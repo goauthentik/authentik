@@ -3,7 +3,7 @@
 from django.http import HttpResponse
 from rest_framework.fields import CharField
 
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -38,7 +38,6 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
         token.save()
         return OAuthDeviceCodeFinishChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-provider-oauth2-device-code-finish",
             }
         )

@@ -1,4 +1,5 @@
 import { AndNext } from "@goauthentik/common/api/config";
+import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -31,7 +32,7 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        `/if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
+                        `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
                     )}"
                     class="pf-c-button pf-m-primary"
                 >
@@ -39,5 +40,11 @@ export class UserSettingsPassword extends AKElement {
                 </a>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-password": UserSettingsPassword;
     }
 }

@@ -19,7 +19,12 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID_PROFILE,
     TOKEN_TYPE,
 )
-from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.jwks import JWKSView
 from authentik.sources.oauth.models import OAuthSource
@@ -32,9 +37,16 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
+        self.other_cert = create_test_cert()
+        # Provider used as a helper to sign JWTs with the same key as the OAuth source has
+        self.helper_provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            authorization_flow=create_test_flow(),
+            signing_key=self.other_cert,
+        )
         self.cert = create_test_cert()
 
-        jwk = JWKSView().get_jwk_for_key(self.cert)
+        jwk = JWKSView().get_jwk_for_key(self.other_cert, "sig")
         self.source: OAuthSource = OAuthSource.objects.create(
             name=generate_id(),
             slug=generate_id(),
@@ -54,10 +66,10 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            redirect_uris="http://testserver",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://testserver")],
             signing_key=self.cert,
         )
-        self.provider.jwks_sources.add(self.source)
+        self.provider.jwt_federation_sources.add(self.source)
         self.provider.property_mappings.set(ScopeMapping.objects.all())
         self.app = Application.objects.create(name="test", slug="test", provider=self.provider)
 
@@ -95,7 +107,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
 
     def test_invalid_signature(self):
         """test invalid JWT"""
-        token = self.provider.encode(
+        token = self.helper_provider.encode(
             {
                 "sub": "foo",
                 "exp": datetime.now() + timedelta(hours=2),
@@ -117,7 +129,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
 
     def test_invalid_expired(self):
         """test invalid JWT"""
-        token = self.provider.encode(
+        token = self.helper_provider.encode(
             {
                 "sub": "foo",
                 "exp": datetime.now() - timedelta(hours=2),
@@ -141,7 +153,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         """test invalid JWT"""
         self.app.provider = None
         self.app.save()
-        token = self.provider.encode(
+        token = self.helper_provider.encode(
             {
                 "sub": "foo",
                 "exp": datetime.now() + timedelta(hours=2),
@@ -169,7 +181,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
             target=self.app,
             order=0,
         )
-        token = self.provider.encode(
+        token = self.helper_provider.encode(
             {
                 "sub": "foo",
                 "exp": datetime.now() + timedelta(hours=2),
@@ -191,7 +203,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
 
     def test_successful(self):
         """test successful"""
-        token = self.provider.encode(
+        token = self.helper_provider.encode(
             {
                 "sub": "foo",
                 "exp": datetime.now() + timedelta(hours=2),

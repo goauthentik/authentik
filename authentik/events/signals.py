@@ -1,19 +1,22 @@
 """authentik events signal listener"""
 
+from importlib import import_module
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
+from rest_framework.request import Request
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
-from authentik.flows.planner import PLAN_CONTEXT_SOURCE, FlowPlan
+from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
@@ -23,6 +26,7 @@ from authentik.stages.user_write.signals import user_write
 from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
+_session_engine = import_module(settings.SESSION_ENGINE)
 
 
 @receiver(user_logged_in)
@@ -38,13 +42,25 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
             # Save the login method used
             kwargs[PLAN_CONTEXT_METHOD] = flow_plan.context[PLAN_CONTEXT_METHOD]
             kwargs[PLAN_CONTEXT_METHOD_ARGS] = flow_plan.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+        if PLAN_CONTEXT_OUTPOST in flow_plan.context:
+            # Save outpost context
+            kwargs[PLAN_CONTEXT_OUTPOST] = flow_plan.context[PLAN_CONTEXT_OUTPOST]
     event = Event.new(EventAction.LOGIN, **kwargs).from_http(request, user=user)
     request.session[SESSION_LOGIN_EVENT] = event
+    request.session.save()
 
 
-def get_login_event(request: HttpRequest) -> Event | None:
+def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | None) -> Event | None:
     """Wrapper to get login event that can be mocked in tests"""
-    return request.session.get(SESSION_LOGIN_EVENT, None)
+    session = None
+    if not request_or_session:
+        return None
+    if isinstance(request_or_session, HttpRequest | Request):
+        session = request_or_session.session
+    if isinstance(request_or_session, AuthenticatedSession):
+        SessionStore = _session_engine.SessionStore
+        session = SessionStore(request_or_session.session_key)
+    return session.get(SESSION_LOGIN_EVENT, None)
 
 
 @receiver(user_logged_out)
@@ -75,7 +91,10 @@ def on_login_failed(
     **kwargs,
 ):
     """Failed Login, authentik custom event"""
-    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(request)
+    user = User.objects.filter(username=credentials.get("username")).first()
+    Event.new(EventAction.LOGIN_FAILED, **credentials, stage=stage, **kwargs).from_http(
+        request, user
+    )
 
 
 @receiver(invitation_used)
@@ -87,9 +106,9 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
 
 
 @receiver(password_changed)
-def on_password_changed(sender, user: User, password: str, **_):
+def on_password_changed(sender, user: User, password: str, request: HttpRequest | None, **_):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(None, user=user)
+    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)

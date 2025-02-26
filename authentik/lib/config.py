@@ -5,6 +5,7 @@ import json
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
+from copy import deepcopy
 from dataclasses import dataclass, field
 from enum import Enum
 from glob import glob
@@ -19,6 +20,8 @@ from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
+
+from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -46,29 +49,6 @@ DEPRECATIONS = {
     "redis.cache_timeout_policies": "cache.timeout_policies",
     "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
-
-
-def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
-    """Recursively walk through `root`, checking each part of `path` separated by `sep`.
-    If at any point a dict does not exist, return default"""
-    for comp in path.split(sep):
-        if root and comp in root:
-            root = root.get(comp)
-        else:
-            return default
-    return root
-
-
-def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
-    """Recursively walk through `root`, checking each part of `path` separated by `sep`
-    and setting the last value to `value`"""
-    # Walk each component of the path
-    path_parts = path.split(sep)
-    for comp in path_parts[:-1]:
-        if comp not in root:
-            root[comp] = {}
-        root = root.get(comp, {})
-    root[path_parts[-1]] = value
 
 
 @dataclass(slots=True)
@@ -384,9 +364,33 @@ class ConfigLoader:
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
+    def get_optional_int(self, path: str, default=None) -> int | None:
+        """Wrapper for get that converts value into int or None if set"""
+        value = self.get(path, default)
+        if value is UNSET:
+            return default
+        try:
+            return int(value)
+        except (ValueError, TypeError) as exc:
+            if value is None or (isinstance(value, str) and value.lower() == "null"):
+                return default
+            if value is UNSET:
+                return default
+            self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
+            return default
+
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
-        return str(self.get(path, default)).lower() == "true"
+        value = self.get(path, UNSET)
+        if value is UNSET:
+            return default
+        return str(self.get(path)).lower() == "true"
+
+    def get_keys(self, path: str, sep=".") -> list[str]:
+        """List attribute keys by using yaml path"""
+        root = self.raw
+        attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr({}))
+        return attr.keys()
 
     def get_dict_from_b64_json(self, path: str, default=None) -> dict:
         """Wrapper for get that converts value from Base64 encoded string into dictionary"""
@@ -435,8 +439,73 @@ def redis_url(db: int) -> str:
     return _redis_url
 
 
+def django_db_config(config: ConfigLoader | None = None) -> dict:
+    if not config:
+        config = CONFIG
+    db = {
+        "default": {
+            "ENGINE": "authentik.root.db",
+            "HOST": config.get("postgresql.host"),
+            "NAME": config.get("postgresql.name"),
+            "USER": config.get("postgresql.user"),
+            "PASSWORD": config.get("postgresql.password"),
+            "PORT": config.get("postgresql.port"),
+            "OPTIONS": {
+                "sslmode": config.get("postgresql.sslmode"),
+                "sslrootcert": config.get("postgresql.sslrootcert"),
+                "sslcert": config.get("postgresql.sslcert"),
+                "sslkey": config.get("postgresql.sslkey"),
+            },
+            "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
+            "CONN_HEALTH_CHECKS": CONFIG.get_bool("postgresql.conn_health_checks", False),
+            "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+                "postgresql.disable_server_side_cursors", False
+            ),
+            "TEST": {
+                "NAME": config.get("postgresql.test.name"),
+            },
+        }
+    }
+
+    conn_max_age = CONFIG.get_optional_int("postgresql.conn_max_age", UNSET)
+    disable_server_side_cursors = CONFIG.get_bool("postgresql.disable_server_side_cursors", UNSET)
+    if config.get_bool("postgresql.use_pgpool", False):
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+        if disable_server_side_cursors is not UNSET:
+            db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
+
+    if config.get_bool("postgresql.use_pgbouncer", False):
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
+        db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        db["default"]["CONN_MAX_AGE"] = None  # persistent
+        if disable_server_side_cursors is not UNSET:
+            db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = disable_server_side_cursors
+        if conn_max_age is not UNSET:
+            db["default"]["CONN_MAX_AGE"] = conn_max_age
+
+    for replica in config.get_keys("postgresql.read_replicas"):
+        _database = deepcopy(db["default"])
+        for setting, current_value in db["default"].items():
+            if isinstance(current_value, dict):
+                continue
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database[setting] = override
+        for setting in db["default"]["OPTIONS"].keys():
+            override = config.get(
+                f"postgresql.read_replicas.{replica}.{setting.lower()}", default=UNSET
+            )
+            if override is not UNSET:
+                _database["OPTIONS"][setting] = override
+        db[f"replica_{replica}"] = _database
+    return db
+
+
 if __name__ == "__main__":
     if len(argv) < 2:  # noqa: PLR2004
         print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.get(argv[1]))
+        print(CONFIG.get(argv[-1]))

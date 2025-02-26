@@ -46,10 +46,10 @@ class TokenIntrospectionParams:
         if not provider:
             raise TokenIntrospectionError
 
-        access_token = AccessToken.objects.filter(token=raw_token).first()
+        access_token = AccessToken.objects.filter(token=raw_token, provider=provider).first()
         if access_token:
             return TokenIntrospectionParams(access_token, provider)
-        refresh_token = RefreshToken.objects.filter(token=raw_token).first()
+        refresh_token = RefreshToken.objects.filter(token=raw_token, provider=provider).first()
         if refresh_token:
             return TokenIntrospectionParams(refresh_token, provider)
         LOGGER.debug("Token does not exist", token=raw_token)

@@ -3,10 +3,8 @@
 from typing import Any
 
 from django.core.cache import cache
-from django_filters.filters import AllValuesMultipleFilter
-from django_filters.filterset import FilterSet
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, extend_schema_field, inline_serializer
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.utils import extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -16,12 +14,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.core.api.propertymappings import PropertyMappingSerializer
+from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.sync.outgoing.api import SyncStatusSerializer
-from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
+from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
@@ -42,9 +40,8 @@ class LDAPSourceSerializer(SourceSerializer):
         """Get cached source connectivity"""
         return cache.get(CACHE_KEY_STATUS + source.slug, None)
 
-    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+    def validate_sync_users_password(self, sync_users_password: bool) -> bool:
         """Check that only a single source has password_sync on"""
-        sync_users_password = attrs.get("sync_users_password", True)
         if sync_users_password:
             sources = LDAPSource.objects.filter(sync_users_password=True)
             if self.instance:
@@ -52,8 +49,28 @@ class LDAPSourceSerializer(SourceSerializer):
             if sources.exists():
                 raise ValidationError(
                     {
-                        "sync_users_password": (
+                        "sync_users_password": _(
                             "Only a single LDAP Source with password synchronization is allowed"
+                        )
+                    }
+                )
+        return sync_users_password
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        """Validate property mappings with sync_ flags"""
+        types = ["user", "group"]
+        for type in types:
+            toggle_value = attrs.get(f"sync_{type}s", False)
+            mappings_field = f"{type}_property_mappings"
+            mappings_value = attrs.get(mappings_field, [])
+            if toggle_value and len(mappings_value) == 0:
+                raise ValidationError(
+                    {
+                        mappings_field: _(
+                            (
+                                "When 'Sync {type}s' is enabled, '{type}s property "
+                                "mappings' cannot be empty."
+                            ).format(type=type)
                         )
                     }
                 )
@@ -81,8 +98,6 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_users_password",
             "sync_groups",
             "sync_parent_group",
-            "property_mappings",
-            "property_mappings_group",
             "connectivity",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
@@ -95,6 +110,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",
@@ -116,8 +132,8 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_users_password",
         "sync_groups",
         "sync_parent_group",
-        "property_mappings",
-        "property_mappings_group",
+        "user_property_mappings",
+        "group_property_mappings",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
@@ -143,10 +159,12 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                 uid__startswith=source.slug,
             )
         )
-        status = {
-            "tasks": tasks,
-            "is_running": source.sync_lock.locked(),
-        }
+        with source.sync_lock as lock_acquired:
+            status = {
+                "tasks": tasks,
+                # If we could not acquire the lock, it means a task is using it, and thus is running
+                "is_running": not lock_acquired,
+            }
         return Response(SyncStatusSerializer(status).data)
 
     @extend_schema(
@@ -169,39 +187,35 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         for sync_class in SYNC_CLASSES:
             class_name = sync_class.name()
             all_objects.setdefault(class_name, [])
-            for obj in sync_class(source).get_objects(size_limit=10):
-                obj: dict
-                obj.pop("raw_attributes", None)
-                obj.pop("raw_dn", None)
-                all_objects[class_name].append(obj)
+            for page in sync_class(source).get_objects(size_limit=10):
+                for obj in page:
+                    obj: dict
+                    obj.pop("raw_attributes", None)
+                    obj.pop("raw_dn", None)
+                    all_objects[class_name].append(obj)
         return Response(data=all_objects)
 
 
-class LDAPPropertyMappingSerializer(PropertyMappingSerializer):
+class LDAPSourcePropertyMappingSerializer(PropertyMappingSerializer):
     """LDAP PropertyMapping Serializer"""
 
     class Meta:
-        model = LDAPPropertyMapping
-        fields = PropertyMappingSerializer.Meta.fields + [
-            "object_field",
-        ]
+        model = LDAPSourcePropertyMapping
+        fields = PropertyMappingSerializer.Meta.fields
 
 
-class LDAPPropertyMappingFilter(FilterSet):
-    """Filter for LDAPPropertyMapping"""
+class LDAPSourcePropertyMappingFilter(PropertyMappingFilterSet):
+    """Filter for LDAPSourcePropertyMapping"""
 
-    managed = extend_schema_field(OpenApiTypes.STR)(AllValuesMultipleFilter(field_name="managed"))
-
-    class Meta:
-        model = LDAPPropertyMapping
-        fields = "__all__"
+    class Meta(PropertyMappingFilterSet.Meta):
+        model = LDAPSourcePropertyMapping
 
 
-class LDAPPropertyMappingViewSet(UsedByMixin, ModelViewSet):
+class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
     """LDAP PropertyMapping Viewset"""
 
-    queryset = LDAPPropertyMapping.objects.all()
-    serializer_class = LDAPPropertyMappingSerializer
-    filterset_class = LDAPPropertyMappingFilter
+    queryset = LDAPSourcePropertyMapping.objects.all()
+    serializer_class = LDAPSourcePropertyMappingSerializer
+    filterset_class = LDAPSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]

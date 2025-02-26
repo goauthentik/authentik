@@ -3,10 +3,18 @@
 from enum import StrEnum
 from typing import TYPE_CHECKING
 
+from deepmerge import always_merger
 from django.db import DatabaseError
 from structlog.stdlib import get_logger
 
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException
+from authentik.core.expression.exceptions import (
+    PropertyMappingExpressionException,
+)
+from authentik.events.models import Event, EventAction
+from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.lib.sync.mapper import PropertyMappingManager
+from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
+from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from django.db.models import Model
@@ -28,6 +36,7 @@ class BaseOutgoingSyncClient[
     provider: TProvider
     connection_type: type[TConnection]
     connection_type_query: str
+    mapper: PropertyMappingManager
 
     can_discover = False
 
@@ -70,9 +79,34 @@ class BaseOutgoingSyncClient[
         """Delete object from destination"""
         raise NotImplementedError()
 
-    def to_schema(self, obj: TModel, creating: bool) -> TSchema:
+    def to_schema(self, obj: TModel, connection: TConnection | None, **defaults) -> TSchema:
         """Convert object to destination schema"""
-        raise NotImplementedError()
+        raw_final_object = {}
+        try:
+            eval_kwargs = {
+                "request": None,
+                "provider": self.provider,
+                "connection": connection,
+                obj._meta.model_name: obj,
+            }
+            eval_kwargs.setdefault("user", None)
+            for value in self.mapper.iter_eval(**eval_kwargs):
+                always_merger.merge(raw_final_object, value)
+        except ControlFlowException as exc:
+            raise exc from exc
+        except PropertyMappingExpressionException as exc:
+            # Value error can be raised when assigning invalid data to an attribute
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
+                mapping=exc.mapping,
+            ).save()
+            raise StopSync(exc, obj, exc.mapping) from exc
+        if not raw_final_object:
+            raise StopSync(ValueError("No mappings configured"), obj)
+        for key, value in defaults.items():
+            raw_final_object.setdefault(key, value)
+        return raw_final_object
 
     def discover(self):
         """Optional method. Can be used to implement a "discovery" where
@@ -80,3 +114,8 @@ class BaseOutgoingSyncClient[
         pre-link any users/groups in the remote system with the respective
         object in authentik based on a common identifier"""
         raise NotImplementedError()
+
+    def update_single_attribute(self, connection: TConnection):
+        """Update connection attributes on a connection object, when the connection
+        is manually created"""
+        raise NotImplementedError

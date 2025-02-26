@@ -7,53 +7,27 @@ on:
 
 jobs:
   build-server:
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/_reusable-docker-build.yaml
+    secrets: inherit
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: prepare variables
-        uses: ./.github/actions/docker-push-variables
-        id: ev
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        with:
-          image-name: ghcr.io/goauthentik/server,beryju/authentik
-      - name: Docker Login Registry
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
-        run: |
-          mkdir -p ./gen-ts-api
-          mkdir -p ./gen-go-api
-      - name: Build Docker Image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
-          tags: ${{ steps.ev.outputs.imageTags }}
-          platforms: linux/amd64,linux/arm64
+      # Needed for attestation
+      id-token: write
+      attestations: write
+    with:
+      image_name: ghcr.io/goauthentik/server,beryju/authentik
+      release: true
+      registry_dockerhub: true
+      registry_ghcr: true
   build-outpost:
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     strategy:
       fail-fast: false
       matrix:
@@ -68,7 +42,7 @@ jobs:
         with:
           go-version-file: "go.mod"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
+        uses: docker/setup-qemu-action@v3.4.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
@@ -94,13 +68,22 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        id: push
         with:
           push: true
+          build-args: |
+            VERSION=${{ github.ref }}
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           context: .
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   build-outpost-binary:
     timeout-minutes: 120
     runs-on: ubuntu-latest
@@ -145,6 +128,27 @@ jobs:
           file: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           tag: ${{ github.ref }}
+  upload-aws-cfn-template:
+    permissions:
+      # Needed for AWS login
+      id-token: write
+      contents: read
+    needs:
+      - build-server
+      - build-outpost
+    env:
+      AWS_REGION: eu-central-1
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "arn:aws:iam::016170277896:role/github_goauthentik_authentik"
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Upload template
+        run: |
+          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
       - build-server
@@ -155,8 +159,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run test suite in final docker images
         run: |
-          echo "PG_PASS=$(openssl rand 32 | base64)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64)" >> .env
+          echo "PG_PASS=$(openssl rand 32 | base64 -w 0)" >> .env
+          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64 -w 0)" >> .env
           docker compose pull -q
           docker compose up --no-start
           docker compose start postgresql redis
@@ -178,8 +182,8 @@ jobs:
           image-name: ghcr.io/goauthentik/server
       - name: Get static files from docker image
         run: |
-          docker pull ${{ steps.ev.outputs.imageMainTag }}
-          container=$(docker container create ${{ steps.ev.outputs.imageMainTag }})
+          docker pull ${{ steps.ev.outputs.imageMainName }}
+          container=$(docker container create ${{ steps.ev.outputs.imageMainName }})
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
         uses: getsentry/action-release@v1

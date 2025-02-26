@@ -124,7 +124,6 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.update(current, reference)
                 self.logger.debug("Updating")
             except (OpenApiException, HTTPError) as exc:
-
                 if isinstance(exc, ApiException) and exc.status == 422:  # noqa: PLR2004
                     self.logger.debug("Failed to update current, triggering re-create")
                     self._recreate(current=current, reference=reference)
@@ -208,7 +207,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/instance": slugify(self.controller.outpost.name),
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
-                "app.kubernetes.io/version": get_version(),
+                "app.kubernetes.io/version": get_version().replace("+", "-"),
                 "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
                 "goauthentik.io/outpost-type": str(self.controller.outpost.type),
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,

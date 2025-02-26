@@ -1,13 +1,13 @@
 {% extends "base/skeleton.html" %}
 
-{% load static %}
+{% load authentik_core %}
 
 {% block title %}
 API Browser - {{ brand.branding_title }}
 {% endblock %}
 
 {% block head %}
-<script src="{% static 'dist/standalone/api-browser/index.js' %}?version={{ version }}" type="module"></script>
+<script src="{% versioned_script 'dist/standalone/api-browser/index-%v.js' %}" type="module"></script>
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
 {% endblock %}

@@ -9,3 +9,6 @@ class AuthentikBrandsConfig(AppConfig):
     name = "authentik.brands"
     label = "authentik_brands"
     verbose_name = "authentik Brands"
+    mountpoints = {
+        "authentik.brands.urls_root": "",
+    }

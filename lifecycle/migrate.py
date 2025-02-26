@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """System Migration handler"""
+
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from os import environ, system
@@ -53,19 +54,20 @@ class BaseMigration:
 
 def wait_for_lock(cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
+    global LOCKED  # noqa: PLW0603
     LOGGER.info("waiting to acquire database lock")
     cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
-
-    global LOCKED  # noqa: PLW0603
     LOCKED = True
 
 
 def release_lock(cursor: Cursor):
     """Release database lock"""
+    global LOCKED  # noqa: PLW0603
     if not LOCKED:
         return
     LOGGER.info("releasing database lock")
     cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    LOCKED = False
 
 
 def run_migrations():
@@ -82,7 +84,10 @@ def run_migrations():
     )
     curr = conn.cursor()
     try:
-        for migration_path in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
+        wait_for_lock(curr)
+        for migration_path in sorted(
+            Path(__file__).parent.absolute().glob("system_migrations/*.py")
+        ):
             spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
@@ -94,14 +99,11 @@ def run_migrations():
                     continue
                 migration = sub(curr, conn)
                 if migration.needs_migration():
-                    wait_for_lock(curr)
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
                     LOGGER.info("Migration finished applying", migration=migration_path.name)
-                    release_lock(curr)
         LOGGER.info("applying django migrations")
         environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-        wait_for_lock(curr)
         try:
             from django.core.management import execute_from_command_line
         except ImportError as exc:
@@ -111,7 +113,8 @@ def run_migrations():
                 "forget to activate a virtual environment?"
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
-        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        if CONFIG.get_bool("tenants.enabled", False):
+            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
         execute_from_command_line(
             ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
         )

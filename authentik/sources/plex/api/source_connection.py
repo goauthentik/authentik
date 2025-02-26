@@ -1,39 +1,47 @@
 """Plex Source connection Serializer"""
 
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
-from authentik.core.api.sources import UserSourceConnectionSerializer
-from authentik.core.api.used_by import UsedByMixin
-from authentik.sources.plex.models import PlexSourceConnection
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
+)
+from authentik.sources.plex.models import GroupPlexSourceConnection, UserPlexSourceConnection
 
 
-class PlexSourceConnectionSerializer(UserSourceConnectionSerializer):
+class UserPlexSourceConnectionSerializer(UserSourceConnectionSerializer):
     """Plex Source connection Serializer"""
 
-    class Meta:
-        model = PlexSourceConnection
-        fields = [
-            "pk",
-            "user",
-            "source",
+    class Meta(UserSourceConnectionSerializer.Meta):
+        model = UserPlexSourceConnection
+        fields = UserSourceConnectionSerializer.Meta.fields + [
             "identifier",
             "plex_token",
         ]
         extra_kwargs = {
-            "user": {"read_only": True},
+            **UserSourceConnectionSerializer.Meta.extra_kwargs,
+            "plex_token": {"write_only": True},
         }
 
 
-class PlexSourceConnectionViewSet(UsedByMixin, ModelViewSet):
+class UserPlexSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
     """Plex Source connection Serializer"""
 
-    queryset = PlexSourceConnection.objects.all()
-    serializer_class = PlexSourceConnectionSerializer
-    filterset_fields = ["source__slug"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["pk"]
-    search_fields = ["source__slug"]
+    queryset = UserPlexSourceConnection.objects.all()
+    serializer_class = UserPlexSourceConnectionSerializer
+
+
+class GroupPlexSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    """Plex Group-Source connection Serializer"""
+
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupPlexSourceConnection
+
+
+class GroupPlexSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    """Group-source connection Viewset"""
+
+    queryset = GroupPlexSourceConnection.objects.all()
+    serializer_class = GroupPlexSourceConnectionSerializer

@@ -2,24 +2,21 @@
 
 from collections.abc import Iterable
 
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
-from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
-from authentik.core.models import Source, UserSourceConnection
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
+from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
 from authentik.lib.utils.file import (
     FilePathSerializer,
@@ -27,7 +24,6 @@ from authentik.lib.utils.file import (
     set_file,
     set_file_url,
 )
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.engine import PolicyEngine
 from authentik.rbac.decorators import permission_required
 
@@ -61,6 +57,8 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
             "enabled",
             "authentication_flow",
             "enrollment_flow",
+            "user_property_mappings",
+            "group_property_mappings",
             "component",
             "verbose_name",
             "verbose_name_plural",
@@ -74,6 +72,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class SourceViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -86,7 +85,7 @@ class SourceViewSet(
     serializer_class = SourceSerializer
     lookup_field = "slug"
     search_fields = ["slug", "name"]
-    filterset_fields = ["slug", "name", "managed"]
+    filterset_fields = ["slug", "name", "managed", "pbm_uuid"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
@@ -132,30 +131,6 @@ class SourceViewSet(
         source: Source = self.get_object()
         return set_file_url(request, source, "icon")
 
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable source types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model):
-            subclass: Source
-            component = ""
-            if len(subclass.__subclasses__()) > 0:
-                continue
-            if subclass._meta.abstract:
-                component = subclass.__bases__[0]().component
-            else:
-                component = subclass().component
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": component,
-                    "model_name": subclass._meta.model_name,
-                }
-            )
-        return Response(TypeCreateSerializer(data, many=True).data)
-
     @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
     def user_settings(self, request: Request) -> Response:
@@ -181,9 +156,9 @@ class SourceViewSet(
 
 
 class UserSourceConnectionSerializer(SourceSerializer):
-    """OAuth Source Serializer"""
+    """User source connection"""
 
-    source = SourceSerializer(read_only=True)
+    source_obj = SourceSerializer(read_only=True, source="source")
 
     class Meta:
         model = UserSourceConnection
@@ -191,10 +166,10 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "pk",
             "user",
             "source",
+            "source_obj",
             "created",
         ]
         extra_kwargs = {
-            "user": {"read_only": True},
             "created": {"read_only": True},
         }
 
@@ -211,7 +186,45 @@ class UserSourceConnectionViewSet(
 
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
-    permission_classes = [OwnerSuperuserPermissions]
-    filterset_fields = ["user"]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-    ordering = ["pk"]
+    filterset_fields = ["user", "source__slug"]
+    search_fields = ["source__slug"]
+    ordering = ["source__slug", "pk"]
+    owner_field = "user"
+
+
+class GroupSourceConnectionSerializer(SourceSerializer):
+    """Group Source Connection"""
+
+    source_obj = SourceSerializer(read_only=True)
+
+    class Meta:
+        model = GroupSourceConnection
+        fields = [
+            "pk",
+            "group",
+            "source",
+            "source_obj",
+            "identifier",
+            "created",
+        ]
+        extra_kwargs = {
+            "created": {"read_only": True},
+        }
+
+
+class GroupSourceConnectionViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    """Group-source connection Viewset"""
+
+    queryset = GroupSourceConnection.objects.all()
+    serializer_class = GroupSourceConnectionSerializer
+    filterset_fields = ["group", "source__slug"]
+    search_fields = ["source__slug"]
+    ordering = ["source__slug", "pk"]
+    owner_field = "user"

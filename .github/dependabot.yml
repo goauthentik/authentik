@@ -21,7 +21,9 @@ updates:
     labels:
       - dependencies
   - package-ecosystem: npm
-    directory: "/web"
+    directories:
+      - "/web"
+      - "/web/sfe"
     schedule:
       interval: daily
       time: "04:00"
@@ -30,7 +32,6 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
-    # TODO: deduplicate these groups
     groups:
       sentry:
         patterns:
@@ -42,9 +43,11 @@ updates:
           - "babel-*"
       eslint:
         patterns:
+          - "@eslint/*"
           - "@typescript-eslint/*"
-          - "eslint"
           - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
       storybook:
         patterns:
           - "@storybook/*"
@@ -52,42 +55,16 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+          - "esbuild*"
       rollup:
         patterns:
           - "@rollup/*"
           - "rollup-*"
-  - package-ecosystem: npm
-    directory: "/tests/wdio"
-    schedule:
-      interval: daily
-      time: "04:00"
-    labels:
-      - dependencies
-    open-pull-requests-limit: 10
-    commit-message:
-      prefix: "web:"
-    # TODO: deduplicate these groups
-    groups:
-      sentry:
+          - "rollup*"
+      swc:
         patterns:
-          - "@sentry/*"
-          - "@spotlightjs/*"
-      babel:
-        patterns:
-          - "@babel/*"
-          - "babel-*"
-      eslint:
-        patterns:
-          - "@typescript-eslint/*"
-          - "eslint"
-          - "eslint-*"
-      storybook:
-        patterns:
-          - "@storybook/*"
-          - "*storybook*"
-      esbuild:
-        patterns:
-          - "@esbuild/*"
+          - "@swc/*"
+          - "swc-*"
       wdio:
         patterns:
           - "@wdio/*"
@@ -105,6 +82,16 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
+  - package-ecosystem: npm
+    directory: "/lifecycle/aws"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "lifecycle/aws:"
+    labels:
+      - dependencies
   - package-ecosystem: pip
     directory: "/"
     schedule:

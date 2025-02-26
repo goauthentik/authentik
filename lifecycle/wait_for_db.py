@@ -10,15 +10,20 @@ from redis.exceptions import RedisError
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.parser import parse_url
 
+CHECK_THRESHOLD = 30
+
 
 def check_postgres():
+    attempt = 0
     while True:
+        if attempt >= CHECK_THRESHOLD:
+            sysexit(1)
         try:
             conn = connect(
-                dbname=CONFIG.get("postgresql.name"),
-                user=CONFIG.get("postgresql.user"),
-                password=CONFIG.get("postgresql.password"),
-                host=CONFIG.get("postgresql.host"),
+                dbname=CONFIG.refresh("postgresql.name"),
+                user=CONFIG.refresh("postgresql.user"),
+                password=CONFIG.refresh("postgresql.password"),
+                host=CONFIG.refresh("postgresql.host"),
                 port=CONFIG.get_int("postgresql.port"),
                 sslmode=CONFIG.get("postgresql.sslmode"),
                 sslrootcert=CONFIG.get("postgresql.sslrootcert"),
@@ -30,12 +35,17 @@ def check_postgres():
         except OperationalError as exc:
             sleep(1)
             CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
+        finally:
+            attempt += 1
     CONFIG.log("info", "PostgreSQL connection successful")
 
 
 def check_redis():
-    url = CONFIG.get("redis.url")
+    url = CONFIG.get("cache.url") or CONFIG.get("redis.url")
+	attempt = 0
     while True:
+        if attempt >= CHECK_THRESHOLD:
+            sysexit(1)
         try:
             redis = parse_url(url)
             redis.ping()
@@ -44,6 +54,8 @@ def check_redis():
         except (RedisError, IndexError) as exc:
             sleep(1)
             CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})")
+        finally:
+            attempt += 1
     CONFIG.log("info", "Redis Connection successful")
 
 

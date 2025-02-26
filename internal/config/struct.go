@@ -14,6 +14,7 @@ type Config struct {
 	// Config for both core and outposts
 	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
 	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -33,7 +34,7 @@ type RedisConfig struct {
 	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"` // Deprecated: Use URL instead
 	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"` // Deprecated: Use URL instead
 	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"` // Deprecated: Use URL instead
-    TLSCaCert *string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"` // Deprecated: Use URL instead
+    TLSCaCert              string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"` // Deprecated: Use URL instead
 }
 
 type ListenConfig struct {
@@ -72,4 +73,8 @@ type OutpostConfig struct {
 	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
 	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
 	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type WebConfig struct {
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }

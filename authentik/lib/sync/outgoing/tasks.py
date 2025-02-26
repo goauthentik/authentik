@@ -1,9 +1,11 @@
 from collections.abc import Callable
+from dataclasses import asdict
 
 from celery.exceptions import Retry
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
+from django.db.models.query import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
@@ -13,6 +15,7 @@ from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
@@ -35,7 +38,9 @@ class SyncTasks:
         self._provider_model = provider_model
 
     def sync_all(self, single_sync: Callable[[int], None]):
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             self.trigger_single_task(provider, single_sync)
 
     def trigger_single_task(self, provider: OutgoingSyncProvider, sync_task: Callable[[int], None]):
@@ -60,13 +65,10 @@ class SyncTasks:
             provider_pk=provider_pk,
         )
         provider = self._provider_model.objects.filter(
-            pk=provider_pk, backchannel_application__isnull=False
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False),
+            pk=provider_pk,
         ).first()
         if not provider:
-            return
-        lock = provider.sync_lock
-        if lock.locked():
-            self.logger.debug("Sync locked, skipping task", source=provider.name)
             return
         task.set_uid(slugify(provider.name))
         messages = []
@@ -74,24 +76,27 @@ class SyncTasks:
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        with allow_join_result(), lock:
+        with allow_join_result(), provider.sync_lock as lock_acquired:
+            if not lock_acquired:
+                self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
+                return
             try:
                 for page in users_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                    messages.append(_("Syncing page {page} of users".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(User), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,
                         soft_time_limit=PAGE_TIMEOUT,
                     ).get():
-                        messages.append(msg)
+                        messages.append(LogEvent(**msg))
                 for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                    messages.append(_("Syncing page {page} of groups".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(Group), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,
                         soft_time_limit=PAGE_TIMEOUT,
                     ).get():
-                        messages.append(msg)
+                        messages.append(LogEvent(**msg))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 raise task.retry(exc=exc) from exc
@@ -100,7 +105,7 @@ class SyncTasks:
                 return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
-    def sync_objects(self, object_type: str, page: int, provider_pk: int):
+    def sync_objects(self, object_type: str, page: int, provider_pk: int, **filter):
         _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -115,7 +120,7 @@ class SyncTasks:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return messages
-        paginator = Paginator(provider.get_object_qs(_object_type), PAGE_SIZE)
+        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()
@@ -125,61 +130,70 @@ class SyncTasks:
             try:
                 client.write(obj)
             except SkipObjectException:
+                self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 messages.append(
-                    LogEvent(
-                        _(
-                            (
-                                "Failed to sync {object_type} {object_name} "
-                                "due to error: {error}"
-                            ).format_map(
-                                {
-                                    "object_type": obj._meta.verbose_name,
-                                    "object_name": str(obj),
-                                    "error": str(exc),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
-                        attributes={"arguments": exc.args[1:]},
+                    asdict(
+                        LogEvent(
+                            _(
+                                (
+                                    "Failed to sync {object_type} {object_name} "
+                                    "due to error: {error}"
+                                ).format_map(
+                                    {
+                                        "object_type": obj._meta.verbose_name,
+                                        "object_name": str(obj),
+                                        "error": str(exc),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"arguments": exc.args[1:], "obj": sanitize_item(obj)},
+                        )
                     )
                 )
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 messages.append(
-                    LogEvent(
-                        _(
-                            (
-                                "Failed to sync {object_type} {object_name} "
-                                "due to transient error: {error}"
-                            ).format_map(
-                                {
-                                    "object_type": obj._meta.verbose_name,
-                                    "object_name": str(obj),
-                                    "error": str(exc),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
+                    asdict(
+                        LogEvent(
+                            _(
+                                (
+                                    "Failed to sync {object_type} {object_name} "
+                                    "due to transient error: {error}"
+                                ).format_map(
+                                    {
+                                        "object_type": obj._meta.verbose_name,
+                                        "object_name": str(obj),
+                                        "error": str(exc),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
+                        )
                     )
                 )
             except StopSync as exc:
                 self.logger.warning("Stopping sync", exc=exc)
                 messages.append(
-                    LogEvent(
-                        _(
-                            "Stopping sync due to error: {error}".format_map(
-                                {
-                                    "error": exc.detail(),
-                                }
-                            )
-                        ),
-                        log_level="warning",
-                        logger="",
+                    asdict(
+                        LogEvent(
+                            _(
+                                "Stopping sync due to error: {error}".format_map(
+                                    {
+                                        "error": exc.detail(),
+                                    }
+                                )
+                            ),
+                            log_level="warning",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={"obj": sanitize_item(obj)},
+                        )
                     )
                 )
                 break
@@ -194,7 +208,9 @@ class SyncTasks:
         if not instance:
             return
         operation = Direction(raw_op)
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             client = provider.client_for_model(instance.__class__)
             # Check if the object is allowed within the provider's restrictions
             queryset = provider.get_object_qs(instance.__class__)
@@ -213,6 +229,8 @@ class SyncTasks:
                     client.delete(instance)
             except TransientSyncException as exc:
                 raise Retry() from exc
+            except SkipObjectException:
+                continue
             except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)
 
@@ -223,7 +241,9 @@ class SyncTasks:
         group = Group.objects.filter(pk=group_pk).first()
         if not group:
             return
-        for provider in self._provider_model.objects.filter(backchannel_application__isnull=False):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
             # Check if the object is allowed within the provider's restrictions
             queryset: QuerySet = provider.get_object_qs(Group)
             # The queryset we get from the provider must include the instance we've got given
@@ -241,5 +261,7 @@ class SyncTasks:
                 client.update_group(group, operation, pk_set)
             except TransientSyncException as exc:
                 raise Retry() from exc
+            except SkipObjectException:
+                continue
             except StopSync as exc:
                 self.logger.warning(exc, provider_pk=provider.pk)

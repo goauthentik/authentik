@@ -3,24 +3,20 @@
 from typing import Any
 
 from django.utils.timezone import now
-from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from guardian.shortcuts import assign_perm, get_anonymous_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_ATTRIBUTE_TOKEN_MAXIMUM_LIFETIME,
@@ -44,6 +40,13 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
             self.fields["key"] = CharField(required=False)
+
+    def validate_user(self, user: User):
+        """Ensure user of token cannot be changed"""
+        if self.instance and self.instance.user_id:
+            if user.pk != self.instance.user_id:
+                raise ValidationError("User cannot be changed")
+        return user
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
@@ -132,8 +135,8 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
         "managed",
     ]
     ordering = ["identifier", "expires"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
+    owner_field = "user"
+    rbac_allow_create_without_perm = True
 
     def get_queryset(self):
         user = self.request.user if self.request else get_anonymous_user()

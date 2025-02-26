@@ -22,12 +22,10 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
     checkbox = true;
     clearOnRefresh = true;
 
-    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
         return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+            ...(await this.defaultEndpointConfig()),
             uuid: this.roleUuid || "",
-            page: page,
-            ordering: this.order,
-            search: this.search,
         });
     }
 
@@ -39,9 +37,9 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
 
     columns(): TableColumn[] {
         return [
-            new TableColumn("Model", "model"),
-            new TableColumn("Permission", ""),
-            new TableColumn("Object", ""),
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
+            new TableColumn(msg("Object"), ""),
             new TableColumn(""),
         ];
     }
@@ -92,5 +90,11 @@ export class RoleAssignedObjectPermissionTable extends Table<ExtraRoleObjectPerm
                   </pf-tooltip>`}`,
             html`<i class="fas fa-check pf-m-success"></i>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-assigned-object-permissions-table": RoleAssignedObjectPermissionTable;
     }
 }

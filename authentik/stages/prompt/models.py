@@ -38,7 +38,7 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
-    # update website/docs/flow/stages/prompt/index.md
+    # update website/docs/add-secure-apps/flows-stages/stages/prompt/index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -170,7 +170,7 @@ class Prompt(SerializerModel):
             try:
                 raw_choices = evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt choices",
                     exc=wrapped,
@@ -208,7 +208,7 @@ class Prompt(SerializerModel):
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt placeholder",
                     exc=wrapped,
@@ -237,7 +237,7 @@ class Prompt(SerializerModel):
             try:
                 value = evaluator.evaluate(self.initial_value)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt initial value",
                     exc=wrapped,

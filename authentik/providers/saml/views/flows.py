@@ -16,11 +16,11 @@ from authentik.flows.challenge import (
     AutoSubmitChallengeResponse,
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.views import bad_request_message
+from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
@@ -72,16 +72,15 @@ class SAMLFlowFinalView(ChallengeStageView):
         ).from_http(self.request)
 
         if provider.sp_binding == SAMLBindings.POST:
-            form_attrs = {
-                "ACSUrl": provider.acs_url,
-                REQUEST_KEY_SAML_RESPONSE: nice64(response),
-            }
-            if auth_n_request.relay_state:
-                form_attrs[REQUEST_KEY_RELAY_STATE] = auth_n_request.relay_state
+            form_attrs = delete_none_values(
+                {
+                    REQUEST_KEY_SAML_RESPONSE: nice64(response),
+                    REQUEST_KEY_RELAY_STATE: auth_n_request.relay_state,
+                }
+            )
             return super().get(
                 self.request,
                 **{
-                    "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,

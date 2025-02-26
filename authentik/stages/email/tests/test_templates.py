@@ -96,7 +96,7 @@ class TestEmailStageTemplates(FlowTestCase):
         """Test addresses are correctly parsed"""
         message = TemplateEmailMessage(to=[("foo@bar.baz", "foo@bar.baz")])
         [sanitize_address(addr, "utf-8") for addr in message.recipients()]
-        self.assertEqual(message.recipients(), ["foo@bar.baz"])
+        self.assertEqual(message.recipients(), ['"foo@bar.baz" <foo@bar.baz>'])
         message = TemplateEmailMessage(to=[("some-name", "foo@bar.baz")])
         [sanitize_address(addr, "utf-8") for addr in message.recipients()]
         self.assertEqual(message.recipients(), ["some-name <foo@bar.baz>"])

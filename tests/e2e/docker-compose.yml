@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   chrome:
     image: docker.io/selenium/standalone-chrome:122.0

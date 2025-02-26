@@ -3,6 +3,7 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
+    --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
 }
 body {
     background-color: var(--ak-dark-background) !important;
@@ -31,9 +32,6 @@ body {
 .notification-trigger {
     background-color: transparent !important;
 }
-.pf-c-page__main-section.pf-m-light {
-    background-color: transparent;
-}
 .pf-c-content {
     color: var(--ak-dark-foreground);
 }
@@ -41,6 +39,9 @@ body {
 .pf-c-card {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
     color: var(--ak-dark-foreground);
+}
+.pf-c-card.pf-m-non-selectable-raised {
+    --pf-c-card--BackgroundColor: var(--ak-dark-background-lighter);
 }
 .pf-c-card__title,
 .pf-c-card__body {
@@ -152,7 +153,7 @@ select[multiple] option:checked {
     background-color: var(--ak-dark-background-light);
 }
 .pf-c-form-control[readonly] {
-    background-color: var(--ak-dark-background-light);
+    background-color: var(--ak-dark-background-light) !important;
 }
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);

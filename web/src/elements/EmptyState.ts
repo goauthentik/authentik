@@ -1,16 +1,26 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { msg } from "@lit/localize";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IEmptyState {
+    icon?: string;
+    loading?: boolean;
+    fullHeight?: boolean;
+    header?: string;
+}
+
 @customElement("ak-empty-state")
-export class EmptyState extends AKElement {
+export class EmptyState extends AKElement implements IEmptyState {
     @property({ type: String })
     icon = "";
 
@@ -21,9 +31,9 @@ export class EmptyState extends AKElement {
     fullHeight = false;
 
     @property()
-    header = "";
+    header?: string;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFEmptyState,
@@ -37,7 +47,7 @@ export class EmptyState extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
                 ${this.loading
@@ -49,7 +59,9 @@ export class EmptyState extends AKElement {
                           "fa-question-circle"} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                <h1 class="pf-c-title pf-m-lg">${this.header}</h1>
+                <h1 class="pf-c-title pf-m-lg">
+                    ${this.loading && this.header === undefined ? msg("Loading") : this.header}
+                </h1>
                 <div class="pf-c-empty-state__body">
                     <slot name="body"></slot>
                 </div>
@@ -58,5 +70,17 @@ export class EmptyState extends AKElement {
                 </div>
             </div>
         </div>`;
+    }
+}
+
+export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
+    const message =
+        typeof content === "string" ? html`<span slot="body">${content}</span>` : content;
+    return html`<ak-empty-state ${spread(properties as Spread)}>${message}</ak-empty-state>`;
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-empty-state": EmptyState;
     }
 }

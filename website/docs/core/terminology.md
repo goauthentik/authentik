@@ -45,7 +45,7 @@ A Provider is a way for other applications to authenticate against authentik. Co
 
 At a base level a policy is a yes/no gate. It will either evaluate to True or False depending on the Policy Kind and settings. For example, a "Group Membership Policy" evaluates to True if the user is member of the specified Group and False if not. This can be used to conditionally apply Stages, grant/deny access to various objects, and for other custom logic.
 
-See [Policies](../policies/index.md)
+See [Policies](../customize/policies/index.md)
 
 ### Flows & Stages
 
@@ -57,19 +57,19 @@ A stage represents a single verification or logic step. They are used to authent
 
 Certain use cases within authentik add steps that are run as part of a flow. These steps are a special type of stage called the "Dynamic in-memory" stage, as they are added to flows dynamically when required, only exist in memory, and are thus not configurable by administrators.
 
-See [Flows](../flow/index.md)
+See [Flows](../add-secure-apps/flows-stages/flow/index.md)
 
 ### Property Mappings
 
-Property Mappings allow you to make information available for external applications. For example, if you want to login to AWS with authentik, you'd use Property Mappings to set the user's roles in AWS based on their group memberships in authentik.
+Property Mappings allow you to make information available for external applications, and to modify how information from sources are stored in authentik. For example, if you want to log in to AWS with authentik, you'd use property mappings to set the user's roles in AWS based on their group memberships in authentik.
 
-See [Property Mappings](../property-mappings/index.md)
+See [Providers Property Mappings](../add-secure-apps/providers/property-mappings/index.md) and [Source Property Mappings](../users-sources/sources/property-mappings/index.md).
 
 ### Outpost
 
 An outpost is a separate component of authentik, which can be deployed anywhere, regardless of the authentik deployment. The outpost offers services that aren't implemented directly into the authentik core, e.g. Reverse Proxying.
 
-See [Outposts](../outposts/index.mdx)
+See [Outposts](../add-secure-apps/outposts/index.mdx)
 
 ### System tasks
 

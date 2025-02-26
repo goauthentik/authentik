@@ -9,6 +9,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/Message";
 import { APIMessage } from "@goauthentik/elements/messages/Message";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -19,6 +20,9 @@ export function showMessage(message: APIMessage, unique = false): void {
     const container = document.querySelector<MessageContainer>("ak-message-container");
     if (!container) {
         throw new SentryIgnoredError("failed to find message container");
+    }
+    if (message.message.trim() === "") {
+        message.message = msg("Error");
     }
     container.addMessage(message, unique);
     container.requestUpdate();
@@ -77,5 +81,11 @@ export class MessageContainer extends AKElement {
                 </ak-message>`;
             })}
         </ul>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-message-container": MessageContainer;
     }
 }

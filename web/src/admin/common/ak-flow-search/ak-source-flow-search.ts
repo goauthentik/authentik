@@ -47,4 +47,10 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
     }
 }
 
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-flow-search": AkSourceFlowSearch<Flow>;
+    }
+}
+
 export default AkSourceFlowSearch;

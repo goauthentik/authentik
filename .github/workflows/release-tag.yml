@@ -14,16 +14,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Pre-release test
         run: |
-          echo "PG_PASS=$(openssl rand 32 | base64)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand 32 | base64)" >> .env
-          docker buildx install
-          mkdir -p ./gen-ts-api
-          docker build -t testing:latest .
-          echo "AUTHENTIK_IMAGE=testing" >> .env
-          echo "AUTHENTIK_TAG=latest" >> .env
-          docker compose up --no-start
-          docker compose start postgresql redis
-          docker compose run -u root server test-all
+          make test-docker
       - id: generate_token
         uses: tibdex/github-app-token@v2
         with:

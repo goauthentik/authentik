@@ -20,7 +20,7 @@ import (
 
 const RedisKeyPrefix = "authentik_proxy_session_"
 
-func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
+func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) (sessions.Store, error) {
 	maxAge := 0
 	if p.AccessTokenValidity.IsSet() {
 		t := p.AccessTokenValidity.Get()
@@ -34,25 +34,25 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			if err != nil {
 				panic(err)
 			}
-			rs, err := redisstore.NewStore(
-				client,
-				redisstore.WithOptions(&sessions.Options{
-					Path:     "/",
-					Domain:   *p.CookieDomain,
-					HttpOnly: true,
-					MaxAge:   maxAge,
-					SameSite: http.SameSiteLaxMode,
-					Secure:   strings.ToLower(externalHost.Scheme) == "https",
-				}),
-				redisstore.WithKeyPrefix(RedisKeyPrefix),
-				redisstore.WithMaxLength(math.MaxInt),
-				redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
-			)
+
+			// New default RedisStore
+			rs, err := redisstore.NewRedisStore(context.Background(), client)
 			if err != nil {
-				panic(err)
+				return nil, err
 			}
+
+			rs.KeyPrefix(RedisKeyPrefix)
+			rs.Options(sessions.Options{
+				HttpOnly: true,
+				Secure:   strings.ToLower(externalHost.Scheme) == "https",
+				Domain:   *p.CookieDomain,
+				SameSite: http.SameSiteLaxMode,
+				MaxAge:   maxAge,
+				Path:     "/",
+			})
+			
 			a.log.Trace("using redis session backend")
-			return rs
+			return rs, nil
 		}
 	}
 
@@ -73,7 +73,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	cs.Options.MaxAge = maxAge
 	cs.Options.Path = "/"
 	a.log.WithField("dir", dir).Trace("using filesystem session backend")
-	return cs
+	return cs, nil
 }
 
 func (a *Application) SessionName() string {

@@ -15,8 +15,7 @@ export class DeviceCodeFinish extends BaseStage<
 > {
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<ak-empty-state
             icon="fas fa-check"
@@ -24,5 +23,11 @@ export class DeviceCodeFinish extends BaseStage<
         >
             <span slot="body"> ${msg("You've successfully authenticated your device.")} </span>
         </ak-empty-state>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-provider-oauth2-code-finish": DeviceCodeFinish;
     }
 }

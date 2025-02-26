@@ -64,36 +64,43 @@ def to_base64url_uint(val: int, min_length: int = 0) -> bytes:
 class JWKSView(View):
     """Show RSA Key data for Provider"""
 
-    def get_jwk_for_key(self, key: CertificateKeyPair) -> dict | None:
+    @staticmethod
+    def get_jwk_for_key(key: CertificateKeyPair, use: str) -> dict | None:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
         key_data = None
         if not private_key:
             return key_data
+
+        key_data = {}
+
+        if use == "sig":
+            if isinstance(private_key, RSAPrivateKey):
+                key_data["alg"] = JWTAlgorithms.RS256
+            elif isinstance(private_key, EllipticCurvePrivateKey):
+                key_data["alg"] = JWTAlgorithms.ES256
+        elif use == "enc":
+            key_data["alg"] = "RSA-OAEP-256"
+            key_data["enc"] = "A256CBC-HS512"
+
         if isinstance(private_key, RSAPrivateKey):
             public_key: RSAPublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
-            key_data = {
-                "kid": key.kid,
-                "kty": "RSA",
-                "alg": JWTAlgorithms.RS256,
-                "use": "sig",
-                "n": to_base64url_uint(public_numbers.n).decode(),
-                "e": to_base64url_uint(public_numbers.e).decode(),
-            }
+            key_data["kid"] = key.kid
+            key_data["kty"] = "RSA"
+            key_data["use"] = use
+            key_data["n"] = to_base64url_uint(public_numbers.n).decode()
+            key_data["e"] = to_base64url_uint(public_numbers.e).decode()
         elif isinstance(private_key, EllipticCurvePrivateKey):
             public_key: EllipticCurvePublicKey = private_key.public_key()
             public_numbers = public_key.public_numbers()
             curve_type = type(public_key.curve)
-            key_data = {
-                "kid": key.kid,
-                "kty": "EC",
-                "alg": JWTAlgorithms.ES256,
-                "use": "sig",
-                "x": to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode(),
-                "y": to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode(),
-                "crv": ec_crv_map.get(curve_type, public_key.curve.name),
-            }
+            key_data["kid"] = key.kid
+            key_data["kty"] = "EC"
+            key_data["use"] = use
+            key_data["x"] = to_base64url_uint(public_numbers.x, min_length_map[curve_type]).decode()
+            key_data["y"] = to_base64url_uint(public_numbers.y, min_length_map[curve_type]).decode()
+            key_data["crv"] = ec_crv_map.get(curve_type, public_key.curve.name)
         else:
             return key_data
         key_data["x5c"] = [b64encode(key.certificate.public_bytes(Encoding.DER)).decode("utf-8")]
@@ -113,14 +120,19 @@ class JWKSView(View):
         """Show JWK Key data for Provider"""
         application = get_object_or_404(Application, slug=application_slug)
         provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
-        signing_key: CertificateKeyPair = provider.signing_key
 
         response_data = {}
 
-        if signing_key:
-            jwk = self.get_jwk_for_key(signing_key)
+        if signing_key := provider.signing_key:
+            jwk = JWKSView.get_jwk_for_key(signing_key, "sig")
             if jwk:
-                response_data["keys"] = [jwk]
+                response_data.setdefault("keys", [])
+                response_data["keys"].append(jwk)
+        if encryption_key := provider.encryption_key:
+            jwk = JWKSView.get_jwk_for_key(encryption_key, "enc")
+            if jwk:
+                response_data.setdefault("keys", [])
+                response_data["keys"].append(jwk)
 
         response = JsonResponse(response_data)
         response["Access-Control-Allow-Origin"] = "*"

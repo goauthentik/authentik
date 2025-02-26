@@ -16,6 +16,7 @@ from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from guardian.models import UserObjectPermission
+from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import BoundLogger, get_logger
@@ -32,9 +33,11 @@ from authentik.blueprints.v1.common import (
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
+    GroupSourceConnection,
     PropertyMapping,
     Provider,
     Source,
+    User,
     UserSourceConnection,
 )
 from authentik.enterprise.license import LicenseKey
@@ -47,24 +50,36 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.providers.ssf.models import StreamEvent
+from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
+    EndpointDevice,
+    EndpointDeviceConnection,
+)
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
+from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
-from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    DeviceToken,
+    RefreshToken,
+)
+from authentik.providers.rac.models import ConnectionToken
+from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
+from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
 from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
-# Update website/developer-docs/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -87,6 +102,7 @@ def excluded_models() -> list[type[Model]]:
         Source,
         PropertyMapping,
         UserSourceConnection,
+        GroupSourceConnection,
         Stage,
         OutpostServiceConnection,
         Policy,
@@ -97,8 +113,8 @@ def excluded_models() -> list[type[Model]]:
         # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
         FlowToken,
         LicenseUsage,
-        SCIMGroup,
-        SCIMUser,
+        SCIMProviderGroup,
+        SCIMProviderUser,
         Tenant,
         SystemTask,
         ConnectionToken,
@@ -113,6 +129,10 @@ def excluded_models() -> list[type[Model]]:
         GoogleWorkspaceProviderGroup,
         MicrosoftEntraProviderUser,
         MicrosoftEntraProviderGroup,
+        EndpointDevice,
+        EndpointDeviceConnection,
+        DeviceToken,
+        StreamEvent,
     )
 
 
@@ -136,6 +156,16 @@ def transaction_rollback():
         pass
 
 
+def rbac_models() -> dict:
+    models = {}
+    for app in get_apps():
+        for model in app.get_models():
+            if not is_model_allowed(model):
+                continue
+            models[model._meta.model_name] = app.label
+    return models
+
+
 class Importer:
     """Import Blueprint from raw dict or YAML/JSON"""
 
@@ -154,7 +184,10 @@ class Importer:
 
     def default_context(self):
         """Default context"""
-        return {"goauthentik.io/enterprise/licensed": LicenseKey.get_total().is_valid()}
+        return {
+            "goauthentik.io/enterprise/licensed": LicenseKey.get_total().status().is_valid,
+            "goauthentik.io/rbac/models": rbac_models(),
+        }
 
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
@@ -214,14 +247,17 @@ class Importer:
 
         return main_query | sub_query
 
-    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:
+    def _validate_single(self, entry: BlueprintEntry) -> BaseSerializer | None:  # noqa: PLR0915
         """Validate a single entry"""
         if not entry.check_all_conditions_match(self._import):
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
             return None
 
         model_app_label, model_name = entry.get_model(self._import).split(".")
-        model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
+        try:
+            model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
+        except LookupError as exc:
+            raise EntryInvalidError.from_entry(exc, entry) from exc
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError.from_entry(f"Model {model} not allowed", entry)
@@ -265,7 +301,11 @@ class Importer:
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
-        if not isinstance(model(), BaseMetaModel) and model_instance:
+        if (
+            not isinstance(model(), BaseMetaModel)
+            and model_instance
+            and entry.state != BlueprintEntryDesiredState.MUST_CREATED
+        ):
             self.logger.debug(
                 "Initialise serializer with instance",
                 model=model,
@@ -275,11 +315,12 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
         elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
+            msg = (
+                f"State is set to {BlueprintEntryDesiredState.MUST_CREATED.value} "
+                "and object exists already",
+            )
             raise EntryInvalidError.from_entry(
-                (
-                    f"State is set to {BlueprintEntryDesiredState.MUST_CREATED} "
-                    "and object exists already",
-                ),
+                ValidationError({k: msg for k in entry.identifiers.keys()}, "unique"),
                 entry,
             )
         else:
@@ -296,10 +337,7 @@ class Importer:
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
-            raise EntryInvalidError.from_entry(
-                exc,
-                entry,
-            ) from exc
+            raise EntryInvalidError.from_entry(exc, entry) from exc
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
@@ -319,6 +357,15 @@ class Importer:
                 serializer=serializer,
             ) from exc
         return serializer
+
+    def _apply_permissions(self, instance: Model, entry: BlueprintEntry):
+        """Apply object-level permissions for an entry"""
+        for perm in entry.get_permissions(self._import):
+            if perm.user is not None:
+                assign_perm(perm.permission, User.objects.get(pk=perm.user), instance)
+            if perm.role is not None:
+                role = Role.objects.get(pk=perm.role)
+                role.assign_permission(perm.permission, obj=instance)
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
@@ -384,6 +431,7 @@ class Importer:
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
                 entry._state = BlueprintEntryState(instance)
+                self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
                 if instance.pk:
@@ -400,7 +448,7 @@ class Importer:
         orig_import = deepcopy(self._import)
         if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
-            return False, [{"event": "Invalid blueprint version"}]
+            return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
         with (
             transaction_rollback(),
             capture_logs() as logs,

@@ -31,7 +31,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.54.2
+          version: latest
           args: --timeout 5000s --verbose
           skip-cache: true
   test-unittest:
@@ -49,12 +49,15 @@ jobs:
         run: |
           go test -timeout 0 -v -race -coverprofile=coverage.out -covermode=atomic -cover ./...
   ci-outpost-mark:
+    if: always()
     needs:
       - lint-golint
       - test-unittest
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
   build-container:
     timeout-minutes: 120
     needs:
@@ -69,14 +72,17 @@ jobs:
           - rac
     runs-on: ubuntu-latest
     permissions:
-      # Needed to upload contianer images to ghcr.io
+      # Needed to upload container images to ghcr.io
       packages: write
+      # Needed for attestation
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.0.0
+        uses: docker/setup-qemu-action@v3.4.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
@@ -87,7 +93,7 @@ jobs:
         with:
           image-name: ghcr.io/goauthentik/dev-${{ matrix.type }}
       - name: Login to Container Registry
-        if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -96,17 +102,25 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: Build Docker Image
-        uses: docker/build-push-action@v5
+        id: push
+        uses: docker/build-push-action@v6
         with:
           tags: ${{ steps.ev.outputs.imageTags }}
           file: ${{ matrix.type }}.Dockerfile
-          push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
+          push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
           platforms: linux/amd64,linux/arm64
           context: .
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-${{ matrix.type }}:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && format('type=registry,ref=ghcr.io/goauthentik/dev-{0}:buildcache,mode=max', matrix.type) || '' }}
+      - uses: actions/attest-build-provenance@v2
+        id: attest
+        if: ${{ steps.ev.outputs.shouldPush == 'true' }}
+        with:
+          subject-name: ${{ steps.ev.outputs.attestImageNames }}
+          subject-digest: ${{ steps.push.outputs.digest }}
+          push-to-registry: true
   build-binary:
     timeout-minutes: 120
     needs:

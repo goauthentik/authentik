@@ -1,8 +1,8 @@
 ---
-title: Nextcloud
+title: Integrate with Nextcloud
+sidebar_label: Nextcloud
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Nextcloud
 
@@ -11,7 +11,11 @@ title: Nextcloud
 > -- https://en.wikipedia.org/wiki/Nextcloud
 
 :::caution
-This setup only works, when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
+If you require [Server Side Encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**. Nextcloud Server-Side Encryption requires access to the user's cleartext password, which Nextcloud only has access to when using LDAP as the user enters their password directly into Nextcloud.
+:::
+
+:::caution
+This setup only works when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
 :::
 
 :::info
@@ -20,34 +24,39 @@ In case something goes wrong with the configuration, you can use the URL `http:/
 
 ## Authentication
 
-There are 2 ways to setup single sign on (SSO) for Nextcloud:
+There are 3 ways to setup single sign on (SSO) for Nextcloud:
 
--   [via OIDC Connect (OAuth)](#openid-connect-auth)
--   [via SAML](#saml-auth)
+- [via OIDC Connect (OAuth)](#openid-connect-auth)
+- [via SAML](#saml-auth)
+- via LDAP outpost (required for SSE, not covered in this documentation)
 
 ### OpenID Connect auth
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `nextcloud.company` is the FQDN of the Nextcloud install.
--   `authentik.company` is the FQDN of the authentik install.
--   `authentik.local` is the internal FQDN of the authentik install (only relevant when running authentik and Nextcloud behind a reverse proxy)
+- `nextcloud.company` is the FQDN of the Nextcloud installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `authentik.local` is the internal FQDN of the authentik install (only relevant when running authentik and Nextcloud behind a reverse proxy)
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Lets start by thinking what user attributes need to be available in Nextcloud:
 
--   name
--   email
--   unique user ID
--   storage quota (optional)
--   groups (optional)
+- name
+- email
+- unique user ID
+- storage quota (optional)
+- groups (optional)
 
 authentik already provides some default _scopes_ with _claims_ inside them, such as:
 
--   `email` scope: Has claims `email` and `email_verified`
--   `profile` scope: Has claims `name`, `given_name`, `preferred_username`, `nickname`, `groups`
--   `openid` scope: This is a default scope required by the OpenID spec. It contains no claims
+- `email` scope: Has claims `email` and `email_verified`
+- `profile` scope: Has claims `name`, `given_name`, `preferred_username`, `nickname`, `groups`
+- `openid` scope: This is a default scope required by the OpenID spec. It contains no claims
 
 ##### Custom profile scope
 
@@ -55,9 +64,9 @@ If you do not need storage quota, group information, or to manage already existi
 
 However, if you want to be able to control how much storage users in Nextcloud can use, as well as which users are recognized as Nextcloud administrators, you would need to make this information available in Nextcloud. To achieve this you would need to create a custom `profile` scope. To do so, go to _Customization_ -> _Property mappings_. Create a _Scope mapping_ with the following parameters:
 
--   Name: Nextcloud Profile
--   Scope name: profile
--   Expression:
+- Name: Nextcloud Profile
+- Scope name: profile
+- Expression:
 
 ```python
 # Extract all groups the user is a member of
@@ -98,19 +107,19 @@ If set to a value, for example `goauthentik`, it will try to connect to the `goa
 
 Create a provider for Nextcloud. In the Admin Interface, go to _Applications_ -> _Providers_. Create an _OAuth2/OpenID Provider_ with the following parameters:
 
--   Name: Nextcloud
--   Client type: Confidential
--   Redirect URIs/Origins (RegEx): `https://nextcloud.company/apps/user_oidc/code`
--   Signing key: Any valid certificate
--   Under advanced settings:
-    -   Scopes:
-        -   `authentik default Oauth Mapping email`
-        -   `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
-    -   Subject mode: Based on the User's UUID
-        :::danger
-        Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
-        :::
-    -   Include claims in ID token: ✔️
+- Name: Nextcloud
+- Client type: Confidential
+- Redirect URIs/Origins (RegEx): `https://nextcloud.company/apps/user_oidc/code`
+- Signing key: Any valid certificate
+- Under advanced settings:
+    - Scopes:
+        - `authentik default Oauth Mapping email`
+        - `Nextcloud Profile` (or `authentik default Oauth Mapping profile` if you skipped the [custom profile scope](#custom-profile-scope) section)
+    - Subject mode: Based on the User's UUID
+      :::danger
+      Nextcloud will use the UUID as username. However, mapping the subject mode to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the subject mode to an username, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik and set this to `Based on the User's username`.
+      :::
+    - Include claims in ID token: ✔️
 
 Before continuing, make sure to take note of your `client ID` and `secret ID`. Don't worry you can go back to see/change them at any time.
 
@@ -130,27 +139,27 @@ In Nextcloud, ensure that the `OpenID Connect user backend` app is installed. Na
 
 Add a new provider using the `+` button and set the following values:
 
--   Identifier: Authentik
--   Client ID: The client ID from the provider
--   Client secret: The secret ID from the provider
--   Discovery endpoint: `https://authentik.company/application/o/<nextcloud-app-slug>/.well-known/openid-configuration`
-    :::tip
-    If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
-    :::
--   Scope: `email`, `profile` (you can safely omit `openid` if you prefer)
--   Attribute mappings:
-    -   User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
-    -   Display name mapping: name
-    -   Email mapping: email
-    -   Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
-    -   Groups mapping: groups (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
-        :::tip
-        You need to enable the "Use group provisioning" checkmark to be able to write to this field
-        :::
--   Use unique user ID: If you only have one provider you can deselect this if you prefer. This will affect your Federated Cloud ID, which you can check under _Personal settings_ -> _Sharing_ -> _Federated Cloud_. If the box is selected, nextcloud will pick a hashed value here (`437218904321784903214789023@nextcloud.instance` for example). Otherwise, it will use the mapped user ID (`<authentik's sub or user_id>@nextcloud.instance`).
-    :::tip
-    To avoid your federated cloud id being a hash value, deselect **Use unique user ID** and use `user_id` in the **User ID mapping** field.
-    :::
+- Identifier: Authentik
+- Client ID: The client ID from the provider
+- Client secret: The secret ID from the provider
+- Discovery endpoint: `https://authentik.company/application/o/<nextcloud-app-slug>/.well-known/openid-configuration`
+  :::tip
+  If you are running both your authentik and Nextcloud instances behind a reverse proxy, you can go ahead and use your internal FQDN here (i.e. `http://authentik.local`, however, note that if you do so there is [extra configuration required](#extra-configuration-when-running-behind-a-reverse-proxy)).
+  :::
+- Scope: `email profile` (you can safely omit `openid` if you prefer)
+- Attribute mappings:
+    - User ID mapping: sub (or `user_id` if you need to connect to an already existing Nextcloud user)
+    - Display name mapping: name
+    - Email mapping: email
+    - Quota mapping: quota (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
+    - Groups mapping: groups (leave empty if you have skipped the [custom profile scope](#custom-profile-scope) section)
+      :::tip
+      You need to enable the "Use group provisioning" checkmark to be able to write to this field
+      :::
+- Use unique user ID: If you only have one provider you can deselect this if you prefer. This will affect your Federated Cloud ID, which you can check under _Personal settings_ -> _Sharing_ -> _Federated Cloud_. If the box is selected, nextcloud will pick a hashed value here (`437218904321784903214789023@nextcloud.instance` for example). Otherwise, it will use the mapped user ID (`<authentik's sub or user_id>@nextcloud.instance`).
+  :::tip
+  To avoid your federated cloud id being a hash value, deselect **Use unique user ID** and use `user_id` in the **User ID mapping** field.
+  :::
 
 At this stage you should be able to login with SSO.
 
@@ -175,9 +184,9 @@ If you are configuring an insecure (http) discovery endpoint, Nextcloud will, by
 :::note
 It is currently not possible force Nextcloud to connect to an https endpoint which uses an untrusted (selfsigned) certificate. If this is the case with your setup, you can do one of 3 things:
 
--   switch to using a trusted certificate
--   add the selfsigned certificate to Nextcloud's trust store
--   switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
+- switch to using a trusted certificate
+- add the selfsigned certificate to Nextcloud's trust store
+- switch to using an http endpoint and add `allow_local_remote_servers => true` to your `config.php`
 
 :::
 
@@ -185,15 +194,15 @@ Because authentik has no knowledge of where each endpoint is/can be accessed fro
 
 For example, if your Nextcloud instance queries the discovery endpoint using an internal domain name (`authentik.local`), all returned endpoints will have the same domain name. In this case:
 
--   `http://authentik.local/application/o/<app-slug>/`
--   `http://authentik.local/application/o/authorize/`
--   `http://authentik.local/application/o/token/`
--   `http://authentik.local/application/o/userinfo/`
--   `http://authentik.local/application/o/<app-slug>/end-session/`
--   `http://authentik.local/application/o/introspect/`
--   `http://authentik.local/application/o/revoke/`
--   `http://authentik.local/application/o/device/`
--   `http://authentik.local/application/o/<app-slug>/jwks/`
+- `http://authentik.local/application/o/<app-slug>/`
+- `http://authentik.local/application/o/authorize/`
+- `http://authentik.local/application/o/token/`
+- `http://authentik.local/application/o/userinfo/`
+- `http://authentik.local/application/o/<app-slug>/end-session/`
+- `http://authentik.local/application/o/introspect/`
+- `http://authentik.local/application/o/revoke/`
+- `http://authentik.local/application/o/device/`
+- `http://authentik.local/application/o/<app-slug>/jwks/`
 
 This represents a problem, because Nextcloud will attempt to redirect the user to the received `authorization` and `end-session` endpoints during login and logout respectively. When that happens, the user will try to access an internal domain and fail.
 
@@ -201,8 +210,8 @@ The easiest way to fix this is to modify the redirect response's `Location` head
 
 At a minimum, the `authorize` and `end-session` endpoints must be edited in-flight like so:
 
--   `http://authentik.local/application/o/authorize/` -> `https://authentik.company/application/o/authorize/`
--   `http://authentik.local/application/o/<app-slug>/end-session/` -> `https://authentik.company/application/o/<app-slug>/end-session/`
+- `http://authentik.local/application/o/authorize/` -> `https://authentik.company/application/o/authorize/`
+- `http://authentik.local/application/o/<app-slug>/end-session/` -> `https://authentik.company/application/o/<app-slug>/end-session/`
 
 :::note
 HTTP headers are usually capitalised (e.g. **L**ocation), however, at least some versions of Nextcloud seem to return all lowercase headers (e.g. **l**ocation). To be safe, make sure to add header replacement rules for both cases.
@@ -218,19 +227,23 @@ If you do not have any relying parties accessing authentik from the outside, you
 
 #### Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `nextcloud.company` is the FQDN of the Nextcloud install.
--   `authentik.company` is the FQDN of the authentik install.
+- `nextcloud.company` is the FQDN of the Nextcloud installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _SAML provider_ with the following parameters:
 
--   ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
--   Issuer: `https://authentik.company`
--   Service Provider Binding: `Post`
--   Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
--   Signing certificate: Select any certificate you have.
--   Property mappings: Select all Managed mappings.
+- ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
+- Issuer: `https://authentik.company`
+- Service Provider Binding: `Post`
+- Audience: `https://nextcloud.company/apps/user_saml/saml/metadata`
+- Signing certificate: Select any certificate you have.
+- Property mappings: Select all Managed mappings.
 
 :::note
 Depending on your Nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`
@@ -244,21 +257,21 @@ In Nextcloud, ensure that the `SSO & SAML Authentication` app is installed. Navi
 
 Set the following values:
 
--   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
-    :::danger
-    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/core/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
-    :::
--   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
--   Identifier of the IdP entity (must be a URI): `https://authentik.company`
--   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
--   URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect`
--   Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
+- Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
+  :::danger
+  Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+  :::
+- Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
+- Identifier of the IdP entity (must be a URI): `https://authentik.company`
+- URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
+- URL Location of IdP where the SP will send the SLO Request: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
+- Public X.509 certificate of the IdP: Copy the PEM of the Selected Signing Certificate
 
 Under Attribute mapping, set these values:
 
--   Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
--   Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
--   Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
+- Attribute to map the displayname to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- Attribute to map the email address to.: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+- Attribute to map the users groups to.: `http://schemas.xmlsoap.org/claims/Group`
 
 You should now be able to log in with authentik.
 
@@ -274,8 +287,8 @@ Create a group for each different level of quota you want users to have. Set a c
 
 Afterwards, create a custom SAML Property Mapping with the name `SAML Nextcloud Quota`.
 
--   Set the _SAML Attribute Name_ to `nextcloud_quota`.
--   Set the _Expression_ to:
+- Set the _SAML Attribute Name_ to `nextcloud_quota`.
+- Set the _Expression_ to:
 
 ```python
 return user.group_attributes().get("nextcloud_quota", "1 GB")
@@ -287,7 +300,7 @@ Then, edit the Nextcloud SAML Provider, and add `nextcloud_quota` to Property ma
 
 In Nextcloud, go to `Settings`, then `SSO & SAML Authentication`Under `Attribute mapping`, set this value:
 
--   Attribute to map the quota to.: `nextcloud_quota`
+- Attribute to map the quota to.: `nextcloud_quota`
 
 #### Admin Group
 
@@ -295,8 +308,8 @@ To give authentik users admin access to your Nextcloud instance, you need to cre
 
 Create a custom SAML Property Mapping:
 
--   Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`.
--   Set the _Expression_ to:
+- Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`.
+- Set the _Expression_ to:
 
 ```python
 for group in request.user.all_groups():

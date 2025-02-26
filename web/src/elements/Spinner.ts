@@ -28,3 +28,9 @@ export class Spinner extends AKElement {
         </span>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-spinner": Spinner;
+    }
+}

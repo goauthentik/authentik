@@ -48,7 +48,7 @@ func (ls *LDAPServer) StartLDAPTLSServer() error {
 		return err
 	}
 
-	proxyListener := &proxyproto.Listener{Listener: ln}
+	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	tln := tls.NewListener(proxyListener, tlsConfig)

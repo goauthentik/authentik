@@ -1,7 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/chips/Chip";
+import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -25,12 +26,10 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
+    async apiEndpoint(): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: "expires",
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -64,15 +63,15 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${msg("Refresh Tokens(s)")}
+            objectLabel=${msg("Access Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: ExpiringBaseGrantModel) => {
-                return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensDestroy({
+                return new Oauth2Api(DEFAULT_CONFIG).oauth2AccessTokensDestroy({
                     id: item.pk,
                 });
             }}
@@ -86,12 +85,27 @@ export class UserOAuthAccessTokenList extends Table<TokenModel> {
     row(item: TokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
-            html`<ak-status-label type="warning" ?good=${item.revoked}></ak-status-label>`,
+            html`<ak-status-label
+                type="warning"
+                ?good=${!item.revoked}
+                good-label=${msg("No")}
+                bad-label=${msg("Yes")}
+            ></ak-status-label>`,
             html`${item.expires
                 ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
-            html`${item.scope.join(", ")}`,
+            html`<ak-chip-group>
+                ${item.scope.sort().map((scope) => {
+                    return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
+                })}
+            </ak-chip-group>`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-oauth-access-token-list": UserOAuthAccessTokenList;
     }
 }

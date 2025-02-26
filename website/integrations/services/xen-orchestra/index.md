@@ -1,8 +1,8 @@
 ---
-title: Xen Orchestra
+title: Integrate with Xen Orchestra
+sidebar_label: Xen Orchestra
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Xen Orchestra
 
@@ -17,10 +17,14 @@ If you are using the Xen Orchestra Appliance, the OIDC Plugin should be present.
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
--   `authentik.company` is the FQDN of the authentik install.
+- `xenorchestra.company` is the FQDN of the Xen Orchestra instance.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
@@ -28,10 +32,10 @@ The following placeholders will be used:
 
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
--   Name: Provider for XenOrchestra
--   Authorization Flow: Select one of the available Flows.
--   Client type: Confidential
--   Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
+- Name: Provider for XenOrchestra
+- Authorization Flow: Select one of the available Flows.
+- Client type: Confidential
+- Redirect URIs/Origins: `https://xenorchestra.company/signin/oidc/callback`
 
 Take note of the Client ID and the Client Secret, because we need them for the configuration of Xen Orchestra.
 
@@ -39,9 +43,9 @@ Take note of the Client ID and the Client Secret, because we need them for the c
 
 Create an application with the following details:
 
--   Slug: `xenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary.)
--   Provider: Select the one we have created in Step 1
--   Set the Launch URL to `https://xenorchestra.company/`
+- Slug: `xenorchestra` (If you want to choose a different slug, your URLs for the Xen Orchestra Configuration may vary.)
+- Provider: Select the one we have created in Step 1
+- Set the Launch URL to `https://xenorchestra.company/`
 
 Optionally apply access restrictions to the application.
 
@@ -54,12 +58,12 @@ All of the URLs mentioned below can be copied & pasted from authentik (_Applicat
 2. Scroll to **auth-oidc** and click on the **+** icon on the right hand side.
 3. Configure the auth-oidc plugin with the following configuration values:
 
--   Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
--   Set the `Client identifier (key)` to the Client ID from your notes.
--   Set the `Client secret` to the Client Secret from your notes.
--   Check the `Fill information (optional)`-Checkbox to open the advanced menu.
--   Set the `Username field` to `username`
--   Set the `Scopes` to `openid profile email`
+- Set the `Auto-discovery URL` to `https://authentik.company/application/o/xenorchestra/.well-known/openid-configuration`.
+- Set the `Client identifier (key)` to the Client ID from your notes.
+- Set the `Client secret` to the Client Secret from your notes.
+- Check the `Fill information (optional)`-Checkbox to open the advanced menu.
+- Set the `Username field` to `username`
+- Set the `Scopes` to `openid profile email`
 
 4. Enable the `auth-oidc`-Plugin by toggling the switch above the configuration.
 5. You should be able to login with OIDC.

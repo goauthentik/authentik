@@ -5,6 +5,7 @@ from django.contrib.auth.models import Permission
 from django.db.models import QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
@@ -13,10 +14,11 @@ from rest_framework.fields import (
     ReadOnlyField,
     SerializerMethodField,
 )
-from rest_framework.serializers import ModelSerializer
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.validators import RequiredTogetherValidator
 from authentik.policies.event_matcher.models import model_choices
@@ -60,6 +62,12 @@ class PermissionSerializer(ModelSerializer):
         ]
 
 
+class PermissionAssignResultSerializer(PassiveSerializer):
+    """Result from assigning permissions to a user/role"""
+
+    id = CharField()
+
+
 class PermissionFilter(FilterSet):
     """Filter permissions"""
 
@@ -87,7 +95,9 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     queryset = Permission.objects.none()
     serializer_class = PermissionSerializer
     ordering = ["name"]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_class = PermissionFilter
+    permission_classes = [IsAuthenticated]
     search_fields = [
         "codename",
         "content_type__model",

@@ -1,0 +1,35 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as AggregatePromiseCardStories from "./AggregatePromiseCard.stories";
+
+<Meta of={AggregatePromiseCardStories} />
+
+# Aggregate Promise Cards
+
+Aggregate Promise Cards are Aggregate Cards that take a promise from client code and either display
+the contents of that promise or a pre-configured failure notice. The contents must be compliant with
+and produce a meaningful result via the `.toString()` API. HTML in the string will currently be
+escaped.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/cards/AggregatePromiseCard.js";
+```
+
+```html
+<ak-aggregate-card-promise
+    header="Some title"
+    .promise="${somePromise}"
+></ak-aggregate-card-promise>
+```
+
+## Demo
+
+### Success
+
+<Story of={AggregatePromiseCardStories.DefaultStory} />
+
+### Failure
+
+<Story of={AggregatePromiseCardStories.PromiseRejected} />

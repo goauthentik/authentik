@@ -26,6 +26,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
+            invalidationFlow: data.invalidationFlow || "",
         });
     }
 
@@ -46,9 +47,29 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Invalidation flow")}
+                ?required=${true}
+                name="invalidationFlow"
+            >
+                <ak-flow-search-no-default
+                    flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                    defaultFlowSlug="default-provider-invalidation-flow"
+                    required
+                ></ak-flow-search-no-default>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Flow used when logging out of this provider.")}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-element-horizontal label=${msg("Metadata")} name="metadata">
                 <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-import-form": SAMLProviderImportForm;
     }
 }

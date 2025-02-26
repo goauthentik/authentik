@@ -3,13 +3,13 @@ import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
 import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
@@ -191,7 +191,7 @@ export class FlowViewPage extends AKElement {
                                                                 const finalURL = `${
                                                                     link.link
                                                                 }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                    `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
@@ -280,9 +280,15 @@ export class FlowViewPage extends AKElement {
                 <ak-rbac-object-permission-page
                     slot="page-permissions"
                     data-tab-title="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-view": FlowViewPage;
     }
 }

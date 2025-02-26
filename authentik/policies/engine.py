@@ -7,7 +7,7 @@ from time import perf_counter
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -111,9 +111,9 @@ class PolicyEngine:
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
         with (
-            Hub.current.start_span(
+            start_span(
                 op="authentik.policy.engine.build",
-                description=self.__pbm,
+                name=self.__pbm,
             ) as span,
             HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
                 obj_type=class_to_path(self.__pbm.__class__),

@@ -1,9 +1,11 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/providers/rac/ConnectionTokenList";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserApplicationTable";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/users/UserImpersonateForm";
 import {
     renderRecoveryEmailRequest,
     requestRecoveryLink,
@@ -33,14 +35,15 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/oauth/UserAccessTokenList";
 import "@goauthentik/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/elements/rbac/ObjectPermissionsPage";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
+import "@goauthentik/elements/user/UserReputationList";
 import "@goauthentik/elements/user/sources/SourceSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -155,6 +158,10 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                 ? html`<div>${getRelativeTime(user.lastLogin)}</div>
                       <small>${user.lastLogin.toLocaleString()}</small>`
                 : html`${msg("-")}`],
+            [msg("Last password change"), user.passwordChangeDate
+                ? html`<div>${getRelativeTime(user.passwordChangeDate)}</div>
+                      <small>${user.passwordChangeDate.toLocaleString()}</small>`
+                : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
             [msg("Superuser"), html`<ak-status-label type="warning" ?good=${user.isSuperuser}></ak-status-label>`],
@@ -164,7 +171,9 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
-            <div class="pf-c-card__body">${renderDescriptionList(userInfo)}</div>
+            <div class="pf-c-card__body">
+                ${renderDescriptionList(userInfo, { twocolumn: true })}
+            </div>
         `;
     }
 
@@ -206,26 +215,22 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             </ak-user-active-form>
             ${canImpersonate
                 ? html`
-                      <ak-action-button
-                          class="pf-m-secondary pf-m-block"
-                          id="impersonate-user-button"
-                          .apiRequest=${() => {
-                              return new CoreApi(DEFAULT_CONFIG)
-                                  .coreUsersImpersonateCreate({
-                                      id: user.pk,
-                                  })
-                                  .then(() => {
-                                      window.location.href = "/";
-                                  });
-                          }}
-                      >
-                          <pf-tooltip
-                              position="top"
-                              content=${msg("Temporarily assume the identity of this user")}
-                          >
-                              ${msg("Impersonate")}
-                          </pf-tooltip>
-                      </ak-action-button>
+                      <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
+                          <span slot="submit">${msg("Impersonate")}</span>
+                          <span slot="header">${msg("Impersonate")} ${user.username}</span>
+                          <ak-user-impersonate-form
+                              slot="form"
+                              .instancePk=${user.pk}
+                          ></ak-user-impersonate-form>
+                          <button slot="trigger" class="pf-c-button pf-m-secondary pf-m-block">
+                              <pf-tooltip
+                                  position="top"
+                                  content=${msg("Temporarily assume the identity of this user")}
+                              >
+                                  <span>${msg("Impersonate")}</span>
+                              </pf-tooltip>
+                          </button>
+                      </ak-forms-modal>
                   `
                 : nothing}
         </div> `;
@@ -271,6 +276,21 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                         <div class="pf-c-card__body">
                             <ak-user-session-list targetUser=${user.username}>
                             </ak-user-session-list>
+                        </div>
+                    </div>
+                </section>
+                <section
+                    slot="page-reputation"
+                    data-tab-title="${msg("Reputation scores")}"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile"
+                >
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__body">
+                            <ak-user-reputation-list
+                                targetUsername=${user.username}
+                                targetEmail=${ifDefined(user.email)}
+                            >
+                            </ak-user-reputation-list>
                         </div>
                     </div>
                 </section>
@@ -364,12 +384,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                     >
                         ${this.renderUserCard()}
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl"
                     >
                         <div class="pf-c-card__title">
                             ${msg("Actions over the last week (per 8 hours)")}
@@ -444,10 +464,16 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
                 objectPk=${this.user.pk}
             >
             </ak-rbac-object-permission-page>
         </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-view": UserViewPage;
     }
 }

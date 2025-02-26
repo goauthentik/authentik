@@ -4,4 +4,4 @@ from time import time
 
 from authentik import __version__
 
-print("%s-%d" % (__version__, time()))
+print(f"{__version__}-{int(time())}")

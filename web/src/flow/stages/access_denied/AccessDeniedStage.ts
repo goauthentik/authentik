@@ -10,6 +10,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
@@ -20,13 +21,12 @@ export class AccessDeniedStage extends BaseStage<
     FlowChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl];
+        return [PFBase, PFLogin, PFForm, PFTitle, PFFormControl];
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -58,5 +58,11 @@ export class AccessDeniedStage extends BaseStage<
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-access-denied": AccessDeniedStage;
     }
 }

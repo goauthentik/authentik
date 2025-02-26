@@ -15,11 +15,11 @@ from rest_framework.decorators import action
 from rest_framework.fields import DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.object_types import TypeCreateSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
 
 

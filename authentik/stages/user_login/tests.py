@@ -129,6 +129,11 @@ class TestUserLoginStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(response, component="ak-stage-user-login")
+
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             data={"remember_me": True},

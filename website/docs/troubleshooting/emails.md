@@ -23,5 +23,5 @@ docker compose exec worker ak test_email [...]
 To run this command with Kubernetes, use
 
 ```shell
-kubectl exec -it deployment/authentik-worker -c authentik -- ak test_email [...]
+kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
 ```

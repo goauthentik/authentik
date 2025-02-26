@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   postgresql:
     image: docker.io/library/postgres:${PSQL_TAG:-16}

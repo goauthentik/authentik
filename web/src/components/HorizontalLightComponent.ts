@@ -1,11 +1,12 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/forms/HorizontalFormElement.js";
 
 import { TemplateResult, html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
 type HelpType = TemplateResult | typeof nothing;
 
-export class HorizontalLightComponent extends AKElement {
+export class HorizontalLightComponent<T> extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -41,6 +42,12 @@ export class HorizontalLightComponent extends AKElement {
     @property({ attribute: false })
     errorMessages: string[] = [];
 
+    @property({ attribute: false })
+    value?: T;
+
+    @property({ type: String })
+    inputHint = "";
+
     renderControl() {
         throw new Error("Must be implemented in a subclass");
     }
@@ -65,7 +72,7 @@ export class HorizontalLightComponent extends AKElement {
             .errorMessages=${this.errorMessages}
             ?invalid=${this.invalid}
             >
-              ${this.renderControl()} 
+              ${this.renderControl()}
               ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }

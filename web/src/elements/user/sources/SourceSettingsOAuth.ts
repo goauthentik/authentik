@@ -69,3 +69,9 @@ export class SourceSettingsOAuth extends BaseUserSettings {
         return html`${msg("-")}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-source-oauth": SourceSettingsOAuth;
+    }
+}

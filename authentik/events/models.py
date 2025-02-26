@@ -49,6 +49,7 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -58,7 +59,11 @@ NOTIFICATION_SUMMARY_LENGTH = 75
 def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
-    return now() + timedelta(days=365)
+    try:
+        tenant = get_current_tenant(only=["event_retention"])
+        return now() + timedelta_from_string(tenant.event_retention)
+    except Tenant.DoesNotExist:
+        return now() + timedelta(days=365)
 
 
 def default_brand():
@@ -238,17 +243,13 @@ class Event(SerializerModel, ExpiringModel):
                 "args": cleanse_dict(QueryDict(request.META.get("QUERY_STRING", ""))),
                 "user_agent": request.META.get("HTTP_USER_AGENT", ""),
             }
+            if hasattr(request, "request_id"):
+                self.context["http_request"]["request_id"] = request.request_id
             # Special case for events created during flow execution
             # since they keep the http query within a wrapped query
             if QS_QUERY in self.context["http_request"]["args"]:
                 wrapped = self.context["http_request"]["args"][QS_QUERY]
                 self.context["http_request"]["args"] = cleanse_dict(QueryDict(wrapped))
-        if hasattr(request, "tenant"):
-            tenant: Tenant = request.tenant
-            # Because self.created only gets set on save, we can't use it's value here
-            # hence we set self.created to now and then use it
-            self.created = now()
-            self.expires = self.created + timedelta_from_string(tenant.event_retention)
         if hasattr(request, "brand"):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
@@ -305,7 +306,7 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
-        indexes = [
+        indexes = ExpiringModel.Meta.indexes + [
             models.Index(fields=["action"]),
             models.Index(fields=["user"]),
             models.Index(fields=["app"]),
@@ -693,3 +694,4 @@ class SystemTask(SerializerModel, ExpiringModel):
         permissions = [("run_task", _("Run task"))]
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")
+        indexes = ExpiringModel.Meta.indexes

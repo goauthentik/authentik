@@ -163,3 +163,9 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
 }
 
 export default AkDualSelectControls;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-dual-select-controls": AkDualSelectControls;
+    }
+}

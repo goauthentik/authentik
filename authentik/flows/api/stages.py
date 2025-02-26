@@ -1,19 +1,21 @@
 """Flow Stage API Views"""
 
+from uuid import uuid4
+
 from django.urls.base import reverse
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.types import UserSettingSerializer
-from authentik.enterprise.apps import EnterpriseConfig
 from authentik.flows.api.flows import FlowSetSerializer
 from authentik.flows.models import ConfigurableStage, Stage
 from authentik.lib.utils.reflection import all_subclasses
@@ -26,6 +28,11 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
 
     component = SerializerMethodField()
     flow_set = FlowSetSerializer(many=True, required=False)
+
+    def to_representation(self, instance: Stage):
+        if isinstance(instance, Stage) and instance.is_in_memory:
+            instance.stage_uuid = uuid4()
+        return super().to_representation(instance)
 
     def get_component(self, obj: Stage) -> str:
         """Get object type so that we know how to edit the object"""
@@ -47,6 +54,7 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class StageViewSet(
+    TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
@@ -62,25 +70,6 @@ class StageViewSet(
 
     def get_queryset(self):  # pragma: no cover
         return Stage.objects.select_subclasses().prefetch_related("flow_set")
-
-    @extend_schema(responses={200: TypeCreateSerializer(many=True)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    def types(self, request: Request) -> Response:
-        """Get all creatable stage types"""
-        data = []
-        for subclass in all_subclasses(self.queryset.model, False):
-            subclass: Stage
-            data.append(
-                {
-                    "name": subclass._meta.verbose_name,
-                    "description": subclass.__doc__,
-                    "component": subclass().component,
-                    "model_name": subclass._meta.model_name,
-                    "requires_enterprise": isinstance(subclass._meta.app_config, EnterpriseConfig),
-                }
-            )
-        data = sorted(data, key=lambda x: x["name"])
-        return Response(TypeCreateSerializer(data, many=True).data)
 
     @extend_schema(responses={200: UserSettingSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])

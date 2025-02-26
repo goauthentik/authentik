@@ -137,3 +137,9 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
 }
 
 export default AkDualSelectSelectedPane;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-dual-select-selected-pane": AkDualSelectSelectedPane;
+    }
+}

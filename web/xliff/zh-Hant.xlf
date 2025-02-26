@@ -440,7 +440,7 @@
         <target>成功登入</target>
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -485,7 +485,7 @@
         <target>常规系统状态</target>
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
         <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
       </trans-unit>
@@ -657,14 +657,6 @@
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
       </trans-unit>
-      <trans-unit id="sbc80eab557fbf782">
-        <source>Search group</source>
-        <target>搜索组</target>
-      </trans-unit>
-      <trans-unit id="s04b7f8d6aaef3756">
-        <source>Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.</source>
-        <target>所选组中的用户可以执行搜索查询。如果未选择任何组，则不允许 LDAP 搜索。</target>
-      </trans-unit>
       <trans-unit id="se5973e7c8ba0fc71">
         <source>Bind mode</source>
       </trans-unit>
@@ -735,14 +727,6 @@
         <source>The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber</source>
         <target>对于 GIDNumbers 来说，这个数字被添加到从 group.pk 生成的数字中，以确保对于 POSIX 组来说，这个数字不会太低。默认值为 4000，以确保我们不会与本地组或用户主组 GIDNumber 发生冲突</target>
       </trans-unit>
-      <trans-unit id="s2236dc563c2dbf76">
-        <source>(Format: hours=-1;minutes=-2;seconds=-3).</source>
-        <target>(格式： hours=-1;minutes=-2;seconds=-3).</target>
-      </trans-unit>
-      <trans-unit id="sbec40ef4e6f139b7">
-        <source>(Format: hours=1;minutes=2;seconds=3).</source>
-        <target>(格式： hours=1;minutes=2;seconds=3).</target>
-      </trans-unit>
       <trans-unit id="sbb8ad22c83d375b1">
         <source>The following keywords are supported:</source>
       </trans-unit>
@@ -787,19 +771,9 @@
         <source>Client Secret</source>
         <target>客户端密钥</target>
       </trans-unit>
-      <trans-unit id="sde0ad51b14f77cf6">
-        <source>Redirect URIs/Origins (RegEx)</source>
-      </trans-unit>
-      <trans-unit id="s7f9eb9c8bd26e8fd">
-        <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-        <target>授权流成功后有效的重定向 URL。还可以在此处为隐式流指定任何来源。</target>
-      </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
         <source>If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.</source>
         <target>如果未指定显式重定向 URI，则将保存第一个成功使用的重定向 URI。</target>
-      </trans-unit>
-      <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
         <source>Signing Key</source>
@@ -841,10 +815,6 @@
       <trans-unit id="s3a3fae99373ce56b">
         <source>Select which scopes can be used by the client. The client still has to specify the scope to access the data.</source>
         <target>选择客户端可以使用哪些作用域。客户端仍然需要指定访问数据的范围。</target>
-      </trans-unit>
-      <trans-unit id="sffd2e553143d1b0e">
-        <source>Hold control/command to select multiple items.</source>
-        <target>按住 ctrl/command 键可选择多个项目。</target>
       </trans-unit>
       <trans-unit id="s26bf2730430efbea">
         <source>Subject mode</source>
@@ -903,9 +873,6 @@
       </trans-unit>
       <trans-unit id="se2adaf0371ffcd65">
         <source>Machine-to-Machine authentication settings</source>
-      </trans-unit>
-      <trans-unit id="s33318837e6c54a9b">
-        <source>Trusted OIDC Sources</source>
       </trans-unit>
       <trans-unit id="s22e566052f7bec81">
         <source>JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.</source>
@@ -1175,15 +1142,6 @@
         <source>Select type</source>
         <target>选择类型</target>
       </trans-unit>
-      <trans-unit id="s0b3bf19b31dd6bac">
-        <source>Try the new application wizard</source>
-      </trans-unit>
-      <trans-unit id="sa18e1c6e0e6f16cc">
-        <source>The new application wizard greatly simplifies the steps required to create applications and providers.</source>
-      </trans-unit>
-      <trans-unit id="s01ef54f5d7c6ed47">
-        <source>Try it now</source>
-      </trans-unit>
       <trans-unit id="s382a2aa3984474dd">
         <source>Create</source>
         <target>创建</target>
@@ -1206,11 +1164,6 @@
       </trans-unit>
       <trans-unit id="s9e9316a6b0c16231">
         <source>Client Networks</source>
-      </trans-unit>
-      <trans-unit id="s7f2dcf01f7a8c0b7">
-        <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific
-                            CIDR will match before a looser one. Clients connecting from a non-specified CIDR
-                            will be dropped.</source>
       </trans-unit>
       <trans-unit id="s61eacb19db252f5e">
         <source>URL</source>
@@ -1664,15 +1617,9 @@
         <source>Run sync again</source>
         <target>再次运行同步</target>
       </trans-unit>
-      <trans-unit id="sc2cedfb22488ccb2">
-        <source>Modern applications, APIs and Single-page applications.</source>
-      </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
         <source>LDAP</source>
         <target>LDAP</target>
-      </trans-unit>
-      <trans-unit id="sffd5481034a1bd41">
-        <source>Provide an LDAP interface for applications and users to authenticate against.</source>
       </trans-unit>
       <trans-unit id="s0c9670f429e74283">
         <source>New application</source>
@@ -1836,10 +1783,6 @@
       <trans-unit id="s890810efbe103cbc">
         <source>Match created events with this action type. When left empty, all action types will be matched.</source>
         <target>将创建的事件与此操作类型匹配。留空时，所有操作类型都将匹配。</target>
-      </trans-unit>
-      <trans-unit id="sfab527528ea64618">
-        <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy.</source>
-        <target>匹配事件的客户端 IP（严格匹配），对于网络匹配，请使用表达式策略。</target>
       </trans-unit>
       <trans-unit id="s5a15a8f39c699273">
         <source>Match events created by selected application. When left empty, all applications are matched.</source>
@@ -2035,22 +1978,18 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s2e532e19ed477a56">
         <source>Path</source>
       </trans-unit>
-      <trans-unit id="s67560d7e37d984c3">
-        <source>Policy / User / Group</source>
-        <target>策略/用户/组</target>
-      </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
-        <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
+        <source>Policy <x id="0" equiv-text="${v.policyObj?.name}"/></source>
         <target>策略
         <x id="0" equiv-text="${item.policyObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
+        <source>Group <x id="0" equiv-text="${v.groupObj?.name}"/></source>
         <target>组
         <x id="0" equiv-text="${item.groupObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
-        <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
+        <source>User <x id="0" equiv-text="${v.userObj?.name}"/></source>
         <target>用户
         <x id="0" equiv-text="${item.userObj?.name}"/></target>
       </trans-unit>
@@ -2093,9 +2032,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sc15d60377cc8aaac">
         <source>No policies are currently bound to this object.</source>
         <target>当前没有策略绑定到此对象。</target>
-      </trans-unit>
-      <trans-unit id="sddb040c47daae56b">
-        <source>Bind existing policy</source>
       </trans-unit>
       <trans-unit id="saa855c61e0403fe6">
         <source>Warning: Application is not used by any Outpost.</source>
@@ -2198,10 +2134,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s3de6db803012016a">
         <source>LDAP Attribute mapping</source>
         <target>LDAP 属性映射</target>
-      </trans-unit>
-      <trans-unit id="s7c05ee41d634aa45">
-        <source>Property mappings used to user creation.</source>
-        <target>用于创建用户的属性映射。</target>
       </trans-unit>
       <trans-unit id="s94333971a07803b9">
         <source>Additional settings</source>
@@ -2516,19 +2448,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Not synced yet.</source>
         <target>尚未同步。</target>
       </trans-unit>
-      <trans-unit id="s388ee787bbf2271b">
-        <source>Task finished with warnings</source>
-        <target>任务已完成，但出现警告</target>
-      </trans-unit>
-      <trans-unit id="s949826fad0fe0909">
-        <source>Task finished with errors</source>
-        <target>任务已完成，但出现错误</target>
-      </trans-unit>
-      <trans-unit id="sbedb77365a066648">
-        <source>Last sync: <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></source>
-        <target>上次同步：
-        <x id="0" equiv-text="${task.finishTimestamp.toLocaleString()}"/></target>
-      </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
         <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
       </trans-unit>
@@ -2581,14 +2500,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="sffeef5b119d8625c">
         <source>Successfully created mapping.</source>
         <target>已成功创建映射。</target>
-      </trans-unit>
-      <trans-unit id="s1c33d22492029aba">
-        <source>Object field</source>
-        <target>对象字段</target>
-      </trans-unit>
-      <trans-unit id="s06df3c3b6a503da8">
-        <source>Field of the user object this value is written to.</source>
-        <target>写入此值的用户对象的字段。</target>
       </trans-unit>
       <trans-unit id="sd39c5e998efecf93">
         <source>SAML Attribute Name</source>
@@ -2802,10 +2713,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Recovery flow</source>
         <target>恢复流程</target>
       </trans-unit>
-      <trans-unit id="s1c2fd8097e14a608">
-        <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>恢复流程。如果留空，则使用按辅助信息块排序的第一个适用流程。</target>
-      </trans-unit>
       <trans-unit id="s836aa192b30c21da">
         <source>Unenrollment flow</source>
         <target>取消注册流程</target>
@@ -2843,10 +2750,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s2536ac8d32d2e63f">
         <source>Duration after which events will be deleted from the database.</source>
         <target>事件将从数据库中删除的持续时间。</target>
-      </trans-unit>
-      <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 “minutes=5”。</target>
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
         <source>This setting only affects new Events, as the expiration is saved per-event.</source>
@@ -3514,10 +3417,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s6336fa345e96dde9">
         <source>Evaluate when stage is run</source>
       </trans-unit>
-      <trans-unit id="sff3b708e23bb96b2">
-        <source>Evaluate policies before the Stage is present to the user.</source>
-        <target>在阶段呈现给用户之前评估策略。</target>
-      </trans-unit>
       <trans-unit id="s0dc46deb8f181baf">
         <source>Invalid response behavior</source>
       </trans-unit>
@@ -3830,14 +3729,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Always require consent</source>
         <target>始终需要征得同意</target>
       </trans-unit>
-      <trans-unit id="s8ce8bdc9cc9c8604">
-        <source>Consent given last indefinitely</source>
-        <target>无限期地给予同意</target>
-      </trans-unit>
-      <trans-unit id="sb986f15fa9b17805">
-        <source>Consent expires.</source>
-        <target>同意过期。</target>
-      </trans-unit>
       <trans-unit id="s6f328f2d8382d998">
         <source>Consent expires in</source>
         <target>同意到期时间</target>
@@ -4043,13 +3934,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Fields</source>
         <target>字段</target>
       </trans-unit>
-      <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
-        <target>
-        <x id="0" equiv-text="${prompt.name}"/>(“
-        <x id="1" equiv-text="${prompt.fieldKey}"/>”, 类型为
-        <x id="2" equiv-text="${prompt.type}"/>)</target>
-      </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
         <target>验证策略</target>
@@ -4216,12 +4100,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s7b105164d209f670">
         <source>Require authentication</source>
       </trans-unit>
-      <trans-unit id="s239c2a351cde6d39">
-        <source>Require no authentication.</source>
-      </trans-unit>
-      <trans-unit id="s98beadfeeb3acb66">
-        <source>Require superuser.</source>
-      </trans-unit>
       <trans-unit id="sfad9279cc42c6b61">
         <source>Required authentication level for this flow.</source>
       </trans-unit>
@@ -4346,10 +4224,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s9a393a04eaf1eb0e">
         <source>Create Stage binding</source>
         <target>创建 Stage 绑定</target>
-      </trans-unit>
-      <trans-unit id="s207e8b106806d7e4">
-        <source>Bind stage</source>
-        <target>Bind 阶段</target>
       </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
@@ -4584,11 +4458,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Not available</source>
         <target>不可用</target>
       </trans-unit>
-      <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
-        <target>最后显示：
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
-      </trans-unit>
       <trans-unit id="sa43153d53ae65063">
         <source>Unknown type</source>
       </trans-unit>
@@ -4655,10 +4524,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s13de04774ff0f210">
         <source>Docker URL</source>
         <target>Docker URL</target>
-      </trans-unit>
-      <trans-unit id="sa7fcf026bd25f231">
-        <source>Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.</source>
-        <target>连接到本地 docker 守护进程时可以采用 'unix: //' 的格式，通过 SSH 连接时使用 'ssh: //'，或者在连接到远程系统时使用 'https://:2376' 的格式。</target>
       </trans-unit>
       <trans-unit id="saf1d289e3137c2ea">
         <source>CA which the endpoint's Certificate is verified against. Can be left empty for no validation.</source>
@@ -4884,15 +4749,6 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Clear all</source>
         <target>全部清除</target>
       </trans-unit>
-      <trans-unit id="s4207178ba0b99418">
-        <source>A newer version of the frontend is available.</source>
-        <target>有较新版本的前端可用。</target>
-      </trans-unit>
-      <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating <x id="0" equiv-text="${this.impersonation}"/>. Click to stop.</source>
-        <target>你目前正在模拟
-        <x id="0" equiv-text="${this.impersonation}"/>。单击停止。</target>
-      </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
         <source>User interface</source>
         <target>用户界面</target>
@@ -5072,10 +4928,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s3cd84e82e83e35ad">
         <source>Please enter your code</source>
       </trans-unit>
-      <trans-unit id="s18b910437b73e8e8">
-        <source>Return to device picker</source>
-        <target>返回设备选择器</target>
-      </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
         <target>重试身份验证</target>
@@ -5200,10 +5052,6 @@ Bindings to groups/users are checked against the user of the event.</source>
       <trans-unit id="s6fe64b4625517333">
         <source>Powered by authentik</source>
         <target>由 authentik 强力驱动</target>
-      </trans-unit>
-      <trans-unit id="sdf34a5599d66f85c">
-        <source>Background image</source>
-        <target>背景图片</target>
       </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
         <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
@@ -5446,9 +5294,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa1db89262360550b">
   <source>Send us feedback!</source>
 </trans-unit>
-<trans-unit id="s4015746f55a8d89f">
-  <source>Get a license</source>
-</trans-unit>
 <trans-unit id="sb2cbd06f8e25b47e">
   <source>Go to Customer Portal</source>
 </trans-unit>
@@ -5478,9 +5323,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s77e8668a27dbc402">
   <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
-</trans-unit>
-<trans-unit id="s28cbd874ba450b4e">
-  <source>Less details</source>
 </trans-unit>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
@@ -5639,38 +5481,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se2b29e6cfe59414c">
   <source>UI Settings</source>
 </trans-unit>
-<trans-unit id="s836148f721d8913b">
-  <source>Transparent Reverse Proxy</source>
-</trans-unit>
-<trans-unit id="s945a6b94361ee45b">
-  <source>For transparent reverse proxies with required authentication</source>
-</trans-unit>
-<trans-unit id="s40830ec037f34626">
-  <source>Configure SAML provider manually</source>
-</trans-unit>
-<trans-unit id="sea9fc40dfd1d18b1">
-  <source>Configure RADIUS provider manually</source>
-</trans-unit>
-<trans-unit id="sa1b0052ae095b9b3">
-  <source>Configure SCIM provider manually</source>
-</trans-unit>
-<trans-unit id="s15831fa50a116545">
-  <source>Saving Application...</source>
-</trans-unit>
-<trans-unit id="s823abdb61543a826">
-  <source>Authentik was unable to save this application:</source>
-</trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
 </trans-unit>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
-</trans-unit>
-<trans-unit id="h10ef80d434185070">
-  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
-                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
-                    routed to the outpost (when using a managed outpost, this is done for you).</source>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -5780,50 +5595,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s2da4aa7a9abeb653">
   <source>Pseudolocale (for testing)</source>
 </trans-unit>
-<trans-unit id="s4bd386db7302bb22">
-  <source>Create With Wizard</source>
-</trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-</trans-unit>
-<trans-unit id="s61bd841e66966325">
-  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
 </trans-unit>
 <trans-unit id="s6985c401e1100122">
   <source>Message shown when this stage is run.</source>
-</trans-unit>
-<trans-unit id="s09f0c100d0ad2fec">
-  <source>Open Wizard</source>
-</trans-unit>
-<trans-unit id="sf2ef885f7d0a101d">
-  <source>Demo Wizard</source>
-</trans-unit>
-<trans-unit id="s77505ee5d2e45e53">
-  <source>Run the demo wizard</source>
-</trans-unit>
-<trans-unit id="s4498e890d47a8066">
-  <source>OAuth2/OIDC (Open Authorization/OpenID Connect)</source>
-</trans-unit>
-<trans-unit id="s4f2e195d09e2868c">
-  <source>LDAP (Lightweight Directory Access Protocol)</source>
-</trans-unit>
-<trans-unit id="s7f5bb0c9923315ed">
-  <source>Forward Auth (Single Application)</source>
-</trans-unit>
-<trans-unit id="sf8008d2d6b064b95">
-  <source>Forward Auth (Domain Level)</source>
-</trans-unit>
-<trans-unit id="sfa8a1ffa9fee07d3">
-  <source>SAML (Security Assertion Markup Language)</source>
-</trans-unit>
-<trans-unit id="s848a23972e388662">
-  <source>RADIUS (Remote Authentication Dial-In User Service)</source>
-</trans-unit>
-<trans-unit id="s3e902999ddf7b50e">
-  <source>SCIM (System for Cross-domain Identity Management)</source>
 </trans-unit>
 <trans-unit id="sdc5690be4a342985">
   <source>The token has been copied to your clipboard</source>
@@ -5857,15 +5636,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0924f51b028233a3">
   <source>&lt;No name set&gt;</source>
-</trans-unit>
-<trans-unit id="sdc9a6ad1af30572c">
-  <source>For nginx's auth_request or traefik's forwardAuth</source>
-</trans-unit>
-<trans-unit id="sfc31264ef7ff86ef">
-  <source>For nginx's auth_request or traefik's forwardAuth per root domain</source>
-</trans-unit>
-<trans-unit id="sc615309d10a9228c">
-  <source>RBAC is in preview.</source>
 </trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
@@ -5936,23 +5706,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s21f95eaf151d4ce3">
   <source>Review the provider.</source>
 </trans-unit>
-<trans-unit id="s9fd39a5cb20b4e61">
-  <source>There was an error</source>
-</trans-unit>
 <trans-unit id="s7a6b3453209e1066">
   <source>There was an error creating the application, but no error message was sent. Please review the server logs.</source>
 </trans-unit>
 <trans-unit id="s1a711c19cda48375">
   <source>Configure LDAP Provider</source>
 </trans-unit>
-<trans-unit id="s9368e965b5c292ab">
-  <source>Configure OAuth2/OpenId Provider</source>
-</trans-unit>
 <trans-unit id="sf5cbccdc6254c8dc">
   <source>Configure Proxy Provider</source>
-</trans-unit>
-<trans-unit id="sf6d46bb442b77e91">
-  <source>AdditionalScopes</source>
 </trans-unit>
 <trans-unit id="s2c8c6f89089b31d4">
   <source>Configure Radius Provider</source>
@@ -5960,20 +5721,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sfe906cde5dddc041">
   <source>Configure SAML Provider</source>
 </trans-unit>
-<trans-unit id="sb3defbacd01ad972">
-  <source>Property mappings used for user mapping.</source>
-</trans-unit>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
 </trans-unit>
-<trans-unit id="sd7728d2b6e1d25e9">
-  <source>Property mappings used for group creation.</source>
-</trans-unit>
 <trans-unit id="s7513372fe60f6387">
   <source>Event volume</source>
-</trans-unit>
-<trans-unit id="s047a5f0211fedc72">
-  <source>Require Outpost (flow can only be executed from an outpost).</source>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -6013,9 +5765,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s38e7cd1a24e70faa">
   <source>Create Endpoint</source>
-</trans-unit>
-<trans-unit id="s4770c10e5b1c028c">
-  <source>RAC is in preview.</source>
 </trans-unit>
 <trans-unit id="s168565f5ac74a89f">
   <source>Update RAC Provider</source>
@@ -6109,9 +5858,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s95d56e58f816d211">
   <source>Dutch</source>
-</trans-unit>
-<trans-unit id="s16a15af46bc9aeef">
-  <source>Failed to fetch objects: <x id="0" equiv-text="${this.error.detail}"/></source>
 </trans-unit>
 <trans-unit id="s744401846fea6e76">
   <source>Brand</source>
@@ -6274,12 +6020,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd176021da2ea0fe3">
   <source>Selected Applications</source>
 </trans-unit>
-<trans-unit id="s862505f29064fc72">
-  <source>This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:</source>
-</trans-unit>
-<trans-unit id="sb2275335377069aa">
-  <source>This feature requires an enterprise license.</source>
-</trans-unit>
 <trans-unit id="s6d3f81dc4bcacbda">
   <source>Last used</source>
 </trans-unit>
@@ -6312,15 +6052,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se16b4d412ad1aba9">
   <source>Brand name</source>
-</trans-unit>
-<trans-unit id="sb7e68dcad68a638c">
-  <source>Remote Access Provider</source>
-</trans-unit>
-<trans-unit id="sfb1980a471b7dfb6">
-  <source>Remotely access computers/servers via RDP/SSH/VNC</source>
-</trans-unit>
-<trans-unit id="s9ffdea131dddb3c5">
-  <source>Configure Remote Access Provider Provider</source>
 </trans-unit>
 <trans-unit id="s56bc67239b9255a2">
   <source>Delete authorization on disconnect</source>
@@ -6469,9 +6200,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0ca04e397298bc43">
   <source>Select permissions to assign</source>
 </trans-unit>
-<trans-unit id="s676d94e7e31a8075">
-  <source>SCIM Source is in preview.</source>
-</trans-unit>
 <trans-unit id="s31f1afc0a81977c1">
   <source>Update SCIM Source</source>
 </trans-unit>
@@ -6529,9 +6257,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa817aa9f6f88a991">
   <source>Credentials</source>
 </trans-unit>
-<trans-unit id="s44b0d2fa9c97719d">
-  <source>TODO</source>
-</trans-unit>
 <trans-unit id="sc668815044e218c2">
   <source>Delegated Subject</source>
 </trans-unit>
@@ -6574,11 +6299,950 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sdb872a9f425937fa">
   <source>Determines what authentik will do when a Group is deleted.</source>
 </trans-unit>
-<trans-unit id="sa5f28f1ad0bee45b">
-  <source>Google Workspace Provider is in preview.</source>
+<trans-unit id="s958928ab6208d748">
+  <source>Microsoft Entra Provider</source>
 </trans-unit>
-<trans-unit id="sfcf7bc2ef234d938">
-  <source>Update Google Provider</source>
+<trans-unit id="sc7d6bc4aebb58fe9">
+  <source>Google Cloud credentials file.</source>
+</trans-unit>
+<trans-unit id="s2e707072d5a9615d">
+  <source>Email address of the user the actions of authentik will be delegated to.</source>
+</trans-unit>
+<trans-unit id="s03a759e65ceb722d">
+  <source>Client ID for the app registration.</source>
+</trans-unit>
+<trans-unit id="s479980cf9252628c">
+  <source>Client secret for the app registration.</source>
+</trans-unit>
+<trans-unit id="s25c2392ffcb78df2">
+  <source>Tenant ID</source>
+</trans-unit>
+<trans-unit id="s89e4e698cdb1187f">
+  <source>ID of the tenant accounts will be synced into.</source>
+</trans-unit>
+<trans-unit id="s79dd6df244c05ae9">
+  <source>Update Microsoft Entra Provider</source>
+</trans-unit>
+<trans-unit id="saf4b498d81141878">
+  <source>Finished successfully</source>
+</trans-unit>
+<trans-unit id="s46f1d86ffec6223c">
+  <source>Finished with errors</source>
+</trans-unit>
+<trans-unit id="sbd12ed8a1053a108">
+  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
+</trans-unit>
+<trans-unit id="sc3c334d642866997">
+  <source>Sync currently running</source>
+</trans-unit>
+<trans-unit id="sd520a4089006ca93">
+  <source>Update Google Workspace Provider</source>
+</trans-unit>
+<trans-unit id="sfdfa5bb4ddd99d70">
+  <source>Enterprise only</source>
+</trans-unit>
+<trans-unit id="scffa59cfac1951f2">
+  <source><x id="0" equiv-text="${type.name}"/> Icon</source>
+</trans-unit>
+<trans-unit id="s1da3499258024860">
+  <source><x id="0" equiv-text="${versionString}"/> (build <x id="1" equiv-text="${this.outpostHealth.buildHash.substring(0, 8)}"/>)</source>
+</trans-unit>
+<trans-unit id="s001fd928369d4ddc">
+  <source><x id="0" equiv-text="${versionString}"/> (FIPS)</source>
+</trans-unit>
+<trans-unit id="sce17c2bdea3e6ace">
+  <source>Score minimum threshold</source>
+</trans-unit>
+<trans-unit id="sf2fcb974c62625fc">
+  <source>Minimum required score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s7452199a73ce8b78">
+  <source>Score maximum threshold</source>
+</trans-unit>
+<trans-unit id="s2d3a6cd50b46b44d">
+  <source>Maximum allowed score to allow continuing</source>
+</trans-unit>
+<trans-unit id="s9d6e40d9a9a58fbf">
+  <source>Error on invalid score</source>
+</trans-unit>
+<trans-unit id="s2af59e2f9f12847a">
+  <source>When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.</source>
+</trans-unit>
+<trans-unit id="s10092327ad833090">
+  <source>Microsoft Entra Group(s)</source>
+</trans-unit>
+<trans-unit id="s811c45ad24a5feae">
+  <source>Microsoft Entra User(s)</source>
+</trans-unit>
+<trans-unit id="s7d2d3d298fdccfc8">
+  <source>Google Workspace Group(s)</source>
+</trans-unit>
+<trans-unit id="s8c9cf2c004755526">
+  <source>Google Workspace User(s)</source>
+</trans-unit>
+<trans-unit id="sd000b42fea07c34a">
+  <source>SCIM Group(s)</source>
+</trans-unit>
+<trans-unit id="s146769fb55f1ee50">
+  <source>SCIM User(s)</source>
+</trans-unit>
+<trans-unit id="s35f47dbd321aaf15">
+  <source>FIPS compliance: passing</source>
+</trans-unit>
+<trans-unit id="sc94578030c702562">
+  <source>Unverified</source>
+</trans-unit>
+<trans-unit id="s16749cce7c4c1589">
+  <source>FIPS compliance: unverified</source>
+</trans-unit>
+<trans-unit id="s0b2ad58c3deaa8dd">
+  <source>FIPS Status</source>
+</trans-unit>
+<trans-unit id="s4facec1106c91cf9">
+  <source>Search returned no results.</source>
+</trans-unit>
+<trans-unit id="s23446284b56ca0cc">
+  <source>Reputation score(s)</source>
+</trans-unit>
+<trans-unit id="s7a64ac07061f85b2">
+  <source>See documentation</source>
+</trans-unit>
+<trans-unit id="se166e95fe447ebcd">
+  <source>Close dialog</source>
+</trans-unit>
+<trans-unit id="s3dc14a4b8129f989">
+  <source>Pagination</source>
+</trans-unit>
+<trans-unit id="sf2da0e95c78f2cb7">
+  <source>Restore Application Wizard Hint</source>
+</trans-unit>
+<trans-unit id="s76dc6d0d1a7db8e2">
+  <source>Your authentik password</source>
+</trans-unit>
+<trans-unit id="se3a34af2a05c5c98">
+  <source>Internal Service account</source>
+</trans-unit>
+<trans-unit id="s681c086b8f7afcae">
+  <source>Global</source>
+</trans-unit>
+<trans-unit id="s1b85e6ac2978a2c0">
+  <source>Outpost integrations</source>
+</trans-unit>
+<trans-unit id="sec55a3a7f18615ec">
+  <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
+</trans-unit>
+<trans-unit id="s74d86eb7e5a10fdf">
+  <source>Operation failed to complete</source>
+</trans-unit>
+<trans-unit id="sc0448bc8a76227cb">
+  <source>Failed to fetch objects: </source>
+</trans-unit>
+<trans-unit id="s233a0201fde4a38d">
+  <source>Available Scopes</source>
+</trans-unit>
+<trans-unit id="s631b3419f6dfd031">
+  <source>Selected Scopes</source>
+</trans-unit>
+<trans-unit id="s81d76cccf339a43c">
+  <source>Available Property Mappings</source>
+</trans-unit>
+<trans-unit id="se9195c05c61d8ef8">
+  <source>Selected Property Mappings</source>
+</trans-unit>
+<trans-unit id="s0619413371f33083">
+  <source>Available User Property Mappings</source>
+</trans-unit>
+<trans-unit id="sbb46aed99e712337">
+  <source>Selected User Property Mappings</source>
+</trans-unit>
+<trans-unit id="se84ebf32648e6a63">
+  <source>Available Group Property Mappings</source>
+</trans-unit>
+<trans-unit id="seaf9f9ecb99568c7">
+  <source>Selected Group Property Mappings</source>
+</trans-unit>
+<trans-unit id="sc362f1f1e4044878">
+  <source>Ensure the user satisfies requirements of geography or network topology, based on IP address. If any of the configured values match, the policy passes.</source>
+</trans-unit>
+<trans-unit id="s26c2828bf8db525e">
+  <source>ASNs</source>
+</trans-unit>
+<trans-unit id="s72ee4dd6cfa6e10d">
+  <source>List of autonomous system numbers. Comma separated. E.g. 13335, 15169, 20940</source>
+</trans-unit>
+<trans-unit id="s77fbb0a6d145442d">
+  <source>Countries</source>
+</trans-unit>
+<trans-unit id="sdd277e10884a7272">
+  <source>Available Countries</source>
+</trans-unit>
+<trans-unit id="s7a93139fb12ebf96">
+  <source>Selected Countries</source>
+</trans-unit>
+<trans-unit id="s375a13497266db93">
+  <source>Bind existing policy/group/user</source>
+</trans-unit>
+<trans-unit id="s8e2de27afeb78e5a">
+  <source>Property mappings for user creation.</source>
+</trans-unit>
+<trans-unit id="s045cf2d851164d5a">
+  <source>Property mappings for group creation.</source>
+</trans-unit>
+<trans-unit id="s9642f1d8ee6e787d">
+  <source>Link to a group with identical name. Can have security implications when a group is used with another source</source>
+</trans-unit>
+<trans-unit id="s485964f83b5ed044">
+  <source>Use the group's name, but deny enrollment when the name already exists</source>
+</trans-unit>
+<trans-unit id="s2b1b532c5271b296">
+  <source>Group matching mode</source>
+</trans-unit>
+<trans-unit id="s704381cea57e5a12">
+  <source>OAuth Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s4b9501c321dc4922">
+  <source>Plex Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s6135938c50ad8a4b">
+  <source>Encryption Certificate</source>
+</trans-unit>
+<trans-unit id="s37b8d48b9416fc25">
+  <source>When selected, encrypted assertions will be decrypted using this keypair.</source>
+</trans-unit>
+<trans-unit id="s924a87f37bc0201e">
+  <source>SAML Attribute mapping</source>
+</trans-unit>
+<trans-unit id="sf0532ddee3b4e977">
+  <source>SCIM Attribute mapping</source>
+</trans-unit>
+<trans-unit id="sd61a4f736ac0a98e">
+  <source>External user settings</source>
+</trans-unit>
+<trans-unit id="sdc4f72f6a46ae2c8">
+  <source>Default application</source>
+</trans-unit>
+<trans-unit id="sac85801a25b7bb27">
+  <source>When configured, external users will automatically be redirected to this application when not attempting to access a different application</source>
+</trans-unit>
+<trans-unit id="s9f4d6296b906d591">
+  <source>Warning: One or more license(s) have expired.</source>
+</trans-unit>
+<trans-unit id="s3b016caea59af3ef">
+  <source>Warning: One or more license(s) will expire within the next 2 weeks.</source>
+</trans-unit>
+<trans-unit id="sd8a5f7269b7ac7a3">
+  <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
+</trans-unit>
+<trans-unit id="se8c58e65674b6847">
+  <source>This authentik instance uses a Trial license.</source>
+</trans-unit>
+<trans-unit id="s6ee52309e586eb18">
+  <source>This authentik instance uses a Non-production license.</source>
+</trans-unit>
+<trans-unit id="s4a799b4562ab2051">
+  <source>Access Tokens(s)</source>
+</trans-unit>
+<trans-unit id="s4ae42fa672dd72bc">
+  <source>Created at</source>
+</trans-unit>
+<trans-unit id="see1f8a5c8e11c5ab">
+  <source>Last updated at</source>
+</trans-unit>
+<trans-unit id="s82dd7087cd1471ab">
+  <source>Last used at</source>
+</trans-unit>
+<trans-unit id="s9dda0789d278f5c5">
+  <source>Provide users with a 'show password' button.</source>
+</trans-unit>
+<trans-unit id="s2f7f35f6a5b733f5">
+  <source>Show password</source>
+</trans-unit>
+<trans-unit id="s452f791e0ff6a13e">
+  <source>Hide password</source>
+</trans-unit>
+<trans-unit id="s08272eeeddfd244e">
+  <source>An outpost is on an incorrect version!</source>
+</trans-unit>
+<trans-unit id="sa30c12014e955946">
+  <source>Russian</source>
+</trans-unit>
+<trans-unit id="s354405ae02cb262d">
+  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+</trans-unit>
+<trans-unit id="s5aebe06e3ddf6ca9">
+  <source>Sign assertions</source>
+</trans-unit>
+<trans-unit id="s4e2329ffa0ef6b74">
+  <source>When enabled, the assertion element of the SAML response will be signed.</source>
+</trans-unit>
+<trans-unit id="s2ad1b968b37ded68">
+  <source>Sign responses</source>
+</trans-unit>
+<trans-unit id="sb416d07987093cd5">
+  <source>When selected, assertions will be encrypted using this keypair.</source>
+</trans-unit>
+<trans-unit id="sa42be520242dec2a">
+  <source>Available Sources</source>
+</trans-unit>
+<trans-unit id="s876e75cf2c07b38e">
+  <source>Selected Sources</source>
+</trans-unit>
+<trans-unit id="s3b579c4bb6b447ae">
+  <source>Successfully triggered sync.</source>
+</trans-unit>
+<trans-unit id="s05073d2537b45d1a">
+  <source>Sync</source>
+</trans-unit>
+<trans-unit id="se9da93aa2e6cce21">
+  <source>Sync User</source>
+</trans-unit>
+<trans-unit id="s7bd456df0becbbff">
+  <source>Available Stages</source>
+</trans-unit>
+<trans-unit id="sf80798d2f56b540b">
+  <source>Selected Stages</source>
+</trans-unit>
+<trans-unit id="sf651943c3ddff635">
+  <source>Available Fields</source>
+</trans-unit>
+<trans-unit id="s80ba9c5ebb7826a9">
+  <source>Selected Fields</source>
+</trans-unit>
+<trans-unit id="s26733a6289ca6f1a">
+  <source>Available Transports</source>
+</trans-unit>
+<trans-unit id="sa65f772cfc5aa67e">
+  <source>Selected Transports</source>
+</trans-unit>
+<trans-unit id="sd923f95605fed7b2">
+  <source>Expired</source>
+</trans-unit>
+<trans-unit id="s86959994f28077dc">
+  <source>Expiring soon</source>
+</trans-unit>
+<trans-unit id="sc60a5fba70bf5a53">
+  <source>Unlicensed</source>
+</trans-unit>
+<trans-unit id="s4f9880ce82953741">
+  <source>Read Only</source>
+</trans-unit>
+<trans-unit id="s4220dda46d622211">
+  <source>Valid</source>
+</trans-unit>
+<trans-unit id="sdc94711a2eb66a45">
+  <source>Current license status</source>
+</trans-unit>
+<trans-unit id="se10fb73c1f1039c5">
+  <source>Overall license status</source>
+</trans-unit>
+<trans-unit id="sc4804358f202968c">
+  <source>Internal user usage</source>
+</trans-unit>
+<trans-unit id="s087d6f07b52b30ec">
+  <source><x id="0" equiv-text="${internalUserPercentage &lt; Infinity ? internalUserPercentage : &quot;∞&quot;}"/>%</source>
+</trans-unit>
+<trans-unit id="sae72e1569d34fb02">
+  <source>External user usage</source>
+</trans-unit>
+<trans-unit id="sa82f8948649d0989">
+  <source>Matches Event's Client IP (strict matching, for network matching use an Expression Policy).</source>
+</trans-unit>
+<trans-unit id="s6506b7c69456b0d6">
+  <source>Invalid update request.</source>
+</trans-unit>
+<trans-unit id="s3819162efec77de1">
+  <source>Sync Group</source>
+</trans-unit>
+<trans-unit id="s2d5f69929bb7221d">
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+</trans-unit>
+<trans-unit id="s25bacc19d98b444e">
+  <source>Parent Group</source>
+</trans-unit>
+<trans-unit id="s0159c800f16ee1a5">
+  <source>Flow used when logging out of this provider.</source>
+</trans-unit>
+<trans-unit id="s821d70ef9496e6f7">
+  <source>Unbind flow</source>
+</trans-unit>
+<trans-unit id="s6773ec2a233bbf41">
+  <source>Flow used for unbinding users.</source>
+</trans-unit>
+<trans-unit id="s99060120f626df5b">
+  <source>Verify SCIM server's certificates</source>
+</trans-unit>
+<trans-unit id="sac88482c48453fc8">
+  <source>You've logged out of <x id="0" equiv-text="${this.challenge.applicationName}"/>. You can go back to the overview to launch another application, or log out of your authentik account.</source>
+</trans-unit>
+<trans-unit id="s3108167b562674e2">
+  <source>Go back to overview</source>
+</trans-unit>
+<trans-unit id="sdb749e793de55478">
+  <source>Log out of <x id="0" equiv-text="${this.challenge.brandName}"/></source>
+</trans-unit>
+<trans-unit id="s521681ed1d5ff814">
+  <source>Log back into <x id="0" equiv-text="${this.challenge.applicationName}"/></source>
+</trans-unit>
+<trans-unit id="sc991a35f5e88d1d3">
+  <source>Encryption Key</source>
+</trans-unit>
+<trans-unit id="s8a598f7aef81c3bc">
+  <source>Key used to encrypt the tokens.</source>
+</trans-unit>
+<trans-unit id="sbfee780fa0a2c83e">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
+</trans-unit>
+<trans-unit id="s336936629cdeb3e5">
+  <source>Stage used to verify users' browsers using Google Chrome Device Trust. This stage can be used in authentication/authorization flows.</source>
+</trans-unit>
+<trans-unit id="s85fe794c71b4ace8">
+  <source>Google Verified Access API</source>
+</trans-unit>
+<trans-unit id="s013620384af7c8b4">
+  <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
+</trans-unit>
+<trans-unit id="s4347135696fc7cde">
+  <source>Advanced flow settings</source>
+</trans-unit>
+<trans-unit id="sf52ff57fd136cc2f">
+  <source>Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.</source>
+</trans-unit>
+<trans-unit id="s14a16542f956e11d">
+  <source>Realm settings</source>
+</trans-unit>
+<trans-unit id="s9c2eae548d3c1c30">
+  <source>Realm</source>
+</trans-unit>
+<trans-unit id="s6b032212997e2491">
+  <source>Kerberos 5 configuration</source>
+</trans-unit>
+<trans-unit id="sbf50181022f47de3">
+  <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
+</trans-unit>
+<trans-unit id="s2386539a0bd62fab">
+  <source>Sync connection settings</source>
+</trans-unit>
+<trans-unit id="s0d1a6f3fe81351f8">
+  <source>Sync principal</source>
+</trans-unit>
+<trans-unit id="sa691d6e1974295fa">
+  <source>Principal used to authenticate to the KDC for syncing.</source>
+</trans-unit>
+<trans-unit id="s977b9c629eed3d33">
+  <source>Sync password</source>
+</trans-unit>
+<trans-unit id="s77772860385de948">
+  <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
+</trans-unit>
+<trans-unit id="sc59ec59c3d5e74dc">
+  <source>Sync keytab</source>
+</trans-unit>
+<trans-unit id="scd42997958453f05">
+  <source>Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+</trans-unit>
+<trans-unit id="s60eaf439ccdca1f2">
+  <source>Sync credentials cache</source>
+</trans-unit>
+<trans-unit id="s95722900b0c9026f">
+  <source>Credentials cache used to authenticate to the KDC for syncing. Optional if Sync password or Sync keytab is provided. Must be in the form TYPE:residual.</source>
+</trans-unit>
+<trans-unit id="sf9c055db98d7994a">
+  <source>SPNEGO settings</source>
+</trans-unit>
+<trans-unit id="sab580a45dc46937f">
+  <source>SPNEGO server name</source>
+</trans-unit>
+<trans-unit id="s7a79d6174d17ab2d">
+  <source>Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain</source>
+</trans-unit>
+<trans-unit id="sa4ba2b2081472ccd">
+  <source>SPNEGO keytab</source>
+</trans-unit>
+<trans-unit id="s64adda975c1106c0">
+  <source>Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.</source>
+</trans-unit>
+<trans-unit id="s92247825b92587b5">
+  <source>SPNEGO credentials cache</source>
+</trans-unit>
+<trans-unit id="sd9757c345e4062f8">
+  <source>Credentials cache used for SPNEGO. Optional if SPNEGO keytab is provided. Must be in the form TYPE:residual.</source>
+</trans-unit>
+<trans-unit id="s734ab8fbcae0b69e">
+  <source>Kerberos Attribute mapping</source>
+</trans-unit>
+<trans-unit id="s2c378e86e025fdb2">
+  <source>Update Kerberos Source</source>
+</trans-unit>
+<trans-unit id="s03e4044abe0b556c">
+  <source>User database + Kerberos password</source>
+</trans-unit>
+<trans-unit id="s98bb2ae796f1ceef">
+  <source>Select another authentication method</source>
+</trans-unit>
+<trans-unit id="s21d95b4651ad7a1e">
+  <source>Enter a one-time recovery code for this user.</source>
+</trans-unit>
+<trans-unit id="s2e1d5a7d320c25ef">
+  <source>Enter the code from your authenticator device.</source>
+</trans-unit>
+<trans-unit id="scc1a17d28912e974">
+  <source>Kerberos Source is in preview.</source>
+</trans-unit>
+<trans-unit id="s54154a8d64a3597b">
+  <source>Captcha stage</source>
+</trans-unit>
+<trans-unit id="s0c250af62ddbf801">
+  <source>When set, adds functionality exactly like a Captcha stage, but baked into the Identification stage.</source>
+</trans-unit>
+<trans-unit id="sabf8a430d504f8c8">
+  <source>Endpoint Google Chrome Device Trust is in preview.</source>
+</trans-unit>
+<trans-unit id="s6f4f35a5a4b9b3cb">
+  <source>Interactive</source>
+</trans-unit>
+<trans-unit id="sd020240e41e4c207">
+  <source>Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.</source>
+</trans-unit>
+<trans-unit id="saa29a2ac03cd9d19">
+  <source>Reason</source>
+</trans-unit>
+<trans-unit id="se9fd92a824994eba">
+  <source>Reason for impersonating the user</source>
+</trans-unit>
+<trans-unit id="s29fab8887734192f">
+  <source>Require reason for impersonation</source>
+</trans-unit>
+<trans-unit id="sc24af6de78468cfa">
+  <source>Require administrators to provide a reason for impersonating a user.</source>
+</trans-unit>
+<trans-unit id="sd48cc52117f4d68b">
+  <source>Italian</source>
+</trans-unit>
+<trans-unit id="s6cee92a3b310e650">
+  <source>Add entry</source>
+</trans-unit>
+<trans-unit id="s8f36fb59c31d33eb">
+  <source>Link Title</source>
+</trans-unit>
+<trans-unit id="s92205c10ba1f0f4c">
+  <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
+</trans-unit>
+<trans-unit id="s66f572bec2bde9c4">
+  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+</trans-unit>
+<trans-unit id="s58bec0ecd4f3ccd4">
+  <source>Strict</source>
+</trans-unit>
+<trans-unit id="sd27a8f54aca5d278">
+  <source>Regex</source>
+</trans-unit>
+<trans-unit id="seb411b22a8f262d6">
+  <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
+</trans-unit>
+<trans-unit id="s4c49d27de60a532b">
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+</trans-unit>
+<trans-unit id="sa52bf79fe1ccb13e">
+  <source>Federated OIDC Sources</source>
+</trans-unit>
+<trans-unit id="s555465bf6577505e">
+  <source>Federated OIDC Providers</source>
+</trans-unit>
+<trans-unit id="s066bfb12c9032dc2">
+  <source>Available Providers</source>
+</trans-unit>
+<trans-unit id="sa12111ca3f3e398e">
+  <source>Selected Providers</source>
+</trans-unit>
+<trans-unit id="s4f8a3f7792e6b940">
+  <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
+</trans-unit>
+<trans-unit id="s3cc2b33d2a8000d3">
+  <source>KAdmin type</source>
+</trans-unit>
+<trans-unit id="s624e1c8739507529">
+  <source>MIT krb5 kadmin</source>
+</trans-unit>
+<trans-unit id="s6d225d9e74dfff6f">
+  <source>Heimdal kadmin</source>
+</trans-unit>
+<trans-unit id="sc9e494c8346b7cb5">
+  <source>Other</source>
+</trans-unit>
+<trans-unit id="sbf6c78047e8ec8f8">
+  <source>Other type of kadmin</source>
+</trans-unit>
+<trans-unit id="sb53d0b77abef2316">
+  <source>To let a user directly reset their password, configure a recovery flow on the currently active brand.</source>
+</trans-unit>
+<trans-unit id="s2e5226fcf269689b">
+  <source>Consent given lasts indefinitely</source>
+</trans-unit>
+<trans-unit id="s7eff620292ed9349">
+  <source>Consent expires</source>
+</trans-unit>
+<trans-unit id="s1cc032bcc50b2942">
+  <source>Available Policies</source>
+</trans-unit>
+<trans-unit id="s3ad64193ad5f4a5e">
+  <source>Selected Policies</source>
+</trans-unit>
+<trans-unit id="sc487e11d5987dbb4">
+  <source>Redirect the user to another flow, potentially with all gathered context</source>
+</trans-unit>
+<trans-unit id="sad9d5481474d4f5b">
+  <source>Static</source>
+</trans-unit>
+<trans-unit id="se87a96950464bc89">
+  <source>Target URL</source>
+</trans-unit>
+<trans-unit id="s7f3097955b19736a">
+  <source>Redirect the user to a static URL.</source>
+</trans-unit>
+<trans-unit id="s9bdee1c5130c8240">
+  <source>Target Flow</source>
+</trans-unit>
+<trans-unit id="sa5d1405b8d6529c7">
+  <source>Redirect the user to a Flow.</source>
+</trans-unit>
+<trans-unit id="s7c9db337d14d42b3">
+  <source>Keep flow context</source>
+</trans-unit>
+<trans-unit id="s0d7dea184036a74d">
+  <source>Require no authentication</source>
+</trans-unit>
+<trans-unit id="s66f533986ba6182c">
+  <source>Require superuser</source>
+</trans-unit>
+<trans-unit id="s26c0a8789930b5fd">
+  <source>Require being redirected from another flow</source>
+</trans-unit>
+<trans-unit id="sbfaee8cfbf4e44e8">
+  <source>Require Outpost (flow can only be executed from an outpost)</source>
+</trans-unit>
+<trans-unit id="sb80507bed88545a6">
+  <source>An application name is required</source>
+</trans-unit>
+<trans-unit id="s39c052006b2b141a">
+  <source>Not a valid URL</source>
+</trans-unit>
+<trans-unit id="s317f3ab0da3d068a">
+  <source>Not a valid slug</source>
+</trans-unit>
+<trans-unit id="s177577c23ed3ca7e">
+  <source>Configure The Application</source>
+</trans-unit>
+<trans-unit id="s030ed8a3f12c23ff">
+  <source>Configure Bindings</source>
+</trans-unit>
+<trans-unit id="sc387b20e6d629087">
+  <source>Configure Policy/User/Group Bindings</source>
+</trans-unit>
+<trans-unit id="s71c3ec95efe723ca">
+  <source>No bound policies.</source>
+</trans-unit>
+<trans-unit id="sab1786ef3c0383ba">
+  <source>Bind policy/group/user</source>
+</trans-unit>
+<trans-unit id="s082ea0f3c0a854ff">
+  <source>Configure Policy Bindings</source>
+</trans-unit>
+<trans-unit id="sac315d5bd28d4efa">
+  <source>Don't Pass</source>
+</trans-unit>
+<trans-unit id="s54a37223ce938349">
+  <source>Save Binding</source>
+</trans-unit>
+<trans-unit id="s931754aabd4a6a47">
+  <source>Create a Policy/User/Group Binding</source>
+</trans-unit>
+<trans-unit id="s10ba15343fe64890">
+  <source>Choose A Provider</source>
+</trans-unit>
+<trans-unit id="sb7be945aa799b8d7">
+  <source>Please choose a provider type before proceeding.</source>
+</trans-unit>
+<trans-unit id="s2289ff3b411251d8">
+  <source>Choose a Provider Type</source>
+</trans-unit>
+<trans-unit id="sde0ad51b14f77cf6">
+  <source>Redirect URIs/Origins (RegEx)</source>
+</trans-unit>
+<trans-unit id="s89ae85c3a9df8a6f">
+  <source>Configure OAuth2 Provider</source>
+</trans-unit>
+<trans-unit id="s881271a499c9db98">
+  <source>Configure Remote Access Provider</source>
+</trans-unit>
+<trans-unit id="s9b6bf63fddc7362f">
+  <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+</trans-unit>
+<trans-unit id="s19907c16eb319618">
+  <source>Configure Provider</source>
+</trans-unit>
+<trans-unit id="s7055edd8fab866f4">
+  <source>strict</source>
+</trans-unit>
+<trans-unit id="s5e57ca23b946c1b8">
+  <source>regexp</source>
+</trans-unit>
+<trans-unit id="sd226dc54c414585a">
+  <source>Review and Submit Application</source>
+</trans-unit>
+<trans-unit id="s828ded9ade500ffc">
+  <source>There was an error. Please go back and review the application.</source>
+</trans-unit>
+<trans-unit id="s9fdda682893624a1">
+  <source>There was an error:</source>
+</trans-unit>
+<trans-unit id="s201ee6bc6d9f97da">
+  <source>Please go back and review the application.</source>
+</trans-unit>
+<trans-unit id="s9c09ef16900241fa">
+  <source>Review the Application and Provider</source>
+</trans-unit>
+<trans-unit id="s0a0a21f7bcf9d865">
+  <source>Saving application...</source>
+</trans-unit>
+<trans-unit id="se669a4b939be0891">
+  <source>authentik was unable to complete this process.</source>
+</trans-unit>
+<trans-unit id="s8aac845c63f45ca2">
+  <source>Create with wizard</source>
+</trans-unit>
+<trans-unit id="s080af72866b69b3d">
+  <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
+</trans-unit>
+<trans-unit id="sa36117e97f49c86e">
+  <source>Successfully updated entitlement.</source>
+</trans-unit>
+<trans-unit id="s86bee999b735111f">
+  <source>Successfully created entitlement.</source>
+</trans-unit>
+<trans-unit id="s8a48455905fc14e6">
+  <source>Application entitlement(s)</source>
+</trans-unit>
+<trans-unit id="sae971cbff672090b">
+  <source>Update Entitlement</source>
+</trans-unit>
+<trans-unit id="s537a58ae0ff50f1c">
+  <source>These bindings control which users have access to this entitlement.</source>
+</trans-unit>
+<trans-unit id="s05849efeac672dc7">
+  <source>No app entitlements created.</source>
+</trans-unit>
+<trans-unit id="sdc8a8f29af6aa411">
+  <source>This application does currently not have any application entitlement defined.</source>
+</trans-unit>
+<trans-unit id="sf0bd204ce3fea1de">
+  <source>Create Entitlement</source>
+</trans-unit>
+<trans-unit id="s55d8e42d0a1c057e">
+  <source>Create entitlement</source>
+</trans-unit>
+<trans-unit id="sc6479479c936939f">
+  <source>Application entitlements</source>
+</trans-unit>
+<trans-unit id="sfafbd9bddb38d172">
+  <source>Application entitlements are in preview.</source>
+</trans-unit>
+<trans-unit id="s8e1c375a007d1839">
+  <source>These entitlements can be used to configure user access in this application.</source>
+</trans-unit>
+<trans-unit id="s82cced87e15e0665">
+  <source>Worker with incorrect version connected.</source>
+</trans-unit>
+<trans-unit id="ha8e91858b300a3b7">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=-1;minutes=-2;seconds=-3)<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="hbe8e6353371ecb22">
+  <source>(Format: <x id="0" equiv-text="&lt;code&gt;"/>hours=1;minutes=2;seconds=3).<x id="1" equiv-text="&lt;/code&gt;"/></source>
+</trans-unit>
+<trans-unit id="se8dd47dfaf01d6c9">
+  <source>Key used to sign the events.</source>
+</trans-unit>
+<trans-unit id="sd1b31f8fba05d429">
+  <source>Event Retention</source>
+</trans-unit>
+<trans-unit id="sd760b123cced4675">
+  <source>Determines how long events are stored for. If an event could not be sent correctly, its expiration is also increased by this duration.</source>
+</trans-unit>
+<trans-unit id="s1aa62e1bf258e88a">
+  <source>OIDC Providers</source>
+</trans-unit>
+<trans-unit id="sb9d947872397ca07">
+  <source>SSF Provider is in preview.</source>
+</trans-unit>
+<trans-unit id="s78302d097a608b99">
+  <source>Update SSF Provider</source>
+</trans-unit>
+<trans-unit id="sa412f34efd88e962">
+  <source>Streams</source>
+</trans-unit>
+<trans-unit id="s91ae4b6bf981682b">
+  <source>authentik Logo</source>
+</trans-unit>
+<trans-unit id="s1cdeecda0baf365e">
+  <source>Release</source>
+</trans-unit>
+<trans-unit id="s35429c9dc2319aea">
+  <source>Development</source>
+</trans-unit>
+<trans-unit id="s5937938934a777ab">
+  <source>UI Version</source>
+</trans-unit>
+<trans-unit id="s3fe3ff490adaaa63">
+  <source>Build</source>
+</trans-unit>
+<trans-unit id="s42aea5c6d3d1fce7">
+  <source>Python version</source>
+</trans-unit>
+<trans-unit id="s5c67b6c66029e5b2">
+  <source>Platform</source>
+</trans-unit>
+<trans-unit id="se8574bce64d9c1f8">
+  <source>Kernel</source>
+</trans-unit>
+<trans-unit id="s3fbe63b7fcfe3e91">
+  <source>OpenSSL</source>
+</trans-unit>
+<trans-unit id="s1381314790b50b1f">
+  <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
+</trans-unit>
+<trans-unit id="s61ffea061fae0af4">
+  <source>No notifications found.</source>
+</trans-unit>
+<trans-unit id="scf8d5cdc8b434982">
+  <source>You don't have any notifications currently.</source>
+</trans-unit>
+<trans-unit id="s358e08de4fbebf51">
+  <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="sfb95ad8c25db95ba">
+  <source>Last password change</source>
+</trans-unit>
+<trans-unit id="s37e1bad4bf0e9241">
+  <source>Evaluate policies before the Stage is presented to the user.</source>
+</trans-unit>
+<trans-unit id="h8c1aa2d523f94f36">
+  <source>Can be in the format of <x id="0" equiv-text="&lt;code&gt;"/>unix://<x id="1" equiv-text="&lt;/code&gt;"/> when connecting to a local
+                            docker daemon, using <x id="2" equiv-text="&lt;code&gt;"/>ssh://<x id="3" equiv-text="&lt;/code&gt;"/> to connect via SSH, or
+                            <x id="4" equiv-text="&lt;code&gt;"/>https://:2376<x id="5" equiv-text="&lt;/code&gt;"/> when connecting to a remote system.</source>
+</trans-unit>
+<trans-unit id="h3ac79dc5cc553329">
+  <source>When using an external logging solution for archiving, this can be
+                                set to <x id="0" equiv-text="&lt;code&gt;"/>minutes=5<x id="1" equiv-text="&lt;/code&gt;"/>.</source>
+</trans-unit>
+<trans-unit id="sc92905d14a9421f3">
+  <source>Idle</source>
+</trans-unit>
+<trans-unit id="s4b052cb287d81da7">
+  <source>Connecting</source>
+</trans-unit>
+<trans-unit id="s123b7254b44dd148">
+  <source>Waiting</source>
+</trans-unit>
+<trans-unit id="s82a4e28ab5b56670">
+  <source>Connected</source>
+</trans-unit>
+<trans-unit id="sd669c8ff49c068ad">
+  <source>Disconnecting</source>
+</trans-unit>
+<trans-unit id="sfc2c3bd345c0128a">
+  <source>Disconnected</source>
+</trans-unit>
+<trans-unit id="s47b7ce63a543564c">
+  <source>Fewer details</source>
+</trans-unit>
+<trans-unit id="s140111d464591e6b">
+  <source>Create a new application and configure a provider for it.</source>
+</trans-unit>
+<trans-unit id="s5e0c81c05565bf42">
+  <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+</trans-unit>
+<trans-unit id="s035bfd9c5f97e4d3">
+  <source>Distance settings</source>
+</trans-unit>
+<trans-unit id="s207e6f8a8b3515fd">
+  <source>Check historical distance of logins</source>
+</trans-unit>
+<trans-unit id="s8158f4b3e5c869be">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
+</trans-unit>
+<trans-unit id="sb8b7450c8515894c">
+  <source>Maximum distance</source>
+</trans-unit>
+<trans-unit id="s40cdbaa532bc9899">
+  <source>Maximum distance a login attempt is allowed from in kilometers.</source>
+</trans-unit>
+<trans-unit id="seef852b5c0f8a529">
+  <source>Distance tolerance</source>
+</trans-unit>
+<trans-unit id="sce567ced300aeb8a">
+  <source>Tolerance in checking for distances in kilometers.</source>
+</trans-unit>
+<trans-unit id="s9ea9cdabd74f8f97">
+  <source>Historical Login Count</source>
+</trans-unit>
+<trans-unit id="s27aec4c2de1ae777">
+  <source>Amount of previous login events to check against.</source>
+</trans-unit>
+<trans-unit id="s48611ce6e85874dc">
+  <source>Check impossible travel</source>
+</trans-unit>
+<trans-unit id="s8cf926e8311f8065">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+</trans-unit>
+<trans-unit id="sa963d05af436770b">
+  <source>Impossible travel tolerance</source>
+</trans-unit>
+<trans-unit id="s5760cd97ca42a238">
+  <source>Static rule settings</source>
+</trans-unit>
+<trans-unit id="s8fec035fa1737294">
+  <source>Create with Provider</source>
+</trans-unit>
+<trans-unit id="sca2487321ec12bd6">
+  <source>Email address the verification email will be sent from.</source>
+</trans-unit>
+<trans-unit id="s24a8fdfc73e8137f">
+  <source>Stage used to configure an email-based authenticator.</source>
+</trans-unit>
+<trans-unit id="sea0da186a814a212">
+  <source>Use global connection settings</source>
+</trans-unit>
+<trans-unit id="s7754fa56a4439de4">
+  <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+</trans-unit>
+<trans-unit id="s7e2bcca51126ec9c">
+  <source>Subject of the verification email.</source>
+</trans-unit>
+<trans-unit id="sc12c90b1da0f3a47">
+  <source>Token expiration</source>
+</trans-unit>
+<trans-unit id="sc264a82f9c710f14">
+  <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+</trans-unit>
+<trans-unit id="s15986693bfc99fb7">
+  <source>Email-based Authenticators</source>
+</trans-unit>
+<trans-unit id="s6bb30c61df4cf486">
+  <source>Caps Lock is enabled.</source>
+</trans-unit>
+<trans-unit id="s3f8a07912545e72e">
+  <source>Configure your email</source>
+</trans-unit>
+<trans-unit id="scedf77e8b75cad5a">
+  <source>Please enter your email address.</source>
+</trans-unit>
+<trans-unit id="s7cdd62c100b6b17b">
+  <source>Please enter the code you received via email</source>
+</trans-unit>
+<trans-unit id="s1d64dba9bb8b284d">
+  <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s833cfe815918c143">
+  <source>Tokens sent via email.</source>
 </trans-unit>
     </body>
   </file>

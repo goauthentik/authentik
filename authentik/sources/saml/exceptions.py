@@ -19,5 +19,9 @@ class MismatchedRequestID(SAMLException):
     """Exception raised when the returned request ID doesn't match the saved ID."""
 
 
+class InvalidEncryption(SAMLException):
+    """Encryption of XML Object is either missing or invalid"""
+
+
 class InvalidSignature(SAMLException):
     """Signature of XML Object is either missing or invalid"""

@@ -15,7 +15,6 @@ from authentik.core.expression.exceptions import PropertyMappingExpressionExcept
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import PermissionDict
 from authentik.providers.oauth2.constants import (
-    SCOPE_AUTHENTIK_API,
     SCOPE_GITHUB_ORG_READ,
     SCOPE_GITHUB_USER,
     SCOPE_GITHUB_USER_EMAIL,
@@ -57,7 +56,6 @@ class UserInfoView(View):
             SCOPE_GITHUB_USER_READ: _("GitHub Compatibility: Access your User Information"),
             SCOPE_GITHUB_USER_EMAIL: _("GitHub Compatibility: Access you Email addresses"),
             SCOPE_GITHUB_ORG_READ: _("GitHub Compatibility: Access your Groups"),
-            SCOPE_AUTHENTIK_API: _("authentik API Access on behalf of your user"),
         }
         for scope in scopes:
             if scope in special_scope_map:
@@ -110,7 +108,7 @@ class UserInfoView(View):
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.token:
-            allowed_origins = self.token.provider.redirect_uris.split("\n")
+            allowed_origins = [x.url for x in self.token.provider.redirect_uris]
         cors_allow(self.request, response, *allowed_origins)
         return response
 

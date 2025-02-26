@@ -1,4 +1,4 @@
-# update website/docs/installation/configuration.mdx
+# update website/docs/install-config/configuration/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost
@@ -6,10 +6,13 @@ postgresql:
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
-  use_pgbouncer: false
-  use_pgpool: false
   test:
     name: test_authentik
+  default_schema: public
+  read_replicas: {}
+  # For example
+  # 0:
+  #   host: replica1.example.com
 
 listen:
   listen_http: 0.0.0.0:9000
@@ -19,6 +22,7 @@ listen:
   listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
   listen_debug: 0.0.0.0:9900
+  listen_debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -47,7 +51,6 @@ cache:
   timeout: 300
   timeout_flows: 300
   timeout_policies: 300
-  timeout_reputation: 300
 
 # channel:
 #   url: ""
@@ -57,11 +60,13 @@ cache:
 #   transport_options: ""
 
 debug: false
-remote_debug: false
+debugger: false
 
 log_level: info
 
 session_storage: cache
+sessions:
+  unauthenticated_age: days=1
 
 error_reporting:
   enabled: false
@@ -103,6 +108,10 @@ ldap:
   tls:
     ciphers: null
 
+sources:
+  kerberos:
+    task_timeout_hours: 2
+
 reputation:
   expiry: 86400
 
@@ -113,6 +122,9 @@ events:
   context_processors:
     geoip: "/geoip/GeoLite2-City.mmdb"
     asn: "/geoip/GeoLite2-ASN.mmdb"
+compliance:
+  fips:
+    enabled: false
 
 cert_discovery_dir: /certs
 
@@ -126,6 +138,7 @@ web:
   # No default here as it's set dynamically
   # workers: 2
   threads: 4
+  path: /
 
 worker:
   concurrency: 2

@@ -1,8 +1,8 @@
 ---
-title: Vikunja
+title: Integrate with Vikunja
+sidebar_label: Vikunja
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Vikunja
 
@@ -16,11 +16,15 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `vik.company` is the FQDN of Vikunja.
--   `authentik.company` is the FQDN of authentik.
--   `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
+- `vik.company` is the FQDN of Vikunja.
+- `authentik.company` is the FQDN of authentik.
+- `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 
@@ -32,11 +36,11 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: Vikunja
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Signing Key: Select one of the available signing keys (Without this, Vikunja will not recognize Authentik's signing key method as a valid one and the login will not work)
--   Redirect URIs/Origins:
+- Name: Vikunja
+- Client ID: Copy and Save this for Later
+- Client Secret: Copy and Save this for later
+- Signing Key: Select one of the available signing keys (Without this, Vikunja will not recognize Authentik's signing key method as a valid one and the login will not work)
+- Redirect URIs/Origins:
 
 ```
 https://vik.company/auth/openid/authentiklogin
@@ -92,7 +96,7 @@ Vikunja Configuration Reference: https://vikunja.io/docs/config-options/#auth
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Vikunja
--   Slug: vikunja
--   Provider: vikunja
--   Launch URL: https://vik.company
+- Name: Vikunja
+- Slug: vikunja
+- Provider: vikunja
+- Launch URL: https://vik.company

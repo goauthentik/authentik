@@ -12,11 +12,17 @@ export class RequestError extends Error {}
 
 export type APIErrorTypes = ValidationError | GenericError;
 
+export const HTTP_BAD_REQUEST = 400;
+export const HTTP_INTERNAL_SERVICE_ERROR = 500;
+
 export async function parseAPIError(error: Error): Promise<APIErrorTypes> {
     if (!(error instanceof ResponseError)) {
         return error;
     }
-    if (error.response.status < 400 || error.response.status > 499) {
+    if (
+        error.response.status < HTTP_BAD_REQUEST ||
+        error.response.status >= HTTP_INTERNAL_SERVICE_ERROR
+    ) {
         return error;
     }
     const body = await error.response.json();

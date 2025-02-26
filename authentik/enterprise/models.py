@@ -17,6 +17,17 @@ if TYPE_CHECKING:
     from authentik.enterprise.license import LicenseKey
 
 
+def usage_expiry():
+    """Keep license usage records for 3 months"""
+    return now() + timedelta(days=30 * 3)
+
+
+THRESHOLD_WARNING_ADMIN_WEEKS = 2
+THRESHOLD_WARNING_USER_WEEKS = 4
+THRESHOLD_WARNING_EXPIRY_WEEKS = 2
+THRESHOLD_READ_ONLY_WEEKS = 6
+
+
 class License(SerializerModel):
     """An authentik enterprise license"""
 
@@ -39,7 +50,7 @@ class License(SerializerModel):
         """Get parsed license status"""
         from authentik.enterprise.license import LicenseKey
 
-        return LicenseKey.validate(self.key)
+        return LicenseKey.validate(self.key, check_expiry=False)
 
     class Meta:
         indexes = (HashIndex(fields=("key",)),)
@@ -47,9 +58,23 @@ class License(SerializerModel):
         verbose_name_plural = _("Licenses")
 
 
-def usage_expiry():
-    """Keep license usage records for 3 months"""
-    return now() + timedelta(days=30 * 3)
+class LicenseUsageStatus(models.TextChoices):
+    """License states an instance/tenant can be in"""
+
+    UNLICENSED = "unlicensed"
+    VALID = "valid"
+    EXPIRED = "expired"
+    EXPIRY_SOON = "expiry_soon"
+    # User limit exceeded, 2 week threshold, show message in admin interface
+    LIMIT_EXCEEDED_ADMIN = "limit_exceeded_admin"
+    # User limit exceeded, 4 week threshold, show message in user interface
+    LIMIT_EXCEEDED_USER = "limit_exceeded_user"
+    READ_ONLY = "read_only"
+
+    @property
+    def is_valid(self) -> bool:
+        """Quickly check if a license is valid"""
+        return self in [LicenseUsageStatus.VALID, LicenseUsageStatus.EXPIRY_SOON]
 
 
 class LicenseUsage(ExpiringModel):
@@ -59,12 +84,13 @@ class LicenseUsage(ExpiringModel):
 
     usage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    user_count = models.BigIntegerField()
+    internal_user_count = models.BigIntegerField()
     external_user_count = models.BigIntegerField()
-    within_limits = models.BooleanField()
+    status = models.TextField(choices=LicenseUsageStatus.choices)
 
     record_date = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _("License Usage")
         verbose_name_plural = _("License Usage Records")
+        indexes = ExpiringModel.Meta.indexes

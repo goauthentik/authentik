@@ -3,7 +3,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -38,8 +38,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -49,7 +48,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                     <ak-empty-state
                         icon="fa-times"
                         header=${this.challenge.error
-                            ? html`${this.challenge.error}`
+                            ? this.challenge.error
                             : msg("Something went wrong! Please try again later.")}
                     >
                         <div slot="body">
@@ -57,13 +56,13 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                                 ? html`<div class="pf-c-form__group">
                                       <pre class="ak-exception">${this.challenge.traceback}</pre>
                                   </div>`
-                                : html``}
+                                : nothing}
                             ${this.challenge?.requestId
                                 ? html`<div class="pf-c-form__group">
                                       <p>${msg("Request ID")}</p>
                                       <code>${this.challenge.requestId}</code>
                                   </div>`
-                                : html``}
+                                : nothing}
                         </div>
                     </ak-empty-state>
                 </form>
@@ -71,5 +70,11 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-flow-error": FlowErrorStage;
     }
 }

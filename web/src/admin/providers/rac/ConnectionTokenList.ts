@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -37,12 +36,9 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<ConnectionToken>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             sessionUser: this.userId,
         });
@@ -94,5 +90,11 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }
         return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-connection-token-list": ConnectionTokenListPage;
     }
 }

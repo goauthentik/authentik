@@ -3,6 +3,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -13,30 +14,15 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    FlowsInstancesListDesignationEnum,
-    PaginatedRACPropertyMappingList,
-    PropertymappingsApi,
-    ProvidersApi,
-    RACProvider,
-} from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
-    @state()
-    propertyMappings?: PaginatedRACPropertyMappingList;
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsRacList({
-            ordering: "name",
-        });
-    }
-
     async loadInstance(pk: number): Promise<RACProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersRacRetrieve({
             id: pk,
@@ -97,7 +83,9 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 <input
                     type="text"
                     value="${first(this.instance?.connectionExpiry, "hours=8")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -137,27 +125,12 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         label=${msg("Property mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (this.instance?.propertyMappings) {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
-                        </p>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
+                            available-label="${msg("Available Property Mappings")}"
+                            selected-label="${msg("Selected Property Mappings")}"
+                        ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
@@ -170,5 +143,11 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </div>
             </ak-form-group>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-rac-form": RACProviderFormPage;
     }
 }

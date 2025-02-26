@@ -1,8 +1,8 @@
 ---
-title: VMware vCenter
+title: Integrate with VMware vCenter
+sidebar_label: VMware vCenter
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is vCenter
 
@@ -11,96 +11,87 @@ title: VMware vCenter
 > -- https://en.wikipedia.org/wiki/VCenter
 
 :::caution
-This requires authentik 0.10.3 or newer.
+Integration with authentik requires VMware vCenter 8.03 or newer.
 :::
 
-:::caution
-This requires VMware vCenter 7.0.0 or newer.
-:::
+The following placeholders will be used in the examples below:
+
+- `vcenter.company` is the FQDN of the vCenter server.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-It seems that the vCenter still needs to be joined to the Active Directory Domain, otherwise group membership does not work correctly. We're working on a fix for this, for the meantime your vCenter should be part of your Domain.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Preparation
+## authentik configuration
 
-The following placeholders will be used:
+Create an application and an OAuth2/OpenID provider, using the authentik Wizard.
 
--   `vcenter.company` is the FQDN of the vCenter server.
--   `authentik.company` is the FQDN of the authentik install.
+1.  Log into authentik as an admin, and navigate to **Applications --> Applications**, and then click **Create with Wizard**.
 
-Since vCenter only allows OpenID-Connect in combination with Active Directory/LDAP, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an authentik managed LDAP outpost for user management.
+2.  In the Wizard, follow the prompts to create an application and its provider.
 
-### Step 1
+    Create the application with these settings:
 
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-VMware-vCenter". Set the scope name to `openid` and the expression to the following
+    - Select OIDC as the provider type.
+    - Ensure that the **Redirect URI Setting** is left empty.
 
-```python
-return {
-  "domain": "<your active directory domain>",
-}
-```
+    Create the provider with these settings:
 
-If you are using an authentik managed LDAP outpost you can use the following expression in your property mapping. This will correctly return the `groups` claim as a list of LDAP DNs instead of their names.
+        -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
+        -   Ensure that a signing key is selected, for example the Self-signed Certificate.
 
-```python
-ldap_base_dn = "DC=ldap,DC=goauthentik,DC=io"
-groups = []
-for group in request.user.ak_groups.all():
-    group_dn = f"CN={group.name},dc=groups,{ldap_base_dn}"
-    groups.append(group_dn)
-return {
-    "name": request.user.name,
-    "email": request.user.email,
-    "given_name": request.user.name,
-    "preferred_username": request.user.username,
-    "nickname": request.user.username,
-    "groups": groups,
-    "domain": "ldap.goauthentik.io"
-}
-```
+3.  Click **Submit** to create the application and provider, and then click **Close** to close the Wizard.
 
-### Step 2
+Optionally, you can use a policy to apply access restrictions to the application.
 
-:::note
-If your Active Directory Schema is the same as your Email address schema, skip to Step 3.
-:::
+## vCenter configuration
 
-Under _Sources_, click _Edit_ and ensure that "authentik default Active Directory Mapping: userPrincipalName" has been added to your source.
+1. Log in to vCenter with your local Administrator account. Using the menu in the left navigation bar, navigate to **Administration -> Single Sign-on -> Configuration**.
 
-### Step 3
+2. Click **Change Provider** in the top-right corner, and then select **Okta** from the drop-down list.
 
-Under _Providers_, create an OAuth2/OpenID provider with these settings:
+3. In the wizard, click **Run Prechecks**, select the confirmation box, and then click **Next**
 
--   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
--   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...". If you are using authentik's managed LDAP outpost, chose "Based on the User's username"
--   Scopes: Select the Scope Mapping you've created in Step 1
--   Signing Key: Select any available key
+    - Enter the **Directory Name**. For example `authentik` or any other name.
+    - Add a **Domain Name**. For example `authentik.company`.
+    - Click on the Plus (+) sign to show the default domain name.
 
-![](./authentik_setup.png)
+4. Click **Next**.
 
-### Step 4
+5. On the OpenID Connect page, enter the following values:
 
-Create an application which uses this provider. Optionally apply access restrictions to the application.
+    - Set **Identity Provider Name** to `authentik`.
+    - Set **Client Identifier** to the client ID from authentik.
+    - Set **Shared secret** to the client secret from authentik.
+    - Set **OpenID Address** to the _OpenID Configuration URL_ from authentik.
 
-Set the Launch URL to `https://vcenter.company/ui/login/oauth2`. This will skip vCenter's User Prompt and directly log you in.
+6. Click **Next**, and then **Finish**.
 
-:::caution
-This Launch URL only works for vCenter < 7.0u2. If you're running 7.0u2 or later, set the launch URL to `https://vcenter.company/ui/login`
-:::
+7. On the **Single Sign On -> Configuration** page, in the **User Provisioning** area, take the following steps:
 
-## vCenter Setup
+    - Copy the **Tenant URL** and save to a safe place.
+    - Click on **Generate** to generate a SCIM token.
+    - Click **Generate** in the newly opened modal box.
+    - Copy the token and save to a safe place.
 
-Login as local Administrator account (most likely ends with vsphere.local). Using the Menu in the Navigation bar, navigate to _Administration -> Single Sing-on -> Configuration_.
+8. Return to the authentik Admin interface.
 
-Click on _Change Identity Provider_ in the top-right corner.
+    - Create a SCIM provider with the name `vcenter-scim`.
+    - Paste the Tenant URL into **URL** field for the provider.
+    - Paste the token you saved into the **Token** field.
+    - If your vCenter certificate is self-signed (which is the default), toggle **Verify SCIM server's certificates** to be off.
+    - Configure options under `User filtering` to your needs.
+    - Save the provider.
+    - Edit the application that you created earlier and select this newly created SCIM provider as the backchannel provider.
+    - Navigate to the provider and trigger a sync.
 
-In the wizard, select "Microsoft ADFS" and click Next.
+9. Return to vCenter.
 
-Fill in the Client Identifier and Shared Secret from the Provider in authentik. For the OpenID Address, click on _View Setup URLs_ in authentik, and copy the OpenID Configuration URL.
+    - Navigate to **Administration -> Access Control -> Global Permissions**.
+    - Click **Add**.
+    - Select the Domain created above from the dropdown.
+    - Enter the name of the group to which you want to assign permissions.
+    - Select the role.
 
-On the next page, fill in your Active Directory Connection Details. These should be similar to what you have set in authentik.
-
-![](./vcenter_post_setup.png)
-
-If your vCenter was already setup with LDAP beforehand, your Role assignments will continue to work.
+10. Click **Save**.

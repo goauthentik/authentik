@@ -157,8 +157,9 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   ${msg("See more about OCI support here:")}&nbsp;
                                   <a
                                       target="_blank"
+                                      rel="noopener noreferrer"
                                       href="${docLink(
-                                          "/developer-docs/blueprints/?utm_source=authentik#storage---oci",
+                                          "/docs/customize/blueprints/?utm_source=authentik#storage---oci",
                                       )}"
                                       >${msg("Documentation")}</a
                                   >
@@ -192,5 +193,11 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-blueprint-form": BlueprintForm;
     }
 }

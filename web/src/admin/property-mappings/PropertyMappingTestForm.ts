@@ -8,22 +8,25 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CoreApi,
+    CoreGroupsListRequest,
     CoreUsersListRequest,
-    PolicyTestRequest,
+    Group,
     PropertyMapping,
+    PropertyMappingTestRequest,
     PropertyMappingTestResult,
     PropertymappingsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-test-form")
-export class PolicyTestForm extends Form<PolicyTestRequest> {
+export class PolicyTestForm extends Form<PropertyMappingTestRequest> {
     @property({ attribute: false })
     mapping?: PropertyMapping;
 
@@ -31,17 +34,17 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     result?: PropertyMappingTestResult;
 
     @property({ attribute: false })
-    request?: PolicyTestRequest;
+    request?: PropertyMappingTestRequest;
 
     getSuccessMessage(): string {
         return msg("Successfully sent test-request.");
     }
 
-    async send(data: PolicyTestRequest): Promise<PropertyMappingTestResult> {
+    async send(data: PropertyMappingTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;
         const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
-            policyTestRequest: data,
+            propertyMappingTestRequest: data,
             formatResult: true,
         });
         return (this.result = result);
@@ -58,20 +61,20 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                   </ak-codemirror>`
                 : html` <div class="pf-c-form__group-label">
                       <div class="c-form__horizontal-group">
-                          <span class="pf-c-form__label-text">${this.result?.result}</span>
+                          <span class="pf-c-form__label-text">
+                              <pre>${this.result?.result}</pre>
+                          </span>
                       </div>
                   </div>`}
         </ak-form-element-horizontal>`;
     }
 
-    renderExampleButtons(): TemplateResult {
-        const header = html`<p>${msg("Example context data")}</p>`;
-        switch (this.mapping?.metaModelName) {
-            case "authentik_sources_ldap.ldappropertymapping":
-                return html`${header}${this.renderExampleLDAP()}`;
-            default:
-                return html``;
-        }
+    renderExampleButtons() {
+        return this.mapping?.metaModelName ===
+            RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsourcepropertymapping
+            ? html`<p>${msg("Example context data")}</p>
+                  ${this.renderExampleLDAP()}`
+            : nothing;
     }
 
     renderExampleLDAP(): TemplateResult {
@@ -122,8 +125,9 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
+        return html`<ak-form-element-horizontal label=${msg("User")} name="user">
                 <ak-search-select
+                    blankable
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
                             ordering: "username",
@@ -144,7 +148,32 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                         return user?.pk;
                     }}
                     .selected=${(user: User): boolean => {
-                        return this.request?.user.toString() === user.pk.toString();
+                        return this.request?.user?.toString() === user.pk.toString();
+                    }}
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Group")} name="group">
+                <ak-search-select
+                    blankable
+                    .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                        const args: CoreGroupsListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        return groups.results;
+                    }}
+                    .renderElement=${(group: Group): string => {
+                        return group.name;
+                    }}
+                    .value=${(group: Group | undefined): string | undefined => {
+                        return group?.pk;
+                    }}
+                    .selected=${(group: Group): boolean => {
+                        return this.request?.group?.toString() === group.pk.toString();
                     }}
                 >
                 </ak-search-select>
@@ -158,5 +187,11 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-test-form": PolicyTestForm;
     }
 }

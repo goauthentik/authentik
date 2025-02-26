@@ -1,3 +1,4 @@
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -34,10 +35,12 @@ export class OutpostHealthElement extends AKElement {
         }
         let versionString = this.outpostHealth.version;
         if (this.outpostHealth.buildHash) {
-            versionString = `${versionString} (build ${this.outpostHealth.buildHash.substring(
-                0,
-                8,
-            )})`;
+            versionString = msg(
+                str`${versionString} (build ${this.outpostHealth.buildHash.substring(0, 8)})`,
+            );
+        }
+        if (this.outpostHealth.fipsEnabled) {
+            versionString = msg(str`${versionString} (FIPS)`);
         }
         return html`<dl class="pf-c-description-list pf-m-compact">
             <div class="pf-c-description-list__group">
@@ -47,7 +50,9 @@ export class OutpostHealthElement extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         <ak-label color=${PFColor.Green} ?compact=${true}>
-                            ${this.outpostHealth.lastSeen?.toLocaleTimeString()}
+                            ${msg(
+                                str`${getRelativeTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
+                            )}
                         </ak-label>
                     </div>
                 </dd>
@@ -79,5 +84,11 @@ export class OutpostHealthElement extends AKElement {
                 </dd>
             </div>
         </dl> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-health": OutpostHealthElement;
     }
 }

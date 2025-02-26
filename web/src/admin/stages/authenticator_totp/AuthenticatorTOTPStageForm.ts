@@ -140,3 +140,9 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
             </ak-form-group>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-totp-form": AuthenticatorTOTPStageForm;
+    }
+}

@@ -50,3 +50,9 @@ export abstract class ProxyForm extends Form<unknown> {
         return html`${this.innerElement}`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-proxy-form": ProxyForm;
+    }
+}

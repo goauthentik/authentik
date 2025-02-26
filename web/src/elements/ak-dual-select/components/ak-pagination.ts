@@ -59,7 +59,7 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
                               </span>
                           </div>
                       </div>
-                      <nav class="pf-c-pagination__nav" aria-label="Pagination">
+                      <nav class="pf-c-pagination__nav" aria-label=${msg("Pagination")}>
                           <div class="pf-c-pagination__nav-control pf-m-prev">
                               <button
                                   class="pf-c-button pf-m-plain"
@@ -92,3 +92,9 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
 }
 
 export default AkPagination;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-pagination": AkPagination;
+    }
+}
