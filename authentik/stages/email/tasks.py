@@ -63,7 +63,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
 def send_mail(
     self: SystemTask,
     message: dict[Any, Any],
-    stage_class_path: str,
+    stage_class_path: str | None = None,
     email_stage_pk: str | None = None,
 ):
     """Send Email for Email Stage. Retries are scheduled automatically."""
@@ -71,12 +71,10 @@ def send_mail(
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
-        # Map stage class path to the actual class
-        stage_class = path_to_class(stage_class_path)
-
-        if not email_stage_pk:
-            stage: EmailStage | AuthenticatorEmailStage = stage_class(use_global_settings=True)
+        if not stage_class_path or not email_stage_pk:
+            stage = EmailStage(use_global_settings=True)
         else:
+            stage_class = path_to_class(stage_class_path)
             stages = stage_class.objects.filter(pk=email_stage_pk)
             if not stages.exists():
                 self.set_status(

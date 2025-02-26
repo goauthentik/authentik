@@ -6,6 +6,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.utils.reflection import class_to_path
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import get_email_body, send_mail, send_mails
@@ -38,19 +39,14 @@ class TestEmailTasks(TestCase):
         message.body = "plain text"
         self.assertEqual(get_email_body(message), "plain text")
 
-    def test_send_mail_invalid_stage_class(self):
-        """Test send_mail with invalid stage class name"""
-        message = EmailMultiAlternatives()
-        with self.assertRaises(ValueError) as exc:
-            send_mail(message.__dict__, "InvalidStage")
-        self.assertEqual(str(exc.exception), "Invalid stage class name: InvalidStage")
-
     def test_send_mails_email_stage(self):
         """Test send_mails with EmailStage"""
         message = EmailMultiAlternatives()
         with patch("authentik.stages.email.tasks.send_mail") as mock_send:
             send_mails(self.stage, message)
-            mock_send.s.assert_called_once_with(message.__dict__, "EmailStage", str(self.stage.pk))
+            mock_send.s.assert_called_once_with(
+                message.__dict__, class_to_path(EmailStage), str(self.stage.pk)
+            )
 
     def test_send_mails_authenticator_stage(self):
         """Test send_mails with AuthenticatorEmailStage"""
@@ -58,5 +54,5 @@ class TestEmailTasks(TestCase):
         with patch("authentik.stages.email.tasks.send_mail") as mock_send:
             send_mails(self.auth_stage, message)
             mock_send.s.assert_called_once_with(
-                message.__dict__, "AuthenticatorEmailStage", str(self.auth_stage.pk)
+                message.__dict__, class_to_path(AuthenticatorEmailStage), str(self.auth_stage.pk)
             )
