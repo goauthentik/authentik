@@ -38,10 +38,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
 COPY ./package.json /work
 COPY ./web /work/web/
 COPY ./website /work/website/
-COPY --from=ts-generator /local/gen-ts-api /work/web/node_modules/@goauthentik/api
-
-RUN cd /work/web/node_modules/@goauthentik/api && \
-    npm install
+COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
 RUN npm run build
 
@@ -73,6 +70,8 @@ COPY ./web/static.go /go/src/goauthentik.io/web/static.go
 COPY --from=web-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
 COPY --from=web-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
 COPY ./internal /go/src/goauthentik.io/internal
+COPY ./go.mod /go/src/goauthentik.io/go.mod
+COPY ./go.sum /go/src/goauthentik.io/go.sum
 
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
