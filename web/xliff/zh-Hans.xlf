@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL "
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2864,8 +2864,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3783,10 +3783,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4857,7 +4857,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5226,7 +5226,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7521,7 +7521,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8815,7 +8815,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>同步组</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/>（&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -9048,7 +9048,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9063,8 +9063,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>授权流程成功后有效的重定向 URI。还可以在此处为隐式流程指定任何来源。</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9486,93 +9486,123 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
+  <target>创建一个应用程序并为它配置提供程序。</target>
 </trans-unit>
 <trans-unit id="s5e0c81c05565bf42">
   <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+  <target>此表单只会创建应用程序。要设置此应用程序的身份验证，您需要手动为它配对一个提供程序。</target>
 </trans-unit>
 <trans-unit id="s035bfd9c5f97e4d3">
   <source>Distance settings</source>
+  <target>距离设置</target>
 </trans-unit>
 <trans-unit id="s207e6f8a8b3515fd">
   <source>Check historical distance of logins</source>
+  <target>检查历史登录距离</target>
 </trans-unit>
 <trans-unit id="s8158f4b3e5c869be">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
+  <target>启用此选项时，策略请求的 GeoIP 数据会用来与指定数量的历史登录比较。</target>
 </trans-unit>
 <trans-unit id="sb8b7450c8515894c">
   <source>Maximum distance</source>
+  <target>最大距离</target>
 </trans-unit>
 <trans-unit id="s40cdbaa532bc9899">
   <source>Maximum distance a login attempt is allowed from in kilometers.</source>
+  <target>允许登录请求的最大距离，单位为千米。</target>
 </trans-unit>
 <trans-unit id="seef852b5c0f8a529">
   <source>Distance tolerance</source>
+  <target>距离误差</target>
 </trans-unit>
 <trans-unit id="sce567ced300aeb8a">
   <source>Tolerance in checking for distances in kilometers.</source>
+  <target>检查距离时允许的误差，单位为千米。</target>
 </trans-unit>
 <trans-unit id="s9ea9cdabd74f8f97">
   <source>Historical Login Count</source>
+  <target>历史登录次数</target>
 </trans-unit>
 <trans-unit id="s27aec4c2de1ae777">
   <source>Amount of previous login events to check against.</source>
+  <target>检查指定次数的历史登录事件。</target>
 </trans-unit>
 <trans-unit id="s48611ce6e85874dc">
   <source>Check impossible travel</source>
+  <target>检查不可能的行程</target>
 </trans-unit>
 <trans-unit id="s8cf926e8311f8065">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+  <target>启用此选项时，策略请求的 GeoIP 数据会用来与指定数量的历史登录比较，以及自上次活动以来移动的距离是否可能在该时段内完成。</target>
 </trans-unit>
 <trans-unit id="sa963d05af436770b">
   <source>Impossible travel tolerance</source>
+  <target>不可能行程的误差</target>
 </trans-unit>
 <trans-unit id="s5760cd97ca42a238">
   <source>Static rule settings</source>
+  <target>静态规则设置</target>
 </trans-unit>
 <trans-unit id="s8fec035fa1737294">
   <source>Create with Provider</source>
+  <target>以提供程序创建</target>
 </trans-unit>
 <trans-unit id="sca2487321ec12bd6">
   <source>Email address the verification email will be sent from.</source>
+  <target>用于发送验证邮件的电子邮件地址。</target>
 </trans-unit>
 <trans-unit id="s24a8fdfc73e8137f">
   <source>Stage used to configure an email-based authenticator.</source>
+  <target>用来配置基于电子邮件的身份验证器的阶段。</target>
 </trans-unit>
 <trans-unit id="sea0da186a814a212">
   <source>Use global connection settings</source>
+  <target>使用全局连接设置</target>
 </trans-unit>
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+  <target>启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。</target>
 </trans-unit>
 <trans-unit id="s7e2bcca51126ec9c">
   <source>Subject of the verification email.</source>
+  <target>验证邮件的主题。</target>
 </trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
+  <target>令牌过期时间</target>
 </trans-unit>
 <trans-unit id="sc264a82f9c710f14">
   <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+  <target>发出令牌有效的时间（格式：hours=3,minutes=17,seconds=300）。</target>
 </trans-unit>
 <trans-unit id="s15986693bfc99fb7">
   <source>Email-based Authenticators</source>
+  <target>基于电子邮件的身份验证器</target>
 </trans-unit>
 <trans-unit id="s6bb30c61df4cf486">
   <source>Caps Lock is enabled.</source>
+  <target>大写锁定已启用。</target>
 </trans-unit>
 <trans-unit id="s3f8a07912545e72e">
   <source>Configure your email</source>
+  <target>配置您的电子邮件</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
+  <target>请输入您的电子邮件地址。</target>
 </trans-unit>
 <trans-unit id="s7cdd62c100b6b17b">
   <source>Please enter the code you received via email</source>
+  <target>请输入您通过电子邮件收到的代码</target>
 </trans-unit>
 <trans-unit id="s1d64dba9bb8b284d">
   <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+  <target>一份代码已通过电子邮件地址 <x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/> 发送给您</target>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+  <target>通过电子邮件发送的令牌。</target>
 </trans-unit>
     </body>
   </file>
