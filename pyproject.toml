@@ -134,7 +134,7 @@ pyrad = "*"
 python = "~3.12"
 python-kadmin-rs = "0.5.3"
 pyyaml = "*"
-redis = { extras = ["hiredis"], version = "5.1.0b4"}
+redis = { extras = ["hiredis"], version = "5.2.1"}
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
 sentry-sdk = "*"

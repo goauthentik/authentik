@@ -281,18 +281,6 @@ files = [
 ]
 
 [[package]]
-name = "async-timeout"
-version = "5.0.1"
-description = "Timeout context manager for asyncio programs"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "async_timeout-5.0.1-py3-none-any.whl", hash = "sha256:39e3809566ff85354557ec2398b55e096c8364bacac9405a7a1fa429e77fe76c"},
-    {file = "async_timeout-5.0.1.tar.gz", hash = "sha256:d9321a7a3d5a6a5e187e824d2fa0793ce379a202935782d555d6e9d2735677d3"},
-]
-
-[[package]]
 name = "attrs"
 version = "25.1.0"
 description = "Classes Without Boilerplate"
@@ -4722,23 +4710,22 @@ files = [
 
 [[package]]
 name = "redis"
-version = "5.1.0b4"
+version = "5.2.1"
 description = "Python client for Redis database and key-value store"
 optional = false
 python-versions = ">=3.8"
 groups = ["main"]
 files = [
-    {file = "redis-5.1.0b4-py3-none-any.whl", hash = "sha256:8a74fae7cbd25493142c8cc2f79c21b2e3c03bf85dd3525a1db9f33ff47a3f2d"},
-    {file = "redis-5.1.0b4.tar.gz", hash = "sha256:9cac9a8ce8926a61f2dd81992978ffccd98a2bd065ac97694d49d28e7c928b59"},
+    {file = "redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4"},
+    {file = "redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f"},
 ]
 
 [package.dependencies]
-async-timeout = ">=4.0.3"
-hiredis = {version = ">=1.0.0", optional = true, markers = "extra == \"hiredis\""}
+hiredis = {version = ">=3.0.0", optional = true, markers = "extra == \"hiredis\""}
 
 [package.extras]
-hiredis = ["hiredis (>=1.0.0)"]
-ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
+hiredis = ["hiredis (>=3.0.0)"]
+ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==23.2.1)", "requests (>=2.31.0)"]
 
 [[package]]
 name = "referencing"
@@ -6345,4 +6332,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12"
-content-hash = "5440f44d360b66b496a490828804977d342f30ae480fccab7b81d7965e078e58"
+content-hash = "3b4727a95c7b7304eaa5dd46d035f4456dc59e45de90d299ca1156a26ef3d872"
