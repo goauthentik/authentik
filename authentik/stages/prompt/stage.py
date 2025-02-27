@@ -150,6 +150,7 @@ class PromptChallengeResponse(ChallengeResponse):
             raise ValidationError(list(result.messages))
         else:
             for msg in result.messages:
+                # TODO(risson): figure out how to avoid this
                 add_message(self.request, INFO, msg)
         return attrs
 

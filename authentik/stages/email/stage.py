@@ -139,15 +139,16 @@ class EmailStageView(ChallengeStageView):
             if restore_token.user != user:
                 self.logger.warning("Flow token for non-matching user, denying request")
                 return self.executor.stage_invalid()
+            # TODO(risson): figure out how to avoid this
             messages.success(request, _("Successfully verified Email."))
             if self.executor.current_stage.activate_user_on_success:
                 user.is_active = True
                 user.save()
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            self.logger.debug("No pending user")
-            messages.error(self.request, _("No pending user."))
-            return self.executor.stage_invalid()
+            message = _("No pending user")
+            self.logger.debug(message)
+            return self.executor.stage_invalid(message)
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
             try:
@@ -171,9 +172,11 @@ class EmailStageView(ChallengeStageView):
 
     def challenge_invalid(self, response: ChallengeResponse) -> HttpResponse:
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
+            # TODO(risson): figure out how to avoid this
             messages.error(self.request, _("No pending user."))
             return super().challenge_invalid(response)
         self.send_email()
+        # TODO(risson): figure out how to avoid this
         messages.success(self.request, _("Email Successfully sent."))
         # We can't call stage_ok yet, as we're still waiting
         # for the user to click the link in the email

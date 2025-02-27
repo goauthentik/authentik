@@ -96,6 +96,7 @@ class OAuthCallback(OAuthClientMixin, View):
     def handle_login_failure(self, reason: str) -> HttpResponse:
         "Message user and redirect on error."
         LOGGER.warning("Authentication Failure", reason=reason)
+        # TODO(risson): figure out how to avoid this
         messages.error(
             self.request,
             _(
