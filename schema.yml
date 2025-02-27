@@ -39432,6 +39432,10 @@ components:
         component:
           type: string
           default: ak-stage-access-denied
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -39546,6 +39550,10 @@ components:
         component:
           type: string
           default: ak-source-oauth-apple
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -39873,6 +39881,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-duo
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40032,6 +40044,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-email
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40288,6 +40304,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-sms
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40451,6 +40471,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-static
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40572,6 +40596,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-totp
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40799,6 +40827,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-validate
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40852,6 +40884,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-webauthn
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41001,6 +41037,10 @@ components:
         component:
           type: string
           default: ak-stage-autosubmit
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41264,6 +41304,10 @@ components:
         component:
           type: string
           default: ak-stage-captcha
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41663,6 +41707,10 @@ components:
         component:
           type: string
           default: ak-stage-consent
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -42464,6 +42512,10 @@ components:
         component:
           type: string
           default: ak-stage-dummy
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -42666,6 +42718,10 @@ components:
         component:
           type: string
           default: ak-stage-email
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -43593,6 +43649,10 @@ components:
         component:
           type: string
           default: ak-stage-flow-error
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -43921,6 +43981,10 @@ components:
         component:
           type: string
           default: xak-flow-frame
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -44731,6 +44795,10 @@ components:
         component:
           type: string
           default: ak-stage-identification
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -46324,6 +46392,22 @@ components:
       - strict
       - regex
       type: string
+    Message:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+        level:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - level
+      - message
+      - tags
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -47209,6 +47293,10 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -47237,6 +47325,10 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code-finish
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -49387,6 +49479,10 @@ components:
         component:
           type: string
           default: ak-stage-password
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -52942,6 +53038,10 @@ components:
         component:
           type: string
           default: ak-source-plex
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -53467,6 +53567,10 @@ components:
         component:
           type: string
           default: ak-stage-prompt
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -54663,6 +54767,10 @@ components:
         component:
           type: string
           default: xak-flow-redirect
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -56528,6 +56636,10 @@ components:
         component:
           type: string
           default: ak-stage-session-end
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -56662,6 +56774,10 @@ components:
         component:
           type: string
           default: xak-flow-shell
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -57943,6 +58059,10 @@ components:
         component:
           type: string
           default: ak-stage-user-login
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
