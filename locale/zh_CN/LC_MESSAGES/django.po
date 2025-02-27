@@ -1086,7 +1086,7 @@ msgstr "与上一次身份验证的距离超过阈值。"
 
 #: authentik/policies/geoip/models.py
 msgid "Distance is further than possible."
-msgstr "间隔大幅超过可能值。"
+msgstr "距离大幅超过可能值。"
 
 #: authentik/policies/geoip/models.py
 msgid "GeoIP Policy"
