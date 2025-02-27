@@ -8,7 +8,13 @@ from uuid import UUID
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.http import JsonResponse
-from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    DictField,
+    ListField,
+)
 from rest_framework.request import Request
 
 from authentik.core.api.utils import PassiveSerializer
@@ -39,6 +45,12 @@ class ErrorDetailSerializer(PassiveSerializer):
     code = CharField()
 
 
+class MessageSerializer(PassiveSerializer):
+    message = CharField()
+    level = CharField()
+    tags = ListField(child=CharField())
+
+
 class ContextualFlowInfo(PassiveSerializer):
     """Contextual flow information for a challenge"""
 
@@ -55,6 +67,7 @@ class Challenge(PassiveSerializer):
     flow_info = ContextualFlowInfo(required=False)
     component = CharField(default="")
 
+    messages = MessageSerializer(many=True)
     response_errors = DictField(
         child=ErrorDetailSerializer(many=True), allow_empty=True, required=False
     )
@@ -170,7 +183,6 @@ class FrameChallenge(Challenge):
 
 
 class FrameChallengeResponse(ChallengeResponse):
-
     component = CharField(default="xak-flow-frame")
 
 

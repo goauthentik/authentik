@@ -39432,6 +39432,10 @@ components:
         component:
           type: string
           default: ak-stage-access-denied
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -39445,6 +39449,7 @@ components:
         error_message:
           type: string
       required:
+      - messages
       - pending_user
       - pending_user_avatar
     AlgEnum:
@@ -39546,6 +39551,10 @@ components:
         component:
           type: string
           default: ak-source-oauth-apple
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -39562,6 +39571,7 @@ components:
           type: string
       required:
       - client_id
+      - messages
       - redirect_uri
       - scope
       - state
@@ -39873,6 +39883,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-duo
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -39892,6 +39906,7 @@ components:
       required:
       - activation_barcode
       - activation_code
+      - messages
       - pending_user
       - pending_user_avatar
       - stage_uuid
@@ -40032,6 +40047,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-email
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40049,6 +40068,7 @@ components:
           type: boolean
           default: true
       required:
+      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorEmailChallengeResponseRequest:
@@ -40288,6 +40308,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-sms
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40302,6 +40326,7 @@ components:
           type: boolean
           default: true
       required:
+      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorSMSChallengeResponseRequest:
@@ -40451,6 +40476,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-static
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40467,6 +40496,7 @@ components:
             type: string
       required:
       - codes
+      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorStaticChallengeResponseRequest:
@@ -40572,6 +40602,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-totp
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40586,6 +40620,7 @@ components:
           type: string
       required:
       - config_url
+      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorTOTPChallengeResponseRequest:
@@ -40799,6 +40834,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-validate
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40820,6 +40859,7 @@ components:
       required:
       - configuration_stages
       - device_challenges
+      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorValidationChallengeResponseRequest:
@@ -40852,6 +40892,10 @@ components:
         component:
           type: string
           default: ak-stage-authenticator-webauthn
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -40866,6 +40910,7 @@ components:
           type: object
           additionalProperties: {}
       required:
+      - messages
       - pending_user
       - pending_user_avatar
       - registration
@@ -41001,6 +41046,10 @@ components:
         component:
           type: string
           default: ak-stage-autosubmit
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41017,6 +41066,7 @@ components:
           type: string
       required:
       - attrs
+      - messages
       - url
     BackendsEnum:
       enum:
@@ -41264,6 +41314,10 @@ components:
         component:
           type: string
           default: ak-stage-captcha
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41283,6 +41337,7 @@ components:
       required:
       - interactive
       - js_url
+      - messages
       - pending_user
       - pending_user_avatar
       - site_key
@@ -41663,6 +41718,10 @@ components:
         component:
           type: string
           default: ak-stage-consent
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -41687,6 +41746,7 @@ components:
           type: string
       required:
       - additional_permissions
+      - messages
       - pending_user
       - pending_user_avatar
       - permissions
@@ -42464,6 +42524,10 @@ components:
         component:
           type: string
           default: ak-stage-dummy
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -42473,6 +42537,7 @@ components:
         name:
           type: string
       required:
+      - messages
       - name
     DummyChallengeResponseRequest:
       type: object
@@ -42666,12 +42731,18 @@ components:
         component:
           type: string
           default: ak-stage-email
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - messages
     EmailChallengeResponseRequest:
       type: object
       description: |-
@@ -43593,6 +43664,10 @@ components:
         component:
           type: string
           default: ak-stage-flow-error
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -43606,6 +43681,7 @@ components:
         traceback:
           type: string
       required:
+      - messages
       - request_id
     FlowImportResult:
       type: object
@@ -43921,6 +43997,10 @@ components:
         component:
           type: string
           default: xak-flow-frame
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -43936,6 +44016,7 @@ components:
           type: string
       required:
       - loading_text
+      - messages
       - url
     FrameChallengeResponseRequest:
       type: object
@@ -44731,6 +44812,10 @@ components:
         component:
           type: string
           default: ak-stage-identification
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -44771,6 +44856,7 @@ components:
           type: boolean
       required:
       - flow_designation
+      - messages
       - password_fields
       - primary_action
       - show_source_labels
@@ -46324,6 +46410,22 @@ components:
       - strict
       - regex
       type: string
+    Message:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        message:
+          type: string
+        level:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+      required:
+      - level
+      - message
+      - tags
     Metadata:
       type: object
       description: Serializer for blueprint metadata
@@ -47209,12 +47311,18 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - messages
     OAuthDeviceCodeChallengeResponseRequest:
       type: object
       description: Response that includes the user-entered device code
@@ -47237,12 +47345,18 @@ components:
         component:
           type: string
           default: ak-provider-oauth2-device-code-finish
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
+      required:
+      - messages
     OAuthDeviceCodeFinishChallengeResponseRequest:
       type: object
       description: Response that device has been authenticated and tab can be closed
@@ -49387,6 +49501,10 @@ components:
         component:
           type: string
           default: ak-stage-password
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -49403,6 +49521,7 @@ components:
           type: boolean
           default: false
       required:
+      - messages
       - pending_user
       - pending_user_avatar
     PasswordChallengeResponseRequest:
@@ -52942,6 +53061,10 @@ components:
         component:
           type: string
           default: ak-source-plex
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -52954,6 +53077,7 @@ components:
           type: string
       required:
       - client_id
+      - messages
       - slug
     PlexAuthenticationChallengeResponseRequest:
       type: object
@@ -53467,6 +53591,10 @@ components:
         component:
           type: string
           default: ak-stage-prompt
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -53479,6 +53607,7 @@ components:
             $ref: '#/components/schemas/StagePrompt'
       required:
       - fields
+      - messages
     PromptChallengeResponseRequest:
       type: object
       description: |-
@@ -54663,6 +54792,10 @@ components:
         component:
           type: string
           default: xak-flow-redirect
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -54672,6 +54805,7 @@ components:
         to:
           type: string
       required:
+      - messages
       - to
     RedirectChallengeResponseRequest:
       type: object
@@ -56528,6 +56662,10 @@ components:
         component:
           type: string
           default: ak-stage-session-end
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -56548,6 +56686,7 @@ components:
           type: string
       required:
       - brand_name
+      - messages
       - pending_user
       - pending_user_avatar
     SessionUser:
@@ -56662,6 +56801,10 @@ components:
         component:
           type: string
           default: xak-flow-shell
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -56672,6 +56815,7 @@ components:
           type: string
       required:
       - body
+      - messages
     SignatureAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#rsa-sha1
@@ -57943,6 +58087,10 @@ components:
         component:
           type: string
           default: ak-stage-user-login
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Message'
         response_errors:
           type: object
           additionalProperties:
@@ -57954,6 +58102,7 @@ components:
         pending_user_avatar:
           type: string
       required:
+      - messages
       - pending_user
       - pending_user_avatar
     UserLoginChallengeResponseRequest:

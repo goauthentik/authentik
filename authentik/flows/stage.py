@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.messages import get_messages
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.http.response import HttpResponse
@@ -21,6 +22,7 @@ from authentik.flows.challenge import (
     ChallengeResponse,
     ContextualFlowInfo,
     HttpChallengeResponse,
+    MessageSerializer,
     RedirectChallenge,
     SessionEndChallenge,
     WithUserInfoChallenge,
@@ -191,6 +193,20 @@ class ChallengeStageView(StageView):
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
+            if "messages" not in challenge.initial_data:
+                messages = MessageSerializer(
+                    data=[
+                        {
+                            "message": message.message,
+                            "level": message.level_tag,
+                            "tags": message.tags,
+                        }
+                        for message in get_messages(self.request)
+                    ],
+                    many=True,
+                )
+                messages.is_valid()
+                challenge.initial_data["messages"] = messages.data
             if isinstance(challenge, WithUserInfoChallenge):
                 # If there's a pending user, update the `username` field
                 # this field is only used by password managers.

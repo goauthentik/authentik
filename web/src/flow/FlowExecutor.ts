@@ -5,11 +5,13 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/components/ak-brand-footer";
@@ -43,6 +45,7 @@ import {
     FlowErrorChallenge,
     FlowLayoutEnum,
     FlowsApi,
+    Message,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -229,6 +232,7 @@ export class FlowExecutor extends Interface implements StageHost {
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
+            this.showMessages(this.challenge.messages);
             return !this.challenge.responseErrors;
         } catch (exc: unknown) {
             this.errorMessage(exc as Error | ResponseError | FetchError);
@@ -261,11 +265,21 @@ export class FlowExecutor extends Interface implements StageHost {
             if (this.challenge.flowInfo) {
                 this.flowInfo = this.challenge.flowInfo;
             }
+            this.showMessages(this.challenge.messages);
         } catch (exc: unknown) {
             // Catch JSON or Update errors
             this.errorMessage(exc as Error | ResponseError | FetchError);
         } finally {
             this.loading = false;
+        }
+    }
+
+    showMessages(messages: Array<Message>) {
+        for (const message of messages) {
+            showMessage({
+                level: message.level as MessageLevel,
+                message: message.message,
+            });
         }
     }
 
