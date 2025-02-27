@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Gravity
 
-> Gravity is a fully-replicated DNS, DHCP, and TFTP server powered by etcd, offering features like built-in caching, ad/privacy blocking, automatic DNS registration, and metric tracking.
+> Gravity is a fully-replicated DNS, DHCP, and TFTP server powered by [etcd](https://etcd.io/), offering features like built-in caching, ad/privacy blocking, automatic DNS registration, and metric tracking.
 >
 > -- https://gravity.beryju.io/
 
