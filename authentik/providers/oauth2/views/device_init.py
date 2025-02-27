@@ -71,7 +71,7 @@ class CodeValidatorView(PolicyAccessView):
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             return None
-        plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
+        plan.append_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
         return plan.to_redirect(self.request, self.token.provider.authorization_flow)
 
 
