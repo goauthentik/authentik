@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -8,13 +7,7 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    EVENT_ADD_ALL,
-    EVENT_ADD_SELECTED,
-    EVENT_DELETE_ALL,
-    EVENT_REMOVE_ALL,
-    EVENT_REMOVE_SELECTED,
-} from "../constants";
+import { DualSelectMoveRequestEvent, type MoveEventType } from "../events";
 
 const styles = [
     PFBase,
@@ -47,7 +40,7 @@ const styles = [
  */
 
 @customElement("ak-dual-select-controls")
-export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
+export class AkDualSelectControls extends AKElement {
     static get styles() {
         return styles;
     }
@@ -96,11 +89,11 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
         this.onClick = this.onClick.bind(this);
     }
 
-    onClick(eventName: string) {
-        this.dispatchCustomEvent(eventName);
+    onClick(eventName: MoveEventType) {
+        this.dispatchEvent(new DualSelectMoveRequestEvent(eventName));
     }
 
-    renderButton(label: string, event: string, active: boolean, direction: string) {
+    renderButton(label: string, event: MoveEventType, active: boolean, direction: string) {
         return html`
             <div class="pf-c-dual-list-selector__controls-item">
                 <button
@@ -121,23 +114,18 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
     render() {
         return html`
             <div class="ak-dual-list-selector__controls">
-                ${this.renderButton(
-                    msg("Add"),
-                    EVENT_ADD_SELECTED,
-                    this.addActive,
-                    "fa-angle-right",
-                )}
+                ${this.renderButton(msg("Add"), "add-selected", this.addActive, "fa-angle-right")}
                 ${this.selectAll
                     ? html`
                           ${this.renderButton(
                               msg("Add All Available"),
-                              EVENT_ADD_ALL,
+                              "add-all",
                               this.addAllActive,
                               "fa-angle-double-right",
                           )}
                           ${this.renderButton(
                               msg("Remove All Available"),
-                              EVENT_REMOVE_ALL,
+                              "remove-all",
                               this.removeAllActive,
                               "fa-angle-double-left",
                           )}
@@ -145,14 +133,14 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     : nothing}
                 ${this.renderButton(
                     msg("Remove"),
-                    EVENT_REMOVE_SELECTED,
+                    "remove-selected",
                     this.removeActive,
                     "fa-angle-left",
                 )}
                 ${this.deleteAll
                     ? html`${this.renderButton(
                           msg("Remove All"),
-                          EVENT_DELETE_ALL,
+                          "delete-all",
                           this.enableDeleteAll,
                           "fa-times",
                       )}`
