@@ -1,11 +1,8 @@
 ---
 title: Integrate with Frappe
 sidebar_label: Frappe
+support_level: community
 ---
-
-# Integrate with Frappe
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 :::note
 These instructions apply to all projects in the Frappe Family.

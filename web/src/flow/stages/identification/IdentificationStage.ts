@@ -260,6 +260,7 @@ export class IdentificationStage extends BaseStage<
                     placeholder=${label}
                     autofocus=""
                     autocomplete="username"
+                    spellcheck="false"
                     class="pf-c-form-control"
                     required
                 />

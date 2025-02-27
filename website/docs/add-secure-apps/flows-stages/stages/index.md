@@ -70,8 +70,8 @@ To bind a user or a group to a stage binding for a specific flow, follow these s
 ![](./edit_stage_binding.png)
 
 6. In the expanded area, click **Bind existing policy/group/user**.
-7. In the **Create Binding** modal box, select either the tab for **Group** or **User**.
+7. In the **Create Binding** box, select either the tab for **Group** or **User**.
 8. In the drop-down list, select the group or user.
-9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the modal box.
+9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
 
 Learn more about [bindings](../bindings/index.md) and [working with them](../bindings/work_with_bindings.md).

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Hoarder
 sidebar_label: Hoarder
+support_level: community
 ---
-
-# Integrate with Hoarder
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Hoarder
 

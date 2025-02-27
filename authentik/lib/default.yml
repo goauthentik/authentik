@@ -8,6 +8,7 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   test:
     name: test_authentik
+  default_schema: public
   read_replicas: {}
   # For example
   # 0:
@@ -63,6 +64,8 @@ debugger: false
 log_level: info
 
 session_storage: cache
+sessions:
+  unauthenticated_age: days=1
 
 error_reporting:
   enabled: false

@@ -48,6 +48,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             help=${msg(
                 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
             )}
+            inputHint="code"
         >
         </ak-text-input>
 
@@ -56,6 +57,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             label=${msg("HTTP-Basic Password Key")}
             value="${ifDefined(provider?.basicAuthPasswordAttribute)}"
             help=${msg("User/Group Attribute used for the password part of the HTTP-Basic Header.")}
+            inputHint="code"
         >
         </ak-text-input>`;
 }
@@ -88,6 +90,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
+            inputHint="code"
         ></ak-text-input>
         <ak-text-input
             name="internalHost"
@@ -96,6 +99,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             required
             .errorMessages=${errors?.internalHost ?? []}
             help=${msg("Upstream host that the requests are forwarded to.")}
+            inputHint="code"
         ></ak-text-input>
 
         <ak-switch-input
@@ -122,6 +126,7 @@ function renderForwardSingleSettings(provider: Partial<ProxyProvider>, errors?: 
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
+            inputHint="code"
         ></ak-text-input>`;
 }
 
@@ -220,6 +225,7 @@ export function renderForm(
             .errorMessages=${errors?.accessTokenValidity ?? []}
             required
             .help=${msg("Configure how long tokens are valid for.")}
+            inputHint="code"
         ></ak-text-input>
 
         <ak-form-group>
@@ -251,7 +257,9 @@ export function renderForm(
                         : msg("Unauthenticated Paths")}"
                     name="skipPathRegex"
                 >
-                    <textarea class="pf-c-form-control">${provider?.skipPathRegex}</textarea>
+                    <textarea class="pf-c-form-control pf-m-monospace">
+${provider?.skipPathRegex}</textarea
+                    >
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",

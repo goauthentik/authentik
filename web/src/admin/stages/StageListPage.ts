@@ -2,6 +2,7 @@ import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/StageWizard";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm";
+import "@goauthentik/admin/stages/authenticator_email/AuthenticatorEmailStageForm";
 import "@goauthentik/admin/stages/authenticator_endpoint_gdtc/AuthenticatorEndpointGDTCStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";

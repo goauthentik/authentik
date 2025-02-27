@@ -89,6 +89,7 @@ module.exports = {
                         "services/netbox/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
+                        "services/plesk/index",
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
@@ -123,6 +124,7 @@ module.exports = {
                     label: "Miscellaneous",
                     items: [
                         "services/actual-budget/index",
+                        "services/adventurelog/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
@@ -133,6 +135,7 @@ module.exports = {
                         "services/jellyfin/index",
                         "services/komga/index",
                         "services/node-red/index",
+                        "services/open-webui/index",
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",

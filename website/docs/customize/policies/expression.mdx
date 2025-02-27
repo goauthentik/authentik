@@ -42,7 +42,7 @@ ak_message("Access denied")
 return False
 ```
 
-import Functions from "../../expressions/_functions.md";
+import Functions from "../../expressions/_functions.mdx";
 
 <Functions />
 
@@ -119,7 +119,7 @@ This includes the following:
 - `context['prompt_data']`: Data which has been saved from a prompt stage or an external source. (Optional)
 - `context['application']`: The application the user is in the process of authorizing. (Optional)
 - `context['source']`: The source the user is authenticating/enrolling with. (Optional)
-- `context['pending_user']`: The currently pending user, see [User](../../users-sources/user/user_ref.md)
+- `context['pending_user']`: The currently pending user, see [User](../../users-sources/user/user_ref.mdx)
 - `context['is_restored']`: Contains the flow token when the flow plan was restored from a link, for example the user clicked a link to a flow which was sent by an email stage. (Optional)
 - `context['auth_method']`: Authentication method (this value is set by password stages) (Optional)
 
@@ -145,7 +145,7 @@ This includes the following:
         }
         ```
 
-    - `auth_webauthn_pwl`: Password-less WebAuthn login
+    - `auth_webauthn_pwl`: Password-less WebAuthn with Passkeys login
     - `jwt`: OAuth Machine-to-machine login via external JWT
     - `app_password`: App password (token)
 

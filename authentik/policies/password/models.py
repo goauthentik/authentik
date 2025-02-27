@@ -148,10 +148,10 @@ class PasswordPolicy(Policy):
             user_inputs.append(request.user.email)
         if request.http_request:
             user_inputs.append(request.http_request.brand.branding_title)
-        # Only calculate result for the first 100 characters, as with over 100 char
+        # Only calculate result for the first 72 characters, as with over 100 char
         # long passwords we can be reasonably sure that they'll surpass the score anyways
         # See https://github.com/dropbox/zxcvbn#runtime-latency
-        results = zxcvbn(password[:100], user_inputs)
+        results = zxcvbn(password[:72], user_inputs)
         LOGGER.debug("password failed", check="zxcvbn", score=results["score"])
         result = PolicyResult(results["score"] > self.zxcvbn_score_threshold)
         if not result.passing:

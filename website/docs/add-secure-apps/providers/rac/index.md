@@ -2,10 +2,6 @@
 title: Remote Access Control (RAC) Provider
 ---
 
-<span class="badge badge--primary">Enterprise</span>
-
----
-
 :::info
 This provider requires the deployment of the [RAC Outpost](../../outposts/index.mdx).
 :::

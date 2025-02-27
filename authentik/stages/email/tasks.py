@@ -12,18 +12,31 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.system_tasks import SystemTask
+from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
+from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
 
 LOGGER = get_logger()
 
 
-def send_mails(stage: EmailStage, *messages: list[EmailMultiAlternatives]):
-    """Wrapper to convert EmailMessage to dict and send it from worker"""
+def send_mails(
+    stage: EmailStage | AuthenticatorEmailStage, *messages: list[EmailMultiAlternatives]
+):
+    """Wrapper to convert EmailMessage to dict and send it from worker
+
+    Args:
+        stage: Either an EmailStage or AuthenticatorEmailStage instance
+        messages: List of email messages to send
+    Returns:
+        Celery group promise for the email sending tasks
+    """
     tasks = []
+    # Use the class path instead of the class itself for serialization
+    stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, str(stage.pk)))
+        tasks.append(send_mail.s(message.__dict__, stage_class_path, str(stage.pk)))
     lazy_group = group(*tasks)
     promise = lazy_group()
     return promise
@@ -47,23 +60,29 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     retry_backoff=True,
     base=SystemTask,
 )
-def send_mail(self: SystemTask, message: dict[Any, Any], email_stage_pk: str | None = None):
+def send_mail(
+    self: SystemTask,
+    message: dict[Any, Any],
+    stage_class_path: str | None = None,
+    email_stage_pk: str | None = None,
+):
     """Send Email for Email Stage. Retries are scheduled automatically."""
     self.save_on_success = False
     message_id = make_msgid(domain=DNS_NAME)
     self.set_uid(slugify(message_id.replace(".", "_").replace("@", "_")))
     try:
-        if not email_stage_pk:
-            stage: EmailStage = EmailStage(use_global_settings=True)
+        if not stage_class_path or not email_stage_pk:
+            stage = EmailStage(use_global_settings=True)
         else:
-            stages = EmailStage.objects.filter(pk=email_stage_pk)
+            stage_class = path_to_class(stage_class_path)
+            stages = stage_class.objects.filter(pk=email_stage_pk)
             if not stages.exists():
                 self.set_status(
                     TaskStatus.WARNING,
                     "Email stage does not exist anymore. Discarding message.",
                 )
                 return
-            stage: EmailStage = stages.first()
+            stage: EmailStage | AuthenticatorEmailStage = stages.first()
         try:
             backend = stage.backend
         except ValueError as exc:

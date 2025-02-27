@@ -1,0 +1,13 @@
+{% load i18n %}{% load humanize %}{% autoescape off %}{% blocktrans with username=user.username %}Hi {{ username }},{% endblocktrans %}
+
+{% blocktrans %}
+Email MFA code
+{% endblocktrans %}
+{{ token }}
+{% blocktrans with expires=expires|timeuntil %}
+If you did not request this code, please ignore this email. The code above is valid for {{ expires }}.
+{% endblocktrans %}
+
+-- 
+Powered by goauthentik.io.
+{% endautoescape %}
