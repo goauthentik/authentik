@@ -193,8 +193,9 @@ class ChallengeStageView(StageView):
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
-            # TODO: only do it for non-redirect challenges
-            if "messages" not in challenge.initial_data:
+            if "messages" not in challenge.initial_data and not isinstance(
+                challenge, RedirectStage
+            ):
                 messages = MessageSerializer(
                     data=[
                         {
