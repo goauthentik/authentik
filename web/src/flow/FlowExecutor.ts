@@ -274,8 +274,8 @@ export class FlowExecutor extends Interface implements StageHost {
         }
     }
 
-    showMessages(messages: Array<Message>) {
-        for (const message of messages) {
+    showMessages(messages: Array<Message> | undefined) {
+        for (const message of (messages ??= [])) {
             showMessage({
                 level: message.level as MessageLevel,
                 message: message.message,

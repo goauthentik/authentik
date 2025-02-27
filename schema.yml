@@ -39449,7 +39449,6 @@ components:
         error_message:
           type: string
       required:
-      - messages
       - pending_user
       - pending_user_avatar
     AlgEnum:
@@ -39571,7 +39570,6 @@ components:
           type: string
       required:
       - client_id
-      - messages
       - redirect_uri
       - scope
       - state
@@ -39906,7 +39904,6 @@ components:
       required:
       - activation_barcode
       - activation_code
-      - messages
       - pending_user
       - pending_user_avatar
       - stage_uuid
@@ -40068,7 +40065,6 @@ components:
           type: boolean
           default: true
       required:
-      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorEmailChallengeResponseRequest:
@@ -40326,7 +40322,6 @@ components:
           type: boolean
           default: true
       required:
-      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorSMSChallengeResponseRequest:
@@ -40496,7 +40491,6 @@ components:
             type: string
       required:
       - codes
-      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorStaticChallengeResponseRequest:
@@ -40620,7 +40614,6 @@ components:
           type: string
       required:
       - config_url
-      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorTOTPChallengeResponseRequest:
@@ -40859,7 +40852,6 @@ components:
       required:
       - configuration_stages
       - device_challenges
-      - messages
       - pending_user
       - pending_user_avatar
     AuthenticatorValidationChallengeResponseRequest:
@@ -40910,7 +40902,6 @@ components:
           type: object
           additionalProperties: {}
       required:
-      - messages
       - pending_user
       - pending_user_avatar
       - registration
@@ -41066,7 +41057,6 @@ components:
           type: string
       required:
       - attrs
-      - messages
       - url
     BackendsEnum:
       enum:
@@ -41337,7 +41327,6 @@ components:
       required:
       - interactive
       - js_url
-      - messages
       - pending_user
       - pending_user_avatar
       - site_key
@@ -41746,7 +41735,6 @@ components:
           type: string
       required:
       - additional_permissions
-      - messages
       - pending_user
       - pending_user_avatar
       - permissions
@@ -42537,7 +42525,6 @@ components:
         name:
           type: string
       required:
-      - messages
       - name
     DummyChallengeResponseRequest:
       type: object
@@ -42741,8 +42728,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - messages
     EmailChallengeResponseRequest:
       type: object
       description: |-
@@ -43681,7 +43666,6 @@ components:
         traceback:
           type: string
       required:
-      - messages
       - request_id
     FlowImportResult:
       type: object
@@ -44016,7 +44000,6 @@ components:
           type: string
       required:
       - loading_text
-      - messages
       - url
     FrameChallengeResponseRequest:
       type: object
@@ -44856,7 +44839,6 @@ components:
           type: boolean
       required:
       - flow_designation
-      - messages
       - password_fields
       - primary_action
       - show_source_labels
@@ -47321,8 +47303,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - messages
     OAuthDeviceCodeChallengeResponseRequest:
       type: object
       description: Response that includes the user-entered device code
@@ -47355,8 +47335,6 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/ErrorDetail'
-      required:
-      - messages
     OAuthDeviceCodeFinishChallengeResponseRequest:
       type: object
       description: Response that device has been authenticated and tab can be closed
@@ -49521,7 +49499,6 @@ components:
           type: boolean
           default: false
       required:
-      - messages
       - pending_user
       - pending_user_avatar
     PasswordChallengeResponseRequest:
@@ -53077,7 +53054,6 @@ components:
           type: string
       required:
       - client_id
-      - messages
       - slug
     PlexAuthenticationChallengeResponseRequest:
       type: object
@@ -53607,7 +53583,6 @@ components:
             $ref: '#/components/schemas/StagePrompt'
       required:
       - fields
-      - messages
     PromptChallengeResponseRequest:
       type: object
       description: |-
@@ -54805,7 +54780,6 @@ components:
         to:
           type: string
       required:
-      - messages
       - to
     RedirectChallengeResponseRequest:
       type: object
@@ -56686,7 +56660,6 @@ components:
           type: string
       required:
       - brand_name
-      - messages
       - pending_user
       - pending_user_avatar
     SessionUser:
@@ -56815,7 +56788,6 @@ components:
           type: string
       required:
       - body
-      - messages
     SignatureAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#rsa-sha1
@@ -58102,7 +58074,6 @@ components:
         pending_user_avatar:
           type: string
       required:
-      - messages
       - pending_user
       - pending_user_avatar
     UserLoginChallengeResponseRequest:
