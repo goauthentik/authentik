@@ -1,9 +1,13 @@
 ---
-name: authentik-backend-translate-extract-compile
+name: authentik-translate-extract-compile
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - version-*
 
 env:
   POSTGRES_DB: authentik
@@ -15,15 +19,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
+        if: ${{ github.event_name != 'pull_request' }}
         uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
+        if: ${{ github.event_name != 'pull_request' }}
         with:
           token: ${{ steps.generate_token.outputs.token }}
+      - uses: actions/checkout@v4
+        if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - name: Generate API
+        run: make gen-client-ts
       - name: run extract
         run: |
           poetry run make i18n-extract
@@ -32,6 +42,7 @@ jobs:
           poetry run ak compilemessages
           make web-check-compile
       - name: Create Pull Request
+        if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ steps.generate_token.outputs.token }}
