@@ -20,6 +20,7 @@ from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    DryRunRejected,
     StopSync,
     TransientSyncException,
 )
@@ -105,7 +106,9 @@ class SyncTasks:
                 return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
-    def sync_objects(self, object_type: str, page: int, provider_pk: int, **filter):
+    def sync_objects(
+        self, object_type: str, page: int, provider_pk: int, override_dry_run=False, **filter
+    ):
         _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -116,6 +119,10 @@ class SyncTasks:
         provider = self._provider_model.objects.filter(pk=provider_pk).first()
         if not provider:
             return messages
+        # Override dry run mode if requested, however don't save the provider
+        # so that scheduled sync tasks still run in dry_run mode
+        if override_dry_run:
+            provider.dry_run = False
         try:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
@@ -132,6 +139,22 @@ class SyncTasks:
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
+            except DryRunRejected as exc:
+                messages.append(
+                    asdict(
+                        LogEvent(
+                            _("Dropping mutating request due to dry run"),
+                            log_level="info",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={
+                                "obj": sanitize_item(obj),
+                                "method": exc.method,
+                                "url": exc.url,
+                                "body": exc.body,
+                            },
+                        )
+                    )
+                )
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 messages.append(

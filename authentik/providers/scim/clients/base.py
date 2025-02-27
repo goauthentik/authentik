@@ -12,8 +12,9 @@ from authentik.lib.sync.outgoing import (
     HTTP_SERVICE_UNAVAILABLE,
     HTTP_TOO_MANY_REQUESTS,
 )
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
+    DryRunRejected,
     NotFoundSyncException,
     ObjectExistsSyncException,
     TransientSyncException,
@@ -54,6 +55,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
+        if self.provider.dry_run and method.upper() not in SAFE_METHODS:
+            raise DryRunRejected(f"{self.base_url}{path}", method, body=kwargs.get("json"))
         try:
             response = self._session.request(
                 method,
