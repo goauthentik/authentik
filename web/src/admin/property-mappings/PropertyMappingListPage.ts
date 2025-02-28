@@ -15,7 +15,7 @@ import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";

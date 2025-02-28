@@ -4,11 +4,11 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { MessageLevel } from "@goauthentik/common/messages.js";
+import { me } from "@goauthentik/common/users.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {

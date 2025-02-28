@@ -4,7 +4,7 @@ import "@goauthentik/admin/flows/FlowForm";
 import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";

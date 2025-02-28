@@ -1,7 +1,7 @@
-import { config } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { me } from "@goauthentik/common/users";
+import { config } from "@goauthentik/common/api/config.js";
+import { VERSION } from "@goauthentik/common/constants.js";
+import { SentryIgnoredError } from "@goauthentik/common/errors.js";
+import { me } from "@goauthentik/common/users.js";
 import {
     ErrorEvent,
     EventHint,

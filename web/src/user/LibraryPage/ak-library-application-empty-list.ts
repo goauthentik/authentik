@@ -1,4 +1,4 @@
-import { docLink, globalAK } from "@goauthentik/common/global";
+import { docLink, globalAK } from "@goauthentik/common/global.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 

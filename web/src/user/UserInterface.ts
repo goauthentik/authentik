@@ -1,14 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import { WebsocketClient } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { configureSentry } from "@goauthentik/common/sentry.js";
+import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { me } from "@goauthentik/common/users.js";
+import { WebsocketClient } from "@goauthentik/common/ws.js";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
@@ -285,7 +285,7 @@ export class UserInterface extends AuthenticatedInterface {
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
 
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
+            const { ESBuildObserver } = await import("@goauthentik/common/client.js");
 
             new ESBuildObserver(process.env.WATCHER_URL);
         }

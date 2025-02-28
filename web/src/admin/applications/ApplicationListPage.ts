@@ -1,5 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";

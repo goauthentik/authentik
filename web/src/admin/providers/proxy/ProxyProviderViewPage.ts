@@ -1,9 +1,9 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToSlug } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { convertToSlug } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDCaddyStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_caddy_standalone.md";

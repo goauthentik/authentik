@@ -1,4 +1,4 @@
-import { purify } from "@goauthentik/common/purify";
+import { purify } from "@goauthentik/common/purify.js";
 import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";

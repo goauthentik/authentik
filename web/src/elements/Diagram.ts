@@ -1,5 +1,5 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { DOM_PURIFY_STRICT } from "@goauthentik/common/purify";
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
+import { DOM_PURIFY_STRICT } from "@goauthentik/common/purify.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid, { MermaidConfig } from "mermaid";

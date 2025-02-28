@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

@@ -1,11 +1,11 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
+} from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config.js";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
 import { match } from "ts-pattern";

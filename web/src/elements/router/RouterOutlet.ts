@@ -1,4 +1,4 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { ROUTE_SEPARATOR } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { Route } from "@goauthentik/elements/router/Route";
 import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";

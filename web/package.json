@@ -176,6 +176,7 @@
             ],
             "dependencies": [
                 "build-locales",
+                "./packages/common:build",
                 "./packages/sfe:build"
             ],
             "env": {

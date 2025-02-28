@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
 import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api";

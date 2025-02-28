@@ -1,7 +1,7 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.mdx";

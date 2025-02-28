@@ -1,0 +1,44 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "baseUrl": ".",
+        "outDir": "./dist/",
+        "esModuleInterop": true,
+        "paths": {
+            "@goauthentik/common/*": ["./src/*"],
+            "@goauthentik/locales/*": ["src/locales/*"]
+        },
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "experimentalDecorators": true,
+        "sourceMap": true,
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "lib": [
+            "ES5",
+            "ES2015",
+            "ES2016",
+            "ES2017",
+            "ES2018",
+            "ES2019",
+            "ES2020",
+            "ESNext",
+            "DOM",
+            "DOM.Iterable",
+            "WebWorker"
+        ],
+        "noUnusedLocals": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "strictBindCallApply": true,
+        "strictFunctionTypes": true,
+        "strictNullChecks": true,
+        "allowUnreachableCode": false,
+        "allowUnusedLabels": false,
+        "useDefineForClassFields": false,
+        "alwaysStrict": true,
+        "noImplicitAny": true,
+    },
+    "exclude": ["node_modules", "dist"]
+}

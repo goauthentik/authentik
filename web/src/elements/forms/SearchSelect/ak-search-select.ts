@@ -1,4 +1,4 @@
-import { groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils.js";
 
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";

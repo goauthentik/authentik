@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/events/LogViewer";
 import { Form } from "@goauthentik/elements/forms/Form";

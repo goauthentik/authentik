@@ -1,8 +1,8 @@
 import "@goauthentik/admin/events/RuleForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { severityToLabel } from "@goauthentik/common/labels";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { severityToLabel } from "@goauthentik/common/labels.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";

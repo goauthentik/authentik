@@ -1,5 +1,5 @@
-import { currentInterface } from "@goauthentik/common/sentry";
-import { me } from "@goauthentik/common/users";
+import { currentInterface } from "@goauthentik/common/sentry.js";
+import { me } from "@goauthentik/common/users.js";
 
 import { UiThemeEnum, UserSelf } from "@goauthentik/api";
 

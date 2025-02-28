@@ -1,7 +1,7 @@
 import "@goauthentik/admin/crypto/CertificateGenerateForm";
 import "@goauthentik/admin/crypto/CertificateKeyPairForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-status-label";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";

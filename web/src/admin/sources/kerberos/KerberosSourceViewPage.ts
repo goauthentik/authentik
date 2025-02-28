@@ -1,8 +1,8 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceConnectivity";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDSourceKerberosBrowser from "@goauthentik/docs/users-sources/sources/protocols/kerberos/browser.md";
 import { AKElement } from "@goauthentik/elements/Base";

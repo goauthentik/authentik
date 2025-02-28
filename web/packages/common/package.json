@@ -1,0 +1,156 @@
+{
+    "name": "@goauthentik/common",
+    "version": "0.0.0",
+    "dependencies": {
+        "@sentry/browser": "^8.23.0",
+        "@types/webappsec-credential-management": "^0.6.8",
+        "base64-js": "^1.5.1"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.8.0",
+        "@types/eslint__js": "^8.42.3",
+        "esbuild": "^0.23.0",
+        "eslint": "^9.8.0",
+        "eslint-config-google": "^0.14.0",
+        "eslint-config-nightmare-mode": "^2.3.0",
+        "eslint-plugin-custom-elements": "^0.0.8",
+        "eslint-plugin-lit": "^1.14.0",
+        "eslint-plugin-sonarjs": "^1.0.4",
+        "glob": "^11.0.0",
+        "lit-analyzer": "^2.0.3",
+        "lockfile-lint": "^4.14.0",
+        "prettier": "^3.3.3",
+        "rimraf": "^6.0.1",
+        "syncpack": "^12.4.0",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.0.1",
+        "typesync": "^0.13.0",
+        "wireit": "^0.14.4"
+    },
+    "exports": {
+        "./*": "./dist/*"
+    },
+    "files": [
+        "./dist/**/*"
+    ],
+    "license": "MIT",
+    "peerDependencies": {
+        "@lit/localize": "^0.12.2",
+        "lit": "^3.2.0"
+    },
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "build:types": "wireit",
+        "format": "wireit",
+        "lint": "wireit",
+        "lint:lockfile": "wireit",
+        "lint:nightmare": "wireit",
+        "lint:package": "wireit",
+        "lint:spelling": "wireit",
+        "lint:types": "wireit",
+        "precommit": "wireit",
+        "prettier": "wireit"
+    },
+    "type": "module",
+    "wireit": {
+        "build": {
+            "command": "${NODE_RUNNER} build.mjs",
+            "dependencies": [
+                "build:types"
+            ],
+            "files": [
+                "src/**/*.{css,jpg,png,ts,js,json}",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts",
+                "!src/locales/*.ts",
+                "!src/locale-codes.ts"
+            ],
+            "output": [
+                "./dist/**/*.js",
+                "./dist/**/*.css"
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "build:types": {
+            "command": "tsc --declaration -p .",
+            "files": [
+                "src/**/*.ts",
+                "!src/**/*.stories.ts",
+                "!src/**/*.tests.ts"
+            ],
+            "output": [
+                "./dist/**/*.d.ts"
+            ]
+        },
+        "lint": {
+            "command": "eslint --max-warnings 0 --fix --config ./eslint.config.mjs",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=65536"
+            }
+        },
+        "lint:types": {
+            "command": "tsc --noEmit -p ."
+        },
+        "lint:lockfile": {
+            "command": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https"
+        },
+        "lint:package": {
+            "command": "syncpack format -i '    '"
+        },
+        "lint:precommit": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:nightmare": {
+            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "prettier": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:package"
+            ]
+        },
+        "format": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:package"
+            ]
+        },
+        "precommit": {
+            "command": "prettier --write .",
+            "dependencies": [
+                "lint:types",
+                "lint:spelling",
+                "lint:lockfile",
+                "lint:package",
+                "lint:precommit"
+            ],
+            "env": {
+                "NODE_RUNNER": {
+                    "external": true,
+                    "default": "node"
+                }
+            }
+        },
+        "lint:spelling": {
+            "command": "node scripts/check-spelling.mjs"
+        }
+    }
+}

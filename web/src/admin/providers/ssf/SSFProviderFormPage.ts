@@ -4,8 +4,8 @@ import {
     oauth2ProvidersProvider,
     oauth2ProvidersSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProvidersProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";

@@ -1,6 +1,6 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
-import { groupBy } from "@goauthentik/common/utils";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors.js";
+import { groupBy } from "@goauthentik/common/utils.js";
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";

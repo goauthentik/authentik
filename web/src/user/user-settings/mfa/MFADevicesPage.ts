@@ -1,8 +1,8 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { globalAK } from "@goauthentik/common/global";
-import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { SentryIgnoredError } from "@goauthentik/common/errors.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { deviceTypeName } from "@goauthentik/common/labels.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";

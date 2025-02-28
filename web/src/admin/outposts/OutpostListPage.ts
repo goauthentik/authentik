@@ -4,7 +4,7 @@ import "@goauthentik/admin/outposts/OutpostForm";
 import "@goauthentik/admin/outposts/OutpostHealth";
 import "@goauthentik/admin/outposts/OutpostHealthSimple";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";

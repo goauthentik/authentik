@@ -1,5 +1,5 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 import { customElement } from "lit/decorators.js";

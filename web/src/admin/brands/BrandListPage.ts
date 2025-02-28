@@ -1,6 +1,6 @@
 import "@goauthentik/admin/brands/BrandForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";

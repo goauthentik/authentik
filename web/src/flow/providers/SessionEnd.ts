@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

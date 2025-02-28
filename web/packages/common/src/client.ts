@@ -17,7 +17,7 @@ type BuildEventListener<Data = unknown> = (event: MessageEvent<Data>) => void;
  *
  * ```ts
  * if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
- *   const { ESBuildObserver } = await import("@goauthentik/common/client");
+ *   const { ESBuildObserver } = await import("@goauthentik/common/client.js");
  *
  *   new ESBuildObserver(process.env.WATCHER_URL);
  * }

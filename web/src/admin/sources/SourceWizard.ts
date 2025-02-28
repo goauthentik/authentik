@@ -4,7 +4,7 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
 import "@goauthentik/admin/sources/scim/SCIMSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";

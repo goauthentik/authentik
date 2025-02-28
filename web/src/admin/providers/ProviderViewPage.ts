@@ -8,7 +8,7 @@ import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
 import "@goauthentik/admin/providers/ssf/SSFProviderViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";

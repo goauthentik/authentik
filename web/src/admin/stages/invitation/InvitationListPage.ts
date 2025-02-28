@@ -1,7 +1,7 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/invitation/InvitationForm";
 import "@goauthentik/admin/stages/invitation/InvitationListLink";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";

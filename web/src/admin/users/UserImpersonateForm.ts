@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { globalAK } from "@goauthentik/common/global.js";
 import "@goauthentik/components/ak-text-input";
 import { Form } from "@goauthentik/elements/forms/Form";
 

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/components/ak-wizard/ak-wizard-steps.js";
 import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
 import { AKElement } from "@goauthentik/elements/Base.js";

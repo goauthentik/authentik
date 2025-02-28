@@ -1,5 +1,5 @@
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/AdminInterface";
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";

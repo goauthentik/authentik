@@ -1,6 +1,6 @@
 import { PFSize } from "@goauthentik/common/enums.js";
-import { globalAK } from "@goauthentik/common/global";
-import { truncateWords } from "@goauthentik/common/utils";
+import { globalAK } from "@goauthentik/common/global.js";
+import { truncateWords } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/AppIcon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";

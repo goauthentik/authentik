@@ -1,7 +1,7 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first, groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";

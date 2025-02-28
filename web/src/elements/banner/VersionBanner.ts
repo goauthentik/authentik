@@ -1,4 +1,4 @@
-import { VERSION } from "@goauthentik/common/constants";
+import { VERSION } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 

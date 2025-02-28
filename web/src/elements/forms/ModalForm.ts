@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/elements/LoadingOverlay";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";

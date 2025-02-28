@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 

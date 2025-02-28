@@ -1,13 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import {
     EVENT_FLOW_ADVANCE,
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
-import { WebsocketClient } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { configureSentry } from "@goauthentik/common/sentry.js";
+import { first } from "@goauthentik/common/utils.js";
+import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";

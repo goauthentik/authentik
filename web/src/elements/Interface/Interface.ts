@@ -1,4 +1,4 @@
-import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, uiConfig } from "@goauthentik/common/ui/config.js";
 import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";

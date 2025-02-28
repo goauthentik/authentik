@@ -1,4 +1,4 @@
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/errors.js";
 
 import { CSSResult, css } from "lit";
 

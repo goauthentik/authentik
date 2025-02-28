@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";

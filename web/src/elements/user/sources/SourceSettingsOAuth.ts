@@ -1,6 +1,6 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseUserSettings } from "@goauthentik/elements/user/sources/BaseUserSettings";

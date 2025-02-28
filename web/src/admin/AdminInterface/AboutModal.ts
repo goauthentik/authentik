@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { VERSION } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/EmptyState";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
