@@ -165,6 +165,7 @@ module.exports = {
                     items: [
                         "services/budibase/index",
                         "services/drupal/index",
+                        "services/pocketbase/index",
                         "services/wordpress/index",
                     ],
                 },
