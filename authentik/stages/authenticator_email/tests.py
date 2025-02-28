@@ -300,9 +300,11 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             )
             self.assertEqual(response.status_code, 200)
             self.assertTrue(device.confirmed)
-            # Session key should be removed after device is saved
-            device.save()
-            self.assertNotIn(SESSION_KEY_EMAIL_DEVICE, self.client.session)
+            # Get a fresh session to check if the key was removed
+            session = self.client.session
+            session.save()
+            session.load()
+            self.assertNotIn(SESSION_KEY_EMAIL_DEVICE, session)
 
     def test_model_properties_and_methods(self):
         """Test model properties"""

@@ -106,6 +106,22 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
+                        label=${msg("Maximum distance")}
+                        name="historyMaxDistanceKm"
+                    >
+                        <input
+                            type="number"
+                            min="1"
+                            value="${first(this.instance?.historyMaxDistanceKm, 100)}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Maximum distance a login attempt is allowed from in kilometers.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Distance tolerance")}
                         name="distanceToleranceKm"
                     >
@@ -133,27 +149,6 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                             ${msg("Amount of previous login events to check against.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Maximum distance")}
-                        name="historyMaxDistanceKm"
-                    >
-                        <input
-                            type="number"
-                            min="1"
-                            value="${first(this.instance?.historyMaxDistanceKm, 100)}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Maximum distance a login attempt is allowed from in kilometers.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Distance settings (Impossible travel)")} </span>
-                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="checkImpossibleTravel">
                         <label class="pf-c-switch">
                             <input
