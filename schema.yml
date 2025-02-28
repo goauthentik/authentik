@@ -46405,6 +46405,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -46565,6 +46569,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - client_id
       - client_secret
@@ -51272,6 +51280,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
