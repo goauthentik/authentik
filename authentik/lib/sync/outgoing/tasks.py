@@ -254,8 +254,10 @@ class SyncTasks:
                 raise Retry() from exc
             except SkipObjectException:
                 continue
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run event", exc=exc)
             except StopSync as exc:
-                self.logger.warning(exc, provider_pk=provider.pk)
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
 
     def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
         self.logger = get_logger().bind(
@@ -286,5 +288,7 @@ class SyncTasks:
                 raise Retry() from exc
             except SkipObjectException:
                 continue
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run event", exc=exc)
             except StopSync as exc:
-                self.logger.warning(exc, provider_pk=provider.pk)
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
