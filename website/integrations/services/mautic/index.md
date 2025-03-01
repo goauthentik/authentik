@@ -6,16 +6,9 @@ support_level: community
 
 ## What is Mautic
 
-> The World's Largest Open Source Marketing Automation platform:
+> Mautic provides free and open source marketing automation software available to everyone. Free email marketing and lead management software.
 >
-> - Fully featured omni-channel Marketing Automation tool
-> - Email marketing campaigns
-> - Tracking of activity across web resources
-> - Communication tool for en-mass, multi-channel coordinated communications (e.g. governments and public services)
-> - Landing page creation
-> - Lead nurturing
->
-> -- https://mautic.org/ and https://contribute.mautic.org/about/how-is-mautic-used
+> -- https://mautic.org/
 
 ## Preparation
 
@@ -30,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ### Prepare the certificates
 
-Mautic and authentik both require a X.509 certificates.
+Mautic and authentik both require an X.509 certificates.
 Mautic requires the key to be in PKCS#1-format specifically (and thus RSA).
 
 To avoid changing certificates in authentik (e.g., if they are present in PKCS#8), we generate a new one:
