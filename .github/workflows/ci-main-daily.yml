@@ -15,8 +15,8 @@ jobs:
       matrix:
         version:
           - docs
+          - version-2025-2
           - version-2024-12
-          - version-2024-10
     steps:
       - uses: actions/checkout@v4
       - run: |
