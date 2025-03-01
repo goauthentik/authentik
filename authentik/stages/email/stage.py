@@ -145,9 +145,9 @@ class EmailStageView(ChallengeStageView):
                 user.save()
             return self.executor.stage_ok()
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            self.logger.debug("No pending user")
-            messages.error(self.request, _("No pending user."))
-            return self.executor.stage_invalid()
+            message = _("No pending user")
+            self.logger.debug(message)
+            return self.executor.stage_invalid(message)
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
             try:
