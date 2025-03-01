@@ -1629,6 +1629,7 @@
       </trans-unit>
       <trans-unit id="sf6eb148db23d19de">
         <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <target>Fallo al eliminar <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="s039b6434e8a75560">
@@ -1639,6 +1640,7 @@
       </trans-unit>
       <trans-unit id="s5819a49638f6d7cb">
         <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
+        <target>¿Estás seguro que quieres eliminar <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</target>
       </trans-unit>
       <trans-unit id="sdc673e73b5c13aea">
         <source>Delete</source>
@@ -1762,6 +1764,7 @@
       </trans-unit>
       <trans-unit id="s7fc1ace65486dc25">
         <source>All policies must match to grant access</source>
+        <target>Todas las póliticas deben cumplirse para permitir el acceso</target>
         
       </trans-unit>
       <trans-unit id="s8be4abc7ca71da6c">
@@ -1786,6 +1789,7 @@
       </trans-unit>
       <trans-unit id="s8655c52824caac63">
         <source>If checked, the launch URL will open in a new browser tab or window from the user's application library.</source>
+        <target>Si se marca, la url se abrirá en una pestaña o ventana nueva del navegador desde la libreria de aplicaciones del usuario.</target>
         
       </trans-unit>
       <trans-unit id="s068d4dd16d9106d0">
@@ -1800,7 +1804,7 @@
       </trans-unit>
       <trans-unit id="s80e6d6fe5ad458d3">
         <source>Clear icon</source>
-        <target>Ícono Borrar</target>
+        <target>Icono Borrar</target>
         
       </trans-unit>
       <trans-unit id="s6d3b4d0561ba1cff">
@@ -2073,6 +2077,7 @@
       </trans-unit>
       <trans-unit id="s2da51a6287118ba8">
         <source>SSO URL (IdP-initiated Login)</source>
+        <target>SSO URL (IdP-initiated Login)</target>
         
       </trans-unit>
       <trans-unit id="s0a57e911e457302b">
@@ -2157,10 +2162,12 @@
       </trans-unit>
       <trans-unit id="s5deac600e329de1b">
         <source>Log messages</source>
+        <target>Registro de mensajes</target>
         
       </trans-unit>
       <trans-unit id="s3feea7b49673bef2">
         <source>No log messages.</source>
+        <target>Sin registro de mensajes.</target>
         
       </trans-unit>
       <trans-unit id="sa45a194b58837e4f">
@@ -2481,6 +2488,8 @@
       <trans-unit id="scf4afecb0f1e69b2">
         <source>Invalid login attempts will decrease the score for the client's IP, and the
 username they are attempting to login as, by one.</source>
+	<target>Intentos de acceso fallidos decrementará en uno la puntuación de la ip del
+cliente y del usuario que se esté utilizando.</target>
       </trans-unit>
       <trans-unit id="s8323a9af28e10502">
         <source>The policy passes when the reputation score is below the threshold, and
@@ -2535,6 +2544,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="sec5cdfa358f9dbf7">
         <source>Warning: Adding the user to the selected group(s) will give them superuser permissions.</source>
+        <target>Atención: Añadir el usuario a los grupo(s) seleccionado(s) le dará permisos de superusuario.</target>
         
       </trans-unit>
       <trans-unit id="scab2900019953050">
@@ -2554,6 +2564,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s5a802e46a033c8af">
         <source>User's primary identifier. 150 characters or fewer.</source>
+        <target>Identificador primario del usuario. 150 caracteres como máximo.</target>
         
       </trans-unit>
       <trans-unit id="sd34be0d0fcb39971">
@@ -2691,6 +2702,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="sed02f831e653deb3">
         <source>Logins over the last week (per 8 hours)</source>
+        <target>Accesos en la última semana (cada 8 horas)</target>
         
       </trans-unit>
       <trans-unit id="s2b1bc31276c4c477">
@@ -2930,14 +2942,17 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s199b55513a739f43">
         <source>OIDC Well-known URL</source>
+        <target>OIDC Well-known URL</target>
         
       </trans-unit>
       <trans-unit id="s8b149b30b5b523ef">
         <source>OIDC well-known configuration URL. Can be used to automatically configure the URLs above.</source>
+        <target>OIDC well-known URL de configuración. Puede utilizarse para configurar automáticamente las URLS anteriores.</target>
         
       </trans-unit>
       <trans-unit id="s9db2c836ade1339c">
         <source>OIDC JWKS URL</source>
+        <target>OIDC JWKS URL</target>
         
       </trans-unit>
       <trans-unit id="s4b2a1b657c160f5b">
@@ -2952,6 +2967,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s02de8d9e8583b480">
         <source>Raw JWKS data.</source>
+        <target>Datos JWKS sin procesar.</target>
         
       </trans-unit>
       <trans-unit id="s81a87652ade099e4">
@@ -3131,6 +3147,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
+        <target>Tiempo al que tus usuarios temporales son eliminados. Sólo aplica si tu IDP usa el formato de NameID 'transient', y los usuarios no cierran sesión manualmente.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3367,6 +3384,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="se31d92bea7f3a186">
         <source>Used to access the API programmatically</source>
+        <target>Usado para acceder al API de manera programática</target>
         
       </trans-unit>
       <trans-unit id="sfd586951c75eb291">
@@ -3376,6 +3394,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s59bf194136d0d13a">
         <source>Used to login using a flow executor</source>
+        <target>Se utiliza para acceder usando un ejecutor de flujo</target>
         
       </trans-unit>
       <trans-unit id="s1b14062c44e5ef45">
@@ -3728,6 +3747,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s4414164d120de61a">
         <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
+        <target>Los siguientes objectos utilizan <x id="0" equiv-text="${objName}"/></target>
         
       </trans-unit>
       <trans-unit id="s92e241c9f3c101a2">
@@ -3790,6 +3810,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s5d7748b1d2363478">
         <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
+        <target>¿Estas seguro que quieres eliminar los usuarios seleccionados del grupo <x id="0" equiv-text="${this.targetGroup?.name}"/>?</target>
         
       </trans-unit>
       <trans-unit id="sea4f08110bb8f15d">
@@ -3869,6 +3890,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s4c41f3f4c23e8eaa">
         <source>Warning: This group is configured with superuser access. Added users will have superuser access.</source>
+        <target>Atención: Este grupo está configurado con permisos de superusuario. Los usuarios añadidos tendrán acceso como superusuario.</target>
         
       </trans-unit>
       <trans-unit id="scee721983b1c28d0">
@@ -3908,6 +3930,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s634448e4942cf452">
         <source>Edit the notes attribute of this group to add notes here.</source>
+        <target>Edita el atributo notes de este grupo para añadir notas aqui.</target>
         
       </trans-unit>
       <trans-unit id="s586d6bd2eca2da93">
@@ -3922,6 +3945,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s3616cc78631f5893">
         <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
+        <target>Atención: Vas a eliminar el usuario con el que tu creado sesión (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Continua bajo tu propia responsabilidad.</target>
         
       </trans-unit>
       <trans-unit id="s510c7add9e24c306">
@@ -3951,6 +3975,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="sb4c9ed2a487b238f">
         <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
+        <target>¿Estás seguro que quieres eliminar el usuario <x id="0" equiv-text="${this.targetUser?.username}"/> the los siguientes grupos?</target>
         
       </trans-unit>
       <trans-unit id="s964f6725aeb7662f">
@@ -4065,10 +4090,12 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="sc44bae5cde0083fa">
         <source>Actions over the last week (per 8 hours)</source>
+        <target>Acciones en la última semana (cada 8 horas)</target>
         
       </trans-unit>
       <trans-unit id="sb57dbcda1929c642">
         <source>Edit the notes attribute of this user to add notes here.</source>
+        <target>Edita el atributo notes the este usuario para añadir notas aqui.</target>
         
       </trans-unit>
       <trans-unit id="s5c18cae48b93138c">
@@ -4252,10 +4279,12 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s34edeb18f887161d">
         <source>Radio Button Group (fixed choice)</source>
+        <target>Grupo de opciones (selección fija)</target>
         
       </trans-unit>
       <trans-unit id="s57730b6870e8916c">
         <source>Dropdown (fixed choice)</source>
+        <target>Menú desplegable (selección fija)</target>
         
       </trans-unit>
       <trans-unit id="sac8252732f2edb19">
@@ -4339,11 +4368,14 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s37dbfe2133b74d2d">
         <source>Interpret placeholder as expression</source>
+        <target>Interpretar el marcador de posición como una expresión</target>
         
       </trans-unit>
       <trans-unit id="s4a953e6234cb4808">
         <source>When checked, the placeholder will be evaluated in the same way a property mapping is.
             If the evaluation fails, the placeholder itself is returned.</source>
+        <target>Cuando esta activada, el marcador de posición será evaluado de la misma forma que mapeo de propiedades.
+            Si la evaluación falla se devuelve el marcador de posición.</target>
       </trans-unit>
       <trans-unit id="sf90be97cb08f3d5a">
         <source>Placeholder</source>
@@ -4363,6 +4395,8 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       <trans-unit id="sd60415c7666859f0">
         <source>When checked, the initial value will be evaluated in the same way a property mapping is.
             If the evaluation fails, the initial value itself is returned.</source>
+        <target>Cuando esta activa, el valor inicial se evaluará de la misma forma que un mapeo de propiedades.
+            Si la evaluación falla, se devolverá el valor inicial.</target>
       </trans-unit>
       <trans-unit id="sa9c7044d9fd1f3e6">
         <source>Initial value</source>
@@ -4436,6 +4470,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="sf533f13321fee530">
         <source>Evaluate policies during the Flow planning process.</source>
+        <target>Evaluar las políticas durante el proceso de planificación de flujos.</target>
         
       </trans-unit>
       <trans-unit id="s6336fa345e96dde9">
@@ -4459,6 +4494,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s6b9a1dd402750a8a">
         <source>Restarts the flow from the beginning, while keeping the flow context</source>
+        <target>Reiniciar el flujo desde el principio, manteniendo el contexto del flujo</target>
         
       </trans-unit>
       <trans-unit id="sbc88fb27a4c3b894">
@@ -4513,6 +4549,7 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
       </trans-unit>
       <trans-unit id="s88870d7e499e848b">
         <source>Duo Admin API (optional)</source>
+        <target>Duo Admin API (opcional)</target>
         
       </trans-unit>
       <trans-unit id="s7f13f4a2d0370cf6">
@@ -6302,6 +6339,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
+        <target>Autentícate para continuar a <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</target>
         
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
@@ -6321,6 +6359,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
       </trans-unit>
       <trans-unit id="s7073489bb01b3c24">
         <source>Application already has access to the following permissions:</source>
+        <target>La aplicación ya tiene acceso a los siguientes permisos:</target>
         
       </trans-unit>
       <trans-unit id="s98dc556f8bf707dc">
@@ -6395,6 +6434,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
       </trans-unit>
       <trans-unit id="seb0c08d9f233bbfe">
         <source>Please enter the code you received via SMS</source>
+        <target>Por favor, introduce el código que has recibido por SMS</target>
         
       </trans-unit>
       <trans-unit id="s2b7dbba348234a36">
@@ -7865,6 +7905,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="sb0821a9e92cac5eb">
   <source>Failed to register. Please try again.</source>
+  <target>Fallo en el registro. Por favor inténtalo de nuevo.</target>
 </trans-unit>
 <trans-unit id="s238784fc1dc672ae">
   <source>Registering...</source>
@@ -7880,6 +7921,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s6ecfc18dbfeedd76">
   <source>Select one of the options below to continue.</source>
+  <target>Selecciona una de las siguientes opciones para continuar.</target>
 </trans-unit>
 <trans-unit id="s00bcaadd620a11f8">
   <source>Latest version unknown</source>
@@ -7930,6 +7972,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s8cc0075913c67566">
   <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
+  <target>Introduce el email associado a tu cuenta y te enviaremos un enlace para resetear tu password.</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
   <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
@@ -7956,7 +7999,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s6446c35d6b411e53">
   <source>Selected Device types</source>
-  <target>Tipos de Dispositivo Seleccionados</target>
+  <target>Tipos de Dispositivo seleccionados</target>
 </trans-unit>
 <trans-unit id="s1f4df216b56de4ac">
   <source>Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.</source>
@@ -8635,6 +8678,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s98bb2ae796f1ceef">
   <source>Select another authentication method</source>
+  <target>Selecciona otro método de autenticación</target>
 </trans-unit>
 <trans-unit id="s21d95b4651ad7a1e">
   <source>Enter a one-time recovery code for this user.</source>
@@ -9058,9 +9102,11 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s8cf926e8311f8065">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+  <target>Cuando esta opción está habilitada se utiliza la geolocalización de la petición con el número especificado de accesos del histórico y se comprueba si el viaje entre esos puntos es posible en el momento que se accedió.</target>
 </trans-unit>
 <trans-unit id="sa963d05af436770b">
   <source>Impossible travel tolerance</source>
+  <target>Tolerancia al viaje imposible</target>
 </trans-unit>
 <trans-unit id="s5760cd97ca42a238">
   <source>Static rule settings</source>
@@ -9070,18 +9116,21 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="sca2487321ec12bd6">
   <source>Email address the verification email will be sent from.</source>
+  <target>Dirección de correo electrónico desde la que enviarán los correos de verificación de email.</target>
 </trans-unit>
 <trans-unit id="s24a8fdfc73e8137f">
   <source>Stage used to configure an email-based authenticator.</source>
 </trans-unit>
 <trans-unit id="sea0da186a814a212">
   <source>Use global connection settings</source>
+  <target>Utilizar configuración global de conexión</target>
 </trans-unit>
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
 </trans-unit>
 <trans-unit id="s7e2bcca51126ec9c">
   <source>Subject of the verification email.</source>
+  <target>Asunto del email de verificación.</target>
 </trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
@@ -9094,21 +9143,27 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s6bb30c61df4cf486">
   <source>Caps Lock is enabled.</source>
+  <target>Bloqueo de mayúsculas activado.</target>
 </trans-unit>
 <trans-unit id="s3f8a07912545e72e">
   <source>Configure your email</source>
+  <target>Configura tu correo electrónico</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
+  <target>Por favor, introduce tu correo electrónico.</target>
 </trans-unit>
 <trans-unit id="s7cdd62c100b6b17b">
   <source>Please enter the code you received via email</source>
+  <target>Por favor introduce el código que has recibido por email</target>
 </trans-unit>
 <trans-unit id="s1d64dba9bb8b284d">
   <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+  <target>Se ha enviado un código al email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+  <target>Tokens enviados por email.</target>
 </trans-unit>
     </body>
   </file>
