@@ -26,12 +26,19 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     constructor() {
         super();
-        this.addEventListener(EVENT_REFRESH, () => this.requestUpdate());
+        this.addEventListener(EVENT_REFRESH, () => {
+            this.dataPromise = this.fetchData();
+            this.requestUpdate();
+        });
     }
 
     connectedCallback(): void {
         super.connectedCallback();
-        this.dataPromise = this.getPrimaryValue().then((value) => {
+        this.dataPromise = this.fetchData();
+    }
+
+    private fetchData(): Promise<T> {
+        return this.getPrimaryValue().then((value) => {
             this.value = value;
             return value;
         });
@@ -46,17 +53,14 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
             ${until(
                 this.dataPromise
                     ? this.dataPromise
-                          .then((value) =>
-                              this.getStatus(value).then(
-                                  (status) => html`
-                                      <p>
-                                          <i class="${status.icon}"></i>&nbsp;${this.renderValue()}
-                                      </p>
-                                      ${status.message
-                                          ? html`<p class="subtext">${status.message}</p>`
-                                          : nothing}
-                                  `,
-                              ),
+                          .then((value) => this.getStatus(value))
+                          .then(
+                              (status) => html`
+                                  <p><i class="${status.icon}"></i>&nbsp;${this.renderValue()}</p>
+                                  ${status.message
+                                      ? html`<p class="subtext">${status.message}</p>`
+                                      : nothing}
+                              `,
                           )
                           .catch(
                               (exc: ResponseError) => html`
