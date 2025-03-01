@@ -6669,6 +6669,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14196,6 +14201,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Default group email domain"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14344,6 +14354,11 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []

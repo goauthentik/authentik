@@ -30,6 +30,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "token",
             "exclude_users_service_account",
             "filter_group",
+            "dry_run",
         ]
         extra_kwargs = {}
 

@@ -8,9 +8,10 @@ from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.lib.sync.outgoing import HTTP_CONFLICT
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    DryRunRejected,
     NotFoundSyncException,
     ObjectExistsSyncException,
     StopSync,
@@ -43,6 +44,8 @@ class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict
             self.domains.append(domain_name)
 
     def _request(self, request: HttpRequest):
+        if self.provider.dry_run and request.method.upper() not in SAFE_METHODS:
+            raise DryRunRejected(request.uri, request.method, request.body)
         try:
             response = request.execute()
         except GoogleAuthError as exc:
