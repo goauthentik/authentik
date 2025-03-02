@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 00:11+0000\n"
+"POT-Creation-Date: 2025-03-01 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -1388,6 +1388,14 @@ msgstr "RS256（非对称加密）"
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256（非对称加密）"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr "ES384（非对称加密）"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr "ES512（非对称加密）"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
