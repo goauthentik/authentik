@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from django.http import HttpResponseBadRequest, HttpResponseNotFound
 from pydantic import ValidationError
+import re
 from requests import RequestException, Session
 
 from authentik.lib.sync.outgoing import (
@@ -52,6 +53,10 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
         self.base_url = base_url
         self.token = provider.token
         self._config = self.get_service_provider_config()
+
+        # HACK: override AWS response that it supports patch because it only supports single-value patch
+        if self._config.patch.supported and re.match(r"^https://scim\.[a-z-]+[1-9]\.amazonaws\.com/.+$", self.base_url):
+            self._config.patch.supported = False
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
