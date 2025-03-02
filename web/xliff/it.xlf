@@ -9461,6 +9461,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
 </trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
