@@ -1,11 +1,12 @@
 """User API Views"""
 
-from datetime import timedelta
+from datetime import datetime, timedelta
+from hashlib import sha256
 from json import loads
 from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import AnonymousUser, Permission
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.db.models.functions import ExtractHour
@@ -84,6 +85,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.models import EmailStage
@@ -446,15 +448,19 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self) -> tuple[str, Token]:
+    def _create_recovery_link(self, expires: datetime) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand
         # Check that there is a recovery flow, if not return an error
         flow = brand.flow_recovery
         if not flow:
-            raise ValidationError({"non_field_errors": "No recovery flow set."})
+            raise ValidationError(
+                {"non_field_errors": [_("Recovery flow is not set for this brand.")]}
+            )
+        # Mimic an unauthenticated user navigating the recovery flow
         user: User = self.get_object()
+        self.request._request.user = AnonymousUser()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:
@@ -466,16 +472,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             )
         except FlowNonApplicableException:
             raise ValidationError(
-                {"non_field_errors": "Recovery flow not applicable to user"}
+                {"non_field_errors": [_("Recovery flow is not applicable to this user.")]}
             ) from None
-        token, __ = FlowToken.objects.update_or_create(
-            identifier=f"{user.uid}-password-reset",
-            defaults={
-                "user": user,
-                "flow": flow,
-                "_plan": FlowToken.pickle(plan),
-            },
+        token = FlowToken.objects.create(
+            identifier=f"{user.uid}-password-reset-{sha256(str(datetime.now()).encode('UTF-8')).hexdigest()[:8]}",
+            user=user,
+            flow=flow,
+            _plan=FlowToken.pickle(plan),
+            expires=expires,
         )
+
         querystring = urlencode({QS_KEY_TOKEN: token.key})
         link = self.request.build_absolute_uri(
             reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
@@ -610,61 +616,68 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="email_stage",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+            ),
+            OpenApiParameter(
+                name="token_duration",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.STR,
+                required=True,
+            ),
+        ],
         responses={
             "200": LinkSerializer(many=False),
         },
         request=None,
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery(self, request: Request, pk: int) -> Response:
+    def recovery_link(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
-        link, _ = self._create_recovery_link()
-        return Response({"link": link})
+        token_duration = request.query_params.get("token_duration", "")
+        timedelta_string_validator(token_duration)
+        expires = now() + timedelta_from_string(token_duration)
+        link, token = self._create_recovery_link(expires)
 
-    @permission_required("authentik_core.reset_user_password")
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="email_stage",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.STR,
-                required=True,
+        if email_stage := request.query_params.get("email_stage"):
+            for_user: User = self.get_object()
+            if for_user.email == "":
+                LOGGER.debug("User doesn't have an email address")
+                raise ValidationError(
+                    {"non_field_errors": [_("User does not have an email address set.")]}
+                )
+
+            # Lookup the email stage to assure the current user can access it
+            stages = get_objects_for_user(
+                request.user, "authentik_stages_email.view_emailstage"
+            ).filter(pk=email_stage)
+            if not stages.exists():
+                if stages := EmailStage.objects.filter(pk=email_stage).exists():
+                    raise ValidationError(
+                        {"non_field_errors": [_("User has no permissions to this Email stage.")]}
+                    )
+                else:
+                    raise ValidationError(
+                        {"non_field_errors": [_("The given Email stage does not exist.")]}
+                    )
+            email_stage: EmailStage = stages.first()
+            message = TemplateEmailMessage(
+                subject=_(email_stage.subject),
+                to=[(for_user.name, for_user.email)],
+                template_name=email_stage.template,
+                language=for_user.locale(request),
+                template_context={
+                    "url": link,
+                    "user": for_user,
+                    "expires": token.expires,
+                },
             )
-        ],
-        responses={
-            "204": OpenApiResponse(description="Successfully sent recover email"),
-        },
-        request=None,
-    )
-    @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    def recovery_email(self, request: Request, pk: int) -> Response:
-        """Create a temporary link that a user can use to recover their accounts"""
-        for_user: User = self.get_object()
-        if for_user.email == "":
-            LOGGER.debug("User doesn't have an email address")
-            raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link()
-        # Lookup the email stage to assure the current user can access it
-        stages = get_objects_for_user(
-            request.user, "authentik_stages_email.view_emailstage"
-        ).filter(pk=request.query_params.get("email_stage"))
-        if not stages.exists():
-            LOGGER.debug("Email stage does not exist/user has no permissions")
-            raise ValidationError({"non_field_errors": "Email stage does not exist."})
-        email_stage: EmailStage = stages.first()
-        message = TemplateEmailMessage(
-            subject=_(email_stage.subject),
-            to=[(for_user.name, for_user.email)],
-            template_name=email_stage.template,
-            language=for_user.locale(request),
-            template_context={
-                "url": link,
-                "user": for_user,
-                "expires": token.expires,
-            },
-        )
-        send_mails(email_stage, message)
-        return Response(status=204)
+            send_mails(email_stage, message)
+
+        return Response({"link": link})
 
     @permission_required("authentik_core.impersonate")
     @extend_schema(
