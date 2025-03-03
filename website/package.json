@@ -66,17 +66,17 @@
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.2.6",
-        "@rspack/binding-linux-arm64-gnu": "1.1.6",
-        "@rspack/binding-linux-x64-gnu": "1.1.6",
-        "lightningcss-darwin-arm64": "1.28.2",
-        "lightningcss-linux-arm64-gnu": "1.28.2",
-        "lightningcss-linux-x64-gnu": "1.28.2",
-        "@swc/core-darwin-arm64": "1.10.1",
-        "@swc/core-linux-arm64-gnu": "1.10.1",
-        "@swc/core-linux-x64-gnu": "1.10.1",
-        "@swc/html-darwin-arm64": "1.10.1",
-        "@swc/html-linux-arm64-gnu": "1.10.1",
-        "@swc/html-linux-x64-gnu": "1.10.1"
+        "@rspack/binding-linux-arm64-gnu": "1.2.6",
+        "@rspack/binding-linux-x64-gnu": "1.2.6",
+        "lightningcss-darwin-arm64": "1.29.1",
+        "lightningcss-linux-arm64-gnu": "1.29.1",
+        "lightningcss-linux-x64-gnu": "1.29.1",
+        "@swc/core-darwin-arm64": "1.11.5",
+        "@swc/core-linux-arm64-gnu": "1.11.5",
+        "@swc/core-linux-x64-gnu": "1.11.5",
+        "@swc/html-darwin-arm64": "1.11.5",
+        "@swc/html-linux-arm64-gnu": "1.11.5",
+        "@swc/html-linux-x64-gnu": "1.11.5"
     },
     "wireit": {
         "lint:lockfile": {
