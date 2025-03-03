@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 00:11+0000\n"
+"POT-Creation-Date: 2025-03-02 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -878,6 +878,12 @@ msgstr "流程令牌"
 msgid "Invalid next URL"
 msgstr "无效的 next URL"
 
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr "启用时，提供程序将不会在远程系统上修改或创建对象。"
+
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Starting full provider sync"
 msgstr "开始全量提供程序同步"
@@ -891,6 +897,10 @@ msgstr "正在同步用户页面 {page}"
 #, python-brace-format
 msgid "Syncing page {page} of groups"
 msgstr "正在同步群组页面 {page}"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Dropping mutating request due to dry run"
+msgstr "由于启用了试运行，已放弃变更请求"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1388,6 +1398,14 @@ msgstr "RS256（非对称加密）"
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256（非对称加密）"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr "ES384（非对称加密）"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr "ES512（非对称加密）"
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
