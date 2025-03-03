@@ -23,32 +23,37 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-### Provider & application configuration
+To support the integration of NetBird with authentik, you need to create an application/provider pair in authentik.
 
-1. Access the **Admin Interface** of your authentik installation.
-2. Create a new **OAuth2 / OpenID Provider**.
-3. Ensure the **Client Type** is set to `Public`.
-4. Note the generated **Client ID** and **Client Secret**.
-5. In the provider settings, add the following redirect URLs under **Redirect URIs/Origins**:
-    - Strict; `https://netbird.company`
-    - Regex; `https://netbird.company/.*`
-    - Strict; `http://localhost:53000`
-6. Under **Signing Key**, select an available key. By default, the authentik self-signed certificate is available.
-7. Under **Advanced Protocol Settings**, set the **Access Code Validity** to `minutes=10` and set the **Subject Mode** to `Based on the User's ID`.
-8. Click **Finish** to save the provider configuration.
-9. Create a new application associated with this provider.
+### Create an application and provider in authentik
 
-### Service account setup
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-1. Access the **Admin Interface** of your authentik install once more.
-2. Navigate to **Directory** -> **Users**, and click **Create a service account**.
-3. Set the username to `NetBird` and disable the **Create group** option.
-4. Take note of the generated password.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Add two `Strict` redirect URIs and set them to <kbd>http://localhost:53000</kbd> and <kbd>https://<em>netbird.company</em></kbd>. Then, add a `Regex` redirect URI and set it to <kbd>https://<em>netbird.company</em>/.\*</kbd>.
+    - Select any available signing key.
+    - Under **Advanced Protocol Settings**, set **Access Code Validity** to `minutes=10`, then set **Subject Mode** to be `Based on the User's ID`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-### Adding the service account to the administrator group
+3. Click **Submit** to save the new application and provider.
 
-1. Under **Directory** -> **Groups**, select the `authentik Default Admins` group and switch to the **Users** tab near the top of the page.
-2. Click **Add existing user** and then select your NetBird service account.
+### Set up a service account
+
+1. Log into authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Users**, and click **Create a service account**.
+3. Set the **Username** to `NetBird` and disable the **Create group** option. Click **Create** and take note of the **password**.
+
+### Make the service account an administrator
+
+NetBird requires the service account to have full administrative access to the authentik instance. Follow these steps to make it an administrator.
+
+1. Log into authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups**, and click **`authentik Admins`**.
+3. On the top of the group configuration page, switch to the **Users** tab near the top of the page, then click **Add existing user**, and select the service account you just created.
 
 ## NetBird configuration
 
