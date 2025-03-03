@@ -9621,7 +9621,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sc2473aae093ce256">
   <source>Dry-run</source>
-  <target>Mode simultation</target>
+  <target>Mode simulation</target>
 </trans-unit>
     </body>
   </file>
