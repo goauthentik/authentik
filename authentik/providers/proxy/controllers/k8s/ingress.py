@@ -46,7 +46,7 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
 
     def reconcile(self, current: V1Ingress, reference: V1Ingress):
         super().reconcile(current, reference)
-        self._check_annotations(current)
+        self._check_annotations(current, reference)
         # Create a list of all expected host and tls hosts
         expected_hosts = []
         expected_hosts_tls = []
