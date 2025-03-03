@@ -82,6 +82,12 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
+      build:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
+          - "lightningcss*"
+          - "@rspack/binding*"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:
