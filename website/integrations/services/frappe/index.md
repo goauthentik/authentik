@@ -10,7 +10,7 @@ These instructions apply to all projects in the Frappe Family.
 
 ## What is Frappe
 
-> Frappe is a full stack, batteries-included, web framework written in Python and Javascript.
+> Frappe is a full stack, batteries-included, web framework written in Python and JavaScript.
 >
 > -- https://frappe.io/
 
