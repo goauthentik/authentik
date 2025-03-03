@@ -65,7 +65,7 @@
         "wireit": "^0.14.11"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.1.6",
+        "@rspack/binding-darwin-arm64": "1.2.6",
         "@rspack/binding-linux-arm64-gnu": "1.1.6",
         "@rspack/binding-linux-x64-gnu": "1.1.6",
         "lightningcss-darwin-arm64": "1.28.2",
