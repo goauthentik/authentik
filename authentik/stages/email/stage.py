@@ -75,7 +75,7 @@ class EmailStageView(ChallengeStageView):
         pending_user = self.get_pending_user()
         current_stage: EmailStage = self.executor.current_stage
         valid_delta = timedelta(
-            minutes=timedelta_from_string(current_stage.token_expiry).total_seconds()/60 + 1
+            minutes=timedelta_from_string(current_stage.token_expiry).total_seconds() / 60 + 1
         )  # + 1 because django timesince always rounds down
         identifier = slugify(f"ak-email-stage-{current_stage.name}-{str(uuid4())}")
         # Don't check for validity here, we only care if the token exists
