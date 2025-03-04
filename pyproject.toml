@@ -72,9 +72,6 @@ dependencies = [
     "opencontainers[reggie]",
 ]
 
-[tool.uv]
-package = false
-
 [dependency-groups]
 dev = [
     "aws-cdk-lib",
@@ -185,5 +182,9 @@ filterwarnings = [
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project.scripts]
-ak = ".lifecycle.ak:main"
+ak = "lifecycle.ak:main"
