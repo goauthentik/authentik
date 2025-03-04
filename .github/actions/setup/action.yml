@@ -24,7 +24,7 @@ runs:
         python-version-file: "pyproject.toml"
     - name: Install Python deps
       shell: bash
-      run: uv sync --all-extras --dev --frozen --locked
+      run: uv sync --all-extras --dev --frozen
     - name: Setup node
       uses: actions/setup-node@v4
       with:

@@ -138,7 +138,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
     --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --locked --no-install-project --no-dev
+    uv sync --frozen --no-install-project --no-dev
 
 # Stage 6: Run
 FROM python-base AS final-image
