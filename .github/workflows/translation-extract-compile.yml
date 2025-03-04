@@ -36,10 +36,10 @@ jobs:
         run: make gen-client-ts
       - name: run extract
         run: |
-          poetry run make i18n-extract
+          uv run make i18n-extract
       - name: run compile
         run: |
-          poetry run ak compilemessages
+          uv run ak compilemessages
           make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}

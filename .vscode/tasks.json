@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "authentik/core: make",
-            "command": "poetry",
+            "command": "uv",
             "args": ["run", "make", "lint-fix", "lint"],
             "presentation": {
                 "panel": "new"
@@ -12,7 +12,7 @@
         },
         {
             "label": "authentik/core: run",
-            "command": "poetry",
+            "command": "uv",
             "args": ["run", "ak", "server"],
             "group": "build",
             "presentation": {
@@ -60,7 +60,7 @@
         },
         {
             "label": "authentik/api: generate",
-            "command": "poetry",
+            "command": "uv",
             "args": ["run", "make", "gen"],
             "group": "build"
         }
