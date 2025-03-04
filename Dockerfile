@@ -117,20 +117,20 @@ ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     apt-get update && \
-        # Required for installing pip packages
-        apt-get install -y --no-install-recommends \
-        # Build essentials
-        build-essential pkg-config libffi-dev \
-        # cryptography
-        curl \
-        # libxml
-        libxslt-dev zlib1g-dev \
-        # postgresql
-        libpq-dev \
-        # python-kadmin-rs
-        clang libkrb5-dev sccache \
-        # xmlsec
-        libltdl-dev && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential pkg-config libffi-dev \
+    # cryptography
+    curl \
+    # libxml
+    libxslt-dev zlib1g-dev \
+    # postgresql
+    libpq-dev \
+    # python-kadmin-rs
+    clang libkrb5-dev sccache \
+    # xmlsec
+    libltdl-dev && \
     curl https://sh.rustup.rs -sSf | sh -s -- -y
 
 ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
@@ -138,7 +138,7 @@ ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=bind,target=uv.lock,src=uv.lock \
     --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-install-project --no-dev
+    uv sync --frozen --locked --no-install-project --no-dev
 
 # Stage 6: Run
 FROM python-base AS final-image
@@ -173,7 +173,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
-COPY ./poetry.lock /
+COPY ./uv.lock /
 COPY ./schemas /schemas
 COPY ./locale /locale
 COPY ./tests /tests

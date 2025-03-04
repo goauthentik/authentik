@@ -65,7 +65,7 @@ lint: ## Lint the python and golang sources
 	golangci-lint run -v
 
 core-install:
-	poetry install
+	uv sync --frozen
 
 migrate: ## Run the Authentik Django server's migrations
 	python -m lifecycle.migrate
