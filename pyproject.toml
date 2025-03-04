@@ -63,6 +63,7 @@ dependencies = [
     "twilio",
     "ua-parser",
     "unidecode",
+    "urllib3 <3",
     "uvicorn[standard]",
     "watchdog",
     "webauthn",
