@@ -166,6 +166,9 @@ const createConfig = (): Config => {
         markdown: {
             mermaid: true,
         },
+        future: {
+            experimental_faster: true,
+        },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };

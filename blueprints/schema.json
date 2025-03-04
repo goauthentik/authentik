@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.0 Blueprint schema",
+    "title": "authentik 2025.2.1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6669,6 +6669,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14195,6 +14200,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Default group email domain"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14343,6 +14353,11 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
