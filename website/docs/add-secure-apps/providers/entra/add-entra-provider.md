@@ -1,9 +1,6 @@
 ---
 title: Add an Entra ID provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 For more information about using an Entra ID provider, see the [Overview](./index.md) documentation.
@@ -20,7 +17,7 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
 1.  Log in as an admin to authentik, and go to the Admin interface.
 2.  In the Admin interface, navigate to **Applications -> Providers**.
-3.  Click **Create**, and in the **New provider** modal box select **Microsoft Entra Provider** as the type and click **Next**.
+3.  Click **Create**, and in the **New provider** box select **Microsoft Entra Provider** as the type and click **Next**.
 4.  Define the following fields:
 
     - **Name**: define a descriptive name, such as "Entra provider".
@@ -49,7 +46,7 @@ As detailed in the steps below, when you add an Entra ID provider in authentik y
 
 1. Log in as an admin to authentik, and go to the Admin interface.
 2. In the Admin interface, navigate to **Applications -> Applications**.
-3. Click **Create**, and in the **Create Application** modal box define the following fields:
+3. Click **Create**, and define the following fields:
 
     - **Name**: provide a descriptive name.
     - **Slug**: enter the name of the app as you want it to appear in the URL.

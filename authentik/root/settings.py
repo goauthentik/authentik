@@ -16,6 +16,7 @@ from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
@@ -242,6 +243,9 @@ SESSION_CACHE_ALIAS = "default"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.unauthenticated_age", "days=1")
+).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"

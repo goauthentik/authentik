@@ -10,7 +10,7 @@ import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -83,12 +83,14 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    firstUpdated(): void {
-        this.flowSlug = this.brand?.flowUserSettings;
-        if (!this.flowSlug) {
-            return;
+    updated(changedProperties: PropertyValues<this>): void {
+        if (changedProperties.has("brand") && this.brand) {
+            this.flowSlug = this.brand?.flowUserSettings;
+            if (!this.flowSlug) {
+                return;
+            }
+            this.nextChallenge();
         }
-        this.nextChallenge();
     }
 
     async nextChallenge(): Promise<void> {
@@ -161,7 +163,7 @@ export class UserSettingsFlowExecutor
                 // Flow has finished, so let's load while in the background we can restart the flow
                 this.loading = true;
                 console.debug("authentik/user/flows: redirect to '/', restarting flow.");
-                this.firstUpdated();
+                this.nextChallenge();
                 this.globalRefresh();
                 showMessage({
                     level: MessageLevel.success,

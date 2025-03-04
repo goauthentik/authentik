@@ -128,7 +128,7 @@ class GeoIPPolicy(Policy):
                 (geoip_data["lat"], geoip_data["long"]),
             )
             if self.check_history_distance and dist.km >= (
-                self.history_max_distance_km - self.distance_tolerance_km
+                self.history_max_distance_km + self.distance_tolerance_km
             ):
                 return PolicyResult(
                     False, _("Distance from previous authentication is larger than threshold.")
@@ -139,7 +139,7 @@ class GeoIPPolicy(Policy):
             # clamped to be at least 1 hour
             rel_time_hours = max(int((_now - previous_login.created).total_seconds() / 3600), 1)
             if self.check_impossible_travel and dist.km >= (
-                (MAX_DISTANCE_HOUR_KM * rel_time_hours) - self.distance_tolerance_km
+                (MAX_DISTANCE_HOUR_KM * rel_time_hours) + self.distance_tolerance_km
             ):
                 return PolicyResult(False, _("Distance is further than possible."))
         return PolicyResult(True)

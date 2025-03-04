@@ -89,6 +89,7 @@ module.exports = {
                         "services/netbox/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
+                        "services/plesk/index",
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
@@ -163,6 +164,7 @@ module.exports = {
                     label: "Platforms",
                     items: [
                         "services/budibase/index",
+                        "services/drupal/index",
                         "services/wordpress/index",
                     ],
                 },
