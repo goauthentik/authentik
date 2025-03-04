@@ -44,7 +44,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 
 3. Click **Submit** to save the new application and provider.
 
-## Zipline configuration
+## Gravity configuration
 
 1. From the **Gravity administrative interface**, navigate to **Cluster** > **Roles** and click **API**.
 2. Under the **OIDC** sub-section, configure the following values:
