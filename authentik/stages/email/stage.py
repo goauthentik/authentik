@@ -17,7 +17,7 @@ from rest_framework.serializers import ValidationError
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import FlowDesignation, FlowToken
+from authentik.flows.models import FlowAuthenticationRequirement, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
@@ -97,14 +97,27 @@ class EmailStageView(ChallengeStageView):
         """Helper function that sends the actual email. Implies that you've
         already checked that there is a pending user."""
         pending_user = self.get_pending_user()
-        if not pending_user.pk and self.executor.flow.designation == FlowDesignation.RECOVERY:
-            # Pending user does not have a primary key, and we're in a recovery flow,
-            # which means the user entered an invalid identifier, so we pretend to send the
-            # email, to not disclose if the user exists
-            return
-        email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, None)
+        email = self.executor.plan.context.get(PLAN_CONTEXT_EMAIL_OVERRIDE, pending_user.email)
+        if FlowAuthenticationRequirement(
+            self.executor.flow.authentication
+        ).possibly_unauthenticated:
+            # In possibly unauthenticated flows, do not disclose whether user or their email exists
+            # to prevent enumeration attacks
+            if not pending_user.pk:
+                self.logger.debug(
+                    "User object does not exist. Email not sent.", pending_user=pending_user
+                )
+                return
+            if not email:
+                self.logger.debug(
+                    "No recipient email address could be determined. Email not sent.",
+                    pending_user=pending_user,
+                )
+                return
         if not email:
-            email = pending_user.email
+            raise StageInvalidException(
+                "No recipient email address could be determined. Email not sent."
+            )
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
         # Send mail to user
@@ -133,7 +146,9 @@ class EmailStageView(ChallengeStageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
-        restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
+        restore_token: FlowToken | None = self.executor.plan.context.get(
+            PLAN_CONTEXT_IS_RESTORED, None
+        )
         user = self.get_pending_user()
         if restore_token:
             if restore_token.user != user:
