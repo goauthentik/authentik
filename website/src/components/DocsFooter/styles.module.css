@@ -1,0 +1,5 @@
+.cta {
+    .footer__link-item {
+        --ifm-footer-link-color: var(--ifm-color-primary);
+    }
+}
