@@ -202,18 +202,20 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Token expiry")}
+                        label=${msg("Token expiration")}
                         ?required=${true}
                         name="tokenExpiry"
                     >
                         <input
-                            type="number"
-                            value="${first(this.instance?.tokenExpiry, 30)}"
+                            type="text"
+                            value="${first(this.instance?.tokenExpiry, "minutes=15")}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Time in minutes the token sent is valid.")}
+                            ${msg(
+                                "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
