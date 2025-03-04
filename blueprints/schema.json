@@ -6661,6 +6661,15 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "compatibility_mode": {
+                    "type": "string",
+                    "enum": [
+                        "default",
+                        "aws"
+                    ],
+                    "title": "SCIM Compatibility Mode",
+                    "description": "Alter authentik behavior for vendor-specific SCIM implementations."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"

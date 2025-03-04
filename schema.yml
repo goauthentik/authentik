@@ -41582,6 +41582,11 @@ components:
       - confidential
       - public
       type: string
+    CompatibilityModeEnum:
+      enum:
+      - default
+      - aws
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -52445,6 +52450,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55845,6 +55855,11 @@ components:
         token:
           type: string
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55935,6 +55950,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:

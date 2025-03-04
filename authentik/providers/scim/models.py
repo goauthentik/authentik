@@ -57,6 +57,13 @@ class SCIMProviderGroup(SerializerModel):
         return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
 
 
+class SCIMCompatibilityMode(models.TextChoices):
+    """SCIM compatibility mode"""
+
+    DEFAULT = "default", _("Default")
+    AWS = "aws", _("AWS")
+
+
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
@@ -75,6 +82,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+    )
+
+    compatibility_mode = models.CharField(
+        max_length=30,
+        choices=SCIMCompatibilityMode.choices,
+        default=SCIMCompatibilityMode.DEFAULT,
+        verbose_name=_("SCIM Compatibility Mode"),
+        help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
     )
 
     @property

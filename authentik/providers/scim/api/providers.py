@@ -28,6 +28,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "url",
             "verify_certificates",
             "token",
+            "compatibility_mode",
             "exclude_users_service_account",
             "filter_group",
             "dry_run",
