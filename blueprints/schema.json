@@ -11364,11 +11364,10 @@
                     "title": "From address"
                 },
                 "token_expiry": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
+                    "type": "string",
+                    "minLength": 1,
                     "title": "Token expiry",
-                    "description": "Time in minutes the token sent is valid."
+                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
                 },
                 "subject": {
                     "type": "string",
