@@ -1,0 +1,62 @@
+.lastUpdated {
+    font-size: smaller;
+    font-style: italic;
+    margin-top: 0.2rem;
+    align-self: end;
+}
+
+.divider {
+    margin-block: calc(var(--ifm-spacing-horizontal) * 1.5);
+    margin-inline: var(--ifm-spacing-vertical);
+}
+
+@media (min-width: 997px) {
+    .lastUpdated {
+        text-align: right;
+    }
+}
+
+.headerContent {
+    text-transform: none;
+}
+
+.admonitionContrib {
+    --ifm-h5-font-size: 1.25rem;
+
+    display: block;
+
+    @media (min-width: 768px) {
+        --ifm-h5-font-size: 1.5rem;
+        --ifm-paragraph-margin-bottom: 0;
+
+        p:first-child {
+            margin-top: 0.75em;
+        }
+
+        ul {
+            --ifm-spacing-horizontal: 0.5rem;
+
+            display: flex;
+            gap: var(--ifm-spacing-horizontal);
+            justify-content: center;
+            margin: calc(var(--ifm-spacing-horizontal) * 2) 0
+                var(--ifm-spacing-horizontal);
+            padding: 0;
+        }
+
+        li {
+            vertical-align: middle;
+            display: flex;
+            align-items: center;
+        }
+
+        li:not(:first-child)::before {
+            display: inline-block;
+            content: "•";
+            list-style-type: "•";
+            font-size: 1em;
+            opacity: 0.75;
+            margin-inline-end: var(--ifm-spacing-horizontal);
+        }
+    }
+}
