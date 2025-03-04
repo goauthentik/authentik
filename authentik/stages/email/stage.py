@@ -22,6 +22,7 @@ from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDI
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -74,7 +75,7 @@ class EmailStageView(ChallengeStageView):
         pending_user = self.get_pending_user()
         current_stage: EmailStage = self.executor.current_stage
         valid_delta = timedelta(
-            minutes=current_stage.token_expiry + 1
+            minutes=timedelta_from_string(current_stage.token_expiry).total_seconds()/60 + 1
         )  # + 1 because django timesince always rounds down
         identifier = slugify(f"ak-email-stage-{current_stage.name}-{str(uuid4())}")
         # Don't check for validity here, we only care if the token exists
