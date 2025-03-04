@@ -11,7 +11,7 @@ services:
       - 5432:5432
     restart: always
   redis:
-    image: docker.io/library/redis:7.4
+    image: docker.io/library/redis:7
     ports:
       - 6379:6379
     restart: always
