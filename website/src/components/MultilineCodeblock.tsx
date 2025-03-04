@@ -4,6 +4,7 @@ import React, {
     isValidElement,
     useCallback,
     useEffect,
+    useRef,
 } from "react";
 import createDOMPurify from "dompurify";
 
@@ -52,6 +53,9 @@ const IntegrationsMultilineCodeblock: React.FC<
     const [sanitizedContent, setSanitizedContent] = useState<string | null>(
         null,
     );
+
+    // Ref to access the actual DOM element for text extraction
+    const codeRef = useRef<HTMLElement>(null);
 
     /**
      * Recursively converts React children to plain text string
@@ -106,10 +110,11 @@ const IntegrationsMultilineCodeblock: React.FC<
      * Handles copy-to-clipboard functionality
      */
     const handleCopy = async (): Promise<void> => {
-        if (!sanitizedContent) return;
+        // Get raw text content from DOM element, stripping all HTML tags
+        const textToCopy = codeRef.current?.textContent || "";
 
         try {
-            await navigator.clipboard.writeText(sanitizedContent);
+            await navigator.clipboard.writeText(textToCopy);
             setCopyState({
                 isCopied: true,
                 className: "integration-codeblock__copy-btn--copied",
@@ -135,7 +140,8 @@ const IntegrationsMultilineCodeblock: React.FC<
 
     return (
         <pre className={`integration-codeblock ${className}`.trim()}>
-            <code className="integration-codeblock__content">
+            {/* Attach ref to access rendered text content */}
+            <code className="integration-codeblock__content" ref={codeRef}>
                 {typeof children === "string" ? (
                     // Render sanitized HTML for string content
                     <span
