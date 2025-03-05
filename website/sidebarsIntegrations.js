@@ -114,6 +114,7 @@ module.exports = {
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
                         "services/fortimanager/index",
+                        "services/gravity/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                         "services/netbird/index",
@@ -165,6 +166,7 @@ module.exports = {
                     items: [
                         "services/budibase/index",
                         "services/drupal/index",
+                        "services/pocketbase/index",
                         "services/wordpress/index",
                     ],
                 },
