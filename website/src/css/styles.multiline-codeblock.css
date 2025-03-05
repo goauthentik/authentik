@@ -1,0 +1,112 @@
+/* Base styles */
+.integration-codeblock {
+    position: relative;
+    background: #f8f8f8;
+    border-radius: 8px;
+    font-family: "Menlo", "Consolas", monospace;
+    margin: 1.5rem 0;
+    padding: 1rem 2rem 1.5rem 1.5rem;
+    display: block;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.5;
+    transition: box-shadow 0.2s ease;
+}
+
+.integration-codeblock:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.integration-codeblock code {
+    margin: 0;
+    padding: 0;
+    display: block;
+    background: transparent !important;
+    white-space: pre-wrap;
+}
+
+/* Copy button */
+.integration-codeblock__copy-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    padding: 0.5rem;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #666;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.integration-codeblock__copy-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.integration-codeblock__copy-btn:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+.integration-codeblock__copy-btn[disabled] {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.integration-codeblock__copy-icons {
+    display: block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+}
+
+.integration-codeblock__copy-icon,
+.integration-codeblock__copy-success-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.integration-codeblock__copy-success-icon {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.integration-codeblock__copy-btn--copied .integration-codeblock__copy-icon {
+    opacity: 0;
+    transform: scale(1.1);
+}
+
+.integration-codeblock__copy-btn--copied
+    .integration-codeblock__copy-success-icon {
+    opacity: 1;
+    transform: scale(1);
+    color: #10b981;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    .integration-codeblock {
+        background: #1e1e1e;
+        color: #f8f8f8;
+    }
+
+    .integration-codeblock:hover {
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .integration-codeblock__copy-btn {
+        color: #999;
+    }
+
+    .integration-codeblock__copy-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .integration-codeblock__copy-success-icon {
+        color: #10b981;
+    }
+}
