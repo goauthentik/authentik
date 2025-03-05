@@ -148,6 +148,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/beszel/index",
                         "services/chronograf/index",
                         "services/gatus/index",
                         "services/glitchtip/index",
