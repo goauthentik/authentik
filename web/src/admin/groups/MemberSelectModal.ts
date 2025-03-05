@@ -7,13 +7,24 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
+    static get styles() {
+        return [
+            ...super.styles,
+            css`
+                .show-disabled-toggle-group {
+                    margin-left: 0.5rem;
+                }
+            `,
+        ];
+    }
+
     checkbox = true;
     checkboxChip = true;
 
@@ -24,12 +35,15 @@ export class MemberSelectTable extends TableModal<User> {
     @property()
     confirm!: (selectedItems: User[]) => Promise<unknown>;
 
+    showDisabledUsers = false;
+
     order = "username";
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
             includeGroups: false,
+            ...(this.showDisabledUsers ? {} : { isActive: true }),
         });
     }
 
@@ -39,6 +53,36 @@ export class MemberSelectTable extends TableModal<User> {
             new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
         ];
+    }
+
+    renderToolbarAfter() {
+        const toggleShowDisabledUsers = () => {
+            this.showDisabledUsers = !this.showDisabledUsers;
+            this.page = 1;
+            this.fetch();
+        };
+
+        return html`&nbsp;
+            <div class="pf-c-toolbar__group pf-m-filter-group">
+                <div class="pf-c-toolbar__item pf-m-search-filter">
+                    <div class="pf-c-input-group show-disabled-toggle-group">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${this.showDisabledUsers}
+                                @change=${toggleShowDisabledUsers}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Show inactive users")}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>`;
     }
 
     row(item: User): TemplateResult[] {
