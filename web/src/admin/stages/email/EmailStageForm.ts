@@ -208,7 +208,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenExpiry, "minutes=15")}"
+                            value="${first(this.instance?.tokenExpiry, "minutes=30")}"
                             class="pf-c-form-control"
                             required
                         />
