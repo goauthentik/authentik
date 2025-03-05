@@ -39,6 +39,9 @@ export class MemberSelectTable extends TableModal<User> {
 
     order = "username";
 
+    // The `showDisabledUsers` clause below is necessary because the back-end for searches is
+    // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
+    // inactive users; only when it's _missing_ will you get all users.
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
