@@ -60,7 +60,7 @@ export class UserSettingsPage extends AKElement {
                     --pf-c-page__main-section--BackgroundColor: transparent;
                 }
                 .pf-c-page__main {
-                    min-height: 100vw;
+                    min-height: 100vh;
                     overflow-y: auto;
                 }
                 @media screen and (min-width: 1200px) {
