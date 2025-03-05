@@ -7,7 +7,7 @@ import React, {
     useRef,
 } from "react";
 import createDOMPurify from "dompurify";
-import "@site/src/css/styles.multiline-codeblock.css";
+import "@site/src/css/styles.multilinecodeblock.css";
 
 type IntegrationsMultilineCodeblockProps = {
     children: ReactNode;
