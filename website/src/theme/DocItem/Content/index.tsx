@@ -22,6 +22,7 @@ import { DocFrontMatter } from "@docusaurus/plugin-content-docs";
 import { useSyntheticTitle } from "@site/src/hooks/title";
 import { SupportBadge } from "@site/src/components/SupportBadge";
 import { VersionBadge } from "@site/src/components/VersionBadge";
+import { DocsFooterEdit } from "@site/src/components/DocsFooter/index";
 
 interface SwizzledDocFrontMatter extends DocFrontMatter {
     support_level?: string;
@@ -81,6 +82,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
             ) : null}
 
             <MDXContent>{children}</MDXContent>
+            <DocsFooterEdit />
         </div>
     );
 };
