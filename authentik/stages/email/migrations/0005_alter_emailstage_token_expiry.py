@@ -6,15 +6,17 @@ from django.db import migrations, models
 
 
 def convert_integer_to_string_format(apps, schema_editor):
+    db_alias = schema_editor.connection.alias
     EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
-    for stage in EmailStage.objects.all():
+    for stage in EmailStage.objects.using(db_alias).all():
         stage.token_expiry = f"minutes={stage.token_expiry}"
-        stage.save()
+        stage.save(using=db_alias)
 
 
 def convert_string_to_integer_format(apps, schema_editor):
+    db_alias = schema_editor.connection.alias
     EmailStage = apps.get_model("authentik_stages_email", "EmailStage")
-    for stage in EmailStage.objects.all():
+    for stage in EmailStage.objects.using(db_alias).all():
         # Check if token_expiry is a string
         if isinstance(stage.token_expiry, str):
             try:
@@ -23,7 +25,7 @@ def convert_string_to_integer_format(apps, schema_editor):
                 td = timedelta_from_string(stage.token_expiry)
                 minutes_value = int(td.total_seconds() / 60)
                 stage.token_expiry = minutes_value
-                stage.save()
+                stage.save(using=db_alias)
             except (ValueError, TypeError):
                 # If the string can't be parsed or converted properly, skip
                 pass
