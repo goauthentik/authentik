@@ -7,6 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
@@ -70,6 +71,14 @@ class AuthenticatorEmailStage(ConfigurableStage, FriendlyNamedStage, Stage):
     @property
     def component(self) -> str:
         return "ak-stage-authenticator-email-form"
+
+    def ui_user_settings(self) -> UserSettingSerializer | None:
+        return UserSettingSerializer(
+            data={
+                "title": self.friendly_name or str(self._meta.verbose_name),
+                "component": "ak-user-settings-authenticator-email",
+            }
+        )
 
     @property
     def backend_class(self) -> type[BaseEmailBackend]:
