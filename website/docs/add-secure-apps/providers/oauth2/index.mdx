@@ -39,7 +39,7 @@ sequenceDiagram
     user->>op: User authentication & authorization occurs
     op->>rp: Redirect back to the RP with an authorization code
 
-    rect rgb(255, 255, 191)
+    rect
 
         rp->>op: Exchange authorization code
         op->>rp: RP receives Access token (optionally Refresh Token)
@@ -138,6 +138,7 @@ By default, every user that has access to an application can request any of the 
 
 ```python
 # There are additional fields set in the context, use `ak_logger.debug(request.context)` to see them.
+
 if "my-admin-scope" in request.context["oauth_scopes"]:
     return ak_is_group_member(request.user, name="my-admin-group")
 return True

@@ -3,15 +3,16 @@ import esbuild from "esbuild";
 import findFreePorts from "find-free-ports";
 import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
-import path from "path";
+import * as path from "path";
 import { cwd } from "process";
 import process from "process";
 import { fileURLToPath } from "url";
 
-import { buildObserverPlugin } from "./build-observer-plugin.mjs";
+import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
+import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-let authentikProjectRoot = __dirname + "../";
+let authentikProjectRoot = path.join(__dirname, "..", "..");
 
 try {
     // Use the package.json file in the root folder, as it has the current version information.
@@ -122,11 +123,10 @@ const BASE_ESBUILD_OPTIONS = {
     loader: {
         ".css": "text",
         ".md": "text",
-        ".mdx": "text",
     },
     define: definitions,
     format: "esm",
-    plugins: [],
+    plugins: [mdxPlugin()],
     logOverride: {
         /**
          * HACK: Silences issue originating in ESBuild.
@@ -161,7 +161,7 @@ function composeVersionID() {
  * @throws {Error} on build failure
  */
 function createEntryPointOptions([source, dest], overrides = {}) {
-    const outdir = path.join(__dirname, "./dist", dest);
+    const outdir = path.join(__dirname, "..", "dist", dest);
 
     return {
         ...BASE_ESBUILD_OPTIONS,
@@ -214,7 +214,7 @@ async function doWatch() {
                         buildObserverPlugin({
                             serverURL,
                             logPrefix: entryPoint[1],
-                            relativeRoot: __dirname,
+                            relativeRoot: path.join(__dirname, ".."),
                         }),
                     ],
                     define: {
