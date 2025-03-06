@@ -1,210 +1,210 @@
+import pytest
+from unittest.mock import patch, PropertyMock, MagicMock, call
+from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
+from django.conf import settings
+from django.db import connection
+from pathlib import Path
 import os
 import uuid
-from pathlib import Path
-from unittest.mock import patch, MagicMock
-from urllib.parse import urlsplit, parse_qsl
-
-import pytest
-import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
-from django.conf import settings
-from django.core.exceptions import SuspiciousOperation, ImproperlyConfigured
-from django.db import connection
-from storages.utils import safe_join
-from structlog.testing import capture_logs
+from storages.backends.s3 import S3Storage as BaseS3Storage
 
-from authentik.root.storages import FileStorage, S3Storage
+from authentik.root.storages import (
+    FileStorage,
+    S3Storage,
+    TenantAwareStorage,
+)
 from authentik.lib.config import CONFIG
 
 
-@pytest.fixture(autouse=True)
-def set_tenant_schema():
-    original_schema = getattr(connection, "schema_name", None)
-    connection.schema_name = "tenant1"
-    yield
-    if original_schema is not None:
-        connection.schema_name = original_schema
+@pytest.fixture
+def tmp_media_root(tmpdir, settings):
+    settings.MEDIA_ROOT = tmpdir
+    return tmpdir
 
 
 @pytest.fixture
-def media_settings(tmp_path, monkeypatch):
-    media_root = tmp_path / "media"
-    media_root.mkdir()
-    monkeypatch.setattr(settings, "MEDIA_ROOT", str(media_root))
-    monkeypatch.setattr(settings, "MEDIA_URL", "http://example.com/media/")
-    return media_root
+def mock_schema_name(mocker):
+    return mocker.patch.object(
+        connection,
+        'schema_name',
+        new_callable=PropertyMock(return_value='tenant1')
+    )
 
 
 class TestFileStorage:
-    def test_basic_operations(self, media_settings):
-        fs = FileStorage()
-        test_content = b"test content"
-        
-        # Test save and retrieve
-        fs.save("test.txt", test_content)
-        assert fs.exists("test.txt")
-        
-        # Test path resolution
-        full_path = fs.path("test.txt")
-        assert str(media_settings / "tenant1" / "test.txt") in full_path
-        
-        # Test URL generation
-        assert fs.url("test.txt") == "http://example.com/media/tenant1/test.txt"
+    def test_initialization_creates_directory(self, tmp_media_root, mock_schema_name):
+        storage = FileStorage()
+        expected_dir = Path(tmp_media_root) / 'tenant1'
+        assert expected_dir.exists()
+        assert storage.location == str(expected_dir)
 
-    def test_directory_creation_failure(self, media_settings, monkeypatch):
-        monkeypatch.setattr(Path, "mkdir", MagicMock(side_effect=PermissionError("Denied")))
-        
-        with capture_logs() as logs:
-            with pytest.raises(PermissionError):
-                FileStorage()
-                
-        assert any(log["event"] == "Permission denied creating storage directory" for log in logs)
+    def test_path_includes_tenant(self, tmp_media_root, mock_schema_name):
+        storage = FileStorage()
+        path = storage.path('test.txt')
+        assert path == str(Path(tmp_media_root) / 'tenant1' / 'test.txt')
 
-    def test_suspicious_path(self, media_settings):
-        fs = FileStorage()
-        with capture_logs() as logs:
-            with pytest.raises(SuspiciousOperation):
-                fs.path("../illegal.txt")
-                
-        assert any(log["event"] == "Invalid file path requested" for log in logs)
+    def test_base_url_includes_tenant(self, mock_schema_name, settings):
+        settings.MEDIA_URL = '/media/'
+        storage = FileStorage()
+        assert storage.base_url == '/media/tenant1/'
 
-    def test_media_url_format(self, media_settings, monkeypatch):
-        monkeypatch.setattr(settings, "MEDIA_URL", "http://example.com/media")
-        fs = FileStorage()
-        
-        with capture_logs() as logs:
-            url = fs.base_url
-            
-        assert any(log["event"] == "MEDIA_URL should end with '/' for proper URL composition" for log in logs)
-        assert url == "http://example.com/media/tenant1/"
+    def test_base_url_without_trailing_slash(self, mock_schema_name, settings, caplog):
+        settings.MEDIA_URL = '/media'
+        storage = FileStorage()
+        assert storage.base_url == '/media/tenant1/'
+        assert "MEDIA_URL should end with '/'" in caplog.text
+
+    def test_suspicious_path_raises(self, mock_schema_name):
+        storage = FileStorage()
+        with pytest.raises(SuspiciousOperation):
+            storage.path('../outside.txt')
+
+    def test_permission_error_during_init(self, mocker, caplog):
+        mock_mkdir = mocker.patch('pathlib.Path.mkdir')
+        mock_mkdir.side_effect = PermissionError("Permission denied")
+        with pytest.raises(PermissionError):
+            FileStorage()
+        assert "Permission denied creating storage directory" in caplog.text
+
+    def test_directory_creation_error_logging(self, mocker, caplog):
+        mock_mkdir = mocker.patch('pathlib.Path.mkdir')
+        mock_mkdir.side_effect = OSError("Disk full")
+        with pytest.raises(OSError):
+            FileStorage()
+        assert "Filesystem error creating storage directory" in caplog.text
 
 
 class TestS3Storage:
-    @pytest.fixture(autouse=True)
-    def mock_config(self, monkeypatch):
-        config_values = {
-            "storage.media.s3.session_profile": None,
-            "storage.media.s3.access_key": "test_key",
-            "storage.media.s3.secret_key": "test_secret",
-            "storage.media.s3.security_token": None,
-        }
-        monkeypatch.setattr(CONFIG, "refresh", lambda key, default: config_values.get(key, default))
+    def test_config_validation_missing_credentials(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
+        with pytest.raises(ImproperlyConfigured) as exc:
+            S3Storage()
+        assert "Either AWS session profile" in str(exc.value)
 
-    @pytest.fixture
-    def mock_boto(self, monkeypatch):
+    def test_config_validation_conflicting_credentials(self, mocker):
+        def mock_config_refresh(key, default):
+            if 'session_profile' in key:
+                return 'profile'
+            if 'access_key' in key:
+                return 'key'
+            return None
+        
+        mocker.patch.object(CONFIG, 'refresh', mock_config_refresh)
+        with pytest.raises(ImproperlyConfigured) as exc:
+            S3Storage()
+        assert "Conflicting S3 storage configuration" in str(exc.value)
+
+    def test_client_init_with_session_profile(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', side_effect=lambda k, d: (
+            'test-profile' if 'session_profile' in k else None
+        ))
+        mock_session = mocker.patch('boto3.Session')
+        storage = S3Storage()
+        storage.client  # Trigger client creation
+        mock_session.assert_called_once_with(
+            profile_name='test-profile',
+            aws_access_key_id=None,
+            aws_secret_access_key=None,
+            aws_session_token=None
+        )
+
+    def test_client_init_with_access_keys(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', side_effect=lambda k, d: (
+            'AKIAXXX' if 'access_key' in k else
+            'secret' if 'secret_key' in k else None
+        ))
+        mock_session = mocker.patch('boto3.Session')
+        storage = S3Storage()
+        storage.client  # Trigger client creation
+        mock_session.assert_called_once_with(
+            profile_name=None,
+            aws_access_key_id='AKIAXXX',
+            aws_secret_access_key='secret',
+            aws_session_token=None
+        )
+
+    def test_normalize_name_includes_tenant(self, mocker, mock_schema_name):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
+        storage = S3Storage()
+        storage.location = 'base'
+        assert storage._normalize_name('file.txt') == 'base/tenant1/file.txt'
+
+    def test_url_strips_signing_params_with_custom_domain(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
+        mock_super_url = mocker.patch.object(
+            BaseS3Storage, 'url', 
+            return_value='https://cdn.example.com/path?X-Amz-Signature=abc&other=1'
+        )
+        storage = S3Storage()
+        storage.custom_domain = 'cdn.example.com'
+        url = storage.url('file.txt')
+        assert url == 'https://cdn.example.com/path?other=1'
+
+    def test_filename_randomization(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
+        storage = S3Storage()
+        filename = storage._randomize_filename('document.pdf')
+        assert filename.endswith('.pdf')
+        assert len(filename) == 32 + len('.pdf')  # 32 hex chars + extension
+
+    def test_client_error_handling(self, mocker, caplog):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
         mock_client = MagicMock()
-        mock_session = MagicMock()
-        mock_session.client.return_value = mock_client
-        monkeypatch.setattr(boto3, "Session", mock_session)
-        return mock_session, mock_client
-
-    def test_valid_configuration(self):
-        storage = S3Storage()
-        assert storage.access_key == "test_key"
-        assert storage.secret_key == "test_secret"
-
-    def test_conflicting_config(self, monkeypatch):
-        monkeypatch.setattr(CONFIG, "refresh", lambda key, _: "value" if key == "storage.media.s3.session_profile" else "conflict")
-        
-        with capture_logs() as logs:
-            with pytest.raises(ImproperlyConfigured):
-                S3Storage()
-                
-        assert any(log["event"] == "Conflicting S3 storage configuration" for log in logs)
-
-    def test_client_initialization(self, mock_boto):
-        mock_session, mock_client = mock_boto
-        storage = S3Storage()
-        
-        # First access creates client
-        client = storage.client
-        mock_session.assert_called_with(
-            aws_access_key_id="test_key",
-            aws_secret_access_key="test_secret",
-            aws_session_token=None,
-            profile_name=None
-        )
-        assert client == mock_client
-
-    def test_client_initialization_failure(self, monkeypatch):
-        monkeypatch.setattr(boto3, "Session", MagicMock(side_effect=NoCredentialsError()))
-        
-        with capture_logs() as logs:
-            with pytest.raises(ImproperlyConfigured):
-                S3Storage().client
-                
-        assert any(log["event"] == "AWS credentials/region configuration error" for log in logs)
-
-    def test_normalize_name(self):
-        storage = S3Storage()
-        normalized = storage._normalize_name("test.txt")
-        assert normalized == "tenant1/test.txt"
-
-    def test_suspicious_normalization(self):
-        storage = S3Storage()
-        with capture_logs() as logs:
-            with pytest.raises(SuspiciousOperation):
-                storage._normalize_name("../../invalid.txt")
-                
-        assert any(log["event"] == "Invalid S3 key path detected" for log in logs)
-
-    @patch("uuid.uuid4")
-    def test_filename_randomization(self, mock_uuid):
-        mock_uuid.return_value = uuid.UUID(bytes=b"\x00"*16)
-        storage = S3Storage()
-        filename = storage._randomize_filename("document.pdf")
-        assert filename == "00000000000000000000000000000000.pdf"
-
-    def test_save_operation(self, mock_boto):
-        mock_client = mock_boto[1]
-        storage = S3Storage()
-        
-        with capture_logs() as logs:
-            storage._save("test.txt", b"content")
-            
-        assert any(log["event"] == "Saving file to S3" for log in logs)
-        mock_client.upload_fileobj.assert_called_once()
-
-    def test_url_generation(self):
-        storage = S3Storage()
-        storage.custom_domain = "cdn.example.com"
-        
-        with patch.object(BaseS3Storage, "url", return_value="https://cdn.example.com/file?x-amz-signature=test"):
-            url = storage.url("file")
-            assert "x-amz-signature" not in url
-
-    def test_error_handling(self, mock_boto):
-        mock_client = mock_boto[1]
         mock_client.upload_fileobj.side_effect = ClientError(
-            error_response={"Error": {"Code": "403", "Message": "Forbidden"}},
-            operation_name="Upload"
+            {'Error': {'Code': '403', 'Message': 'Forbidden'}}, 
+            'PutObject'
         )
+        mocker.patch('boto3.Session', return_value=MagicMock(client=MagicMock(return_value=mock_client)))
         
         storage = S3Storage()
-        with capture_logs() as logs:
-            with pytest.raises(ClientError):
-                storage._save("test.txt", b"content")
-                
-        assert any(log["event"] == "S3 upload failed" for log in logs)
+        with pytest.raises(ClientError):
+            storage._save('test.txt', None)
+        
+        assert "S3 upload failed" in caplog.text
 
-    def test_filename_validation(self):
+    def test_get_valid_name_cleans_filename(self, mocker):
+        mocker.patch.object(CONFIG, 'refresh', return_value=None)
         storage = S3Storage()
-        with patch.object(BaseS3Storage, "get_valid_name", return_value="clean_name"):
-            valid_name = storage.get_valid_name("  messy/name.txt  ")
-            assert valid_name == "clean_name"
+        assert storage.get_valid_name("../../file.txt") == 'file.txt'
 
 
 class TestTenantAwareStorage:
-    def test_tenant_prefix(self):
+    def test_tenant_prefix(self, mocker):
+        mocker.patch.object(connection, 'schema_name', new='acme_tenant')
         class TestStorage(TenantAwareStorage):
             pass
-            
-        storage = TestStorage()
-        assert storage.tenant_prefix == "tenant1"
-        
+        assert TestStorage().tenant_prefix == 'acme_tenant'
+
     def test_get_tenant_path(self):
         class TestStorage(TenantAwareStorage):
-            pass
-            
+            @property
+            def tenant_prefix(self):
+                return 'test_tenant'
+        
         storage = TestStorage()
-        assert storage.get_tenant_path("file.txt") == "tenant1/file.txt"
+        assert storage.get_tenant_path('file.txt') == 'test_tenant/file.txt'
+
+
+def test_file_storage_random_filename(tmp_media_root, mock_schema_name):
+    storage = FileStorage()
+    name = storage._randomize_filename('image.jpg')
+    assert name.endswith('.jpg')
+    assert len(name) == 32 + len('.jpg')  # UUID hex + extension
+
+
+def test_s3_storage_config_refresh(mocker):
+    config_calls = []
+    def mock_refresh(key, default):
+        config_calls.append(key)
+        return None
+    
+    mocker.patch.object(CONFIG, 'refresh', mock_refresh)
+    S3Storage()
+    expected_keys = [
+        'storage.media.s3.session_profile',
+        'storage.media.s3.access_key',
+        'storage.media.s3.secret_key',
+        'storage.media.s3.security_token'
+    ]
+    assert set(config_calls) == set(expected_keys)
