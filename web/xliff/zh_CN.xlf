@@ -9604,6 +9604,26 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Tokens sent via email.</source>
   <target>通过电子邮件发送的令牌。</target>
 </trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+  <target>启用试运行模式</target>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+  <target>启用时，变更请求将会被放弃，仅记录日志。</target>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+  <target>覆盖试运行模式</target>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+  <target>启用时，此同步仍将执行变更请求，无论提供程序是否启用试运行模式。</target>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
+  <target>试运行</target>
+</trans-unit>
     </body>
   </file>
 </xliff>

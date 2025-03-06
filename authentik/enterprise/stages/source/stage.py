@@ -89,9 +89,9 @@ class SourceStageFinal(StageView):
     This stage uses the override flow token to resume execution of the initial flow the
     source stage is bound to."""
 
-    def dispatch(self):
+    def dispatch(self, *args, **kwargs):
         token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
-        self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
+        self.logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
         plan = token.plan
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         response = plan.to_redirect(self.request, token.flow)

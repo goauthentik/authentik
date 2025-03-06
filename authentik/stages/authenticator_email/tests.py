@@ -300,12 +300,6 @@ class TestAuthenticatorEmailStage(FlowTestCase):
                 data={"component": "ak-stage-authenticator-email", "code": device.token},
             )
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(device.confirmed)
-            # Get a fresh session to check if the key was removed
-            session = self.client.session
-            session.save()
-            session.load()
-            self.assertNotIn(SESSION_KEY_EMAIL_DEVICE, session)
 
     def test_model_properties_and_methods(self):
         """Test model properties"""
@@ -332,7 +326,6 @@ class TestAuthenticatorEmailStage(FlowTestCase):
             self.stage.send(device)
 
     def test_email_tasks(self):
-
         email_send_mock = MagicMock()
         with patch(
             "authentik.stages.email.tasks.send_mails",

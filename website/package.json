@@ -19,6 +19,7 @@
     "dependencies": {
         "semver": "^7.7.1",
         "@docusaurus/core": "^3.7.0",
+        "@docusaurus/faster": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
         "@docusaurus/plugin-content-docs": "^3.7.0",
         "@docusaurus/preset-classic": "^3.7.0",
@@ -37,7 +38,7 @@
         "react-feather": "^2.0.10",
         "react-toggle": "^4.1.3",
         "react-tooltip": "^5.28.0",
-        "remark-directive": "^3.0.1",
+        "remark-directive": "^4.0.0",
         "remark-github": "^12.0.0"
     },
     "browserslist": {
@@ -59,9 +60,23 @@
         "@docusaurus/types": "^3.3.2",
         "@types/react": "^18.3.13",
         "cross-env": "^7.0.3",
-        "prettier": "3.5.2",
-        "typescript": "~5.7.3",
+        "prettier": "3.5.3",
+        "typescript": "~5.8.2",
         "wireit": "^0.14.11"
+    },
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "1.2.7",
+        "@rspack/binding-linux-arm64-gnu": "1.2.7",
+        "@rspack/binding-linux-x64-gnu": "1.2.7",
+        "lightningcss-darwin-arm64": "1.29.1",
+        "lightningcss-linux-arm64-gnu": "1.29.1",
+        "lightningcss-linux-x64-gnu": "1.29.1",
+        "@swc/core-darwin-arm64": "1.11.7",
+        "@swc/core-linux-arm64-gnu": "1.11.7",
+        "@swc/core-linux-x64-gnu": "1.11.7",
+        "@swc/html-darwin-arm64": "1.11.7",
+        "@swc/html-linux-arm64-gnu": "1.11.7",
+        "@swc/html-linux-x64-gnu": "1.11.7"
     },
     "wireit": {
         "lint:lockfile": {
