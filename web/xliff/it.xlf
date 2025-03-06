@@ -7436,10 +7436,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Statistics</source>
   <target>Statistiche degli utenti</target>
 </trans-unit>
-<trans-unit id="s0924f51b028233a3">
-  <source>&lt;No name set&gt;</source>
-  <target>&lt;No name set&gt;</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>Tipo di utente utilizzato per gli utenti appena creati.</target>
@@ -9475,6 +9471,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc2473aae093ce256">
   <source>Dry-run</source>
+</trans-unit>
+<trans-unit id="s34661765d81e7340">
+  <source>Successfully cleared application cache</source>
+</trans-unit>
+<trans-unit id="s9377ae285bc0157c">
+  <source>Failed to delete application cache</source>
+</trans-unit>
+<trans-unit id="s754153d9e524ffce">
+  <source>Clear Application cache</source>
+</trans-unit>
+<trans-unit id="sea5092df2c72b064">
+  <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+</trans-unit>
+<trans-unit id="s1367dcd6e8749fcd">
+  <source>No name set</source>
 </trans-unit>
     </body>
   </file>
