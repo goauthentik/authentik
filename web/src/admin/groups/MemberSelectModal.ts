@@ -5,12 +5,18 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
+import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, User } from "@goauthentik/api";
+import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
+
+// Leaving room in the future for a multi-state control if someone somehow needs to filter inactive
+// users as well.
+type UserListFilter = "active" | "all";
+type UserFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
@@ -19,7 +25,7 @@ export class MemberSelectTable extends TableModal<User> {
             ...super.styles,
             css`
                 .show-disabled-toggle-group {
-                    margin-left: 0.5rem;
+                    margin-inline-start: 0.5rem;
                 }
             `,
         ];
@@ -35,18 +41,23 @@ export class MemberSelectTable extends TableModal<User> {
     @property()
     confirm!: (selectedItems: User[]) => Promise<unknown>;
 
-    showDisabledUsers = false;
+    userListFilter: UserListFilter = "active";
 
     order = "username";
 
-    // The `showDisabledUsers` clause below is necessary because the back-end for searches is
-    // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
-    // inactive users; only when it's _missing_ will you get all users.
+    // The `userFilter` clause is necessary because the back-end for searches is tri-state:
+    // `isActive: true` will only show active users, `isActive: false` will show only inactive
+    // users; only when it's _missing_ will you get all users.
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
+        const userListFilter: UserFilter = match(this.userListFilter)
+            .with("all", () => ({}))
+            .with("active", () => ({ isActive: true }))
+            .exhaustive();
+
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
+            ...userListFilter,
             includeGroups: false,
-            ...(this.showDisabledUsers ? {} : { isActive: true }),
         });
     }
 
@@ -60,7 +71,7 @@ export class MemberSelectTable extends TableModal<User> {
 
     renderToolbarAfter() {
         const toggleShowDisabledUsers = () => {
-            this.showDisabledUsers = !this.showDisabledUsers;
+            this.userListFilter = this.userListFilter === "all" ? "active" : "all";
             this.page = 1;
             this.fetch();
         };
@@ -73,7 +84,7 @@ export class MemberSelectTable extends TableModal<User> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.showDisabledUsers}
+                                ?checked=${this.userListFilter === "all"}
                                 @change=${toggleShowDisabledUsers}
                             />
                             <span class="pf-c-switch__toggle">
