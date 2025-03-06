@@ -7452,10 +7452,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Statistics</source>
   <target>用户统计</target>
 </trans-unit>
-<trans-unit id="s0924f51b028233a3">
-  <source>&lt;No name set&gt;</source>
-  <target>&lt;未设置名称&gt;</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
@@ -9623,6 +9619,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc2473aae093ce256">
   <source>Dry-run</source>
   <target>试运行</target>
+</trans-unit>
+<trans-unit id="s34661765d81e7340">
+  <source>Successfully cleared application cache</source>
+  <target>已成功清除应用程序缓存</target>
+</trans-unit>
+<trans-unit id="s9377ae285bc0157c">
+  <source>Failed to delete application cache</source>
+  <target>删除应用程序缓存失败</target>
+</trans-unit>
+<trans-unit id="s754153d9e524ffce">
+  <source>Clear Application cache</source>
+  <target>清除应用程序缓存</target>
+</trans-unit>
+<trans-unit id="sea5092df2c72b064">
+  <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+  <target>确实要清除应用程序缓存吗？这将导致所有策略在下次使用时重新评估。</target>
+</trans-unit>
+<trans-unit id="s1367dcd6e8749fcd">
+  <source>No name set</source>
+  <target>未设置名称</target>
 </trans-unit>
     </body>
   </file>
