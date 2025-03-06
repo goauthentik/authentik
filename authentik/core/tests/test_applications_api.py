@@ -5,7 +5,7 @@ from json import loads
 from django.core.files.base import ContentFile
 from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITransactionTestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -17,7 +17,7 @@ from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.saml.models import SAMLProvider
 
 
-class TestApplicationsAPI(APITestCase):
+class TestApplicationsAPI(APITransactionTestCase):
     """Test applications API"""
 
     def setUp(self) -> None:
@@ -40,6 +40,14 @@ class TestApplicationsAPI(APITestCase):
             policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
+        self.test_files = []
+
+    def tearDown(self) -> None:
+        # Clean up any test files
+        for app in [self.allowed, self.denied]:
+            if app.meta_icon:
+                app.meta_icon.delete()
+        super().tearDown()
 
     def test_formatted_launch_url(self):
         """Test formatted launch URL"""
@@ -58,19 +66,22 @@ class TestApplicationsAPI(APITestCase):
         )
 
     def test_set_icon(self):
-        """Test set_icon"""
-        file = ContentFile(b"text", "name")
+        """Test set_icon and cleanup"""
+        file = ContentFile(b"test-content", "test-icon.png")
         self.client.force_login(self.user)
+
+        # Test setting icon
         response = self.client.post(
             reverse(
                 "authentik_api:application-set-icon",
                 kwargs={"slug": self.allowed.slug},
             ),
-            data=encode_multipart(data={"file": file}, boundary=BOUNDARY),
+            data=encode_multipart(BOUNDARY, {"file": file}),
             content_type=MULTIPART_CONTENT,
         )
         self.assertEqual(response.status_code, 200)
 
+        # Verify icon was set correctly
         app_raw = self.client.get(
             reverse(
                 "authentik_api:application-detail",
@@ -80,7 +91,23 @@ class TestApplicationsAPI(APITestCase):
         app = loads(app_raw.content)
         self.allowed.refresh_from_db()
         self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
-        self.assertEqual(self.allowed.meta_icon.read(), b"text")
+        self.assertEqual(self.allowed.meta_icon.read(), b"test-content")
+
+        # Test icon replacement
+        new_file = ContentFile(b"new-content", "new-icon.png")
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data=encode_multipart(BOUNDARY, {"file": new_file}),
+            content_type=MULTIPART_CONTENT,
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Verify new icon was set and old one was cleaned up
+        self.allowed.refresh_from_db()
+        self.assertEqual(self.allowed.meta_icon.read(), b"new-content")
 
     def test_check_access(self):
         """Test check_access operation"""
