@@ -5,7 +5,7 @@ from json import loads
 from django.core.files.base import ContentFile
 from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from rest_framework.test import APITransactionCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -17,7 +17,7 @@ from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.saml.models import SAMLProvider
 
 
-class TestApplicationsAPI(APITestCase):
+class TestApplicationsAPI(APITransactionCase):
     """Test applications API"""
 
     def setUp(self) -> None:
