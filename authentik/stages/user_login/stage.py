@@ -80,9 +80,8 @@ class UserLoginStageView(ChallengeStageView):
     def do_login(self, request: HttpRequest, remember: bool = False) -> HttpResponse:
         """Attach the currently pending user to the current session"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            message = _("No Pending user to login.")
-            self.logger.debug(message)
-            return self.executor.stage_invalid(message)
+            self.logger.warning("No pending user to login")
+            return self.executor.stage_invalid(_("No Pending user to login."))
         backend = self.executor.plan.context.get(
             PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
         )

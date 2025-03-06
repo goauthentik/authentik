@@ -15,9 +15,8 @@ class UserDeleteStageView(StageView):
         """Delete currently pending user"""
         user = self.get_pending_user()
         if not user.is_authenticated:
-            message = _("No Pending User.")
-            self.logger.debug(message)
-            return self.executor.stage_invalid(message)
+            self.logger.warning("No authenticated user")
+            return self.executor.stage_invalid(_("No authenticated User."))
         logout(self.request)
         user.delete()
         self.logger.debug("Deleted user", user=user)
