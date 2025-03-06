@@ -4,6 +4,8 @@ import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/SidebarHelp/SidebarHelp.js";
+import { SidebarHelpController } from "@goauthentik/elements/SidebarHelp/SidebarHelpController.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -18,6 +20,7 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
+import SidebarHelp from "@goauthentik/elements/SidebarHelp/SidebarHelp.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
@@ -63,6 +66,8 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     @property()
     order = "name";
 
+    sidebarHelpController = new SidebarHelpController(this);
+
     async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
             ...(await this.defaultEndpointConfig()),
@@ -71,7 +76,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFCard, applicationListStyle);
+        return super.styles.concat(PFCard, SidebarHelp, applicationListStyle);
     }
 
     columns(): TableColumn[] {
@@ -86,13 +91,12 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderSidebarAfter(): TemplateResult {
-        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
-            <div class="pf-c-card">
-                <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
-                </div>
-            </div>
-        </div>`;
+        return html`<ak-sidebar-help
+            label=${msg("Applications Documentation")}
+            .content=${MDApplication}
+            class="pf-c-sidebar__panel"
+            active-style="pf-m-width-25"
+        ></ak-sidebar-help>`;
     }
 
     renderToolbarSelected(): TemplateResult {
