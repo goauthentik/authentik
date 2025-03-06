@@ -16,7 +16,7 @@ import { CoreApi, CoreUsersListRequest, User } from "@goauthentik/api";
 // Leaving room in the future for a multi-state control if someone somehow needs to filter inactive
 // users as well.
 type UserListFilter = "active" | "all";
-type UserFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
+type UserListRequestFilter = Partial<Pick<CoreUsersListRequest, "isActive">>;
 
 @customElement("ak-group-member-select-table")
 export class MemberSelectTable extends TableModal<User> {
@@ -45,18 +45,18 @@ export class MemberSelectTable extends TableModal<User> {
 
     order = "username";
 
-    // The `userFilter` clause is necessary because the back-end for searches is tri-state:
-    // `isActive: true` will only show active users, `isActive: false` will show only inactive
-    // users; only when it's _missing_ will you get all users.
+    // The `userListRequestFilter` clause is necessary because the back-end for searches is
+    // tri-state: `isActive: true` will only show active users, `isActive: false` will show only
+    // inactive users; only when it's _missing_ will you get all users.
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
-        const userListFilter: UserFilter = match(this.userListFilter)
+        const userListRequestFilter: UserListRequestFilter = match(this.userListFilter)
             .with("all", () => ({}))
             .with("active", () => ({ isActive: true }))
             .exhaustive();
 
         return new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            ...userListFilter,
+            ...userListRequestFilter,
             includeGroups: false,
         });
     }
