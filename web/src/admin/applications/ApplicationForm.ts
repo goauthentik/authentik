@@ -22,7 +22,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -126,7 +126,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         );
 
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-alert level="pf-m-info">${alertMsg}</ak-alert>
+            ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 value=${ifDefined(this.instance?.name)}

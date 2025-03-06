@@ -58,9 +58,9 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
+        PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
-        PolicyBindingCheckTarget.policy,
     ];
 
     @property({ type: Array })

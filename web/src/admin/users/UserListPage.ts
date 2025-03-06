@@ -248,7 +248,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
-                <small>${item.name === "" ? msg("<No name set>") : item.name}</small>
+                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin

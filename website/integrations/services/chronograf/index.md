@@ -24,11 +24,12 @@ This documentation lists only the settings that you need to change from their de
 ## authentik configuration
 
 1. From the authentik Admin interface navigate to **Applications** -> **Applications** on the left sidebar.
-2. Create an application and an OAuth2/OpenID provider using the [wizard](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications).
+
+2. Create an application and an OAuth2/OpenID provider using the [Application modal](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#instructions).
     - Note the application slug, client ID, and client secret, as they will be required later.
     - Set a strict redirect URI to `https://chronograf.company/oauth/authentik/callback`.
     - Choose a signing key (any available key is acceptable).
-3. Complete and submit the settings to close the wizard.
+3. Complete and submit the settings to close the modal.
 
 ## Chronograf configuration
 

@@ -8930,7 +8930,7 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9256,6 +9256,111 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s47b7ce63a543564c">
   <source>Fewer details</source>
+</trans-unit>
+<trans-unit id="s140111d464591e6b">
+  <source>Create a new application and configure a provider for it.</source>
+</trans-unit>
+<trans-unit id="s5e0c81c05565bf42">
+  <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+</trans-unit>
+<trans-unit id="s035bfd9c5f97e4d3">
+  <source>Distance settings</source>
+</trans-unit>
+<trans-unit id="s207e6f8a8b3515fd">
+  <source>Check historical distance of logins</source>
+</trans-unit>
+<trans-unit id="s8158f4b3e5c869be">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
+</trans-unit>
+<trans-unit id="sb8b7450c8515894c">
+  <source>Maximum distance</source>
+</trans-unit>
+<trans-unit id="s40cdbaa532bc9899">
+  <source>Maximum distance a login attempt is allowed from in kilometers.</source>
+</trans-unit>
+<trans-unit id="seef852b5c0f8a529">
+  <source>Distance tolerance</source>
+</trans-unit>
+<trans-unit id="sce567ced300aeb8a">
+  <source>Tolerance in checking for distances in kilometers.</source>
+</trans-unit>
+<trans-unit id="s9ea9cdabd74f8f97">
+  <source>Historical Login Count</source>
+</trans-unit>
+<trans-unit id="s27aec4c2de1ae777">
+  <source>Amount of previous login events to check against.</source>
+</trans-unit>
+<trans-unit id="s48611ce6e85874dc">
+  <source>Check impossible travel</source>
+</trans-unit>
+<trans-unit id="s8cf926e8311f8065">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+</trans-unit>
+<trans-unit id="sa963d05af436770b">
+  <source>Impossible travel tolerance</source>
+</trans-unit>
+<trans-unit id="s5760cd97ca42a238">
+  <source>Static rule settings</source>
+</trans-unit>
+<trans-unit id="s8fec035fa1737294">
+  <source>Create with Provider</source>
+</trans-unit>
+<trans-unit id="sca2487321ec12bd6">
+  <source>Email address the verification email will be sent from.</source>
+</trans-unit>
+<trans-unit id="s24a8fdfc73e8137f">
+  <source>Stage used to configure an email-based authenticator.</source>
+</trans-unit>
+<trans-unit id="sea0da186a814a212">
+  <source>Use global connection settings</source>
+</trans-unit>
+<trans-unit id="s7754fa56a4439de4">
+  <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+</trans-unit>
+<trans-unit id="s7e2bcca51126ec9c">
+  <source>Subject of the verification email.</source>
+</trans-unit>
+<trans-unit id="sc12c90b1da0f3a47">
+  <source>Token expiration</source>
+</trans-unit>
+<trans-unit id="sc264a82f9c710f14">
+  <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+</trans-unit>
+<trans-unit id="s15986693bfc99fb7">
+  <source>Email-based Authenticators</source>
+</trans-unit>
+<trans-unit id="s6bb30c61df4cf486">
+  <source>Caps Lock is enabled.</source>
+</trans-unit>
+<trans-unit id="s3f8a07912545e72e">
+  <source>Configure your email</source>
+</trans-unit>
+<trans-unit id="scedf77e8b75cad5a">
+  <source>Please enter your email address.</source>
+</trans-unit>
+<trans-unit id="s7cdd62c100b6b17b">
+  <source>Please enter the code you received via email</source>
+</trans-unit>
+<trans-unit id="s1d64dba9bb8b284d">
+  <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+</trans-unit>
+<trans-unit id="s833cfe815918c143">
+  <source>Tokens sent via email.</source>
+</trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
 </trans-unit>
     </body>
   </file>

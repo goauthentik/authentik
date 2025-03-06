@@ -1,10 +1,11 @@
 ---
-title: Authenticator validation stage
+title: Authenticator Validation stage
 ---
 
 This stage validates an already configured Authenticator Device. This device has to be configured using any of the other authenticator stages:
 
 - [Duo authenticator stage](../authenticator_duo/index.mdx)
+- [Email authenticator stage](../authenticator_email/index.md)
 - [SMS authenticator stage](../authenticator_sms/index.mdx)
 - [Static authenticator stage](../authenticator_static/index.md)
 - [TOTP authenticator stage](../authenticator_totp/index.md)
@@ -33,7 +34,7 @@ You can configure this stage to only ask for MFA validation if the user hasn't a
 Firefox has some known issues regarding TouchID (see https://bugzilla.mozilla.org/show_bug.cgi?id=1536482)
 :::
 
-Passwordless authentication currently only supports WebAuthn devices, like security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
+Passwordless authentication currently only supports WebAuthn devices, which provides for the use of passkeys, security keys and biometrics. For an alternate passwordless setup, see [Password stage](../password/index.md#passwordless-login), which supports other types.
 
 To configure passwordless authentication, create a new Flow with the designation set to _Authentication_.
 

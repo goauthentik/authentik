@@ -176,6 +176,23 @@ export class MicrosoftEntraProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Dry-run")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ak-status-label
+                                            ?good=${!this.provider.dryRun}
+                                            type="info"
+                                            good-label=${msg("No")}
+                                            bad-label=${msg("Yes")}
+                                        ></ak-status-label>
+                                    </div>
+                                </dd>
+                            </div>
                         </dl>
                     </div>
                     <div class="pf-c-card__footer">

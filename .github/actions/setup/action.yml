@@ -30,12 +30,16 @@ runs:
       uses: actions/setup-go@v5
       with:
         go-version-file: "go.mod"
+    - name: Setup docker cache
+      uses: ScribeMD/docker-cache@0.5.0
+      with:
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/docker-compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry install --sync
+        poetry sync
         cd web && npm ci
     - name: Generate config
       shell: poetry run python {0}

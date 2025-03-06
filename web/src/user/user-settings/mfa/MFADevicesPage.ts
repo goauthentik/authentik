@@ -74,7 +74,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.base}if/user/#/settings;${JSON.stringify({
+                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"

@@ -61,7 +61,7 @@ class SAMLSLOView(PolicyAccessView):
                 PLAN_CONTEXT_APPLICATION: self.application,
             },
         )
-        plan.insert_stage(in_memory_stage(SessionEndStage))
+        plan.append_stage(in_memory_stage(SessionEndStage))
         return plan.to_redirect(self.request, self.flow)
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:

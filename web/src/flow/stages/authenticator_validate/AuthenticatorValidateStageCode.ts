@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -35,7 +35,7 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         switch (this.deviceChallenge?.deviceClass) {
             case DeviceClassesEnum.Email: {
                 const email = this.deviceChallenge.challenge?.email;
-                return msg(`A code has been sent to you via email${email ? ` ${email}` : ""}`);
+                return msg(str`A code has been sent to you via email${email ? ` ${email}` : ""}`);
             }
             case DeviceClassesEnum.Sms:
                 return msg("A code has been sent to you via SMS.");
