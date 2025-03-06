@@ -37,6 +37,7 @@ class GoogleWorkspaceProviderSerializer(EnterpriseRequiredMixin, ProviderSeriali
             "user_delete_action",
             "group_delete_action",
             "default_group_email_domain",
+            "dry_run",
         ]
         extra_kwargs = {}
 
