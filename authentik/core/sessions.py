@@ -155,3 +155,14 @@ class SessionStore(SessionBase):
     @classmethod
     async def aclear_expired(cls):
         await cls.get_model_class().objects.filter(expires__lt=timezone.now()).adelete()
+
+    def cycle_key(self):
+        data = self._session
+        key = self.session_key
+        self.create()
+        self._session_cache = data
+        if key:
+            self.delete(key)
+        if (authenticated_session := data.get("authenticatedsession")) is not None:
+            authenticated_session.session_id = self.session_key
+            authenticated_session.save(force_insert=True)
