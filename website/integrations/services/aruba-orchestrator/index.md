@@ -1,11 +1,8 @@
 ---
 title: Integrate with Aruba Orchestrator
 sidebar_label: Aruba Orchestrator
+support_level: community
 ---
-
-# Integrate with Aruba Orchestrator
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Aruba Orchestrator
 

@@ -17,7 +17,7 @@ import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
-import "chartjs-adapter-moment";
+import "chartjs-adapter-date-fns";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

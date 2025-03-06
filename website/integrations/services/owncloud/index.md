@@ -1,9 +1,8 @@
 ---
 title: Integrate with ownCloud
 sidebar_label: ownCloud
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ownCloud
 

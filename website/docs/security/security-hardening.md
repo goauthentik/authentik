@@ -25,7 +25,7 @@ However, for further hardening, it is possible to prevent any user (even super-u
 - `/api/v3/propertymappings*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file). Take care to restrict access to the file system itself.
+With these restrictions in place, expressions can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file). Take care to restrict access to the file system itself.
 
 ### Blueprints
 
@@ -35,7 +35,7 @@ To prevent any user from creating/editing blueprints, block API requests to this
 
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.md#storage---file).
+With these restrictions in place, Blueprints can only be edited via [the file system](../customize/blueprints/index.mdx#storage---file).
 
 ### CAPTCHA Stage
 
@@ -46,7 +46,7 @@ To prevent any user from creating/editing CAPTCHA stages block API requests to t
 - `/api/v3/stages/captcha*`
 - `/api/v3/managed/blueprints*`
 
-With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.md#storage---file).
+With these restrictions in place, CAPTCHA stages can only be edited using [Blueprints on the file system](../customize/blueprints/index.mdx#storage---file).
 
 ### Content Security Policy (CSP)
 

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Node-RED
 sidebar_label: Node-RED
+support_level: community
 ---
-
-# Integrate with Node-RED
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Node-RED
 

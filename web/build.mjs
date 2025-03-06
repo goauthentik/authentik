@@ -1,45 +1,54 @@
 import { execFileSync } from "child_process";
-import * as chokidar from "chokidar";
 import esbuild from "esbuild";
-import fs from "fs";
+import findFreePorts from "find-free-ports";
+import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
 import path from "path";
 import { cwd } from "process";
 import process from "process";
 import { fileURLToPath } from "url";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+import { buildObserverPlugin } from "./build-observer-plugin.mjs";
 
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 let authentikProjectRoot = __dirname + "../";
+
 try {
     // Use the package.json file in the root folder, as it has the current version information.
     authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
         encoding: "utf8",
     }).replace("\n", "");
-} catch (_exc) {
-    // We probably don't have a .git folder, which could happen in container builds
+} catch (_error) {
+    // We probably don't have a .git folder, which could happen in container builds.
 }
-const rootPackage = JSON.parse(fs.readFileSync(path.join(authentikProjectRoot, "./package.json")));
 
-const isProdBuild = process.env.NODE_ENV === "production";
+const packageJSONPath = path.join(authentikProjectRoot, "./package.json");
+const rootPackage = JSON.parse(readFileSync(packageJSONPath, "utf8"));
 
-const apiBasePath = process.env.AK_API_BASE_PATH || "";
+const NODE_ENV = process.env.NODE_ENV || "development";
+const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
 
-const envGitHashKey = "GIT_BUILD_HASH";
+const environmentVars = new Map([
+    ["NODE_ENV", NODE_ENV],
+    ["CWD", cwd()],
+    ["AK_API_BASE_PATH", AK_API_BASE_PATH],
+]);
 
-const definitions = {
-    "process.env.NODE_ENV": JSON.stringify(isProdBuild ? "production" : "development"),
-    "process.env.CWD": JSON.stringify(cwd()),
-    "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-};
+const definitions = Object.fromEntries(
+    Array.from(environmentVars).map(([key, value]) => {
+        return [`process.env.${key}`, JSON.stringify(value)];
+    }),
+);
 
-// All is magic is just to make sure the assets are copied into the right places. This is a very
-// stripped down version of what the rollup-copy-plugin does, without any of the features we don't
-// use, and using globSync instead of globby since we already had globSync lying around thanks to
-// Typescript. If there's a third argument in an array entry, it's used to replace the internal path
-// before concatenating it all together as the destination target.
-
-const otherFiles = [
+/**
+ * All is magic is just to make sure the assets are copied into the right places. This is a very
+ * stripped down version of what the rollup-copy-plugin does, without any of the features we don't
+ * use, and using globSync instead of globby since we already had globSync lying around thanks to
+ * Typescript. If there's a third argument in an array entry, it's used to replace the internal path
+ * before concatenating it all together as the destination target.
+ * @type {Array<[string, string, string?]>}
+ */
+const assetsFileMappings = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
     ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
     ["src/custom.css", "."],
@@ -48,49 +57,76 @@ const otherFiles = [
     ["./icons/*", "./assets/icons"],
 ];
 
-const isFile = (filePath) => fs.statSync(filePath).isFile();
+/**
+ * @param {string} filePath
+ */
+const isFile = (filePath) => statSync(filePath).isFile();
+
+/**
+ * @param {string} src Source file
+ * @param {string} dest Destination folder
+ * @param {string} [strip] Path to strip from the source file
+ */
 function nameCopyTarget(src, dest, strip) {
     const target = path.join(dest, strip ? src.replace(strip, "") : path.parse(src).base);
     return [src, target];
 }
 
-for (const [source, rawdest, strip] of otherFiles) {
+for (const [source, rawdest, strip] of assetsFileMappings) {
     const matchedPaths = globSync(source);
     const dest = path.join("dist", rawdest);
+
     const copyTargets = matchedPaths.map((path) => nameCopyTarget(path, dest, strip));
+
     for (const [src, dest] of copyTargets) {
         if (isFile(src)) {
-            fs.mkdirSync(path.dirname(dest), { recursive: true });
-            fs.copyFileSync(src, dest);
+            mkdirSync(path.dirname(dest), { recursive: true });
+            copyFileSync(src, dest);
         }
     }
 }
 
-// This starts the definitions used for esbuild: Our targets, our arguments, the function for
-// running a build, and three options for building: watching, building, and building the proxy.
-// Ordered by largest to smallest interface to build even faster
-const interfaces = [
+/**
+ * @typedef {[source: string, destination: string]} EntryPoint
+ */
+
+/**
+ * This starts the definitions used for esbuild: Our targets, our arguments, the function for
+ * running a build, and three options for building: watching, building, and building the proxy.
+ * Ordered by largest to smallest interface to build even faster
+ *
+ * @type {EntryPoint[]}
+ */
+const entryPoints = [
     ["admin/AdminInterface/AdminInterface.ts", "admin"],
     ["user/UserInterface.ts", "user"],
     ["flow/FlowInterface.ts", "flow"],
     ["standalone/api-browser/index.ts", "standalone/api-browser"],
-    ["enterprise/rac/index.ts", "enterprise/rac"],
+    ["rac/index.ts", "rac"],
     ["standalone/loading/index.ts", "standalone/loading"],
     ["polyfill/poly.ts", "."],
 ];
 
-const baseArgs = {
+/**
+ * @satisfies {import("esbuild").BuildOptions}
+ */
+const BASE_ESBUILD_OPTIONS = {
     bundle: true,
     write: true,
     sourcemap: true,
-    minify: isProdBuild,
+    minify: NODE_ENV === "production",
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
     tsconfig: "./tsconfig.json",
-    loader: { ".css": "text", ".md": "text" },
+    loader: {
+        ".css": "text",
+        ".md": "text",
+        ".mdx": "text",
+    },
     define: definitions,
     format: "esm",
+    plugins: [],
     logOverride: {
         /**
          * HACK: Silences issue originating in ESBuild.
@@ -102,91 +138,144 @@ const baseArgs = {
     },
 };
 
-function getVersion() {
-    let version = rootPackage.version;
-    if (process.env[envGitHashKey]) {
-        version = `${version}+${process.env[envGitHashKey]}`;
+/**
+ * Creates a version ID for the build.
+ * @returns {string}
+ */
+function composeVersionID() {
+    const { version } = rootPackage;
+    const buildHash = process.env.GIT_BUILD_HASH;
+
+    if (buildHash) {
+        return `${version}+${buildHash}`;
     }
+
     return version;
 }
 
-async function buildOneSource(source, dest) {
-    const DIST = path.join(__dirname, "./dist", dest);
-    console.log(`[${new Date(Date.now()).toISOString()}] Starting build for target ${source}`);
+/**
+ * Build a single entry point.
+ *
+ * @param {EntryPoint} buildTarget
+ * @param {Partial<esbuild.BuildOptions>} [overrides]
+ * @throws {Error} on build failure
+ */
+function createEntryPointOptions([source, dest], overrides = {}) {
+    const outdir = path.join(__dirname, "./dist", dest);
 
-    try {
-        const start = Date.now();
-        await esbuild.build({
-            ...baseArgs,
-            entryPoints: [`./src/${source}`],
-            entryNames: `[dir]/[name]-${getVersion()}`,
-            outdir: DIST,
-        });
-        const end = Date.now();
-        console.log(
-            `[${new Date(end).toISOString()}] Finished build for target ${source} in ${
-                Date.now() - start
-            }ms`,
-        );
-        return 0;
-    } catch (exc) {
-        console.error(`[${new Date(Date.now()).toISOString()}] Failed to build ${source}: ${exc}`);
-        return 1;
-    }
+    return {
+        ...BASE_ESBUILD_OPTIONS,
+        entryPoints: [`./src/${source}`],
+        entryNames: `[dir]/[name]-${composeVersionID()}`,
+        outdir,
+        ...overrides,
+    };
 }
 
-async function buildAuthentik(interfaces) {
-    const code = await Promise.allSettled(
-        interfaces.map(([source, dest]) => buildOneSource(source, dest)),
+/**
+ * Build all entry points in parallel.
+ *
+ * @param {EntryPoint[]} entryPoints
+ */
+async function buildParallel(entryPoints) {
+    await Promise.allSettled(
+        entryPoints.map((entryPoint) => {
+            return esbuild.build(createEntryPointOptions(entryPoint));
+        }),
     );
-    const finalCode = code.reduce((a, res) => a + res.value, 0);
-    if (finalCode > 0) {
-        return 1;
-    }
-    return 0;
 }
 
-let timeoutId = null;
-function debouncedBuild() {
-    if (timeoutId !== null) {
-        clearTimeout(timeoutId);
-    }
-    timeoutId = setTimeout(() => {
-        console.clear();
-        buildAuthentik(interfaces);
-    }, 250);
-}
+function doHelp() {
+    console.log(`Build the authentik UI
 
-if (process.argv.length > 2 && (process.argv[2] === "-h" || process.argv[2] === "--help")) {
-    console.log(`Build the authentikUI
-
-options:
-  -w, --watch: Build all ${interfaces.length} interfaces
-  -p, --proxy: Build only the polyfills and the loading application
-  -h, --help: This help message
+        options:
+            -w, --watch: Build all ${entryPoints.length} interfaces
+            -p, --proxy: Build only the polyfills and the loading application
+            -h, --help: This help message
 `);
+
     process.exit(0);
 }
 
-if (process.argv.length > 2 && (process.argv[2] === "-w" || process.argv[2] === "--watch")) {
-    console.log("Watching ./src for changes");
-    chokidar.watch("./src").on("all", (event, path) => {
-        if (!["add", "change", "unlink"].includes(event)) {
-            return;
-        }
-        if (!/(\.css|\.ts|\.js)$/.test(path)) {
-            return;
-        }
-        debouncedBuild();
-    });
-} else if (process.argv.length > 2 && (process.argv[2] === "-p" || process.argv[2] === "--proxy")) {
-    // There's no watch-for-proxy, sorry.
-    process.exit(
-        await buildAuthentik(
-            interfaces.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
-        ),
+async function doWatch() {
+    console.log("Watching all entry points...");
+
+    const wathcherPorts = await findFreePorts(entryPoints.length);
+
+    const buildContexts = await Promise.all(
+        entryPoints.map((entryPoint, i) => {
+            const port = wathcherPorts[i];
+            const serverURL = new URL(`http://localhost:${port}/events`);
+
+            return esbuild.context(
+                createEntryPointOptions(entryPoint, {
+                    plugins: [
+                        ...BASE_ESBUILD_OPTIONS.plugins,
+                        buildObserverPlugin({
+                            serverURL,
+                            logPrefix: entryPoint[1],
+                            relativeRoot: __dirname,
+                        }),
+                    ],
+                    define: {
+                        ...definitions,
+                        "process.env.WATCHER_URL": JSON.stringify(serverURL.toString()),
+                    },
+                }),
+            );
+        }),
     );
-} else {
-    // And the fallback: just build it.
-    process.exit(await buildAuthentik(interfaces));
+
+    await Promise.all(buildContexts.map((context) => context.rebuild()));
+
+    await Promise.allSettled(buildContexts.map((context) => context.watch()));
+
+    return /** @type {Promise<void>} */ (
+        new Promise((resolve) => {
+            process.on("SIGINT", () => {
+                resolve();
+            });
+        })
+    );
 }
+
+async function doBuild() {
+    console.log("Building all entry points");
+
+    return buildParallel(entryPoints);
+}
+
+async function doProxy() {
+    return buildParallel(
+        entryPoints.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
+    );
+}
+
+async function delegateCommand() {
+    const command = process.argv[2];
+
+    switch (command) {
+        case "-h":
+        case "--help":
+            return doHelp();
+        case "-w":
+        case "--watch":
+            return doWatch();
+        // There's no watch-for-proxy, sorry.
+        case "-p":
+        case "--proxy":
+            return doProxy();
+        default:
+            return doBuild();
+    }
+}
+
+await delegateCommand()
+    .then(() => {
+        console.log("Build complete");
+        process.exit(0);
+    })
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });

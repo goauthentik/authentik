@@ -20,7 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint";
 
@@ -50,7 +50,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     pageDescription(): string {
         return msg(
-            str`External applications that use ${this.brand.brandingTitle || "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+            str`External applications that use ${this.brand?.brandingTitle ?? "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {
@@ -83,10 +83,6 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
             new TableColumn(msg("Provider Type")),
             new TableColumn(msg("Actions")),
         ];
-    }
-
-    renderSectionBefore(): TemplateResult {
-        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderSidebarAfter(): TemplateResult {
@@ -160,12 +156,44 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Application")} </span>
-            <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                <button
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="start-application-wizard"
+                >
+                    ${msg("Create with Provider")}
+                </button>
+            </ak-application-wizard>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Application")} </span>
+                <ak-application-form slot="form"> </ak-application-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            </ak-forms-modal>`;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html` ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${msg("Successfully cleared application cache")}
+                errorMessage=${msg("Failed to delete application cache")}
+                action=${msg("Clear cache")}
+                .onConfirm=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${msg("Clear Application cache")} </span>
+                <p slot="body">
+                    ${msg(
+                        "Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.",
+                    )}
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${msg("Clear cache")}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
 }
 

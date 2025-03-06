@@ -13,7 +13,7 @@ import MDNginxStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy
 import MDTraefikCompose from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_compose.md";
 import MDTraefikIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
 import MDTraefikStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.md";
+import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -25,7 +25,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -94,6 +94,11 @@ export class ProxyProviderViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFBanner,
+            css`
+                :host(:not([theme="dark"])) .ak-markdown-section {
+                    background-color: var(--pf-c-card--BackgroundColor);
+                }
+            `,
         ];
     }
 
@@ -118,7 +123,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     renderConfig(): TemplateResult {
-        const serves = [
+        const servers = [
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
@@ -184,11 +189,11 @@ export class ProxyProviderViewPage extends AKElement {
             },
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
-            ${serves.map((server) => {
+            ${servers.map((server) => {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
-                    class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-markdown
                         .replacers=${replacers}

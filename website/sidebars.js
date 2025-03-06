@@ -2,13 +2,14 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
+    "releases/2025/v2025.2",
     "releases/2024/v2024.12",
     "releases/2024/v2024.10",
-    "releases/2024/v2024.8",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.8",
             "releases/2024/v2024.6",
             "releases/2024/v2024.4",
             "releases/2024/v2024.2",
@@ -200,8 +201,6 @@ export default {
                                 "add-secure-apps/providers/oauth2/github-compatibility",
                             ],
                         },
-                        "add-secure-apps/providers/saml/index",
-                        "add-secure-apps/providers/radius/index",
                         {
                             type: "category",
                             label: "Proxy Provider",
@@ -228,7 +227,6 @@ export default {
                                 },
                             ],
                         },
-                        "add-secure-apps/providers/scim/index",
                         {
                             type: "category",
                             label: "RAC (Remote Access Control) Provider",
@@ -237,6 +235,20 @@ export default {
                                 id: "add-secure-apps/providers/rac/index",
                             },
                             items: ["add-secure-apps/providers/rac/how-to-rac"],
+                        },
+                        "add-secure-apps/providers/radius/index",
+                        "add-secure-apps/providers/saml/index",
+                        "add-secure-apps/providers/scim/index",
+                        {
+                            type: "category",
+                            label: "SSF Provider",
+                            link: {
+                                type: "doc",
+                                id: "add-secure-apps/providers/ssf/index",
+                            },
+                            items: [
+                                "add-secure-apps/providers/ssf/create-ssf-provider",
+                            ],
                         },
                     ],
                 },
@@ -286,11 +298,12 @@ export default {
                             items: [
                                 "add-secure-apps/flows-stages/stages/authenticator_duo/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_email/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_static/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_totp/index",
-                                "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                                 "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
+                                "add-secure-apps/flows-stages/stages/authenticator_validate/index",
                                 "add-secure-apps/flows-stages/stages/captcha/index",
                                 "add-secure-apps/flows-stages/stages/deny",
                                 "add-secure-apps/flows-stages/stages/email/index",
@@ -608,11 +621,12 @@ export default {
             items: [
                 {
                     type: "category",
-                    label: "Setup",
+                    label: "Development environment",
                     items: [
                         "developer-docs/setup/full-dev-environment",
                         "developer-docs/setup/frontend-dev-environment",
                         "developer-docs/setup/website-dev-environment",
+                        "developer-docs/setup/debugging",
                     ],
                 },
                 {

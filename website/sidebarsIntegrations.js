@@ -89,6 +89,7 @@ module.exports = {
                         "services/netbox/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
+                        "services/plesk/index",
                         "services/powerdns-admin/index",
                         "services/proftpd/index",
                         "services/qnap-nas/index",
@@ -113,6 +114,7 @@ module.exports = {
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
                         "services/fortimanager/index",
+                        "services/gravity/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                         "services/netbird/index",
@@ -123,6 +125,7 @@ module.exports = {
                     label: "Miscellaneous",
                     items: [
                         "services/actual-budget/index",
+                        "services/adventurelog/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
@@ -162,6 +165,8 @@ module.exports = {
                     label: "Platforms",
                     items: [
                         "services/budibase/index",
+                        "services/drupal/index",
+                        "services/pocketbase/index",
                         "services/wordpress/index",
                     ],
                 },

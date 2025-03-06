@@ -74,7 +74,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.base}if/user/#/settings;${JSON.stringify({
+                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"
@@ -95,6 +95,8 @@ export class MFADevicesPage extends Table<Device> {
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsEmailDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":
