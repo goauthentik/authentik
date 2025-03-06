@@ -26,13 +26,12 @@ This documentation lists only the settings that you need to change from their de
 Mautic and authentik both require an X.509 certificates.
 Mautic requires the key to be in PKCS#1-format specifically (and thus RSA).
 
-To avoid changing certificates in authentik (e.g., if they are present in PKCS#8), we generate a new one:
+To avoid changing certificates in authentik (e.g., if they are present in PKCS#8), go to the authentik Admin interface and generate a new one:
 
-1. Go to certificates and click on **Generate** and use the following values:
-    - **Common Name**: `Mautic Self-signed Certificate`
+1. Go to **System -> Certificates** and click on **Generate**. Use the following values: - **Common Name**: `Mautic Self-signed Certificate`
     - **Private key Algorithm**: `RSA`
-2. Click on the drop-down arrow left of the newly generated certificate and **Download certificate** to `certificate.pem` and **Download Private key** to `private_key.pem`.
-3. Make sure that the `private_key.pem` is in PKCS#1 format. Therefore, open it in a text editor and check that the header footer contain `RSA`:
+2. Click on the caret (**>**) to the left of the newly generated certificate and click both **Download certificate** (downloads a file named `certificate.pem`) and **Download Private key** (downloads a file named `private_key.pem`).
+3. Make sure that the `private_key.pem` is in PKCS#1 format. To verify, open the file in a text editor and check that the header footer contain `RSA`:
     ```diff
     - -----BEGIN PRIVATE KEY-----
     + -----BEGIN RSA PRIVATE KEY-----
@@ -50,26 +49,27 @@ To avoid changing certificates in authentik (e.g., if they are present in PKCS#8
     openssl req -new -key private_key.pem -out request.csr
     ```
 
-    This will prompt to enter values for the certificate which you can choose freely. For some, you can use authentiks generated values:
+    This will prompt to enter values for the certificate which you can choose freely. For some, you can use authentik's generated values:
 
     - **Organization Name**: `authentik`
     - **Organizational Unit Name**: `Self-signed`
     - **Common Name**: `Mautic Self-signed Certificate`
 
-    Next, regenerate the certificate:
+    Next, generate the certificate with the (now) PKCS#1-compliant key and the previously generated signing request:
 
     ```sh
     openssl x509 -req -days 365 -in request.csr -signkey private_key.pem -out certificate_new.pem
     ```
 
-6. Update the previously generated certificate in authentik:
-    - **Certificate**: The contents of `certificate_new.pem`
-    - **Private Key**: The contents of `private_key_new.pem`
+6. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate. Click on the description below the text inputs to activate the inputs.
+    - **Certificate**: Enter the contents of `certificate_new.pem`
+    - **Private Key**: Enter the contents of `private_key_new.pem`
+    - Click on **Update**
 
 ## authentik configuration
 
 1. Because Mautic requires a first name and last name attribute, create two [SAML provider property mappings](../../../docs/users-sources/sources/property-mappings):
-    1. The first name mapping returns everything until the first space (or an empty string if there is no space):
+    1. The first name mapping returns everything up to the first space (or an empty string if there is no space):
         - **Name**: `SAML-FirstName-from-Name`
         - **SAML Attribute Name**: `FirstName`
         - **Expression**:
@@ -96,10 +96,10 @@ To avoid changing certificates in authentik (e.g., if they are present in PKCS#8
 
 ## Mautic configuration
 
-1. When running behind an SSL-terminating reverse proxy (e.g. traefik): In Configuration > System Settings, make sure that
+1. When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Configuration > System Settings**, make sure that:
     - the **Site URL** starts with `https://`
     - **trusted proxies** includes the IP-address of the reverse proxy
-2. In Configuration > User/Authentication Settings, set the following values:
+2. In **Configuration > User/Authentication Settings**, set the following values:
     - **Entity ID for the IDP**: <kbd>https://<em>mautic.company</em></kbd>
     - **Identity provider metadata file**: The `authentik_meta.xml` file
     - **Default role for created users**: Choose one to enable creating users.
