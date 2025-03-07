@@ -41,27 +41,27 @@ To avoid changing certificates in authentik (e.g., if they are present in PKCS#8
     - -----END PRIVATE KEY-----
     + -----END RSA PRIVATE KEY-----
     ```
-    If the key contains `RSA` in header and footer, the certificate preparation is complete and you can skip steps 4 to 6.
+    If the key contains `RSA` in header and footer, the certificate preparation is complete and you can skip steps 4 to 7.
 4. Add `RSA` after `BEGIN`/`END` in `private_key.pem` as shown in step 3 and save the file as `private_key_new.pem`.
-5. Regenerate the X.509-certificate by first creating a signing request:
+5. Regenerate the X.509-certificate by first creating a signing request, using the following command:
 
     ```sh
     openssl req -new -key private_key.pem -out request.csr
     ```
 
-    This will prompt to enter values for the certificate which you can choose freely. For some, you can use authentik's generated values:
+    This will prompt you to enter values for the certificate which you can choose freely. For some, you can use authentik's generated values:
 
     - **Organization Name**: `authentik`
     - **Organizational Unit Name**: `Self-signed`
     - **Common Name**: `Mautic Self-signed Certificate`
 
-    Next, generate the certificate with the (now) PKCS#1-compliant key and the previously generated signing request:
+6. Next, generate the certificate with the (now) PKCS#1-compliant key and the previously generated signing request, using the following command:
 
     ```sh
     openssl x509 -req -days 365 -in request.csr -signkey private_key.pem -out certificate_new.pem
     ```
 
-6. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate. Click on the description below the text inputs to activate the inputs.
+7. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate. Click on the description below the text inputs to activate the inputs.
     - **Certificate**: Enter the contents of `certificate_new.pem`
     - **Private Key**: Enter the contents of `private_key_new.pem`
     - Click on **Update**
