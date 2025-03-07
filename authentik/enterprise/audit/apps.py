@@ -9,7 +9,7 @@ class AuthentikEnterpriseAuditConfig(EnterpriseConfig):
     """Enterprise app config"""
 
     name = "authentik.enterprise.audit"
-    label = "authentik_enterprise_audit"
+    label = "authentik_audit"
     verbose_name = "authentik Enterprise.Audit"
     default = True
 
