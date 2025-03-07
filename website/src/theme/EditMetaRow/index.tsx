@@ -34,7 +34,11 @@ const EditMetaRow: React.FC<Props> = ({
                         id="theme.common.contributor.footerDescription2"
                         description="The description for the contribution footer"
                     >
-                        We welcome your knowledge and expertise. If you see areas of the documentation that you can improve (fix a typo, correct a technical detail, add additional context, etc.) we would really appreciate your contribution.
+                        We welcome your knowledge and expertise. If you see
+                        areas of the documentation that you can improve (fix a
+                        typo, correct a technical detail, add additional
+                        context, etc.) we would really appreciate your
+                        contribution.
                     </Translate>
                 </p>
 
