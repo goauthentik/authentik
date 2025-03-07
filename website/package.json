@@ -4,8 +4,8 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yaml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build-bundled": "cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
         "lint:lockfile": "wireit",
@@ -71,12 +71,12 @@
         "lightningcss-darwin-arm64": "1.29.1",
         "lightningcss-linux-arm64-gnu": "1.29.1",
         "lightningcss-linux-x64-gnu": "1.29.1",
-        "@swc/core-darwin-arm64": "1.11.5",
-        "@swc/core-linux-arm64-gnu": "1.11.5",
-        "@swc/core-linux-x64-gnu": "1.11.5",
-        "@swc/html-darwin-arm64": "1.11.5",
-        "@swc/html-linux-arm64-gnu": "1.11.5",
-        "@swc/html-linux-x64-gnu": "1.11.5"
+        "@swc/core-darwin-arm64": "1.11.7",
+        "@swc/core-linux-arm64-gnu": "1.11.7",
+        "@swc/core-linux-x64-gnu": "1.11.7",
+        "@swc/html-darwin-arm64": "1.11.7",
+        "@swc/html-linux-arm64-gnu": "1.11.7",
+        "@swc/html-linux-x64-gnu": "1.11.7"
     },
     "wireit": {
         "lint:lockfile": {

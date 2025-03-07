@@ -2,7 +2,7 @@ authentik takes security very seriously. We follow the rules of [responsible di
 
 ## Independent audits and pentests
 
-We are committed to engaging in regular pentesting and security audits of authentik. Defining and adhering to a cadence of external testing ensures a stronger probability that our code base, our features, and our architecture is as secure and non-exploitable as possible. For more details about specfic audits and pentests, refer to "Audits and Certificates" in our [Security documentation](https://docs.goauthentik.io/docs/security).
+We are committed to engaging in regular pentesting and security audits of authentik. Defining and adhering to a cadence of external testing ensures a stronger probability that our code base, our features, and our architecture is as secure and non-exploitable as possible. For more details about specific audits and pentests, refer to "Audits and Certificates" in our [Security documentation](https://docs.goauthentik.io/docs/security).
 
 ## What authentik classifies as a CVE
 
