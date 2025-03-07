@@ -37,6 +37,7 @@ from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
+from authentik.tasks.tasks import async_task
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -143,11 +144,9 @@ class OutpostServiceConnection(models.Model):
     @property
     def state(self) -> OutpostServiceConnectionState:
         """Get state of service connection"""
-        from authentik.outposts.tasks import outpost_service_connection_state
-
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_state.delay(self.pk)
+            async_task("authentik.outposts.tasks.outpost_service_connection_state", self.pk)
             return OutpostServiceConnectionState("", False)
         return state
 

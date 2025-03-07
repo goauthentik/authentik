@@ -10,9 +10,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import __version__, get_build_hash
-from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL, update_latest_version
+from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL
 from authentik.core.api.utils import PassiveSerializer
 from authentik.outposts.models import Outpost
+from authentik.tasks.tasks import async_task
 
 
 class VersionSerializer(PassiveSerializer):
@@ -37,7 +38,7 @@ class VersionSerializer(PassiveSerializer):
         """Get latest version from cache"""
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover
-            update_latest_version.delay()
+            async_task("authentik.admin.tasks.update_latest_version")
             return __version__
         return version_in_cache
 

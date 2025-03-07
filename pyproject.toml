@@ -120,6 +120,7 @@ django-guardian = "*"
 django-model-utils = "*"
 django-pglock = "*"
 django-prometheus = "*"
+django-q2 = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
 # See https://github.com/django-tenants/django-tenants/pull/997

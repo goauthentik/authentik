@@ -1,5 +1,6 @@
 """authentik admin tasks"""
 
+from authentik.tasks.tasks import TaskData, task
 from django.core.cache import cache
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
@@ -10,10 +11,9 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
+from authentik.events.system_tasks import TaskStatus
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
-from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
@@ -33,7 +33,7 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task(
+@task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def clear_update_notifications():
@@ -47,9 +47,8 @@ def clear_update_notifications():
             notification.delete()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def update_latest_version(self: SystemTask):
+@task(bind=True)
+def update_latest_version(self: TaskData):
     """Update latest version info"""
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
