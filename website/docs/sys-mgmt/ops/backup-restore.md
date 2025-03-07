@@ -12,7 +12,7 @@ This guide outlines the critical components to back up and restore in authentik.
 - **Role:** Stores all persistent data (users, policies, configurations, etc.).
 - **Impact of Loss:** Complete data loss, requiring full restoration to recover functionality.
 - **Backup Guidance:**
-    - Use PostgreSQL's native tools (`pg_dump`, `pg_dumpall`, or [continuous archiving](https://www.postgresql.org/docs/current/continuous-archiving.html)).
+    - Use PostgreSQL's native tools ([`pg_dump`](https://www.postgresql.org/docs/current/app-pgdump.html), [`pg_dumpall`](https://www.postgresql.org/docs/current/app-pg-dumpall.html), or [continuous archiving](https://www.postgresql.org/docs/current/continuous-archiving.html)).
     - Exclude system databases: `template0` and `template1`.
 - **Official Documentation:** [PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)
 
