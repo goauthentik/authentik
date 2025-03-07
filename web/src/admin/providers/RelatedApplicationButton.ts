@@ -31,7 +31,9 @@ export class RelatedApplicationButton extends AKElement {
             </a>`;
         }
         if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
-            return html`<a href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}">
+            return html`<a
+                href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}"
+            >
                 ${this.provider.assignedBackchannelApplicationName}
             </a>`;
         }
