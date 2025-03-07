@@ -11,6 +11,9 @@ from django_q.models import Task
 from authentik.events.logs import LogEvent
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tasks.models import TaskExtra, TaskStatus
+from structlog.stdlib import get_logger
+
+LOGGER = get_logger()
 
 
 @dataclass
@@ -68,7 +71,7 @@ def task(
     return wrapper
 
 
-def async_task(func, *args, **kwargs):
+def async_task(func: str, *args, **kwargs):
     """
     Wrapper around django_q's async_task to support various extra use-cases.
 
@@ -77,6 +80,9 @@ def async_task(func, *args, **kwargs):
     if not isinstance(func, str):
         raise RuntimeError("async_task should be called with the task path")
     f = pydoc.locate(func)
+    if f is None:
+        LOGGER.error(f"Could not find task at {func}")
+        raise RuntimeError(f"Could not find task at {func}")
     q_options = kwargs.pop("q_options", {})
     if f.bind and "hook" not in q_options:
         q_options["hook"] = "authentik.tasks.tasks._hook"

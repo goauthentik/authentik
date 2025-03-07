@@ -16,7 +16,7 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
-from authentik.events.system_tasks import TaskStatus
+from authentik.tasks.models import TaskStatus
 from authentik.lib.config import CONFIG
 from authentik.tasks.tasks import TaskData, task
 

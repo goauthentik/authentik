@@ -14,3 +14,5 @@ class AuthentikAdminConfig(ManagedAppConfig):
     label = "authentik_admin"
     verbose_name = "authentik Admin"
     default = True
+
+    startup_tasks_all_tenants = ("authentik.admin.tasks.clear_update_notifications",)

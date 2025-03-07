@@ -3,13 +3,13 @@
 from collections.abc import Callable
 from importlib import import_module
 from inspect import ismethod
+from typing import Iterable
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.root.signals import startup
-from authentik.tasks.tasks import async_task
 
 
 class ManagedAppConfig(AppConfig):
@@ -19,6 +19,9 @@ class ManagedAppConfig(AppConfig):
 
     RECONCILE_GLOBAL_CATEGORY: str = "global"
     RECONCILE_TENANT_CATEGORY: str = "tenant"
+
+    startup_tasks_default_tenant: Iterable[str] = []
+    startup_tasks_all_tenants: Iterable[str] = []
 
     def __init__(self, app_name: str, *args, **kwargs) -> None:
         super().__init__(app_name, *args, **kwargs)
@@ -84,6 +87,7 @@ class ManagedAppConfig(AppConfig):
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
+        from authentik.tasks.tasks import async_task
 
         try:
             tenants = list(Tenant.objects.filter(ready=True))
@@ -93,6 +97,8 @@ class ManagedAppConfig(AppConfig):
         for tenant in tenants:
             with tenant:
                 self._reconcile(self.RECONCILE_TENANT_CATEGORY)
+                for task in self.startup_tasks_all_tenants:
+                    async_task(task)
 
     def _reconcile_global(self) -> None:
         """
@@ -100,9 +106,12 @@ class ManagedAppConfig(AppConfig):
         Used for signals, tasks, etc. Database queries should not be made in here.
         """
         from django_tenants.utils import get_public_schema_name, schema_context
+        from authentik.tasks.tasks import async_task
 
         with schema_context(get_public_schema_name()):
             self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
+            for task in self.startup_tasks_default_tenant:
+                async_task(task)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -113,17 +122,15 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     verbose_name = "authentik Blueprints"
     default = True
 
+    startup_tasks_all_tenants = (
+        "authentik.blueprints.v1.tasks.blueprints_discovery",
+        "authentik.blueprints.v1.tasks.clear_failed_blueprints",
+    )
+
     @ManagedAppConfig.reconcile_global
     def load_blueprints_v1_tasks(self):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
-
-    @ManagedAppConfig.reconcile_tenant
-    def blueprints_discovery(self):
-        """Run blueprint discovery"""
-
-        async_task("authentik.blueprints.v1.tasks.blueprints_discovery")
-        async_task("authentik.blueprints.v1.tasks.clear_failed_blueprints")
 
     def import_models(self):
         super().import_models()

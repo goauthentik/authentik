@@ -39,12 +39,6 @@ CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 HEARTBEAT_FILE = Path(gettempdir() + "/authentik-worker")
 
 
-@setup_logging.connect
-def config_loggers(*args, **kwargs):
-    """Apply logging settings from settings.py to celery"""
-    dictConfig(settings.LOGGING)
-
-
 @after_task_publish.connect
 def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
@@ -87,48 +81,9 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
         ).save()
 
 
-def _get_startup_tasks_default_tenant() -> list[Callable]:
-    """Get all tasks to be run on startup for the default tenant"""
-    # from authentik.outposts.tasks import outpost_connection_discovery
-
-    return [
-        # outpost_connection_discovery,
-    ]
-
-
-def _get_startup_tasks_all_tenants() -> list[Callable]:
-    """Get all tasks to be run on startup for all tenants"""
-    from authentik.providers.proxy.tasks import proxy_set_defaults
-
-    return [
-        # clear_update_notifications,
-        proxy_set_defaults,
-    ]
-
-
 @worker_ready.connect
 def worker_ready_hook(*args, **kwargs):
     """Run certain tasks on worker start"""
-    from authentik.tenants.models import Tenant
-
-    LOGGER.info("Dispatching startup tasks...")
-
-    # TODO: find out what to do about those
-    def _run_task(task: Callable):
-        try:
-            task.delay()
-        except ProgrammingError as exc:
-            LOGGER.warning("Startup task failed", task=task, exc=exc)
-
-    for task in _get_startup_tasks_default_tenant():
-        with Tenant.objects.get(schema_name=get_public_schema_name()):
-            _run_task(task)
-
-    for task in _get_startup_tasks_all_tenants():
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                _run_task(task)
-
     from authentik.blueprints.v1.tasks import start_blueprint_watcher
 
     start_blueprint_watcher()

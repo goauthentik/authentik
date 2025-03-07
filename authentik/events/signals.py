@@ -121,7 +121,7 @@ def event_post_save_notification(sender, instance: Event, **_):
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     if get_current_tenant().gdpr_compliance:
-        async_task("authentik.events.gdpr_cleanup", instance.pk)
+        async_task("authentik.events.tasks.gdpr_cleanup", instance.pk)
 
 
 @receiver(monitoring_set)
