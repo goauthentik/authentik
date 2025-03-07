@@ -103,7 +103,7 @@ const createConfig = (): Config => {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
                         showLastUpdateTime:
-                            process.env.GIT_UNAVAILABLE == "true",
+                            process.env.GIT_UNAVAILABLE != "true",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
