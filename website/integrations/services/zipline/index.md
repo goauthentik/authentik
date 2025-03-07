@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::warning
-This guide is only compatible with [version `v4.0.0`](https://github.com/diced/zipline/releases/tag/v4.0.0). It is **not** compatible with `v3.x.x`.
+This guide is only compatible with Zipline [version `v4.0.0`](https://github.com/diced/zipline/releases/tag/v4.0.0) or later.
 :::
 
 ## authentik configuration
