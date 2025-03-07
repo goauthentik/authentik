@@ -1,5 +1,6 @@
 ---
-title: Backup & Restore
+title: Backup and restore your authentik instance
+sidebar_label: Backup & Restore
 ---
 
 This guide outlines the critical components to back up and restore in authentik.
