@@ -81,9 +81,14 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                                 "Altered behavior for usage with Amazon Web Services.",
                             )}`,
                         },
+                        {
+                            label: msg("Slack"),
+                            value: CompatibilityModeEnum.Slack,
+                            description: html`${msg("Altered behavior for usage with Slack.")}`,
+                        },
                     ]}
                     help=${msg(
-                        "Alter authentik behavior for vendor-specific SCIM implementations.",
+                        "Alter authentik's behavior for vendor-specific SCIM implementations.",
                     )}
                 ></ak-radio-input>
                 <ak-form-element-horizontal name="dryRun">

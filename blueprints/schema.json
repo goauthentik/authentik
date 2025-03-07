@@ -6665,7 +6665,8 @@
                     "type": "string",
                     "enum": [
                         "default",
-                        "aws"
+                        "aws",
+                        "slack"
                     ],
                     "title": "SCIM Compatibility Mode",
                     "description": "Alter authentik behavior for vendor-specific SCIM implementations."

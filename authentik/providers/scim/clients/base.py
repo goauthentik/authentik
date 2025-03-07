@@ -95,6 +95,8 @@ class SCIMClient[TModel: "Model", TConnection: "Model", TSchema: "BaseModel"](
             )
             if self.provider.compatibility_mode == SCIMCompatibilityMode.AWS:
                 config.patch.supported = False
+            if self.provider.compatibility_mode == SCIMCompatibilityMode.SLACK:
+                config.filter.supported = True
             return config
         except (ValidationError, SCIMRequestException, NotFoundSyncException) as exc:
             self.logger.warning("failed to get ServiceProviderConfig", exc=exc)

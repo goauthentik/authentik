@@ -41586,6 +41586,7 @@ components:
       enum:
       - default
       - aws
+      - slack
       type: string
     Config:
       type: object
