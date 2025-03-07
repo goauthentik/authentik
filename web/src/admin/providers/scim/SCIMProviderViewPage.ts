@@ -173,6 +173,7 @@ export class SCIMProviderViewPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <ak-provider-related-application
+                                                mode="backchannel"
                                                 .provider=${this.provider}
                                             ></ak-provider-related-application>
                                         </div>
