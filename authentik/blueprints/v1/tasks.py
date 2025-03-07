@@ -34,7 +34,7 @@ from authentik.events.logs import capture_logs
 from authentik.events.models import TaskStatus
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
-from authentik.tasks.tasks import TaskData, task
+from authentik.tasks.tasks import TaskData, async_task, task
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
@@ -91,7 +91,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
         LOGGER.debug("new blueprint file created, starting discovery")
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                blueprints_discovery.delay()
+                async_task("authentik.blueprints.tasks.blueprints_discovery")
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
@@ -102,7 +102,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
             with tenant:
                 for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
                     LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                    apply_blueprint.delay(instance.pk.hex)
+                    async_task("authentik.blueprints.tasks.apply_blueprint", instance.pk.hex)
 
 
 @task(
@@ -183,7 +183,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
     if instance.last_applied_hash != blueprint.hash:
         LOGGER.info("Applying blueprint due to changed file", instance=instance, path=instance.path)
-        apply_blueprint.delay(str(instance.pk))
+        async_task("authentik.blueprints.tasks.apply_blueprint", str(instance.pk))
 
 
 @task(bind=True)

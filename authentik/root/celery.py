@@ -113,6 +113,7 @@ def worker_ready_hook(*args, **kwargs):
 
     LOGGER.info("Dispatching startup tasks...")
 
+    # TODO: find out what to do about those
     def _run_task(task: Callable):
         try:
             task.delay()

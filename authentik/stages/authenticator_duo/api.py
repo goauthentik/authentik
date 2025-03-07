@@ -19,7 +19,7 @@ from authentik.flows.api.stages import StageSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
-from authentik.stages.authenticator_duo.tasks import duo_import_devices
+from authentik.tasks.tasks import async_task, result
 
 LOGGER = get_logger()
 
@@ -159,8 +159,10 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 },
                 status=400,
             )
-        result = duo_import_devices.delay(str(stage.pk)).get()
-        return Response(data=result, status=200 if result["error"] == "" else 400)
+        data = result(
+            async_task("authentik.stages.authenticator_duo.tasks.duo_import_devices", str(stage.pk))
+        )
+        return Response(data=data, status=200 if result["error"] == "" else 400)
 
 
 class DuoDeviceSerializer(ModelSerializer):

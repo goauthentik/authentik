@@ -13,11 +13,11 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderGroup,
     GoogleWorkspaceProviderMapping,
 )
-from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.lib.tests.utils import load_fixture
+from authentik.tasks.tasks import async_task, result
 from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")
@@ -324,7 +324,12 @@ class GoogleWorkspaceGroupTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            google_workspace_sync.delay(self.provider.pk).get()
+            result(
+                async_task(
+                    "authentik.enterprise.providers.google_workspace.tasks.google_workspace_sync",
+                    self.provider.pk,
+                )
+            )
             self.assertTrue(
                 GoogleWorkspaceProviderGroup.objects.filter(
                     group=different_group, provider=self.provider

@@ -14,7 +14,7 @@ from authentik.sources.kerberos.models import (
     Krb5ConfContext,
     UserKerberosSourceConnection,
 )
-from authentik.sources.kerberos.tasks import kerberos_connectivity_check, kerberos_sync_single
+from authentik.tasks.tasks import async_task
 
 LOGGER = get_logger()
 
@@ -24,8 +24,8 @@ def sync_kerberos_source_on_save(sender, instance: KerberosSource, **_):
     """Ensure that source is synced on save (if enabled)"""
     if not instance.enabled or not instance.sync_users:
         return
-    kerberos_sync_single.delay(instance.pk)
-    kerberos_connectivity_check.delay(instance.pk)
+    async_task("authentik.sources.kerberos.tasks.kerberos_sync_single", instance.pk)
+    async_task("authentik.sources.kerberos.tasks.kerberos_connectivity_check", instance.pk)
 
 
 @receiver(password_changed)
@@ -55,8 +55,7 @@ def kerberos_sync_password(sender, user: User, password: str, **_):
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
                     message=(
-                        "Failed to change password in Kerberos source due to remote error: "
-                        f"{exc}"
+                        f"Failed to change password in Kerberos source due to remote error: {exc}"
                     ),
                     source=source,
                 ).set_user(user).save()

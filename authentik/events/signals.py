@@ -14,7 +14,6 @@ from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
 from authentik.events.models import Event, EventAction, SystemTask
-from authentik.events.tasks import event_notification_handler, gdpr_cleanup
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -23,6 +22,7 @@ from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.user_write.signals import user_write
+from authentik.tasks.tasks import async_task
 from authentik.tenants.utils import get_current_tenant
 
 SESSION_LOGIN_EVENT = "login_event"
@@ -114,14 +114,14 @@ def on_password_changed(sender, user: User, password: str, request: HttpRequest 
 @receiver(post_save, sender=Event)
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
-    event_notification_handler.delay(instance.event_uuid.hex)
+    async_task("authentik.events.tasks.event_notification_handler", instance.event_uuid.hex)
 
 
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     if get_current_tenant().gdpr_compliance:
-        gdpr_cleanup.delay(instance.pk)
+        async_task("authentik.events.gdpr_cleanup", instance.pk)
 
 
 @receiver(monitoring_set)

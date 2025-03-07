@@ -10,7 +10,7 @@ from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
-from authentik.tasks.tasks import TaskData, task
+from authentik.tasks.tasks import TaskData, async_iter, task
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
@@ -19,8 +19,10 @@ CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
 @task()
 def kerberos_sync_all():
     """Sync all sources"""
-    for source in KerberosSource.objects.filter(enabled=True, sync_users=True):
-        kerberos_sync_single.delay(str(source.pk))
+    async_iter(
+        "authentik.sources.kerberos.tasks.kerberos_sync_single",
+        KerberosSource.objects.filter(enabled=True, sync_users=True).values_list("pk", flat=True),
+    )
 
 
 @task()

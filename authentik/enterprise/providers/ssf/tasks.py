@@ -18,7 +18,7 @@ from authentik.events.models import TaskStatus
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.tasks.tasks import TaskData, task
+from authentik.tasks.tasks import TaskData, async_task, task
 
 session = get_http_session()
 LOGGER = get_logger()
@@ -41,7 +41,7 @@ def send_ssf_event(
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         payload.append((str(stream.uuid), event_data))
-    return _send_ssf_event.delay(payload)
+    return async_task("authentik.enterprise.providers.ssf.tasks._send_ssf_event", payload)
 
 
 def _check_app_access(stream_uuid: str, event_data: dict) -> bool:

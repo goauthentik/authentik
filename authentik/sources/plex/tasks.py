@@ -6,14 +6,16 @@ from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
-from authentik.tasks.tasks import TaskData, task
+from authentik.tasks.tasks import TaskData, async_iter, task
 
 
 @task()
 def check_plex_token_all():
     """Check plex token for all plex sources"""
-    for source in PlexSource.objects.all():
-        check_plex_token.delay(source.slug)
+    async_iter(
+        "authentik.sources.plex.tasks.check_plex_token",
+        PlexSource.objects.all().values_list("slug", flat=True),
+    )
 
 
 @task(bind=True)

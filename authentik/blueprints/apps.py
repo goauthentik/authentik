@@ -9,6 +9,7 @@ from django.db import DatabaseError, InternalError, ProgrammingError
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.root.signals import startup
+from authentik.tasks.tasks import async_task
 
 
 class ManagedAppConfig(AppConfig):
@@ -120,10 +121,9 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     @ManagedAppConfig.reconcile_tenant
     def blueprints_discovery(self):
         """Run blueprint discovery"""
-        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 
-        blueprints_discovery.delay()
-        clear_failed_blueprints.delay()
+        async_task("authentik.blueprints.v1.tasks.blueprints_discovery")
+        async_task("authentik.blueprints.v1.tasks.clear_failed_blueprints")
 
     def import_models(self):
         super().import_models()
