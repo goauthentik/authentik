@@ -9,12 +9,11 @@ from django.db.transaction import atomic
 from fido2.mds3 import filter_revoked, parse_blob
 
 from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
-from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_webauthn.models import (
     UNKNOWN_DEVICE_TYPE_AAGUID,
     WebAuthnDeviceType,
 )
+from authentik.tasks.tasks import TaskData, task
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
 AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"
@@ -29,12 +28,8 @@ def mds_ca() -> bytes:
         return _raw_root.read()
 
 
-@CELERY_APP.task(
-    bind=True,
-    base=SystemTask,
-)
-@prefill_task
-def webauthn_mds_import(self: SystemTask, force=False):
+@task(bind=True)
+def webauthn_mds_import(self: TaskData, force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())

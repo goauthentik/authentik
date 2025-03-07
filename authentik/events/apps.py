@@ -76,6 +76,7 @@ class AuthentikEventsConfig(ManagedAppConfig):
         from authentik.events.models import TaskStatus
         from authentik.events.system_tasks import SystemTask as CelerySystemTask
 
+        # TODO: figure out what to do with this
         for task in CELERY_APP.conf["beat_schedule"].values():
             schedule = task["schedule"]
             if not isinstance(schedule, crontab):

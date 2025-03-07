@@ -1,10 +1,13 @@
 import pydoc
-from django_q.humanhash import uuid
+from collections.abc import Iterable
+from dataclasses import asdict, dataclass, field
+
+from django_q import tasks
 from django_q.brokers import get_broker
 from django_q.conf import Conf
-from dataclasses import asdict, dataclass, field
+from django_q.humanhash import uuid
 from django_q.models import Task
-from django_q import tasks
+
 from authentik.events.logs import LogEvent
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tasks.models import TaskExtra, TaskStatus
@@ -45,7 +48,13 @@ def _hook(task: Task):
     Task.objects.filter(pk=task.pk).update(result=result)
 
 
-def task(bind=False, throws=None):
+def task(
+    bind=False,
+    throws: Iterable[type[Exception]] | None = None,
+    autoretry_for: Iterable[type[Exception]] | None = None,
+    retry_backoff: bool = False,
+    timeout: int | None = None,
+):
     def wrapper(func):
         def inner(*args, **kwargs):
             if bind:
@@ -104,7 +113,7 @@ def async_chain(chain, group=None, cached=Conf.CACHED, sync=Conf.SYNC, broker=No
         task = (task,)
     if len(task) > 1:
         args = task[1]
-    if len(task) > 2:
+    if len(task) > 2:  # noqa: PLR2004
         kwargs = task[2]
     kwargs["chain"] = chain
     kwargs["group"] = group

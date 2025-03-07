@@ -19,7 +19,10 @@ skip = [
     "**/dist",
     "**/web/src/locales",
     "**/web/xliff",
+    "./web/custom-elements.json",
     "./website/build",
+    "./gen-go-api",
+    "./gen-py-api",
     "./gen-ts-api",
     "*.api.mdx",
 ]

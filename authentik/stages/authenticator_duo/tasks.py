@@ -3,13 +3,13 @@
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.tasks.tasks import task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
+@task()
 def duo_import_devices(stage_pk: str):
     """Import duo devices"""
     created = 0

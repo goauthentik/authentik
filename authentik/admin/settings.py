@@ -1,9 +1,5 @@
 """authentik admin settings"""
 
-from celery.schedules import crontab
-
-from authentik.lib.utils.time import fqdn_rand
-
 # CELERY_BEAT_SCHEDULE = {
 #     "admin_latest_version": {
 #         "task": "authentik.admin.tasks.update_latest_version",

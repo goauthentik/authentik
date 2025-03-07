@@ -1,6 +1,5 @@
 """authentik admin tasks"""
 
-from authentik.tasks.tasks import TaskData, task
 from django.core.cache import cache
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +13,7 @@ from authentik.events.models import Event, EventAction, Notification
 from authentik.events.system_tasks import TaskStatus
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
+from authentik.tasks.tasks import TaskData, task
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"

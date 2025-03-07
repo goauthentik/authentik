@@ -14,22 +14,21 @@ from authentik.events.models import (
     NotificationTransportError,
     TaskStatus,
 )
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.tasks import TaskData, task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
+@task()
 def event_notification_handler(event_uuid: str):
     """Start task for each trigger definition"""
     for trigger in NotificationRule.objects.all():
         event_trigger_handler.apply_async(args=[event_uuid, trigger.name], queue="authentik_events")
 
 
-@CELERY_APP.task()
+@task()
 def event_trigger_handler(event_uuid: str, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
@@ -90,14 +89,13 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
                 break
 
 
-@CELERY_APP.task(
+@task(
     bind=True,
     autoretry_for=(NotificationTransportError,),
     retry_backoff=True,
-    base=SystemTask,
 )
 def notification_transport(
-    self: SystemTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
+    self: TaskData, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
 ):
     """Send notification over specified transport"""
     self.save_on_success = False
@@ -124,7 +122,7 @@ def notification_transport(
         raise exc
 
 
-@CELERY_APP.task()
+@task()
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
@@ -132,9 +130,8 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def notification_cleanup(self: SystemTask):
+@task(bind=True)
+def notification_cleanup(self: TaskData):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()

@@ -42,7 +42,7 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
-from authentik.tasks.tasks import TaskData, task, async_task
+from authentik.tasks.tasks import TaskData, async_task, task
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"

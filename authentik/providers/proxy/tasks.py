@@ -8,10 +8,10 @@ from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.oauth2.id_token import hash_session_key
 from authentik.providers.proxy.models import ProxyProvider
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.tasks import task
 
 
-@CELERY_APP.task(
+@task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def proxy_set_defaults():
@@ -21,7 +21,7 @@ def proxy_set_defaults():
         provider.save()
 
 
-@CELERY_APP.task()
+@task()
 def proxy_on_logout(session_id: str):
     """Update outpost instances connected to a single outpost"""
     layer = get_channel_layer()

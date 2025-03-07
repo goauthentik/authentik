@@ -16,16 +16,15 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
+from authentik.events.system_tasks import TaskStatus
 from authentik.lib.config import CONFIG
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.tasks import TaskData, task
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_expired_models(self: SystemTask):
+@task(bind=True)
+def clean_expired_models(self: TaskData):
     """Remove expired objects"""
     messages = []
     for cls in ExpiringModel.__subclasses__():
@@ -75,9 +74,8 @@ def clean_expired_models(self: SystemTask):
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_temporary_users(self: SystemTask):
+@task(bind=True)
+def clean_temporary_users(self: TaskData):
     """Remove temporary users created by SAML Sources"""
     _now = datetime.now()
     messages = []

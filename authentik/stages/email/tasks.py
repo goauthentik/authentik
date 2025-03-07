@@ -11,12 +11,11 @@ from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction, TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
+from authentik.tasks.tasks import TaskData, task
 
 LOGGER = get_logger()
 
@@ -50,7 +49,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     return email.body
 
 
-@CELERY_APP.task(
+@task(
     bind=True,
     autoretry_for=(
         SMTPException,
@@ -58,10 +57,9 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
         OSError,
     ),
     retry_backoff=True,
-    base=SystemTask,
 )
 def send_mail(
-    self: SystemTask,
+    self: TaskData,
     message: dict[Any, Any],
     stage_class_path: str | None = None,
     email_stage_pk: str | None = None,

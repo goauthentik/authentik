@@ -15,11 +15,10 @@ from authentik.enterprise.providers.ssf.models import (
 )
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.tasks import TaskData, task
 
 session = get_http_session()
 LOGGER = get_logger()
@@ -65,7 +64,7 @@ def _check_app_access(stream_uuid: str, event_data: dict) -> bool:
     return engine.passing
 
 
-@CELERY_APP.task()
+@task()
 def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
@@ -91,8 +90,8 @@ def send_single_ssf_event(stream_id: str, evt_id: str):
     return []
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-def ssf_push_event(self: SystemTask, event_id: str):
+@task(bind=True)
+def ssf_push_event(self: TaskData, event_id: str):
     self.save_on_success = False
     event = StreamEvent.objects.filter(pk=event_id).first()
     if not event:
