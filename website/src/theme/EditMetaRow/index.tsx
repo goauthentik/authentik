@@ -31,7 +31,7 @@ const EditMetaRow: React.FC<Props> = ({
             >
                 <p>
                     <Translate
-                        id="theme.common.contributor.footerDescription2"
+                        id="theme.common.contributor.footerDescription1"
                         description="The description for the contribution footer"
                     >
                         We welcome your knowledge and expertise. If you see
