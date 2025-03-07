@@ -165,13 +165,21 @@ class UserInterfacePresentation extends AKElement {
         }
 
         return html`<a
-            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-            href="${globalAK().api.base}if/admin/"
-            slot="extra"
-        >
-            ${msg("Admin interface")}
-        </a>`;
+                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                href="${globalAK().api.base}if/admin/"
+                slot="extra"
+            >
+                ${msg("Admin interface")}
+            </a>
+            <a
+                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
+                href="${globalAK().api.base}if/admin/"
+                slot="extra"
+            >
+                ${msg("Admin")}
+            </a>`;
     }
+
     render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
