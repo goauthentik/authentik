@@ -15,7 +15,7 @@ export interface AdminStatus {
 
 /**
  * Abstract base class for admin status cards with robust state management
- * 
+ *
  * @template T - Type of the primary data value used in the card
  */
 export abstract class AdminStatusCard<T> extends AggregateCard {
@@ -56,7 +56,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     private fetchData() {
         this.getPrimaryValue()
             .then((value: T) => {
-                this.value = value;  // Triggers shouldUpdate
+                this.value = value; // Triggers shouldUpdate
                 this.error = undefined;
             })
             .catch((err: ResponseError) => {
@@ -67,7 +67,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Lit lifecycle method: Determine if component should update
-     * 
+     *
      * @param changed - Map of changed properties
      * @returns boolean indicating if update should proceed
      */
@@ -92,7 +92,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Render the primary value display
-     * 
+     *
      * @returns TemplateResult displaying the value
      */
     protected renderValue(): TemplateResult {
@@ -101,7 +101,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Render status state
-     * 
+     *
      * @param status - AdminStatus object containing icon and message
      * @returns TemplateResult for status display
      */
@@ -114,7 +114,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Render error state
-     * 
+     *
      * @param error - Error message to display
      * @returns TemplateResult for error display
      */
@@ -127,7 +127,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Render loading state
-     * 
+     *
      * @returns TemplateResult for loading spinner
      */
     private renderLoading(): TemplateResult {
@@ -136,17 +136,18 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     /**
      * Main render method that selects appropriate state display
-     * 
+     *
      * @returns TemplateResult for current component state
      */
     renderInner(): TemplateResult {
         return html`
             <p class="center-value">
                 ${this.status
-                    ? this.renderStatus(this.status)  // Status available
+                    ? this.renderStatus(this.status) // Status available
                     : this.error
-                    ? this.renderError(this.error)    // Error state
-                    : this.renderLoading()}           // Loading state
+                      ? this.renderError(this.error) // Error state
+                      : this.renderLoading()}
+                // Loading state
             </p>
         `;
     }
