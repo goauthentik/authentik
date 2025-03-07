@@ -21,10 +21,18 @@ export class RelatedApplicationButton extends AKElement {
     @property({ attribute: false })
     provider?: Provider;
 
+    @property()
+    mode: "primary" | "backchannel" = "primary";
+
     render(): TemplateResult {
-        if (this.provider?.assignedApplicationSlug) {
+        if (this.mode === "primary" && this.provider?.assignedApplicationSlug) {
             return html`<a href="#/core/applications/${this.provider.assignedApplicationSlug}">
                 ${this.provider.assignedApplicationName}
+            </a>`;
+        }
+        if (this.mode === "backchannel" && this.provider?.assignedBackchannelApplicationSlug) {
+            return html`<a href="#/core/applications/${this.provider.assignedBackchannelApplicationSlug}">
+                ${this.provider.assignedBackchannelApplicationName}
             </a>`;
         }
         return html`<ak-forms-modal>
