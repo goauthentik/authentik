@@ -21,7 +21,7 @@
 }
 
 .admonitionContrib {
-    --ifm-h5-font-size: 1.25rem;
+    --ifm-h5-font-size: 1.00rem;
 
     display: block;
 
@@ -54,8 +54,8 @@
             display: inline-block;
             content: "•";
             list-style-type: "•";
-            font-size: 1em;
-            opacity: 0.75;
+            font-size: .75em;
+            opacity: 0.50;
             margin-inline-end: var(--ifm-spacing-horizontal);
         }
     }
