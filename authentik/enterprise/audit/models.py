@@ -6,6 +6,22 @@ from uuid import uuid4
 from authentik.core.models import Group, User
 
 
+# # Names
+# Lifecycle
+# Access reviews
+# Access lifecycle
+# Governance
+# Audit
+# Compliance
+
+# Lifecycle
+# Lifecycle review
+# Review
+# Access review
+# Compliance review
+# X Scheduled review
+
+
 # Only some objects supported?
 #
 # For disabling support:
@@ -26,6 +42,8 @@ from authentik.core.models import Group, User
 # everything else
 #   would need to show in an audit dashboard cause not all have pages to get details
 
+# "default" policy for objects, by default, everlasting
+
 
 class AuditPolicyFailAction(models.TextChoices):
     # For preview
@@ -36,10 +54,14 @@ class AuditPolicyFailAction(models.TextChoices):
     WARN = "warn"
 
 
-class AuditPolicy(SerializerModel):
+class LifecycleRule(SerializerModel):
+    pass
+
+
+class ReviewRule(SerializerModel):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    # Check every 6 months
+    # Check every 6 months, allow for daily/weekly/first of month, etc.
     interval = models.TextField()  # timedelta
     # Preventive notification
     reminder_interval = models.TextField()  # timedelta
@@ -69,8 +91,8 @@ class AuditPolicyBinding(SerializerModel):
     content_object = GenericForeignKey("content_type", "object_id")
 
     # valid -> waiting review -> valid
-    # valid -> waiting review -> review overview -> valid
-    # valid -> waiting review -> review overview -> failed -> valid
+    # valid -> waiting review -> review overdue -> valid
+    # valid -> waiting review -> review overdue -> failed -> valid
     # look at django-fsm or django-viewflow
     status = models.TextField()
 
@@ -79,3 +101,7 @@ class AuditPolicyBinding(SerializerModel):
             models.Index(fields=["content_type"]),
             models.Index(fields=["content_type", "object_id"]),
         )
+
+
+class AuditHistory:
+    pass
