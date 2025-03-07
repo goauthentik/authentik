@@ -9373,6 +9373,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 <trans-unit id="s1367dcd6e8749fcd">
   <source>No name set</source>
 </trans-unit>
+<trans-unit id="s85a91d843c3eb4ad">
+  <source>Show inactive users</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

@@ -9640,6 +9640,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>No name set</source>
   <target>未设置名称</target>
 </trans-unit>
+<trans-unit id="s85a91d843c3eb4ad">
+  <source>Show inactive users</source>
+  <target>显示不活跃的用户</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
