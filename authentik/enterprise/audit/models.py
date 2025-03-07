@@ -30,7 +30,7 @@ from authentik.core.models import Group, User
 class AuditPolicyFailAction(models.TextChoices):
     # For preview
     NOTHING = "nothing"
-    # Disable the thing failing
+    # Disable the thing failing, HOW
     DISABLE = "disable"
     # Emit events
     WARN = "warn"
