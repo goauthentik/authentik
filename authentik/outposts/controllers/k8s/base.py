@@ -124,7 +124,6 @@ class KubernetesObjectReconciler(Generic[T]):
             try:
                 current = self.retrieve()
             except (OpenApiException, HTTPError) as exc:
-
                 if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
@@ -168,7 +167,6 @@ class KubernetesObjectReconciler(Generic[T]):
             self.delete(current)
             self.logger.debug("Removing")
         except (OpenApiException, HTTPError) as exc:
-
             if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                 self.logger.debug("Failed to get current, assuming non-existent")
                 return
