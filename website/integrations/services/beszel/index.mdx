@@ -1,0 +1,55 @@
+---
+title: Integrate with Beszel
+sidebar_label: Beszel
+---
+
+# Integrate With Beszel
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is Beszel
+
+> Beszel is a lightweight server monitoring platform that provides Docker statistics, historical data, and configurable alerts.
+> It features a user-friendly web interface, supports multi-user management, OAuth authentication, and offers a REST API for integration with other applications.
+> Designed for simplicity, Beszel is easy to set up and operates efficiently without requiring public internet exposure.
+>
+> -- https://beszel.dev/
+>
+> This guide explains how to configure Beszel to use authentik as the OAuth provider for logging in to the Web GUI.
+
+## Preparation
+
+
+- `beszel.company` is the FQDN of the Beszel installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `Beszel` is the Name of the authentik application.
+- `beszel` is the Slug of the authentik application.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+Since Beszel uses PocketBase as its backend, when you integrate Beszel you can follow the exact same steps used to configure authentik as you did with PocketBase; you only need to replace the PocketBase placeholders with the placeholder FDQNs found above.
+
+You can find the PocketBase documentation here: https://docs.goauthentik.io/integrations/services/pocketbase/.
+## Test the login
+
+- Open your web browser and go to: <kbd>https://<em>beszel.company</em></kbd>.
+- Click **authentik** to log in.
+- You should be redirected to authentik (following the login flow you configured). After logging in, authentik will redirect you back to <kbd>https://<em>beszel.company</em></kbd>.
+- If you successfully return to the Beszel WebGUI, the login is working correctly.
+
+## User Creation
+
+1. Manually Creating Users:
+
+    - Users are not created automatically when logging in with authentik. The owner must manually create each user in Beszel.
+    - To create users, go to the System Settings where you configured OpenID Connect.
+    - The URL for user creation is: <kbd>https://<em>beszel.company</em>>/\_/#/collections?collection=pb_users_auth</kbd>.
+    - Click **+ New record** and enter the user's **email** (must match the authentik email address).
+
+2. Automatically Creating Users:
+    - Set the following environment variable: **USER_CREATION=true**
+    - Depending on your deployment method, you can set this as a Docker environment variable or in the systemd service file.
