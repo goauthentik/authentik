@@ -20,10 +20,10 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
+from authentik.tasks.tasks import async_task, result
 from authentik.tenants.models import Tenant
 
 
@@ -397,7 +397,12 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=GroupCollectionResponse(value=[])),
             ),
         ):
-            microsoft_entra_sync.delay(self.provider.pk).get()
+            result(
+                async_task(
+                    "authentik.enterprise.providers.microsoft_entra.tasks.microsoft_entra_sync",
+                    self.provider.pk,
+                )
+            )
             self.assertTrue(
                 MicrosoftEntraProviderUser.objects.filter(
                     user=different_user, provider=self.provider

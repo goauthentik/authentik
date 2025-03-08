@@ -4,19 +4,17 @@ from email.utils import make_msgid
 from smtplib import SMTPException
 from typing import Any
 
-from celery import group
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
 from structlog.stdlib import get_logger
 
 from authentik.events.models import Event, EventAction, TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
+from authentik.tasks.tasks import TaskData, async_task, task
 
 LOGGER = get_logger()
 
@@ -29,17 +27,16 @@ def send_mails(
     Args:
         stage: Either an EmailStage or AuthenticatorEmailStage instance
         messages: List of email messages to send
-    Returns:
-        Celery group promise for the email sending tasks
     """
-    tasks = []
     # Use the class path instead of the class itself for serialization
     stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage_class_path, str(stage.pk)))
-    lazy_group = group(*tasks)
-    promise = lazy_group()
-    return promise
+        async_task(
+            "authentik.stages.email.tasks.send_mail",
+            message.__dict__,
+            stage_class_path,
+            str(stage.pk),
+        )
 
 
 def get_email_body(email: EmailMultiAlternatives) -> str:
@@ -50,7 +47,7 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
     return email.body
 
 
-@CELERY_APP.task(
+@task(
     bind=True,
     autoretry_for=(
         SMTPException,
@@ -58,10 +55,9 @@ def get_email_body(email: EmailMultiAlternatives) -> str:
         OSError,
     ),
     retry_backoff=True,
-    base=SystemTask,
 )
 def send_mail(
-    self: SystemTask,
+    self: TaskData,
     message: dict[Any, Any],
     stage_class_path: str | None = None,
     email_stage_pk: str | None = None,

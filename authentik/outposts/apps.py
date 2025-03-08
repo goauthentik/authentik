@@ -30,6 +30,8 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     verbose_name = "authentik Outpost"
     default = True
 
+    startup_tasks_default_tenant = ("authentik.outposts.tasks.outpost_connection_discovery",)
+
     @ManagedAppConfig.reconcile_tenant
     def embedded_outpost(self):
         """Ensure embedded outpost"""

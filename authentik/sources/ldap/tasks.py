@@ -9,17 +9,16 @@ from structlog.stdlib import get_logger
 
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.tasks.tasks import TaskData, task
 
 LOGGER = get_logger()
 SYNC_CLASSES = [
@@ -31,14 +30,14 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 CACHE_KEY_STATUS = "goauthentik.io/sources/ldap/status/"
 
 
-@CELERY_APP.task()
+@task()
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
         ldap_sync_single.apply_async(args=[str(source.pk)])
 
 
-@CELERY_APP.task()
+@task()
 def ldap_connectivity_check(pk: str | None = None):
     """Check connectivity for LDAP Sources"""
     # 2 hour timeout, this task should run every hour
@@ -51,12 +50,12 @@ def ldap_connectivity_check(pk: str | None = None):
         cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
-@CELERY_APP.task(
+@task(
     # We take the configured hours timeout time by 2.5 as we run user and
     # group in parallel and then membership, so 2x is to cover the serial tasks,
     # and 0.5x on top of that to give some more leeway
-    soft_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
-    task_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
+    timeout=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
+    * 2.5,
 )
 def ldap_sync_single(source_pk: str):
     """Sync a single source"""
@@ -95,14 +94,13 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     return signatures
 
 
-@CELERY_APP.task(
+@task(
     bind=True,
-    base=SystemTask,
-    soft_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
-    task_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
+    timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
 )
-def ldap_sync(self: SystemTask, source_pk: str, sync_class: str, page_cache_key: str):
+def ldap_sync(self: TaskData, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
+    # TODO: fix this
     self.result_timeout_hours = CONFIG.get_int("ldap.task_timeout_hours")
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:

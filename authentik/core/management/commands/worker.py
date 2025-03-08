@@ -30,6 +30,7 @@ class Command(BaseCommand):
         LOGGER.debug("Celery options", **options)
         close_old_connections()
         start_debug_server()
+        # TODO: use djangoq
         worker: Worker = CELERY_APP.Worker(
             no_color=False,
             quiet=True,

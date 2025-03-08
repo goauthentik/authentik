@@ -32,10 +32,9 @@ from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
 from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.tasks import TaskData, async_task, task
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
@@ -92,7 +91,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
         LOGGER.debug("new blueprint file created, starting discovery")
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                blueprints_discovery.delay()
+                async_task("authentik.blueprints.tasks.blueprints_discovery")
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
@@ -103,10 +102,10 @@ class BlueprintEventHandler(FileSystemEventHandler):
             with tenant:
                 for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
                     LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                    apply_blueprint.delay(instance.pk.hex)
+                    async_task("authentik.blueprints.tasks.apply_blueprint", instance.pk.hex)
 
 
-@CELERY_APP.task(
+@task(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_find_dict():
@@ -146,11 +145,8 @@ def blueprints_find() -> list[BlueprintFile]:
     return blueprints
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError), base=SystemTask, bind=True
-)
-@prefill_task
-def blueprints_discovery(self: SystemTask, path: str | None = None):
+@task(bind=True, throws=(DatabaseError, ProgrammingError, InternalError))
+def blueprints_discovery(self: TaskData, path: str | None = None):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
     for blueprint in blueprints_find():
@@ -187,14 +183,11 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
     if instance.last_applied_hash != blueprint.hash:
         LOGGER.info("Applying blueprint due to changed file", instance=instance, path=instance.path)
-        apply_blueprint.delay(str(instance.pk))
+        async_task("authentik.blueprints.tasks.apply_blueprint", str(instance.pk))
 
 
-@CELERY_APP.task(
-    bind=True,
-    base=SystemTask,
-)
-def apply_blueprint(self: SystemTask, instance_pk: str):
+@task(bind=True)
+def apply_blueprint(self: TaskData, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
     instance: BlueprintInstance | None = None
@@ -241,7 +234,7 @@ def apply_blueprint(self: SystemTask, instance_pk: str):
             instance.save()
 
 
-@CELERY_APP.task()
+@task()
 def clear_failed_blueprints():
     """Remove blueprints which couldn't be fetched"""
     # Exclude OCI blueprints as those might be temporarily unavailable

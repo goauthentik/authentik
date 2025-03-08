@@ -1,4 +1,3 @@
-from collections.abc import Callable
 
 from django.core.paginator import Paginator
 from django.db.models import Model
@@ -10,13 +9,14 @@ from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
+from authentik.tasks.tasks import async_task, result
 
 
 def register_signals(
     provider_type: type[OutgoingSyncProvider],
-    task_sync_single: Callable[[int], None],
-    task_sync_direct: Callable[[int], None],
-    task_sync_m2m: Callable[[int], None],
+    task_sync_single: str,
+    task_sync_direct: str,
+    task_sync_m2m: str,
 ):
     """Register sync signals"""
     uid = class_to_path(provider_type)
@@ -25,11 +25,8 @@ def register_signals(
         """Trigger sync when Provider is saved"""
         users_paginator = Paginator(instance.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(instance.get_object_qs(Group), PAGE_SIZE)
-        soft_time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT
-        time_limit = soft_time_limit * 1.5
-        task_sync_single.apply_async(
-            (instance.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
-        )
+        timeout = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT * 1.5
+        async_task(task_sync_single, instance.pk, q_options={"timeout": timeout})
 
     post_save.connect(post_save_provider, provider_type, dispatch_uid=uid, weak=False)
 
@@ -39,7 +36,9 @@ def register_signals(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ).exists():
             return
-        task_sync_direct.delay(class_to_path(instance.__class__), instance.pk, Direction.add.value)
+        async_task(
+            task_sync_direct, class_to_path(instance.__class__), instance.pk, Direction.add.value
+        )
 
     post_save.connect(model_post_save, User, dispatch_uid=uid, weak=False)
     post_save.connect(model_post_save, Group, dispatch_uid=uid, weak=False)
@@ -50,9 +49,14 @@ def register_signals(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False)
         ).exists():
             return
-        task_sync_direct.delay(
-            class_to_path(instance.__class__), instance.pk, Direction.remove.value
-        ).get(propagate=False)
+        result(
+            async_task(
+                task_sync_direct,
+                class_to_path(instance.__class__),
+                instance.pk,
+                Direction.remove.value,
+            )
+        )
 
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
     pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid, weak=False)
@@ -70,9 +74,9 @@ def register_signals(
         # reverse: instance is a Group, pk_set is a list of user pks
         # non-reverse: instance is a User, pk_set is a list of groups
         if reverse:
-            task_sync_m2m.delay(str(instance.pk), action, list(pk_set))
+            async_task(task_sync_m2m, str(instance.pk), action, list(pk_set))
         else:
             for group_pk in pk_set:
-                task_sync_m2m.delay(group_pk, action, [instance.pk])
+                async_task(task_sync_m2m, group_pk, action, [instance.pk])
 
     m2m_changed.connect(model_m2m_changed, User.ak_groups.through, dispatch_uid=uid, weak=False)

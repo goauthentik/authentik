@@ -1,5 +1,9 @@
 """Test Users API"""
 
+from smtplib import SMTPException
+from unittest.mock import MagicMock, PropertyMock, patch
+from django.core.mail.backends.locmem import EmailBackend
+
 from datetime import datetime
 
 from django.contrib.sessions.backends.cache import KEY_PREFIX
@@ -141,13 +145,17 @@ class TestUsersAPI(APITestCase):
         stage = EmailStage.objects.create(name="email")
 
         self.client.force_login(self.admin)
-        response = self.client.post(
-            reverse(
-                "authentik_api:user-recovery-email",
-                kwargs={"pk": self.user.pk},
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.post(
+                reverse(
+                    "authentik_api:user-recovery-email",
+                    kwargs={"pk": self.user.pk},
+                )
+                + f"?email_stage={stage.pk}"
             )
-            + f"?email_stage={stage.pk}"
-        )
         self.assertEqual(response.status_code, 204)
 
     def test_service_account(self):

@@ -1,4 +1,3 @@
-from celery import Task
 from django.utils.text import slugify
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -14,6 +13,7 @@ from authentik.events.logs import LogEvent, LogEventSerializer
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
 from authentik.rbac.filters import ObjectFilter
+from authentik.tasks.tasks import async_task, result
 
 
 class SyncStatusSerializer(PassiveSerializer):
@@ -45,8 +45,8 @@ class SyncObjectResultSerializer(PassiveSerializer):
 class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
-    sync_single_task: type[Task] = None
-    sync_objects_task: type[Task] = None
+    sync_single_task: str | None = None
+    sync_objects_task: str | None = None
 
     @extend_schema(
         responses={
@@ -65,6 +65,7 @@ class OutgoingSyncProviderStatusMixin:
         """Get provider's sync status"""
         provider: OutgoingSyncProvider = self.get_object()
         tasks = list(
+            # TODO: find out what to do here
             get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
                 name=self.sync_single_task.__name__,
                 uid=slugify(provider.name),
@@ -94,13 +95,16 @@ class OutgoingSyncProviderStatusMixin:
         provider: OutgoingSyncProvider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
-        res: list[LogEvent] = self.sync_objects_task.delay(
-            params.validated_data["sync_object_model"],
-            page=1,
-            provider_pk=provider.pk,
-            pk=params.validated_data["sync_object_id"],
-            override_dry_run=params.validated_data["override_dry_run"],
-        ).get()
+        res: list[LogEvent] = result(
+            async_task(
+                self.sync_objects_task,
+                params.validated_data["sync_object_model"],
+                page=1,
+                provider_pk=provider.pk,
+                pk=params.validated_data["sync_object_id"],
+                override_dry_run=params.validated_data["override_dry_run"],
+            )
+        )
         return Response(SyncObjectResultSerializer(instance={"messages": res}).data)
 
 

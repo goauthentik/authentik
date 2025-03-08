@@ -17,10 +17,10 @@ from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
+from authentik.tasks.tasks import async_task, result
 
 LDAP_PASSWORD = generate_key()
 
@@ -42,7 +42,14 @@ class LDAPSyncTests(TestCase):
         """Test sync with missing page"""
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync.delay(str(self.source.pk), class_to_path(UserLDAPSynchronizer), "foo").get()
+            result(
+                async_task(
+                    "authentik.sources.ldap.tasks.ldap_sync",
+                    str(self.source.pk),
+                    class_to_path(UserLDAPSynchronizer),
+                    "foo",
+                )
+            )
         task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
         self.assertEqual(task.status, TaskStatus.ERROR)
 
@@ -255,7 +262,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            result(async_task("authentik.sources.ldap.tasks.ldap_sync_all"))
 
     def test_tasks_openldap(self):
         """Test Scheduled tasks"""
@@ -270,4 +277,4 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            result(async_task("authentik.sources.ldap.tasks.ldap_sync_all"))

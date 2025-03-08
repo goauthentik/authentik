@@ -7,10 +7,10 @@ from requests_mock import Mocker
 from authentik.admin.tasks import (
     VERSION_CACHE_KEY,
     clear_update_notifications,
-    update_latest_version,
 )
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
+from authentik.tasks.tasks import async_task, result
 
 RESPONSE_VALID = {
     "$schema": "https://version.goauthentik.io/schema.json",
@@ -30,7 +30,7 @@ class TestAdminTasks(TestCase):
         """Test Update checker with valid response"""
         with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
             mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
-            update_latest_version.delay().get()
+            result(async_task("authentik.admin.tasks.update_latest_version"))
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
             self.assertTrue(
                 Event.objects.filter(
@@ -40,7 +40,7 @@ class TestAdminTasks(TestCase):
                 ).exists()
             )
             # test that a consecutive check doesn't create a duplicate event
-            update_latest_version.delay().get()
+            result(async_task("authentik.admin.tasks.update_latest_version"))
             self.assertEqual(
                 len(
                     Event.objects.filter(
@@ -56,7 +56,7 @@ class TestAdminTasks(TestCase):
         """Test Update checker with invalid response"""
         with Mocker() as mocker:
             mocker.get("https://version.goauthentik.io/version.json", status_code=400)
-            update_latest_version.delay().get()
+            result(async_task("authentik.admin.tasks.update_latest_version"))
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
             self.assertFalse(
                 Event.objects.filter(
@@ -67,7 +67,7 @@ class TestAdminTasks(TestCase):
     def test_version_disabled(self):
         """Test Update checker while its disabled"""
         with CONFIG.patch("disable_update_check", True):
-            update_latest_version.delay().get()
+            result(async_task("authentik.admin.tasks.update_latest_version"))
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
 
     def test_clear_update_notifications(self):

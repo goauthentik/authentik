@@ -10,3 +10,5 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
     label = "authentik_providers_proxy"
     verbose_name = "authentik Providers.Proxy"
     default = True
+
+    startup_tasks_all_tenants = ("authentik.providers.proxy.tasks.proxy_set_defaults",)

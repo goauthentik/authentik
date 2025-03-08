@@ -6,7 +6,6 @@ from django.urls import reverse
 from freezegun import freeze_time
 
 from authentik.core.models import Application
-from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import PermissionDict
 from authentik.flows.markers import StageMarker
@@ -20,6 +19,7 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
     SESSION_KEY_CONSENT_TOKEN,
 )
+from authentik.tasks.tasks import async_task, result
 
 
 class TestConsentStage(FlowTestCase):
@@ -139,7 +139,7 @@ class TestConsentStage(FlowTestCase):
         )
         with freeze_time() as frozen_time:
             frozen_time.tick(timedelta(seconds=3))
-            clean_expired_models.delay().get()
+            result(async_task("authentik.core.tasks.clean_expired_models"))
             self.assertFalse(
                 UserConsent.objects.filter(user=self.user, application=self.application).exists()
             )

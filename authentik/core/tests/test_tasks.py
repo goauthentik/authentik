@@ -13,9 +13,9 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
-from authentik.core.tasks import clean_expired_models, clean_temporary_users
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from authentik.tasks.tasks import async_task, result
 
 
 class TestTasks(APITestCase):
@@ -33,7 +33,7 @@ class TestTasks(APITestCase):
             expires=now(), user=get_anonymous_user(), intent=TokenIntents.INTENT_API
         )
         key = token.key
-        clean_expired_models.delay().get()
+        result(async_task("authentik.core.tasks.clean_expired_models"))
         token.refresh_from_db()
         self.assertNotEqual(key, token.key)
 
@@ -47,5 +47,5 @@ class TestTasks(APITestCase):
                 USER_ATTRIBUTE_EXPIRES: mktime(now().timetuple()),
             },
         )
-        clean_temporary_users.delay().get()
+        result(async_task("authentik.core.tasks.clean_temporary_users"))
         self.assertFalse(User.objects.filter(username=username))

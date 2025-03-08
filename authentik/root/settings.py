@@ -72,6 +72,7 @@ TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "django_q",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
@@ -122,6 +123,7 @@ TENANT_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
+    "authentik.tasks",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
@@ -381,6 +383,14 @@ CELERY = {
         "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
     ),
     "redis_retry_on_timeout": True,
+}
+
+Q_CLUSTER = {
+    "workers": CONFIG.get_int("worker.concurrency"),
+    "save_limit": 250,  # TODO: make configurable
+    "orm": "default",
+    "sync": DEBUG,
+    "retry": 10000,  # TODO: by app
 }
 
 # Sentry integration

@@ -6,10 +6,6 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.enterprise.api import EnterpriseRequiredMixin
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
-from authentik.enterprise.providers.microsoft_entra.tasks import (
-    microsoft_entra_sync,
-    microsoft_entra_sync_objects,
-)
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 
 
@@ -53,5 +49,7 @@ class MicrosoftEntraProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin
     ]
     search_fields = ["name"]
     ordering = ["name"]
-    sync_single_task = microsoft_entra_sync
-    sync_objects_task = microsoft_entra_sync_objects
+    sync_single_task = "authentik.enterprise.providers.microsoft_entra.tasks.microsoft_entra_sync"
+    sync_objects_task = (
+        "authentik.enterprise.providers.microsoft_entra.tasks.microsoft_entra_sync_objects"
+    )
