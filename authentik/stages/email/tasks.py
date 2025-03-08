@@ -4,7 +4,6 @@ from email.utils import make_msgid
 from smtplib import SMTPException
 from typing import Any
 
-from celery import group
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
@@ -15,7 +14,7 @@ from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
-from authentik.tasks.tasks import TaskData, task
+from authentik.tasks.tasks import TaskData, async_task, task
 
 LOGGER = get_logger()
 
@@ -28,17 +27,16 @@ def send_mails(
     Args:
         stage: Either an EmailStage or AuthenticatorEmailStage instance
         messages: List of email messages to send
-    Returns:
-        Celery group promise for the email sending tasks
     """
-    tasks = []
     # Use the class path instead of the class itself for serialization
     stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(send_mail.s(message.__dict__, stage_class_path, str(stage.pk)))
-    lazy_group = group(*tasks)
-    promise = lazy_group()
-    return promise
+        async_task(
+            "authentik.stages.email.tasks.send_mail",
+            message.__dict__,
+            stage_class_path,
+            str(stage.pk),
+        )
 
 
 def get_email_body(email: EmailMultiAlternatives) -> str:
