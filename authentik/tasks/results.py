@@ -2,7 +2,7 @@ from django.db import DEFAULT_DB_ALIAS
 from django.db.models import QuerySet
 from django.utils import timezone
 from dramatiq.message import Message, get_encoder
-from dramatiq.results.backend import MResult, Missing, Result, ResultBackend
+from dramatiq.results.backend import Missing, MResult, Result, ResultBackend
 
 from authentik.tasks.models import Queue
 

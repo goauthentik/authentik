@@ -1,4 +1,5 @@
 from uuid import uuid4
+
 from django.db import models
 from django.utils import timezone
 
@@ -19,7 +20,7 @@ class Queue(models.Model):
     result_ttl = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        indexes = (
-            models.Index(fields=("state", "mtime")),
-            models.Index(fields=("mesage__actor_name",)),
-        )
+        indexes = (models.Index(fields=("state", "mtime")),)
+
+    def __str__(self):
+        return str(self.message_id)

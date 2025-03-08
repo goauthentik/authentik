@@ -26,6 +26,7 @@ skip = [
     "./gen-go-api",
     "*.api.mdx",
     "./htmlcov",
+    "./web/custom-elements.json",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
