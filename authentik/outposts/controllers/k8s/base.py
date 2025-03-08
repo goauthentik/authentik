@@ -3,6 +3,7 @@
 from dataclasses import asdict
 from json import dumps
 from typing import TYPE_CHECKING, Generic, TypeVar
+import re
 
 from dacite.core import from_dict
 from django.http import HttpResponseNotFound
@@ -67,13 +68,24 @@ class KubernetesObjectReconciler(Generic[T]):
     @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return (
+
+        base_name = (
             self.controller.outpost.config.object_naming_template
             % {
                 "name": slugify(self.controller.outpost.name),
                 "uuid": self.controller.outpost.uuid.hex,
             }
         ).lower()
+
+        formatted = slugify(base_name)
+        formatted = re.sub(r"[^a-z0-9-]", "-", formatted)
+        formatted = re.sub(r"-+", "-", formatted)
+        formatted = formatted[:63]
+
+        if not formatted:
+            formatted = f"outpost-{self.controller.outpost.uuid.hex}"[:63]
+
+        return formatted
 
     def get_patched_reference_object(self) -> T:
         """Get patched reference object"""
