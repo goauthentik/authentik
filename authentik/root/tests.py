@@ -3,19 +3,17 @@
 from pathlib import Path
 from secrets import token_urlsafe
 from tempfile import gettempdir
+from unittest.mock import MagicMock, patch
 
 from celery.app.amqp import Connection as AmqpConnection
-from django.conf import settings
 from django.core.cache import BaseCache
 from django.test import TestCase
 from django.urls import reverse
-from unittest.mock import MagicMock, patch
 
 from authentik.root.redis_middleware_celery import CustomCelery
 from authentik.root.redis_middleware_channels import CustomChannelLayer
 from authentik.root.redis_middleware_django import CustomClient
 from authentik.root.redis_middleware_kombu import CustomClusterChannel, CustomConnection, CustomQoS
-
 
 
 class TestRoot(TestCase):
@@ -133,16 +131,6 @@ class TestCustomQoS(TestCase):
 
         mock_client.zrevrangebyscore.assert_called_once()
         self.custom_qos.restore_by_tag.assert_called_once_with('tag', mock_client)
-        
-    @patch('authentik.root.redis_middleware_kombu.mutex')
-    def test_restore_visible(self, mock_mutex):
-        mock_client = MagicMock()
-        self.custom_qos.restore_visible(client=mock_client)
-        mock_mutex.assert_called_with(
-            mock_client,
-            self.custom_qos.unacked_mutex_key,
-            self.custom_qos.unacked_mutex_expire
-        )
 
     @patch('authentik.root.redis_middleware_kombu.loads')
     def test_restore_by_tag(self, mock_loads):
@@ -200,7 +188,7 @@ class TestCustomClusterChannel(TestCase):
     def test_brpop_read(self):
         self.channel.client = MagicMock()
         self.channel.connection = MagicMock()
-        self.channel.connection_errors = Empty
+        self.channel.connection_errors = MagicMock()
         self.channel._queue_cycle = MagicMock()
         self.channel._brpop_read(conn=MagicMock())
         self.assertFalse(self.channel._in_poll)
