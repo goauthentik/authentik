@@ -124,6 +124,7 @@ django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
 django-pglock = "*"
+django-pgtrigger = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }

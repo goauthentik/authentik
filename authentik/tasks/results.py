@@ -29,10 +29,19 @@ class PostgresBackend(ResultBackend):
         return self.encoder.decode(data)
 
     def _store(self, message_key: str, result: Result, ttl: int) -> None:
-        # TODO: update_or_create
         encoder = get_encoder()
-        self.query_set.filter(message_id=message_key).update(
-            mtime=timezone.now(),
-            result=encoder.encode(result),
-            result_ttl=timezone.now() + timezone.timedelta(milliseconds=ttl),
-        )
+        query = {
+            "message_id": message_key,
+        }
+        defaults = {
+            "mtime": timezone.now(),
+            "result": encoder.encode(result),
+            "result_ttl": timezone.now() + timezone.timedelta(milliseconds=ttl),
+        }
+        create_defaults = {
+            **query,
+            **defaults,
+            "queue_name": "__RQ__",
+            "state": Queue.State.DONE,
+        }
+        self.query_set.update_or_create(**query, defaults=defaults, create_defaults=create_defaults)

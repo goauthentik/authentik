@@ -1535,6 +1535,21 @@ django = ">=4"
 django-pgactivity = ">=1.2,<2"
 
 [[package]]
+name = "django-pgtrigger"
+version = "4.13.3"
+description = "Postgres trigger support integrated with Django models."
+category = "main"
+optional = false
+python-versions = "<4,>=3.9.0"
+files = [
+    {file = "django_pgtrigger-4.13.3-py3-none-any.whl", hash = "sha256:d6e4d17021bbd5e425a308f07414b237b9b34423275d86ad756b90c307df3ca4"},
+    {file = "django_pgtrigger-4.13.3.tar.gz", hash = "sha256:c525f9e81f120d166c4bd5fe8c3770640356f0644edf0fc2b7f6426008e52f77"},
+]
+
+[package.dependencies]
+django = ">=4"
+
+[[package]]
 name = "django-prometheus"
 version = "2.3.1"
 description = "Django middlewares to monitor your application with Prometheus.io."
@@ -6341,4 +6356,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "~3.12"
-content-hash = "2c4a0e7ad08377212eb8ef2c3a372a557a407c43f2e2b3429403598477106c55"
+content-hash = "1f8cfdb90051911b2d677a9fd9ad4de8afea6fd8644de4bc25d418652506b7e2"

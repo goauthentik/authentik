@@ -1,9 +1,18 @@
+from enum import StrEnum, auto
 from uuid import uuid4
+import pgtrigger
 
 from django.db import models
 from django.utils import timezone
 
 from authentik.tenants.models import Tenant
+
+CHANNEL_PREFIX = "authentik.tasks"
+
+
+class ChannelIdentifier(StrEnum):
+    ENQUEUE = auto()
+    LOCK = auto()
 
 
 class Queue(models.Model):
@@ -24,6 +33,25 @@ class Queue(models.Model):
 
     class Meta:
         indexes = (models.Index(fields=("state", "mtime")),)
+        triggers = (
+            pgtrigger.Trigger(
+                name="notify_enqueueing",
+                operation=pgtrigger.Insert | pgtrigger.Update,
+                when=pgtrigger.After,
+                condition=pgtrigger.Q(new__state="queued"),
+                timing=pgtrigger.Deferred,
+                func=f"""
+                    PERFORM pg_notify(
+                        '{CHANNEL_PREFIX}' || NEW.queue_name || '.{ChannelIdentifier.ENQUEUE.value}',
+                        CASE WHEN octet_length(NEW.message::text) >= 8000
+                        THEN jsonb_build_object('message_id', NEW.message_id)::text
+                        ELSE message::text
+                        END
+                    );
+                    RETURN NEW;
+                """,  # noqa: E501
+            ),
+        )
 
     def __str__(self):
         return str(self.message_id)

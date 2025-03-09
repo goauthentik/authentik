@@ -1,4 +1,3 @@
-from enum import Enum, StrEnum, auto
 import functools
 import logging
 import time
@@ -22,20 +21,15 @@ from psycopg import Notify
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
-from authentik.tasks.models import Queue as MQueue
+from authentik.tasks.models import Queue as MQueue, CHANNEL_PREFIX, ChannelIdentifier
 from authentik.tasks.results import PostgresBackend
 from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 
 
-class ChannelIdentifier(StrEnum):
-    ENQUEUE = auto()
-    LOCK = auto()
-
-
 def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
-    return f"authentik.tasks.{queue_name}.{identifier.value}"
+    return f"{CHANNEL_PREFIX}.{queue_name}.{identifier.value}"
 
 
 def raise_connection_error(func):
@@ -62,7 +56,11 @@ class PostgresBroker(Broker):
             self.add_middleware(Results(backend=self.backend))
 
     @property
-    def consumer_class(self):
+    def connection(self) -> DatabaseWrapper:
+        return connections[self.db_alias]
+
+    @property
+    def consumer_class(self) -> "type[_PostgresConsumer]":
         return _PostgresConsumer
 
     @property
@@ -120,14 +118,24 @@ class PostgresBroker(Broker):
         self.declare_queue(canonical_queue_name)
         self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
         self.emit_before("enqueue", message, delay)
-        # TODO: notify
-        # TODO: update_or_create
-        self.query_set.create(
-            message_id=message.message_id,
-            tenant=get_current_tenant(),
-            queue_name=message.queue_name,
-            state=MQueue.State.QUEUED,
-            message=message.encode(),
+        encoded = message.encode()
+        query = {
+            "message_id": message.message_id,
+        }
+        defaults = {
+            "tenant": get_current_tenant(),
+            "queue_name": message.queue_name,
+            "state": MQueue.State.QUEUED,
+            "message": encoded,
+        }
+        create_defaults = {
+            **query,
+            **defaults,
+        }
+        self.query_set.update_or_create(
+            **query,
+            defaults=defaults,
+            create_defaults=create_defaults,
         )
         self.emit_after("enqueue", message, delay)
         return message
@@ -227,7 +235,7 @@ class _PostgresConsumer(Consumer):
             queue_name=message.queue_name,
             state__ne=MQueue.State.REJECTED,
         ).update(
-            state=MQueue.State.REJECT,
+            state=MQueue.State.REJECTED,
             message=message.encode(),
         )
         self.in_processing.remove(message.message_id)
