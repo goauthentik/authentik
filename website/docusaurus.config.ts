@@ -102,6 +102,8 @@ const createConfig = (): Config => {
                     docs: {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
+                        showLastUpdateTime:
+                            process.env.GIT_UNAVAILABLE != "true",
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
@@ -152,7 +154,7 @@ const createConfig = (): Config => {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yaml",
+                            specPath: "static/schema.yml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
@@ -165,6 +167,9 @@ const createConfig = (): Config => {
         ],
         markdown: {
             mermaid: true,
+        },
+        future: {
+            experimental_faster: true,
         },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };

@@ -114,6 +114,7 @@ module.exports = {
                         "services/fortigate-admin/index",
                         "services/fortigate-ssl/index",
                         "services/fortimanager/index",
+                        "services/gravity/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                         "services/netbird/index",
@@ -141,6 +142,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/weblate/index",
+                        "services/zipline/index",
                     ],
                 },
                 {
@@ -164,6 +166,8 @@ module.exports = {
                     label: "Platforms",
                     items: [
                         "services/budibase/index",
+                        "services/drupal/index",
+                        "services/pocketbase/index",
                         "services/wordpress/index",
                     ],
                 },

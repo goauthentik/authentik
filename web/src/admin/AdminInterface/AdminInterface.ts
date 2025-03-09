@@ -90,12 +90,14 @@ export class AdminInterface extends AuthenticatedInterface {
     constructor() {
         super();
         this.ws = new WebsocketClient();
+
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
                 notificationDrawerOpen: this.notificationDrawerOpen,
             });
         });
+
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
             updateURLParams({
@@ -107,12 +109,23 @@ export class AdminInterface extends AuthenticatedInterface {
     async firstUpdated(): Promise<void> {
         configureSentry(true);
         this.user = await me();
+
         const canAccessAdmin =
             this.user.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
             this.user.user.systemPermissions.includes("access_admin_interface");
         if (!canAccessAdmin && this.user.user.pk > 0) {
             window.location.assign("/if/user/");
+        }
+    }
+
+    async connectedCallback(): Promise<void> {
+        super.connectedCallback();
+
+        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
+            const { ESBuildObserver } = await import("@goauthentik/common/client");
+
+            new ESBuildObserver(process.env.WATCHER_URL);
         }
     }
 

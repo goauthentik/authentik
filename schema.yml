@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.0
+  version: 2025.2.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -44154,6 +44154,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -44317,6 +44321,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -46397,6 +46405,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -46557,6 +46569,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - client_id
       - client_secret
@@ -50679,6 +50695,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: OAuth Group-Source connection Serializer
@@ -51260,6 +51280,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -52427,6 +52451,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -55823,6 +55851,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -55909,6 +55941,10 @@ components:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - name
       - token
@@ -57105,6 +57141,9 @@ components:
         sync_object_id:
           type: string
           minLength: 1
+        override_dry_run:
+          type: boolean
+          default: false
       required:
       - sync_object_id
       - sync_object_model

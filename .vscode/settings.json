@@ -1,26 +1,4 @@
 {
-    "cSpell.words": [
-        "akadmin",
-        "asgi",
-        "authentik",
-        "authn",
-        "entra",
-        "goauthentik",
-        "jwe",
-        "jwks",
-        "kubernetes",
-        "oidc",
-        "openid",
-        "passwordless",
-        "plex",
-        "saml",
-        "scim",
-        "slo",
-        "sso",
-        "totp",
-        "traefik",
-        "webauthn"
-    ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [

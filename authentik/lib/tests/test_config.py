@@ -187,6 +187,18 @@ class TestConfig(TestCase):
             test_obj = Test()
             dumps(test_obj, indent=4, cls=AttrEncoder)
 
+    def test_get_optional_int(self):
+        config = ConfigLoader()
+        self.assertEqual(config.get_optional_int("foo", 21), 21)
+        self.assertEqual(config.get_optional_int("foo"), None)
+        config.set("foo", "21")
+        self.assertEqual(config.get_optional_int("foo"), 21)
+        self.assertEqual(config.get_optional_int("foo", 0), 21)
+        self.assertEqual(config.get_optional_int("foo", "null"), 21)
+        config.set("foo", "null")
+        self.assertEqual(config.get_optional_int("foo"), None)
+        self.assertEqual(config.get_optional_int("foo", 21), None)
+
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
         """Test config key re-write for deprecated env vars"""
@@ -248,6 +260,16 @@ class TestConfig(TestCase):
                     "DISABLE_SERVER_SIDE_CURSORS": False,
                 }
             },
+        )
+
+    def test_db_conn_max_age(self):
+        """Test DB conn_max_age Config"""
+        config = ConfigLoader()
+        config.set("postgresql.conn_max_age", "null")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf["default"]["CONN_MAX_AGE"],
+            None,
         )
 
     def test_db_read_replicas(self):

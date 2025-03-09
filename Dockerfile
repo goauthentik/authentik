@@ -3,7 +3,8 @@
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS website-builder
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    GIT_UNAVAILABLE=true
 
 WORKDIR /work/website
 

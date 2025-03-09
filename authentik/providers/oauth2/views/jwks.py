@@ -75,10 +75,7 @@ class JWKSView(View):
         key_data = {}
 
         if use == "sig":
-            if isinstance(private_key, RSAPrivateKey):
-                key_data["alg"] = JWTAlgorithms.RS256
-            elif isinstance(private_key, EllipticCurvePrivateKey):
-                key_data["alg"] = JWTAlgorithms.ES256
+            key_data["alg"] = JWTAlgorithms.from_private_key(private_key)
         elif use == "enc":
             key_data["alg"] = "RSA-OAEP-256"
             key_data["enc"] = "A256CBC-HS512"
