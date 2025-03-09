@@ -6,7 +6,6 @@ package redisstore
 import (
 	"context"
 	"encoding/base32"
-	"errors"
 	"fmt"
 	"net/http"
 	"strings"
@@ -21,15 +20,15 @@ import (
 type (
 	RedisStore struct {
 		// client to connect to redis
-		client     redis.UniversalClient
+		client redis.UniversalClient
 		// codecs used for cookie storage
-		codecs     []securecookie.Codec
+		codecs []securecookie.Codec
 		// default options to use when a new session is created
-		options    *sessions.Options
+		options *sessions.Options
 		// maximum length of values to store
-		maxLength  int
+		maxLength int
 		// key prefix with which the session will be stored
-		keyPrefix  string
+		keyPrefix string
 		// key generator
 		keyGen KeyGenFunc
 		// session serializer
@@ -53,13 +52,12 @@ type (
 
 // default values for options
 const (
-	defaultMaxLen    = 4096
 	defaultKeyPrefix = "session_"
-	defaultMaxAge    = 864000 * 30
+	defaultMaxAge    = 86400 * 30
 	defaultPath      = "/"
 )
 
-// NewRedisStore returns a new RedisStore with default configuration
+// NewStore returns a new RedisStore with default configuration
 func NewStore(client redis.UniversalClient, optFns ...Option) (*RedisStore, error) {
 	newOpts := &Options{}
 	for _, optFn := range optFns {
@@ -71,9 +69,6 @@ func NewStore(client redis.UniversalClient, optFns ...Option) (*RedisStore, erro
 			Path:   defaultPath,
 			MaxAge: defaultMaxAge,
 		}
-	}
-	if newOpts.MaxLength == 0 {
-		newOpts.MaxLength = defaultMaxLen
 	}
 	if newOpts.KeyPrefix == "" {
 		newOpts.KeyPrefix = defaultKeyPrefix
@@ -91,7 +86,7 @@ func NewStore(client redis.UniversalClient, optFns ...Option) (*RedisStore, erro
 		options:    newOpts.Options,
 		maxLength:  newOpts.MaxLength,
 		keyPrefix:  newOpts.KeyPrefix,
-		keyGen: newOpts.KeyGenFunc,
+		keyGen:     newOpts.KeyGenFunc,
 		serializer: newOpts.Serializer,
 	}, nil
 }
@@ -151,7 +146,7 @@ func (st *RedisStore) Save(r *http.Request, w http.ResponseWriter, session *sess
 
 			id, err := keyGenFunc(r)
 			if err != nil {
-				return errors.New("redistore: failed to generate session id")
+				return fmt.Errorf("redisstore: failed to generate session id: %w", err)
 			}
 
 			session.ID = id
@@ -229,7 +224,7 @@ func (st *RedisStore) save(session *sessions.Session) error {
 	}
 
 	if st.maxLength != 0 && len(b) > st.maxLength {
-		return errors.New("SessionStore: the value to store is too big")
+		return fmt.Errorf("SessionStore: the value to store is too big, length: %d", len(b))
 	}
 
 	return st.client.Set(context.Background(), st.key(session), b, time.Duration(session.Options.MaxAge)*time.Second).Err()
@@ -255,5 +250,8 @@ func (st *RedisStore) key(session *sessions.Session) string {
 }
 
 func generateRandomKey(r *http.Request) (string, error) {
-	return strings.TrimRight(base32.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(32)), "="), nil
+	key := securecookie.GenerateRandomKey(64)
+	encodedKey := base32.StdEncoding.EncodeToString(key)
+	trimmedKey := strings.TrimRight(encodedKey, "=")
+	return trimmedKey, nil
 }

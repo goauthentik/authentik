@@ -101,19 +101,19 @@ func (c *Config) deprecatedRedisConfigSet() bool {
 }
 
 func (c *Config) UpdateRedisURL() {
-	var(
-		redisURL = url.URL{Scheme: "redis"}
+	var (
+		redisURL      = url.URL{Scheme: "redis"}
 		redisURLQuery = redisURL.Query()
-		redisHost = "localhost"
-		redisPort = 6379
-		redisDB = 0
+		redisHost     = "localhost"
+		redisPort     = 6379
+		redisDB       = 0
 	)
 
 	// To make it easier for users to switch over to new Redis config allow old style config for now
 	if c.deprecatedRedisConfigSet() && c.Redis.URL == "redis://localhost:6379/0" {
 		log.Warning(
 			"other Redis environment variables have been deprecated in favor of 'AUTHENTIK_REDIS__URL'. " +
-			"Please update your configuration.",
+				"Please update your configuration.",
 		)
 		if c.Redis.TLS {
 			redisURL.Scheme = "rediss"
@@ -158,7 +158,7 @@ func (c *Config) UpdateRedisURL() {
 	} else {
 		var redisEnvKeys []string
 		redisVal := reflect.ValueOf(c.Redis)
-		for i := 0; i < redisVal.Type().NumField(); i++ {
+		for i := range redisVal.Type().NumField() {
 			if envTag, ok := redisVal.Type().Field(i).Tag.Lookup("env"); ok {
 				redisEnvKeys = append(redisEnvKeys, envTag)
 			}
@@ -209,7 +209,7 @@ func (c *Config) fromEnv() error {
 	return nil
 }
 
-func (c *Config) walkScheme(v interface{}) {
+func (c *Config) walkScheme(v any) {
 	rv := reflect.ValueOf(v)
 	if rv.Kind() != reflect.Ptr || rv.IsNil() {
 		return

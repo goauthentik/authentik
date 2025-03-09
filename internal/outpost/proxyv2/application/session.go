@@ -34,23 +34,23 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			if err != nil {
 				panic(err)
 			}
-
-			// New default RedisStore
-			rs, err := redisstore.NewRedisStore(context.Background(), client)
+			rs, err := redisstore.NewStore(
+				client,
+				redisstore.WithOptions(&sessions.Options{
+					Path:     "/",
+					Domain:   *p.CookieDomain,
+					HttpOnly: true,
+					MaxAge:   maxAge,
+					SameSite: http.SameSiteLaxMode,
+					Secure:   strings.ToLower(externalHost.Scheme) == "https",
+				}),
+				redisstore.WithKeyPrefix(RedisKeyPrefix),
+				redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
+			)
 			if err != nil {
 				return nil, err
 			}
 
-			rs.KeyPrefix(RedisKeyPrefix)
-			rs.Options(sessions.Options{
-				HttpOnly: true,
-				Secure:   strings.ToLower(externalHost.Scheme) == "https",
-				Domain:   *p.CookieDomain,
-				SameSite: http.SameSiteLaxMode,
-				MaxAge:   maxAge,
-				Path:     "/",
-			})
-			
 			a.log.Trace("using redis session backend")
 			return rs, nil
 		}
@@ -137,7 +137,7 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 		for _, key := range keys {
 			b, err := rs.GetBytesByKey(key)
 			if err != nil {
-				a.log.WithError(err).Warning("failed to load value")
+				a.log.WithError(err).Warning("failed to get value")
 				continue
 			}
 			s := sessions.Session{}
