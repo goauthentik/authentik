@@ -5,6 +5,7 @@ import pgtrigger
 from django.db import models
 from django.utils import timezone
 
+from authentik.lib.models import SerializerModel
 from authentik.tenants.models import Tenant
 
 CHANNEL_PREFIX = "authentik.tasks"
@@ -15,21 +16,23 @@ class ChannelIdentifier(StrEnum):
     LOCK = auto()
 
 
-class Queue(models.Model):
+class Task(SerializerModel):
     class State(models.TextChoices):
         QUEUED = "queued"
         CONSUMED = "consumed"
         REJECTED = "rejected"
         DONE = "done"
 
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     message_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    queue_name = models.TextField(default="default")
-    state = models.CharField(default=State.QUEUED, choices=State.choices)
-    mtime = models.DateTimeField(default=timezone.now)
-    message = models.JSONField(blank=True, null=True)
-    result = models.JSONField(blank=True, null=True)
-    result_ttl = models.DateTimeField(blank=True, null=True)
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
+    queue_name = models.TextField(default="default", editable=False)
+    state = models.CharField(default=State.QUEUED, choices=State.choices, editable=False)
+    mtime = models.DateTimeField(default=timezone.now, editable=False)
+    message = models.JSONField(blank=True, null=True, editable=False)
+    result = models.JSONField(blank=True, null=True, editable=False)
+    result_ttl = models.DateTimeField(blank=True, null=True, editable=False)
+    description = models.TextField(blank=True)
+    messages = models.JSONField(blank=True, null=True, editable=False)
 
     class Meta:
         indexes = (models.Index(fields=("state", "mtime")),)
@@ -55,3 +58,8 @@ class Queue(models.Model):
 
     def __str__(self):
         return str(self.message_id)
+
+    @property
+    def serializer(self):
+        # TODO: fixme
+        pass

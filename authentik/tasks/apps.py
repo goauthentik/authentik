@@ -13,6 +13,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
 
     def ready(self) -> None:
         from authentik.tasks.broker import PostgresBroker
+        from authentik.tasks.middleware import CurrentTask
 
         dramatiq.set_encoder(JSONPickleEncoder())
         broker = PostgresBroker()
@@ -21,5 +22,6 @@ class AuthentikTasksConfig(ManagedAppConfig):
         broker.add_middleware(TimeLimit())
         broker.add_middleware(Callbacks())
         broker.add_middleware(Retries(max_retries=3))
+        broker.add_middleware(CurrentTask())
         dramatiq.set_broker(broker)
         return super().ready()

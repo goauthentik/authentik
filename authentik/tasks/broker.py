@@ -21,7 +21,7 @@ from psycopg import Notify
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
-from authentik.tasks.models import Queue as MQueue, CHANNEL_PREFIX, ChannelIdentifier
+from authentik.tasks.models import Task, CHANNEL_PREFIX, ChannelIdentifier
 from authentik.tasks.results import PostgresBackend
 from authentik.tenants.utils import get_current_tenant
 
@@ -65,7 +65,7 @@ class PostgresBroker(Broker):
 
     @property
     def query_set(self) -> QuerySet:
-        return MQueue.objects.using(self.db_alias)
+        return Task.objects.using(self.db_alias)
 
     def consume(self, queue_name: str, prefetch: int = 1, timeout: int = 30000) -> Consumer:
         self.declare_queue(queue_name)
@@ -125,7 +125,7 @@ class PostgresBroker(Broker):
         defaults = {
             "tenant": get_current_tenant(),
             "queue_name": message.queue_name,
-            "state": MQueue.State.QUEUED,
+            "state": Task.State.QUEUED,
             "message": encoded,
         }
         create_defaults = {
@@ -169,7 +169,7 @@ class PostgresBroker(Broker):
             if (
                 self.query_set.filter(
                     queue_name=queue_name,
-                    state__in=(MQueue.State.QUEUED, MQueue.State.CONSUMED),
+                    state__in=(Task.State.QUEUED, Task.State.CONSUMED),
                 )
                 == 0
             ):
@@ -200,7 +200,7 @@ class _PostgresConsumer(Consumer):
 
     @property
     def query_set(self) -> QuerySet:
-        return MQueue.objects.using(self.db_alias)
+        return Task.objects.using(self.db_alias)
 
     @property
     def listen_connection(self) -> DatabaseWrapper:
@@ -220,9 +220,9 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
-            state=MQueue.State.CONSUMED,
+            state=Task.State.CONSUMED,
         ).update(
-            state=MQueue.State.DONE,
+            state=Task.State.DONE,
             message=message.encode(),
         )
         self.in_processing.remove(message.message_id)
@@ -233,9 +233,9 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
-            state__ne=MQueue.State.REJECTED,
+            state__ne=Task.State.REJECTED,
         ).update(
-            state=MQueue.State.REJECTED,
+            state=Task.State.REJECTED,
             message=message.encode(),
         )
         self.in_processing.remove(message.message_id)
@@ -245,14 +245,14 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
         ).update(
-            state=MQueue.State.QUEUED,
+            state=Task.State.QUEUED,
         )
         # We don't care about locks, requeue occurs on worker stop
 
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")
         notifies = self.query_set.filter(
-            state__in=(MQueue.State.QUEUED, MQueue.State.CONSUMED), queue_name=self.queue_name
+            state__in=(Task.State.QUEUED, Task.State.CONSUMED), queue_name=self.queue_name
         )
         channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
         return [Notify(pid=0, channel=channel, payload=item.message) for item in notifies]
@@ -276,9 +276,9 @@ class _PostgresConsumer(Consumer):
         result = (
             self.query_set.filter(
                 message_id=message.message_id,
-                state__in=(MQueue.State.QUEUED, MQueue.State.CONSUMED),
+                state__in=(Task.State.QUEUED, Task.State.CONSUMED),
             )
-            .update(state=MQueue.State.CONSUMED, mtime=timezone.now())
+            .update(state=Task.State.CONSUMED, mtime=timezone.now())
             .extra(where=["pg_try_advisory_lock(%s)"], params=[self._get_message_lock_id(message)])
         )
         return result == 1
@@ -354,7 +354,7 @@ class _PostgresConsumer(Consumer):
             return
         self.logger.debug("Running garbage collector")
         count = self.query_set.filter(
-            state__in=(MQueue.State.DONE, MQueue.State.REJECTED),
+            state__in=(Task.State.DONE, Task.State.REJECTED),
             mtime__lte=timezone.now() - timezone.timedelta(days=30),
         ).delete()
         self.logger.info(f"Purged {count} messages in all queues")
