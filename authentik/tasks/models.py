@@ -16,21 +16,25 @@ class ChannelIdentifier(StrEnum):
     LOCK = auto()
 
 
-class Task(SerializerModel):
-    class State(models.TextChoices):
-        QUEUED = "queued"
-        CONSUMED = "consumed"
-        REJECTED = "rejected"
-        DONE = "done"
+class TaskState(models.TextChoices):
+    QUEUED = "queued"
+    CONSUMED = "consumed"
+    REJECTED = "rejected"
+    DONE = "done"
 
+
+class Task(SerializerModel):
     message_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
     queue_name = models.TextField(default="default", editable=False)
-    state = models.CharField(default=State.QUEUED, choices=State.choices, editable=False)
+
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
+    state = models.CharField(default=TaskState.QUEUED, choices=TaskState.choices, editable=False)
     mtime = models.DateTimeField(default=timezone.now, editable=False)
-    message = models.JSONField(blank=True, null=True, editable=False)
-    result = models.JSONField(blank=True, null=True, editable=False)
-    result_ttl = models.DateTimeField(blank=True, null=True, editable=False)
+    message = models.JSONField(null=True, editable=False)
+
+    result = models.JSONField(null=True, editable=False)
+    result_ttl = models.DateTimeField(null=True, editable=False)
+
     description = models.TextField(blank=True)
     messages = models.JSONField(blank=True, null=True, editable=False)
 
@@ -41,14 +45,14 @@ class Task(SerializerModel):
                 name="notify_enqueueing",
                 operation=pgtrigger.Insert | pgtrigger.Update,
                 when=pgtrigger.After,
-                condition=pgtrigger.Q(new__state="queued"),
+                condition=pgtrigger.Q(new__state=TaskState.QUEUED),
                 timing=pgtrigger.Deferred,
                 func=f"""
                     PERFORM pg_notify(
                         '{CHANNEL_PREFIX}' || NEW.queue_name || '.{ChannelIdentifier.ENQUEUE.value}',
                         CASE WHEN octet_length(NEW.message::text) >= 8000
                         THEN jsonb_build_object('message_id', NEW.message_id)::text
-                        ELSE message::text
+                        ELSE NEW.message::text
                         END
                     );
                     RETURN NEW;

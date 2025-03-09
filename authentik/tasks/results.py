@@ -4,7 +4,7 @@ from django.utils import timezone
 from dramatiq.message import Message, get_encoder
 from dramatiq.results.backend import Missing, MResult, Result, ResultBackend
 
-from authentik.tasks.models import Task
+from authentik.tasks.models import Task, TaskState
 
 
 class PostgresBackend(ResultBackend):
@@ -42,6 +42,6 @@ class PostgresBackend(ResultBackend):
             **query,
             **defaults,
             "queue_name": "__RQ__",
-            "state": Queue.State.DONE,
+            "state": TaskState.DONE,
         }
         self.query_set.update_or_create(**query, defaults=defaults, create_defaults=create_defaults)
