@@ -3,6 +3,8 @@ from uuid import uuid4
 from django.db import models
 from django.utils import timezone
 
+from authentik.tenants.models import Tenant
+
 
 class Queue(models.Model):
     class State(models.TextChoices):
@@ -11,6 +13,7 @@ class Queue(models.Model):
         REJECTED = "rejected"
         DONE = "done"
 
+    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE)
     message_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     queue_name = models.TextField(default="default")
     state = models.CharField(default=State.QUEUED, choices=State.choices)

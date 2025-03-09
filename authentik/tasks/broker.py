@@ -1,3 +1,4 @@
+from enum import Enum, StrEnum, auto
 import functools
 import logging
 import time
@@ -23,12 +24,18 @@ from structlog.stdlib import get_logger
 
 from authentik.tasks.models import Queue as MQueue
 from authentik.tasks.results import PostgresBackend
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 
 
-def channel_name(connection: DatabaseWrapper, queue_name: str, identifier: str) -> str:
-    return f"{connection.schema_name}.dramatiq.{queue_name}.{identifier}"
+class ChannelIdentifier(StrEnum):
+    ENQUEUE = auto()
+    LOCK = auto()
+
+
+def channel_name(queue_name: str, identifier: ChannelIdentifier) -> str:
+    return f"authentik.tasks.{queue_name}.{identifier.value}"
 
 
 def raise_connection_error(func):
@@ -117,6 +124,7 @@ class PostgresBroker(Broker):
         # TODO: update_or_create
         self.query_set.create(
             message_id=message.message_id,
+            tenant=get_current_tenant(),
             queue_name=message.queue_name,
             state=MQueue.State.QUEUED,
             message=message.encode(),
@@ -196,9 +204,7 @@ class _PostgresConsumer(Consumer):
         # Should be set to True by Django by default
         self._listen_connection.set_autocommit(True)
         with self._listen_connection.cursor() as cursor:
-            cursor.execute(
-                "LISTEN %s", channel_name(self._listen_connection, self.queue_name, "enqueue")
-            )
+            cursor.execute("LISTEN %s", channel_name(self.queue_name, ChannelIdentifier.ENQUEUE))
 
     @raise_connection_error
     def ack(self, message: Message):
@@ -240,7 +246,7 @@ class _PostgresConsumer(Consumer):
         notifies = self.query_set.filter(
             state__in=(MQueue.State.QUEUED, MQueue.State.CONSUMED), queue_name=self.queue_name
         )
-        channel = channel_name(self.connection, self.queue_name, "enqueue")
+        channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
         return [Notify(pid=0, channel=channel, payload=item.message) for item in notifies]
 
     def _poll_for_notify(self):
@@ -251,7 +257,7 @@ class _PostgresConsumer(Consumer):
 
     def _get_message_lock_id(self, message: Message) -> int:
         return _cast_lock_id(
-            f"{channel_name(connections[self.connection], self.queue_name, 'lock')}.{message.message_id}"  # noqa: E501
+            f"{channel_name(self.queue_name, ChannelIdentifier.LOCK)}.{message.message_id}"
         )
 
     def _consume_one(self, message: Message) -> bool:
