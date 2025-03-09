@@ -42,7 +42,7 @@ def check_postgres():
 
 def check_redis():
     url = CONFIG.get("cache.url") or CONFIG.get("redis.url")
-	attempt = 0
+    attempt = 0
     while True:
         if attempt >= CHECK_THRESHOLD:
             sysexit(1)
