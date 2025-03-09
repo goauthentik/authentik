@@ -19,7 +19,7 @@ from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAS
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
 OUTPOST_GROUP = "group_outpost_%(outpost_pk)s"
-OUTPOST_GROUP_INSTANCE = "group_outpost_%(instance)s"
+OUTPOST_GROUP_INSTANCE = "group_outpost_%(outpost_pk)s_%(instance)s"
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -79,7 +79,8 @@ class OutpostConsumer(JsonWebsocketConsumer):
             OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
         )
         async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid.replace("!", ".")},
+            OUTPOST_GROUP_INSTANCE
+            % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
             self.channel_name,
         )
         GAUGE_OUTPOSTS_CONNECTED.labels(
@@ -96,7 +97,8 @@ class OutpostConsumer(JsonWebsocketConsumer):
             )
             if self.instance_uid:
                 async_to_sync(self.channel_layer.group_discard)(
-                    OUTPOST_GROUP_INSTANCE % {"instance": self.instance_uid.replace("!", ".")},
+                    OUTPOST_GROUP_INSTANCE
+                    % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
                     self.channel_name,
                 )
         if self.outpost and self.instance_uid:

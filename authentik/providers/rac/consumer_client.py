@@ -107,7 +107,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 continue
             self.logger.debug("Sending out connection broadcast")
             async_to_sync(self.channel_layer.group_send)(
-                OUTPOST_GROUP_INSTANCE % {"instance": states[0].uid.replace("!", ".")},
+                OUTPOST_GROUP_INSTANCE % {"outpost_pk": str(outpost.pk), "instance": states[0].uid},
                 msg,
             )
         if self.provider and self.provider.delete_token_on_disconnect:
