@@ -21,8 +21,8 @@ class TestPurgePasswordHistory(TestCase):
         """Tests the task empties the UserPasswordHistory table"""
         UserPasswordHistory.objects.bulk_create(
             [
-                UserPasswordHistory(user=self.user, old_password="hunter1"),
-                UserPasswordHistory(user=self.user, old_password="hunter2"),
+                UserPasswordHistory(user=self.user, old_password="hunter1"),  # nosec B106
+                UserPasswordHistory(user=self.user, old_password="hunter2"),  # nosec B106
             ]
         )
         purge_password_history_table.delay().get()
@@ -43,15 +43,19 @@ class TestTrimPasswordHistory(TestCase):
             [
                 UserPasswordHistory(
                     user=self.user,
-                    old_password="hunter1",
+                    old_password="hunter1",  # nosec B106
                     created_at=_now - timedelta(days=3),
                 ),
                 UserPasswordHistory(
                     user=self.user,
-                    old_password="hunter2",
+                    old_password="hunter2",  # nosec B106
                     created_at=_now - timedelta(days=2),
                 ),
-                UserPasswordHistory(user=self.user, old_password="hunter3", created_at=_now),
+                UserPasswordHistory(
+                    user=self.user,
+                    old_password="hunter3",  # nosec B106
+                    created_at=_now,
+                ),
             ]
         )
 
@@ -70,7 +74,7 @@ class TestTrimPasswordHistory(TestCase):
         """Test no passwords removed if policy binding is disabled"""
 
         # Insert a record to ensure it's not deleted after executing task
-        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")
+        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")  # nosec B106
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=1)
         PolicyBinding.objects.create(
@@ -85,7 +89,7 @@ class TestTrimPasswordHistory(TestCase):
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
         """Test no passwords deleted if fewer passwords exist than limit"""
 
-        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")
+        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")  # nosec B106
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=2)
         PolicyBinding.objects.create(

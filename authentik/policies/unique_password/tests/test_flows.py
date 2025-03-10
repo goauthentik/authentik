@@ -14,7 +14,7 @@ from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 class TestUniquePasswordPolicyFlow(FlowTestCase):
     """Test Unique Password Policy in a flow"""
 
-    REUSED_PASSWORD = "hunter1"
+    REUSED_PASSWORD = "hunter1"  # nosec B105
 
     def setUp(self) -> None:
         self.user = create_test_user()
