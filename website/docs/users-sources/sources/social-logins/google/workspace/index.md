@@ -52,7 +52,7 @@ Keep a text-editor handy because we'll be copying and pasting values between the
 
 The following placeholders are used:
 
-- `authentik.company`: The Fully Qualified Domain Name of the authentik installation.
+- `authentik.company`: The FQDN of the authentik installation.
 
 ## Google Workspace configuration
 
@@ -71,7 +71,7 @@ Within the app creation page, define the following **Name** and **Description** 
 | Name        | authentik                    |
 | Description | Single Sign-On for authentik |
 
-Press **Continue** to generate the SAML configuration we'll need to complete the integration.
+Click **Continue** to generate the SAML configuration we'll need to complete the integration.
 
 ### Google Identity Provider details
 
@@ -79,13 +79,13 @@ You should now be presented with a choice to download metadata file containing t
 
 Under _Option 2_, copy the SSO URL to your text editor and download the certificate.
 
-:::info{title="Entity ID"}
+:::info Entity ID
 
 authentik is acting as both a Service Provider (SP) to Google and an Identity Provider (IdP) to your applications. Since we only need the SP configuration, you can ignore the Entity ID provided by Google.
 
 :::
 
-With the SSO URL and certificate downloaded, press **Continue** to proceed to the next step.
+With the SSO URL and certificate downloaded, click **Continue** to proceed to the next step.
 
 ### Service Provider details
 
@@ -100,7 +100,7 @@ We'll need to provide Google with some information about our authentik instance,
 | Name ID         | Basic Information › Primary Email                   |
 | Signed Response | Enabled ✅                                          |
 
-:::info{title="Verify signed responses"}
+:::info Verify signed responses
 
 Enabling signed responses indicates that the entire SAML authentication response will be signed by Google. You'll need to configure uploaded certificates in authentik if you enable this option.
 
@@ -135,7 +135,7 @@ Start by logging into your authentik instance as an administrator and navigating
 
 ### Create a Federation Source
 
-In the Admin interface, navigate to **Directory -> Federation & Social login** and press **Create**.
+In the Admin interface, navigate to **Directory -> Federation & Social login** and click **Create**.
 
 In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
 
@@ -144,7 +144,7 @@ In the **New source** box, choose **SAML Source** and continue by filling in the
 | Name  | Google Workspace |
 | Slug  | `google`         |
 
-:::info{title="Choosing a slug"}
+:::info Choosing a slug
 Your choice of `slug` should match the ACS URL you provided to Google Workspace.
 You can choose a different slug, but you will need to update the ACS URL in Google Workspace to match.
 :::
