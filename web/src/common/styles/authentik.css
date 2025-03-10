@@ -17,19 +17,27 @@
     --ak-sidebar--minimum-auto-width: 80rem;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-    background-color: transparent;
+@supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--ak-accent);
+    }
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
 }
-::-webkit-scrollbar-thumb {
-    background-color: var(--ak-accent);
-}
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-::-webkit-scrollbar-corner {
-    background-color: transparent;
+
+@supports not selector(::-webkit-scrollbar) {
+    :root {
+        scrollbar-color: var(--ak-accent) transparent;
+    }
 }
 
 html {
