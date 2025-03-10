@@ -12,7 +12,7 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding

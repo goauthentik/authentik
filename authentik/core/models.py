@@ -656,7 +656,8 @@ class SourceUserMatchingModes(models.TextChoices):
     EMAIL_DENY = (
         "email_deny",
         _(
-            "Use the user's email address, but deny enrollment when the email address already exists."
+            "Use the user's email address, but deny enrollment when the email address already "
+            "exists."
         ),
     )
     USERNAME_LINK = (

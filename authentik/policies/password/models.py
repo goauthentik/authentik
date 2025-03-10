@@ -3,7 +3,6 @@
 import re
 from hashlib import sha1
 
-from django.contrib.auth.hashers import identify_hasher
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer

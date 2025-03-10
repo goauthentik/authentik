@@ -37,7 +37,7 @@ class TestTrimPasswordHistory(TestCase):
         self.pbm = PolicyBindingModel.objects.create()
 
     def test_trim_password_history_ok(self):
-        """Test passwors over the define limit are deleted"""
+        """Test passwords over the define limit are deleted"""
         _now = datetime.now()
         UserPasswordHistory.objects.bulk_create(
             [

@@ -43,7 +43,7 @@ def copy_password_to_password_history(
         ).exists()
 
         if unique_pwd_policy_binding_in_use:
-            """NOTE: Because we run this in a signal after saving the user, 
+            """NOTE: Because we run this in a signal after saving the user,
             we are not atomically guaranteed to save password history.
             """
             UserPasswordHistory.objects.create(user=user, old_password=user.password)

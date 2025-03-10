@@ -5,6 +5,7 @@ from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.models import User
 from authentik.events.models import (
     Event,
     Notification,

@@ -15,8 +15,8 @@ LOGGER = get_logger()
 class UniquePasswordPolicy(Policy):
     """Policy ensuring a user's password is not identical to a previously used password.
 
-    After enabling the policy, Authentik stores every user's previous password whenever a user changes
-    their own password. Old passwords remain stored in hashed form.
+    After enabling the policy, Authentik stores every user's previous password whenever a user
+    changes their own password. Old passwords remain stored in hashed form.
     """
 
     password_field = models.TextField(
