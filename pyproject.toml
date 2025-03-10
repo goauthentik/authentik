@@ -17,11 +17,15 @@ skip = [
     "go.sum",
     "locale",
     "**/dist",
+    "**/storybook-static",
     "**/web/src/locales",
     "**/web/xliff",
     "./website/build",
     "./gen-ts-api",
+    "./gen-py-api",
+    "./gen-go-api",
     "*.api.mdx",
+    "./htmlcov",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
