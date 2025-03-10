@@ -87,6 +87,9 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         """Return full filesystem path to the file"""
         try:
             name = self.get_valid_name(name)
+            name = os.path.normpath(name).lstrip("./")
+            if name.startswith("..") or name.startswith("/"):
+                raise ValueError("Suspicious path")
             full_path = safe_join(self.location, name)
             LOGGER.debug("Resolved file path", name=name, path=full_path)
             return full_path
@@ -99,6 +102,9 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
     def _save(self, name: str, content) -> str:
         """Save file with sanitized name"""
         name = self.get_valid_name(name)
+        name = os.path.normpath(name).lstrip("./")
+        if name.startswith("..") or name.startswith("/"):
+            raise SuspiciousOperation(f"Invalid path: {name}")
         return super()._save(name, content)
 
 
