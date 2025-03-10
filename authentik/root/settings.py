@@ -203,6 +203,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PARSER_CLASSES": [
         "drf_orjson_renderer.parsers.ORJSONParser",
+        "rest_framework.parsers.MultiPartParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",

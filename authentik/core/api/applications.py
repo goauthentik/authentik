@@ -281,6 +281,13 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+        parser_classes=(MultiPartParser,),
+    )
     @permission_required("authentik_core.change_application")
     @extend_schema(
         request={
@@ -291,18 +298,17 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             400: OpenApiResponse(description="Bad request"),
         },
     )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-        parser_classes=(MultiPartParser,),
-    )
     def set_icon(self, request: Request, slug: str):
         """Set application icon"""
         app: Application = self.get_object()
         return set_file(request, app, "meta_icon")
 
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST"],
+    )
     @permission_required("authentik_core.change_application")
     @extend_schema(
         request=FilePathSerializer,
@@ -310,12 +316,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             200: OpenApiResponse(description="Success"),
             400: OpenApiResponse(description="Bad request"),
         },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
     )
     def set_icon_url(self, request: Request, slug: str):
         """Set application icon (as URL)"""
