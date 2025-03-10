@@ -10,7 +10,9 @@ from botocore.exceptions import ClientError, NoCredentialsError, NoRegionError
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.core.files.storage import FileSystemStorage
+from django.core.files.uploadedfile import UploadedFile
 from django.db import connection
+from PIL import Image
 from storages.backends.s3 import S3Storage as BaseS3Storage
 from storages.utils import safe_join
 from structlog.stdlib import get_logger
@@ -18,6 +20,95 @@ from structlog.stdlib import get_logger
 from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
+
+ALLOWED_IMAGE_EXTENSIONS = {
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".ico": "image/x-icon",
+}
+
+
+def validate_image_file(file: UploadedFile) -> bool:
+    """Validate that a file is an allowed image format"""
+    if not file:
+        return False
+
+    _, ext = os.path.splitext(file.name.lower())
+
+    if (
+        ext not in ALLOWED_IMAGE_EXTENSIONS
+        or file.content_type not in ALLOWED_IMAGE_EXTENSIONS.values()
+    ):
+        LOGGER.warning(
+            "File extension or mimetype not allowed",
+            extension=ext,
+            mimetype=file.content_type,
+            allowed_extensions=list(ALLOWED_IMAGE_EXTENSIONS.keys()),
+            allowed_mimetypes=list(ALLOWED_IMAGE_EXTENSIONS.values()),
+        )
+        return False
+
+    try:
+        is_valid = False
+
+        if ext == ".svg":
+            content = file.read(8192).decode("utf-8").strip().lower()
+            file.seek(0)
+
+            has_valid_start = content.startswith("<?xml") or content.startswith("<svg")
+            is_valid = has_valid_start and "<svg" in content
+
+        elif ext == ".ico":
+            magic = file.read(4)
+            file.seek(0)
+            is_valid = magic == b"\x00\x00\x01\x00"
+
+        else:
+            try:
+                with Image.open(file) as img:
+                    format_to_ext = {
+                        "JPEG": ".jpg",
+                        "PNG": ".png",
+                        "GIF": ".gif",
+                        "WEBP": ".webp",
+                    }
+                    detected_ext = format_to_ext.get(img.format)
+
+                    if not detected_ext:
+                        LOGGER.warning(
+                            "Unrecognized image format", format=img.format, extension=ext
+                        )
+                    else:
+                        is_jpeg = detected_ext == ".jpg" and ext == ".jpeg"
+                        is_valid = detected_ext == ext or is_jpeg
+                        if not is_valid:
+                            LOGGER.warning(
+                                "File extension doesn't match content",
+                                detected_format=img.format,
+                                extension=ext,
+                            )
+                        else:
+                            img.verify()
+                            is_valid = True
+
+                    file.seek(0)
+
+            except Exception as img_error:
+                LOGGER.warning("Invalid image file", error=str(img_error))
+                is_valid = False
+
+        return is_valid
+
+    except UnicodeDecodeError as e:
+        LOGGER.warning("Invalid SVG file: not valid UTF-8", error=str(e))
+        return False
+    except Exception as e:
+        LOGGER.warning("Error validating image file", error=str(e))
+        return False
 
 
 class TenantAwareStorage:
@@ -101,6 +192,10 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
 
     def _save(self, name: str, content) -> str:
         """Save file with sanitized name"""
+        # Validate image format
+        if not validate_image_file(content):
+            raise SuspiciousOperation("Invalid or unsupported image format")
+
         name = self.get_valid_name(name)
         name = os.path.normpath(name).lstrip("./")
         if name.startswith("..") or name.startswith("/"):
@@ -329,6 +424,9 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
     def _save(self, name: str, content) -> str:
         """Save file to S3 with tenant isolation and random filename"""
+        if not validate_image_file(content):
+            raise SuspiciousOperation("Invalid or unsupported image format")
+
         randomized_name = self._randomize_filename(name)
         normalized_name = self._normalize_name(randomized_name)
 

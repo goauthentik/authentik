@@ -1,14 +1,87 @@
 """Test storage backends"""
 
+import io
 from unittest.mock import MagicMock, patch
 
 from botocore.exceptions import ClientError
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.db import connection
 from django.test import TestCase, override_settings
+from PIL import Image
 
-from authentik.root.storages import S3Storage
+from authentik.root.storages import S3Storage, validate_image_file
+
+
+class TestImageValidation(TestCase):
+    """Test image validation"""
+
+    def create_test_image(self, format: str, content_type: str) -> InMemoryUploadedFile:
+        """Create a test image file"""
+        image = Image.new("RGB", (100, 100), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format=format)
+        img_io.seek(0)
+        return InMemoryUploadedFile(
+            img_io,
+            "meta_icon",
+            f"test.{format.lower()}",
+            content_type,
+            len(img_io.getvalue()),
+            None,
+        )
+
+    def test_valid_image_formats(self):
+        """Test validation of valid image formats"""
+        # Test PNG
+        png_file = self.create_test_image("PNG", "image/png")
+        self.assertTrue(validate_image_file(png_file))
+
+        # Test JPEG
+        jpeg_file = self.create_test_image("JPEG", "image/jpeg")
+        self.assertTrue(validate_image_file(jpeg_file))
+
+        # Test GIF
+        gif_file = self.create_test_image("GIF", "image/gif")
+        self.assertTrue(validate_image_file(gif_file))
+
+    def test_invalid_content_type(self):
+        """Test validation with invalid content type"""
+        png_file = self.create_test_image("PNG", "application/octet-stream")
+        self.assertFalse(validate_image_file(png_file))
+
+    def test_invalid_extension(self):
+        """Test validation with invalid extension"""
+        png_file = self.create_test_image("PNG", "image/png")
+        png_file.name = "test.txt"
+        self.assertFalse(validate_image_file(png_file))
+
+    def test_svg_validation(self):
+        """Test SVG validation"""
+        # Valid SVG
+        valid_svg = InMemoryUploadedFile(
+            io.BytesIO(b'<?xml version="1.0"?><svg></svg>'),
+            "meta_icon",
+            "test.svg",
+            "image/svg+xml",
+            11,
+            None,
+        )
+        self.assertTrue(validate_image_file(valid_svg))
+
+        # Invalid SVG
+        invalid_svg = InMemoryUploadedFile(
+            io.BytesIO(b"not an svg"), "meta_icon", "test.svg", "image/svg+xml", 10, None
+        )
+        self.assertFalse(validate_image_file(invalid_svg))
+
+    def test_non_image_file(self):
+        """Test validation of non-image file"""
+        text_file = InMemoryUploadedFile(
+            io.BytesIO(b"test content"), "meta_icon", "test.txt", "text/plain", 12, None
+        )
+        self.assertFalse(validate_image_file(text_file))
 
 
 class TestS3Storage(TestCase):
@@ -271,3 +344,27 @@ class TestS3Storage(TestCase):
 
         # Verify delete was still attempted
         self.mock_object.delete.assert_called_once()
+
+    def test_save_invalid_image(self):
+        """Test saving invalid image file"""
+        text_file = ContentFile(b"test content", name="test.txt")
+        with self.assertRaises(SuspiciousOperation):
+            self.storage._save("test.txt", text_file)
+
+    def test_save_valid_image(self):
+        """Test saving valid image file"""
+        # Create a valid PNG file
+        image = Image.new("RGB", (100, 100), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format="PNG")
+        img_io.seek(0)
+        png_file = InMemoryUploadedFile(
+            img_io, "meta_icon", "test.png", "image/png", len(img_io.getvalue()), None
+        )
+
+        # Mock successful upload
+        self.mock_object.load.return_value = None
+
+        # Should not raise an exception
+        name = self.storage._save("test.png", png_file)
+        self.assertTrue(name.endswith(".png"))

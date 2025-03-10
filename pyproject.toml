@@ -153,6 +153,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
+pillow = "*"
 
 [tool.poetry.group.dev.dependencies]
 aws-cdk-lib = "*"
