@@ -21,11 +21,11 @@ class JSONPickleEncoder(dramatiq.encoder.Encoder):
             keys=True,
             warn=True,
             use_base85=True,
-        ).encode("utf-8")
+        ).encode()
 
     def decode(self, data: bytes) -> MessageData:
         return jsonpickle.decode(
-            data.decode("utf-8"),
+            data.decode(),
             backend=OrjsonBackend(),
             keys=True,
             on_missing="warn",

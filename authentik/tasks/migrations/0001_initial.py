@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunSQL(
-            "ALTER TABLE authentik_tasks_queue SET WITHOUT OIDS;", migrations.RunSQL.noop
+            "ALTER TABLE authentik_tasks_task SET WITHOUT OIDS;", migrations.RunSQL.noop
         ),
         pgtrigger.migrations.AddTrigger(
             model_name="task",

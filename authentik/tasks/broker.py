@@ -1,3 +1,4 @@
+from psycopg import sql
 import functools
 import logging
 import time
@@ -118,7 +119,7 @@ class PostgresBroker(Broker):
         self.declare_queue(canonical_queue_name)
         self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
         self.emit_before("enqueue", message, delay)
-        encoded = message.encode()
+        encoded = message.encode().decode()
         query = {
             "message_id": message.message_id,
         }
@@ -212,7 +213,12 @@ class _PostgresConsumer(Consumer):
         # Should be set to True by Django by default
         self._listen_connection.set_autocommit(True)
         with self._listen_connection.cursor() as cursor:
-            cursor.execute("LISTEN %s", channel_name(self.queue_name, ChannelIdentifier.ENQUEUE))
+            cursor.execute(
+                sql.SQL("LISTEN {}").format(
+                    sql.Identifier(channel_name(self.queue_name, ChannelIdentifier.ENQUEUE))
+                )
+            )
+        return self._listen_connection
 
     @raise_connection_error
     def ack(self, message: Message):
@@ -223,7 +229,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.CONSUMED,
         ).update(
             state=TaskState.DONE,
-            message=message.encode(),
+            message=message.encode().decode(),
         )
         self.in_processing.remove(message.message_id)
 
@@ -236,7 +242,7 @@ class _PostgresConsumer(Consumer):
             state__ne=TaskState.REJECTED,
         ).update(
             state=TaskState.REJECTED,
-            message=message.encode(),
+            message=message.encode().decode(),
         )
         self.in_processing.remove(message.message_id)
 
@@ -259,7 +265,7 @@ class _PostgresConsumer(Consumer):
 
     def _poll_for_notify(self):
         with self.listen_connection.cursor() as cursor:
-            notifies = cursor.notifies(timeout=self.timeout)
+            notifies = list(cursor.connection.notifies(timeout=self.timeout))
             self.logger.debug(f"Received {len(notifies)} postgres notifies")
             self.notifies += notifies
 
@@ -278,8 +284,8 @@ class _PostgresConsumer(Consumer):
                 message_id=message.message_id,
                 state__in=(TaskState.QUEUED, TaskState.CONSUMED),
             )
-            .update(state=TaskState.CONSUMED, mtime=timezone.now())
             .extra(where=["pg_try_advisory_lock(%s)"], params=[self._get_message_lock_id(message)])
+            .update(state=TaskState.CONSUMED, mtime=timezone.now())
         )
         return result == 1
 
@@ -334,7 +340,7 @@ class _PostgresConsumer(Consumer):
 
         # No message to process
         self._purge_locks()
-        self._auto_pruge()
+        self._auto_purge()
 
     def _purge_locks(self):
         while True:
@@ -344,7 +350,9 @@ class _PostgresConsumer(Consumer):
                 return
             self.logger.debug(f"Unlocking {message.message_id}@{message.queue_name}")
             with self.connection.cursor() as cursor:
-                cursor.execute("SELECT pg_advisory_unlock(%s)", self._get_message_lock_id(message))
+                cursor.execute(
+                    "SELECT pg_advisory_unlock(%s)", (self._get_message_lock_id(message),)
+                )
             self.unlock_queue.task_done()
 
     def _auto_purge(self):
