@@ -26,6 +26,7 @@ from authentik.outposts.models import (
     KubernetesServiceConnection,
     OutpostServiceConnection,
 )
+from authentik.rbac.filters import ObjectFilter
 
 
 class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
@@ -75,7 +76,7 @@ class ServiceConnectionViewSet(
     filterset_fields = ["name"]
 
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
+    @action(detail=True, pagination_class=None, filter_backends=[ObjectFilter])
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
         connection = self.get_object()

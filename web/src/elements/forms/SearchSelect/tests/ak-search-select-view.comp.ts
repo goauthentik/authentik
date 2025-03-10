@@ -40,6 +40,7 @@ export class AkSearchSelectViewDriver {
         }
         const id = await element.getAttribute("data-ouia-component-id");
         const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
+        // @ts-expect-error "Another ChainablePromise mistake"
         return new AkSearchSelectViewDriver(element, menu);
     }
 

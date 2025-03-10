@@ -68,6 +68,7 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
+    verify_certificates = models.BooleanField(default=True)
 
     property_mappings_group = models.ManyToManyField(
         PropertyMapping,

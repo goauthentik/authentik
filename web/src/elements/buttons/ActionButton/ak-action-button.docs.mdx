@@ -1,0 +1,33 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as ActionButtonStories from "./ak-action-button.stories";
+
+<Meta of={ActionButtonStories} />
+
+# Action Button
+
+An `<ak-action-button>` takes a zero-arity function (a function that takes no argument) that returns
+a promise. Pressing the button runs the function and the results of the promise drive the behavior
+of the button.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/buttons/ActionButton/ak-action-button.js";
+```
+
+```html
+<ak-action-button .apiRequest=${somePromise}">Your message here</ak-action-button>
+```
+
+## Demo
+
+### Success: button with "promise revolved" animation
+
+<Story of={ActionButtonStories.ButtonWithSuccess} />
+
+### Failure: button with "promise rejected" animation
+
+This shows how the button behaves if the promise rejects.
+
+<Story of={ActionButtonStories.ButtonWithError} />

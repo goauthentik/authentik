@@ -1,104 +1,116 @@
-import { $, browser } from "@wdio/globals";
+/* eslint-env jest */
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { bound } from "@goauthentik/elements/decorators/bound.js";
+import { render } from "@goauthentik/elements/tests/utils.js";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
-import { Key } from "webdriverio";
 
-import { html, render } from "lit";
+import { html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { property, query } from "lit/decorators.js";
 
-import "../ak-search-select-view.js";
-import { sampleData } from "../stories/sampleData.js";
+import "../ak-search-select.js";
+import { SearchSelect } from "../ak-search-select.js";
+import { type ViewSample, sampleData } from "../stories/sampleData.js";
 import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";
 
-const longGoodForYouPairs = {
-    grouped: false,
-    options: sampleData.map(({ produce }) => [slug(produce), produce]),
-};
+const renderElement = (fruit: ViewSample) => fruit.produce;
 
-describe("Search select: Test Input Field", () => {
+const renderDescription = (fruit: ViewSample) => html`${fruit.desc}`;
+
+const renderValue = (fruit: ViewSample | undefined) => slug(fruit?.produce ?? "");
+
+@customElement("ak-mock-search-group")
+export class MockSearch extends CustomListenerElement(AKElement) {
+    /**
+     * The current fruit
+     *
+     * @attr
+     */
+    @property({ type: String, reflect: true })
+    fruit?: string;
+
+    @query("ak-search-select")
+    search!: SearchSelect<ViewSample>;
+
+    selectedFruit?: ViewSample;
+
+    get value() {
+        return this.selectedFruit ? renderValue(this.selectedFruit) : undefined;
+    }
+
+    @bound
+    handleSearchUpdate(ev: CustomEvent) {
+        ev.stopPropagation();
+        this.selectedFruit = ev.detail.value;
+        this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
+    }
+
+    @bound
+    selected(fruit: ViewSample) {
+        return this.fruit === slug(fruit.produce);
+    }
+
+    @bound
+    fetchObjects() {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const resolver = (resolve: any) => {
+            this.addEventListener("resolve", () => {
+                resolve(sampleData);
+            });
+        };
+        return new Promise(resolver);
+    }
+
+    render() {
+        return html`
+            <ak-search-select
+                .fetchObjects=${this.fetchObjects}
+                .renderElement=${renderElement}
+                .renderDescription=${renderDescription}
+                .value=${renderValue}
+                .selected=${this.selected}
+                managed
+                @ak-change=${this.handleSearchUpdate}
+                ?blankable=${true}
+            >
+            </ak-search-select>
+        `;
+    }
+}
+
+describe("Search select: event driven startup", () => {
     let select: AkSearchSelectViewDriver;
+    let wrapper: SearchSelect<ViewSample>;
 
     beforeEach(async () => {
-        await render(
-            html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
-            document.body,
-        );
+        await render(html`<ak-mock-search-group></ak-mock-search-group>`, document.body);
         // @ts-ignore
-        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
+        wrapper = await $(">>>ak-search-select");
     });
 
-    it("should open the menu when the input is clicked", async () => {
-        expect(await select.open).toBe(false);
-        expect(await select.menuIsVisible()).toBe(false);
-        await select.clickInput();
-        expect(await select.open).toBe(true);
-        //  expect(await select.menuIsVisible()).toBe(true);
-    });
-
-    it("should not open the menu when the input is focused", async () => {
-        expect(await select.open).toBe(false);
-        await select.focusOnInput();
-        expect(await select.open).toBe(false);
-        expect(await select.menuIsVisible()).toBe(false);
-    });
-
-    it("should close the menu when the input is clicked a second time", async () => {
-        expect(await select.open).toBe(false);
-        expect(await select.menuIsVisible()).toBe(false);
-        await select.clickInput();
-        expect(await select.menuIsVisible()).toBe(true);
-        expect(await select.open).toBe(true);
-        await select.clickInput();
-        expect(await select.open).toBe(false);
-        expect(await select.open).toBe(false);
-    });
-
-    it("should open the menu from a focused but closed input when a search is begun", async () => {
-        expect(await select.open).toBe(false);
-        await select.focusOnInput();
-        expect(await select.open).toBe(false);
-        expect(await select.menuIsVisible()).toBe(false);
-        await browser.keys("A");
-        expect(await select.open).toBe(true);
-        expect(await select.menuIsVisible()).toBe(true);
-    });
-
-    it("should update the list as the user types", async () => {
-        await select.focusOnInput();
-        await browser.keys("Ap");
-        expect(await select.menuIsVisible()).toBe(true);
-        const elements = Array.from(await select.listElements());
-        expect(elements.length).toBe(2);
-    });
-
-    it("set the value when a match is close", async () => {
-        await select.focusOnInput();
-        await browser.keys("Ap");
-        expect(await select.menuIsVisible()).toBe(true);
-        const elements = Array.from(await select.listElements());
-        expect(elements.length).toBe(2);
-        await browser.keys(Key.Tab);
-        expect(await (await select.input()).getValue()).toBe("Apples");
-    });
-
-    it("should close the menu when the user clicks away", async () => {
-        document.body.insertAdjacentHTML(
-            "afterbegin",
-            '<input id="a-separate-component" type="text" />',
-        );
-        const input = await browser.$("#a-separate-component");
-
-        await select.clickInput();
-        expect(await select.open).toBe(true);
-        await input.click();
-        expect(await select.open).toBe(false);
+    it("should shift from the loading indicator to search select view on fetch event completed", async () => {
+        expect(await wrapper).toBeExisting();
+        expect(await $(">>>ak-search-select-loading-indicator")).toBeDisplayed();
+        await browser.execute(() => {
+            const mock = document.querySelector("ak-mock-search-group");
+            mock?.dispatchEvent(new Event("resolve"));
+        });
+        expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
+        // @ts-expect-error "Another ChainablePromise mistake"
+        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
+        expect(await select).toBeExisting();
     });
 
     afterEach(async () => {
-        await document.body.querySelector("#a-separate-component")?.remove();
-        await document.body.querySelector("ak-search-select-view")?.remove();
-        // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-        if (document.body["_$litPart$"]) {
+        await browser.execute(() => {
+            document.body.querySelector("ak-mock-search-group")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            delete document.body["_$litPart$"];
-        }
+            if (document.body["_$litPart$"]) {
+                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+                delete document.body["_$litPart$"];
+            }
+        });
     });
 });

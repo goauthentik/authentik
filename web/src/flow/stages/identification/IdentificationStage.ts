@@ -4,10 +4,11 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/stages/captcha/CaptchaStage";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -45,6 +46,9 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallengeResponseRequest
 > {
     form?: HTMLFormElement;
+
+    @state()
+    captchaToken = "";
 
     static get styles(): CSSResult[] {
         return [
@@ -256,6 +260,7 @@ export class IdentificationStage extends BaseStage<
                     placeholder=${label}
                     autofocus=""
                     autocomplete="username"
+                    spellcheck="false"
                     class="pf-c-form-control"
                     required
                 />
@@ -274,6 +279,18 @@ export class IdentificationStage extends BaseStage<
                   `
                 : nothing}
             ${this.renderNonFieldErrors()}
+            ${this.challenge.captchaStage
+                ? html`
+                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
+                      <ak-stage-captcha
+                          .challenge=${this.challenge.captchaStage}
+                          .onTokenChange=${(token: string) => {
+                              this.captchaToken = token;
+                          }}
+                          embedded
+                      ></ak-stage-captcha>
+                  `
+                : nothing}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}

@@ -17,6 +17,7 @@ class TestMetadataProcessor(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.source = SAMLSource.objects.create(
+            name=generate_id(),
             slug=generate_id(),
             issuer="authentik",
             signing_kp=create_test_cert(),
@@ -30,7 +31,9 @@ class TestMetadataProcessor(TestCase):
         xml = MetadataProcessor(self.source, request).build_entity_descriptor()
         metadata = lxml_from_string(xml)
 
-        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(
+            etree.parse("schemas/saml-schema-metadata-2.0.xsd", parser=etree.XMLParser())  # nosec
+        )
         self.assertTrue(schema.validate(metadata))
 
     def test_metadata_consistent(self):

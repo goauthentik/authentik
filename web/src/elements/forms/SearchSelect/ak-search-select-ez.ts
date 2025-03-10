@@ -1,17 +1,15 @@
 import { TemplateResult } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 import { type ISearchSelectBase, SearchSelectBase } from "./SearchSelect.js";
 
 export interface ISearchSelectApi<T> {
     fetchObjects: (query?: string) => Promise<T[]>;
     renderElement: (element: T) => string;
     renderDescription?: (element: T) => string | TemplateResult;
-    value: (element: T | undefined) => unknown;
+    value: (element: T | undefined) => string;
     selected?: (element: T, elements: T[]) => boolean;
-    groupBy: (items: T[]) => [string, T[]][];
+    groupBy?: (items: T[]) => [string, T[]][];
 }
 
 export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
@@ -48,7 +46,7 @@ export interface ISearchSelectEz<T> extends ISearchSelectBase<T> {
 @customElement("ak-search-select-ez")
 export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSelectEz<T> {
     static get styles() {
-        return [PFBase];
+        return [...SearchSelectBase.styles];
     }
 
     @property({ type: Object, attribute: false })
@@ -60,7 +58,9 @@ export class SearchSelectEz<T> extends SearchSelectBase<T> implements ISearchSel
         this.renderDescription = this.config.renderDescription;
         this.value = this.config.value;
         this.selected = this.config.selected;
-        this.groupBy = this.config.groupBy;
+        if (this.config.groupBy !== undefined) {
+            this.groupBy = this.config.groupBy;
+        }
         super.connectedCallback();
     }
 }

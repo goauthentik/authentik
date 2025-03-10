@@ -1,8 +1,8 @@
 ---
-title: SharePoint Server SE
+title: Integrate with SharePoint Server SE
+sidebar_label: SharePoint Server SE
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Microsoft SharePoint
 
@@ -72,8 +72,8 @@ SharePoint requires additional properties within the OpenID and profile scopes i
 
 Additional information from Microsoft documentation:
 
--   https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
--   https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
+- https://learn.microsoft.com/en-us/entra/identity-platform/id-tokens#validate-tokens
+- https://learn.microsoft.com/en-us/entra/identity-platform/id-token-claims-reference#payload-claims
 
 #### Add an OpenID scope mapping for SharePoint
 
@@ -178,8 +178,8 @@ The following PowerShell script must be updated according to your environment an
 
 :::caution
 
--   Update placeholders
--   Read all script's comments
+- Update placeholders
+- Read all script's comments
 
 :::
 
@@ -229,8 +229,8 @@ The following PowerShell script must be updated according to your environment an
 
 :::caution
 
--   Update placeholders
--   Read all script's comments.
+- Update placeholders
+- Read all script's comments.
 
 :::
 
@@ -290,9 +290,9 @@ Repeat all steps for each target web applications that matches with `auth.provid
 
 Objectives :
 
--   Integrate SharePoint People Picker with authentik to search users and groups
--   Augment SharePoint user claims at login stage
--   Resolve user's membership
+- Integrate SharePoint People Picker with authentik to search users and groups
+- Augment SharePoint user claims at login stage
+- Resolve user's membership
 
 :::caution
 [LDAPCP](https://www.ldapcp.com/docs/overview/introduction/) must be installed on the target SharePoint farm.
@@ -304,8 +304,8 @@ The following PowerShell script must be updated according to your environment an
 
 :::caution
 
--   Update placeholders
--   Read all script's comments
+- Update placeholders
+- Read all script's comments
 
 :::
 

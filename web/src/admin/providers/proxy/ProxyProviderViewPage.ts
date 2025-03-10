@@ -6,14 +6,14 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToSlug } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
-import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
-import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
-import MDNginxStandalone from "@goauthentik/docs/providers/proxy/_nginx_standalone.md";
-import MDTraefikCompose from "@goauthentik/docs/providers/proxy/_traefik_compose.md";
-import MDTraefikIngress from "@goauthentik/docs/providers/proxy/_traefik_ingress.md";
-import MDTraefikStandalone from "@goauthentik/docs/providers/proxy/_traefik_standalone.md";
-import MDHeaderAuthentication from "@goauthentik/docs/providers/proxy/header_authentication.md";
+import MDCaddyStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
+import MDNginxIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
+import MDNginxPM from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
+import MDNginxStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_nginx_standalone.md";
+import MDTraefikCompose from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_compose.md";
+import MDTraefikIngress from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_ingress.md";
+import MDTraefikStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_traefik_standalone.md";
+import MDHeaderAuthentication from "@goauthentik/docs/add-secure-apps/providers/proxy/header_authentication.mdx";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -25,7 +25,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -94,6 +94,11 @@ export class ProxyProviderViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFBanner,
+            css`
+                :host(:not([theme="dark"])) .ak-markdown-section {
+                    background-color: var(--pf-c-card--BackgroundColor);
+                }
+            `,
         ];
     }
 
@@ -118,7 +123,7 @@ export class ProxyProviderViewPage extends AKElement {
     }
 
     renderConfig(): TemplateResult {
-        const serves = [
+        const servers = [
             {
                 label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
@@ -166,7 +171,7 @@ export class ProxyProviderViewPage extends AKElement {
                     return input;
                 }
                 const extHost = new URL(this.provider.externalHost);
-                // See website/docs/providers/proxy/forward_auth.mdx
+                // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
                         .replaceAll("authentik.company", window.location.hostname)
@@ -184,11 +189,11 @@ export class ProxyProviderViewPage extends AKElement {
             },
         ];
         return html`<ak-tabs pageIdentifier="proxy-setup">
-            ${serves.map((server) => {
+            ${servers.map((server) => {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
-                    class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-markdown
                         .replacers=${replacers}
@@ -229,7 +234,7 @@ export class ProxyProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -392,9 +397,13 @@ export class ProxyProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         <ul class="pf-c-list">
-                                            ${this.provider.redirectUris.split("\n").map((url) => {
-                                                return html`<li><pre>${url}</pre></li>`;
-                                            })}
+                                            <ul>
+                                                ${this.provider.redirectUris.map((ru) => {
+                                                    return html`<li>
+                                                        ${ru.matchingMode}: ${ru.url}
+                                                    </li>`;
+                                                })}
+                                            </ul>
                                         </ul>
                                     </div>
                                 </dd>

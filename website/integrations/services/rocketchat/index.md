@@ -1,8 +1,8 @@
 ---
-title: Rocket.chat
+title: Integrate with Rocket.chat
+sidebar_label: Rocket.chat
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Rocket.chat
 
@@ -16,10 +16,14 @@ This is based on authentik 2022.3.1 and Rocket.chat 4.5.1 using the [Docker-Comp
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `rocket.company` is the FQDN of Rocket.chat.
--   `authentik.company` is the FQDN of authentik.
+- `rocket.company` is the FQDN of Rocket.chat installation.
+- `authentik.company` is the FQDN of authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ### Step 1
 
@@ -31,10 +35,10 @@ Only settings that have been modified from default have been listed.
 
 **Protocol Settings**
 
--   Name: RocketChat
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins:
+- Name: RocketChat
+- Client ID: Copy and Save this for Later
+- Client Secret: Copy and Save this for later
+- Redirect URIs/Origins:
 
 ```
 https://rocket.company/_oauth/authentik
@@ -48,10 +52,10 @@ In authentik, under _Applications_, create a new application with these settings
 
 **Application Settings**
 
--   Name: Rocket.chat
--   Slug: rocketchat
--   Provider: RocketChat
--   Launch URL:
+- Name: Rocket.chat
+- Slug: rocketchat
+- Provider: RocketChat
+- Launch URL:
 
 ```
 https://rocket.company/_oauth/authentik
@@ -127,10 +131,10 @@ By default, Rocket.chat will attempt to use two-factor authentication with any n
 
 Navigate to the _Accounts_ settings to change the following:
 
--   Allow Name Change: Off
--   Allow Username Change: Off
--   Allow Email Change: Off
--   Allow Password Change for OAuth Users: Off
+- Allow Name Change: Off
+- Allow Username Change: Off
+- Allow Email Change: Off
+- Allow Password Change for OAuth Users: Off
 
 **If you are using Two Factor authentication through authentik:**
 
@@ -139,4 +143,4 @@ Navigate to the _Accounts_ settings, Scroll Down to Two Factor Authentication an
 **Registration Options**
 Navigate to the _Accounts_ settings, Scroll Down to Registration and choose your [registration options](https://docs.rocket.chat/guides/administration/settings/account-settings#registration), such as:
 
--   Registration Form: Disabled
+- Registration Form: Disabled

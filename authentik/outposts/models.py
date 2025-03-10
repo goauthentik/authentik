@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.md
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False

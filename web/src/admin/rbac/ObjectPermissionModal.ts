@@ -7,7 +7,6 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -53,17 +52,13 @@ export class ObjectPermissionModal extends AKElement {
     objectPk?: string | number;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFBanner];
+        return [PFBase, PFButton];
     }
 
     render(): TemplateResult {
         return html`
             <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
                 <span slot="header"> ${msg("Update Permissions")} </span>
-                <div class="pf-c-banner pf-m-info" slot="above-form">
-                    ${msg("RBAC is in preview.")}
-                    <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-                </div>
                 <ak-rbac-object-permission-modal-form
                     slot="form"
                     .model=${this.model}

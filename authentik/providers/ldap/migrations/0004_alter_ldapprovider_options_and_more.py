@@ -4,13 +4,13 @@ from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 from django.db import migrations
-from django.contrib.auth.management import create_permissions
 
 
 def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
-    from guardian.shortcuts import assign_perm
     from authentik.core.models import User
     from django.apps import apps as real_apps
+    from django.contrib.auth.management import create_permissions
+    from guardian.shortcuts import UserObjectPermission
 
     db_alias = schema_editor.connection.alias
 
@@ -20,14 +20,25 @@ def migrate_search_group(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     create_permissions(real_apps.get_app_config("authentik_providers_ldap"), using=db_alias)
 
     LDAPProvider = apps.get_model("authentik_providers_ldap", "ldapprovider")
+    Permission = apps.get_model("auth", "Permission")
+    UserObjectPermission = apps.get_model("guardian", "UserObjectPermission")
+    ContentType = apps.get_model("contenttypes", "ContentType")
+
+    new_prem = Permission.objects.using(db_alias).get(codename="search_full_directory")
+    ct = ContentType.objects.using(db_alias).get(
+        app_label="authentik_providers_ldap",
+        model="ldapprovider",
+    )
 
     for provider in LDAPProvider.objects.using(db_alias).all():
-        for user_pk in (
-            provider.search_group.users.using(db_alias).all().values_list("pk", flat=True)
-        ):
-            # We need the correct user model instance to assign the permission
-            assign_perm(
-                "search_full_directory", User.objects.using(db_alias).get(pk=user_pk), provider
+        if not provider.search_group:
+            continue
+        for user in provider.search_group.users.using(db_alias).all():
+            UserObjectPermission.objects.using(db_alias).create(
+                user=user,
+                permission=new_prem,
+                object_pk=provider.pk,
+                content_type=ct,
             )
 
 
@@ -35,6 +46,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_ldap", "0003_ldapprovider_mfa_support_and_more"),
+        ("guardian", "0002_generic_permissions_index"),
     ]
 
     operations = [

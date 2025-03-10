@@ -8,7 +8,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 interface PropertyMapping {
     name: string;
-    expression: string;
+    expression?: string;
 }
 
 export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends ModelForm<
@@ -16,7 +16,7 @@ export abstract class BasePropertyMappingForm<T extends PropertyMapping> extends
     string
 > {
     docLink(): string {
-        return "/docs/providers/property-mappings/expression?utm_source=authentik";
+        return "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik";
     }
 
     getSuccessMessage(): string {

@@ -10,22 +10,22 @@
         "weakmap-polyfill": "^2.0.4"
     },
     "devDependencies": {
-        "@rollup/plugin-commonjs": "^26.0.1",
-        "@rollup/plugin-node-resolve": "^15.2.3",
-        "@rollup/plugin-swc": "^0.3.1",
+        "@rollup/plugin-commonjs": "^28.0.0",
+        "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.4.0",
-        "@swc/core": "^1.7.11",
+        "@swc/core": "^1.7.28",
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@types/jquery": "^3.5.30",
+        "@types/jquery": "^3.5.31",
         "lockfile-lint": "^4.14.0",
         "prettier": "^3.3.2",
-        "rollup": "^4.18.1",
+        "rollup": "^4.23.0",
         "rollup-plugin-copy": "^3.5.0",
-        "wireit": "^0.14.4"
+        "wireit": "^0.14.9"
     },
     "license": "MIT",
     "optionalDependencies": {
-        "@swc/core": "^1.7.11",
+        "@swc/core": "^1.7.28",
         "@swc/core-darwin-arm64": "^1.6.13",
         "@swc/core-darwin-x64": "^1.6.13",
         "@swc/core-linux-arm-gnueabihf": "^1.6.13",

@@ -2,7 +2,7 @@ import { convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -33,7 +33,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *    where the field isn't available for the user to view unless they explicitly request to be able
  *    to see the content; otherwise, a dead password field is shown. There are 10 uses of this
  *    feature.
- * 
+ *
  */
 
 const isAkControl = (el: unknown): boolean =>
@@ -86,7 +86,7 @@ export class HorizontalFormElement extends AKElement {
     writeOnlyActivated = false;
 
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    errorMessages: string[] | string[][] = [];
 
     @property({ type: Boolean })
     slugMode = false;
@@ -183,6 +183,16 @@ export class HorizontalFormElement extends AKElement {
                           </p>`
                         : html``}
                     ${this.errorMessages.map((message) => {
+                        if (message instanceof Object) {
+                            return html`${Object.entries(message).map(([field, errMsg]) => {
+                                return html`<p
+                                    class="pf-c-form__helper-text pf-m-error"
+                                    aria-live="polite"
+                                >
+                                    ${msg(str`${field}: ${errMsg}`)}
+                                </p>`;
+                            })}`;
+                        }
                         return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
                             ${message}
                         </p>`;

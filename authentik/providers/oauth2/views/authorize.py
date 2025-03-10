@@ -2,7 +2,6 @@
 
 from dataclasses import InitVar, dataclass, field
 from datetime import timedelta
-from hashlib import sha256
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
@@ -16,7 +15,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application
+from authentik.core.models import Application, AuthenticatedSession
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
@@ -28,9 +27,7 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
@@ -57,6 +54,8 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
     ResponseMode,
     ResponseTypes,
     ScopeMapping,
@@ -188,40 +187,39 @@ class OAuthAuthorizationParams:
 
     def check_redirect_uri(self):
         """Redirect URI validation."""
-        allowed_redirect_urls = self.provider.redirect_uris.split()
+        allowed_redirect_urls = self.provider.redirect_uris
         if not self.redirect_uri:
             LOGGER.warning("Missing redirect uri.")
             raise RedirectUriError("", allowed_redirect_urls)
 
-        if self.provider.redirect_uris == "":
+        if len(allowed_redirect_urls) < 1:
             LOGGER.info("Setting redirect for blank redirect_uris", redirect=self.redirect_uri)
-            self.provider.redirect_uris = self.redirect_uri
+            self.provider.redirect_uris = [
+                RedirectURI(RedirectURIMatchingMode.STRICT, self.redirect_uri)
+            ]
             self.provider.save()
-            allowed_redirect_urls = self.provider.redirect_uris.split()
+            allowed_redirect_urls = self.provider.redirect_uris
 
-        if self.provider.redirect_uris == "*":
-            LOGGER.info("Converting redirect_uris to regex", redirect=self.redirect_uri)
-            self.provider.redirect_uris = ".*"
-            self.provider.save()
-            allowed_redirect_urls = self.provider.redirect_uris.split()
-
-        try:
-            if not any(fullmatch(x, self.redirect_uri) for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (regex comparison)",
-                    redirect_uri_given=self.redirect_uri,
-                    redirect_uri_expected=allowed_redirect_urls,
-                )
-                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
-        except RegexError as exc:
-            LOGGER.info("Failed to parse regular expression, checking directly", exc=exc)
-            if not any(x == self.redirect_uri for x in allowed_redirect_urls):
-                LOGGER.warning(
-                    "Invalid redirect uri (strict comparison)",
-                    redirect_uri_given=self.redirect_uri,
-                    redirect_uri_expected=allowed_redirect_urls,
-                )
-                raise RedirectUriError(self.redirect_uri, allowed_redirect_urls) from None
+        match_found = False
+        for allowed in allowed_redirect_urls:
+            if allowed.matching_mode == RedirectURIMatchingMode.STRICT:
+                if self.redirect_uri == allowed.url:
+                    match_found = True
+                    break
+            if allowed.matching_mode == RedirectURIMatchingMode.REGEX:
+                try:
+                    if fullmatch(allowed.url, self.redirect_uri):
+                        match_found = True
+                        break
+                except RegexError as exc:
+                    LOGGER.warning(
+                        "Failed to parse regular expression",
+                        exc=exc,
+                        url=allowed.url,
+                        provider=self.provider,
+                    )
+        if not match_found:
+            raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
         # Check against forbidden schemes
         if urlparse(self.redirect_uri).scheme in FORBIDDEN_URI_SCHEMES:
             raise RedirectUriError(self.redirect_uri, allowed_redirect_urls)
@@ -318,7 +316,9 @@ class OAuthAuthorizationParams:
             expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
-            session_id=sha256(request.session.session_key.encode("ascii")).hexdigest(),
+            session=AuthenticatedSession.objects.filter(
+                session_key=request.session.session_key
+            ).first(),
         )
 
         if self.code_challenge and self.code_challenge_method:
@@ -452,11 +452,16 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
         plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
 
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=self.provider.authorization_flow.slug,
+        return plan.to_redirect(
+            self.request,
+            self.provider.authorization_flow,
+            # We can only skip the flow executor and directly go to the final redirect URL if
+            #  we can submit the data to the RP via URL
+            allowed_silent_types=(
+                [OAuthFulfillmentStage]
+                if self.params.response_mode in [ResponseMode.QUERY, ResponseMode.FRAGMENT]
+                else []
+            ),
         )
 
 
@@ -494,11 +499,11 @@ class OAuthFulfillmentStage(StageView):
             )
 
             challenge.is_valid()
-
+            self.executor.stage_ok()
             return HttpChallengeResponse(
                 challenge=challenge,
             )
-
+        self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
@@ -610,7 +615,9 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
-            session_id=sha256(self.request.session.session_key.encode("ascii")).hexdigest(),
+            session=AuthenticatedSession.objects.filter(
+                session_key=self.request.session.session_key
+            ).first(),
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

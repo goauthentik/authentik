@@ -26,17 +26,16 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     """Ensure that source is synced on save (if enabled)"""
     if not instance.enabled:
         return
+    ldap_connectivity_check.delay(instance.pk)
     # Don't sync sources when they don't have any property mappings. This will only happen if:
     # - the user forgets to set them or
     # - the source is newly created, this is the first save event
     #   and the mappings are created with an m2m event
-    if (
-        not instance.user_property_mappings.exists()
-        or not instance.group_property_mappings.exists()
-    ):
+    if instance.sync_users and not instance.user_property_mappings.exists():
+        return
+    if instance.sync_groups and not instance.group_property_mappings.exists():
         return
     ldap_sync_single.delay(instance.pk)
-    ldap_connectivity_check.delay(instance.pk)
 
 
 @receiver(password_validate)
@@ -63,6 +62,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     if not sources.exists():
         return
     source = sources.first()
+    if source.pk == getattr(sender, "pk", None):
+        return
     if not LDAPPasswordChanger.should_check_user(user):
         return
     try:

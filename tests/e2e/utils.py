@@ -9,6 +9,8 @@ from os import environ
 from sys import stderr
 from time import sleep
 from typing import Any
+from unittest.case import TestCase
+from urllib.parse import urlencode
 
 from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
@@ -19,6 +21,7 @@ from django.urls import reverse
 from docker import DockerClient, from_env
 from docker.errors import DockerException
 from docker.models.containers import Container
+from docker.models.networks import Network
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
@@ -31,6 +34,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.generators import generate_id
 
 RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
@@ -54,8 +58,31 @@ def get_local_ip() -> str:
     return ip_addr
 
 
-class DockerTestCase:
+class DockerTestCase(TestCase):
     """Mixin for dealing with containers"""
+
+    max_healthcheck_attempts = 30
+
+    __client: DockerClient
+    __network: Network
+
+    __label_id = generate_id()
+
+    def setUp(self) -> None:
+        self.__client = from_env()
+        self.__network = self.docker_client.networks.create(name=f"authentik-test-{generate_id()}")
+
+    @property
+    def docker_client(self) -> DockerClient:
+        return self.__client
+
+    @property
+    def docker_network(self) -> Network:
+        return self.__network
+
+    @property
+    def docker_labels(self) -> dict:
+        return {"io.goauthentik.test": self.__label_id}
 
     def wait_for_container(self, container: Container):
         """Check that container is health"""
@@ -67,47 +94,29 @@ class DockerTestCase:
                 return container
             sleep(1)
             attempt += 1
-            if attempt >= 30:  # noqa: PLR2004
+            if attempt >= self.max_healthcheck_attempts:
                 self.failureException("Container failed to start")
-
-
-class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
-    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
-
-    host = get_local_ip()
-    container: Container | None = None
-    wait_timeout: int
-    user: User
-
-    def setUp(self):
-        if IS_CI:
-            print("::group::authentik Logs", file=stderr)
-        super().setUp()
-        apps.get_app_config("authentik_tenants").ready()
-        self.wait_timeout = 60
-        self.driver = self._get_driver()
-        self.driver.implicitly_wait(30)
-        self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.logger = get_logger()
-        self.user = create_test_admin_user()
-        if specs := self.get_container_specs():
-            self.container = self._start_container(specs)
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
-        client: DockerClient = from_env()
         image = f"{base}:gh-main"
         try:
             branch_image = f"{base}:{get_docker_tag()}"
-            client.images.pull(branch_image)
+            self.docker_client.images.pull(branch_image)
             return branch_image
         except DockerException:
-            client.images.pull(image)
+            self.docker_client.images.pull(image)
         return image
 
-    def _start_container(self, specs: dict[str, Any]) -> Container:
-        client: DockerClient = from_env()
-        container = client.containers.run(**specs)
+    def run_container(self, **specs: dict[str, Any]) -> Container:
+        if "network_mode" not in specs:
+            specs["network"] = self.__network.name
+        specs["labels"] = self.docker_labels
+        specs["detach"] = True
+        if hasattr(self, "live_server_url"):
+            specs.setdefault("environment", {})
+            specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
+        container = self.docker_client.containers.run(**specs)
         container.reload()
         state = container.attrs.get("State", {})
         if "Health" not in state:
@@ -117,25 +126,57 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def output_container_logs(self, container: Container | None = None):
         """Output the container logs to our STDOUT"""
-        _container = container or self.container
         if IS_CI:
-            image = _container.image
+            image = container.image
             tags = image.tags[0] if len(image.tags) > 0 else str(image)
             print(f"::group::Container logs - {tags}")
-        for log in _container.logs().decode().split("\n"):
+        for log in container.logs().decode().split("\n"):
             print(log)
         if IS_CI:
             print("::endgroup::")
 
-    def get_container_specs(self) -> dict[str, Any] | None:
-        """Optionally get container specs which will launched on setup, wait for the container to
-        be healthy, and deleted again on tearDown"""
-        return None
+    def tearDown(self):
+        containers: list[Container] = self.docker_client.containers.list(
+            filters={"label": ",".join(f"{x}={y}" for x, y in self.docker_labels.items())}
+        )
+        for container in containers:
+            self.output_container_logs(container)
+            try:
+                container.kill()
+            except DockerException:
+                pass
+            try:
+                container.remove(force=True)
+            except DockerException:
+                pass
+        self.__network.remove()
+
+
+class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
+    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+
+    host = get_local_ip()
+    wait_timeout: int
+    user: User
+
+    def setUp(self):
+        if IS_CI:
+            print("::group::authentik Logs", file=stderr)
+        apps.get_app_config("authentik_tenants").ready()
+        self.wait_timeout = 60
+        self.driver = self._get_driver()
+        self.driver.implicitly_wait(30)
+        self.wait = WebDriverWait(self.driver, self.wait_timeout)
+        self.logger = get_logger()
+        self.user = create_test_admin_user()
+        super().setUp()
 
     def _get_driver(self) -> WebDriver:
         count = 0
         try:
-            return webdriver.Chrome()
+            opts = webdriver.ChromeOptions()
+            opts.add_argument("--disable-search-engine-choice-screen")
+            return webdriver.Chrome(options=opts)
         except WebDriverException:
             pass
         while count < RETRIES:
@@ -151,18 +192,15 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
-        super().tearDown()
         if IS_CI:
             print("::endgroup::", file=stderr)
+        super().tearDown()
         if IS_CI:
             print("::group::Browser logs")
         for line in self.driver.get_log("browser"):
             print(line["message"])
         if IS_CI:
             print("::endgroup::")
-        if self.container:
-            self.output_container_logs()
-            self.container.kill()
         self.driver.quit()
 
     def wait_for_url(self, desired_url):
@@ -172,9 +210,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
 
-    def url(self, view, **kwargs) -> str:
+    def url(self, view, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
-        return self.live_server_url + reverse(view, kwargs=kwargs)
+        url = self.live_server_url + reverse(view, kwargs=kwargs)
+        if query:
+            return url + "?" + urlencode(query)
+        return url
 
     def if_user_url(self, path: str | None = None) -> str:
         """same as self.url() but show URL in shell"""

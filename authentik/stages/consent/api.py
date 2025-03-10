@@ -1,12 +1,8 @@
 """ConsentStage API Views"""
 
-from django_filters.rest_framework import DjangoFilterBackend
-from guardian.utils import get_anonymous_user
 from rest_framework import mixins
-from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
@@ -57,11 +53,4 @@ class UserConsentViewSet(
     filterset_fields = ["user", "application"]
     ordering = ["application", "expires"]
     search_fields = ["user__username"]
-    permission_classes = [OwnerSuperuserPermissions]
-    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
-
-    def get_queryset(self):
-        user = self.request.user if self.request else get_anonymous_user()
-        if user.is_superuser:
-            return super().get_queryset()
-        return super().get_queryset().filter(user=user.pk)
+    owner_field = "user"

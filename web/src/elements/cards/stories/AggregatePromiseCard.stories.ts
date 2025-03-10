@@ -29,12 +29,15 @@ export default metadata;
 const text =
     "Curl up and sleep on the freshly laundered towels mew, but make meme, make cute face growl at dogs in my sleep. Scratch me there, elevator butt humans, humans, humans oh how much they love us felines we are the center of attention they feed, they clean hopped up on catnip mice. Kitty time flop over, for see owner, run in terror";
 
+const MILLIS_PER_SECOND = 1000;
+const EXAMPLE_TIMEOUT = 8000; // 8 seconds
+
 export const DefaultStory: StoryObj = {
     args: {
         icon: undefined,
         header: "Default",
         headerLink: undefined,
-        subtext: "Demo has an eight second delay until resolution",
+        subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
         leftJustified: false,
     },
     render: ({ icon, header, headerLink, subtext, leftJustified }: IAggregatePromiseCard) => {
@@ -55,7 +58,7 @@ export const DefaultStory: StoryObj = {
                 subtext=${ifDefined(subtext)}
                 icon=${ifDefined(icon)}
                 ?left-justified=${leftJustified}
-                .promise=${runThis(8000, text)}
+                .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
         </div>`;
@@ -67,7 +70,7 @@ export const PromiseRejected: StoryObj = {
         icon: undefined,
         header: "Default",
         headerLink: undefined,
-        subtext: "Demo has an eight second delay until rejection",
+        subtext: `Demo has a ${EXAMPLE_TIMEOUT / MILLIS_PER_SECOND} second delay until resolution`,
         leftJustified: false,
         failureMessage: undefined,
     },
@@ -97,7 +100,7 @@ export const PromiseRejected: StoryObj = {
                 icon=${ifDefined(icon)}
                 failureMessage=${ifDefined(failureMessage)}
                 ?left-justified=${leftJustified}
-                .promise=${runThis(8000, text)}
+                .promise=${runThis(EXAMPLE_TIMEOUT, text)}
             >
             </ak-aggregate-card-promise>
         </div>`;

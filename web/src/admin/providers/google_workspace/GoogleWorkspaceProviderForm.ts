@@ -1,8 +1,14 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import {
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -19,8 +25,6 @@ import {
     GoogleWorkspaceProvider,
     Group,
     OutgoingSyncDeleteAction,
-    PaginatedGoogleWorkspaceProviderMappingList,
-    PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -31,16 +35,6 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
             id: pk,
         });
     }
-
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceList({
-            ordering: "managed",
-        });
-    }
-
-    propertyMappings?: PaginatedGoogleWorkspaceProviderMappingList;
 
     async send(data: GoogleWorkspaceProvider): Promise<GoogleWorkspaceProvider> {
         if (this.instance) {
@@ -88,7 +82,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="email"
                             value="${first(this.instance?.delegatedSubject, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -105,7 +99,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="text"
                             value="${first(this.instance?.defaultGroupEmailDomain, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -167,6 +161,26 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         help=${msg("Determines what authentik will do when a Group is deleted.")}
                     >
                     </ak-radio-input>
+                    <ak-form-element-horizontal name="dryRun">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.dryRun, false)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When enabled, mutating requests will be dropped and logged instead.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>
@@ -229,67 +243,34 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappings) {
-                                    selected =
-                                        mapping.managed ===
-                                            "goauthentik.io/providers/google_workspace/user" ||
-                                        false;
-                                } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == mapping.pk;
-                                        },
-                                    );
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.propertyMappings,
+                                "goauthentik.io/providers/google_workspace/user",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to user mapping.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group Property Mappings")}
                         name="propertyMappingsGroup"
                     >
-                        <select class="pf-c-form-control" multiple>
-                            ${this.propertyMappings?.results.map((mapping) => {
-                                let selected = false;
-                                if (!this.instance?.propertyMappingsGroup) {
-                                    selected =
-                                        mapping.managed ===
-                                        "goauthentik.io/providers/google_workspace/group";
-                                } else {
-                                    selected = Array.from(
-                                        this.instance?.propertyMappingsGroup,
-                                    ).some((su) => {
-                                        return su == mapping.pk;
-                                    });
-                                }
-                                return html`<option
-                                    value=${ifDefined(mapping.pk)}
-                                    ?selected=${selected}
-                                >
-                                    ${mapping.name}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
+                                this.instance?.propertyMappingsGroup,
+                                "goauthentik.io/providers/google_workspace/group",
+                            )}
+                            available-label=${msg("Available Property Mappings")}
+                            selected-label=${msg("Selected Property Mappings")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings used to group creation.")}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

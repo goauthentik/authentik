@@ -1,8 +1,8 @@
 ---
-title: Mastodon
+title: Integrate with Mastodon
+sidebar_label: Mastodon
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Mastodon
 
@@ -12,10 +12,14 @@ title: Mastodon
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `mastodon.company` is the FQDN of the mastodon install.
--   `authentik.company` is the FQDN of the authentik install.
+- `mastodon.company` is the FQDN of the mastodon installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 
@@ -23,20 +27,28 @@ The following placeholders will be used:
 
 Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
--   Name : mastodon
--   Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
+- Name : mastodon
+- Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
 
 ### Step 3 - Application
 
 Create an application (under _Resources/Applications_) with these settings:
 
--   Name: Mastodon
--   Slug: mastodon
--   Provider: mastodon
+- Name: Mastodon
+- Slug: mastodon
+- Provider: mastodon
 
 ## Mastodon Setup
 
 Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
+
+:::warning
+When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues.
+:::
+
+:::info
+You can configure Mastodon to use either the `sub` or `preferred_username` as the UID field under `OIDC_UID_FIELD`. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::
 
 ```
 OIDC_ENABLED=true
@@ -45,7 +57,7 @@ OIDC_DISCOVERY=true
 OIDC_ISSUER=< OpenID Configuration Issuer>
 OIDC_AUTH_ENDPOINT=https://authentik.company/application/o/authorize/
 OIDC_SCOPE=openid,profile,email
-OIDC_UID_FIELD=sub
+OIDC_UID_FIELD=preferred_username
 OIDC_CLIENT_ID=<Client ID>
 OIDC_CLIENT_SECRET=<Client Secret>
 OIDC_REDIRECT_URI=https://mastodon.company/auth/auth/openid_connect/callback
@@ -56,5 +68,5 @@ Restart mastodon-web.service
 
 ## Additional Resources
 
--   https://github.com/mastodon/mastodon/pull/16221
--   https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42
+- https://github.com/mastodon/mastodon/pull/16221
+- https://forum.fedimins.net/t/sso-fuer-verschiedene-dienste/42

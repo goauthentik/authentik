@@ -29,16 +29,6 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 	return nil
 }
 
-func (ls *LDAPServer) getInvalidationFlow() string {
-	req, _, err := ls.ac.Client.CoreApi.CoreBrandsCurrentRetrieve(context.Background()).Execute()
-	if err != nil {
-		ls.log.WithError(err).Warning("failed to fetch brand config")
-		return ""
-	}
-	flow := req.GetFlowInvalidation()
-	return flow
-}
-
 func (ls *LDAPServer) Refresh() error {
 	apiProviders, err := ak.Paginator(ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()), ak.PaginatorOptions{
 		PageSize: 100,
@@ -51,7 +41,6 @@ func (ls *LDAPServer) Refresh() error {
 		return errors.New("no ldap provider defined")
 	}
 	providers := make([]*ProviderInstance, len(apiProviders))
-	invalidationFlow := ls.getInvalidationFlow()
 	for idx, provider := range apiProviders {
 		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUUsers, *provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUGroups, *provider.BaseDn))
@@ -75,7 +64,7 @@ func (ls *LDAPServer) Refresh() error {
 			UserDN:                 userDN,
 			appSlug:                provider.ApplicationSlug,
 			authenticationFlowSlug: provider.BindFlowSlug,
-			invalidationFlowSlug:   invalidationFlow,
+			invalidationFlowSlug:   provider.UnbindFlowSlug.Get(),
 			boundUsersMutex:        usersMutex,
 			boundUsers:             users,
 			s:                      ls,

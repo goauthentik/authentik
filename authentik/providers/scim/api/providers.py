@@ -6,7 +6,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.lib.sync.outgoing.api import OutgoingSyncProviderStatusMixin
 from authentik.providers.scim.models import SCIMProvider
-from authentik.providers.scim.tasks import scim_sync
+from authentik.providers.scim.tasks import scim_sync, scim_sync_objects
 
 
 class SCIMProviderSerializer(ProviderSerializer):
@@ -26,9 +26,11 @@ class SCIMProviderSerializer(ProviderSerializer):
             "verbose_name_plural",
             "meta_model_name",
             "url",
+            "verify_certificates",
             "token",
             "exclude_users_service_account",
             "filter_group",
+            "dry_run",
         ]
         extra_kwargs = {}
 
@@ -42,3 +44,4 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
     sync_single_task = scim_sync
+    sync_objects_task = scim_sync_objects

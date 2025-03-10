@@ -1,8 +1,8 @@
 ---
-title: NetBox
+title: Integrate with NetBox
+sidebar_label: NetBox
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is NetBox
 
@@ -12,17 +12,21 @@ title: NetBox
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `netbox.company` is the FQDN of the NetBox install.
--   `authentik.company` is the FQDN of the authentik install.
+- `netbox.company` is the FQDN of the NetBox installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _OAuth2/OpenID provider_ with the following parameters:
 
--   Client Type: `Confidential`
--   Redirect URIs: `https://netbox.company/oauth/complete/oidc/`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
+- Client Type: `Confidential`
+- Redirect URIs: `https://netbox.company/oauth/complete/oidc/`
+- Scopes: OpenID, Email and Profile
+- Signing Key: Select any available key
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
 
@@ -40,10 +44,10 @@ REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth config
-SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
-SOCIAL_AUTH_OIDC_SCOPE = ["openid", "profile", "email", "roles"]
+SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
 LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
 ```
 
@@ -57,10 +61,10 @@ from os import environ
 #############
 
 # python-social-auth configuration
-SOCIAL_AUTH_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_ENDPOINT')
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_OIDC_ENDPOINT')
 SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
 SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
-SOCIAL_AUTH_OIDC_SCOPE = ["openid", "profile", "email", "roles"]
+SOCIAL_AUTH_OIDC_SCOPE = environ.get('SOCIAL_AUTH_OIDC_SCOPE').split(' ')
 LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 

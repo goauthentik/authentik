@@ -10,15 +10,20 @@ from redis.exceptions import RedisError
 
 from authentik.lib.config import CONFIG, redis_url
 
+CHECK_THRESHOLD = 30
+
 
 def check_postgres():
+    attempt = 0
     while True:
+        if attempt >= CHECK_THRESHOLD:
+            sysexit(1)
         try:
             conn = connect(
-                dbname=CONFIG.get("postgresql.name"),
-                user=CONFIG.get("postgresql.user"),
-                password=CONFIG.get("postgresql.password"),
-                host=CONFIG.get("postgresql.host"),
+                dbname=CONFIG.refresh("postgresql.name"),
+                user=CONFIG.refresh("postgresql.user"),
+                password=CONFIG.refresh("postgresql.password"),
+                host=CONFIG.refresh("postgresql.host"),
                 port=CONFIG.get_int("postgresql.port"),
                 sslmode=CONFIG.get("postgresql.sslmode"),
                 sslrootcert=CONFIG.get("postgresql.sslrootcert"),
@@ -30,12 +35,17 @@ def check_postgres():
         except OperationalError as exc:
             sleep(1)
             CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
+        finally:
+            attempt += 1
     CONFIG.log("info", "PostgreSQL connection successful")
 
 
 def check_redis():
     url = CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db"))
+    attempt = 0
     while True:
+        if attempt >= CHECK_THRESHOLD:
+            sysexit(1)
         try:
             redis = Redis.from_url(url)
             redis.ping()
@@ -43,6 +53,8 @@ def check_redis():
         except RedisError as exc:
             sleep(1)
             CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})")
+        finally:
+            attempt += 1
     CONFIG.log("info", "Redis Connection successful")
 
 
@@ -51,7 +63,9 @@ def wait_for_db():
     # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
     if CONFIG.get("secret_key") is None or len(CONFIG.get("secret_key")) == 0:
         CONFIG.log("info", "----------------------------------------------------------------------")
-        CONFIG.log("info", "Secret key missing, check https://goauthentik.io/docs/installation/.")
+        CONFIG.log(
+            "info", "Secret key missing, check https://docs.goauthentik.io/docs/install-config/"
+        )
         CONFIG.log("info", "----------------------------------------------------------------------")
         sysexit(1)
     check_postgres()

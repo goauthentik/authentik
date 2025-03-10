@@ -2,7 +2,8 @@
 
 from unittest.mock import MagicMock, patch
 
-from django.test import TestCase
+from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
 from authentik.events.models import (
@@ -10,6 +11,7 @@ from authentik.events.models import (
     EventAction,
     Notification,
     NotificationRule,
+    NotificationSeverity,
     NotificationTransport,
     NotificationWebhookMapping,
     TransportMode,
@@ -20,7 +22,7 @@ from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
 
 
-class TestEventsNotifications(TestCase):
+class TestEventsNotifications(APITestCase):
     """Test Event Notifications"""
 
     def setUp(self) -> None:
@@ -131,3 +133,15 @@ class TestEventsNotifications(TestCase):
         Notification.objects.all().delete()
         Event.new(EventAction.CUSTOM_PREFIX).save()
         self.assertEqual(Notification.objects.first().body, "foo")
+
+    def test_api_mark_all_seen(self):
+        """Test mark_all_seen"""
+        self.client.force_login(self.user)
+
+        Notification.objects.create(
+            severity=NotificationSeverity.NOTICE, body="foo", user=self.user, seen=False
+        )
+
+        response = self.client.post(reverse("authentik_api:notification-mark-all-seen"))
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(Notification.objects.filter(body="foo", seen=False).exists())

@@ -1,12 +1,19 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncObjectForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { ProvidersApi, SCIMProviderGroup } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    ProvidersScimSyncObjectCreateRequest,
+    SCIMProviderGroup,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-groups-list")
 export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
@@ -19,6 +26,24 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
 
     checkbox = true;
     clearOnRefresh = true;
+
+    renderToolbar(): TemplateResult {
+        return html`<ak-forms-modal cancelText=${msg("Close")} ?closeAfterSuccessfulSubmit=${false}>
+                <span slot="submit">${msg("Sync")}</span>
+                <span slot="header">${msg("Sync Group")}</span>
+                <ak-sync-object-form
+                    .provider=${this.providerId}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
+                        return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
+                    }}
+                    slot="form"
+                >
+                </ak-sync-object-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Sync")}</button>
+            </ak-forms-modal>
+            ${super.renderToolbar()}`;
+    }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;

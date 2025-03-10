@@ -236,9 +236,11 @@ class UserSerializer(ModelSerializer):
             "path",
             "type",
             "uuid",
+            "password_change_date",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
+            "password_change_date": {"read_only": True},
         }
 
 
@@ -427,7 +429,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email", "uuid"]
+    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
     filterset_class = UsersFilter
 
     def get_queryset(self):
@@ -585,7 +587,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(request.data.get("password"))
+            user.set_password(request.data.get("password"), request=request)
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)
@@ -666,7 +668,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.impersonate")
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=inline_serializer(
+            "ImpersonationSerializer",
+            {
+                "reason": CharField(required=True),
+            },
+        ),
         responses={
             "204": OpenApiResponse(description="Successfully started impersonation"),
             "401": OpenApiResponse(description="Access denied"),
@@ -678,18 +685,27 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not request.tenant.impersonation:
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
-        if not request.user.has_perm("impersonate"):
+        user_to_be = self.get_object()
+        reason = request.data.get("reason", "")
+        # Check both object-level perms and global perms
+        if not request.user.has_perm(
+            "authentik_core.impersonate", user_to_be
+        ) and not request.user.has_perm("authentik_core.impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
-        user_to_be = self.get_object()
         if user_to_be.pk == self.request.user.pk:
             LOGGER.debug("User attempted to impersonate themselves", user=request.user)
+            return Response(status=401)
+        if not reason and request.tenant.impersonation_require_reason:
+            LOGGER.debug(
+                "User attempted to impersonate without providing a reason", user=request.user
+            )
             return Response(status=401)
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
 
-        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
+        Event.new(EventAction.IMPERSONATION_STARTED, reason=reason).from_http(request, user_to_be)
 
         return Response(status=201)
 

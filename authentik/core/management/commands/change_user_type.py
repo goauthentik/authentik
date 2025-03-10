@@ -9,10 +9,11 @@ class Command(TenantCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--type", type=str, required=True)
-        parser.add_argument("--all", action="store_true")
-        parser.add_argument("usernames", nargs="+", type=str)
+        parser.add_argument("--all", action="store_true", default=False)
+        parser.add_argument("usernames", nargs="*", type=str)
 
     def handle_per_tenant(self, **options):
+        print(options)
         new_type = UserTypes(options["type"])
         qs = (
             User.objects.exclude_anonymous()
@@ -21,6 +22,9 @@ class Command(TenantCommand):
         )
         if options["usernames"] and options["all"]:
             self.stderr.write("--all and usernames specified, only one can be specified")
+            return
+        if not options["usernames"] and not options["all"]:
+            self.stderr.write("--all or usernames must be specified")
             return
         if options["usernames"] and not options["all"]:
             qs = qs.filter(username__in=options["usernames"])

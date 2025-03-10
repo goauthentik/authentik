@@ -14,10 +14,10 @@ from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.authorization import SecretKeyFilter
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.rbac.filters import SecretKeyFilter
 from authentik.tenants.utils import get_current_tenant
 
 
@@ -84,8 +84,8 @@ class CurrentBrandSerializer(PassiveSerializer):
 
     matched_domain = CharField(source="domain")
     branding_title = CharField()
-    branding_logo = CharField()
-    branding_favicon = CharField()
+    branding_logo = CharField(source="branding_logo_url")
+    branding_favicon = CharField(source="branding_favicon_url")
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,

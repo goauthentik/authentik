@@ -1,8 +1,8 @@
 ---
-title: Apache Guacamole™
+title: Integrate with Apache Guacamole™
+sidebar_label: Apache Guacamole™
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Apache Guacamole™
 
@@ -12,27 +12,31 @@ title: Apache Guacamole™
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `guacamole.company` is the FQDN of the Guacamole install.
--   `authentik.company` is the FQDN of the authentik install.
+- `guacamole.company` is the FQDN of the Guacamole installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   **Client Type**: `Confidential`
--   **Redirect URIs**: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
--   **Scopes**: OpenID, Email, and Profile
+- **Client Type**: `Confidential`
+- **Redirect URIs**: `https://guacamole.company/` (depending on your Tomcat setup, you might have to add `/guacamole/` if the application runs in a subfolder)
+- **Scopes**: OpenID, Email, and Profile
 
 Under **Advanced protocol settings**, set the following:
 
--   **Token validity**: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
--   **Signing Key**: Set the key as `authentik Self-signed Certificate`
+- **Token validity**: Any value to configure how long the session should last. Guacamole will not accept any tokens valid longer than 300 Minutes.
+- **Signing Key**: Set the key as `authentik Self-signed Certificate`
 
 Note the Client ID value. Create an application, using the provider you've created above.
 
 ## Guacamole
 
-It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the email address of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
+It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the username of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
@@ -52,6 +56,7 @@ OPENID_CLIENT_ID: # client ID from above
 OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
 OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
 OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
+OPENID_USERNAME_CLAIM_TYPE: preferred_username
 ```
 
   </TabItem>
@@ -64,6 +69,7 @@ openid-client-id=# client ID from above
 openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
 openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
 openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
+openid-username-claim-type=preferred_username
 ```
 
   </TabItem>

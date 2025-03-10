@@ -5,7 +5,7 @@ from datetime import timedelta
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, IntegerField
@@ -18,7 +18,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.license import LicenseKey, LicenseSummarySerializer
-from authentik.enterprise.models import License, LicenseUsageStatus
+from authentik.enterprise.models import License
 from authentik.rbac.decorators import permission_required
 from authentik.tenants.utils import get_unique_identifier
 
@@ -29,7 +29,7 @@ class EnterpriseRequiredMixin:
 
     def validate(self, attrs: dict) -> dict:
         """Check that a valid license exists"""
-        if LicenseKey.cached_summary().status != LicenseUsageStatus.UNLICENSED:
+        if not LicenseKey.cached_summary().status.is_valid:
             raise ValidationError(_("Enterprise is required to create/update this object."))
         return super().validate(attrs)
 
@@ -86,7 +86,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=False, methods=["GET"])
-    def get_install_id(self, request: Request) -> Response:
+    def install_id(self, request: Request) -> Response:
         """Get install_id"""
         return Response(
             data={
@@ -99,11 +99,22 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         responses={
             200: LicenseSummarySerializer(),
         },
+        parameters=[
+            OpenApiParameter(
+                name="cached",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
+                default=True,
+            )
+        ],
     )
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
     def summary(self, request: Request) -> Response:
         """Get the total license status"""
-        response = LicenseSummarySerializer(instance=LicenseKey.cached_summary())
+        summary = LicenseKey.cached_summary()
+        if request.query_params.get("cached", "true").lower() == "false":
+            summary = LicenseKey.get_total().summary()
+        response = LicenseSummarySerializer(instance=summary)
         return Response(response.data)
 
     @permission_required(None, ["authentik_enterprise.view_license"])

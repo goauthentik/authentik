@@ -20,6 +20,7 @@ from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
+    DryRunRejected,
     StopSync,
     TransientSyncException,
 )
@@ -82,7 +83,7 @@ class SyncTasks:
                 return
             try:
                 for page in users_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                    messages.append(_("Syncing page {page} of users".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(User), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,
@@ -90,7 +91,7 @@ class SyncTasks:
                     ).get():
                         messages.append(LogEvent(**msg))
                 for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                    messages.append(_("Syncing page {page} of groups".format(page=page)))
                     for msg in sync_objects.apply_async(
                         args=(class_to_path(Group), page, provider_pk),
                         time_limit=PAGE_TIMEOUT,
@@ -105,7 +106,9 @@ class SyncTasks:
                 return
         task.set_status(TaskStatus.SUCCESSFUL, *messages)
 
-    def sync_objects(self, object_type: str, page: int, provider_pk: int):
+    def sync_objects(
+        self, object_type: str, page: int, provider_pk: int, override_dry_run=False, **filter
+    ):
         _object_type = path_to_class(object_type)
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
@@ -116,11 +119,15 @@ class SyncTasks:
         provider = self._provider_model.objects.filter(pk=provider_pk).first()
         if not provider:
             return messages
+        # Override dry run mode if requested, however don't save the provider
+        # so that scheduled sync tasks still run in dry_run mode
+        if override_dry_run:
+            provider.dry_run = False
         try:
             client = provider.client_for_model(_object_type)
         except TransientSyncException:
             return messages
-        paginator = Paginator(provider.get_object_qs(_object_type), PAGE_SIZE)
+        paginator = Paginator(provider.get_object_qs(_object_type).filter(**filter), PAGE_SIZE)
         if client.can_discover:
             self.logger.debug("starting discover")
             client.discover()
@@ -132,6 +139,22 @@ class SyncTasks:
             except SkipObjectException:
                 self.logger.debug("skipping object due to SkipObject", obj=obj)
                 continue
+            except DryRunRejected as exc:
+                messages.append(
+                    asdict(
+                        LogEvent(
+                            _("Dropping mutating request due to dry run"),
+                            log_level="info",
+                            logger=f"{provider._meta.verbose_name}@{object_type}",
+                            attributes={
+                                "obj": sanitize_item(obj),
+                                "method": exc.method,
+                                "url": exc.url,
+                                "body": exc.body,
+                            },
+                        )
+                    )
+                )
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
                 messages.append(
@@ -231,8 +254,10 @@ class SyncTasks:
                 raise Retry() from exc
             except SkipObjectException:
                 continue
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run event", exc=exc)
             except StopSync as exc:
-                self.logger.warning(exc, provider_pk=provider.pk)
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)
 
     def sync_signal_m2m(self, group_pk: str, action: str, pk_set: list[int]):
         self.logger = get_logger().bind(
@@ -263,5 +288,7 @@ class SyncTasks:
                 raise Retry() from exc
             except SkipObjectException:
                 continue
+            except DryRunRejected as exc:
+                self.logger.info("Rejected dry-run event", exc=exc)
             except StopSync as exc:
-                self.logger.warning(exc, provider_pk=provider.pk)
+                self.logger.warning("Stopping sync", exc=exc, provider_pk=provider.pk)

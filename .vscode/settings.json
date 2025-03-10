@@ -1,25 +1,4 @@
 {
-    "cSpell.words": [
-        "akadmin",
-        "asgi",
-        "authentik",
-        "authn",
-        "entra",
-        "goauthentik",
-        "jwks",
-        "kubernetes",
-        "oidc",
-        "openid",
-        "passwordless",
-        "plex",
-        "saml",
-        "scim",
-        "slo",
-        "sso",
-        "totp",
-        "traefik",
-        "webauthn"
-    ],
     "todo-tree.tree.showCountsInTree": true,
     "todo-tree.tree.showBadges": true,
     "yaml.customTags": [
@@ -32,7 +11,8 @@
         "!If sequence",
         "!Index scalar",
         "!KeyOf scalar",
-        "!Value scalar"
+        "!Value scalar",
+        "!AtIndex scalar"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

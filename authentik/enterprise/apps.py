@@ -25,4 +25,4 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         """Actual enterprise check, cached"""
         from authentik.enterprise.license import LicenseKey
 
-        return LicenseKey.cached_summary().status
+        return LicenseKey.cached_summary().status.is_valid

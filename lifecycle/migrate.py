@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """System Migration handler"""
+
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from os import environ, system
@@ -84,7 +85,9 @@ def run_migrations():
     curr = conn.cursor()
     try:
         wait_for_lock(curr)
-        for migration_path in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
+        for migration_path in sorted(
+            Path(__file__).parent.absolute().glob("system_migrations/*.py")
+        ):
             spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
@@ -110,7 +113,8 @@ def run_migrations():
                 "forget to activate a virtual environment?"
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
-        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        if CONFIG.get_bool("tenants.enabled", False):
+            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
         execute_from_command_line(
             ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
         )

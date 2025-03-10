@@ -4,7 +4,6 @@ import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -19,35 +18,11 @@ import {
     CoreGroupsListRequest,
     Group,
     LDAPSource,
-    LDAPSourcePropertyMapping,
     LDAPSourceRequest,
-    PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
 
-async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsSourceLdapList({
-        ordering: "managed",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-function makePropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, mapping]: DualSelectPair<LDAPSourcePropertyMapping>) =>
-              mapping?.managed?.startsWith("goauthentik.io/sources/ldap/default") ||
-              mapping?.managed?.startsWith("goauthentik.io/sources/ldap/ms");
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./LDAPSourceFormHelpers.js";
 
 @customElement("ak-source-ldap-form")
 export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
@@ -63,11 +38,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 slug: this.instance.slug,
                 patchedLDAPSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
-                lDAPSourceRequest: data as unknown as LDAPSourceRequest,
-            });
         }
+
+        return new SourcesApi(DEFAULT_CONFIG).sourcesLdapCreate({
+            lDAPSourceRequest: data as unknown as LDAPSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -295,7 +270,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
                             )}
                             available-label="${msg("Available User Property Mappings")}"
@@ -311,7 +286,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
                             )}
                             available-label="${msg("Available Group Property Mappings")}"
@@ -326,7 +301,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
             <ak-form-group>
                 <span slot="header"> ${msg("Additional settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Group")} name="syncParentGroup">
+                    <ak-form-element-horizontal label=${msg("Parent Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {

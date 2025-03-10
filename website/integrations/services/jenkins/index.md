@@ -1,8 +1,8 @@
 ---
-title: Jenkins
+title: Integrate with Jenkins
+sidebar_label: Jenkins
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jenkins
 
@@ -12,16 +12,20 @@ title: Jenkins
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `jenkins.company` is the FQDN of the Service install.
--   `authentik.company` is the FQDN of the authentik install.
+- `jenkins.company` is the FQDN of the Service installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an OAuth2/OpenID provider with the following parameters:
 
--   **Client Type**: `Confidential`
--   **Scopes**: OpenID, Email and Profile
--   **Signing Key**: Select any available key
+- **Client Type**: `Confidential`
+- **Scopes**: OpenID, Email and Profile
+- **Signing Key**: Select any available key
 
 Note the Client ID and Client Secret values for the provider.
 
@@ -43,10 +47,10 @@ Check the checkbox **Override scopes** and input the scopes `openid profile emai
 
 Further down the page, expand the **Advanced** section and input the following values:
 
--   **User name field name**: `preferred_username`
--   **Full name field name**: `name`
--   **Email field name**: `email`
--   **Groups field name**: `groups`
+- **User name field name**: `preferred_username`
+- **Full name field name**: `name`
+- **Email field name**: `email`
+- **Groups field name**: `groups`
 
 We also recommend enabling the option **Enable Proof Key for Code Exchange** further down the page.
 

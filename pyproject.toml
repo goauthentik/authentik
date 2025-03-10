@@ -1,9 +1,34 @@
 [tool.poetry]
 name = "authentik"
-version = "2024.6.3"
+version = "2025.2.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
+[tool.bandit]
+exclude_dirs = ["**/node_modules/**"]
+
+[tool.codespell]
+skip = [
+    "**/node_modules",
+    "**/package-lock.json",
+    "schema.yml",
+    "unittest.xml",
+    "./blueprints/schema.json",
+    "go.sum",
+    "locale",
+    "**/dist",
+    "**/storybook-static",
+    "**/web/src/locales",
+    "**/web/xliff",
+    "./website/build",
+    "./gen-ts-api",
+    "./gen-py-api",
+    "./gen-go-api",
+    "*.api.mdx",
+    "./htmlcov",
+]
+dictionary = ".github/codespell-dictionary.txt,-"
+ignore-words = ".github/codespell-words.txt"
 [tool.black]
 line-length = 100
 target-version = ['py312']
@@ -113,14 +138,19 @@ duo-client = "*"
 fido2 = "*"
 flower = "*"
 geoip2 = "*"
+geopy = "*"
 google-api-python-client = "*"
 gunicorn = "*"
+gssapi = "*"
 jsonpatch = "*"
+jwcrypto = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = [
+    "reggie",
+] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
@@ -129,6 +159,7 @@ pydantic-scim = "*"
 pyjwt = "*"
 pyrad = "*"
 python = "~3.12"
+python-kadmin-rs = "0.5.3"
 pyyaml = "*"
 requests-oauthlib = "*"
 scim2-filter-parser = "*"
@@ -140,6 +171,7 @@ swagger-spec-validator = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
 ua-parser = "*"
+unidecode = "*"
 # Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
 urllib3 = { extras = ["secure"], version = "<3" }
 uvicorn = { extras = ["standard"], version = "*" }
@@ -149,18 +181,21 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+aws-cdk-lib = "*"
 bandit = "*"
 black = "*"
 bump2version = "*"
 channels = { version = "*", extras = ["daphne"] }
 codespell = "*"
 colorama = "*"
+constructs = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
 freezegun = "*"
 importlib-metadata = "*"
+k5test = "*"
 pdoc = "*"
 pytest = "*"
 pytest-django = "*"

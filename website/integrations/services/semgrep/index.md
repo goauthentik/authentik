@@ -1,8 +1,8 @@
 ---
-title: Semgrep
+title: Integrate with Semgrep
+sidebar_label: Semgrep
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Semgrep
 
@@ -12,10 +12,14 @@ title: Semgrep
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `devcompany` is the organization name on Semgrep Cloud platform.
+- `authentik.company` is the FQDN of the authentik installation.
+- `devcompany` is the organization name on Semgrep Cloud platform.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 

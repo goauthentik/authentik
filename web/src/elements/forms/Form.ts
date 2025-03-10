@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIError } from "@goauthentik/common/errors";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -6,6 +7,7 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
@@ -18,7 +20,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauthentik/api";
+import { ResponseError, ValidationError, instanceOfValidationError } from "@goauthentik/api";
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
@@ -33,7 +35,7 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-type AkControlElement = HTMLInputElement & { json: () => string | string[] };
+export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
@@ -123,9 +125,6 @@ export function serializeForm<T extends KeyUnknown>(
     });
     return json as unknown as T;
 }
-
-const HTTP_BAD_REQUEST = 400;
-const HTTP_INTERNAL_SERVICE_ERROR = 500;
 
 /**
  * Form
@@ -307,18 +306,9 @@ export abstract class Form<T> extends AKElement {
             return response;
         } catch (ex) {
             if (ex instanceof ResponseError) {
-                let msg = ex.response.statusText;
-                if (
-                    ex.response.status >= HTTP_BAD_REQUEST &&
-                    ex.response.status < HTTP_INTERNAL_SERVICE_ERROR
-                ) {
-                    const errorMessage = ValidationErrorFromJSON(await ex.response.json());
-                    if (!errorMessage) {
-                        return errorMessage;
-                    }
-                    if (errorMessage instanceof Error) {
-                        throw errorMessage;
-                    }
+                let errorMessage = ex.response.statusText;
+                const error = await parseAPIError(ex);
+                if (instanceOfValidationError(error)) {
                     // assign all input-related errors to their elements
                     const elements =
                         this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
@@ -330,26 +320,28 @@ export abstract class Form<T> extends AKElement {
                         if (!elementName) {
                             return;
                         }
-                        if (camelToSnake(elementName) in errorMessage) {
-                            element.errorMessages = errorMessage[camelToSnake(elementName)];
+                        if (camelToSnake(elementName) in error) {
+                            element.errorMessages = (error as ValidationError)[
+                                camelToSnake(elementName)
+                            ];
                             element.invalid = true;
                         } else {
                             element.errorMessages = [];
                             element.invalid = false;
                         }
                     });
-                    if (errorMessage.nonFieldErrors) {
-                        this.nonFieldErrors = errorMessage.nonFieldErrors;
+                    if ((error as ValidationError).nonFieldErrors) {
+                        this.nonFieldErrors = (error as ValidationError).nonFieldErrors;
                     }
+                    errorMessage = msg("Invalid update request.");
                     // Only change the message when we have `detail`.
                     // Everything else is handled in the form.
-                    if ("detail" in errorMessage) {
-                        msg = errorMessage.detail;
+                    if ("detail" in (error as ValidationError)) {
+                        errorMessage = (error as ValidationError).detail;
                     }
                 }
-                // error is local or not from rest_framework
                 showMessage({
-                    message: msg,
+                    message: errorMessage,
                     level: MessageLevel.error,
                 });
             }

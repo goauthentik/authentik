@@ -1,24 +1,32 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+export interface IExpand {
+    expanded?: boolean;
+    textOpen?: string;
+    textClosed?: string;
+}
+
 @customElement("ak-expand")
-export class Expand extends AKElement {
+export class Expand extends AKElement implements IExpand {
     @property({ type: Boolean })
     expanded = false;
 
-    @property()
+    @property({ type: String, attribute: "text-open" })
     textOpen = msg("Show less");
 
-    @property()
+    @property({ type: String, attribute: "text-closed" })
     textClosed = msg("Show more");
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFExpandableSection,
@@ -30,7 +38,7 @@ export class Expand extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<div
             class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
                 ? "pf-m-expanded"
@@ -56,6 +64,11 @@ export class Expand extends AKElement {
             </div>
         </div>`;
     }
+}
+
+export function akExpand(properties: IExpand, content: SlottedTemplateResult = nothing) {
+    const message = typeof content === "string" ? html`<span>${content}</span>` : content;
+    return html`<ak-expand ${spread(properties as Spread)}>${message}</ak-expand>`;
 }
 
 declare global {

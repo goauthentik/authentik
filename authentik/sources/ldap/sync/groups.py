@@ -38,7 +38,11 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
-            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+            attributes=[
+                ALL_ATTRIBUTES,
+                ALL_OPERATIONAL_ATTRIBUTES,
+                self._source.object_uniqueness_field,
+            ],
             **kwargs,
         )
 
@@ -53,9 +57,9 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             attributes = group.get("attributes", {})
             group_dn = flatten(flatten(group.get("entryDN", group.get("dn"))))
-            if self._source.object_uniqueness_field not in attributes:
+            if not attributes.get(self._source.object_uniqueness_field):
                 self.message(
-                    f"Cannot find uniqueness field in attributes: '{group_dn}'",
+                    f"Uniqueness field not found/not set in attributes: '{group_dn}'",
                     attributes=attributes.keys(),
                     dn=group_dn,
                 )

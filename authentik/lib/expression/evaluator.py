@@ -2,7 +2,6 @@
 
 import re
 import socket
-from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
 from types import CodeType
@@ -10,23 +9,34 @@ from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
+from django.http import HttpRequest
 from django.utils.text import slugify
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
+
+ARG_SANITIZE = re.compile(r"[:.-]")
+
+
+def sanitize_arg(arg_name: str) -> str:
+    return re.sub(ARG_SANITIZE, "_", arg_name)
 
 
 class BaseEvaluator:
@@ -51,6 +61,7 @@ class BaseEvaluator:
             "ak_logger": get_logger(self._filename).bind(),
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
+            "ak_create_jwt": self.expr_create_jwt,
             "ip_address": ip_address,
             "ip_network": ip_network,
             "list_flatten": BaseEvaluator.expr_flatten,
@@ -177,9 +188,39 @@ class BaseEvaluator:
         proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
         return proc.profiling_wrapper()
 
-    def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
+    def expr_create_jwt(
+        self,
+        user: User,
+        provider: OAuth2Provider | str,
+        scopes: list[str],
+        validity: str = "seconds=60",
+    ) -> str | None:
+        """Issue a JWT for a given provider"""
+        request: HttpRequest = self._context.get("http_request")
+        if not request:
+            return None
+        if not isinstance(provider, OAuth2Provider):
+            provider = OAuth2Provider.objects.get(name=provider)
+        session = None
+        if hasattr(request, "session") and request.session.session_key:
+            session = AuthenticatedSession.objects.filter(
+                session_key=request.session.session_key
+            ).first()
+        access_token = AccessToken(
+            provider=provider,
+            user=user,
+            expires=now() + timedelta_from_string(validity),
+            scope=scopes,
+            auth_time=now(),
+            session=session,
+        )
+        access_token.id_token = IDToken.new(provider, access_token, request)
+        access_token.save()
+        return access_token.token
+
+    def wrap_expression(self, expression: str) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
-        handler_signature = ",".join(params)
+        handler_signature = ",".join(sanitize_arg(x) for x in self._context.keys())
         full_expression = ""
         full_expression += f"def handler({handler_signature}):\n"
         full_expression += indent(expression, "    ")
@@ -188,8 +229,8 @@ class BaseEvaluator:
 
     def compile(self, expression: str) -> CodeType:
         """Parse expression. Raises SyntaxError or ValueError if the syntax is incorrect."""
-        param_keys = self._context.keys()
-        return compile(self.wrap_expression(expression, param_keys), self._filename, "exec")
+        expression = self.wrap_expression(expression)
+        return compile(expression, self._filename, "exec")
 
     def evaluate(self, expression_source: str) -> Any:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
@@ -205,7 +246,7 @@ class BaseEvaluator:
                 self.handle_error(exc, expression_source)
                 raise exc
             try:
-                _locals = self._context
+                _locals = {sanitize_arg(x): y for x, y in self._context.items()}
                 # Yes this is an exec, yes it is potentially bad. Since we limit what variables are
                 # available here, and these policies can only be edited by admins, this is a risk
                 # we're willing to take.

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.22-fips-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -42,6 +42,11 @@ LABEL org.opencontainers.image.description="goauthentik.io Radius outpost, see h
 LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/*
 
 COPY --from=builder /go/radius /
 

@@ -23,7 +23,6 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/tests/wdio"
       - "/web/sfe"
     schedule:
       interval: daily
@@ -44,9 +43,11 @@ updates:
           - "babel-*"
       eslint:
         patterns:
+          - "@eslint/*"
           - "@typescript-eslint/*"
-          - "eslint"
           - "eslint-*"
+          - "eslint"
+          - "typescript-eslint"
       storybook:
         patterns:
           - "@storybook/*"
@@ -54,10 +55,12 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+          - "esbuild*"
       rollup:
         patterns:
           - "@rollup/*"
           - "rollup-*"
+          - "rollup*"
       swc:
         patterns:
           - "@swc/*"
@@ -79,6 +82,22 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
+      build:
+        patterns:
+          - "@swc/*"
+          - "swc-*"
+          - "lightningcss*"
+          - "@rspack/binding*"
+  - package-ecosystem: npm
+    directory: "/lifecycle/aws"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "lifecycle/aws:"
+    labels:
+      - dependencies
   - package-ecosystem: pip
     directory: "/"
     schedule:

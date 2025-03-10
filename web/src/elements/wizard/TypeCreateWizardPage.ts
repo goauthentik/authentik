@@ -5,6 +5,7 @@ import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { Ref, createRef, ref } from "lit/directives/ref.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -21,6 +22,8 @@ export enum TypeCreateWizardPageLayouts {
 
 @customElement("ak-wizard-page-type-create")
 export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
+    //#region Properties
+
     @property({ attribute: false })
     types: TypeCreate[] = [];
 
@@ -29,6 +32,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
 
     @property({ type: String })
     layout: TypeCreateWizardPageLayouts = TypeCreateWizardPageLayouts.list;
+
+    //#endregion
 
     static get styles(): CSSResult[] {
         return [
@@ -49,10 +54,25 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
         ];
     }
 
-    sidebarLabel = () => msg("Select type");
+    //#region Refs
 
-    activeCallback: () => Promise<void> = async () => {
-        this.host.isValid = false;
+    formRef: Ref<HTMLFormElement> = createRef();
+
+    //#endregion
+
+    public sidebarLabel = () => msg("Select type");
+
+    public reset = () => {
+        super.reset();
+        this.selectedType = undefined;
+        this.formRef.value?.reset();
+    };
+
+    activeCallback = (): void => {
+        const form = this.formRef.value;
+
+        this.host.isValid = form?.checkValidity() ?? false;
+
         if (this.selectedType) {
             this.selectDispatch(this.selectedType);
         }
@@ -69,9 +89,19 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderGrid(): TemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
+        return html`<div
+            class="pf-l-grid pf-m-gutter"
+            data-ouid-component-type="ak-type-create-grid"
+        >
             ${this.types.map((type, idx) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+
+                // It's valid to pass in a local modelName or the full name with application
+                // part.  If the latter, we only want the part after the dot to appear as our
+                // OUIA tag for test automation.
+                const componentName = type.modelName.includes(".")
+                    ? (type.modelName.split(".")[1] ?? "--unknown--")
+                    : type.modelName;
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
@@ -79,10 +109,11 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}
+                    data-ouid-component-type="ak-type-create-grid-card"
+                    data-ouid-component-name=${componentName}
                     @click=${() => {
-                        if (requiresEnterprise) {
-                            return;
-                        }
+                        if (requiresEnterprise) return;
+
                         this.selectDispatch(type);
                         this.selectedType = type;
                     }}
@@ -107,10 +138,19 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderList(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form
+            ${ref(this.formRef)}
+            class="pf-c-form pf-m-horizontal"
+            data-ouid-component-type="ak-type-create-list"
+        >
             ${this.types.map((type) => {
                 const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
-                return html`<div class="pf-c-radio">
+
+                return html`<div
+                    class="pf-c-radio"
+                    data-ouid-component-type="ak-type-create-list-card"
+                    data-ouid-component-name=${type.modelName.split(".")[1] ?? "--unknown--"}
+                >
                     <input
                         class="pf-c-radio__input"
                         type="radio"
@@ -141,6 +181,8 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return this.renderGrid();
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
+            default:
+                throw new Error(`Unknown layout: ${this.layout}`) as never;
         }
     }
 }

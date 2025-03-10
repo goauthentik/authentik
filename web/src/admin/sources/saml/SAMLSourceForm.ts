@@ -13,7 +13,6 @@ import {
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -30,35 +29,13 @@ import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     NameIdPolicyEnum,
-    PropertymappingsApi,
     SAMLSource,
-    SAMLSourcePropertyMapping,
     SignatureAlgorithmEnum,
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
 
-async function propertyMappingsProvider(page = 1, search = "") {
-    const propertyMappings = await new PropertymappingsApi(
-        DEFAULT_CONFIG,
-    ).propertymappingsSourceSamlList({
-        ordering: "managed",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-    return {
-        pagination: propertyMappings.pagination,
-        options: propertyMappings.results.map((m) => [m.pk, m.name, m.name, m]),
-    };
-}
-
-function makePropertyMappingsSelector(instanceMappings?: string[]) {
-    const localMappings = instanceMappings ? new Set(instanceMappings) : undefined;
-    return localMappings
-        ? ([pk, _]: DualSelectPair) => localMappings.has(pk)
-        : ([_0, _1, _2, _]: DualSelectPair<SAMLSourcePropertyMapping>) => false;
-}
+import { propertyMappingsProvider, propertyMappingsSelector } from "./SAMLSourceFormHelpers.js";
 
 @customElement("ak-source-saml-form")
 export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSource>) {
@@ -381,37 +358,37 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatpersistent}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._11nameidFormatemailAddress}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatX509SubjectName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormattransient}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormattransient}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -455,20 +432,20 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
                                 },
                                 {
                                     label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
                                     default: true,
                                 },
                                 {
                                     label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
                                 },
                                 {
                                     label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
                                 },
                             ]}
                             .value=${this.instance?.digestAlgorithm}
@@ -484,24 +461,24 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
                                 },
                                 {
                                     label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
                                     default: true,
                                 },
                                 {
                                     label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
                                 },
                                 {
                                     label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
                                 },
                                 {
                                     label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
                                 },
                             ]}
                             .value=${this.instance?.signatureAlgorithm}
@@ -532,7 +509,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.userPropertyMappings,
                             )}
                             available-label="${msg("Available User Property Mappings")}"
@@ -548,7 +525,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <ak-dual-select-dynamic-selected
                             .provider=${propertyMappingsProvider}
-                            .selector=${makePropertyMappingsSelector(
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.groupPropertyMappings,
                             )}
                             available-label="${msg("Available Group Property Mappings")}"

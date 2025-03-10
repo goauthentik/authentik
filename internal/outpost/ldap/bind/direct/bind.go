@@ -96,7 +96,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		return ldap.LDAPResultOperationsError, nil
 	}
 	flags.UserPk = userInfo.User.Pk
-	flags.CanSearch = access.HasSearchPermission != nil
+	flags.CanSearch = access.GetHasSearchPermission()
 	db.si.SetFlags(req.BindDN, &flags)
 	if flags.CanSearch {
 		req.Log().Debug("Allowed access to search")

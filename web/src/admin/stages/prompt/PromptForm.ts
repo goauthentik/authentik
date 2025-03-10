@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { parseAPIError } from "@goauthentik/common/errors";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -22,7 +23,7 @@ import {
     PromptTypeEnum,
     ResponseError,
     StagesApi,
-    ValidationErrorFromJSON,
+    ValidationError,
 } from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
@@ -83,10 +84,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
             });
             this.previewError = undefined;
         } catch (exc) {
-            const errorMessage = ValidationErrorFromJSON(
-                await (exc as ResponseError).response.json(),
-            );
-            this.previewError = errorMessage.nonFieldErrors;
+            const errorMessage = parseAPIError(exc as ResponseError);
+            this.previewError = (errorMessage as ValidationError).nonFieldErrors;
         }
     }
 
@@ -218,7 +217,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;

@@ -35,7 +35,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
-            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.CoreUser,
+            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.AuthentikCoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");

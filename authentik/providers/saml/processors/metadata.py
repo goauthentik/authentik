@@ -126,7 +126,7 @@ class MetadataProcessor:
             entity_descriptor,
             xmlsec.constants.TransformExclC14N,
             sign_algorithm_transform,
-            ns="ds",  # type: ignore
+            ns=xmlsec.constants.DSigNs,
         )
         entity_descriptor.append(signature)
 

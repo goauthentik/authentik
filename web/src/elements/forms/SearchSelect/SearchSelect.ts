@@ -4,11 +4,10 @@ import { groupBy } from "@goauthentik/common/utils";
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { PropertyValues, TemplateResult, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -16,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError } from "@goauthentik/api";
 
+import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
 import { SearchSelectView } from "./ak-search-select-view.js";
 
@@ -31,10 +31,7 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T>
-    extends CustomEmitterElement(AkControlElement)
-    implements ISearchSelectBase<T>
-{
+export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
     static get styles() {
         return [PFBase];
     }
@@ -53,7 +50,7 @@ export class SearchSelectBase<T>
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
-    value!: (element: T | undefined) => unknown;
+    value!: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
@@ -104,7 +101,7 @@ export class SearchSelectBase<T>
     @state()
     error?: APIErrorTypes;
 
-    public toForm(): unknown {
+    public toForm(): string {
         if (!this.objects) {
             throw new PreventFormSubmit(msg("Loading options..."));
         }
@@ -115,17 +112,28 @@ export class SearchSelectBase<T>
         return this.toForm();
     }
 
+    protected dispatchChangeEvent(value: T | undefined) {
+        this.dispatchEvent(
+            new CustomEvent("ak-change", {
+                composed: true,
+                bubbles: true,
+                detail: { value },
+            }),
+        );
+    }
+
     public async updateData() {
         if (this.isFetchingData) {
             return Promise.resolve();
         }
         this.isFetchingData = true;
+        this.dispatchEvent(new Event("loading"));
         return this.fetchObjects(this.query)
             .then((objects) => {
                 objects.forEach((obj) => {
                     if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
-                        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+                        this.dispatchChangeEvent(this.selectedObject);
                     }
                 });
                 this.objects = objects;
@@ -163,7 +171,7 @@ export class SearchSelectBase<T>
 
         this.query = value;
         this.updateData()?.then(() => {
-            this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+            this.dispatchChangeEvent(this.selectedObject);
         });
     }
 
@@ -171,7 +179,7 @@ export class SearchSelectBase<T>
         const value = (event.target as SearchSelectView).value;
         if (value === undefined) {
             this.selectedObject = undefined;
-            this.dispatchCustomEvent("ak-change", { value: undefined });
+            this.dispatchChangeEvent(undefined);
             return;
         }
         const selected = (this.objects ?? []).find((obj) => `${this.value(obj)}` === value);
@@ -179,7 +187,7 @@ export class SearchSelectBase<T>
             console.warn(`ak-search-select: No corresponding object found for value (${value}`);
         }
         this.selectedObject = selected;
-        this.dispatchCustomEvent("ak-change", { value: this.selectedObject });
+        this.dispatchChangeEvent(this.selectedObject);
     }
 
     private getGroupedItems(): GroupedOptions {
@@ -228,8 +236,15 @@ export class SearchSelectBase<T>
             return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
         }
 
+        // `this.objects` is both a container and a sigil; if it is in the `undefined` state, it's a
+        // marker that this component has not yet completed a *first* load. After that, it should
+        // never be empty. The only state that allows it to be empty after a successful retrieval is
+        // a subsequent retrieval failure, in which case `this.error` above will be populated and
+        // displayed before this.
         if (!this.objects) {
-            return html`${msg("Loading...")}`;
+            return html`<ak-search-select-loading-indicator
+                tabindex="-1"
+            ></ak-search-select-loading-indicator>`;
         }
 
         const options = this.getGroupedItems();
@@ -248,7 +263,10 @@ export class SearchSelectBase<T>
         ></ak-search-select-view> `;
     }
 
-    public override updated() {
+    public override updated(changed: PropertyValues<this>) {
+        if (!this.isFetchingData && changed.has("objects")) {
+            this.dispatchEvent(new Event("ready"));
+        }
         // It is not safe for automated tests to interact with this component while it is fetching
         // data.
         if (!this.isFetchingData) {

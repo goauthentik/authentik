@@ -65,7 +65,7 @@ func (ls *LDAPServer) StartLDAPServer() error {
 		ls.log.WithField("listen", listen).WithError(err).Warning("Failed to listen (SSL)")
 		return err
 	}
-	proxyListener := &proxyproto.Listener{Listener: ln}
+	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
 	defer proxyListener.Close()
 
 	ls.log.WithField("listen", listen).Info("Starting LDAP server")

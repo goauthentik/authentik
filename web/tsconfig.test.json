@@ -3,6 +3,7 @@
         "baseUrl": ".",
         "types": ["node", "webdriverio/async", "@wdio/cucumber-framework", "expect-webdriverio"],
         "target": "esnext",
+        "module": "esnext",
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
         "lib": [

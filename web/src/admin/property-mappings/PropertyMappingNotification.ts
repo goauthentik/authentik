@@ -1,14 +1,14 @@
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { customElement } from "lit/decorators.js";
 
 import { NotificationWebhookMapping, PropertymappingsApi } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-notification-form")
-export class PropertyMappingNotification extends ModelForm<NotificationWebhookMapping, string> {
+export class PropertyMappingNotification extends BasePropertyMappingForm<NotificationWebhookMapping> {
     loadInstance(pk: string): Promise<NotificationWebhookMapping> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationRetrieve({
             pmUuid: pk,

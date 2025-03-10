@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/getsentry/sentry-go"
 	"goauthentik.io/internal/constants"
@@ -37,16 +38,21 @@ func (ps *ProxyServer) Refresh() error {
 				),
 			),
 		}
-		a, err := application.NewApplication(provider, hc, ps)
-		existing, ok := ps.apps[a.Host]
+		externalHost, err := url.Parse(provider.ExternalHost)
+		if err != nil {
+			ps.log.WithError(err).Warning("failed to parse URL, skipping provider")
+			continue
+		}
+		existing, ok := ps.apps[externalHost.Host]
+		a, err := application.NewApplication(provider, hc, ps, existing)
 		if ok {
 			existing.Stop()
 		}
 		if err != nil {
 			ps.log.WithError(err).Warning("failed to setup application")
-		} else {
-			apps[a.Host] = a
+			continue
 		}
+		apps[externalHost.Host] = a
 	}
 	ps.apps = apps
 	ps.log.Debug("Swapped maps")

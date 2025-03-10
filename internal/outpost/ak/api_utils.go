@@ -35,10 +35,11 @@ func Paginator[Tobj any, Treq any, Tres PaginatorResponse[Tobj]](
 	req PaginatorRequest[Treq, Tres],
 	opts PaginatorOptions,
 ) ([]Tobj, error) {
+	var bfreq, cfreq interface{}
 	fetchOffset := func(page int32) (Tres, error) {
-		req.Page(page)
-		req.PageSize(int32(opts.PageSize))
-		res, _, err := req.Execute()
+		bfreq = req.Page(page)
+		cfreq = bfreq.(PaginatorRequest[Treq, Tres]).PageSize(int32(opts.PageSize))
+		res, _, err := cfreq.(PaginatorRequest[Treq, Tres]).Execute()
 		if err != nil {
 			opts.Logger.WithError(err).WithField("page", page).Warning("failed to fetch page")
 		}

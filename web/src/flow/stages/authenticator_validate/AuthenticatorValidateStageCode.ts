@@ -3,7 +3,7 @@ import "@goauthentik/elements/forms/FormElement";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -31,6 +31,40 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
         `);
     }
 
+    deviceMessage(): string {
+        switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email: {
+                const email = this.deviceChallenge.challenge?.email;
+                return msg(str`A code has been sent to you via email${email ? ` ${email}` : ""}`);
+            }
+            case DeviceClassesEnum.Sms:
+                return msg("A code has been sent to you via SMS.");
+            case DeviceClassesEnum.Totp:
+                return msg(
+                    "Open your two-factor authenticator app to view your authentication code.",
+                );
+            case DeviceClassesEnum.Static:
+                return msg("Enter a one-time recovery code for this user.");
+        }
+
+        return msg("Enter the code from your authenticator device.");
+    }
+
+    deviceIcon(): string {
+        switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email:
+                return "fa-envelope-o";
+            case DeviceClassesEnum.Sms:
+                return "fa-mobile-alt";
+            case DeviceClassesEnum.Totp:
+                return "fa-clock";
+            case DeviceClassesEnum.Static:
+                return "fa-key";
+        }
+
+        return "fa-mobile-alt";
+    }
+
     render(): TemplateResult {
         if (!this.challenge) {
             return html`<ak-empty-state loading> </ak-empty-state>`;
@@ -44,19 +78,8 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
             >
                 ${this.renderUserInfo()}
                 <div class="icon-description">
-                    <i
-                        class="fa ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                            ? "fa-key"
-                            : "fa-mobile-alt"}"
-                        aria-hidden="true"
-                    ></i>
-                    ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                        ? html`<p>${msg("A code has been sent to you via SMS.")}</p>`
-                        : html`<p>
-                              ${msg(
-                                  "Open your two-factor authenticator app to view your authentication code.",
-                              )}
-                          </p>`}
+                    <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
+                    <p>${this.deviceMessage()}</p>
                 </div>
                 <ak-form-element
                     label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static

@@ -5,6 +5,7 @@ from email.policy import Policy
 from types import MethodType
 from typing import Any
 
+from django.contrib.messages import INFO, add_message
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
@@ -147,6 +148,9 @@ class PromptChallengeResponse(ChallengeResponse):
         result = engine.result
         if not result.passing:
             raise ValidationError(list(result.messages))
+        else:
+            for msg in result.messages:
+                add_message(self.request, INFO, msg)
         return attrs
 
 

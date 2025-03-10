@@ -192,7 +192,7 @@ export class LDAPSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesLdapLdapsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

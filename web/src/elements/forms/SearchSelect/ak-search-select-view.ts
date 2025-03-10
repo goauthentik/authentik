@@ -69,6 +69,10 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
+    static get styles() {
+        return [PFBase, PFForm, PFFormControl, PFSelect];
+    }
+
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
      * the `./types.ts` file for variants and how to use them.
@@ -185,10 +189,6 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
      *  Maps a value from the portal to labels to be put into the <input> field>
      */
     flatOptions: [string, SelectOption][] = [];
-
-    static get styles() {
-        return [PFBase, PFForm, PFFormControl, PFSelect];
-    }
 
     connectedCallback() {
         super.connectedCallback();

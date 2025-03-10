@@ -17,6 +17,7 @@ class CaptchaStageSerializer(StageSerializer):
             "private_key",
             "js_url",
             "api_url",
+            "interactive",
             "score_min_threshold",
             "score_max_threshold",
             "error_on_invalid_score",

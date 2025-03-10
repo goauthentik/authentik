@@ -16,10 +16,13 @@
 .env.test.local
 .env.production.local
 
+# Wireit's cache
+.wireit
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
 static/docker-compose.yml
-static/schema.yaml
-developer-docs/api/reference/**
+static/schema.yml
+docs/developer-docs/api/reference/**

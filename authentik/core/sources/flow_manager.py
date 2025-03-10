@@ -1,11 +1,9 @@
 """Source decision helper"""
 
-from enum import Enum
 from typing import Any
 
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from django.db.models.query_utils import Q
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -16,12 +14,11 @@ from authentik.core.models import (
     Group,
     GroupSourceConnection,
     Source,
-    SourceGroupMatchingModes,
-    SourceUserMatchingModes,
     User,
     UserSourceConnection,
 )
 from authentik.core.sources.mapper import SourceMapper
+from authentik.core.sources.matcher import Action, SourceMatcher
 from authentik.core.sources.stage import (
     PLAN_CONTEXT_SOURCES_CONNECTION,
     PostSourceStage,
@@ -38,8 +35,7 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import StageView
-from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -50,18 +46,9 @@ from authentik.stages.user_write.stage import PLAN_CONTEXT_USER_PATH
 
 LOGGER = get_logger()
 
-SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
-
-
-class Action(Enum):
-    """Actions that can be decided based on the request
-    and source settings"""
-
-    LINK = "link"
-    AUTH = "auth"
-    ENROLL = "enroll"
-    DENY = "deny"
+SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
+SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 
 
 class MessageStage(StageView):
@@ -86,6 +73,7 @@ class SourceFlowManager:
 
     source: Source
     mapper: SourceMapper
+    matcher: SourceMatcher
     request: HttpRequest
 
     identifier: str
@@ -108,6 +96,9 @@ class SourceFlowManager:
     ) -> None:
         self.source = source
         self.mapper = SourceMapper(self.source)
+        self.matcher = SourceMatcher(
+            self.source, self.user_connection_type, self.group_connection_type
+        )
         self.request = request
         self.identifier = identifier
         self.user_info = user_info
@@ -131,66 +122,24 @@ class SourceFlowManager:
 
     def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:  # noqa: PLR0911
         """decide which action should be taken"""
-        new_connection = self.user_connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
         if self.request.user.is_authenticated:
+            new_connection = self.user_connection_type(
+                source=self.source, identifier=self.identifier
+            )
             new_connection.user = self.request.user
             new_connection = self.update_user_connection(new_connection, **kwargs)
+            if existing := self.user_connection_type.objects.filter(
+                source=self.source, identifier=self.identifier
+            ).first():
+                existing = self.update_user_connection(existing)
+                return Action.AUTH, existing
             return Action.LINK, new_connection
 
-        existing_connections = self.user_connection_type.objects.filter(
-            source=self.source, identifier=self.identifier
-        )
-        if existing_connections.exists():
-            connection = existing_connections.first()
-            return Action.AUTH, self.update_user_connection(connection, **kwargs)
-        # No connection exists, but we match on identifier, so enroll
-        if self.source.user_matching_mode == SourceUserMatchingModes.IDENTIFIER:
-            # We don't save the connection here cause it doesn't have a user assigned yet
-            return Action.ENROLL, self.update_user_connection(new_connection, **kwargs)
-
-        # Check for existing users with matching attributes
-        query = Q()
-        # Either query existing user based on email or username
-        if self.source.user_matching_mode in [
-            SourceUserMatchingModes.EMAIL_LINK,
-            SourceUserMatchingModes.EMAIL_DENY,
-        ]:
-            if not self.user_properties.get("email", None):
-                self._logger.warning("Refusing to use none email")
-                return Action.DENY, None
-            query = Q(email__exact=self.user_properties.get("email", None))
-        if self.source.user_matching_mode in [
-            SourceUserMatchingModes.USERNAME_LINK,
-            SourceUserMatchingModes.USERNAME_DENY,
-        ]:
-            if not self.user_properties.get("username", None):
-                self._logger.warning("Refusing to use none username")
-                return Action.DENY, None
-            query = Q(username__exact=self.user_properties.get("username", None))
-        self._logger.debug("trying to link with existing user", query=query)
-        matching_users = User.objects.filter(query)
-        # No matching users, always enroll
-        if not matching_users.exists():
-            self._logger.debug("no matching users found, enrolling")
-            return Action.ENROLL, self.update_user_connection(new_connection, **kwargs)
-
-        user = matching_users.first()
-        if self.source.user_matching_mode in [
-            SourceUserMatchingModes.EMAIL_LINK,
-            SourceUserMatchingModes.USERNAME_LINK,
-        ]:
-            new_connection.user = user
-            new_connection = self.update_user_connection(new_connection, **kwargs)
-            return Action.LINK, new_connection
-        if self.source.user_matching_mode in [
-            SourceUserMatchingModes.EMAIL_DENY,
-            SourceUserMatchingModes.USERNAME_DENY,
-        ]:
-            self._logger.info("denying source because user exists", user=user)
-            return Action.DENY, None
-        # Should never get here as default enroll case is returned above.
-        return Action.DENY, None  # pragma: no cover
+        action, connection = self.matcher.get_user_action(self.identifier, self.user_properties)
+        if connection:
+            connection = self.update_user_connection(connection, **kwargs)
+        return action, connection
 
     def update_user_connection(
         self, connection: UserSourceConnection, **kwargs
@@ -270,34 +219,28 @@ class SourceFlowManager:
             }
         )
         flow_context.update(self.policy_context)
-        if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
-            token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
-            self._logger.info("Replacing source flow with overridden flow", flow=token.flow.slug)
-            plan = token.plan
-            plan.context[PLAN_CONTEXT_IS_RESTORED] = token
-            plan.context.update(flow_context)
-            for stage in self.get_stages_to_append(flow):
-                plan.append_stage(stage)
-            if stages:
-                for stage in stages:
-                    plan.append_stage(stage)
-            self.request.session[SESSION_KEY_PLAN] = plan
-            flow_slug = token.flow.slug
-            token.delete()
-            return redirect_with_qs(
-                "authentik_core:if-flow",
-                self.request.GET,
-                flow_slug=flow_slug,
-            )
-        # Ensure redirect is carried through when user was trying to
-        # authorize application
-        final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
-        )
-        if PLAN_CONTEXT_REDIRECT not in flow_context:
-            flow_context[PLAN_CONTEXT_REDIRECT] = final_redirect
+        flow_context.setdefault(PLAN_CONTEXT_REDIRECT, final_redirect)
 
         if not flow:
+            # We only check for the flow token here if we don't have a flow, otherwise we rely on
+            # SESSION_KEY_SOURCE_FLOW_STAGES to delegate the usage of this token and dynamically add
+            # stages that deal with this token to return to another flow
+            if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
+                token: FlowToken = self.request.session.get(SESSION_KEY_OVERRIDE_FLOW_TOKEN)
+                self._logger.info(
+                    "Replacing source flow with overridden flow", flow=token.flow.slug
+                )
+                plan = token.plan
+                plan.context[PLAN_CONTEXT_IS_RESTORED] = token
+                plan.context.update(flow_context)
+                for stage in self.get_stages_to_append(flow):
+                    plan.append_stage(stage)
+                if stages:
+                    for stage in stages:
+                        plan.append_stage(stage)
+                redirect = plan.to_redirect(self.request, token.flow)
+                token.delete()
+                return redirect
             return bad_request_message(
                 self.request,
                 _("Configured flow does not exist."),
@@ -316,19 +259,15 @@ class SourceFlowManager:
         if stages:
             for stage in stages:
                 plan.append_stage(stage)
-        self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
-            flow_slug=flow.slug,
-        )
+        for stage in self.request.session.get(SESSION_KEY_SOURCE_FLOW_STAGES, []):
+            plan.append_stage(stage)
+        return plan.to_redirect(self.request, flow)
 
     def handle_auth(
         self,
         connection: UserSourceConnection,
     ) -> HttpResponse:
         """Login user and redirect."""
-        flow_kwargs = {PLAN_CONTEXT_PENDING_USER: connection.user}
         return self._prepare_flow(
             self.source.authentication_flow,
             connection,
@@ -342,7 +281,11 @@ class SourceFlowManager:
                     ),
                 )
             ],
-            **flow_kwargs,
+            **{
+                PLAN_CONTEXT_PENDING_USER: connection.user,
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.user_properties),
+                PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
+            },
         )
 
     def handle_existing_link(
@@ -354,6 +297,8 @@ class SourceFlowManager:
         # When request isn't authenticated we jump straight to auth
         if not self.request.user.is_authenticated:
             return self.handle_auth(connection)
+        # When an override flow token exists we actually still use a flow for link
+        # to continue the existing flow we came from
         if SESSION_KEY_OVERRIDE_FLOW_TOKEN in self.request.session:
             return self._prepare_flow(None, connection)
         connection.save()
@@ -408,74 +353,16 @@ class SourceFlowManager:
 class GroupUpdateStage(StageView):
     """Dynamically injected stage which updates the user after enrollment/authentication."""
 
-    def get_action(
-        self, group_id: str, group_properties: dict[str, Any | dict[str, Any]]
-    ) -> tuple[Action, GroupSourceConnection | None]:
-        """decide which action should be taken"""
-        new_connection = self.group_connection_type(source=self.source, identifier=group_id)
-
-        existing_connections = self.group_connection_type.objects.filter(
-            source=self.source, identifier=group_id
-        )
-        if existing_connections.exists():
-            return Action.LINK, existing_connections.first()
-        # No connection exists, but we match on identifier, so enroll
-        if self.source.group_matching_mode == SourceGroupMatchingModes.IDENTIFIER:
-            # We don't save the connection here cause it doesn't have a user assigned yet
-            return Action.ENROLL, new_connection
-
-        # Check for existing groups with matching attributes
-        query = Q()
-        if self.source.group_matching_mode in [
-            SourceGroupMatchingModes.NAME_LINK,
-            SourceGroupMatchingModes.NAME_DENY,
-        ]:
-            if not group_properties.get("name", None):
-                LOGGER.warning(
-                    "Refusing to use none group name", source=self.source, group_id=group_id
-                )
-                return Action.DENY, None
-            query = Q(name__exact=group_properties.get("name"))
-        LOGGER.debug(
-            "trying to link with existing group", source=self.source, query=query, group_id=group_id
-        )
-        matching_groups = Group.objects.filter(query)
-        # No matching groups, always enroll
-        if not matching_groups.exists():
-            LOGGER.debug(
-                "no matching groups found, enrolling", source=self.source, group_id=group_id
-            )
-            return Action.ENROLL, new_connection
-
-        group = matching_groups.first()
-        if self.source.group_matching_mode in [
-            SourceGroupMatchingModes.NAME_LINK,
-        ]:
-            new_connection.group = group
-            return Action.LINK, new_connection
-        if self.source.group_matching_mode in [
-            SourceGroupMatchingModes.NAME_DENY,
-        ]:
-            LOGGER.info(
-                "denying source because group exists",
-                source=self.source,
-                group=group,
-                group_id=group_id,
-            )
-            return Action.DENY, None
-        # Should never get here as default enroll case is returned above.
-        return Action.DENY, None  # pragma: no cover
-
     def handle_group(
         self, group_id: str, group_properties: dict[str, Any | dict[str, Any]]
     ) -> Group | None:
-        action, connection = self.get_action(group_id, group_properties)
+        action, connection = self.matcher.get_group_action(group_id, group_properties)
         if action == Action.ENROLL:
             group = Group.objects.create(**group_properties)
             connection.group = group
             connection.save()
             return group
-        elif action == Action.LINK:
+        elif action in (Action.LINK, Action.AUTH):
             group = connection.group
             group.update_attributes(group_properties)
             connection.save()
@@ -489,6 +376,7 @@ class GroupUpdateStage(StageView):
         self.group_connection_type: GroupSourceConnection = (
             self.executor.current_stage.group_connection_type
         )
+        self.matcher = SourceMatcher(self.source, None, self.group_connection_type)
 
         raw_groups: dict[str, dict[str, Any | dict[str, Any]]] = self.executor.plan.context[
             PLAN_CONTEXT_SOURCE_GROUPS
