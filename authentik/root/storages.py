@@ -1,4 +1,8 @@
-"""authentik storage backends with multi-tenant support for S3 and filesystem"""
+"""Storage backends for authentik with multi-tenant support.
+
+This module provides custom storage backends for handling file storage in a multi-tenant
+environment. It supports both filesystem and S3 storage options with proper tenant isolation.
+"""
 
 import os
 import uuid
@@ -21,6 +25,7 @@ from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
+# Mapping of allowed file extensions to their corresponding MIME types
 ALLOWED_IMAGE_EXTENSIONS = {
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
@@ -33,7 +38,24 @@ ALLOWED_IMAGE_EXTENSIONS = {
 
 
 def validate_image_file(file: UploadedFile) -> bool:
-    """Validate that a file is an allowed image format"""
+    """Validate that an uploaded file is a supported and valid image format.
+
+    This function performs multiple validation checks:
+    1. Verifies the file extension and MIME type against allowed formats
+    2. Performs format-specific validation:
+        - SVG: Validates basic XML/SVG structure
+        - ICO: Checks file header magic number
+        - Other formats: Uses Pillow to verify image integrity
+
+    Args:
+        file: The uploaded file to validate. Must be an instance of UploadedFile.
+
+    Returns:
+        bool: True if the file is a valid image of an allowed format, False otherwise.
+
+    Raises:
+        No exceptions are raised; all errors are caught and logged.
+    """
     if not file:
         return False
 
@@ -56,19 +78,23 @@ def validate_image_file(file: UploadedFile) -> bool:
         is_valid = False
 
         if ext == ".svg":
+            # Read first 8KB for SVG validation - sufficient for header and root element
             content = file.read(8192).decode("utf-8").strip().lower()
             file.seek(0)
 
+            # Validate basic SVG structure (XML declaration or SVG root element)
             has_valid_start = content.startswith("<?xml") or content.startswith("<svg")
             is_valid = has_valid_start and "<svg" in content
 
         elif ext == ".ico":
+            # Validate ICO file by checking the magic number in header
             magic = file.read(4)
             file.seek(0)
             is_valid = magic == b"\x00\x00\x01\x00"
 
         else:
             try:
+                # Validate other image formats using Pillow
                 with Image.open(file) as img:
                     format_to_ext = {
                         "JPEG": ".jpg",
@@ -83,6 +109,7 @@ def validate_image_file(file: UploadedFile) -> bool:
                             "Unrecognized image format", format=img.format, extension=ext
                         )
                     else:
+                        # Special handling for JPEG extension variants
                         is_jpeg = detected_ext == ".jpg" and ext == ".jpeg"
                         is_valid = detected_ext == ext or is_jpeg
                         if not is_valid:
@@ -92,6 +119,7 @@ def validate_image_file(file: UploadedFile) -> bool:
                                 extension=ext,
                             )
                         else:
+                            # Verify image data integrity
                             img.verify()
                             is_valid = True
 
@@ -112,22 +140,46 @@ def validate_image_file(file: UploadedFile) -> bool:
 
 
 class TenantAwareStorage:
-    """Mixin providing tenant-aware path functionality"""
+    """Mixin providing tenant-aware path functionality for storage backends."""
 
     @property
     def tenant_prefix(self) -> str:
-        """Get current tenant schema prefix"""
+        """Get current tenant schema prefix.
+
+        Returns:
+            str: The current tenant's schema name from the database connection.
+        """
         return connection.schema_name
 
     def get_tenant_path(self, name: str) -> str:
-        """Get tenant-specific path for storage"""
+        """Get tenant-specific path for storage.
+
+        Args:
+            name (str): Original file path/name.
+
+        Returns:
+            str: Path prefixed with tenant identifier for proper isolation.
+        """
         return str(Path(self.tenant_prefix) / name)
 
 
 class FileStorage(TenantAwareStorage, FileSystemStorage):
-    """Multi-tenant filesystem storage backend"""
+    """Multi-tenant filesystem storage backend."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize the storage backend with tenant-aware configuration.
+
+        Creates the base storage directory if it doesn't exist and sets up proper
+        permissions and logging.
+
+        Args:
+            *args: Variable length argument list passed to parent classes
+            **kwargs: Arbitrary keyword arguments passed to parent classes
+
+        Raises:
+            PermissionError: If storage directory cannot be created due to permissions
+            OSError: If storage directory cannot be created due to filesystem errors
+        """
         super().__init__(*args, **kwargs)
         self._base_path = Path(self.location)
         try:
@@ -149,23 +201,46 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             raise
 
     def get_valid_name(self, name: str) -> str:
-        """Return a sanitized filename"""
+        """Return a sanitized filename safe for storage.
+
+        Removes path components and applies additional sanitization from parent class.
+
+        Args:
+            name (str): Original filename
+
+        Returns:
+            str: Sanitized filename safe for storage
+        """
         name = os.path.basename(name)
         return super().get_valid_name(name)
 
     @property
     def base_location(self) -> Path:
-        """Base storage directory including tenant prefix"""
+        """Get base storage directory including tenant prefix.
+
+        Returns:
+            Path: Complete path to tenant-specific storage directory
+        """
         return Path(settings.MEDIA_ROOT) / self.tenant_prefix
 
     @property
     def location(self) -> str:
-        """Absolute path to storage directory"""
+        """Get absolute path to storage directory.
+
+        Returns:
+            str: Absolute filesystem path to tenant storage directory
+        """
         return os.path.abspath(self.base_location)
 
     @property
     def base_url(self) -> str:
-        """Base URL for serving stored files with tenant prefix"""
+        """Get base URL for serving stored files with tenant prefix.
+
+        Ensures proper URL composition by validating and fixing MEDIA_URL format.
+
+        Returns:
+            str: Base URL with proper tenant prefix for serving files
+        """
         base_url = settings.MEDIA_URL
         if not base_url.endswith("/"):
             LOGGER.warning(
@@ -175,7 +250,19 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         return f"{base_url}{self.tenant_prefix}/"
 
     def path(self, name: str) -> str:
-        """Return full filesystem path to the file"""
+        """Return full filesystem path to the file with security validation.
+
+        Performs path validation to prevent directory traversal and other path-based attacks.
+
+        Args:
+            name (str): Name of the file
+
+        Returns:
+            str: Full filesystem path to the file
+
+        Raises:
+            SuspiciousOperation: If the path appears to be malicious
+        """
         try:
             name = self.get_valid_name(name)
             name = os.path.normpath(name).lstrip("./")
@@ -191,8 +278,20 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             raise SuspiciousOperation(f"Invalid path: {name}") from e
 
     def _save(self, name: str, content) -> str:
-        """Save file with sanitized name"""
-        # Validate image format
+        """Save file.
+
+        Performs image validation and path sanitization before saving the file.
+
+        Args:
+            name (str): Name of the file
+            content: File content to save
+
+        Returns:
+            str: Name of the saved file
+
+        Raises:
+            SuspiciousOperation: If file validation fails or path is suspicious
+        """
         if not validate_image_file(content):
             raise SuspiciousOperation("Invalid or unsupported image format")
 
@@ -204,7 +303,7 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
 
 
 class S3Storage(TenantAwareStorage, BaseS3Storage):
-    """Multi-tenant S3 storage backend"""
+    """Multi-tenant S3 (compatible/Amazon) storage backend."""
 
     CONFIG_KEYS = {
         "session_profile": "storage.media.s3.session_profile",
@@ -216,6 +315,17 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
     }
 
     def __init__(self, **kwargs):
+        """Initialize the S3 storage backend with proper configuration validation.
+
+        Validates AWS credentials and configuration before initializing the storage backend.
+        Sets up caching for S3 client and bucket instances.
+
+        Args:
+            **kwargs: Configuration options passed to parent S3Storage
+
+        Raises:
+            ImproperlyConfigured: If AWS credentials or configuration is invalid
+        """
         self._validate_configuration()
         super().__init__(**kwargs)
         self._client = None
@@ -223,7 +333,15 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         self._file_mapping = {}
 
     def _validate_configuration(self):
-        """Validate configuration and log potential issues"""
+        """Validate AWS credentials and configuration settings.
+
+        1. Checks for conflicting authentication methods
+        2. Ensures required credentials are provided
+        3. Validates bucket name configuration
+
+        Raises:
+            ImproperlyConfigured: If configuration is invalid or incomplete
+        """
         if self.session_profile and (self.access_key or self.secret_key):
             LOGGER.error(
                 "Conflicting S3 storage configuration",
@@ -262,32 +380,65 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             )
 
     def _get_config_value(self, key: str) -> str | None:
-        """Get refreshed configuration value"""
+        """Get refreshed configuration value from environment.
+
+        Args:
+            key (str): Configuration key from CONFIG_KEYS
+
+        Returns:
+            str | None: Configuration value if set, None otherwise
+        """
         return CONFIG.refresh(self.CONFIG_KEYS[key], None)
 
     @property
     def session_profile(self) -> str | None:
-        """AWS session profile name"""
+        """Get AWS session profile name.
+
+        Returns:
+            str | None: Configured AWS session profile name
+        """
         return self._get_config_value("session_profile")
 
     @property
     def access_key(self) -> str | None:
-        """AWS access key ID"""
+        """Get AWS access key ID.
+
+        Returns:
+            str | None: Configured AWS access key ID
+        """
         return self._get_config_value("access_key")
 
     @property
     def secret_key(self) -> str | None:
-        """AWS secret access key"""
+        """Get AWS secret access key.
+
+        Returns:
+            str | None: Configured AWS secret access key
+        """
         return self._get_config_value("secret_key")
 
     @property
     def security_token(self) -> str | None:
-        """AWS temporary security token"""
+        """Get AWS temporary security token.
+
+        Returns:
+            str | None: Configured AWS security token
+        """
         return self._get_config_value("security_token")
 
     @property
     def client(self):
-        """Cached boto3 client instance with refreshed credentials"""
+        """Get or create boto3 S3 client with current credentials.
+
+        Creates a new boto3 S3 client if none exists, using current AWS credentials.
+
+        Returns:
+            boto3.client: Configured S3 client instance
+
+        Raises:
+            ImproperlyConfigured: If AWS credentials are invalid
+            ClientError: If AWS client initialization fails
+        """
         if not self._client:
             try:
                 session = boto3.Session(
@@ -319,21 +470,35 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 raise
             except Exception as e:
                 LOGGER.error(
-                    "Unexpected error creating S3 client", error=str(e), tenant=self.tenant_prefix
+                    "Unexpected error creating S3 client",
+                    error=str(e),
+                    tenant=self.tenant_prefix,
                 )
                 raise
         return self._client
 
     @property
     def bucket(self):
-        """Get S3 bucket instance and validate access"""
+        """Get or create S3 bucket instance with access validation.
+
+        Creates a new S3 bucket instance if none exists and validates access permissions.
+
+        Returns:
+            boto3.s3.Bucket: Validated S3 bucket instance
+
+        Raises:
+            ImproperlyConfigured: If bucket doesn't exist or permissions are insufficient
+            ClientError: If bucket access fails
+        """
         if not self._bucket:
             try:
                 try:
                     self.client.list_buckets()
                 except (ClientError, NoCredentialsError) as e:
                     LOGGER.critical(
-                        "Invalid AWS credentials", error=str(e), tenant=self.tenant_prefix
+                        "Invalid AWS credentials",
+                        error=str(e),
+                        tenant=self.tenant_prefix,
                     )
                     raise ImproperlyConfigured("Invalid AWS credentials") from e
 
@@ -385,19 +550,43 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
             except Exception as e:
                 LOGGER.error(
-                    "Unexpected error accessing S3", error=str(e), tenant=self.tenant_prefix
+                    "Unexpected error accessing S3",
+                    error=str(e),
+                    tenant=self.tenant_prefix,
                 )
                 raise ImproperlyConfigured(f"S3 configuration error: {str(e)}") from e
 
         return self._bucket
 
     def get_valid_name(self, name: str) -> str:
-        """Return a sanitized filename"""
+        """Return a sanitized filename safe for S3 storage.
+
+        Removes path components and applies additional sanitization.
+
+        Args:
+            name (str): Original filename
+
+        Returns:
+            str: Sanitized filename safe for S3 storage
+        """
         name = os.path.basename(name)
         return super().get_valid_name(name)
 
     def _normalize_name(self, name: str) -> str:
-        """Normalize file path for S3 storage"""
+        """Normalize file path for S3 storage with security validation.
+
+        Normalizes the file path and performs security checks to prevent
+        path traversal attacks.
+
+        Args:
+            name (str): Original file path/name
+
+        Returns:
+            str: Normalized and tenant-prefixed path
+
+        Raises:
+            SuspiciousOperation: If the path appears to be malicious
+        """
         if ".." in name or name.startswith("/"):
             raise SuspiciousOperation(f"Suspicious path: {name}")
         normalized = self.get_tenant_path(name)
@@ -409,7 +598,17 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         return normalized
 
     def _randomize_filename(self, filename: str) -> str:
-        """Generate a randomized filename while preserving extension"""
+        """Generate a randomized filename while preserving extension.
+
+        Creates a unique filename using tenant hash and UUID while
+        maintaining the original file extension.
+
+        Args:
+            filename (str): Original filename
+
+        Returns:
+            str: Randomized filename with original extension
+        """
         name, ext = os.path.splitext(filename)
         tenant_hash = str(uuid.uuid5(uuid.NAMESPACE_DNS, self.tenant_prefix))[:8]
         random_uuid = str(uuid.uuid4())
@@ -423,7 +622,22 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         return randomized
 
     def _save(self, name: str, content) -> str:
-        """Save file to S3 with tenant isolation and random filename"""
+        """Save file to S3 with security validation and tenant isolation.
+
+        Performs image validation, generates a random filename, and uploads
+        the file to the appropriate tenant-specific S3 location.
+
+        Args:
+            name (str): Original filename
+            content: File content to save
+
+        Returns:
+            str: Normalized S3 key of the saved file
+
+        Raises:
+            SuspiciousOperation: If file validation fails
+            ClientError: If S3 upload fails
+        """
         if not validate_image_file(content):
             raise SuspiciousOperation("Invalid or unsupported image format")
 
@@ -487,7 +701,17 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             raise
 
     def delete(self, name: str) -> None:
-        """Delete file from S3"""
+        """Delete file from S3 storage.
+
+        Attempts to delete the file using either the mapped normalized name
+        or by normalizing the provided name.
+
+        Args:
+            name (str): Name of the file to delete
+
+        Note:
+            Silently ignores 404 errors when the file doesn't exist
+        """
         try:
             # Get normalized name from mapping or normalize original name
             normalized_name = self._file_mapping.get(name, self._normalize_name(name))
@@ -515,7 +739,21 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             )
 
     def url(self, name: str, **kwargs) -> str:
-        """Generate URL without signing parameters when using custom domain"""
+        """Generate URL for accessing the file, with optional custom domain support.
+
+        Generates a URL for the file, optionally cleaning AWS signing parameters
+        when using a custom domain.
+
+        Args:
+            name (str): Name of the file
+            **kwargs: Additional arguments passed to the parent implementation
+
+        Returns:
+            str: URL for accessing the file
+
+        Raises:
+            ClientError: If URL generation fails
+        """
         try:
             url = super().url(name, **kwargs)
 
