@@ -102,6 +102,7 @@ class TestS3Storage(TestCase):
 
         # Reset for bucket not found test
         self.mock_client.list_buckets.side_effect = None
+        self.mock_client.list_buckets.return_value = {"Buckets": []}
         self.mock_client.head_bucket.side_effect = ClientError(
             {"Error": {"Code": "404", "Message": "Not Found"}}, "head_bucket"
         )
