@@ -99,6 +99,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_groups",
             "sync_parent_group",
             "connectivity",
+            "lookup_groups_from_user",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -134,6 +135,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_parent_group",
         "user_property_mappings",
         "group_property_mappings",
+        "lookup_groups_from_user",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
