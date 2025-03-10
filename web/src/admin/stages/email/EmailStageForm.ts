@@ -213,10 +213,9 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).",
-                            )}
+                            ${msg("Time the token sent is valid.")}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Subject")}
