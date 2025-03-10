@@ -1,6 +1,5 @@
 """Delete stage logic"""
 
-from django.contrib import messages
 from django.contrib.auth import logout
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
@@ -17,9 +16,8 @@ class UserDeleteStageView(StageView):
         user = self.get_pending_user()
         if not user.is_authenticated:
             message = _("No Pending User.")
-            messages.error(request, message)
             self.logger.debug(message)
-            return self.executor.stage_invalid()
+            return self.executor.stage_invalid(message)
         logout(self.request)
         user.delete()
         self.logger.debug("Deleted user", user=user)
