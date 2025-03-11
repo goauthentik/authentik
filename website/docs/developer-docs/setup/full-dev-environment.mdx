@@ -81,7 +81,7 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-poetry shell   # Creates a python virtualenv, and activates it in a new shell
+eval $(poetry env activate)  # Creates a python virtualenv, and activates it in a new shell
 make install   # Installs all required dependencies for Python and Javascript, including development dependencies
 ```
 
