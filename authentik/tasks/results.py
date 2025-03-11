@@ -38,6 +38,7 @@ class PostgresBackend(ResultBackend):
             "result": encoder.encode(result),
             "result_ttl": timezone.now() + timezone.timedelta(milliseconds=ttl),
         }
+        # TODO: tenant
         create_defaults = {
             **query,
             **defaults,

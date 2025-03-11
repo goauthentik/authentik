@@ -30,9 +30,9 @@ class Task(SerializerModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
     state = models.CharField(default=TaskState.QUEUED, choices=TaskState.choices, editable=False)
     mtime = models.DateTimeField(default=timezone.now, editable=False)
-    message = models.JSONField(null=True, editable=False)
+    message = models.TextField(null=True, editable=False)
 
-    result = models.JSONField(null=True, editable=False)
+    result = models.TextField(null=True, editable=False)
     result_ttl = models.DateTimeField(null=True, editable=False)
 
     description = models.TextField(blank=True)
@@ -48,7 +48,7 @@ class Task(SerializerModel):
                 condition=pgtrigger.Q(new__state=TaskState.QUEUED),
                 timing=pgtrigger.Deferred,
                 func=f"""
-                    SELECT pg_notify(
+                    PERFORM pg_notify(
                         '{CHANNEL_PREFIX}.' || NEW.queue_name || '.{ChannelIdentifier.ENQUEUE.value}',
                         CASE WHEN octet_length(NEW.message::text) >= 8000
                         THEN jsonb_build_object('message_id', NEW.message_id)::text

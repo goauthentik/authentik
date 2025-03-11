@@ -259,9 +259,9 @@ class _PostgresConsumer(Consumer):
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")
         notifies = self.query_set.filter(
             state__in=(TaskState.QUEUED, TaskState.CONSUMED), queue_name=self.queue_name
-        )
+        ).values_list("message_id", flat=True)
         channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
-        return [Notify(pid=0, channel=channel, payload=item.message) for item in notifies]
+        return [Notify(pid=0, channel=channel, payload=item) for item in notifies]
 
     def _poll_for_notify(self):
         with self.listen_connection.cursor() as cursor:
