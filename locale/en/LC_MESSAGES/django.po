@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 00:11+0000\n"
+"POT-Creation-Date: 2025-03-02 00:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -865,6 +865,12 @@ msgstr ""
 msgid "Invalid next URL"
 msgstr ""
 
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Starting full provider sync"
 msgstr ""
@@ -877,6 +883,10 @@ msgstr ""
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
 msgid "Syncing page {page} of groups"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Dropping mutating request due to dry run"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -1363,6 +1373,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py

@@ -25,7 +25,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -94,6 +94,11 @@ export class ProxyProviderViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFBanner,
+            css`
+                :host(:not([theme="dark"])) .ak-markdown-section {
+                    background-color: var(--pf-c-card--BackgroundColor);
+                }
+            `,
         ];
     }
 
@@ -188,7 +193,7 @@ export class ProxyProviderViewPage extends AKElement {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
-                    class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                    class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-markdown
                         .replacers=${replacers}

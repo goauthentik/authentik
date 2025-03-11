@@ -23,7 +23,7 @@ kubectl exec -it deployment/authentik-worker -c worker -- ak create_recovery_key
 or, for CLI, run
 
 ```shell
-ak create_recovery_key 10 akadmin
+poetry run ak create_recovery_key 10 akadmin
 ```
 
 This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.

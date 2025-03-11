@@ -1,4 +1,4 @@
-import DOMPurify from "dompurify";
+import DOMPurify, { Config } from "dompurify";
 
 import { render } from "@lit-labs/ssr";
 import { collectResult } from "@lit-labs/ssr/lib/render-result.js";
@@ -6,7 +6,7 @@ import { TemplateResult, html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-export const DOM_PURIFY_STRICT: DOMPurify.Config = {
+export const DOM_PURIFY_STRICT: Config = {
     ALLOWED_TAGS: ["#text"],
 };
 

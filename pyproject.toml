@@ -4,6 +4,32 @@ version = "2025.2.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
+[tool.bandit]
+exclude_dirs = ["**/node_modules/**"]
+
+[tool.codespell]
+skip = [
+    "**/node_modules",
+    "**/package-lock.json",
+    "schema.yml",
+    "unittest.xml",
+    "./blueprints/schema.json",
+    "go.sum",
+    "locale",
+    "**/dist",
+    "**/storybook-static",
+    "**/web/src/locales",
+    "**/web/xliff",
+    "./web/storybook-static",
+    "./website/build",
+    "./gen-ts-api",
+    "./gen-py-api",
+    "./gen-go-api",
+    "*.api.mdx",
+    "./htmlcov",
+]
+dictionary = ".github/codespell-dictionary.txt,-"
+ignore-words = ".github/codespell-words.txt"
 [tool.black]
 line-length = 100
 target-version = ['py312']
@@ -123,7 +149,9 @@ kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
+opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = [
+    "reggie",
+] }
 packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }

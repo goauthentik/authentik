@@ -6,7 +6,11 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex.js";
+import {
+    PlexAPIClient,
+    PlexResource,
+    popupCenterScreen,
+} from "@goauthentik/common/helpers/plex.js";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import {
     CapabilitiesEnum,

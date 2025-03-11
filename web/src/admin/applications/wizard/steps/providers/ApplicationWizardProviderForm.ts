@@ -12,6 +12,7 @@ import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFor
 import { property, query } from "lit/decorators.js";
 
 import { styles as AwadStyles } from "../../ApplicationWizardFormStepStyles.css";
+
 import { type ApplicationWizardState, type OneOfProvider } from "../../types";
 
 export class ApplicationWizardProviderForm<T extends OneOfProvider> extends AKElement {
