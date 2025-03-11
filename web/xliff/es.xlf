@@ -9139,6 +9139,9 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 <trans-unit id="s85a91d843c3eb4ad">
   <source>Show inactive users</source>
 </trans-unit>
+<trans-unit id="s5787e20cab57b383">
+  <source>Unknown error</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
