@@ -25,7 +25,9 @@ class RedditOAuth2Client(UserprofileHeaderAuthClient):
 
     def get_access_token(self, **request_kwargs):
         "Fetch access token from callback request."
-        request_kwargs["auth"] = HTTPBasicAuth(self.source.consumer_key, self.source.consumer_secret)
+        request_kwargs["auth"] = HTTPBasicAuth(
+            self.source.consumer_key, self.source.consumer_secret
+        )
         return super().get_access_token(**request_kwargs)
 
 
