@@ -30,19 +30,8 @@ class PostgresBackend(ResultBackend):
 
     def _store(self, message_key: str, result: Result, ttl: int) -> None:
         encoder = get_encoder()
-        query = {
-            "message_id": message_key,
-        }
-        defaults = {
-            "mtime": timezone.now(),
-            "result": encoder.encode(result),
-            "result_ttl": timezone.now() + timezone.timedelta(milliseconds=ttl),
-        }
-        # TODO: tenant
-        create_defaults = {
-            **query,
-            **defaults,
-            "queue_name": "__RQ__",
-            "state": TaskState.DONE,
-        }
-        self.query_set.update_or_create(**query, defaults=defaults, create_defaults=create_defaults)
+        self.query_set.filter(message_id=message_key).update(
+            mtime=timezone.now(),
+            result=encoder.encode(result),
+            result_ttl=timezone.now() + timezone.timedelta(milliseconds=ttl),
+        )
