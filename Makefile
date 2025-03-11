@@ -4,7 +4,7 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell poetry run python -m scripts.generate_semver)
+NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
