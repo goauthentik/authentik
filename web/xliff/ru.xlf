@@ -9409,6 +9409,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s85a91d843c3eb4ad">
   <source>Show inactive users</source>
 </trans-unit>
+<trans-unit id="s5787e20cab57b383">
+  <source>Unknown error</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
