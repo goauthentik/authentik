@@ -145,7 +145,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
 		-i /local/schema.yml \
 		-g python \
 		-o /local/${GEN_API_PY} \
