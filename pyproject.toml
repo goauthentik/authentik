@@ -20,6 +20,7 @@ skip = [
     "**/storybook-static",
     "**/web/src/locales",
     "**/web/xliff",
+    "./web/storybook-static",
     "./website/build",
     "./gen-ts-api",
     "./gen-py-api",
