@@ -24,9 +24,17 @@
     padding-bottom: 8px;
 }
 
+html {
+    --edit-this-page-background: var(--ifm-color-secondary-lighter);
+}
+
+html[data-theme="dark"] {
+    --edit-this-page-background: var(--ifm-color-secondary-contrast-background);
+}
+
 .admonitionContrib {
     --ifm-h5-font-size: 1rem;
-    --ifm-alert-background-color: var(--ifm-color-secondary-lighter);
+    --ifm-alert-background-color: var(--edit-this-page-background);
     display: block;
     border-left-style: none;
 
