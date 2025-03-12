@@ -73,7 +73,7 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
         - Set the **ACS URL** to <kbd>https://<em>mautic.company</em>/s/saml/login_check</kbd>
         - Set the **Issuer** to <kbd><em>mautic.company</em></kbd>
         - Set the **Service Provider Binding** to `Post`
-        - Under **Advanced protocol settings** set the **Signing Certificate** to `authentik Self-signed Certificate` and check `Sign assertions` and `Sign responses`
+        - Under **Advanced protocol settings** set the **Signing Certificate** to `authentik Self-signed Certificate` and check **Sign assertions** and **Sign responses**
         - Under **Advanced protocol settings** add the newly created property mappings `SAML-FirstName-from-Name` and `SAML-LastName-from-Name` under **Property Mappings**. **Property Mappings**.
 3. Click **Submit** to save the new application and provider.
 4. Go to **Applications** > **Providers** and click on <kbd><em>mautic-provider</em></kbd>.
@@ -130,7 +130,7 @@ This error occurs when logging in, and indicates that the certificate does not m
 
 > Assertions must be signed
 
-This error occurs when logging in, and indicates that the `Sign assertions` and `Sign responses` settings were not checked in authentik.
+This error occurs when logging in, and indicates that the **Sign assertions** and **Sign responses** settings were not checked in authentik.
 (See [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.)
 
 ### Invalid private key
