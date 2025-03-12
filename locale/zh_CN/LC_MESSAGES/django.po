@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-02 00:10+0000\n"
+"POT-Creation-Date: 2025-03-12 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -2570,6 +2570,7 @@ msgid ""
 msgstr "启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。"
 
 #: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr "发出令牌有效的时间（格式：hours=3,minutes=17,seconds=300）。"
 
@@ -2918,10 +2919,6 @@ msgstr "账户确认"
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "完成阶段后激活用户。"
-
-#: authentik/stages/email/models.py
-msgid "Time in minutes the token sent is valid."
-msgstr "发出令牌的有效时间（单位为分钟）。"
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
