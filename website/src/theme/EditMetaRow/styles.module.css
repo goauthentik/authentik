@@ -20,13 +20,18 @@
     text-transform: none;
 }
 
+.admonitionHeader {
+    padding-bottom: 8px;
+}
+
 .admonitionContrib {
     --ifm-h5-font-size: 1rem;
-
+    --ifm-alert-background-color: var(--ifm-color-secondary-lighter);
     display: block;
+    border-left-style: none;
 
     @media (min-width: 768px) {
-        --ifm-h5-font-size: 1.5rem;
+        --ifm-h5-font-size: 1.2rem;
         --ifm-paragraph-margin-bottom: 0;
 
         p:first-child {

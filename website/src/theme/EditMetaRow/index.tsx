@@ -21,14 +21,20 @@ const EditMetaRow: React.FC<Props> = ({
 
             <Admonition
                 className={clsx(styles.admonitionContrib, className)}
-                icon={<IconNote className={styles.contribIcon} />}
-                title={
-                    <span className={styles.headerContent}>
-                        Help us improve this content
-                    </span>
-                }
-                type="info"
+                icon={null}
+                title={null}
+                type="note"
             >
+                <div className={clsx(styles.admonitionHeader)}>
+                    <strong>
+                        <Translate
+                            id="theme.common.contributor.footerHeader"
+                            description="The header for the contribution footer"
+                        >
+                            Help us improve this content
+                        </Translate>
+                    </strong>
+                </div>
                 <p>
                     <Translate
                         id="theme.common.contributor.footerDescription1"
