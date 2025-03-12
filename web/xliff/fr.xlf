@@ -5000,16 +5000,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Si activé, les paramètres globaux de connexion courriel seront utilisés et les paramètres de connexion ci-dessous seront ignorés.</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Expiration du jeton</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Temps en minutes durant lequel le jeton envoyé est valide.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Modèle</target>
@@ -9645,6 +9635,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

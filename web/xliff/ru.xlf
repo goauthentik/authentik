@@ -5001,16 +5001,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Если эта функция включена, будут использоваться глобальные настройки подключения к электронной почте, а настройки подключения, указанные ниже, будут игнорироваться.</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Срок действия токена</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Время в минутах, в течение которого отправленный токен действителен.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Шаблон</target>
@@ -9411,6 +9401,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

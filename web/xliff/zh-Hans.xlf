@@ -5001,16 +5001,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>令牌过期</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>发出令牌的有效时间（单位为分钟）。</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>模板</target>
@@ -9646,6 +9636,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

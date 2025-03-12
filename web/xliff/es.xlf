@@ -4932,16 +4932,6 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
         <target>Cuando se habilita, se utilizará la configuración global de conexión de correo electrónico y se ignorarán las configuraciones de conexión que se indican a continuación</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Caducidad del token</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>El tiempo en minutos que se envía el token es válido.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Plantilla</target>
@@ -9141,6 +9131,9 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

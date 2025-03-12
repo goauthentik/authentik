@@ -4909,16 +4909,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Wenn diese Option aktiviert ist, werden die globalen E-Mail Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen ignoriert</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Ablauf des Tokens</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Zeit in Minuten wie lange der verschickte Token gültig ist</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Schablone</target>
@@ -9049,6 +9039,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>
