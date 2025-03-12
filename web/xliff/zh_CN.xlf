@@ -9644,6 +9644,10 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Show inactive users</source>
   <target>显示不活跃的用户</target>
 </trans-unit>
+<trans-unit id="s5787e20cab57b383">
+  <source>Unknown error</source>
+  <target>未知错误</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
