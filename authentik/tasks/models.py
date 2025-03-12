@@ -1,3 +1,4 @@
+from django.utils.translation import gettext_lazy as _
 from enum import StrEnum, auto
 from uuid import uuid4
 import pgtrigger
@@ -9,6 +10,35 @@ from authentik.lib.models import SerializerModel
 from authentik.tenants.models import Tenant
 
 CHANNEL_PREFIX = "authentik.tasks"
+
+
+# class Schedule(SerializerModel):
+#     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+#
+#     name = models.TextField(editable=False)
+#     func = models.TextField(editable=False)
+#     args = models.TextField(editable=False)
+#     kwargs = models.TextField(editable=False)
+#
+#     class Meta:
+#         verbose_name = _("Schedule")
+#         verbose_name_plural = _("Schedules")
+#         indexes = (
+#             models.Index(
+#                 fields=(
+#                     "name",
+#                     "func",
+#                 ),
+#             ),
+#         )
+#
+#     def __str__(self):
+#         return self.name
+#
+#     @property
+#     def serializer(self):
+#         # TODO: fixme
+#         pass
 
 
 class ChannelIdentifier(StrEnum):
@@ -39,6 +69,8 @@ class Task(SerializerModel):
     messages = models.JSONField(blank=True, null=True, editable=False)
 
     class Meta:
+        verbose_name = _("Task")
+        verbose_name_plural = _("Tasks")
         indexes = (models.Index(fields=("state", "mtime")),)
         triggers = (
             pgtrigger.Trigger(
