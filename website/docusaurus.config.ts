@@ -92,6 +92,7 @@ const createConfig = (): Config => {
                     "json",
                     "nginx",
                     "python",
+                    "bash",
                 ],
             },
         },
