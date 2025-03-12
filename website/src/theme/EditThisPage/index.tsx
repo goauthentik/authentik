@@ -10,7 +10,7 @@ export default function EditThisPage({ editUrl }: Props): ReactNode {
             <Translate
                 id="theme.common.editThisPage"
                 values={{
-                    github: GitHub,
+                    github: "GitHub",
                 }}
                 description="The link label to edit the current page"
             >
