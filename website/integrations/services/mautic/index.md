@@ -110,50 +110,39 @@ By using an incognito/private window or other browser, you can still access the 
 
 ## Troubleshooting
 
-:::danger
+### `Uncaught PHP Exception TypeError`
 
-```
-mautic.CRITICAL: Uncaught PHP Exception TypeError: "Mautic\UserBundle\Entity\User::getUserIdentifier(): Return value must be of type string, null returned" at /app/bundles/UserBundle/Entity/User.php line 335 {"exception":"[object] (TypeError(code: 0): Mautic\\UserBundle\\Entity\\User::getUserIdentifier(): Return value must be of type string, null returned at /app/bundles/UserBundle/Entity/User.php:335)"}
-```
+> ```
+> mautic.CRITICAL: Uncaught PHP Exception TypeError: "Mautic\UserBundle\Entity\User::getUserIdentifier(): Return value must be of type string, null returned" at /app/bundles/UserBundle/Entity/User.php line 335 {"exception":"[object] (TypeError(code: 0): Mautic\\UserBundle\\Entity\\User::getUserIdentifier(): Return value must be of type string, null returned at /app/bundles/UserBundle/Entity/User.php:335)"}
+> ```
 
-:::
-This message in Mautic's **System Info > Log in** with an error 500 on its login page indicates a problem with the mapping of the attributes (See [Mautic configuration](#mautic-configuration) > Email/Username/First Name/Last Name or [Create property mappings](#create-property-mappings) > Step 2 or [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.
+This message in Mautic's **System Info > Log in** with an error 500 on its login page indicates a problem with the mapping of the attributes.
+(See [Mautic configuration](#mautic-configuration) > Email/Username/First Name/Last Name or [Create property mappings](#create-property-mappings) > Step 2 or [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.)
 
-<hr />
-
-:::danger
+### Unable to verify Signature
 
 > Unable to verify Signature
 
-:::
-
-when logging in indicates that the certificate does not match the private key.
+This error occurs when logging in, and indicates that the certificate does not match the private key.
 (E.g. when the certificate was generated without the `RSA` and only the private key was changed afterwards.)
 
-<hr />
-
-:::danger
+### Assertions
 
 > Assertions must be signed
 
-:::
-
-when logging in indicates that the `Sign assertions` and `Sign responses` settings were not checked in authentik.
+This error occurs when logging in, and indicates that the `Sign assertions` and `Sign responses` settings were not checked in authentik.
 (See [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik) > Step 2.)
 
-<hr />
-
-:::danger
+### Invalid private key
 
 > Private key is invalid. It should begin with `-----BEGIN RSA PRIVATE KEY-----` or `-----BEGIN ENCRYPTED PRIVATE KEY-----`
 
-:::
-
 The private key does not provide the header and footer which Mautic expects.
+(E.g., Mautic requires the phrases `RSA` or `ENCRYPTED` in the header and footer.)
 To fix this, a new certificate must be generated.
 Therefore, follow these steps (where the placeholder `Mautic Self-signed Certificate` is used for the new certificate):
 
-To avoid changing certificates in authentik (e.g., if they are present in PKCS#8), go to the authentik Admin interface and generate a new one:
+To avoid changing certificates in authentik, go to the authentik Admin interface and generate a new one:
 
 1. Go to **System > Certificates** and click on **Generate**. Use the following values:
     - **Common Name**: <kbd><em>Mautic Self-signed Certificate</em></kbd>
