@@ -4946,16 +4946,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>활성화하면, 전역 이메일 연결 설정이 사용되며 아래의 연결 설정은 무시됩니다.</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>토큰 유효기간</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>전송한 토큰이 유효한 시간입니다.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>템플릿</target>
@@ -9048,6 +9038,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

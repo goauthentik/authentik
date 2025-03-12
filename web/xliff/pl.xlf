@@ -5002,16 +5002,6 @@ Można tu używać tylko zasad, ponieważ dostęp jest sprawdzany przed uwierzyt
         <target>Po włączeniu będą używane globalne ustawienia połączenia poczty e-mail, a poniższe ustawienia połączenia będą ignorowane.</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Token wygasa</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Czas w minutach, w którym wysłany token jest ważny.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Szablon</target>
@@ -9378,6 +9368,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
     </body>
   </file>

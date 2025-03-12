@@ -4969,16 +4969,6 @@ doesn't pass when either or both of the selected options are equal or above the 
   <target>Ŵĥēń ēńàƀĺēď, ĝĺōƀàĺ Ēḿàĩĺ ćōńńēćţĩōń śēţţĩńĝś ŵĩĺĺ ƀē ũśēď àńď ćōńńēćţĩōń śēţţĩńĝś ƀēĺōŵ ŵĩĺĺ ƀē ĩĝńōŕēď.</target>
 
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-  <target>Ţōķēń ēxƥĩŕŷ</target>
-
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-  <target>Ţĩḿē ĩń ḿĩńũţēś ţĥē ţōķēń śēńţ ĩś vàĺĩď.</target>
-
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
   <target>Ţēḿƥĺàţē</target>
@@ -9384,5 +9374,8 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
 </trans-unit>
 </body></file></xliff>
