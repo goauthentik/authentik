@@ -59,8 +59,8 @@
             display: inline-block;
             content: "•";
             list-style-type: "•";
-            font-size: 0.75em;
-            opacity: 0.5;
+            font-size: 1em;
+            opacity: 0.75;
             margin-inline-end: var(--ifm-spacing-horizontal);
         }
     }
