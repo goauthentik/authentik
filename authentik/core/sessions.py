@@ -24,6 +24,9 @@ class OrjsonBackend(jsonpickle.JSONBackend):
         return orjson.loads(string)
 
 
+JSON = OrjsonBackend()
+
+
 class SessionStore(SessionBase):
     def __init__(self, session_key=None, last_ip=None, last_user_agent=""):
         super().__init__(session_key)
@@ -87,7 +90,7 @@ class SessionStore(SessionBase):
     def encode(self, session_dict):
         return jsonpickle.encode(
             session_dict,
-            backend=OrjsonBackend(),
+            backend=JSON,
             keys=True,
             use_base85=True,
         )
@@ -96,7 +99,7 @@ class SessionStore(SessionBase):
         try:
             return jsonpickle.decode(  # nosec
                 session_data,
-                backend=OrjsonBackend(),
+                backend=JSON,
                 keys=True,
                 on_missing="error",
             )
