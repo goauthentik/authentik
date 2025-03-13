@@ -1016,7 +1016,7 @@ class Session(ExpiringModel, AbstractBaseSession):
 
     # Remove upstream field because we're using our own ExpiringModel
     expire_date = None
-    session_data = models.BinaryField(_("session data"))
+    session_data = models.TextField(_("session data"))
 
     # Keep in sync with Session.Keys
     last_ip = models.GenericIPAddressField()

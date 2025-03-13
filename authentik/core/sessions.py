@@ -1,7 +1,9 @@
 """authentik sessions engine"""
 
-import pickle  # nosec
+from typing import Any
 
+import jsonpickle
+import orjson
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as SessionBase
 from django.core.exceptions import SuspiciousOperation
@@ -12,6 +14,14 @@ from structlog.stdlib import get_logger
 from authentik.root.middleware import ClientIPMiddleware
 
 LOGGER = get_logger()
+
+
+class OrjsonBackend(jsonpickle.JSONBackend):
+    def encode(self, obj: Any, indent=None, separators=None) -> str:
+        return orjson.dumps(obj).decode()
+
+    def decode(self, string: str) -> Any:
+        return orjson.loads(string)
 
 
 class SessionStore(SessionBase):
@@ -75,12 +85,22 @@ class SessionStore(SessionBase):
             self._session_key = None
 
     def encode(self, session_dict):
-        return pickle.dumps(session_dict, protocol=pickle.HIGHEST_PROTOCOL)
+        return jsonpickle.encode(
+            session_dict,
+            backend=OrjsonBackend(),
+            keys=True,
+            use_base85=True,
+        )
 
     def decode(self, session_data):
         try:
-            return pickle.loads(session_data)  # nosec
-        except pickle.PickleError:
+            return jsonpickle.decode(
+                session_data,
+                backend=OrjsonBackend(),
+                keys=True,
+                on_missing="error",
+            )
+        except Exception:
             # ValueError, unpickling exceptions. If any of these happen, just return an empty
             # dictionary (an empty session)
             pass
