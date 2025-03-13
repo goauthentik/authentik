@@ -51,11 +51,7 @@ export class BrandForm extends ModelForm<Brand, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                label=${msg("Domain")}
-                ?required=${true}
-                name="domain"
-            >
+        return html` <ak-form-element-horizontal label=${msg("Domain")} required name="domain">
                 <input
                     type="text"
                     value="${first(this.instance?.domain, window.location.host)}"
@@ -90,14 +86,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group>
                 <span slot="header"> ${msg("Branding settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Title")}
-                        ?required=${true}
-                        name="brandingTitle"
-                    >
+                    <ak-form-element-horizontal label=${msg("Title")} required name="brandingTitle">
                         <input
                             type="text"
                             value="${first(
@@ -111,11 +103,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                             ${msg("Branding shown in page title and several other places.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Logo")}
-                        ?required=${true}
-                        name="brandingLogo"
-                    >
+                    <ak-form-element-horizontal label=${msg("Logo")} required name="brandingLogo">
                         <input
                             type="text"
                             value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
@@ -130,7 +118,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Favicon")}
-                        ?required=${true}
+                        required
                         name="brandingFavicon"
                     >
                         <input
@@ -146,6 +134,23 @@ export class BrandForm extends ModelForm<Brand, string> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg("Icon shown in the browser tab.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Custom CSS")}
+                        required
+                        name="brandingCustomCss"
+                    >
+                        <ak-codemirror
+                            mode=${CodeMirrorMode.CSS}
+                            value="${first(
+                                this.instance?.brandingCustomCss,
+                                DefaultBrand.brandingCustomCss,
+                            )}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Custom CSS to apply to pages when this brand is active.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
