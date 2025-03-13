@@ -149,7 +149,7 @@ class Migration(migrations.Migration):
                 ),
                 ("expires", models.DateTimeField(default=None, null=True)),
                 ("expiring", models.BooleanField(default=True)),
-                ("session_data", models.TextField(verbose_name="session data")),
+                ("session_data", models.BinaryField(verbose_name="session data")),
                 ("last_ip", models.GenericIPAddressField()),
                 ("last_user_agent", models.TextField(blank=True)),
                 ("last_used", models.DateTimeField(auto_now=True)),
