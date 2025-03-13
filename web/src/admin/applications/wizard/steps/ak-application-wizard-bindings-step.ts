@@ -58,7 +58,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
     get bindingsAsColumns() {
         return this.wizard.bindings.map((binding, index) => {
             const { order, enabled, timeout } = binding;
-            const isSet = P.string.minLength(1);
+            const isSet = P.union(P.string.minLength(1), P.number);
             const policy = match(binding)
                 .with({ policy: isSet }, (v) => msg(str`Policy ${v.policyObj?.name}`))
                 .with({ group: isSet }, (v) => msg(str`Group ${v.groupObj?.name}`))

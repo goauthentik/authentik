@@ -92,6 +92,7 @@ const createConfig = (): Config => {
                     "json",
                     "nginx",
                     "python",
+                    "bash",
                 ],
             },
         },
@@ -102,6 +103,7 @@ const createConfig = (): Config => {
                     docs: {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
+                        showLastUpdateTime: false,
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
@@ -152,7 +154,7 @@ const createConfig = (): Config => {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yaml",
+                            specPath: "static/schema.yml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
