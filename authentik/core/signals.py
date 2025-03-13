@@ -4,7 +4,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.cache import cache
 from django.core.signals import Signal
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_save, post_delete
+from django.db.models.signals import post_delete, post_save, pre_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
