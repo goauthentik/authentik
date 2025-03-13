@@ -45,34 +45,36 @@ values={[
 
   <TabItem value="mac">
     To install the native dependencies on macOS, run:
-    
+
     ```sh
     $ pip install poetry poetry-plugin-shell
     $ brew install libxmlsec1 libpq krb5   # Required development libraries,
     $ brew install postgresql redis node@22 golangci-lint   # Required CLI tools
-  ```
+    ```
 
   </TabItem>
 
   <TabItem value="linux">
-  To install native dependencies on Debian or Ubuntu, run:
+    To install native dependencies on Debian or Ubuntu, run:
 
-```sh
-$ pip install poetry poetry-plugin-shell
-$ sudo apt-get install  libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
-$ sudo apt-get install postresql redis
-```
+    ```sh
+    $ pip install poetry poetry-plugin-shell
+    $ sudo apt-get install  libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
+    $ sudo apt-get install postresql redis
+    ```
 
-Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
+    Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
 
-Install golangci-lint locally [from the site
-instructions](https://golangci-lint.run/welcome/install/#other-ci).
+    Install golangci-lint locally [from the site
+    instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
   </TabItem>
 
-<TabItem value="windows">
+  <TabItem value="windows">
+
     [We request community input on running the full dev environment on Windows]
-</TabItem>
+
+  </TabItem>
 
 </Tabs>
 
