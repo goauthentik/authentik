@@ -4,34 +4,17 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.npm_version)
+NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik tests scripts lifecycle .github
-GO_SOURCES = cmd internal
-WEB_SOURCES = web/src web/packages
 DOCKER_IMAGE ?= "authentik:test"
 
 GEN_API_TS = "gen-ts-api"
 GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
 
-pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
-pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
-pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
-
-CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
-		-I .github/codespell-words.txt \
-		-S 'web/src/locales/**' \
-		-S 'website/docs/developer-docs/api/reference/**' \
-		-S '**/node_modules/**' \
-		-S '**/dist/**' \
-		$(PY_SOURCES) \
-		$(GO_SOURCES) \
-		$(WEB_SOURCES) \
-		website/src \
-		website/blog \
-		website/docs \
-		website/integrations \
-		website/src
+pg_user := $(shell poetry run python -m authentik.lib.config postgresql.user 2>/dev/null)
+pg_host := $(shell poetry run python -m authentik.lib.config postgresql.host 2>/dev/null)
+pg_name := $(shell poetry run python -m authentik.lib.config postgresql.name 2>/dev/null)
 
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
@@ -49,26 +32,26 @@ go-test:
 	go test -timeout 0 -v -race -cover ./...
 
 test: ## Run the server tests and produce a coverage report (locally)
-	coverage run manage.py test --keepdb authentik
-	coverage html
-	coverage report
+	poetry run coverage run manage.py test --keepdb authentik
+	poetry run coverage html
+	poetry run coverage report
 
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
-	black $(PY_SOURCES)
-	ruff check --fix $(PY_SOURCES)
+	poetry run black $(PY_SOURCES)
+	poetry run ruff check --fix $(PY_SOURCES)
 
 lint-codespell:  ## Reports spelling errors.
-	codespell -w $(CODESPELL_ARGS)
+	poetry run codespell -w
 
 lint: ## Lint the python and golang sources
-	bandit -r $(PY_SOURCES) -x web/node_modules -x tests/wdio/node_modules -x website/node_modules
+	poetry run bandit -c pyproject.toml -r $(PY_SOURCES)
 	golangci-lint run -v
 
 core-install:
 	poetry install
 
 migrate: ## Run the Authentik Django server's migrations
-	python -m lifecycle.migrate
+	poetry run python -m lifecycle.migrate
 
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
@@ -76,7 +59,7 @@ aws-cfn:
 	cd lifecycle/aws && npm run aws-cfn
 
 core-i18n-extract:
-	ak makemessages \
+	poetry run ak makemessages \
 		--add-location file \
 		--no-obsolete \
 		--ignore web \
@@ -107,11 +90,11 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		ak make_blueprint_schema > blueprints/schema.json
+		poetry run ak make_blueprint_schema > blueprints/schema.json
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		ak spectacular --file schema.yml
+		poetry run ak spectacular --file schema.yml
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
@@ -162,7 +145,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.4.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
 		-i /local/schema.yml \
 		-g python \
 		-o /local/${GEN_API_PY} \
@@ -190,7 +173,7 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
-	python -m scripts.generate_config
+	poetry run scripts/generate_config.py
 
 gen: gen-build gen-client-ts
 
@@ -271,21 +254,21 @@ ci--meta-debug:
 	node --version
 
 ci-black: ci--meta-debug
-	black --check $(PY_SOURCES)
+	poetry run black --check $(PY_SOURCES)
 
 ci-ruff: ci--meta-debug
-	ruff check $(PY_SOURCES)
+	poetry run ruff check $(PY_SOURCES)
 
 ci-codespell: ci--meta-debug
-	codespell $(CODESPELL_ARGS) -s
+	poetry run codespell -s
 
 ci-bandit: ci--meta-debug
-	bandit -r $(PY_SOURCES)
+	poetry run bandit -r $(PY_SOURCES)
 
 ci-pending-migrations: ci--meta-debug
-	ak makemigrations --check
+	poetry run ak makemigrations --check
 
 ci-test: ci--meta-debug
-	coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
-	coverage report
-	coverage xml
+	poetry run coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
+	poetry run coverage report
+	poetry run coverage xml

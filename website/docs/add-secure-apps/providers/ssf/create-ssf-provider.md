@@ -1,5 +1,8 @@
 ---
 title: Configure an SSF provider
+authentik_version: "2025.2.0"
+authentik_enterprise: true
+authentik_preview: true
 ---
 
 The workflow to implement an SSF provider as a [backchannel provider](../../applications/manage_apps#backchannel-providers) for an application/provider pair is as follows:

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.0 Blueprint schema",
+    "title": "authentik 2025.2.1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6661,6 +6661,16 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "compatibility_mode": {
+                    "type": "string",
+                    "enum": [
+                        "default",
+                        "aws",
+                        "slack"
+                    ],
+                    "title": "SCIM Compatibility Mode",
+                    "description": "Alter authentik behavior for vendor-specific SCIM implementations."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -6669,6 +6679,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -11364,11 +11379,10 @@
                     "title": "From address"
                 },
                 "token_expiry": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
+                    "type": "string",
+                    "minLength": 1,
                     "title": "Token expiry",
-                    "description": "Time in minutes the token sent is valid."
+                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
                 },
                 "subject": {
                     "type": "string",
@@ -14196,6 +14210,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Default group email domain"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14344,6 +14363,11 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []

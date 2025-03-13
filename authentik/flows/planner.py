@@ -76,10 +76,10 @@ class FlowPlan:
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
-    def insert_stage(self, stage: Stage, marker: StageMarker | None = None):
+    def insert_stage(self, stage: Stage, marker: StageMarker | None = None, index=1):
         """Insert stage into plan, as immediate next stage"""
-        self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
-        self.markers.insert(1, marker or StageMarker())
+        self.bindings.insert(index, FlowStageBinding(stage=stage, order=0))
+        self.markers.insert(index, marker or StageMarker())
 
     def redirect(self, destination: str):
         """Insert a redirect stage as next stage"""
