@@ -5,6 +5,7 @@ import uuid
 import pickle  # nosec
 import zlib  # nosec
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.sessions.backends.db import SessionStore as DBSessionStore
 from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
@@ -15,6 +16,24 @@ from authentik.root.middleware import ClientIPMiddleware
 
 
 SESSION_CACHE_ALIAS = "default"
+
+
+class PickleSerializer:
+    """
+    Simple wrapper around pickle to be used in signing.dumps()/loads() and
+    cache backends.
+    """
+
+    def __init__(self, protocol=None):
+        self.protocol = pickle.HIGHEST_PROTOCOL if protocol is None else protocol
+
+    def dumps(self, obj):
+        """Pickle data to be stored in redis"""
+        return pickle.dumps(obj, self.protocol)
+
+    def loads(self, data):
+        """Unpickle data to be loaded from redis"""
+        return pickle.loads(data)  # nosec
 
 
 def _migrate_session(
@@ -89,19 +108,14 @@ def migrate_database_sessions(apps, schema_editor):
 
     print("\nMigration database sessions, this might take a couple of minutes...")
     for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
-        data = django_session.session_data.rsplit(":", 1)[0].encode()
-        decompress = data[:1] == b"."
-        if decompress:
-            data = data[1:]
-        pad = b"=" * (-len(data) % 4)
-        data = base64.urlsafe_b64decode(data + pad)
-        if decompress:
-            data = zlib.decompress(data)
+        session_store = DBSessionStore()
+        session_store.serializer = PickleSerializer()
+        session_store.decode(django_session.session_data)
         _migrate_session(
             apps=apps,
             db_alias=db_alias,
             session_key=django_session.session_key,
-            session_data=pickle.loads(data),  # nosec
+            session_data=session_store.decode(django_session.session_data),  # nosec
             expires=django_session.expire_date,
         )
 
