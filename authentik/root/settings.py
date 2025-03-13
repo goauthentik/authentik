@@ -67,11 +67,13 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "authentik.tasks",
 ]
 TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "pgtrigger",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",

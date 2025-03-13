@@ -27,6 +27,7 @@ skip = [
     "./gen-go-api",
     "*.api.mdx",
     "./htmlcov",
+    "./web/custom-elements.json",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
@@ -124,6 +125,7 @@ django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
 django-pglock = "*"
+django-pgtrigger = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
@@ -132,6 +134,7 @@ django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch
 djangorestframework = "3.14.0"
 djangorestframework-guardian = "*"
 docker = "*"
+dramatiq = { version = "*", extras = ["watch"] }
 drf-orjson-renderer = "*"
 drf-spectacular = "*"
 dumb-init = "*"
@@ -169,6 +172,7 @@ service_identity = "*"
 setproctitle = "*"
 structlog = "*"
 swagger-spec-validator = "*"
+tenacity = "*"
 tenant-schemas-celery = "*"
 twilio = "*"
 ua-parser = "*"

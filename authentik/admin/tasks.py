@@ -3,6 +3,7 @@
 from django.core.cache import cache
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
+from dramatiq import actor
 from packaging.version import parse
 from requests import RequestException
 from structlog.stdlib import get_logger
@@ -33,9 +34,7 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
+@actor(throws=(DatabaseError, ProgrammingError, InternalError))
 def clear_update_notifications():
     """Clear update notifications on startup if the notification was for the version
     we're running now."""
