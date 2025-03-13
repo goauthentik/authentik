@@ -83,7 +83,7 @@ export class AKElement extends LitElement {
     }
 
     async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const brand = rootInterface()?.brand;
+        const brand = globalAK().brand;
         if (!brand) {
             return;
         }
