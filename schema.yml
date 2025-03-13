@@ -35143,7 +35143,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: integer
+          type: string
       - in: query
         name: use_global_settings
         schema:
@@ -41583,6 +41583,12 @@ components:
       - confidential
       - public
       type: string
+    CompatibilityModeEnum:
+      enum:
+      - default
+      - aws
+      - slack
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -42775,10 +42781,8 @@ components:
           format: email
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
         template:
@@ -42834,10 +42838,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -50390,10 +50393,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -52446,6 +52448,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55846,6 +55853,11 @@ components:
         token:
           type: string
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55936,6 +55948,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:

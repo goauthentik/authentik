@@ -24,6 +24,7 @@ module.exports = {
                         "services/kimai/index",
                         "services/mastodon/index",
                         "services/matrix-synapse/index",
+                        "services/mautic/index",
                         "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
@@ -142,6 +143,7 @@ module.exports = {
                         "services/sonarr/index",
                         "services/tautulli/index",
                         "services/weblate/index",
+                        "services/zipline/index",
                     ],
                 },
                 {

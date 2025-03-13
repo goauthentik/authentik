@@ -6661,6 +6661,16 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "compatibility_mode": {
+                    "type": "string",
+                    "enum": [
+                        "default",
+                        "aws",
+                        "slack"
+                    ],
+                    "title": "SCIM Compatibility Mode",
+                    "description": "Alter authentik behavior for vendor-specific SCIM implementations."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -11369,11 +11379,10 @@
                     "title": "From address"
                 },
                 "token_expiry": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
+                    "type": "string",
+                    "minLength": 1,
                     "title": "Token expiry",
-                    "description": "Time in minutes the token sent is valid."
+                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
                 },
                 "subject": {
                     "type": "string",

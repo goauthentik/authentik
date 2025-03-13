@@ -1,10 +1,12 @@
 """User client"""
 
+from django.db import transaction
+from django.utils.http import urlencode
 from pydantic import ValidationError
 
 from authentik.core.models import User
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import StopSync
+from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
@@ -55,18 +57,35 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
     def create(self, user: User):
         """Create user from scratch and create a connection object"""
         scim_user = self.to_schema(user, None)
-        response = self._request(
-            "POST",
-            "/Users",
-            json=scim_user.model_dump(
-                mode="json",
-                exclude_unset=True,
-            ),
-        )
-        scim_id = response.get("id")
-        if not scim_id or scim_id == "":
-            raise StopSync("SCIM Response with missing or invalid `id`")
-        return SCIMProviderUser.objects.create(provider=self.provider, user=user, scim_id=scim_id)
+        with transaction.atomic():
+            try:
+                response = self._request(
+                    "POST",
+                    "/Users",
+                    json=scim_user.model_dump(
+                        mode="json",
+                        exclude_unset=True,
+                    ),
+                )
+            except ObjectExistsSyncException as exc:
+                if not self._config.filter.supported:
+                    raise exc
+                users = self._request(
+                    "GET", f"/Users?{urlencode({'filter': f'userName eq {scim_user.userName}'})}"
+                )
+                users_res = users.get("Resources", [])
+                if len(users_res) < 1:
+                    raise exc
+                return SCIMProviderUser.objects.create(
+                    provider=self.provider, user=user, scim_id=users_res[0]["id"]
+                )
+            else:
+                scim_id = response.get("id")
+                if not scim_id or scim_id == "":
+                    raise StopSync("SCIM Response with missing or invalid `id`")
+                return SCIMProviderUser.objects.create(
+                    provider=self.provider, user=user, scim_id=scim_id
+                )
 
     def update(self, user: User, connection: SCIMProviderUser):
         """Update existing user"""
