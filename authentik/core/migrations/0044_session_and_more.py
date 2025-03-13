@@ -2,18 +2,15 @@
 
 import base64
 import uuid
-import pickle
+import pickle  # nosec
 import zlib  # nosec
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
-from django.core.signing import b64_decode
 from django.db import migrations, models
 import django.db.models.deletion
 from django.conf import settings
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.utils.timezone import now, timedelta
 from authentik.lib.migrations import progress_bar
-from authentik.core.sessions import JSON
-import jsonpickle
 
 
 SESSION_CACHE_ALIAS = "default"
@@ -44,9 +41,7 @@ def _migrate_session(
             pass
         else:
             args["session_data"][k] = v
-    args["session_data"] = jsonpickle.encode(
-        args["session_data"], backend=JSON, keys=True, use_base85=True
-    )
+    args["session_data"] = pickle.dumps(args["session_data"])
     session = Session.objects.using(db_alias).create(**args)
 
     old_auth_session = (
