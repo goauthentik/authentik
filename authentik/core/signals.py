@@ -4,7 +4,7 @@ from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.cache import cache
 from django.core.signals import Signal
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_save
+from django.db.models.signals import post_save, pre_save, post_delete
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
@@ -14,6 +14,7 @@ from authentik.core.models import (
     AuthenticatedSession,
     BackchannelProvider,
     ExpiringModel,
+    Session,
     User,
     default_token_duration,
 )
@@ -71,3 +72,9 @@ def expiring_model_pre_save(sender: type[Model], instance: Model, **_):
         return
     if instance.expiring and instance.expires is None:
         instance.expires = default_token_duration()
+
+
+@receiver(post_delete)
+def authenticated_session_post_delete(sender: type[Model], instance: AuthenticatedSession, **_):
+    """Ensure Session objects associated with an AuthenticatedSession are also deleted"""
+    Session.objects.filter(pk=instance.pk).delete()
