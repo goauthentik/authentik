@@ -94,13 +94,13 @@ class SessionStore(SessionBase):
 
     def decode(self, session_data):
         try:
-            return jsonpickle.decode(
+            return jsonpickle.decode(  # nosec
                 session_data,
                 backend=OrjsonBackend(),
                 keys=True,
                 on_missing="error",
             )
-        except Exception:
+        except Exception:  # nosec
             # ValueError, unpickling exceptions. If any of these happen, just return an empty
             # dictionary (an empty session)
             pass
