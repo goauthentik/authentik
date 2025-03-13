@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.utils.timezone import now, timedelta
 from authentik.lib.migrations import progress_bar
+from authentik.root.middleware import ClientIPMiddleware
 
 
 SESSION_CACHE_ALIAS = "default"
@@ -27,26 +28,33 @@ def _migrate_session(
     OldAuthenticatedSession = apps.get_model("authentik_core", "OldAuthenticatedSession")
     AuthenticatedSession = apps.get_model("authentik_core", "AuthenticatedSession")
 
+    old_auth_session = (
+        OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
+    )
+
     args = {
         "session_key": session_key,
         "expires": expires,
-        "last_ip": "255.255.255.255",
+        "last_ip": ClientIPMiddleware.default_ip,
         "last_user_agent": "",
         "session_data": {},
     }
     for k, v in session_data.items():
-        if k in ["last_ip", "last_user_agent", "last_used"]:
+        if k == "authentik/stages/user_login/last_ip":
+            args["last_ip"] = v
+        elif k in ["last_user_agent", "last_used"]:
             args[k] = v
         elif args in [SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY]:
             pass
         else:
             args["session_data"][k] = v
+    if old_auth_session:
+        args["last_user_agent"] = old_auth_session.last_user_agent
+        args["last_used"] = old_auth_session.last_used
+
     args["session_data"] = pickle.dumps(args["session_data"])
     session = Session.objects.using(db_alias).create(**args)
 
-    old_auth_session = (
-        OldAuthenticatedSession.objects.using(db_alias).filter(session_key=session_key).first()
-    )
     if old_auth_session:
         AuthenticatedSession.objects.using(db_alias).create(
             session=session,
