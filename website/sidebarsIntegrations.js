@@ -15,6 +15,11 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Device Management",
+                    items: ["services/apple/index"],
+                },
+                {
+                    type: "category",
                     label: "Chat, Communication & Collaboration",
                     items: [
                         "services/bookstack/index",
