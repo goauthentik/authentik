@@ -44,7 +44,6 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry sync
         cd web && npm ci
     - name: Generate config
       shell: uv run python {0}
