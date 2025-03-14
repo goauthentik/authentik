@@ -3892,6 +3892,7 @@ files = [
 
 [package.dependencies]
 psycopg-c = {version = "3.2.6", optional = true, markers = "implementation_name != \"pypy\" and extra == \"c\""}
+psycopg-pool = {version = "*", optional = true, markers = "extra == \"pool\""}
 typing-extensions = {version = ">=4.6", markers = "python_version < \"3.13\""}
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
@@ -3914,6 +3915,21 @@ markers = "implementation_name != \"pypy\""
 files = [
     {file = "psycopg_c-3.2.6.tar.gz", hash = "sha256:b5fd4ce70f82766a122ca5076a36c4d5818eaa9df9bf76870bc83a064ffaed3a"},
 ]
+
+[[package]]
+name = "psycopg-pool"
+version = "3.2.6"
+description = "Connection Pool for Psycopg"
+optional = false
+python-versions = ">=3.8"
+groups = ["main"]
+files = [
+    {file = "psycopg_pool-3.2.6-py3-none-any.whl", hash = "sha256:5887318a9f6af906d041a0b1dc1c60f8f0dda8340c2572b74e10907b51ed5da7"},
+    {file = "psycopg_pool-3.2.6.tar.gz", hash = "sha256:0f92a7817719517212fbfe2fd58b8c35c1850cdd2a80d36b581ba2085d9148e5"},
+]
+
+[package.dependencies]
+typing-extensions = ">=4.6"
 
 [[package]]
 name = "publication"
@@ -6117,4 +6133,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12"
-content-hash = "8a6bfd4833e415a9f4f613ab4f33e60c8332b9f5743583222cdb7190f6286216"
+content-hash = "57b3d4036092626f327526bd2a30c90ee0e348aeee546db0dee8a6681581e253"

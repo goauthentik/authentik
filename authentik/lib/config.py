@@ -356,6 +356,14 @@ def redis_url(db: int) -> str:
 def django_db_config(config: ConfigLoader | None = None) -> dict:
     if not config:
         config = CONFIG
+
+    pool_options = False
+    use_pool = config.get_bool("postgresql.use_pool", False)
+    if use_pool:
+        pool_options = config.get_dict_from_b64_json("postgresql.pool_options", True)
+        if not pool_options:
+            pool_options = True
+
     db = {
         "default": {
             "ENGINE": "authentik.root.db",
@@ -369,6 +377,7 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
                 "sslrootcert": config.get("postgresql.sslrootcert"),
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
+                "pool": pool_options,
             },
             "CONN_MAX_AGE": config.get_optional_int("postgresql.conn_max_age", 0),
             "CONN_HEALTH_CHECKS": config.get_bool("postgresql.conn_health_checks", False),
