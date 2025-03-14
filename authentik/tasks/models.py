@@ -65,8 +65,9 @@ class Task(SerializerModel):
     result = models.TextField(null=True, editable=False)
     result_ttl = models.DateTimeField(null=True, editable=False)
 
-    description = models.TextField(blank=True)
-    messages = models.JSONField(blank=True, null=True, editable=False)
+    uid = models.TextField(blank=True, editable=False)
+    description = models.TextField(blank=True, editable=False)
+    messages = models.JSONField(default=list, editable=False)
 
     class Meta:
         verbose_name = _("Task")
