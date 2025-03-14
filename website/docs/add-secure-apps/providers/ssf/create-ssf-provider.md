@@ -3,6 +3,9 @@ title: Configure an SSF provider
 authentik_version: "2025.2.0"
 authentik_enterprise: true
 authentik_preview: true
+tags:
+    - backchannel
+    - provider
 ---
 
 The workflow to implement an SSF provider as a [backchannel provider](../../applications/manage_apps#backchannel-providers) for an application/provider pair is as follows:
@@ -41,7 +44,7 @@ The workflow to implement an SSF provider as a [backchannel provider](../../appl
 
 3. Define the settings for the application:
 
-    - **Name**: define a descriptive name ofr the application.
+    - **Name**: define a descriptive name of the application.
     - **Slug**: optionally define the internal application name used in URLs.
     - **Group**: optionally select a group that you want to have access to this application.
     - **Provider**: select the OIDC provider that you created.
