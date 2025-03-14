@@ -72,8 +72,10 @@ TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "pgtrigger",
     "authentik.admin",
     "authentik.api",
+    "authentik.channels",
     "authentik.crypto",
     "authentik.flows",
     "authentik.outposts",
@@ -292,11 +294,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
-        "CONFIG": {
-            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
-            "prefix": "authentik_channels_",
-        },
+        "BACKEND": "authentik.channels.layer.PostgresChannelLayer",
     },
 }
 
