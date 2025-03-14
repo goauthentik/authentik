@@ -1611,7 +1611,7 @@ Django = ">=2.1,<5.1"
 type = "git"
 url = "https://github.com/rissson/django-tenants.git"
 reference = "authentik-fixes"
-resolved_reference = "a7f37c53f62f355a00142473ff1e3451bb794eca"
+resolved_reference = "156e53a6f5902d74b73dd9d0192fffaa2587a740"
 
 [[package]]
 name = "djangorestframework"
