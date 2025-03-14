@@ -1,8 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import {
-    CustomEmitterElement,
-    CustomListenerElement,
-} from "@goauthentik/elements/utils/eventEmitter";
+import { match } from "ts-pattern";
 
 import { msg, str } from "@lit/localize";
 import { PropertyValues, html, nothing } from "lit";
@@ -23,15 +20,13 @@ import { AkDualSelectSelectedPane } from "./components/ak-dual-select-selected-p
 import "./components/ak-pagination";
 import "./components/ak-search-bar";
 import {
-    EVENT_ADD_ALL,
-    EVENT_ADD_ONE,
-    EVENT_ADD_SELECTED,
-    EVENT_DELETE_ALL,
-    EVENT_REMOVE_ALL,
-    EVENT_REMOVE_ONE,
-    EVENT_REMOVE_SELECTED,
-} from "./constants";
-import type { BasePagination, DualSelectPair, SearchbarEvent } from "./types";
+    DualSelectChangeEvent,
+    DualSelectMoveRequestEvent,
+    DualSelectPanelSearchEvent,
+    DualSelectSearchEvent,
+    DualSelectUpdateEvent,
+} from "./events";
+import type { BasePagination, DualSelectPair } from "./types";
 
 function alphaSort([_k1, v1, s1]: DualSelectPair, [_k2, v2, s2]: DualSelectPair) {
     const [l, r] = [s1 !== undefined ? s1 : v1, s2 !== undefined ? s2 : v2];
@@ -60,7 +55,7 @@ const keyfinder =
         k === key;
 
 @customElement("ak-dual-select")
-export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKElement)) {
+export class AkDualSelect extends AKElement {
     static get styles() {
         return styles;
     }
@@ -96,21 +91,9 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         super();
         this.handleMove = this.handleMove.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
-        [
-            EVENT_ADD_ALL,
-            EVENT_ADD_SELECTED,
-            EVENT_DELETE_ALL,
-            EVENT_REMOVE_ALL,
-            EVENT_REMOVE_SELECTED,
-            EVENT_ADD_ONE,
-            EVENT_REMOVE_ONE,
-        ].forEach((eventName: string) => {
-            this.addCustomListener(eventName, (event: Event) => this.handleMove(eventName, event));
-        });
-        this.addCustomListener("ak-dual-select-move", () => {
-            this.requestUpdate();
-        });
-        this.addCustomListener("ak-search", this.handleSearch);
+        this.addEventListener(DualSelectMoveRequestEvent.eventName, this.handleMove);
+        this.addEventListener(DualSelectUpdateEvent.eventName, () => this.requestUpdate());
+        this.addEventListener(DualSelectPanelSearchEvent.eventName, this.handleSearch);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -123,47 +106,17 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         }
     }
 
-    handleMove(eventName: string, event: Event) {
-        if (!(event instanceof CustomEvent)) {
-            throw new Error(`Expected move event here, got ${eventName}`);
-        }
-
-        switch (eventName) {
-            case EVENT_ADD_SELECTED: {
-                this.addSelected();
-                break;
-            }
-            case EVENT_REMOVE_SELECTED: {
-                this.removeSelected();
-                break;
-            }
-            case EVENT_ADD_ALL: {
-                this.addAllVisible();
-                break;
-            }
-            case EVENT_REMOVE_ALL: {
-                this.removeAllVisible();
-                break;
-            }
-            case EVENT_DELETE_ALL: {
-                this.removeAll();
-                break;
-            }
-            case EVENT_ADD_ONE: {
-                this.addOne(event.detail);
-                break;
-            }
-            case EVENT_REMOVE_ONE: {
-                this.removeOne(event.detail);
-                break;
-            }
-
-            default:
-                throw new Error(
-                    `AkDualSelect.handleMove received unknown event type: ${eventName}`,
-                );
-        }
-        this.dispatchCustomEvent("ak-dual-select-change", { value: this.value });
+    handleMove(event: DualSelectMoveRequestEvent) {
+        match(event.move)
+            .with("add-all", () => this.addAllVisible())
+            .with("add-one", () => this.addOne(event.key))
+            .with("add-selected", () => this.addSelected())
+            .with("delete-all", () => this.removeAll())
+            .with("remove-all", () => this.removeAllVisible())
+            .with("remove-one", () => this.removeOne(event.key))
+            .with("remove-selected", () => this.removeSelected())
+            .exhaustive();
+        this.dispatchEvent(new DualSelectChangeEvent(this.value));
         event.stopPropagation();
     }
 
@@ -182,7 +135,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.availablePane.value!.clearMove();
     }
 
-    addOne(key: string) {
+    addOne(key?: string) {
+        if (!key) {
+            return;
+        }
         const requested = this.options.find(keyfinder(key));
         if (requested && !this.selected.find(keyfinder(requested[0]))) {
             this.selected = [...this.selected, requested];
@@ -207,7 +163,10 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    removeOne(key: string) {
+    removeOne(key?: string) {
+        if (!key) {
+            return;
+        }
         this.selected = this.selected.filter(([k]) => k !== key);
     }
 
@@ -223,18 +182,18 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    handleSearch(event: SearchbarEvent) {
-        switch (event.detail.source) {
+    handleSearch(event: DualSelectPanelSearchEvent) {
+        switch (event.source) {
             case "ak-dual-list-available-search":
-                return this.handleAvailableSearch(event.detail.value);
+                return this.handleAvailableSearch(event.filterOn);
             case "ak-dual-list-selected-search":
-                return this.handleSelectedSearch(event.detail.value);
+                return this.handleSelectedSearch(event.filterOn);
         }
         event.stopPropagation();
     }
 
     handleAvailableSearch(value: string) {
-        this.dispatchCustomEvent("ak-dual-select-search", value);
+        this.dispatchEvent(new DualSelectSearchEvent(value));
     }
 
     handleSelectedSearch(value: string) {

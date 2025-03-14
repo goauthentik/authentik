@@ -5,6 +5,7 @@ import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-controls";
 import { AkDualSelectControls } from "../components/ak-dual-select-controls";
+import { DualSelectMoveRequestEvent } from "../events";
 
 const metadata: Meta<AkDualSelectControls> = {
     title: "Elements / Dual Select / Control Panel",
@@ -59,10 +60,9 @@ const displayMessage = (result: any) => {
     target!.appendChild(doc.firstChild!);
 };
 
-window.addEventListener("ak-dual-select-add", () => displayMessage("add"));
-window.addEventListener("ak-dual-select-remove", () => displayMessage("remove"));
-window.addEventListener("ak-dual-select-add-all", () => displayMessage("add all"));
-window.addEventListener("ak-dual-select-remove-all", () => displayMessage("remove all"));
+window.addEventListener(DualSelectMoveRequestEvent.eventName, (ev: DualSelectMoveRequestEvent) =>
+    displayMessage(ev.move.toString()),
+);
 
 type Story = StoryObj;
 

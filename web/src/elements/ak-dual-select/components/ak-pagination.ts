@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -9,6 +8,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { DualSelectPaginatorNavEvent } from "../events";
 import type { BasePagination } from "../types";
 
 const styles = [
@@ -27,7 +27,7 @@ const styles = [
 ];
 
 @customElement("ak-pagination")
-export class AkPagination extends CustomEmitterElement(AKElement) {
+export class AkPagination extends AKElement {
     static get styles() {
         return styles;
     }
@@ -41,7 +41,7 @@ export class AkPagination extends CustomEmitterElement(AKElement) {
     }
 
     onClick(nav: number | undefined) {
-        this.dispatchCustomEvent("ak-pagination-nav-to", nav ?? 0);
+        this.dispatchEvent(new DualSelectPaginatorNavEvent(nav ?? 0));
     }
 
     render() {
