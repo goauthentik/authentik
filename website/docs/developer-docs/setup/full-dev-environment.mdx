@@ -9,7 +9,7 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 ## Requirements
 
 - [Python](https://www.python.org/) 3.12
-- [Poetry](https://python-poetry.org/), which is used to manage dependencies
+- [uv](https://docs.astral.sh/uv/getting-started/installation/), which is used to manage dependencies
 - [Go](https://go.dev/) 1.23 or newer
 - [Node.js](https://nodejs.org/en) 22 or newer
 - [PostgreSQL](https://www.postgresql.org/) 16 or newer
@@ -44,20 +44,20 @@ values={[
 
   <TabItem value="mac">
     To install the native dependencies on macOS, run:
-    
+
     ```sh
-    $ pip install poetry poetry-plugin-shell
+    $ pip install uv
     $ brew install libxmlsec1 libpq krb5   # Required development libraries,
     $ brew install postgresql redis node@22 golangci-lint   # Required CLI tools
-  ```
+    ```
 
-  </TabItem>
+</TabItem>
 
-  <TabItem value="linux">
-  To install native dependencies on Debian or Ubuntu, run:
+<TabItem value="linux">
+To install native dependencies on Debian or Ubuntu, run:
 
 ```sh
-$ pip install poetry poetry-plugin-shell
+$ pip install uv
 $ sudo apt-get install  libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
 $ sudo apt-get install postresql redis
 ```
@@ -80,8 +80,8 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-eval $(poetry env activate)  # Creates a python virtualenv, and activates it in a new shell
-make install   # Installs all required dependencies for Python and Javascript, including development dependencies
+make install               # Installs all required dependencies for Python and Javascript, including development dependencies
+source .venv/bin/activate  # Active the Python virtual environment
 ```
 
 2. Configure authentik to use the local databases using a local config file. To generate this file, run the following command in the same directory as your local authentik git repository:
@@ -131,7 +131,7 @@ make web   # Formats the frontend code
 Now that the backend and frontend have been setup and built, you can start authentik by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-poetry run ak server   # Starts authentik server
+ak server   # Starts authentik server
 ```
 
 And now, authentik should now be accessible at `http://localhost:9000`.

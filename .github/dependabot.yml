@@ -98,7 +98,7 @@ updates:
       prefix: "lifecycle/aws:"
     labels:
       - dependencies
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: "/"
     schedule:
       interval: daily
