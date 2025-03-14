@@ -19,21 +19,35 @@ sidebar_label: Beszel
 
 ## Preparation
 
-
 - `beszel.company` is the FQDN of the Beszel installation.
 - `authentik.company` is the FQDN of the authentik installation.
-- `Beszel` is the Name of the authentik application.
-- `beszel` is the Slug of the authentik application.
 
 :::note
+
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+
 :::
 
 ## authentik configuration
 
-Since Beszel uses PocketBase as its backend, when you integrate Beszel you can follow the exact same steps used to configure authentik as you did with PocketBase; you only need to replace the PocketBase placeholders with the placeholder FDQNs found above.
+The steps to configure authentik include creating an application and provider pair in authentik, obtaining the Client ID, Client Secret, and slug values, setting the redirect URI, and selecting a signing key.
 
-You can find the PocketBase documentation here: https://docs.goauthentik.io/integrations/services/pocketbase/.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+- **Application**: provide a descriptive name ()`Beszel`), a slug (`bezsel`), an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: OAuth2/OpenID
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and any required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://pgadmin.company/oauth2/authorize`.
+    - Select any available signing key.
+- **Configure Bindings** _(optional):_ you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user’s \***\*My applications** \*_page_.\*
+
+3. Click **Submit** to save the new application and provider.
+
+:::note
+Beszel uses PocketBase as its server backend, and when you install Beszel you automatically get Pocketbase as part of Beszel, so you do not need to separately integrate Pocketbase. You can find the PocketBase integration guide here: https://docs.goauthentik.io/integrations/services/pocketbase/.
+:::
+
 ## Test the login
 
 - Open your web browser and go to: <kbd>https://<em>beszel.company</em></kbd>.
