@@ -93,7 +93,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 5: Base python image
+# Stage 5: Download uv
+FROM ghcr.io/astral-sh/uv:0.6.6 AS uv
+# Stage 6: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.12.8-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
@@ -105,7 +107,9 @@ ENV VENV_PATH="/ak-root/.venv" \
 
 WORKDIR /ak-root/
 
-# Stage 5: Python dependencies
+COPY --from=uv /uv /uvx /bin/
+
+# Stage 7: Python dependencies
 FROM python-base AS python-deps
 
 ARG TARGETARCH
@@ -140,7 +144,7 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
-# Stage 6: Run
+# Stage 8: Run
 FROM python-base AS final-image
 
 ARG VERSION
