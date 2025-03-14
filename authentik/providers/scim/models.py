@@ -22,6 +22,7 @@ class SCIMProviderUser(SerializerModel):
     scim_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -43,6 +44,7 @@ class SCIMProviderGroup(SerializerModel):
     scim_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
