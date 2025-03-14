@@ -146,8 +146,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                     ? this.renderStatus(this.status) // Status available
                     : this.error
                       ? this.renderError(this.error) // Error state
-                      : this.renderLoading()}
-                // Loading state
+                      : this.renderLoading() /* Loading state */}
             </p>
         `;
     }
