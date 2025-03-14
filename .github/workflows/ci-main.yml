@@ -34,7 +34,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run job
-        run: poetry run make ci-${{ matrix.job }}
+        run: uv run make ci-${{ matrix.job }}
   test-migrations:
     runs-on: ubuntu-latest
     steps:
@@ -42,7 +42,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run migrations
-        run: poetry run python -m lifecycle.migrate
+        run: uv run python -m lifecycle.migrate
   test-make-seed:
     runs-on: ubuntu-latest
     steps:
@@ -69,8 +69,6 @@ jobs:
           fetch-depth: 0
       - name: checkout stable
         run: |
-          # Delete all poetry envs
-          rm -rf /home/runner/.cache/pypoetry
           # Copy current, latest config to local
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
@@ -91,15 +89,13 @@ jobs:
           git reset --hard HEAD
           git clean -d -fx .
           git checkout $GITHUB_SHA
-          # Delete previous poetry env
-          rm -rf /home/runner/.cache/pypoetry/virtualenvs/*
       - name: Setup authentik env (ensure latest deps are installed)
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
       - name: migrate to latest
         run: |
-          poetry run python -m lifecycle.migrate
+          uv run python -m lifecycle.migrate
       - name: run tests
         env:
           # Test in the main database that we just migrated from the previous stable version
@@ -108,7 +104,7 @@ jobs:
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make ci-test
+          uv run make ci-test
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
@@ -133,7 +129,7 @@ jobs:
           CI_RUN_ID: ${{ matrix.run_id }}
           CI_TOTAL_RUNS: "5"
         run: |
-          poetry run make ci-test
+          uv run make ci-test
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
         with:
@@ -156,8 +152,8 @@ jobs:
         uses: helm/kind-action@v1.12.0
       - name: run integration
         run: |
-          poetry run coverage run manage.py test tests/integration
-          poetry run coverage xml
+          uv run coverage run manage.py test tests/integration
+          uv run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
         with:
@@ -214,8 +210,8 @@ jobs:
           npm run build
       - name: run e2e
         run: |
-          poetry run coverage run manage.py test ${{ matrix.job.glob }}
-          poetry run coverage xml
+          uv run coverage run manage.py test ${{ matrix.job.glob }}
+          uv run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
         with:
