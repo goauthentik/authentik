@@ -4909,16 +4909,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Wenn diese Option aktiviert ist, werden die globalen E-Mail Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen ignoriert</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Ablauf des Tokens</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Zeit in Minuten wie lange der verschickte Token gültig ist</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Schablone</target>
@@ -9049,6 +9039,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
+</trans-unit>
+<trans-unit id="s3483d693c72e412e">
+  <source>Compatibility Mode</source>
+</trans-unit>
+<trans-unit id="se7195530fa981896">
+  <source>Default behavior.</source>
+</trans-unit>
+<trans-unit id="sfa5ba219a0991116">
+  <source>AWS</source>
+</trans-unit>
+<trans-unit id="s44e80dc905ab2ecc">
+  <source>Altered behavior for usage with Amazon Web Services.</source>
+</trans-unit>
+<trans-unit id="s2f5e2bcd583fbc27">
+  <source>Slack</source>
+</trans-unit>
+<trans-unit id="s7f40ef46b7f213ea">
+  <source>Altered behavior for usage with Slack.</source>
+</trans-unit>
+<trans-unit id="s054cb3c0a84eefe5">
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
 </trans-unit>
     </body>
   </file>

@@ -11,6 +11,7 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    CompatibilityModeEnum,
     CoreApi,
     CoreGroupsListRequest,
     Group,
@@ -61,6 +62,35 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     )}
                     inputHint="code"
                 ></ak-text-input>
+                <ak-radio-input
+                    name="compatibilityMode"
+                    label=${msg("Compatibility Mode")}
+                    .value=${provider?.compatibilityMode}
+                    required
+                    .options=${[
+                        {
+                            label: msg("Default"),
+                            value: CompatibilityModeEnum.Default,
+                            default: true,
+                            description: html`${msg("Default behavior.")}`,
+                        },
+                        {
+                            label: msg("AWS"),
+                            value: CompatibilityModeEnum.Aws,
+                            description: html`${msg(
+                                "Altered behavior for usage with Amazon Web Services.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Slack"),
+                            value: CompatibilityModeEnum.Slack,
+                            description: html`${msg("Altered behavior for usage with Slack.")}`,
+                        },
+                    ]}
+                    help=${msg(
+                        "Alter authentik's behavior for vendor-specific SCIM implementations.",
+                    )}
+                ></ak-radio-input>
                 <ak-form-element-horizontal name="dryRun">
                     <label class="pf-c-switch">
                         <input
