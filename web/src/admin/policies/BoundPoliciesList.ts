@@ -1,6 +1,7 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/policies/PolicyBindingForm";
 import { PolicyBindingNotice } from "@goauthentik/admin/policies/PolicyBindingForm";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import "@goauthentik/admin/policies/PolicyWizard";
 import {
     PolicyBindingCheckTarget,
@@ -28,6 +29,9 @@ import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
+
+    @property()
+    policyEngineMode: string = "";
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
@@ -235,6 +239,23 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
                 </button>
             </ak-forms-modal> `;
+    }
+
+    renderPolicyEngineMode(): TemplateResult {
+        const policyEngineMode = policyEngineModes.find(
+            (pem) => pem.value === this.policyEngineMode,
+        );
+        if (policyEngineMode === undefined) {
+            return html``;
+        }
+        return html`<div class="pf-c-content pf-u-pl-xl">
+            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}.`)}
+            ${policyEngineMode.description}
+        </div>`;
+    }
+
+    renderToolbarContainer(): TemplateResult {
+        return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }
 
