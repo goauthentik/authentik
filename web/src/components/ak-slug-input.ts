@@ -1,4 +1,4 @@
-import { convertToSlug } from "@goauthentik/common/utils";
+import { convertToSlug } from "@goauthentik/common/utils.js";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";

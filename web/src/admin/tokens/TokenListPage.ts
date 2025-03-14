@@ -1,8 +1,8 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/tokens/TokenForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { intentToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { intentToLabel } from "@goauthentik/common/labels.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";

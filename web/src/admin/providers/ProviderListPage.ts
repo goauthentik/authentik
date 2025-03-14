@@ -10,7 +10,7 @@ import "@goauthentik/admin/providers/radius/RadiusProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/admin/providers/ssf/SSFProviderFormPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";

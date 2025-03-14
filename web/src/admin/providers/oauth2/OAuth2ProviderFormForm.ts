@@ -4,7 +4,7 @@ import {
     IRedirectURIInput,
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";

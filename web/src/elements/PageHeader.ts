@@ -2,11 +2,11 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { currentInterface } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
+} from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { currentInterface } from "@goauthentik/common/sentry.js";
+import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config.js";
+import { me } from "@goauthentik/common/users.js";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";

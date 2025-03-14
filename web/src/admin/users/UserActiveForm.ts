@@ -1,4 +1,4 @@
-import { MessageLevel } from "@goauthentik/common/messages";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";

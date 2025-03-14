@@ -4,7 +4,7 @@ import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementPage";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/elements/AppIcon";

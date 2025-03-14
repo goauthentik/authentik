@@ -11,12 +11,12 @@ import {
     requestRecoveryLink,
 } from "@goauthentik/admin/users/UserListPage";
 import "@goauthentik/admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { PFSize } from "@goauthentik/common/enums.js";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { userTypeToLabel } from "@goauthentik/common/labels.js";
+import { me } from "@goauthentik/common/users.js";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/DescriptionList";
 import {
     type DescriptionPair,

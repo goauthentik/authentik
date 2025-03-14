@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 

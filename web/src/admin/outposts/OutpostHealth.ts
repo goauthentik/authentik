@@ -1,4 +1,4 @@
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { getRelativeTime } from "@goauthentik/common/utils.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";

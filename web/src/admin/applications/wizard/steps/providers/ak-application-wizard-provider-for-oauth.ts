@@ -1,6 +1,6 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { renderForm } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormForm.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

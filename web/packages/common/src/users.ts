@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
 
 import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 

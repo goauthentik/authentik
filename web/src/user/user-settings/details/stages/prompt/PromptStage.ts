@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "@goauthentik/common/global.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 

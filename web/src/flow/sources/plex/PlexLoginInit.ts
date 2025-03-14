@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 

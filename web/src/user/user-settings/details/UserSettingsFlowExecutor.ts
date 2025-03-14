@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
+import { refreshMe } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";

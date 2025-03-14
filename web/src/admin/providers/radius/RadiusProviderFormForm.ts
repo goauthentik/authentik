@@ -1,6 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
