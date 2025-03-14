@@ -3,8 +3,13 @@
     "tasks": [
         {
             "label": "authentik/core: make",
-            "command": "poetry",
-            "args": ["run", "make", "lint-fix", "lint"],
+            "command": "uv",
+            "args": [
+                "run",
+                "make",
+                "lint-fix",
+                "lint"
+            ],
             "presentation": {
                 "panel": "new"
             },
@@ -12,8 +17,12 @@
         },
         {
             "label": "authentik/core: run",
-            "command": "poetry",
-            "args": ["run", "ak", "server"],
+            "command": "uv",
+            "args": [
+                "run",
+                "ak",
+                "server"
+            ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -23,13 +32,17 @@
         {
             "label": "authentik/web: make",
             "command": "make",
-            "args": ["web"],
+            "args": [
+                "web"
+            ],
             "group": "build"
         },
         {
             "label": "authentik/web: watch",
             "command": "make",
-            "args": ["web-watch"],
+            "args": [
+                "web-watch"
+            ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -39,19 +52,26 @@
         {
             "label": "authentik: install",
             "command": "make",
-            "args": ["install", "-j4"],
+            "args": [
+                "install",
+                "-j4"
+            ],
             "group": "build"
         },
         {
             "label": "authentik/website: make",
             "command": "make",
-            "args": ["website"],
+            "args": [
+                "website"
+            ],
             "group": "build"
         },
         {
             "label": "authentik/website: watch",
             "command": "make",
-            "args": ["website-watch"],
+            "args": [
+                "website-watch"
+            ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
@@ -60,8 +80,12 @@
         },
         {
             "label": "authentik/api: generate",
-            "command": "poetry",
-            "args": ["run", "make", "gen"],
+            "command": "uv",
+            "args": [
+                "run",
+                "make",
+                "gen"
+            ],
             "group": "build"
         }
     ]
