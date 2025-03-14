@@ -70,20 +70,16 @@ jobs:
       - name: checkout stable
         run: |
           # Copy current, latest config to local
-          # Temporarly comment the .github backup while migrating to uv
           cp authentik/lib/default.yml local.env.yml
-          # cp -R .github ..
+          cp -R .github ..
           cp -R scripts ..
           git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
-          # rm -rf .github/ scripts/
-          # mv ../.github ../scripts .
-          rm -rf scripts/
-          mv ../scripts .
+          rm -rf .github/ scripts/
+          mv ../.github ../scripts .
       - name: Setup authentik env (stable)
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
-        continue-on-error: true
       - name: run migrations to stable
         run: poetry run python -m lifecycle.migrate
       - name: checkout current code
