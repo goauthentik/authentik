@@ -124,7 +124,7 @@ RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/v
     # Required for installing pip packages
     apt-get install -y --no-install-recommends \
     # Build essentials
-    build-essential pkg-config libffi-dev \
+    build-essential pkg-config libffi-dev git \
     # cryptography
     curl \
     # libxml
