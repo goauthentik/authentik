@@ -1,6 +1,7 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
@@ -19,6 +20,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -80,20 +82,59 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["metaIcon"];
-            if (icon || this.clearIcon) {
-                await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                    slug: app.slug,
-                    file: icon,
-                    clear: this.clearIcon,
-                });
+            if (this.clearIcon) {
+                try {
+                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                        slug: app.slug,
+                        clear: true,
+                    });
+                } catch (e: any) {
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: e.response?.data?.error || "Failed to clear icon",
+                    });
+                }
+            } else if (icon) {
+                try {
+                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                        slug: app.slug,
+                        file: icon,
+                    });
+                } catch (e: any) {
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: e.response?.data?.error || "Failed to upload icon",
+                    });
+                }
             }
         } else {
-            await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                slug: app.slug,
-                filePathRequest: {
-                    url: data.metaIcon || "",
-                },
-            });
+            if (this.clearIcon) {
+                try {
+                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
+                        slug: app.slug,
+                        clear: true,
+                    });
+                } catch (e: any) {
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: e.response?.data?.error || "Failed to clear icon",
+                    });
+                }
+            } else if (data.metaIcon) {
+                try {
+                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
+                        slug: app.slug,
+                        filePathRequest: {
+                            url: data.metaIcon,
+                        },
+                    });
+                } catch (e: any) {
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: e.response?.data?.error || "Failed to set icon URL",
+                    });
+                }
+            }
         }
         return app;
     }
@@ -113,11 +154,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     handleClearIcon(ev: Event) {
-        ev.stopPropagation();
-        if (!(ev instanceof InputEvent) || !ev.target) {
-            return;
-        }
-        this.clearIcon = !!(ev.target as HTMLInputElement).checked;
+        const target = ev.target as HTMLInputElement;
+        this.clearIcon = target.checked;
     }
 
     renderForm(): TemplateResult {

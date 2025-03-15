@@ -203,6 +203,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PARSER_CLASSES": [
         "drf_orjson_renderer.parsers.ORJSONParser",
+        "rest_framework.parsers.MultiPartParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
@@ -406,6 +407,8 @@ STORAGES = {
 
 
 # Media files
+TEST = False
+
 if CONFIG.get("storage.media.backend", "file") == "s3":
     STORAGES["default"] = {
         "BACKEND": "authentik.root.storages.S3Storage",
@@ -430,6 +433,17 @@ if CONFIG.get("storage.media.backend", "file") == "s3":
             "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
         },
     }
+    if TEST:
+        STORAGES["default"]["OPTIONS"].update(
+            {
+                "access_key": "test-key",
+                "secret_key": "test-secret",
+                "bucket_name": "test-bucket",
+                "region_name": "us-east-1",
+                "endpoint_url": "http://localhost:8020",
+                "use_ssl": False,
+            }
+        )
 # Fallback on file storage backend
 else:
     STORAGES["default"] = {
@@ -444,7 +458,6 @@ else:
     MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
     MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
 
-TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 structlog_configure()
