@@ -5,8 +5,8 @@ import {
     GroupMatchingModeToLabel,
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config.js";
+import { first } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import {

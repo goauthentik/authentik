@@ -2,8 +2,8 @@ import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm"
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";

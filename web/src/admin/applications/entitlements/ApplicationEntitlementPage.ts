@@ -2,8 +2,8 @@ import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm"
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";

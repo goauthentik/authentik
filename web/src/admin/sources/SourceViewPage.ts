@@ -4,7 +4,7 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
 import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
 import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
 import "@goauthentik/admin/sources/scim/SCIMSourceViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";

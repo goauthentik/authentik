@@ -1,4 +1,4 @@
-import { groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez";

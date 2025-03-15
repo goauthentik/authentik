@@ -1,5 +1,5 @@
-import { AndNext } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
+import { AndNext } from "@goauthentik/common/api/config.js";
+import { globalAK } from "@goauthentik/common/global.js";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

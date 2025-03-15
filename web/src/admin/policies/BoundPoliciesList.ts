@@ -7,7 +7,7 @@ import {
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
 import "@goauthentik/admin/users/UserForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/Tabs";

@@ -4,10 +4,10 @@ import { ROUTES } from "@goauthentik/admin/Routes";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-} from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { me } from "@goauthentik/common/users";
-import { WebsocketClient } from "@goauthentik/common/ws";
+} from "@goauthentik/common/constants.js";
+import { configureSentry } from "@goauthentik/common/sentry.js";
+import { me } from "@goauthentik/common/users.js";
+import { WebsocketClient } from "@goauthentik/common/ws.js";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -123,7 +123,7 @@ export class AdminInterface extends AuthenticatedInterface {
         super.connectedCallback();
 
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
+            const { ESBuildObserver } = await import("@goauthentik/common/client.js");
 
             new ESBuildObserver(process.env.WATCHER_URL);
         }

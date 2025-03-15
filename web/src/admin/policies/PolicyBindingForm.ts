@@ -2,8 +2,8 @@ import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { first, groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";

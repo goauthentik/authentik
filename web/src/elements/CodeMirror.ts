@@ -14,7 +14,7 @@ import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 

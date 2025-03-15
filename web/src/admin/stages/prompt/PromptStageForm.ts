@@ -1,7 +1,7 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import "@goauthentik/admin/stages/prompt/PromptForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { PFSize } from "@goauthentik/common/enums.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";

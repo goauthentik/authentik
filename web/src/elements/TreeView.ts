@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
 

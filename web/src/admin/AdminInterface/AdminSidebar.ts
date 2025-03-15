@@ -1,5 +1,5 @@
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
+import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants.js";
+import { me } from "@goauthentik/common/users.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,

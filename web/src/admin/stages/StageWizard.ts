@@ -22,7 +22,7 @@ import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";

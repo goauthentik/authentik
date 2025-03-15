@@ -1,0 +1,12 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "outDir": "./dist/",
+        "types": ["webauthn"],
+        "paths": {
+            "@goauthentik/elements/*": ["./src/*"],
+            "@goauthentik/locales/*": ["src/locales/*"]
+        }
+    }
+}

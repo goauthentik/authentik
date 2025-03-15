@@ -1,6 +1,6 @@
-import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 
 import { msg } from "@lit/localize";
 

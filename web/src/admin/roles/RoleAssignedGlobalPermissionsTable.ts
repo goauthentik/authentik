@@ -1,6 +1,6 @@
 import "@goauthentik/admin/roles/RolePermissionForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { groupBy } from "@goauthentik/common/utils.js";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 

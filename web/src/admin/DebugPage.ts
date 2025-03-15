@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { MessageLevel } from "@goauthentik/common/messages";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { MessageLevel } from "@goauthentik/common/messages.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";

@@ -1,5 +1,5 @@
 ///<reference types="@hcaptcha/types"/>
-import { renderStatic } from "@goauthentik/common/purify";
+import { renderStatic } from "@goauthentik/common/purify.js";
 import "@goauthentik/elements/EmptyState";
 import { akEmptyState } from "@goauthentik/elements/EmptyState";
 import { bound } from "@goauthentik/elements/decorators/bound";

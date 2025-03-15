@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIError } from "@goauthentik/common/errors";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_REFRESH } from "@goauthentik/common/constants.js";
+import { parseAPIError } from "@goauthentik/common/errors.js";
 import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
 import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";

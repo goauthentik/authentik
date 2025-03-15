@@ -19,7 +19,7 @@
         "sourceMap": true,
         "target": "esnext",
         "module": "esnext",
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "lib": [
             "ES5",
             "ES2015",
