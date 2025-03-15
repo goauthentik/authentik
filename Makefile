@@ -230,8 +230,8 @@ website-build:
 	cd website && npm run build
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-    [ -f ./website/static/schema.yml ] && rm ./website/static/schema.yml
-    cp ./schema.yml ./website/static/schema.yml
+	[ -f ./website/static/schema.yml ] && rm ./website/static/schema.yml
+	cp ./schema.yml ./website/static/schema.yml
 	cd website && npm run watch
 
 #########################
