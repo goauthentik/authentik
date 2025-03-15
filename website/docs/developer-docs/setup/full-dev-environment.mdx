@@ -10,10 +10,9 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 - [Python](https://www.python.org/) 3.12
 - [Poetry](https://python-poetry.org/), which is used to manage dependencies
-    - Poetry 2.0 or higher also requires the [poetry-plugin-shell](https://github.com/python-poetry/poetry-plugin-shell) extension.
 - [Go](https://go.dev/) 1.23 or newer
-- [Node.js](https://nodejs.org/en) 21 or newer
-- [PostgreSQL](https://www.postgresql.org/) 14 or newer
+- [Node.js](https://nodejs.org/en) 22 or newer
+- [PostgreSQL](https://www.postgresql.org/) 16 or newer
 - [Redis](https://redis.io/) (any recent version will do)
 - [Docker](https://www.docker.com/) (Community Edition will do)
 
@@ -81,7 +80,7 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 1. Create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your local authentik git repository:
 
 ```shell
-poetry shell   # Creates a python virtualenv, and activates it in a new shell
+eval $(poetry env activate)  # Creates a python virtualenv, and activates it in a new shell
 make install   # Installs all required dependencies for Python and Javascript, including development dependencies
 ```
 
@@ -132,7 +131,7 @@ make web   # Formats the frontend code
 Now that the backend and frontend have been setup and built, you can start authentik by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-ak server   # Starts authentik server
+poetry run ak server   # Starts authentik server
 ```
 
 And now, authentik should now be accessible at `http://localhost:9000`.

@@ -32,6 +32,8 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - name: Generate API
+        run: make gen-client-ts
       - name: run extract
         run: |
           poetry run make i18n-extract

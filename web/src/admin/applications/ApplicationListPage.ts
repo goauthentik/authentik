@@ -20,7 +20,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint";
 
@@ -171,6 +171,29 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <ak-application-form slot="form"> </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>`;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html` ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${msg("Successfully cleared application cache")}
+                errorMessage=${msg("Failed to delete application cache")}
+                action=${msg("Clear cache")}
+                .onConfirm=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${msg("Clear Application cache")} </span>
+                <p slot="body">
+                    ${msg(
+                        "Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.",
+                    )}
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${msg("Clear cache")}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
 }
 

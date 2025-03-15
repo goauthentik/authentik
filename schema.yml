@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.0
+  version: 2025.2.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -35146,7 +35146,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: integer
+          type: string
       - in: query
         name: use_global_settings
         schema:
@@ -41582,6 +41582,12 @@ components:
       - confidential
       - public
       type: string
+    CompatibilityModeEnum:
+      enum:
+      - default
+      - aws
+      - slack
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -42774,10 +42780,8 @@ components:
           format: email
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
         template:
@@ -42833,10 +42837,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -44154,6 +44157,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -44317,6 +44324,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -46397,6 +46408,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -46557,6 +46572,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - client_id
       - client_secret
@@ -50373,10 +50392,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -50679,6 +50697,10 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
       description: OAuth Group-Source connection Serializer
@@ -51260,6 +51282,10 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -52421,12 +52447,21 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -55817,12 +55852,21 @@ components:
         token:
           type: string
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -55903,12 +55947,21 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
+        dry_run:
+          type: boolean
+          description: When enabled, provider will not modify or create objects in
+            the remote system.
       required:
       - name
       - token
@@ -57105,6 +57158,9 @@ components:
         sync_object_id:
           type: string
           minLength: 1
+        override_dry_run:
+          type: boolean
+          default: false
       required:
       - sync_object_id
       - sync_object_model
