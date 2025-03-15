@@ -4448,6 +4448,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: branding_default_flow_background
+        schema:
+          type: string
+      - in: query
         name: branding_favicon
         schema:
           type: string
@@ -41140,6 +41144,8 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_default_flow_background:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41197,6 +41203,9 @@ components:
           type: string
           minLength: 1
         branding_favicon:
+          type: string
+          minLength: 1
+        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
@@ -50118,6 +50127,9 @@ components:
           type: string
           minLength: 1
         branding_favicon:
+          type: string
+          minLength: 1
+        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
