@@ -156,11 +156,25 @@ func (c *Config) UpdateRedisURL() {
 		redisURL.Path = fmt.Sprintf("%d", redisDB)
 		c.Redis.URL = redisURL.String()
 	} else {
+		// Only allow inline replacement for redis env variables
+		redisPrefix := "AUTHENTIK_REDIS__"
 		var redisEnvKeys []string
+
 		redisVal := reflect.ValueOf(c.Redis)
-		for i := range redisVal.Type().NumField() {
-			if envTag, ok := redisVal.Type().Field(i).Tag.Lookup("env"); ok {
-				redisEnvKeys = append(redisEnvKeys, envTag)
+		redisType := redisVal.Type()
+
+		for i := 0; i < redisType.NumField(); i++ {
+			field := redisType.Field(i)
+			if envTag, ok := field.Tag.Lookup("env"); ok {
+				// Parse the env tag to extract the key
+				parts := strings.Split(envTag, ",")
+				key := strings.TrimSpace(parts[0])
+
+				// Check if the key contains "overwrite" and handle appropriately
+				if key != "" && key != "overwrite" {
+					fullKey := redisPrefix + key
+					redisEnvKeys = append(redisEnvKeys, fullKey)
+				}
 			}
 		}
 		encodedGetEnv := func(key string) string {
