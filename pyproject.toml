@@ -194,6 +194,7 @@ constructs = "*"
 coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 drf-jsonschema-serializer = "*"
+fakeredis = "*"
 freezegun = "*"
 importlib-metadata = "*"
 k5test = "*"

@@ -5,6 +5,10 @@ from secrets import token_urlsafe
 from tempfile import gettempdir
 from unittest.mock import MagicMock, patch
 
+import pytest
+import fakeredis
+from redis import exceptions
+
 from celery.app.amqp import Connection as AmqpConnection
 from django.core.cache import BaseCache
 from django.test import TestCase
@@ -139,7 +143,8 @@ class TestCustomQoS(TestCase):
         self.custom_qos.restore_by_tag(mock_tag, client=mock_client)
         mock_client.pipeline.assert_called_once()
         mock_loads.assert_called_once()
-        
+
+
 class TestCustomClusterChannel(TestCase):
     def setUp(self):
         self.conn = MagicMock()
@@ -197,3 +202,106 @@ class TestCustomClusterChannel(TestCase):
         self.channel.client = MagicMock()
         self.channel._poll_error('BRPOP', MagicMock())
         self.channel.client.parse_response.assert_called_once()
+
+
+class TestRedisSentinelHA(TestCase):
+    """Unit tests for HA Redis Sentinel scenarios in custom middleware."""
+
+    def test_sentinel_master_failover(self):
+        """Simulate a Sentinel-managed master failover."""
+        fake_master = fakeredis.FakeRedis()
+        fake_replica = fakeredis.FakeRedis()
+        fake_master.set("before_failover", "123")
+        fake_replica.set("before_failover", "123")
+        client = fake_master
+        self.assertEqual(client.get("before_failover"), b"123")
+
+        # Simulate master failure by patching get() to raise a ConnectionError
+        with patch.object(fake_master, 'get', side_effect=exceptions.ConnectionError("Master down")):
+            with pytest.raises(exceptions.ConnectionError):
+                client.get("before_failover")
+            # Sentinel promotes replica as new master
+            client = fake_replica
+        self.assertEqual(client.get("before_failover"), b"123")
+        client.set("after_failover", "456")
+        self.assertIsNone(fake_master.get("after_failover"))
+        self.assertEqual(fake_replica.get("after_failover"), b"456")
+
+    def test_sentinel_connection_interruption_recovery(self):
+        """Simulate transient network timeouts and recovery in a Sentinel setup."""
+        fake_master = fakeredis.FakeRedis()
+        client = fake_master
+        fake_master.set("key", "value")
+        calls = {'attempt': 0}
+
+        def flaky_get(key):
+            calls['attempt'] += 1
+            if calls['attempt'] == 1:
+                raise exceptions.TimeoutError("Connection timed out")
+            return fake_master.get(key)
+
+        with patch.object(fake_master, 'get', side_effect=flaky_get):
+            with pytest.raises(exceptions.TimeoutError):
+                client.get("key")
+            self.assertEqual(client.get("key"), b"value")
+        self.assertEqual(fake_master.get("key"), b"value")
+
+    def test_sentinel_write_during_failover(self):
+        """Test handling of writes during Sentinel failover that encounter ReadOnlyError."""
+        fake_master = fakeredis.FakeRedis()
+        fake_replica = fakeredis.FakeRedis()
+        client = fake_master
+        fake_master.set("some_key", "1")
+        with patch.object(fake_master, 'set', side_effect=exceptions.ReadOnlyError("READONLY You can't write against a read only replica.")):
+            with pytest.raises(exceptions.ReadOnlyError):
+                client.set("some_key", "2")
+            client = fake_replica
+            client.set("some_key", "2")
+        self.assertEqual(fake_replica.get("some_key"), b"2")
+        self.assertNotEqual(fake_master.get("some_key"), b"2")
+
+
+class TestRedisClusterHA(TestCase):
+    """Unit tests for HA Redis Cluster scenarios in custom middleware."""
+
+    def test_cluster_master_failover(self):
+        """Simulate a master node failover in a Redis Cluster shard."""
+        fake_master = fakeredis.FakeRedis()
+        fake_replica = fakeredis.FakeRedis()
+        fake_master.set("cluster_key", "init")
+        fake_replica.set("cluster_key", "init")
+        client = fake_master
+        self.assertEqual(client.get("cluster_key"), b"init")
+
+        # Simulate master failure by patching get() to raise ConnectionError
+        with patch.object(fake_master, 'get', side_effect=exceptions.ConnectionError("Node down")):
+            with pytest.raises(exceptions.ConnectionError):
+                client.get("cluster_key")
+            client = fake_replica
+        self.assertEqual(client.get("cluster_key"), b"init")
+        client.set("cluster_new", "12345")
+        self.assertIsNone(fake_master.get("cluster_new"))
+        self.assertEqual(fake_replica.get("cluster_new"), b"12345")
+
+    def test_cluster_network_partition_recovery(self):
+        """Simulate a cluster-wide outage and subsequent recovery."""
+        fake_node = fakeredis.FakeRedis()
+        client = fake_node
+        with patch.object(fake_node, 'set', side_effect=exceptions.ClusterDownError("CLUSTERDOWN The cluster is down")):
+            with pytest.raises(exceptions.ClusterDownError):
+                client.set("key", "value")
+        client.set("key", "value")
+        self.assertEqual(client.get("key"), b"value")
+
+    def test_cluster_operation_during_failover(self):
+        """Test that operations during cluster failover raise errors and succeed after recovery."""
+        fake_master = fakeredis.FakeRedis()
+        fake_replica = fakeredis.FakeRedis()
+        client = fake_master
+        fake_master.set("failover_key", "A")
+        fake_replica.set("failover_key", "A")
+        with patch.object(fake_master, 'get', side_effect=exceptions.ClusterDownError("CLUSTERDOWN Failover in progress")):
+            with pytest.raises(exceptions.ClusterDownError):
+                client.get("failover_key")
+            client = fake_replica
+        self.assertEqual(client.get("failover_key"), b"A")

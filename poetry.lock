@@ -1818,6 +1818,29 @@ dnspython = ">=2.0.0"
 idna = ">=2.0.0"
 
 [[package]]
+name = "fakeredis"
+version = "2.27.0"
+description = "Python implementation of redis API, can be used for testing purposes."
+optional = false
+python-versions = "<4.0,>=3.7"
+groups = ["dev"]
+files = [
+    {file = "fakeredis-2.27.0-py3-none-any.whl", hash = "sha256:f4b6e0fa4193acbf00d81dac71ff5cc34fe7d7c12f1560b036f98578a103d5c3"},
+    {file = "fakeredis-2.27.0.tar.gz", hash = "sha256:7b7584ec104392592297f46864a82cb7339a23e254ee885bf5ae07cfc64fbce7"},
+]
+
+[package.dependencies]
+redis = {version = ">=4.3", markers = "python_full_version > \"3.8.0\""}
+sortedcontainers = ">=2,<3"
+
+[package.extras]
+bf = ["pyprobables (>=0.6,<0.7)"]
+cf = ["pyprobables (>=0.6,<0.7)"]
+json = ["jsonpath-ng (>=1.6,<2.0)"]
+lua = ["lupa (>=2.1,<3.0)"]
+probabilistic = ["pyprobables (>=0.6,<0.7)"]
+
+[[package]]
 name = "fido2"
 version = "1.2.0"
 description = "FIDO2/WebAuthn library for implementing clients and servers."
@@ -4718,7 +4741,7 @@ version = "5.2.1"
 description = "Python client for Redis database and key-value store"
 optional = false
 python-versions = ">=3.8"
-groups = ["main"]
+groups = ["main", "dev"]
 files = [
     {file = "redis-5.2.1-py3-none-any.whl", hash = "sha256:ee7e1056b9aea0f04c6c2ed59452947f34c4940ee025f5dd83e6a6418b6989e4"},
     {file = "redis-5.2.1.tar.gz", hash = "sha256:16f2e22dff21d5125e8481515e386711a34cbec50f0e44413dd7d9c060a54e0f"},
@@ -6336,4 +6359,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12"
-content-hash = "3b4727a95c7b7304eaa5dd46d035f4456dc59e45de90d299ca1156a26ef3d872"
+content-hash = "ace248b79ad04da68d4095a1ae5e64724a4de3eacafe0039aa13809ab06af89a"
