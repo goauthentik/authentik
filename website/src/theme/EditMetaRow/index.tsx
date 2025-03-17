@@ -21,31 +21,30 @@ const EditMetaRow: React.FC<Props> = ({
 
             <Admonition
                 className={clsx(styles.admonitionContrib, className)}
-                icon={<IconNote className={styles.contribIcon} />}
-                title={
-                    <span className={styles.headerContent}>
-                        Help us improve this content
-                    </span>
-                }
-                type="info"
+                icon={null}
+                title={null}
+                type="note"
             >
+                <div className={clsx(styles.admonitionHeader)}>
+                    <strong>
+                        <Translate
+                            id="theme.common.contributor.footerHeader"
+                            description="The header for the contribution footer"
+                        >
+                            Help us improve this content
+                        </Translate>
+                    </strong>
+                </div>
                 <p>
                     <Translate
                         id="theme.common.contributor.footerDescription1"
-                        description="The initial description for the contribution footer"
+                        description="The description for the contribution footer"
                     >
-                        Documentation for authentik is made possible by
-                        contributors like you!
-                    </Translate>
-                </p>
-
-                <p>
-                    <Translate
-                        id="theme.common.contributor.footerDescription2"
-                        description="The initial description for the contribution footer"
-                    >
-                        You can help us improve this page, or let us know about
-                        an issue by opening a pull request on GitHub.
+                        We welcome your knowledge and expertise. If you see
+                        areas of the documentation that you can improve (fix a
+                        typo, correct a technical detail, add additional
+                        context, etc.) we would really appreciate your
+                        contribution.
                     </Translate>
                 </p>
 
@@ -75,7 +74,7 @@ const EditMetaRow: React.FC<Props> = ({
 
                             <li>
                                 <a
-                                    href="https://github.com/goauthentik/authentik/issues/new/choose"
+                                    href="https://github.com/goauthentik/authentik/issues/new"
                                     target="_blank"
                                     rel="noreferrer noopener"
                                 >

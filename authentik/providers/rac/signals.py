@@ -4,8 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.contrib.auth.signals import user_logged_out
 from django.core.cache import cache
-from django.db.models import Model
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_delete, post_save, pre_delete
 from django.dispatch import receiver
 from django.http import HttpRequest
 
@@ -46,12 +45,8 @@ def pre_delete_connection_token_disconnect(sender, instance: ConnectionToken, **
     )
 
 
-@receiver(post_save, sender=Endpoint)
-def post_save_endpoint(sender: type[Model], instance, created: bool, **_):
-    """Clear user's endpoint cache upon endpoint creation"""
-    if not created:  # pragma: no cover
-        return
-
-    # Delete user endpoint cache
+@receiver([post_save, post_delete], sender=Endpoint)
+def post_save_post_delete_endpoint(**_):
+    """Clear user's endpoint cache upon endpoint creation or deletion"""
     keys = cache.keys(user_endpoint_cache_key("*"))
     cache.delete_many(keys)

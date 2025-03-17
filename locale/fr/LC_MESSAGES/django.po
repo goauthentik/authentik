@@ -9,9 +9,9 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
-# Charles Leclerc, 2024
 # nerdinator <florian.dupret@gmail.com>, 2024
 # Tina, 2024
+# Charles Leclerc, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-02 00:10+0000\n"
+"POT-Creation-Date: 2025-03-13 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -2098,12 +2098,34 @@ msgid "SAML Providers from Metadata"
 msgstr "Fournisseurs SAML depuis métadonnées"
 
 #: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "Par défaut"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "URL de base pour les requêtes SCIM, se terminant généralement par /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Jeton d'authentification"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr "Mode de compatibilité SCIM"
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
+"Change le comportement d'authentik en fonction des spécificités "
+"d'implémentations des fournisseurs SCIM."
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -2797,6 +2819,7 @@ msgstr ""
 "les paramètres de connexion ci-dessous seront ignorés."
 
 #: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
 "Durée de validité du jeton envoyé (Format : hours=3,minutes=17,seconds=300)."
@@ -3167,10 +3190,6 @@ msgstr "Confirmation du Compte"
 #: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "Activer les utilisateurs à la complétion de l'étape."
-
-#: authentik/stages/email/models.py
-msgid "Time in minutes the token sent is valid."
-msgstr "Temps en minutes durant lequel le jeton envoyé est valide."
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"

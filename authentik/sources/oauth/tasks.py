@@ -28,7 +28,7 @@ def update_well_known_jwks(self: SystemTask):
             LOGGER.warning("Failed to update well_known", source=source, exc=exc, text=text)
             messages.append(f"Failed to update OIDC configuration for {source.slug}")
             continue
-        config = well_known_config.json()
+        config: dict = well_known_config.json()
         try:
             dirty = False
             source_attr_key = (
@@ -40,7 +40,9 @@ def update_well_known_jwks(self: SystemTask):
             for source_attr, config_key in source_attr_key:
                 # Check if we're actually changing anything to only
                 # save when something has changed
-                if getattr(source, source_attr, "") != config[config_key]:
+                if config_key not in config:
+                    continue
+                if getattr(source, source_attr, "") != config.get(config_key, ""):
                     dirty = True
                 setattr(source, source_attr, config[config_key])
         except (IndexError, KeyError) as exc:
