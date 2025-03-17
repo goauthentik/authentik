@@ -124,7 +124,7 @@ jobs:
           - redis
           - redis-sentinel
           - redis-cluster
-		run_id: [1, 2, 3, 4, 5]
+		    run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env

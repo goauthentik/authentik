@@ -6,12 +6,12 @@ services:
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
       POSTGRES_DB: authentik
     ports:
-      - "5432:5432"
+      - 5432:5432
     restart: always
   redis:
     image: docker.io/library/redis:7
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: always
     profiles:
       - redis
@@ -21,7 +21,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_REPLICATION_MODE: master
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: always
     profiles:
       - redis-sentinel
@@ -36,7 +36,7 @@ services:
       REDIS_MASTER_PORT_NUMBER: 6379
       REDIS_MASTER_PASSWORD: bitnami
     ports:
-      - "6380:6379"
+      - 6380:6379
     restart: always
     profiles:
       - redis-sentinel
@@ -47,7 +47,7 @@ services:
     environment:
       REDIS_MASTER_HOST: redis-master
     ports:
-      - "26379:26379"
+      - 26379:26379
     restart: always
     profiles:
       - redis-sentinel
@@ -57,7 +57,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
-      - "6379:6379"
+      - 6379:6379
     restart: always
     profiles:
       - redis-cluster
@@ -67,7 +67,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
-      - "6380:6379"
+      - 6380:6379
     restart: always
     profiles:
       - redis-cluster
@@ -77,7 +77,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
-      - "6381:6379"
+      - 6381:6379
     restart: always
     profiles:
       - redis-cluster
@@ -87,7 +87,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
-      - "6382:6379"
+      - 6382:6379
     restart: always
     profiles:
       - redis-cluster
@@ -97,7 +97,7 @@ services:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
-      - "6383:6379"
+      - 6383:6379
     restart: always
     profiles:
       - redis-cluster
@@ -116,7 +116,7 @@ services:
       REDIS_CLUSTER_REPLICAS: 1
       REDIS_CLUSTER_CREATOR: "yes"
     ports:
-      - "6384:6379"
+      - 6384:6379
     restart: always
     profiles:
       - redis-cluster
