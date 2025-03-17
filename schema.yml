@@ -22682,11 +22682,6 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: name
         schema:
           type: string
@@ -52488,10 +52483,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        filter_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Filter groups used to define sync-scope for users and groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -55909,10 +55906,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        filter_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Filter groups used to define sync-scope for users and groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -56007,10 +56006,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        filter_groups:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Filter groups used to define sync-scope for users and groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in

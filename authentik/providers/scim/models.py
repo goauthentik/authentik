@@ -72,8 +72,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     exclude_users_service_account = models.BooleanField(default=False)
 
-    filter_group = models.ForeignKey(
-        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
+    filter_groups = models.ManyToManyField(
+        "authentik_core.group",
+        default=None,
+        blank=True,
+        help_text=_("Filter groups used to define sync-scope for users and groups."),
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
@@ -121,12 +124,16 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
                 )
-            if self.filter_group:
-                base = base.filter(ak_groups__in=[self.filter_group])
+            if self.filter_groups.exists():
+                base = base.filter(ak_groups__in=self.filter_groups.all())
             return base.order_by("pk")
         if type == Group:
-            # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            # Get a queryset of all roups with consistent ordering
+            # according to the provider's settings
+            base = Group.objects.all()
+            if self.filter_groups.exists():
+                base = base.filter(pk__in=self.filter_groups.all())
+            return base.order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
     @property

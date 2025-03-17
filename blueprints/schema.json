@@ -6680,10 +6680,15 @@
                     "type": "boolean",
                     "title": "Exclude users service account"
                 },
-                "filter_group": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Filter group"
+                "filter_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Filter groups used to define sync-scope for users and groups."
+                    },
+                    "title": "Filter groups",
+                    "description": "Filter groups used to define sync-scope for users and groups."
                 },
                 "dry_run": {
                     "type": "boolean",
