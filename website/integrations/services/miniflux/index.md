@@ -8,13 +8,13 @@ support_level: community
 
 > Miniflux is a minimalist and opinionated RSS feed reader
 >
-> -- [https://github.com/miniflux/v2](https://github.com/miniflux/v2)
+> -- https://github.com/miniflux/v2
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
-- `miniflux.company` is the FQDN of the miniflux installation.
+- `miniflux.company` is the FQDN of the Miniflux installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -22,29 +22,42 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+### Create an application and provider in authentik
 
-Create an **OAuth2/OpenID Application and Provider** under **Applications** -> **Applications** via the **Create with Provider** button, using the following settings:
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-- Name: `miniflux`
-- Redirect URIs/Origins (RegEx): `https://miniflux.company/oauth2/oidc/callback`
+- **Application**: provide a descriptive name (e.g., `Miniflux`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 
-Everything else is up to you, just make sure to grab the client ID and the client secret!
+- **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
+
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **Redirect URI**:
+        - Strict: `https://miniflux.company/oauth2/oidc/callback`
+        
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Miniflux configuration
 
-Add the following to your miniflux environment `.env` file. Make sure to edit with the client ID, client secret and server URL from your Authentik instance.
+Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
 ```sh
 OAUTH2_PROVIDER=oidc
-OAUTH2_CLIENT_ID=<Client ID from Authentik>
-OAUTH2_CLIENT_SECRET=<Client Secret from Authentik>
+OAUTH2_CLIENT_ID=<Client ID from authentik>
+OAUTH2_CLIENT_SECRET=<Client Secret from authentik>
 OAUTH2_REDIRECT_URL=https://miniflux.company/oauth2/oidc/callback
-OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company/application/o/miniflux/
+OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company/application/o/<application slug>/
 OAUTH2_USER_CREATION=1
 ```
 
-Restart the Miniflux docker service for the changes to take effect.
+:::note
+The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC_DISCOVERY_ENDPOINT`
+:::
+
+Restart the Miniflux service for the changes to take effect.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Miniflux, logout of Miniflux and you should see a "Sign in with OpenID Connect" button on the login page. Click on this button and you should be redirected to the Authentik login page.
+To confirm that authentik is properly configured with Miniflux, log out of Miniflux, locate the "Sign in with OpenID Connect" button on the login page, click on it, and ensure you can successfully log in using Single Sign-On.
