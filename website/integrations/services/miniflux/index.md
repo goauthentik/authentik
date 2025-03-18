@@ -33,7 +33,7 @@ This documentation lists only the settings that you need to change from their de
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Redirect URI**:
-        - Strict: `https://miniflux.company/oauth2/oidc/callback`
+        - Strict: <kbd>`https://<em>miniflux.company</em>/oauth2/oidc/callback`</kbd>
         
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -43,14 +43,14 @@ This documentation lists only the settings that you need to change from their de
 
 Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
-```sh
+<kbd>
 OAUTH2_PROVIDER=oidc
-OAUTH2_CLIENT_ID=<Client ID from authentik>
-OAUTH2_CLIENT_SECRET=<Client Secret from authentik>
-OAUTH2_REDIRECT_URL=https://miniflux.company/oauth2/oidc/callback
-OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company/application/o/<application slug>/
+OAUTH2_CLIENT_ID=<em><Client ID from authentik></em>
+OAUTH2_CLIENT_SECRET=<em><Client Secret from authentik></em>
+OAUTH2_REDIRECT_URL=https://<em>miniflux.company</em>/oauth2/oidc/callback
+OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://<em>authentik.company</em>/application/o/<em><application slug></em>/
 OAUTH2_USER_CREATION=1
-```
+</kbd>
 
 :::note
 The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC_DISCOVERY_ENDPOINT`
