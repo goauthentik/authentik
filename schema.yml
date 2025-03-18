@@ -26043,7 +26043,7 @@ paths:
           description: ''
     delete:
       operationId: sources_all_destroy
-      description: Source Viewset
+      description: Prevent deletion of built-in sources
       parameters:
       - in: path
         name: slug
