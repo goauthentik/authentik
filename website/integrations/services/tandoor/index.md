@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `tandoor.company` is the FQDN of the tandoor installation.
+- `Tandoor.company` is the FQDN of the tandoor installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -22,26 +22,33 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+### Create an application and provider in authentik
 
-Create an **OAuth2/OpenID Application and Provider** under **Applications** -> **Applications** via the **Create with Provider** button, using the following settings:
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-- Name: `tandoor`
-- Redirect URIs/Origins (RegEx): `https://tandoor.company/accounts/oidc/authentik/login/callback/`
+- **Application**: provide a descriptive name (e.g., `Tandoor`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 
-Everything else is up to you, just make sure to grab the client ID and the client secret!
+- **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
+
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - **Redirect URI**:
+        - Strict: `https://Tandoor.company/accounts/oidc/authentik/login/callback/`
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Tandoor configuration
 
 Add the following environment variables to your tandoor configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
 ```sh
-# Authentik OAuth2/OpenID configuration
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
 SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}
 '
 ```
 
-Restart the Tandoor docker service for the changes to take effect.
+Restart the Tandoor service for the changes to take effect.
 
 ## Configuration verification
 
