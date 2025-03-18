@@ -55897,7 +55897,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
@@ -55984,7 +55987,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
       - provider
       - scim_id
