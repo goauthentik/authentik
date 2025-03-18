@@ -45,4 +45,4 @@ Restart the Tandoor docker service for the changes to take effect.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Tandoor, log out of Tandoor and you should see a "Sign in with Authentik" button on the Tandoor login page. Click on this button and you should be redirected to the Authentik login screen.
+To confirm that authentik is properly configured with Tandoor, log out of Tandoor, locate the "Sign in with authentik" button on the login page, click on it, and ensure you can successfully log in using Single Sign-On.
