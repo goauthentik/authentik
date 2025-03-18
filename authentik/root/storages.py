@@ -49,19 +49,33 @@ def _validate_svg_content(content: str) -> bool:
         bool: True if content is valid SVG, False otherwise
     """
     try:
-        # Validate basic SVG structure
-        # Must have an SVG root element with proper closing tag
-        has_valid_start = content.startswith("<?xml") or content.startswith("<svg")
+        # Basic check for SVG element presence
         has_svg_element = "<svg" in content and "</svg>" in content
+        if not has_svg_element:
+            LOGGER.warning("Missing SVG element or closing tag")
+            return False
 
-        # Basic check for well-formed XML structure
-        ElementTree.fromstring(content.encode())
-        return has_valid_start and has_svg_element
-    except ElementTree.ParseError:
-        LOGGER.warning("Invalid SVG XML structure")
+        # Try to parse as XML to validate structure
+        tree = ElementTree.fromstring(content.encode())
+
+        # Validate that the root element or a child is an SVG element
+        if tree.tag.lower().endswith("svg"):
+            return True
+
+        for child in tree:
+            if child.tag.lower().endswith("svg"):
+                return True
+
+        LOGGER.warning("SVG element not found in XML structure")
+        return False
+    except ElementTree.ParseError as e:
+        LOGGER.warning("Invalid SVG XML structure", error=str(e))
         return False
     except ValueError as e:
         LOGGER.warning("Invalid SVG content", error=str(e))
+        return False
+    except Exception as e:
+        LOGGER.warning("Unexpected error validating SVG", error=str(e))
         return False
 
 
@@ -74,7 +88,10 @@ def _validate_ico_content(content: bytes) -> bool:
     Returns:
         bool: True if content is valid ICO, False otherwise
     """
-    return content == b"\x00\x00\x01\x00"
+    # ICO files should start with the magic number 0x00 0x00 0x01 0x00
+    # but we don't need to check the exact content - just the header
+    ICO_HEADER_SIZE = 4
+    return len(content) >= ICO_HEADER_SIZE and content.startswith(b"\x00\x00\x01\x00")
 
 
 def _validate_pillow_image(file: UploadedFile, ext: str, name: str = "") -> bool:

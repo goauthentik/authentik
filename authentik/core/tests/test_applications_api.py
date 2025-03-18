@@ -86,8 +86,8 @@ class TestApplicationsAPI(APITransactionTestCase):
 
     def test_set_icon(self):
         """Test set_icon and cleanup"""
-        # Create a test image file with a simple name
-        image = Image.new("RGB", (1, 1), color="red")
+        # Create a test image file with a valid image
+        image = Image.new("RGB", (100, 100), color="red")
         img_io = io.BytesIO()
         image.save(img_io, format="PNG")
         img_io.seek(0)
@@ -110,7 +110,11 @@ class TestApplicationsAPI(APITransactionTestCase):
             data=encode_multipart(BOUNDARY, {"file": file}),
             content_type=MULTIPART_CONTENT,
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.status_code,
+            200,
+            msg=f"Unexpected status code: {response.status_code}, Response: {response.content}",
+        )
 
         # Verify icon was set correctly
         app_raw = self.client.get(
@@ -126,7 +130,7 @@ class TestApplicationsAPI(APITransactionTestCase):
         self.assertEqual(self.allowed.meta_icon.read(), file.read())
 
         # Test icon replacement
-        new_image = Image.new("RGB", (1, 1), color="blue")
+        new_image = Image.new("RGB", (100, 100), color="blue")
         new_img_io = io.BytesIO()
         new_image.save(new_img_io, format="PNG")
         new_img_io.seek(0)
@@ -146,7 +150,11 @@ class TestApplicationsAPI(APITransactionTestCase):
             data=encode_multipart(BOUNDARY, {"file": new_file}),
             content_type=MULTIPART_CONTENT,
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.status_code,
+            200,
+            msg=f"Unexpected status code: {response.status_code}, Response: {response.content}",
+        )
 
         # Verify new icon was set and old one was cleaned up
         self.allowed.refresh_from_db()
