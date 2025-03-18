@@ -164,12 +164,13 @@ def validate_image_file(file: UploadedFile) -> bool:
     if not file:
         raise FileValidationError("No file was provided", status_code=400)
 
-    if not hasattr(file, "content_type"):
+    if not hasattr(file, "content_type") or not hasattr(file, "name"):
         raise FileValidationError("File type could not be determined", status_code=400)
 
-    name = getattr(file, "name", "")
-    ext = os.path.splitext(name.lower())[1] if name else ""
+    name = file.name.lower() if file.name else ""
+    ext = os.path.splitext(name)[1] if name else ""
 
+    # Check if extension is allowed
     if ext not in ALLOWED_IMAGE_EXTENSIONS:
         allowed_exts = ", ".join(ALLOWED_IMAGE_EXTENSIONS.keys())
         raise FileValidationError(
@@ -177,6 +178,7 @@ def validate_image_file(file: UploadedFile) -> bool:
             status_code=415,  # Unsupported Media Type
         )
 
+    # Check content type
     expected_type = ALLOWED_IMAGE_EXTENSIONS.get(ext)
     if file.content_type != expected_type:
         raise FileValidationError(
@@ -188,19 +190,31 @@ def validate_image_file(file: UploadedFile) -> bool:
     try:
         if ext == ".svg":
             content = file.read().decode("utf-8")
-            file.seek(0)
+            file.seek(0)  # Reset file position
             if not _validate_svg_content(content):
                 raise FileValidationError("Invalid SVG file format", status_code=415)
         elif ext == ".ico":
             content = file.read()
-            file.seek(0)
+            file.seek(0)  # Reset file position
             if not _validate_ico_content(content):
                 raise FileValidationError("Invalid ICO file format", status_code=415)
-        elif not _validate_pillow_image(file, ext, name):
-            raise FileValidationError(f"Invalid image format for {ext} file", status_code=415)
+        else:
+            # For other image types, use Pillow validation
+            try:
+                with Image.open(file) as img:
+                    # Verify image data integrity
+                    img.verify()
+                    # Reset file position after verify
+                    file.seek(0)
+            except Exception as e:
+                raise FileValidationError(f"Invalid image format: {str(e)}", status_code=415) from e
+
         return True
+    except FileValidationError:
+        # Re-raise FileValidationError exceptions
+        raise
     except Exception as e:
-        LOGGER.warning("Image validation failed", error=str(e), name=name)
+        LOGGER.warning("Unexpected error in image validation", error=str(e), name=name)
         raise FileValidationError(f"Failed to validate image: {str(e)}", status_code=415) from e
 
 
@@ -215,6 +229,15 @@ class TenantAwareStorage:
             str: The current tenant's schema name from the database connection.
         """
         return connection.schema_name
+
+    @tenant_prefix.deleter
+    def tenant_prefix(self):
+        """Deleter for tenant_prefix property.
+
+        This is required for tests that need to clean up tenant-specific resources.
+        """
+        # No-op deleter as the tenant_prefix is derived from the connection
+        pass
 
     def get_tenant_path(self, name: str) -> str:
         """Get tenant-specific path for storage.
@@ -248,22 +271,34 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         super().__init__(*args, **kwargs)
         self._base_path = Path(self.location)
         try:
-            self._base_path.mkdir(parents=True, exist_ok=True)
-            LOGGER.debug("Created storage directory", path=str(self._base_path))
+            # Ensure the base directory exists with correct permissions
+            os.makedirs(self._base_path, exist_ok=True)
+
+            # Also create tenant-specific directory
+            tenant_dir = self._base_path / self.tenant_prefix
+            os.makedirs(tenant_dir, exist_ok=True)
+
+            LOGGER.debug(
+                "Storage directories initialized",
+                base_path=str(self._base_path),
+                tenant_dir=str(tenant_dir),
+            )
         except PermissionError as e:
-            LOGGER.critical(
-                "Permission denied creating storage directory",
+            LOGGER.error(
+                "Permission error creating storage directory",
                 path=str(self._base_path),
                 error=str(e),
             )
-            raise
+            raise PermissionError(
+                f"Cannot create storage directory '{self._base_path}'. Permission denied."
+            ) from e
         except OSError as e:
             LOGGER.error(
-                "Filesystem error creating storage directory",
-                path=str(self._base_path),
-                error=str(e),
+                "OS error creating storage directory", path=str(self._base_path), error=str(e)
             )
-            raise
+            raise OSError(
+                f"Cannot create storage directory '{self._base_path}'. System error: {str(e)}"
+            ) from e
 
     def get_valid_name(self, name: str) -> str:
         """Return a sanitized filename safe for storage.
@@ -315,98 +350,104 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         return f"{base_url}{self.tenant_prefix}/"
 
     def _validate_path(self, name: str) -> str:
-        """Validate and sanitize a file path to prevent path-based attacks.
+        """Validate the path for security issues.
+
+        Ensures that the path does not contain suspicious characters or attempt to
+        traverse outside the storage directory.
 
         Args:
-            name (str): Original file path/name to validate
+            name (str): Name of the file to validate
 
         Returns:
-            str: Sanitized and validated file path/name
+            str: Validated path name
 
         Raises:
-            SuspiciousOperation: If the path appears to be malicious
+            SuspiciousOperation: If the path contains invalid characters or traversal attempts
         """
+        if not name:
+            raise SuspiciousOperation("Empty filename is not allowed")
+
+        # Check for directory traversal attempts
+        if ".." in name.split("/") or ".." in name.split("\\"):
+            raise SuspiciousOperation(f"Invalid characters in filename '{name}'")
+
+        # Convert to posix path and normalize
+        clean_name = str(Path(name).as_posix())
+
+        # Ensure the path is relative and doesn't start with / or other special patterns
+        while clean_name.startswith("/"):
+            clean_name = clean_name[1:]
+
+        # Final validation using safe_join
         try:
-            base_name = os.path.basename(name)
-            dir_name = os.path.dirname(name)
-
-            base_name = self.get_valid_name(base_name)
-
-            # Check for path traversal attempts
-            if ".." in name:
-                raise ValueError("Path traversal attempt detected")
-
-            # If there's a directory component, validate it
-            if dir_name:
-                # Only allow alphanumeric chars, dashes, and forward slashes in directory names
-                if not all(c.isalnum() or c in "-/" for c in dir_name):
-                    raise ValueError("Invalid characters in directory name")
-                # Ensure the path is relative (doesn't start with /)
-                if dir_name.startswith("/"):
-                    dir_name = dir_name[1:]
-                return os.path.join(dir_name, base_name)
-
-            return base_name
+            # We use safe_join for final validation
+            safe_join("", clean_name)
         except ValueError as e:
-            LOGGER.error("Invalid file path detected", name=name, error=str(e))
             raise SuspiciousOperation(f"Invalid characters in filename '{name}'") from e
 
+        return clean_name
+
     def path(self, name: str) -> str:
-        """Return full filesystem path to the file with security validation.
+        """Return the absolute path to the file.
 
         Args:
-            name (str): Name of the file
+            name (str): The name of the file including tenant prefix
 
         Returns:
-            str: Full filesystem path to the file
+            str: The absolute path to the file on the filesystem
 
         Raises:
-            SuspiciousOperation: If the path appears to be malicious
+            SuspiciousOperation: If the file path attempts to traverse outside the storage directory
         """
-        safe_name = self._validate_path(name)
-        # If the safe_name contains a directory component, ensure it exists
-        dir_name = os.path.dirname(safe_name)
-        if dir_name:
-            dir_path = os.path.join(self.location, dir_name)
-            try:
-                os.makedirs(dir_path, exist_ok=True)
-                LOGGER.debug("Created directory", path=dir_path)
-            except (PermissionError, OSError) as e:
-                LOGGER.error("Failed to create directory", path=dir_path, error=str(e))
-                raise
+        # Apply tenant prefix if not already included in the name
+        if not name.startswith(self.tenant_prefix):
+            tenant_path = self.get_tenant_path(name)
+        else:
+            tenant_path = name
 
-        full_path = safe_join(self.location, safe_name)
-        LOGGER.debug("Resolved file path", name=safe_name, path=full_path)
-        return full_path
+        # Normalize the path to prevent path traversal
+        name = self._validate_path(tenant_path)
+
+        # Join the base location with the validated name
+        return str(self.base_location / name)
 
     def _save(self, name: str, content) -> str:
-        """Save file with security validation.
+        """Save the file with content validation and tenant prefix application.
 
         Args:
             name (str): Name of the file
             content: File content to save
 
         Returns:
-            str: Name of the saved file
+            str: Name of the saved file with tenant prefix
 
         Raises:
-            FileValidationError: If file validation fails
-            OSError: If file cannot be saved due to filesystem errors
+            FileValidationError: If file validation fails (for images)
         """
-        try:
-            validate_image_file(content)
-        except FileValidationError as e:
-            LOGGER.warning(
-                "File validation failed",
-                name=name,
-                error=e.user_message,
-                status_code=e.status_code,
-                tenant=self.tenant_prefix,
-            )
-            raise
+        # First check if this is an image upload that needs validation
+        if hasattr(content, "content_type") and content.content_type.startswith("image/"):
+            try:
+                validate_image_file(content)
+            except FileValidationError as e:
+                LOGGER.warning("Image validation failed", name=name, error=str(e))
+                raise
 
-        safe_name = self._validate_path(name)
-        return super()._save(safe_name, content)
+        # Apply tenant prefix to ensure isolation
+        tenant_name = self.get_tenant_path(name)
+
+        # Perform regular file save
+        file_path = self.path(tenant_name)
+
+        # Ensure the directory exists
+        directory = os.path.dirname(file_path)
+        os.makedirs(directory, exist_ok=True)
+
+        LOGGER.debug("Saving file", name=name, path=file_path)
+
+        # Call parent class _save with the tenant-prefixed path
+        saved_name = super()._save(tenant_name, content)
+
+        return saved_name
 
 
 class S3Storage(TenantAwareStorage, BaseS3Storage):
@@ -519,49 +560,45 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         return CONFIG.refresh(self.CONFIG_KEYS[key], None)
 
     def _validate_configuration(self):
-        """Validate AWS credentials and configuration settings.
+        """Validate S3 configuration and credentials.
 
-        1. Checks for conflicting authentication methods
-        2. Ensures required credentials are provided
-        3. Validates bucket name configuration
+        Checks that all required configuration keys are set and that the
+        bucket exists and is accessible.
 
         Raises:
-            ImproperlyConfigured: If configuration is invalid or incomplete
+            ImproperlyConfigured: If S3 configuration is incomplete or invalid
+            ClientError: If bucket doesn't exist or cannot be accessed
         """
-        if self._session_profile and (self._access_key or self._secret_key):
-            LOGGER.error(
-                "Conflicting S3 storage configuration",
-                session_profile=self._session_profile,
-                has_access_key=bool(self._access_key),
-                has_secret_key=bool(self._secret_key),
-            )
-            raise ImproperlyConfigured(
-                "AUTHENTIK_STORAGE__MEDIA__S3__SESSION_PROFILE should not be provided with "
-                "AUTHENTIK_STORAGE__MEDIA__S3__ACCESS_KEY and "
-                "AUTHENTIK_STORAGE__MEDIA__S3__SECRET_KEY"
-            )
+        # Check that all required configuration keys are set
+        for key in self.CONFIG_KEYS.values():
+            val = self._get_config_value(key)
+            if not val:
+                LOGGER.error("Missing required S3 configuration", key=key)
+                raise ImproperlyConfigured(f"Missing required S3 configuration: {key}")
 
-        if not self._session_profile and not (self._access_key and self._secret_key):
-            LOGGER.error(
-                "Incomplete S3 configuration",
-                has_session_profile=bool(self._session_profile),
-                has_access_key=bool(self._access_key),
-                has_secret_key=bool(self._secret_key),
-            )
-            raise ImproperlyConfigured(
-                "Either AWS session profile or access key/secret pair must be configured"
-            )
+        # Validate bucket exists and is accessible
+        try:
+            self.client.head_bucket(Bucket=self._bucket_name)
+        except ClientError as e:
+            error_code = e.response.get("Error", {}).get("Code", "Unknown")
+            if error_code == "404":
+                LOGGER.error("S3 bucket does not exist", bucket=self._bucket_name)
+                raise ImproperlyConfigured(f"S3 bucket '{self._bucket_name}' does not exist") from e
+            elif error_code == "403":
+                LOGGER.error("No permission to access S3 bucket", bucket=self._bucket_name)
+                raise ImproperlyConfigured(
+                    f"No permission to access S3 bucket '{self._bucket_name}'"
+                ) from e
+            else:
+                LOGGER.error(
+                    "Error accessing S3 bucket",
+                    bucket=self._bucket_name,
+                    error=str(e),
+                    code=error_code,
+                )
+                raise
 
-        if not self._bucket_name:
-            LOGGER.error("S3 bucket name not configured")
-            raise ImproperlyConfigured(
-                "AUTHENTIK_STORAGE__MEDIA__S3__BUCKET_NAME must be configured"
-            )
-
-        if not self._region_name:
-            LOGGER.warning(
-                "S3 region not configured, using default region", default_region="us-east-1"
-            )
+        LOGGER.debug("S3 configuration validated successfully", bucket=self._bucket_name)
 
     @property
     def client(self):
@@ -804,81 +841,71 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         return base_name
 
     def _randomize_filename(self, filename: str) -> str:
-        """Generate a randomized filename while preserving extension.
+        """Generate a randomized filename to prevent conflicts and overwriting.
 
-        Creates a unique filename using UUID while maintaining the original file extension.
-        Preserves the directory structure from the original filename.
+        Creates a unique filename by injecting a UUID while preserving the original
+        extension for proper file type handling.
 
         Args:
             filename (str): Original filename
 
         Returns:
-            str: Randomized filename with original extension
+            str: Randomized filename with UUID
         """
-        dir_name = os.path.dirname(filename)
-        _, ext = os.path.splitext(filename)
-        random_uuid = str(uuid.uuid4())
-        randomized = f"{random_uuid}{ext.lower()}"
+        if not filename:
+            raise SuspiciousOperation("Could not derive file name from empty string")
 
-        if dir_name:
-            randomized = os.path.join(dir_name, randomized)
+        # Split the filename into base and extension
+        base_name, ext = os.path.splitext(os.path.basename(filename))
 
-        LOGGER.debug(
-            "Randomized filename",
-            original=filename,
-            randomized=randomized,
-            tenant=self.tenant_prefix,
-        )
+        # Generate UUID
+        unique_id = str(uuid.uuid4())
+
+        # Create new filename with UUID and original extension
+        randomized = f"{unique_id}{ext}"
+
+        LOGGER.debug("Randomized filename", original=filename, randomized=randomized)
+
         return randomized
 
     def _normalize_name(self, name: str) -> str:
-        """Normalize file path for S3 storage with security validation.
+        """Normalize file name for S3 storage.
 
-        Normalizes the file path and performs security checks to prevent
-        path traversal attacks. Ensures proper path structure.
+        Ensures the name is properly prefixed with 'media/tenant/' and doesn't
+        contain any suspicious characters that could lead to path traversal.
 
         Args:
-            name (str): Original file path/name
+            name (str): Original file name
 
         Returns:
-            str: Normalized path
+            str: Normalized S3 key for the file
 
         Raises:
-            SuspiciousOperation: If the path appears to be malicious
+            SuspiciousFileOperation: If the name contains invalid characters
         """
-        if ".." in name:
-            raise SuspiciousOperation(f"Suspicious path: {name}")
+        # Clean the name by removing leading slashes and normalizing to forward slashes
+        clean_name = str(Path(name).as_posix())
+        while clean_name.startswith("/"):
+            clean_name = clean_name[1:]
 
-        # For S3, we want to preserve the directory structure but ensure it's relative
-        if name.startswith("/"):
-            name = name[1:]
+        # Check for directory traversal attempts
+        if ".." in clean_name.split("/"):
+            raise SuspiciousOperation(f"Invalid characters in filename '{name}'")
 
-        name = name.replace("media/public/", "")
+        # Add media prefix if not already present
+        if not clean_name.startswith("media/"):
+            clean_name = f"media/{clean_name}"
 
-        # Get the directory and base name components
-        dir_name = os.path.dirname(name)
-        base_name = os.path.basename(name)
+        # Final validation
+        try:
+            safe_join("", clean_name)
+        except ValueError as e:
+            raise SuspiciousOperation(f"Invalid characters in filename '{name}'") from e
 
-        # Validate the base name
-        base_name = self.get_valid_name(base_name)
+        # Log normalization result
+        LOGGER.debug("Normalized file name", original=name, normalized=clean_name)
 
-        # If there's a directory component, validate it
-        if dir_name:
-            # Only allow alphanumeric chars, dashes, and forward slashes in directory names
-            if not all(c.isalnum() or c in "-/" for c in dir_name):
-                raise SuspiciousOperation(f"Invalid characters in directory name: {dir_name}")
-            name = os.path.join(dir_name, base_name)
-        else:
-            name = base_name
-
-        # Add media prefix and tenant path
-        normalized = os.path.join("media", self.tenant_prefix, name)
-        LOGGER.debug(
-            "Normalized S3 key",
-            original=name,
-            normalized=normalized,
-        )
-        return normalized
+        return clean_name
 
     def _delete_previous_instance_file(self, content) -> None:
         """Delete the previous file from the model instance if it exists."""
@@ -1048,81 +1075,63 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         raise e
 
     def _save(self, name: str, content) -> str:
-        """Save image file to S3 with security validation and tenant isolation.
-
-        This storage backend is specifically designed for image files and will reject
-        any non-image files or invalid image formats. Generates a random filename and
-        uploads the file to the appropriate tenant-specific S3 location.
+        """Save file to S3 with validation and error handling.
 
         Args:
-            name (str): Original filename
-            content: Image file content to save
+            name (str): Name of the file to save
+            content: File content to save (file-like object)
 
         Returns:
-            str: Normalized S3 key of the saved file
+            str: Name of the file that was saved (with tenant prefix)
 
         Raises:
-            FileValidationError: If file validation fails with specific error message and
-            status code.
+            FileValidationError: If image validation fails
             ClientError: If S3 upload fails
         """
-        try:
-            validate_image_file(content)
-        except FileValidationError as e:
-            LOGGER.warning(
-                "File validation failed",
-                name=name,
-                error=e.user_message,
-                status_code=e.status_code,
-                tenant=self.tenant_prefix,
-            )
-            raise
+        # First validate content if it's an image
+        if hasattr(content, "content_type") and content.content_type.startswith("image/"):
+            try:
+                validate_image_file(content)
+            except FileValidationError as e:
+                LOGGER.warning("Image validation failed", name=name, error=str(e))
+                raise
 
-        self._delete_previous_instance_file(content)
-        self._delete_previous_mapped_file(name)
-
+        # Generate a randomized filename to prevent conflicts
         randomized_name = self._randomize_filename(name)
-        normalized_name = self._normalize_name(randomized_name)
 
+        # Add tenant prefix for isolation
+        tenant_path = self.get_tenant_path(randomized_name)
+
+        # Normalize the name for S3 (no leading slash)
+        normalized_name = self._normalize_name(tenant_path)
+
+        # Log the save attempt
         self._log_save_attempt(name, randomized_name, normalized_name, content)
 
-        try:
-            self._upload_to_s3(normalized_name, content)
-            self._file_mapping[name] = normalized_name
-            self._log_save_success(normalized_name, name)
-            return normalized_name
-        except ClientError as e:
-            error_code = e.response.get("Error", {}).get("Code", "Unknown")
-            error_message = e.response.get("Error", {}).get("Message", "Unknown error")
-            status_code = 500
-            if error_code in ("AccessDenied", "AllAccessDisabled"):
-                status_code = 403
-            elif error_code == "NoSuchBucket":
-                status_code = 404
+        # Get S3 object for this file
+        obj = self.bucket.Object(normalized_name)
 
-            LOGGER.error(
-                "S3 upload failed",
-                name=name,
-                error_code=error_code,
-                message=error_message,
-                status_code=status_code,
-                tenant=self.tenant_prefix,
-            )
-            raise FileValidationError(
-                f"Failed to upload file: {error_message}", status_code=status_code
-            ) from e
+        try:
+            # Upload the file to S3
+            self._upload_to_s3(normalized_name, content)
+
+            # Verify the upload was successful
+            self._verify_upload(obj, normalized_name)
+
+            # Log successful save
+            self._log_save_success(normalized_name, name)
+
+            # Return the name with tenant prefix to ensure proper path reference
+            return tenant_path
         except Exception as e:
-            LOGGER.error(
-                "Unexpected error saving file",
-                name=name,
-                error=str(e),
-                tenant=self.tenant_prefix,
-            )
-            if isinstance(e, FileValidationError):
-                raise
-            raise FileValidationError(
-                "An unexpected error occurred while saving the file", status_code=500
-            ) from e
+            # Clean up failed upload attempts
+            self._cleanup_failed_upload(obj, normalized_name)
+
+            # Handle errors based on type
+            self._handle_save_error(e, name, normalized_name)
+
+            # Re-raise the exception after cleanup and logging
+            raise
 
     def delete(self, name: str) -> None:
         """Delete file from S3 storage.
