@@ -2,8 +2,15 @@
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
-from yaml import safe_load
-import json
+from yaml import safe_load, add_representer
+
+
+def represent_type(dumper, data):
+    """Custom representer for type objects"""
+    return dumper.represent_scalar('tag:yaml.org,2002:str', str(data))
+
+
+add_representer(type, represent_type)
 
 
 class TestSchemaGeneration(APITestCase):
@@ -13,9 +20,8 @@ class TestSchemaGeneration(APITestCase):
         """Test generation"""
         response = self.client.get(
             reverse("authentik_api:schema"),
-            HTTP_ACCEPT="application/json",
         )
-        self.assertTrue(json.loads(response.content.decode()))
+        self.assertTrue(safe_load(response.content.decode()))
 
     def test_browser(self):
         """Test API Browser"""
