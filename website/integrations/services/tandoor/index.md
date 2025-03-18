@@ -37,7 +37,7 @@ Add the following lines to your tandoor environment `.env` file. Make sure to ed
 ```sh
 # Authentik OAuth2/OpenID configuration
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
-SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"Authentik","client_id":"<Client ID from Authentik>","secret":"<Client Secret from Authentik>","settings":{"server_url":"https://authentik.company/application/o/tandoor/.well-known/openid-configuration"}}]}}
+SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}
 '
 ```
 
