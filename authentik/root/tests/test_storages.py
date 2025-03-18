@@ -239,10 +239,14 @@ class TestS3Storage(TestCase):
         self.config_patcher = patch("authentik.lib.config.CONFIG.refresh")
         self.mock_config = self.config_patcher.start()
         self.mock_config.side_effect = lambda key, default=None, sep=".": {
+            "storage.media.s3.session_profile": None,
             "storage.media.s3.access_key": "test-key",
             "storage.media.s3.secret_key": "test-secret",
             "storage.media.s3.bucket_name": "test-bucket",
             "storage.media.s3.region_name": "us-east-1",
+            "storage.media.s3.endpoint": None,
+            "storage.media.s3.custom_domain": None,
+            "storage.media.s3.security_token": None,
         }.get(key, default)
 
         # Create test storage with mocked client

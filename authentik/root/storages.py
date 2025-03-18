@@ -569,12 +569,28 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             ImproperlyConfigured: If S3 configuration is incomplete or invalid
             ClientError: If bucket doesn't exist or cannot be accessed
         """
-        # Check that all required configuration keys are set
-        for key in self.CONFIG_KEYS.values():
-            val = self._get_config_value(key)
-            if not val:
-                LOGGER.error("Missing required S3 configuration", key=key)
-                raise ImproperlyConfigured(f"Missing required S3 configuration: {key}")
+        # Check that bucket_name and region_name are set
+        if not self._bucket_name:
+            LOGGER.error("Missing required S3 configuration: bucket_name")
+            raise ImproperlyConfigured("Missing required S3 configuration: bucket_name")
+
+        if not self._region_name:
+            LOGGER.error("Missing required S3 configuration: region_name")
+            raise ImproperlyConfigured("Missing required S3 configuration: region_name")
+
+        # Check that either session_profile or (access_key and secret_key) are set
+        has_profile = bool(self._session_profile)
+        has_credentials = bool(self._access_key) and bool(self._secret_key)
+
+        if not (has_profile or has_credentials):
+            LOGGER.error(
+                "Missing required S3 authentication configuration. "
+                "Either session_profile or (access_key and secret_key) must be set."
+            )
+            raise ImproperlyConfigured(
+                "Missing required S3 authentication configuration. "
+                "Either session_profile or (access_key and secret_key) must be set."
+            )
 
         # Validate bucket exists and is accessible
         try:
