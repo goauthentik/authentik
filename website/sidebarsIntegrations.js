@@ -141,6 +141,7 @@ module.exports = {
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
+                        "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
                         "services/zipline/index",
