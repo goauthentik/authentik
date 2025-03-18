@@ -1,5 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIError } from "@goauthentik/common/errors";
+import {
+    containsNonFieldErrors,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "@goauthentik/common/errors/network";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -17,14 +21,7 @@ import { map } from "lit/directives/map.js";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import {
-    Prompt,
-    PromptChallenge,
-    PromptTypeEnum,
-    ResponseError,
-    StagesApi,
-    ValidationError,
-} from "@goauthentik/api";
+import { Prompt, PromptChallenge, PromptTypeEnum, StagesApi } from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;
@@ -78,15 +75,22 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 return;
             }
         }
-        try {
-            this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
+
+        return new StagesApi(DEFAULT_CONFIG)
+            .stagesPromptPromptsPreviewCreate({
                 promptRequest: prompt,
+            })
+            .then((nextPreview) => {
+                this.preview = nextPreview;
+                this.previewError = undefined;
+            })
+            .catch(async (error) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.previewError = containsNonFieldErrors(parsedError)
+                    ? error.nonFieldErrors
+                    : [pluckErrorDetail(parsedError, msg("Failed to preview prompt"))];
             });
-            this.previewError = undefined;
-        } catch (exc) {
-            const errorMessage = parseAPIError(exc as ResponseError);
-            this.previewError = (errorMessage as ValidationError).nonFieldErrors;
-        }
     }
 
     getSuccessMessage(): string {

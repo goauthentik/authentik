@@ -1,3 +1,5 @@
+import { APIError } from "@goauthentik/common/errors/network";
+
 import {
     type ApplicationRequest,
     type LDAPProviderRequest,
@@ -25,16 +27,31 @@ export type OneOfProvider =
 
 export type ValidationRecord = { [key: string]: string[] };
 
-// TODO: Elf, extend this type and apply it to every object in the wizard.  Then run
-// the type-checker again.
-
-export type ExtendedValidationError = ValidationError & {
+/**
+ * An error that occurs during the creation or modification of an application.
+ *
+ * @todo (Elf) Extend this type to include all possible errors that can occur during the creation or modification of an application.
+ */
+export interface ApplicationTransactionValidationError extends ValidationError {
     app?: ValidationRecord;
     provider?: ValidationRecord;
     bindings?: ValidationRecord;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     detail?: any;
-};
+}
+
+/**
+ * Type-guard to determine if an API response is shaped like an {@linkcode ApplicationTransactionValidationError}.
+ */
+export function isApplicationTransactionValidationError(
+    error: APIError,
+): error is ApplicationTransactionValidationError {
+    if ("app" in error) return true;
+    if ("provider" in error) return true;
+    if ("bindings" in error) return true;
+
+    return false;
+}
 
 // We use the PolicyBinding instead of the PolicyBindingRequest here, because that gives us a slot
 // in which to preserve the retrieved policy, group, or user object from the SearchSelect used to
@@ -49,7 +66,7 @@ export interface ApplicationWizardState {
     proxyMode: ProxyMode;
     bindings: PolicyBinding[];
     currentBinding: number;
-    errors: ExtendedValidationError;
+    errors: ApplicationTransactionValidationError;
 }
 
 export interface ApplicationWizardStateUpdate {

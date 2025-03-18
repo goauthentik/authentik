@@ -3,7 +3,7 @@ import {
     EVENT_WS_MESSAGE,
     WS_MSG_TYPE_MESSAGE,
 } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import { WSMessage } from "@goauthentik/common/ws";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/Message";

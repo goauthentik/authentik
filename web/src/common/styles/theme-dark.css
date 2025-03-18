@@ -4,6 +4,7 @@
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --pf-c-table--m-striped__tr--BackgroundColor: var(--pf-global--BackgroundColor--dark-300);
 }
 body {
     background-color: var(--ak-dark-background) !important;

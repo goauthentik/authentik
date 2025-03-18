@@ -1,4 +1,4 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventUser, formatGeoEvent } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -118,7 +118,7 @@ export class EventViewPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <div>${this.event.clientIp || msg("-")}</div>
-                                            <small>${EventGeo(this.event)}</small>
+                                            <small>${formatGeoEvent(this.event)}</small>
                                         </div>
                                     </dd>
                                 </div>

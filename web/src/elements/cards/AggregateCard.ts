@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -96,24 +97,30 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 .pf-c-card__footer {
                     padding-bottom: 0;
                 }
+
+                .pf-c-card {
+                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--xs);
+                    --pf-c-card--child--PaddingLeft: var(--pf-global--spacer--md);
+                    --pf-c-card--child--PaddingRight: var(--pf-global--spacer--md);
+                }
             `,
         ]);
     }
 
-    renderInner(): TemplateResult {
+    renderInner(): SlottedTemplateResult {
         return html`<slot></slot>`;
     }
 
-    renderHeaderLink(): TemplateResult {
-        return html`${this.headerLink
-            ? html`<a href="${this.headerLink}">
-                  <i class="fa fa-link"> </i>
-              </a>`
-            : ""}`;
+    renderHeaderLink() {
+        if (!this.headerLink) return nothing;
+
+        return html`<a href="${this.headerLink}">
+            <i class="fa fa-link"></i>
+        </a>`;
     }
 
-    renderHeader(): TemplateResult {
-        return html`${this.header ? this.header : ""}`;
+    renderHeader(): SlottedTemplateResult {
+        return this.header ? html`${this.header}` : nothing;
     }
 
     render(): TemplateResult {

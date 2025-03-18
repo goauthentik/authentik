@@ -14,9 +14,9 @@ import { property, query } from "lit/decorators.js";
 import { ValidationError } from "@goauthentik/api";
 
 import {
+    ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
-    ExtendedValidationError,
 } from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
@@ -48,7 +48,7 @@ export class ApplicationWizardStep extends WizardStep {
     }
 
     protected removeErrors(
-        keyToDelete: keyof ExtendedValidationError,
+        keyToDelete: keyof ApplicationTransactionValidationError,
     ): ValidationError | undefined {
         if (!this.wizard.errors) {
             return undefined;

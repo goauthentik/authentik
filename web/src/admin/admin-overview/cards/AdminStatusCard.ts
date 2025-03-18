@@ -1,5 +1,10 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "@goauthentik/common/errors/network";
 import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
 import { msg } from "@lit/localize";
@@ -29,7 +34,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
 
     // Current error state if any request fails
     @state()
-    protected error?: string;
+    protected error?: APIError;
 
     // Abstract methods to be implemented by subclasses
     abstract getPrimaryValue(): Promise<T>;
@@ -59,9 +64,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                 this.value = value; // Triggers shouldUpdate
                 this.error = undefined;
             })
-            .catch((err: ResponseError) => {
+            .catch(async (error) => {
                 this.status = undefined;
-                this.error = err?.response?.statusText ?? msg("Unknown error");
+                this.error = await parseAPIResponseError(error);
             });
     }
 
@@ -79,9 +84,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                     this.status = status;
                     this.error = undefined;
                 })
-                .catch((err: ResponseError) => {
+                .catch(async (error: ResponseError) => {
                     this.status = undefined;
-                    this.error = err?.response?.statusText ?? msg("Unknown error");
+                    this.error = await parseAPIResponseError(error);
                 });
 
             // Prevent immediate re-render if only value changed
@@ -120,8 +125,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      */
     private renderError(error: string): TemplateResult {
         return html`
-            <p><i class="fa fa-times"></i>&nbsp;${error}</p>
-            <p class="subtext">${msg("Failed to fetch")}</p>
+            <p><i class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
+            <p class="subtext">${error}</p>
         `;
     }
 
@@ -146,7 +151,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                     this.status
                         ? this.renderStatus(this.status) // Status available
                         : this.error
-                          ? this.renderError(this.error) // Error state
+                          ? this.renderError(pluckErrorDetail(this.error)) // Error state
                           : this.renderLoading() // Loading state
                 }
             </p>
