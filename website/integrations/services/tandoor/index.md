@@ -29,7 +29,7 @@ This documentation lists only the settings that you need to change from their de
 
 - **Application**: provide a descriptive name (e.g., `Tandoor`), an optional group for the type of application, the policy engine mode, and optional UI settings.
 
-- **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
+- **Choose a Provider type**: Select **OAuth2/OpenID Provider** as the provider type.
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Redirect URI**:
