@@ -14,7 +14,7 @@
         "serve": "docusaurus serve",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "docusaurus gen-api-docs all && docusaurus start"
+        "watch": "cp -f ../schema.yml ./static/schema.yml && docusaurus gen-api-docs all && docusaurus start"
     },
     "dependencies": {
         "semver": "^7.7.1",
