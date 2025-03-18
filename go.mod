@@ -6,7 +6,7 @@ toolchain go1.24.0
 
 require (
 	beryju.io/ldap v0.1.0
-	github.com/coreos/go-oidc/v3 v3.12.0
+	github.com/coreos/go-oidc/v3 v3.13.0
 	github.com/getsentry/sentry-go v0.31.1
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.10
@@ -29,7 +29,7 @@ require (
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025021.2
+	goauthentik.io/api/v3 v3.2025022.1
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.28.0
 	golang.org/x/sync v0.12.0
@@ -76,9 +76,9 @@ require (
 	go.opentelemetry.io/otel v1.24.0 // indirect
 	go.opentelemetry.io/otel/metric v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
-	golang.org/x/crypto v0.32.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/crypto v0.36.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

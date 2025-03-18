@@ -22,6 +22,7 @@ class SCIMProviderUser(SerializerModel):
     scim_id = models.TextField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -43,6 +44,7 @@ class SCIMProviderGroup(SerializerModel):
     scim_id = models.TextField()
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     provider = models.ForeignKey("SCIMProvider", on_delete=models.CASCADE)
+    attributes = models.JSONField(default=dict)
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -55,6 +57,14 @@ class SCIMProviderGroup(SerializerModel):
 
     def __str__(self) -> str:
         return f"SCIM Provider Group {self.group_id} to {self.provider_id}"
+
+
+class SCIMCompatibilityMode(models.TextChoices):
+    """SCIM compatibility mode"""
+
+    DEFAULT = "default", _("Default")
+    AWS = "aws", _("AWS")
+    SLACK = "slack", _("Slack")
 
 
 class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
@@ -75,6 +85,14 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
         default=None,
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
+    )
+
+    compatibility_mode = models.CharField(
+        max_length=30,
+        choices=SCIMCompatibilityMode.choices,
+        default=SCIMCompatibilityMode.DEFAULT,
+        verbose_name=_("SCIM Compatibility Mode"),
+        help_text=_("Alter authentik behavior for vendor-specific SCIM implementations."),
     )
 
     @property

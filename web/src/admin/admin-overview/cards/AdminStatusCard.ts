@@ -142,12 +142,13 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
     renderInner(): TemplateResult {
         return html`
             <p class="center-value">
-                ${this.status
-                    ? this.renderStatus(this.status) // Status available
-                    : this.error
-                      ? this.renderError(this.error) // Error state
-                      : this.renderLoading()}
-                // Loading state
+                ${
+                    this.status
+                        ? this.renderStatus(this.status) // Status available
+                        : this.error
+                          ? this.renderError(this.error) // Error state
+                          : this.renderLoading() // Loading state
+                }
             </p>
         `;
     }

@@ -20,13 +20,26 @@
     text-transform: none;
 }
 
-.admonitionContrib {
-    --ifm-h5-font-size: 1.25rem;
+.admonitionHeader {
+    padding-bottom: 8px;
+}
 
+html {
+    --edit-this-page-background: var(--ifm-color-secondary-lighter);
+}
+
+html[data-theme="dark"] {
+    --edit-this-page-background: var(--ifm-color-secondary-contrast-background);
+}
+
+.admonitionContrib {
+    --ifm-h5-font-size: 1rem;
+    --ifm-alert-background-color: var(--edit-this-page-background);
     display: block;
+    border-left-style: none;
 
     @media (min-width: 768px) {
-        --ifm-h5-font-size: 1.5rem;
+        --ifm-h5-font-size: 1.2rem;
         --ifm-paragraph-margin-bottom: 0;
 
         p:first-child {

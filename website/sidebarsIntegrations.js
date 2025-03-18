@@ -15,6 +15,11 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Device Management",
+                    items: ["services/apple/index"],
+                },
+                {
+                    type: "category",
                     label: "Chat, Communication & Collaboration",
                     items: [
                         "services/bookstack/index",
@@ -24,6 +29,7 @@ module.exports = {
                         "services/kimai/index",
                         "services/mastodon/index",
                         "services/matrix-synapse/index",
+                        "services/mautic/index",
                         "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
@@ -149,6 +155,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/beszel/index",
                         "services/chronograf/index",
                         "services/gatus/index",
                         "services/glitchtip/index",
