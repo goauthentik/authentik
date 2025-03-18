@@ -10,7 +10,13 @@ def represent_type(dumper, data):
     return dumper.represent_scalar("tag:yaml.org,2002:str", str(data))
 
 
+def represent_str_class(dumper, data):
+    """Custom representer for str class object (not string instances)"""
+    return dumper.represent_scalar("tag:yaml.org,2002:str", str(data))
+
+
 add_representer(type, represent_type)
+add_representer(str, represent_str_class)
 
 
 class TestSchemaGeneration(APITestCase):
