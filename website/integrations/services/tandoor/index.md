@@ -32,7 +32,7 @@ Everything else is up to you, just make sure to grab the client ID and the clien
 
 ## Tandoor configuration
 
-Add the following lines to your tandoor environment `.env` file. Make sure to edit with the client ID, client secret and server URL from your Authentik instance.
+Add the following environment variables to your tandoor configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
 ```sh
 # Authentik OAuth2/OpenID configuration
