@@ -8,7 +8,7 @@ support_level: community
 
 > Application for managing recipes, planning meals, building shopping lists and more.
 >
-> -- [https://github.com/TandoorRecipes/recipes](https://github.com/TandoorRecipes/recipes)
+> -- https://github.com/TandoorRecipes/recipes
 
 ## Preparation
 
