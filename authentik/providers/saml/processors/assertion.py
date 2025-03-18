@@ -158,6 +158,28 @@ class AssertionProcessor:
                 auth_n_context_class_ref.text = (
                     "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract"
                 )
+        if self.provider.authn_context_class_ref_mapping:
+            try:
+                value = self.provider.authn_context_class_ref_mapping.evaluate(
+                    user=self.http_request.user,
+                    request=self.http_request,
+                    provider=self.provider,
+                )
+                if value is not None:
+                    auth_n_context_class_ref.text = str(value)
+                return auth_n_statement
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=(
+                        "Failed to evaluate property-mapping: "
+                        f"'{self.provider.authn_context_class_ref_mapping.name}'",
+                    ),
+                    provider=self.provider,
+                    mapping=self.provider.authn_context_class_ref_mapping,
+                ).from_http(self.http_request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+                return auth_n_statement
         return auth_n_statement
 
     def get_assertion_conditions(self) -> Element:
