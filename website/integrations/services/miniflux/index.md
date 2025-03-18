@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## Authentik configuration
+## authentik configuration
 
 Create an **OAuth2/OpenID Application and Provider** under **Applications** -> **Applications** via the **Create with Provider** button, using the following settings:
 
