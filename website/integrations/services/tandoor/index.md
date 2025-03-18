@@ -33,7 +33,8 @@ This documentation lists only the settings that you need to change from their de
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Redirect URI**:
-        - Strict: `https://tandoor.company/accounts/oidc/authentik/login/callback/`
+        - Strict: <kbd>https://<em>tandoor.company</em>/accounts/oidc/authentik/login/callback/</kbd>
+
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -42,11 +43,11 @@ This documentation lists only the settings that you need to change from their de
 
 Add the following environment variables to your tandoor configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
-```sh
+<kbd>
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
-SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}
+SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<em><Client ID from authentik></em>","secret":"<em><Client Secret from authentik></em>","settings":{"server_url":"https://<em>authentik.company</em>/application/o/<em><application slug></em>/.well-known/openid-configuration"}}]}}
 '
-```
+</kbd>
 
 Restart the Tandoor service for the changes to take effect.
 
