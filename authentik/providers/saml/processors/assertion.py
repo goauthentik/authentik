@@ -180,7 +180,7 @@ class AssertionProcessor:
                     EventAction.CONFIGURATION_ERROR,
                     message=(
                         "Failed to evaluate property-mapping: "
-                        f"'{self.provider.authn_context_class_ref_mapping.name}'",
+                        f"'{self.provider.authn_context_class_ref_mapping.name}'"
                     ),
                     provider=self.provider,
                     mapping=self.provider.authn_context_class_ref_mapping,
