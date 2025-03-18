@@ -73,6 +73,12 @@ class TestUniquePasswordPolicyFlow(FlowTestCase):
                 }
             ],
             response_errors={
-                "non_field_errors": [{"code": "invalid", "string": "Password is not unique."}]
+                "non_field_errors": [
+                    {
+                        "code": "invalid",
+                        "string": "This password has been used previously. "
+                        "Please choose a different one.",
+                    }
+                ]
             },
         )
