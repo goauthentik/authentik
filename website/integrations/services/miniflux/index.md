@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Miniflux
 
-> Miniflux is a minimalist and opinionated RSS feed reader
+> Miniflux is a minimalist and opinionated RSS feed reader.
 >
 > -- https://github.com/miniflux/v2
 
