@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Tandoor
 
-> Application for managing recipes, planning meals, building shopping lists and more.
+> Application for managing recipes, planning meals and building shopping lists.
 >
 > -- https://github.com/TandoorRecipes/recipes
 
@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `Tandoor.company` is the FQDN of the tandoor installation.
+- `tandoor.company` is the FQDN of the tandoor installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -33,7 +33,7 @@ This documentation lists only the settings that you need to change from their de
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Redirect URI**:
-        - Strict: `https://Tandoor.company/accounts/oidc/authentik/login/callback/`
+        - Strict: `https://tandoor.company/accounts/oidc/authentik/login/callback/`
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
