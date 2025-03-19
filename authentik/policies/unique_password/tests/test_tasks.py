@@ -28,6 +28,26 @@ class TestPurgePasswordHistory(TestCase):
         purge_password_history_table.delay().get()
         self.assertFalse(UserPasswordHistory.objects.all())
 
+    def test_signal_purge_password_history(self):
+        """Test that the signal triggers the purge_password_history_table task"""
+        from unittest import mock
+
+        # Create a UniquePasswordPolicy and a PolicyBinding for it
+        policy = UniquePasswordPolicy.objects.create(num_historical_passwords=5)
+        pbm = PolicyBindingModel.objects.create()
+        binding = PolicyBinding.objects.create(
+            target=pbm, policy=policy, order=0, enabled=True
+        )
+
+        # Mock the delay method of the task
+        task_path = 'authentik.policies.unique_password.signals.purge_password_history_table.delay'
+        with mock.patch(task_path) as mock_task:
+            # Delete the binding, which should trigger the signal
+            binding.delete()
+
+            # Verify the task was called
+            mock_task.assert_called_once()
+
 
 class TestTrimPasswordHistory(TestCase):
     """Test password history cleanup task"""
