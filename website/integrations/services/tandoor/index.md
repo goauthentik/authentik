@@ -22,6 +22,9 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+To support the integration of Tandoor with authentik, you need to create an application/provider pair in authentik.
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
@@ -45,7 +48,7 @@ Add the following environment variables to your tandoor configuration. Make sure
 
 ```sh
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
-SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<em><Client ID from authentik></em>","secret":"<em><Client Secret from authentik></em>","settings":{"server_url":"https://<em>authentik.company</em>/application/o/<em><application slug></em>/.well-known/openid-configuration"}}]}}
+SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}
 '
 ```
 
