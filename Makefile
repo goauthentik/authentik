@@ -58,6 +58,9 @@ i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that requir
 aws-cfn:
 	cd lifecycle/aws && npm run aws-cfn
 
+run:  ## Run the main authentik server process
+	uv run ak server
+
 core-i18n-extract:
 	uv run ak makemessages \
 		--add-location file \
