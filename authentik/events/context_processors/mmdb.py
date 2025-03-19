@@ -42,7 +42,7 @@ class MMDBContextProcessor(EventContextProcessor):
         try:
             mtime = Path(path).stat().st_mtime
             diff = self._last_mtime < mtime
-            if diff > 0:
+            if diff:
                 self.logger.info("Found new MMDB Database, reopening", diff=diff, path=path)
                 self.open()
         except OSError as exc:
@@ -50,4 +50,5 @@ class MMDBContextProcessor(EventContextProcessor):
 
     def configured(self) -> bool:
         """Return true if this context processor is configured"""
-        return bool(self.reader)
+        path = self.path()
+        return path != "" and path

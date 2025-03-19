@@ -26,14 +26,15 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host      string `yaml:"host" env:"HOST, overwrite"`
-	Port      int    `yaml:"port" env:"PORT, overwrite"`
-	DB        int    `yaml:"db" env:"DB, overwrite"`
-	Username  string `yaml:"username" env:"USERNAME, overwrite"`
-	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
-	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
-	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
-	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
+	URL       string `yaml:"url" env:"URL, overwrite"`
+	Host      string `yaml:"host" env:"HOST, overwrite"`                // Deprecated: Use URL instead
+	Port      int    `yaml:"port" env:"PORT, overwrite"`                // Deprecated: Use URL instead
+	DB        int    `yaml:"db" env:"DB, overwrite"`                    // Deprecated: Use URL instead
+	Username  string `yaml:"username" env:"USERNAME, overwrite"`        // Deprecated: Use URL instead
+	Password  string `yaml:"password" env:"PASSWORD, overwrite"`        // Deprecated: Use URL instead
+	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`                  // Deprecated: Use URL instead
+	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`        // Deprecated: Use URL instead
+	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"` // Deprecated: Use URL instead
 }
 
 type ListenConfig struct {

@@ -32,14 +32,15 @@ listen:
     - ::1/128
 
 redis:
-  host: localhost
-  port: 6379
-  db: 0
-  username: ""
-  password: ""
-  tls: false
-  tls_reqs: "none"
-  tls_ca_cert: null
+  url: "redis://localhost:6379/0"
+  # host: localhost
+  # port: 6379
+  # db: 0
+  # username: ""
+  # password: ""
+  # tls: false
+  # tls_reqs: "required"
+  # tls_ca_cert: null
 
 # broker:
 #   url: ""

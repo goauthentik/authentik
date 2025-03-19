@@ -12,7 +12,7 @@ from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import __version__
-from authentik.lib.config import CONFIG, django_db_config, redis_url
+from authentik.lib.config import CONFIG, django_db_config
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
@@ -212,20 +212,20 @@ REST_FRAMEWORK = {
     },
 }
 
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
+        "LOCATION": CONFIG.get("cache.url") or CONFIG.get("redis.url"),
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
         "KEY_PREFIX": "authentik_cache",
         "KEY_FUNCTION": "django_tenants.cache.make_key",
         "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
+DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware_django.CustomConnectionFactory"
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
@@ -292,9 +292,9 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
+        "BACKEND": "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
-            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
+            "url": CONFIG.get("channel.url") or CONFIG.get("redis.url"),
             "prefix": "authentik_channels_",
         },
     },
@@ -357,6 +357,7 @@ CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
     "worker_concurrency": CONFIG.get_int("worker.concurrency"),
+    "worker_cancel_long_running_tasks_on_connection_loss": True,
     "beat_schedule": {
         "clean_expired_models": {
             "task": "authentik.core.tasks.clean_expired_models",
@@ -372,8 +373,8 @@ CELERY = {
     "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
-    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
+    "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
+    "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
     "broker_transport_options": CONFIG.get_dict_from_b64_json(
         "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
     ),

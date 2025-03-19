@@ -48,6 +48,7 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
+        await communicator.disconnect()
 
     async def test_send(self):
         """Test sending of Hello"""

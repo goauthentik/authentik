@@ -12,10 +12,11 @@ from glob import glob
 from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from string import Template
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlparse
+from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
@@ -124,6 +125,89 @@ class ConfigLoader:
         self.update_from_env()
         self.update(self.__config, kwargs)
         self.deprecations = self.check_deprecations()
+        self.update_redis_url()
+
+    def _deprecated_redis_config_set(self) -> bool:
+        host_set = self.get("redis.host", UNSET) is not UNSET
+        port_set = self.get("redis.port", UNSET) is not UNSET
+        tls_set = self.get_bool("redis.tls", False)
+        tls_reqs_set = self.get("redis.tls_reqs", UNSET) is not UNSET
+        db_set = self.get("redis.db", UNSET) is not UNSET
+        username_set = self.get("redis.username", UNSET) is not UNSET
+        password_set = self.get("redis.password", UNSET) is not UNSET
+        return (
+            host_set
+            or port_set
+            or tls_set
+            or tls_reqs_set
+            or db_set
+            or username_set
+            or password_set
+        )
+
+    # pylint: disable=too-many-statements
+    def update_redis_url(self):
+        """Build Redis URL using default values or replace placeholders with other env vars"""
+
+        redis_url = "redis"
+        redis_url_query = {}
+        redis_host = "localhost"
+        redis_port = 6379
+        redis_db = 0
+
+        # To make it easier for users to switch over to new Redis URL based config
+        # allow old style config for now
+        if (
+            self._deprecated_redis_config_set()
+            and self.get("redis.url") == "redis://localhost:6379/0"
+        ):
+            self.log(
+                "warning",
+                "Other Redis environment variables have been deprecated "
+                "in favor of 'AUTHENTIK_REDIS__URL'! "
+                "Please update your configuration.",
+            )
+            if self.get("redis.host", UNSET) is not UNSET:
+                redis_host = self.get("redis.host")
+            if self.get("redis.port", UNSET) is not UNSET:
+                redis_port = int(self.get("redis.port"))
+            redis_addr = f"{redis_host}:{redis_port}"
+            if self.get_bool("redis.tls", False):
+                redis_url = "rediss"
+            if self.get("redis.tls_reqs", UNSET) is not UNSET:
+                redis_tls_reqs = self.get("redis.tls_reqs")
+                match redis_tls_reqs.lower():
+                    case "none":
+                        redis_url_query.pop("skipverify", None)
+                        redis_url_query["insecureskipverify"] = "true"
+                    case "optional":
+                        redis_url_query.pop("insecureskipverify", None)
+                        redis_url_query["skipverify"] = "true"
+                    case "required":
+                        pass
+                    case _:
+                        self.log(
+                            "warning",
+                            f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
+                            "Using default option 'required'.",
+                        )
+            if self.get("redis.db", UNSET) is not UNSET:
+                redis_db = int(self.get("redis.db"))
+            if self.get("redis.username", UNSET) is not UNSET:
+                redis_url_query["username"] = self.get("redis.username")
+            if self.get("redis.password", UNSET) is not UNSET:
+                redis_url_query["password"] = self.get("redis.password")
+            redis_url += f"://{redis_addr}"
+            if redis_db is not None:
+                redis_url += f"/{redis_db}"
+            # Sort query in order to have similar tests between Go and Python implementation
+            redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
+            if redis_url_query != "":
+                redis_url += f"?{redis_url_query}"
+            self.set("redis.url", redis_url)
+        else:
+            env = {k: quote_plus(v) for k, v in os.environ.items() if k in REDIS_ENV_KEYS}
+            self.set("redis.url", Template(self.get("redis.url", UNSET)).substitute(env))
 
     def check_deprecations(self) -> dict[str, str]:
         """Warn if any deprecated configuration options are used"""
@@ -331,26 +415,6 @@ class ConfigLoader:
 
 
 CONFIG = ConfigLoader()
-
-
-def redis_url(db: int) -> str:
-    """Helper to create a Redis URL for a specific database"""
-    _redis_protocol_prefix = "redis://"
-    _redis_tls_requirements = ""
-    if CONFIG.get_bool("redis.tls", False):
-        _redis_protocol_prefix = "rediss://"
-        _redis_tls_requirements = f"?ssl_cert_reqs={CONFIG.get('redis.tls_reqs')}"
-        if _redis_ca := CONFIG.get("redis.tls_ca_cert", None):
-            _redis_tls_requirements += f"&ssl_ca_certs={_redis_ca}"
-    _redis_url = (
-        f"{_redis_protocol_prefix}"
-        f"{quote_plus(CONFIG.get('redis.username'))}:"
-        f"{quote_plus(CONFIG.get('redis.password'))}@"
-        f"{quote_plus(CONFIG.get('redis.host'))}:"
-        f"{CONFIG.get_int('redis.port')}"
-        f"/{db}{_redis_tls_requirements}"
-    )
-    return _redis_url
 
 
 def django_db_config(config: ConfigLoader | None = None) -> dict:
