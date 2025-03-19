@@ -33,6 +33,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
 	}
+
+	// Standalone outposts use filesystem storage
 	if !a.isEmbedded {
 		dir := os.TempDir()
 		cs := sessions.NewFilesystemStore(dir)
@@ -54,7 +56,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		return cs, nil
 	}
 
-	// Embedded outpost - use Redis
+	// Only embedded outposts use Redis
+	a.log.Trace("initializing redis session backend for embedded outpost")
 	var tls *tls.Config
 	if config.Get().Redis.TLS {
 		tls = utils.GetTLSConfig()
@@ -83,6 +86,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			tls.RootCAs = rootCAs
 		}
 	}
+
 	client := redis.NewClient(&redis.Options{
 		Addr:      fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
 		Username:  config.Get().Redis.Username,
@@ -164,36 +168,39 @@ func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) er
 			}
 		}
 	}
-	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
-		client := rs.Client()
-		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
-		if err != nil {
-			return err
-		}
-		serializer := redisstore.GobSerializer{}
-		for _, key := range keys {
-			v, err := client.Get(ctx, key).Result()
+	// Only attempt to access Redis for embedded outposts
+	if a.isEmbedded {
+		if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
+			client := rs.Client()
+			keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
 			if err != nil {
-				a.log.WithError(err).Warning("failed to get value")
-				continue
+				return err
 			}
-			s := sessions.Session{}
-			err = serializer.Deserialize([]byte(v), &s)
-			if err != nil {
-				a.log.WithError(err).Warning("failed to deserialize")
-				continue
-			}
-			c := s.Values[constants.SessionClaims]
-			if c == nil {
-				continue
-			}
-			claims := c.(Claims)
-			if filter(claims) {
-				a.log.WithField("key", key).Trace("deleting session")
-				_, err := client.Del(ctx, key).Result()
+			serializer := redisstore.GobSerializer{}
+			for _, key := range keys {
+				v, err := client.Get(ctx, key).Result()
 				if err != nil {
-					a.log.WithError(err).Warning("failed to delete key")
+					a.log.WithError(err).Warning("failed to get value")
 					continue
+				}
+				s := sessions.Session{}
+				err = serializer.Deserialize([]byte(v), &s)
+				if err != nil {
+					a.log.WithError(err).Warning("failed to deserialize")
+					continue
+				}
+				c := s.Values[constants.SessionClaims]
+				if c == nil {
+					continue
+				}
+				claims := c.(Claims)
+				if filter(claims) {
+					a.log.WithField("key", key).Trace("deleting session")
+					_, err := client.Del(ctx, key).Result()
+					if err != nil {
+						a.log.WithError(err).Warning("failed to delete key")
+						continue
+					}
 				}
 			}
 		}
