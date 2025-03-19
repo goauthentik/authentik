@@ -43,14 +43,14 @@ This documentation lists only the settings that you need to change from their de
 
 Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
-<kbd>
+```sh
 OAUTH2_PROVIDER=oidc
 OAUTH2_CLIENT_ID=<em><Client ID from authentik></em>
 OAUTH2_CLIENT_SECRET=<em><Client Secret from authentik></em>
 OAUTH2_REDIRECT_URL=https://<em>miniflux.company</em>/oauth2/oidc/callback
 OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://<em>authentik.company</em>/application/o/<em><application slug></em>/
 OAUTH2_USER_CREATION=1
-</kbd>
+```
 
 :::note
 The trailing `.well-known/openid-configuration` is not required for `OAUTH2_OIDC_DISCOVERY_ENDPOINT`
