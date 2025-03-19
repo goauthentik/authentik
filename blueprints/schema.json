@@ -6462,6 +6462,11 @@
                     "title": "NameID Property Mapping",
                     "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
                 },
+                "authn_context_class_ref_mapping": {
+                    "type": "integer",
+                    "title": "AuthnContextClassRef Property Mapping",
+                    "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
+                },
                 "digest_algorithm": {
                     "type": "string",
                     "enum": [

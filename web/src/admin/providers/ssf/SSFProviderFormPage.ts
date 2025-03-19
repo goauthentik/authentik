@@ -62,7 +62,11 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                    <ak-form-element-horizontal
+                        label=${msg("Signing Key")}
+                        name="signingKey"
+                        required
+                    >
                         <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
                             certificate=${ifDefined(provider?.signingKey ?? undefined)}

@@ -33,7 +33,7 @@ jobs:
           npm ci
       - name: Check changes have been applied
         run: |
-          poetry run make aws-cfn
+          uv run make aws-cfn
           git diff --exit-code
   ci-aws-cfn-mark:
     if: always()
