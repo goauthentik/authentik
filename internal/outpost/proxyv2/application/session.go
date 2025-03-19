@@ -34,8 +34,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 
-	// Standalone outposts use filesystem storage
-	if !a.isEmbedded {
+	createFilesystemStore := func() sessions.Store {
 		dir := os.TempDir()
 		cs := sessions.NewFilesystemStore(dir)
 		cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
@@ -53,10 +52,15 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		cs.Options.MaxAge = maxAge
 		cs.Options.Path = "/"
 		a.log.WithField("dir", dir).Trace("using filesystem session backend")
-		return cs, nil
+		return cs
 	}
 
-	// Only embedded outposts use Redis
+	// Standalone outposts always use filesystem storage
+	if !a.isEmbedded {
+		return createFilesystemStore(), nil
+	}
+
+	// Only embedded outposts try to use Redis
 	a.log.Trace("initializing redis session backend for embedded outpost")
 	var tls *tls.Config
 	if config.Get().Redis.TLS {
@@ -95,10 +99,16 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		TLSConfig: tls,
 	})
 
-	// New default RedisStore
+	// Try to create RedisStore
 	rs, err := redisstore.NewRedisStore(context.Background(), client)
 	if err != nil {
-		return nil, err
+		a.log.WithError(err).Warning("failed to setup redis session backend, using filesystem as fallback")
+		// Close the redis client to prevent resource leaks
+		if client != nil {
+			_ = client.Close()
+		}
+		// Fall back to filesystem store
+		return createFilesystemStore(), nil
 	}
 
 	rs.KeyPrefix(RedisKeyPrefix)
