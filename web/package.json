@@ -2,6 +2,7 @@
     "name": "@goauthentik/web",
     "version": "0.0.0",
     "dependencies": {
+        "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",
         "@codemirror/lang-javascript": "^6.2.2",
         "@codemirror/lang-python": "^6.1.6",
@@ -182,7 +183,6 @@
                 "./dist/enterprise/**",
                 "./dist/poly-*.js",
                 "./dist/poly-*.js.map",
-                "./dist/custom.css",
                 "./dist/theme-dark.css",
                 "./dist/one-dark.css",
                 "./dist/patternfly.min.css"

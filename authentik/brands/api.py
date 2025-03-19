@@ -49,6 +49,7 @@ class BrandSerializer(ModelSerializer):
             "branding_title",
             "branding_logo",
             "branding_favicon",
+            "branding_custom_css",
             "flow_authentication",
             "flow_invalidation",
             "flow_recovery",
@@ -86,6 +87,7 @@ class CurrentBrandSerializer(PassiveSerializer):
     branding_title = CharField()
     branding_logo = CharField(source="branding_logo_url")
     branding_favicon = CharField(source="branding_favicon_url")
+    branding_custom_css = CharField()
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,

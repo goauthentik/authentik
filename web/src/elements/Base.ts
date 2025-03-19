@@ -24,26 +24,6 @@ type AkInterface = HTMLElement & {
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
     (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
 
-let css: Promise<string[]> | undefined;
-function fetchCustomCSS(): Promise<string[]> {
-    if (!css) {
-        css = Promise.all(
-            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map(
-                (link) => {
-                    return fetch(link.href)
-                        .then((res) => {
-                            return res.text();
-                        })
-                        .finally(() => {
-                            return "";
-                        });
-                },
-            ),
-        );
-    }
-    return css;
-}
-
 export const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
 // Ensure themes are converted to a static instance of CSS Stylesheet, otherwise the
@@ -103,15 +83,12 @@ export class AKElement extends LitElement {
     }
 
     async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const sheets = await fetchCustomCSS();
-        sheets.map((css) => {
-            if (css === "") {
-                return;
-            }
-            new CSSStyleSheet().replace(css).then((sheet) => {
-                root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
-            });
-        });
+        const brand = globalAK().brand;
+        if (!brand) {
+            return;
+        }
+        const sheet = await new CSSStyleSheet().replace(brand.brandingCustomCss);
+        root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     }
 
     _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
