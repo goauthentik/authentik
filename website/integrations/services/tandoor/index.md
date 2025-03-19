@@ -35,6 +35,7 @@ To support the integration of Tandoor with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Provider** as the provider type.
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+
     - **Redirect URI**:
         - Strict: <kbd>https://<em>tandoor.company</em>/accounts/oidc/authentik/login/callback/</kbd>
 
