@@ -71,6 +71,20 @@ class SAMLProvider(Provider):
             "the NameIDPolicy of the incoming request will be considered"
         ),
     )
+    authn_context_class_ref_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("AuthnContextClassRef Property Mapping"),
+        related_name="+",
+        help_text=_(
+            "Configure how the AuthnContextClassRef value will be created. When left empty, "
+            "the AuthnContextClassRef will be set based on which authentication methods the user "
+            "used to authenticate."
+        ),
+    )
 
     assertion_valid_not_before = models.TextField(
         default="minutes=-5",
@@ -170,7 +184,6 @@ class SAMLProvider(Provider):
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},
