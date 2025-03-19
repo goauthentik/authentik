@@ -109,8 +109,7 @@ def migrate_database_sessions(apps, schema_editor):
     print("\nMigration database sessions, this might take a couple of minutes...")
     for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
         session_store = DBSessionStore()
-        session_store.serializer = PickleSerializer()
-        session_store.decode(django_session.session_data)
+        session_store.serializer = PickleSerializer
         _migrate_session(
             apps=apps,
             db_alias=db_alias,
