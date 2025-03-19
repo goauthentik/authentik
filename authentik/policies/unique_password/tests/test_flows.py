@@ -50,7 +50,30 @@ class TestUniquePasswordPolicyFlow(FlowTestCase):
 
     def test_prompt_data(self):
         """Test policy attached to a prompt stage"""
+        # Test the policy directly
+        from authentik.policies.types import PolicyRequest
+        from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+
+        # Create a policy request with the reused password
+        request = PolicyRequest(user=self.user)
+        request.context[PLAN_CONTEXT_PROMPT] = {"password": self.REUSED_PASSWORD}
+
+        # Test the policy directly
+        result = self.policy.passes(request)
+
+        # Verify that the policy fails (returns False) with the expected error message
+        self.assertFalse(result.passing, "Policy should fail for reused password")
+        self.assertEqual(
+            result.messages[0],
+            "This password has been used previously. Please choose a different one.",
+            "Incorrect error message",
+        )
+
+        # API-based testing approach:
+
         self.client.force_login(self.user)
+
+        # Send a POST request to the flow executor with the reused password
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
             {"password": self.REUSED_PASSWORD},

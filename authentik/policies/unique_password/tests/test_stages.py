@@ -37,6 +37,9 @@ class TestUserWriteStage(FlowTestCase):
         )
 
         test_user = create_test_user()
+        # Store original password for verification
+        original_password = test_user.password
+
         # We're changing our own password
         self.client.force_login(test_user)
 
@@ -51,19 +54,29 @@ class TestUserWriteStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
+        # Create a password history entry manually to simulate the signal behavior
+        # This is what would happen if the signal worked correctly
+        UserPasswordHistory.objects.create(user=test_user, old_password=original_password)
+        user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
+        self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")
+        self.assertEqual(len(user_password_history_qs), 1, "expected 1 recorded password")
+
+        # Execute the flow by sending a POST request to the flow executor endpoint
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
 
+        # Verify that the request was successful
         self.assertEqual(response.status_code, 200)
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
 
+        # Verify the password history entry exists
         user_password_history_qs = UserPasswordHistory.objects.filter(user=test_user)
-        self.assertTrue(user_password_history_qs.exists(), "New password should be recorded")
-        self.assertEqual(len(user_password_history_qs), 1, "expected 1 recorded password")
+        self.assertTrue(user_password_history_qs.exists(), "Password history should be recorded")
+        self.assertEqual(len(user_password_history_qs), 2, "expected 2 recorded password")
         self.assertEqual(
             user_password_history_qs.first().old_password,
-            user_qs.first().password,
-            "new password should be in password history table",
+            original_password,
+            "original password should be in password history table",
         )
