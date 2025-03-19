@@ -43,11 +43,11 @@ This documentation lists only the settings that you need to change from their de
 
 Add the following environment variables to your tandoor configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
 
-<kbd>
+```sh
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
 SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<em><Client ID from authentik></em>","secret":"<em><Client Secret from authentik></em>","settings":{"server_url":"https://<em>authentik.company</em>/application/o/<em><application slug></em>/.well-known/openid-configuration"}}]}}
 '
-</kbd>
+```
 
 Restart the Tandoor service for the changes to take effect.
 
