@@ -4,6 +4,7 @@ import base64
 import uuid
 import pickle  # nosec
 import zlib  # nosec
+from django.core import signing
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore as DBSessionStore
 from django.db import migrations, models
@@ -108,13 +109,16 @@ def migrate_database_sessions(apps, schema_editor):
 
     print("\nMigration database sessions, this might take a couple of minutes...")
     for django_session in progress_bar(DjangoSession.objects.using(db_alias).all()):
-        session_store = DBSessionStore()
-        session_store.serializer = PickleSerializer
+        session_data = signing.loads(
+            django_session.session_data,
+            salt="django.contrib.sessions.SessionStore",
+            serializer=PickleSerializer,
+        )
         _migrate_session(
             apps=apps,
             db_alias=db_alias,
             session_key=django_session.session_key,
-            session_data=session_store.decode(django_session.session_data),  # nosec
+            session_data=session_data,
             expires=django_session.expire_date,
         )
 
