@@ -20,9 +20,7 @@ class TestUniquePasswordPolicyModel(TestCase):
         # Create a UniquePasswordPolicy and a PolicyBinding for it
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=5)
         pbm = PolicyBindingModel.objects.create()
-        PolicyBinding.objects.create(
-            target=pbm, policy=policy, order=0, enabled=True
-        )
+        PolicyBinding.objects.create(target=pbm, policy=policy, order=0, enabled=True)
 
         # Verify is_in_use returns True
         self.assertTrue(UniquePasswordPolicy.is_in_use())
@@ -66,12 +64,10 @@ class TestPurgePasswordHistory(TestCase):
         # Create a UniquePasswordPolicy and a PolicyBinding for it
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=5)
         pbm = PolicyBindingModel.objects.create()
-        binding = PolicyBinding.objects.create(
-            target=pbm, policy=policy, order=0, enabled=True
-        )
+        binding = PolicyBinding.objects.create(target=pbm, policy=policy, order=0, enabled=True)
 
         # Mock the delay method of the task
-        task_path = 'authentik.policies.unique_password.signals.purge_password_history_table.delay'
+        task_path = "authentik.policies.unique_password.signals.purge_password_history_table.delay"
         with mock.patch(task_path) as mock_task:
             # Delete the binding, which should trigger the signal
             binding.delete()
