@@ -45,7 +45,7 @@ To support the integration of Miniflux with authentik, you need to create an app
 
 ## Miniflux configuration
 
-Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret and OpenID Connect well-known URL from your authentik instance.
+Add the following environment variables to your Miniflux configuration. Make sure to fill in the client ID, client secret, and OpenID Connect well-known URL from your authentik instance.
 
 ```sh
 OAUTH2_PROVIDER=oidc
