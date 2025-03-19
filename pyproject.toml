@@ -154,7 +154,7 @@ opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc
 ] }
 packaging = "*"
 paramiko = "*"
-psycopg = { extras = ["c"], version = "*" }
+psycopg = { extras = ["c", "pool"], version = "*" }
 pydantic = "*"
 pydantic-scim = "*"
 pyjwt = "*"
