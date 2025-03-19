@@ -163,8 +163,10 @@ body {
 }
 
 .badge--support-community {
-    --ifm-badge-background-color: var(--ifm-color-secondary);
-    --ifm-badge-border-color: var(--ifm-color-secondary-contrast-background);
+    --ifm-badge-background-color: var(
+        --ifm-color-secondary-contrast-foreground
+    );
+    --ifm-badge-border-color: var(--ifm-color-secondary-dark);
     --ifm-badge-color: var(--ifm-color-secondary-contrast-background);
 }
 
@@ -176,15 +178,14 @@ body {
 
 .badge--support-authentik {
     --ifm-badge-background-color: var(--ifm-color-primary);
-    --ifm-badge-border-color: var(--ifm-color-primary-contrast-foreground);
-    --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
+    --ifm-badge-border-color: var(--ifm-color-secondary);
+    --ifm-badge-color: var(--ifm-color-secondary);
 }
 
 .badge--version {
     --ifm-badge-background-color: var(--ifm-color-primary-contrast-background);
     --ifm-badge-border-color: var(--ifm-color-primary-contrast-foreground);
     --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
-    cursor: help;
 }
 
 .badge--preview {
