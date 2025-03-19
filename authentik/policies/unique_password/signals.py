@@ -38,12 +38,10 @@ def copy_password_to_password_history(
         and SESSION_KEY_IMPERSONATE_USER not in request.session
     )
     if user_changed_own_password:
-        unique_pwd_policy_binding_in_use = (
-            PolicyBinding.in_use.for_policy(UniquePasswordPolicy).exists()
-            or UniquePasswordPolicy.objects.filter(promptstage__isnull=False).exists()
-        )
+        # Check if any UniquePasswordPolicy is in use
+        unique_pwd_policy_in_use = UniquePasswordPolicy.is_in_use()
 
-        if unique_pwd_policy_binding_in_use:
+        if unique_pwd_policy_in_use:
             """NOTE: Because we run this in a signal after saving the user,
             we are not atomically guaranteed to save password history.
             """

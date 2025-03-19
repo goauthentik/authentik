@@ -93,6 +93,26 @@ class UniquePasswordPolicy(Policy):
 
         return hasher.verify(new_password, old_password)
 
+    @classmethod
+    def is_in_use(cls):
+        """Check if any UniquePasswordPolicy is in use, either through policy bindings
+        or direct attachment to a PromptStage.
+
+        Returns:
+            bool: True if any policy is in use, False otherwise
+        """
+        from authentik.policies.models import PolicyBinding
+
+        # Check if any policy is in use through bindings
+        if PolicyBinding.in_use.for_policy(cls).exists():
+            return True
+
+        # Check if any policy is attached to a PromptStage
+        if cls.objects.filter(promptstage__isnull=False).exists():
+            return True
+
+        return False
+
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Password Uniqueness Policy")
         verbose_name_plural = _("Password Uniqueness Policies")
