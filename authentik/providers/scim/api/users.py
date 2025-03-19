@@ -24,7 +24,9 @@ class SCIMProviderUserSerializer(ModelSerializer):
             "user",
             "user_obj",
             "provider",
+            "attributes",
         ]
+        extra_kwargs = {"attributes": {"read_only": True}}
 
 
 class SCIMProviderUserViewSet(
