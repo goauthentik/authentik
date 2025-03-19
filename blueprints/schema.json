@@ -13020,6 +13020,11 @@
                     "type": "string",
                     "title": "Branding custom css"
                 },
+                "branding_default_flow_background": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Branding default flow background"
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
