@@ -294,6 +294,61 @@ class TestAuthNRequest(TestCase):
         self.assertEqual(parsed_request.id, "aws_LDxLGeubpc5lx12gxCgS6uPbix1yd5re")
         self.assertEqual(parsed_request.name_id_policy, SAML_NAME_ID_FORMAT_EMAIL)
 
+    def test_authn_context_class_ref_mapping(self):
+        """Test custom authn_context_class_ref"""
+        authn_context_class_ref = generate_id()
+        mapping = SAMLPropertyMapping.objects.create(
+            name=generate_id(), expression=f"""return '{authn_context_class_ref}'"""
+        )
+        self.provider.authn_context_class_ref_mapping = mapping
+        self.provider.save()
+        user = create_test_admin_user()
+        http_request = get_request("/", user=user)
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+        self.assertIn(user.username, response)
+        self.assertIn(authn_context_class_ref, response)
+
+    def test_authn_context_class_ref_mapping_invalid(self):
+        """Test custom authn_context_class_ref (invalid)"""
+        mapping = SAMLPropertyMapping.objects.create(name=generate_id(), expression="q")
+        self.provider.authn_context_class_ref_mapping = mapping
+        self.provider.save()
+        user = create_test_admin_user()
+        http_request = get_request("/", user=user)
+
+        # First create an AuthNRequest
+        request_proc = RequestProcessor(self.source, http_request, "test_state")
+        request = request_proc.build_auth_n()
+
+        # To get an assertion we need a parsed request (parsed by provider)
+        parsed_request = AuthNRequestParser(self.provider).parse(
+            b64encode(request.encode()).decode(), "test_state"
+        )
+        # Now create a response and convert it to string (provider)
+        response_proc = AssertionProcessor(self.provider, http_request, parsed_request)
+        response = response_proc.build_response()
+        self.assertIn(user.username, response)
+
+        events = Event.objects.filter(
+            action=EventAction.CONFIGURATION_ERROR,
+        )
+        self.assertTrue(events.exists())
+        self.assertEqual(
+            events.first().context["message"],
+            f"Failed to evaluate property-mapping: '{mapping.name}'",
+        )
+
     def test_request_attributes(self):
         """Test full SAML Request/Response flow, fully signed"""
         user = create_test_admin_user()
@@ -321,8 +376,10 @@ class TestAuthNRequest(TestCase):
         request = request_proc.build_auth_n()
 
         # Create invalid PropertyMapping
-        scope = SAMLPropertyMapping.objects.create(name="test", saml_name="test", expression="q")
-        self.provider.property_mappings.add(scope)
+        mapping = SAMLPropertyMapping.objects.create(
+            name=generate_id(), saml_name="test", expression="q"
+        )
+        self.provider.property_mappings.add(mapping)
 
         # To get an assertion we need a parsed request (parsed by provider)
         parsed_request = AuthNRequestParser(self.provider).parse(
@@ -338,7 +395,7 @@ class TestAuthNRequest(TestCase):
         self.assertTrue(events.exists())
         self.assertEqual(
             events.first().context["message"],
-            "Failed to evaluate property-mapping: 'test'",
+            f"Failed to evaluate property-mapping: '{mapping.name}'",
         )
 
     def test_idp_initiated(self):

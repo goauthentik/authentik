@@ -70,52 +70,57 @@ export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
             return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
-            <form
-                class="pf-c-form"
-                @submit=${(e: Event) => {
-                    this.submitForm(e);
-                }}
-            >
-                ${this.renderUserInfo()}
-                <div class="icon-description">
-                    <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
-                    <p>${this.deviceMessage()}</p>
-                </div>
-                <ak-form-element
-                    label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                        ? msg("Static token")
-                        : msg("Authentication code")}"
-                    required
-                    class="pf-c-form__group"
-                    .errors=${(this.challenge?.responseErrors || {})["code"]}
+                <form
+                    class="pf-c-form"
+                    @submit=${(e: Event) => {
+                        this.submitForm(e);
+                    }}
                 >
-                    <!-- @ts-ignore -->
-                    <input
-                        type="text"
-                        name="code"
-                        inputmode="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                            ? "text"
-                            : "numeric"}"
-                        pattern="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
-                            ? "[0-9a-zA-Z]*"
-                            : "[0-9]*"}"
-                        placeholder="${msg("Please enter your code")}"
-                        autofocus=""
-                        autocomplete="one-time-code"
-                        class="pf-c-form-control"
-                        value="${PasswordManagerPrefill.totp || ""}"
+                    ${this.renderUserInfo()}
+                    <div class="icon-description">
+                        <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
+                        <p>${this.deviceMessage()}</p>
+                    </div>
+                    <ak-form-element
+                        label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
+                            ? msg("Static token")
+                            : msg("Authentication code")}"
                         required
-                    />
-                </ak-form-element>
+                        class="pf-c-form__group"
+                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                    >
+                        <!-- @ts-ignore -->
+                        <input
+                            type="text"
+                            name="code"
+                            inputmode="${this.deviceChallenge?.deviceClass ===
+                            DeviceClassesEnum.Static
+                                ? "text"
+                                : "numeric"}"
+                            pattern="${this.deviceChallenge?.deviceClass ===
+                            DeviceClassesEnum.Static
+                                ? "[0-9a-zA-Z]*"
+                                : "[0-9]*"}"
+                            placeholder="${msg("Please enter your code")}"
+                            autofocus=""
+                            autocomplete="one-time-code"
+                            class="pf-c-form-control"
+                            value="${PasswordManagerPrefill.totp || ""}"
+                            required
+                        />
+                    </ak-form-element>
 
-                <div class="pf-c-form__group pf-m-action">
-                    <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                        ${msg("Continue")}
-                    </button>
-                    ${this.renderReturnToDevicePicker()}
-                </div>
-            </form>
-        </div>`;
+                    <div class="pf-c-form__group pf-m-action">
+                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                            ${msg("Continue")}
+                        </button>
+                        ${this.renderReturnToDevicePicker()}
+                    </div>
+                </form>
+            </div>
+            <footer class="pf-c-login__main-footer">
+                <ul class="pf-c-login__main-footer-links"></ul>
+            </footer>`;
     }
 }
 

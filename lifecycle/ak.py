@@ -1,4 +1,4 @@
-"""Wrapper for lifecycle/ak, to be installed by poetry"""
+"""Wrapper for lifecycle/ak, to be installed by uv"""
 
 from os import system, waitstatus_to_exitcode
 from pathlib import Path

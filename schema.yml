@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.1
+  version: 2025.2.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -22192,6 +22192,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: authn_context_class_ref_mapping
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -25745,7 +25750,7 @@ paths:
           description: ''
     delete:
       operationId: sources_all_destroy
-      description: Source Viewset
+      description: Prevent deletion of built-in sources
       parameters:
       - in: path
         name: slug
@@ -35146,7 +35151,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: integer
+          type: string
       - in: query
         name: use_global_settings
         schema:
@@ -41582,6 +41587,12 @@ components:
       - confidential
       - public
       type: string
+    CompatibilityModeEnum:
+      enum:
+      - default
+      - aws
+      - slack
+      type: string
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -42774,10 +42785,8 @@ components:
           format: email
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
         template:
@@ -42833,10 +42842,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -50389,10 +50397,9 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Time in minutes the token sent is valid.
+          type: string
+          minLength: 1
+          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
         subject:
           type: string
           minLength: 1
@@ -52226,6 +52233,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -52445,6 +52460,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55176,6 +55196,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55341,6 +55369,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55845,6 +55881,11 @@ components:
         token:
           type: string
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55885,7 +55926,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
@@ -55935,6 +55979,11 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        compatibility_mode:
+          allOf:
+          - $ref: '#/components/schemas/CompatibilityModeEnum'
+          title: SCIM Compatibility Mode
+          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
@@ -55967,7 +56016,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
       - provider
       - scim_id

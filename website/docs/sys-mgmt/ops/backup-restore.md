@@ -29,7 +29,7 @@ This guide outlines the critical components to back up and restore in authentik.
 - **Role:** Manages temporary data:
     - User sessions (lost data = users must reauthenticate).
     - Pending tasks (e.g., queued emails, outpost syncs).
-- **Impact of Loss:** Service interruptions (e.g., users logged out), but no permanent data loss.
+- **Impact of Loss:** Service interruptions (e.g., users logged out), and potential permanent data loss (e.g., queued emails).
 - **Backup Guidance:**
     - Use Redis' [`SAVE`](https://redis.io/commands/save) or [`BGSAVE`](https://redis.io/commands/bgsave).
 - **Official Documentation:** [Redis Persistence](https://redis.io/docs/management/persistence/)
@@ -47,6 +47,6 @@ These directories are mounted as volumes in containerized installations and must
 | Directory               | Purpose                                                         | Backup and Restore Notes                                                                                                                                                             |
 | ----------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **`/media`**            | Stores application icons, flow backgrounds, and uploaded files. | Only required if not using S3 external storage. External storage should be backed up using the [AWS S3 Sync](https://docs.aws.amazon.com/cli/latest/reference/s3/sync.html) utility. |
-| **`/certs`**            | Stores TLS certificates in the filesystem.                      | Backup if you rely on these certificates present in the filesystem.. Not needed if authentik has already imported them, as certificates are stored in the database.                  |
+| **`/certs`**            | Stores TLS certificates in the filesystem.                      | Backup if you rely on these certificates present in the filesystem. Not needed if authentik has already imported them, as certificates are stored in the database.                   |
 | **`/custom-templates`** | Stores custom changes to the authentik UI.                      | Required if you modified authentik's default appearance.                                                                                                                             |
 | **`/blueprints`**       | Stores blueprints.                                              | Optional but recommended if using custom blueprints.                                                                                                                                 |
