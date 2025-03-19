@@ -80,7 +80,6 @@ jobs:
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
-        continue-on-error: true
       - name: run migrations to stable
         run: uv run python -m lifecycle.migrate
       - name: checkout current code
