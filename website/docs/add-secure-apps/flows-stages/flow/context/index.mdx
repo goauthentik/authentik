@@ -74,7 +74,7 @@ This key is set to `True` when the flow is executed from an "SSO" context. For e
 
 #### `is_restored` (Token object)
 
-This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
+This key is set when a flow execution is continued from a token. This happens for example when an [Email stage](../../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution. This field is also used by the [Source stage](../../stages/source/index.md) when returning back to the initial flow the Source stage was run on.
 
 #### `is_redirected` (Flow object):ak-version[2024.12]
 
