@@ -7,7 +7,7 @@
 # Chen Zhikai, 2022
 # 刘松, 2022
 # Tianhao Chai <cth451@gmail.com>, 2024
-# Jens L. <jens@goauthentik.io>, 2024
+# Jens L. <jens@goauthentik.io>, 2025
 # deluxghost, 2025
 # 
 #, fuzzy
@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-12 00:09+0000\n"
+"POT-Creation-Date: 2025-03-13 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -1910,12 +1910,32 @@ msgid "SAML Providers from Metadata"
 msgstr "来自元数据的 SAML 提供程序"
 
 #: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "默认"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr "AWS"
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr "Slack"
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "身份验证令牌"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr "SCIM 兼容模式"
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr "更改 authentik 的行为，以兼容特定厂商的 SCIM 实现。"
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"

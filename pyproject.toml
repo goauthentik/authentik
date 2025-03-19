@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "authentik"
-version = "2025.2.1"
+version = "2025.2.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 

@@ -695,6 +695,8 @@ class SourceGroupMatchingModes(models.TextChoices):
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
+    MANAGED_INBUILT = "goauthentik.io/sources/inbuilt"
+
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
