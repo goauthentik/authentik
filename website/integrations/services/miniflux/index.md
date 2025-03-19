@@ -22,6 +22,9 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 ## authentik configuration
+
+To support the integration of Miniflux with authentik, you need to create an application/provider pair in authentik.
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
@@ -45,10 +48,10 @@ Add the following environment variables to your Miniflux configuration. Make sur
 
 ```sh
 OAUTH2_PROVIDER=oidc
-OAUTH2_CLIENT_ID=<em><Client ID from authentik></em>
-OAUTH2_CLIENT_SECRET=<em><Client Secret from authentik></em>
-OAUTH2_REDIRECT_URL=https://<em>miniflux.company</em>/oauth2/oidc/callback
-OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://<em>authentik.company</em>/application/o/<em><application slug></em>/
+OAUTH2_CLIENT_ID=<Client ID from authentik>
+OAUTH2_CLIENT_SECRET=<Client Secret from authentik>
+OAUTH2_REDIRECT_URL=https://miniflux.company/oauth2/oidc/callback
+OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company</em>/application/o/<application slug>/
 OAUTH2_USER_CREATION=1
 ```
 
