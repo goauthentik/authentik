@@ -9,6 +9,7 @@ import { Pagination } from "@goauthentik/api";
 
 import "../ak-dual-select";
 import { AkDualSelect } from "../ak-dual-select";
+import { DualSelectPaginatorNavEvent } from "../events";
 import type { DualSelectPair } from "../types";
 
 const goodForYouRaw = `
@@ -83,11 +84,11 @@ export class AkSbFruity extends LitElement {
             totalPages: Math.ceil(this.options.length / this.pageLength),
         };
         this.onNavigation = this.onNavigation.bind(this);
-        this.addEventListener("ak-pagination-nav-to", this.onNavigation);
+        this.addEventListener(DualSelectPaginatorNavEvent.eventName, this.onNavigation);
     }
 
-    onNavigation(evt: Event) {
-        const current: number = (evt as CustomEvent).detail;
+    onNavigation(evt: DualSelectPaginatorNavEvent) {
+        const current = evt.page;
         const index = current - 1;
         if (index * this.pageLength > this.options.length) {
             console.warn(
