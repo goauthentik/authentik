@@ -64,8 +64,7 @@ class SCIMFilterGroupsTests(TestCase):
         self.users_in_any_filter_group = list(set(self.users_in_group1 + self.users_in_group2))
         self.all_users = list(self.users.values())
         self.users_not_in_filter_groups = [
-            user for user in self.users.values()
-            if user not in self.users_in_any_filter_group
+            user for user in self.users.values() if user not in self.users_in_any_filter_group
         ]
 
         # Assign users to groups
@@ -87,12 +86,12 @@ class SCIMFilterGroupsTests(TestCase):
         self.assertGreaterEqual(groups.count(), len(self.all_groups))
 
         # Verify all users are included
-        user_pks = list(users.values_list('pk', flat=True))
+        user_pks = list(users.values_list("pk", flat=True))
         for user in self.all_users:
             self.assertIn(user.pk, user_pks)
 
         # Verify all test groups are included
-        group_pks = list(groups.values_list('pk', flat=True))
+        group_pks = list(groups.values_list("pk", flat=True))
         for group in self.all_groups:
             self.assertIn(group.pk, group_pks)
 
@@ -108,17 +107,17 @@ class SCIMFilterGroupsTests(TestCase):
         self.assertEqual(groups.count(), 1)
 
         # Verify only users in filter_group1 are included
-        user_pks = set(users.values_list('pk', flat=True))
+        user_pks = set(users.values_list("pk", flat=True))
         for user in self.all_users:
-            if(user in self.users_in_group1):
+            if user in self.users_in_group1:
                 self.assertIn(user.pk, user_pks)
             else:
                 self.assertNotIn(user.pk, user_pks)
 
         # Verify only filter_group1 is included
-        group_pks = list(groups.values_list('pk', flat=True))
+        group_pks = list(groups.values_list("pk", flat=True))
         for group in self.all_groups:
-            if(group == self.filter_group1):
+            if group == self.filter_group1:
                 self.assertIn(group.pk, group_pks)
             else:
                 self.assertNotIn(group.pk, group_pks)
@@ -135,17 +134,17 @@ class SCIMFilterGroupsTests(TestCase):
         self.assertEqual(groups.count(), len(self.filter_groups))
 
         # Verify users in either filter_group1 or filter_group2 are included
-        user_pks = set(users.values_list('pk', flat=True))
+        user_pks = set(users.values_list("pk", flat=True))
         for user in self.all_users:
-            if(user in self.users_in_any_filter_group):
+            if user in self.users_in_any_filter_group:
                 self.assertIn(user.pk, user_pks)
             else:
                 self.assertNotIn(user.pk, user_pks)
 
         # Verify only the filter groups are included
-        group_pks = list(groups.values_list('pk', flat=True))
+        group_pks = list(groups.values_list("pk", flat=True))
         for group in self.all_groups:
-            if(group in self.filter_groups):
+            if group in self.filter_groups:
                 self.assertIn(group.pk, group_pks)
             else:
                 self.assertNotIn(group.pk, group_pks)
@@ -214,6 +213,14 @@ class SCIMFilterGroupsTests(TestCase):
                     group_posts += 1
 
         # Verify number of synchronized users
-        self.assertEqual(user_posts, len(self.users_in_any_filter_group), f"Expected {len(self.users_in_any_filter_group)} users to be synchronized")
+        self.assertEqual(
+            user_posts,
+            len(self.users_in_any_filter_group),
+            f"Expected {len(self.users_in_any_filter_group)} users to be synchronized",
+        )
         # Verify number of synchronized groups
-        self.assertEqual(group_posts, len(self.filter_groups), f"Expected {len(self.users_in_any_filter_group)} groups to be synchronized")
+        self.assertEqual(
+            group_posts,
+            len(self.filter_groups),
+            f"Expected {len(self.users_in_any_filter_group)} groups to be synchronized",
+        )
