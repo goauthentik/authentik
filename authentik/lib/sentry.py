@@ -5,7 +5,6 @@ from typing import Any
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
-from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
 from django.db import DatabaseError, InternalError, OperationalError, ProgrammingError
@@ -124,7 +123,6 @@ def before_send(event: dict, hint: dict) -> dict | None:
         RedisError,
         ResponseError,
         # websocket errors
-        ChannelFull,
         WebSocketException,
         LocalProtocolError,
         # rest_framework error

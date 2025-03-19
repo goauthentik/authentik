@@ -31,6 +31,7 @@ from authentik.blueprints.v1.common import (
     EntryInvalidError,
 )
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
+from authentik.channels.models import GroupChannel, Message
 from authentik.core.models import (
     AuthenticatedSession,
     GroupSourceConnection,
@@ -133,6 +134,8 @@ def excluded_models() -> list[type[Model]]:
         EndpointDeviceConnection,
         DeviceToken,
         StreamEvent,
+        Message,
+        GroupChannel,
     )
 
 

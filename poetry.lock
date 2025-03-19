@@ -895,28 +895,6 @@ daphne = ["daphne (>=4.0.0)"]
 tests = ["async-timeout", "coverage (>=4.5,<5.0)", "pytest", "pytest-asyncio", "pytest-django"]
 
 [[package]]
-name = "channels-redis"
-version = "4.2.1"
-description = "Redis-backed ASGI channel layer implementation"
-optional = false
-python-versions = ">=3.8"
-groups = ["main"]
-files = [
-    {file = "channels_redis-4.2.1-py3-none-any.whl", hash = "sha256:2ca33105b3a04b5a327a9c47dd762b546f30b76a0cd3f3f593a23d91d346b6f4"},
-    {file = "channels_redis-4.2.1.tar.gz", hash = "sha256:8375e81493e684792efe6e6eca60ef3d7782ef76c6664057d2e5c31e80d636dd"},
-]
-
-[package.dependencies]
-asgiref = ">=3.2.10,<4"
-channels = "*"
-msgpack = ">=1.0,<2.0"
-redis = ">=4.6"
-
-[package.extras]
-cryptography = ["cryptography (>=1.3.0)"]
-tests = ["async-timeout", "cryptography (>=1.3.0)", "pytest", "pytest-asyncio", "pytest-timeout"]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.3.2"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -1534,6 +1512,21 @@ files = [
 [package.dependencies]
 django = ">=4"
 django-pgactivity = ">=1.2,<2"
+
+[[package]]
+name = "django-pgtrigger"
+version = "4.13.3"
+description = "Postgres trigger support integrated with Django models."
+optional = false
+python-versions = "<4,>=3.9.0"
+groups = ["main"]
+files = [
+    {file = "django_pgtrigger-4.13.3-py3-none-any.whl", hash = "sha256:d6e4d17021bbd5e425a308f07414b237b9b34423275d86ad756b90c307df3ca4"},
+    {file = "django_pgtrigger-4.13.3.tar.gz", hash = "sha256:c525f9e81f120d166c4bd5fe8c3770640356f0644edf0fc2b7f6426008e52f77"},
+]
+
+[package.dependencies]
+django = ">=4"
 
 [[package]]
 name = "django-prometheus"
@@ -6117,4 +6110,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "~3.12"
-content-hash = "8a6bfd4833e415a9f4f613ab4f33e60c8332b9f5743583222cdb7190f6286216"
+content-hash = "7b2f4c6f458385362a2fd72f4fdcd0b3446fb39279ab4555d4252a6f36ed8c38"

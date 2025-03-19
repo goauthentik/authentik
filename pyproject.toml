@@ -21,6 +21,7 @@ skip = [
     "**/web/src/locales",
     "**/web/xliff",
     "./web/storybook-static",
+    "./web/custom-elements.json",
     "./website/build",
     "./gen-ts-api",
     "./gen-py-api",
@@ -112,7 +113,6 @@ filterwarnings = [
 argon2-cffi = "*"
 celery = "*"
 channels = "*"
-channels-redis = "*"
 cryptography = "*"
 dacite = "*"
 deepmerge = "*"
@@ -124,6 +124,7 @@ django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
 django-pglock = "*"
+django-pgtrigger = "*"
 django-prometheus = "*"
 django-redis = "*"
 django-storages = { extras = ["s3"], version = "*" }
@@ -149,6 +150,7 @@ kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
 msgraph-sdk = "*"
+msgpack = "*"
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = [
     "reggie",
 ] }
