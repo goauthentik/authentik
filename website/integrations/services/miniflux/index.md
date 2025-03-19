@@ -35,9 +35,10 @@ To support the integration of Miniflux with authentik, you need to create an app
 - **Choose a Provider type**: Select OAuth2/OpenID Provider as the provider type.
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+
     - **Redirect URI**:
         - Strict: <kbd>`https://<em>miniflux.company</em>/oauth2/oidc/callback`</kbd>
-        
+
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
