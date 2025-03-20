@@ -187,7 +187,7 @@ export class KerberosSourceViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <ak-markdown
-                                .content=${MDSourceKerberosBrowser}
+                                .md=${MDSourceKerberosBrowser}
                                 meta="users-sources/protocols/kerberos/browser.md"
                                 ;
                             ></ak-markdown>

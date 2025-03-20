@@ -137,13 +137,10 @@ export class SSFProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         <input
-                                            class="pf-c-form-control pf-m-monospace"
+                                            class="pf-c-form-control"
                                             readonly
                                             type="text"
                                             value=${this.provider.ssfUrl || ""}
-                                            placeholder=${this.provider.ssfUrl
-                                                ? msg("SSF URL")
-                                                : msg("No assigned application")}
                                         />
                                     </div>
                                 </dd>

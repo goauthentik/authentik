@@ -8,7 +8,6 @@ import { localized } from "@lit/localize";
 import { LitElement, ReactiveElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import OneDark from "@goauthentik/common/styles/one-dark.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
 import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
@@ -51,7 +50,6 @@ export class AKElement extends LitElement {
         styleRoot.adoptedStyleSheets = adaptCSS([
             ...styleRoot.adoptedStyleSheets,
             ensureCSSStyleSheet(AKGlobal),
-            ensureCSSStyleSheet(OneDark),
         ]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);

@@ -1,19 +1,15 @@
 declare module "*.css";
 
 declare module "*.md" {
-    /**
-     * The HTML content of the markdown file.
-     */
     const html: string;
-    export default html;
+    const metadata: { [key: string]: string };
+    const filename: string;
 }
 
 declare module "*.mdx" {
-    /**
-     * The HTML content of the markdown file.
-     */
     const html: string;
-    export default html;
+    const metadata: { [key: string]: string };
+    const filename: string;
 }
 
 declare namespace Intl {

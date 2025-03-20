@@ -221,7 +221,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text pf-m-monospace">
+                                    <div class="pf-c-description-list__text">
                                         ${this.provider.clientId}
                                     </div>
                                 </dd>
@@ -236,9 +236,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     <div class="pf-c-description-list__text">
                                         <ul>
                                             ${this.provider.redirectUris.map((ru) => {
-                                                return html`<li class="pf-m-monospace">
-                                                    ${ru.matchingMode}: ${ru.url}
-                                                </li>`;
+                                                return html`<li>${ru.matchingMode}: ${ru.url}</li>`;
                                             })}
                                         </ul>
                                     </div>
@@ -358,7 +356,6 @@ export class OAuth2ProviderViewPage extends AKElement {
                 >
                     <div class="pf-c-card__body">
                         <ak-markdown
-                            .content=${MDProviderOAuth2}
                             .replacers=${[
                                 (input: string) => {
                                     if (!this.provider) {
@@ -370,6 +367,8 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     );
                                 },
                             ]}
+                            .md=${MDProviderOAuth2}
+                            meta="providers/oauth2/index.md"
                         ></ak-markdown>
                     </div>
                 </div>

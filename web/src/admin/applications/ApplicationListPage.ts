@@ -89,7 +89,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .content=${MDApplication}></ak-markdown>
+                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
                 </div>
             </div>
         </div>`;

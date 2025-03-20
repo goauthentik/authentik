@@ -13,7 +13,6 @@ const importInlinePatterns = [
     'import AKGlobal from "@goauthentik/common/styles/authentik\\.css',
     'import PF.+ from "@patternfly/patternfly/\\S+\\.css',
     'import ThemeDark from "@goauthentik/common/styles/theme-dark\\.css',
-    'import OneDark from "@goauthentik/common/styles/one-dark\\.css',
     'import styles from "\\./LibraryPageImpl\\.css',
 ];
 
@@ -39,10 +38,6 @@ const config: StorybookConfig = {
         {
             from: "../src/common/styles/theme-dark.css",
             to: "@goauthentik/common/styles/theme-dark.css",
-        },
-        {
-            from: "../src/common/styles/one-dark.css",
-            to: "@goauthentik/common/styles/one-dark.css",
         },
     ],
     framework: {

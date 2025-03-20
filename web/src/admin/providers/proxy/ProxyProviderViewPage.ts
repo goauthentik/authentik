@@ -196,8 +196,8 @@ export class ProxyProviderViewPage extends AKElement {
                     class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >
                     <ak-markdown
-                        .content=${server.md}
                         .replacers=${replacers}
+                        .md=${server.md}
                         meta=${server.meta}
                     ></ak-markdown>
                 </section>`;
@@ -266,7 +266,7 @@ export class ProxyProviderViewPage extends AKElement {
             <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                 <div class="pf-c-card__body">
                     <ak-markdown
-                        .content=${MDHeaderAuthentication}
+                        .md=${MDHeaderAuthentication}
                         meta="proxy/header_authentication.md"
                     ></ak-markdown>
                 </div>

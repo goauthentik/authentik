@@ -18,8 +18,6 @@
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
         "@lit/task": "^1.0.1",
-        "@mdx-js/esbuild": "^3.1.0",
-        "@mdx-js/mdx": "^3.1.0",
         "@open-wc/lit-helpers": "^0.7.0",
         "@patternfly/elements": "^4.0.2",
         "@patternfly/patternfly": "^4.224.2",
@@ -39,11 +37,9 @@
         "guacamole-common-js": "^1.5.0",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mdx-mermaid": "^2.0.3",
         "mermaid": "^11.4.1",
         "rapidoc": "^9.3.7",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "showdown": "^2.1.0",
         "style-mod": "^4.1.2",
         "ts-pattern": "^5.4.0",
         "webcomponent-qr-code": "^1.2.0",
@@ -71,13 +67,13 @@
         "@types/guacamole-common-js": "^1.5.2",
         "@types/mocha": "^10.0.8",
         "@types/node": "^22.7.4",
-        "@types/react": "^18.3.13",
+        "@types/showdown": "^2.0.6",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "9.4",
         "@wdio/cli": "9.4",
         "@wdio/spec-reporter": "^9.1.2",
-        "change-case": "^5.4.4",
+        "chokidar": "^4.0.1",
         "chromedriver": "^131.0.1",
         "esbuild": "^0.25.0",
         "eslint": "^9.11.1",
@@ -92,13 +88,6 @@
         "npm-run-all": "^4.1.5",
         "prettier": "^3.3.3",
         "pseudolocale": "^2.1.0",
-        "rehype-highlight": "^7.0.2",
-        "rehype-parse": "^9.0.1",
-        "rehype-stringify": "^10.0.1",
-        "remark-directive": "^4.0.0",
-        "remark-frontmatter": "^5.0.0",
-        "remark-gfm": "^4.0.1",
-        "remark-mdx-frontmatter": "^5.0.0",
         "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.3.4",
@@ -130,7 +119,7 @@
         "build-locales:build": "wireit",
         "build-proxy": "wireit",
         "build:sfe": "wireit",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
+        "esbuild:watch": "node build.mjs --watch",
         "extract-locales": "wireit",
         "format": "wireit",
         "lint": "wireit",
@@ -165,7 +154,7 @@
                 "instead of `npm run watch`. The former is more comprehensive, but ",
                 "the latter is faster."
             ],
-            "command": "${NODE_RUNNER} scripts/build-web.mjs",
+            "command": "${NODE_RUNNER} build.mjs",
             "files": [
                 "src/**/*.{css,jpg,png,ts,js,json}",
                 "!src/**/*.stories.ts",
@@ -184,7 +173,6 @@
                 "./dist/poly-*.js",
                 "./dist/poly-*.js.map",
                 "./dist/theme-dark.css",
-                "./dist/one-dark.css",
                 "./dist/patternfly.min.css"
             ],
             "dependencies": [
@@ -207,7 +195,7 @@
             ]
         },
         "build-proxy": {
-            "command": "node scripts/build-web.mjs --proxy",
+            "command": "node build.mjs --proxy",
             "dependencies": [
                 "build-locales"
             ]

@@ -1,5 +1,3 @@
-/* #region Global */
-
 :root {
     --ak-accent: #fd4b2d;
 
@@ -47,44 +45,7 @@ html > form > input {
     left: -2000px;
 }
 
-/* #endregion */
-
-/* #region Anchors */
-
-a {
-    --pf-global--link--Color: var(--pf-global--link--Color--light);
-    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-    --pf-global--link--Color--visited: var(--pf-global--link--Color);
-}
-
-/*
-    Note that order of anchor pseudo-selectors must follow:
-
-    1. link
-    2. visited
-    3. hover
-    4. active
-*/
-
-a:link {
-    color: var(--pf-global--link--Color);
-}
-
-a:visited {
-    color: var(--pf-global--link--Color--visited);
-}
-
-a:hover {
-    color: var(--pf-global--link--Color--hover);
-}
-
-a:active {
-    color: var(--pf-global--link--Color);
-}
-
-/* #endregion */
-
-/* #region Icons */
+/*#region Icons*/
 
 .pf-icon {
     display: inline-block;
@@ -105,7 +66,7 @@ a:active {
     );
 }
 
-/* #endregion */
+/*#endregion*/
 
 .pf-c-page__header {
     z-index: 0;
@@ -113,15 +74,15 @@ a:active {
     box-shadow: var(--pf-global--BoxShadow--lg-bottom);
 }
 
-/* #region Login adjustments */
-
+/*****************************
+* Login adjustments
+*****************************/
 /* Ensure card is displayed on small screens */
 .pf-c-login__main {
     display: block;
     position: relative;
     width: 100%;
 }
-
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
     width: 35rem;
@@ -129,34 +90,30 @@ a:active {
     flex-direction: column;
     justify-content: space-between;
 }
-
 .pf-c-login__header {
     flex-grow: 1;
 }
-
 .pf-c-login__footer {
     flex-grow: 2;
     display: flex;
     justify-content: end;
     flex-direction: column;
 }
-
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
     padding: 2rem 0;
 }
-
-/* #endregion */
+/*****************************
+* End Login adjustments
+*****************************/
 
 .pf-c-content h1 {
     display: flex;
     align-items: flex-start;
 }
-
 .pf-c-content h1 i {
     font-style: normal;
 }
-
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
 }
@@ -170,11 +127,9 @@ a:active {
 .pf-m-success {
     color: var(--pf-global--success-color--100) !important;
 }
-
 .pf-m-warning {
     color: var(--pf-global--warning-color--100);
 }
-
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
 }
@@ -212,7 +167,6 @@ a:active {
     justify-content: center;
     width: 100%;
 }
-
 .ak-brand img {
     padding: 0 2rem;
     max-height: inherit;
@@ -227,48 +181,3 @@ a:active {
 .pf-c-data-list {
     padding-inline-start: 0;
 }
-
-/* #region Mermaid */
-
-svg[id^="mermaid-svg-"] {
-    .rect {
-        fill: var(
-            --ak-mermaid-box-background-color,
-            var(--pf-global--BackgroundColor--light-300)
-        ) !important;
-    }
-
-    .messageText {
-        stroke-width: 4;
-        fill: var(--ak-mermaid-message-text) !important;
-        paint-order: stroke;
-    }
-}
-
-/* #endregion */
-
-/* #region Tables */
-
-table thead,
-table tr:nth-child(2n) {
-    background-color: var(
-        --ak-table-stripe-background,
-        var(--pf-global--BackgroundColor--light-200)
-    );
-}
-
-table td,
-table th {
-    border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
-    padding: var(--pf-global--spacer--md);
-}
-
-/* #endregion */
-
-/* #region Code blocks */
-
-pre:has(.hljs) {
-    padding: var(--pf-global--spacer--md);
-}
-
-/* #endregion */
