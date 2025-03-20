@@ -49,8 +49,7 @@ Add the following environment variables to your tandoor configuration. Make sure
 
 ```sh
 SOCIAL_PROVIDERS=allauth.socialaccount.providers.openid_connect
-SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}
-'
+SOCIALACCOUNT_PROVIDERS='{"openid_connect":{"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID from authentik>","secret":"<Client Secret from authentik>","settings":{"server_url":"https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"}}]}}'
 ```
 
 Restart the Tandoor service for the changes to take effect.
