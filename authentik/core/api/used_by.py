@@ -102,6 +102,8 @@ class UsedByMixin:
                 serializer.is_valid()
                 used_by.append(serializer.data)
         # Check the shadows map and remove anything that should be shadowed
-        for shadow in shadows:
-            used_by = [x for x in used_by if not (x["app"] == shadow["app"] and x["model_name"] == shadow["model_name"])]
+        for idx, user in enumerate(used_by):
+            full_model_name = f"{user['app']}.{user['model_name']}"
+            if full_model_name in shadows:
+                del used_by[idx]
         return Response(used_by)
