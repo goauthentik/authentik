@@ -244,8 +244,7 @@ class TestRACConnections(APITestCase):
 
         # Create a second session for the same user
         second_session = AuthenticatedSession.objects.create(
-            user=self.user,
-            session_key=generate_id()
+            user=self.user, session_key=generate_id()
         )
 
         # Try to connect again with a different session
@@ -261,7 +260,7 @@ class TestRACConnections(APITestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
         body2 = loads(flow_response2.content)
-        
+
         # Verify we get an access denied message
         self.assertEqual(body2["component"], "ak-stage-access-denied")
         self.assertIn("Maximum connection limit reached", body2["error"])
