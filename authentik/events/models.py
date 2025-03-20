@@ -339,6 +339,9 @@ class NotificationTransport(SerializerModel):
     webhook_mapping = models.ForeignKey(
         "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
     )
+    webhook_mapping_headers = models.ForeignKey(
+        "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
+    )
     send_once = models.BooleanField(
         default=False,
         help_text=_(
@@ -380,9 +383,18 @@ class NotificationTransport(SerializerModel):
         if notification.event and notification.event.user:
             default_body["event_user_email"] = notification.event.user.get("email", None)
             default_body["event_user_username"] = notification.event.user.get("username", None)
+        headers = {}
         if self.webhook_mapping:
             default_body = sanitize_item(
                 self.webhook_mapping.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                )
+            )
+        if self.webhook_mapping_headers:
+            headers = sanitize_item(
+                self.webhook_mapping_headers.evaluate(
                     user=notification.user,
                     request=None,
                     notification=notification,
@@ -392,6 +404,7 @@ class NotificationTransport(SerializerModel):
             response = get_http_session().post(
                 self.webhook_url,
                 json=default_body,
+                headers=headers,
             )
             response.raise_for_status()
         except RequestException as exc:
