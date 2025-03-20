@@ -109,13 +109,36 @@ class RACFinalStage(RedirectStage):
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        # Find the current session
+        current_session = AuthenticatedSession.objects.filter(
+            session_key=self.request.session.session_key
+        ).first()
+
+        # Invalidate any existing tokens for this session AND endpoint to avoid conflicts
+        # This ensures we don't have multiple active tokens for the same endpoint
+        existing_tokens = ConnectionToken.filter_not_expired(
+            session=current_session,
+            endpoint=self.endpoint,
+        )
+        for old_token in existing_tokens:
+            # Log that we're deleting an existing token
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    f"Removing previous RAC connection token for endpoint: "
+                    f"'{old_token.endpoint.name}'"
+                ),
+                provider=self.provider,
+                endpoint=old_token.endpoint.name,
+            ).from_http(self.request)
+            old_token.delete()
+
+        # Create a new token for the current request
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
             settings=self.executor.plan.context.get("connection_settings", {}),
-            session=AuthenticatedSession.objects.filter(
-                session_key=self.request.session.session_key
-            ).first(),
+            session=current_session,
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )
