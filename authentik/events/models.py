@@ -336,11 +336,27 @@ class NotificationTransport(SerializerModel):
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
-    webhook_mapping = models.ForeignKey(
-        "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
+    webhook_mapping_body = models.ForeignKey(
+        "NotificationWebhookMapping",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        default=None,
+        related_name="+",
+        help_text=_(
+            "Customize the body of the request. "
+            "Mapping should return data that is JSON-serializable."
+        ),
     )
     webhook_mapping_headers = models.ForeignKey(
-        "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
+        "NotificationWebhookMapping",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        default=None,
+        related_name="+",
+        help_text=_(
+            "Configure additional headers to be sent. "
+            "Mapping should return a dictionary of key-value pairs"
+        ),
     )
     send_once = models.BooleanField(
         default=False,
@@ -363,8 +379,8 @@ class NotificationTransport(SerializerModel):
 
     def send_local(self, notification: "Notification") -> list[str]:
         """Local notification delivery"""
-        if self.webhook_mapping:
-            self.webhook_mapping.evaluate(
+        if self.webhook_mapping_body:
+            self.webhook_mapping_body.evaluate(
                 user=notification.user,
                 request=None,
                 notification=notification,
@@ -384,9 +400,9 @@ class NotificationTransport(SerializerModel):
             default_body["event_user_email"] = notification.event.user.get("email", None)
             default_body["event_user_username"] = notification.event.user.get("username", None)
         headers = {}
-        if self.webhook_mapping:
+        if self.webhook_mapping_body:
             default_body = sanitize_item(
-                self.webhook_mapping.evaluate(
+                self.webhook_mapping_body.evaluate(
                     user=notification.user,
                     request=None,
                     notification=notification,
