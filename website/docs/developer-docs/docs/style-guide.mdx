@@ -22,7 +22,9 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 
 ### Logical order
 
-- When writing procedural documentation (How Tos) the steps should follow the workflow in the UI, presenting the exact page(s) they need to navigate, and then the exact fields, tabs, etc that they need to select or fill out. Present the UI components in the document in the same order they appear in the UI.
+- Documentation should be structured to follow the natural order of tasks, making it easier for users to follow. Organize sections in a manner that reflects the actual workflow used to complete tasks.
+
+- When writing procedural documentation (How Tos) the steps should follow the workflow in the UI, specifying the exact pages to navigate and the precise fields, tabs, etc., to select or complete. Present the UI components in the document in the same order they appear in the UI.
 
 ### Headings
 
@@ -30,15 +32,15 @@ Use headings (sub-titles) to break up large blocks of text, making it easier for
 
 ### Look and feel of the docs
 
-In general, the visual "aesthetics" of technical documentation aim to be "lean and clean." This is achieved through concise content, such as shorter sentences and clear instructions, and a layout that maintains a clean, uncluttered appearance with limited color use and minimal large callouts or announcements. Additionally, the colors light blue and light yellow are exclusively reserved for Info and Warning callouts, respectively.
+In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large call0outs or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
 
 ### Cross-references
 
 Always include cross-references to related content. If a concept is referenced elsewhere in the documentation, link to the relevant section to provide users with additional context or instructions.
 
-### Relative paths
+### Relative vs. absolute paths
 
-Use relative paths when linking to documentation files. This will ensure links are automatically updated if file paths change in the future.
+Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between our Integration Guides and our regular technical docs, then use an absolute path.
 
 ### Markdown file type
 
@@ -107,7 +109,7 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 - Use _italic_ for:
 
-    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_).
+    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_). Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
     - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section.
 
 - Use `code formatting` for:
@@ -126,8 +128,6 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
 
-- Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
-
 ### Titles and headers
 
 - Titles and headers (H1, H2, H3) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.
@@ -144,7 +144,7 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
 
-    **Example (of an example)**:
+    **Example**:
 
     This expression policy uses an expression based on the user's name:
         ```
