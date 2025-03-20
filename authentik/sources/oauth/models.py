@@ -253,6 +253,16 @@ class OktaOAuthSource(CreatableType, OAuthSource):
         verbose_name = _("Okta OAuth Source")
         verbose_name_plural = _("Okta OAuth Sources")
 
+class MastodonOauthSource(OAuthSource):
+    """Social Login using a specific mastodon instance."""
+
+    class Meta:
+
+        abstract = True
+        verbose_name = _("Mastodon OAuth Source")
+        verbose_name_plural = _("Mastodon OAuth Sources")
+
+
 
 class RedditOAuthSource(CreatableType, OAuthSource):
     """Social Login using reddit.com."""
