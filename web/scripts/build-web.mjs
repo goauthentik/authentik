@@ -175,9 +175,10 @@ function createEntryPointOptions([source, dest], overrides = {}) {
  * Build all entry points in parallel.
  *
  * @param {EntryPoint[]} entryPoints
+ * @returns {Promise<esbuild.BuildResult[]>}
  */
 async function buildParallel(entryPoints) {
-    await Promise.allSettled(
+    return Promise.all(
         entryPoints.map((entryPoint) => {
             return esbuild.build(createEntryPointOptions(entryPoint));
         }),
