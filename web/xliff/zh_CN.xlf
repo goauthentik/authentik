@@ -9670,6 +9670,30 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
   <target>更改 authentik 的行为，以兼容特定厂商的 SCIM 实现。</target>
 </trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+  <target>AuthnContextClassRef 属性映射</target>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>配置如何创建 AuthnContextClassRef 值。留空时，AuthnContextClassRef 会基于用户使用的身份验证方式设置。</target>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+  <target>SSF URL</target>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+  <target>无分配应用</target>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+  <target>自定义 CSS</target>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>当品牌启用时，应用到页面的自定义 CSS。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
