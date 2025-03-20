@@ -1,5 +1,6 @@
 """SAML Assertion generator"""
 
+from datetime import datetime
 from hashlib import sha256
 from types import GeneratorType
 
@@ -52,6 +53,7 @@ class AssertionProcessor:
     _assertion_id: str
     _response_id: str
 
+    _auth_instant: str
     _valid_not_before: str
     _session_not_on_or_after: str
     _valid_not_on_or_after: str
@@ -65,6 +67,11 @@ class AssertionProcessor:
         self._assertion_id = get_random_id()
         self._response_id = get_random_id()
 
+        _login_event = get_login_event(self.http_request)
+        _login_time = datetime.now()
+        if _login_event:
+            _login_time = _login_event.created
+        self._auth_instant = get_time_string(_login_time)
         self._valid_not_before = get_time_string(
             timedelta_from_string(self.provider.assertion_valid_not_before)
         )
@@ -131,7 +138,7 @@ class AssertionProcessor:
     def get_assertion_auth_n_statement(self) -> Element:
         """Generate AuthnStatement with AuthnContext and ContextClassRef Elements."""
         auth_n_statement = Element(f"{{{NS_SAML_ASSERTION}}}AuthnStatement")
-        auth_n_statement.attrib["AuthnInstant"] = self._valid_not_before
+        auth_n_statement.attrib["AuthnInstant"] = self._auth_instant
         auth_n_statement.attrib["SessionIndex"] = sha256(
             self.http_request.session.session_key.encode("ascii")
         ).hexdigest()
@@ -158,6 +165,28 @@ class AssertionProcessor:
                 auth_n_context_class_ref.text = (
                     "urn:oasis:names:tc:SAML:2.0:ac:classes:MobileOneFactorContract"
                 )
+        if self.provider.authn_context_class_ref_mapping:
+            try:
+                value = self.provider.authn_context_class_ref_mapping.evaluate(
+                    user=self.http_request.user,
+                    request=self.http_request,
+                    provider=self.provider,
+                )
+                if value is not None:
+                    auth_n_context_class_ref.text = str(value)
+                return auth_n_statement
+            except PropertyMappingExpressionException as exc:
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=(
+                        "Failed to evaluate property-mapping: "
+                        f"'{self.provider.authn_context_class_ref_mapping.name}'"
+                    ),
+                    provider=self.provider,
+                    mapping=self.provider.authn_context_class_ref_mapping,
+                ).from_http(self.http_request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+                return auth_n_statement
         return auth_n_statement
 
     def get_assertion_conditions(self) -> Element:
