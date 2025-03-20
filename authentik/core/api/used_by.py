@@ -60,10 +60,14 @@ class UsedByMixin:
         model: Model = self.get_object()
         used_by = []
         shadows = []
-        for attr_name, manager in getmembers(model, lambda x: isinstance(x, Manager)):
+        for attr_name, attr_value in getmembers(model):
+            # Skip if not a manager
+            if not isinstance(attr_value, Manager):
+                continue
+            # Skip objects manager
             if attr_name == "objects":  # pragma: no cover
                 continue
-            manager: Manager
+            manager: Manager = attr_value
             if manager.model._meta.abstract:
                 continue
             app = manager.model._meta.app_label
@@ -98,8 +102,6 @@ class UsedByMixin:
                 serializer.is_valid()
                 used_by.append(serializer.data)
         # Check the shadows map and remove anything that should be shadowed
-        for idx, user in enumerate(used_by):
-            full_model_name = f"{user['app']}.{user['model_name']}"
-            if full_model_name in shadows:
-                del used_by[idx]
+        for shadow in shadows:
+            used_by = [x for x in used_by if not (x["app"] == shadow["app"] and x["model_name"] == shadow["model_name"])]
         return Response(used_by)
