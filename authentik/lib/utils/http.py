@@ -19,7 +19,7 @@ def authentik_user_agent() -> str:
 class TimeoutSession(Session):
     """Always set a default HTTP request timeout"""
 
-    def __init__(self, default_timeout=30):
+    def __init__(self, default_timeout=None):
         super().__init__()
         self.timeout = default_timeout
 
@@ -35,7 +35,7 @@ class TimeoutSession(Session):
         allow_redirects=...,
         **kwargs,
     ):
-        if not timeout:
+        if not timeout and self.timeout:
             timeout = self.timeout
         return super().send(
             request,
@@ -79,4 +79,5 @@ def get_http_session() -> Session:
     if CONFIG.get_bool("debug") or CONFIG.get("log_level") == "trace":
         session = DebugSession()
     session.headers["User-Agent"] = authentik_user_agent()
+    session.timeout = CONFIG.get_optional_int("http_timeout")
     return session
