@@ -6,7 +6,8 @@ import {
     GroupMatchingModeToLabel,
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { ServerConfig } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import {
     CapabilitiesEnum,
@@ -62,8 +63,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 sAMLSourceRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
+        if (ServerConfig.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["icon"];
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({

@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerConfig } from "@goauthentik/common/global";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
 
@@ -24,8 +24,8 @@ export class ConfigContextController implements ReactiveController {
             initialValue: undefined,
         });
         // Pre-hydrate from template-embedded config
-        this.context.setValue(globalAK().config);
-        this.host.config = globalAK().config;
+        this.context.setValue(ServerConfig);
+        this.host.config = ServerConfig;
         this.fetch = this.fetch.bind(this);
         this.fetch();
     }

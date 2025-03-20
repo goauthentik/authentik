@@ -4,7 +4,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { APIConfig } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UIConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
@@ -166,14 +166,14 @@ class UserInterfacePresentation extends AKElement {
 
         return html`<a
                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                href="${globalAK().api.base}if/admin/"
+                href="${APIConfig.base}if/admin/"
                 slot="extra"
             >
                 ${msg("Admin interface")}
             </a>
             <a
                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                href="${globalAK().api.base}if/admin/"
+                href="${APIConfig.base}if/admin/"
                 slot="extra"
             >
                 ${msg("Admin")}

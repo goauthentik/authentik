@@ -4,7 +4,7 @@ import {
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { BrandConfig, FlowConfig } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -201,7 +201,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
+        return BrandConfig.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
@@ -487,7 +487,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+        const prefilledFlow = FlowConfig?.layout || FlowLayoutEnum.Stacked;
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -528,7 +528,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     src="${themeImage(
                                                         first(
                                                             this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
+                                                            BrandConfig.brandingLogo,
                                                             DefaultBrand.brandingLogo,
                                                         ),
                                                     )}"

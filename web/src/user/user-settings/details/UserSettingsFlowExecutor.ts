@@ -5,7 +5,7 @@ import {
     parseAPIResponseError,
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
-import { globalAK } from "@goauthentik/common/global";
+import { APIConfig } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -181,7 +181,7 @@ export class UserSettingsFlowExecutor
                 );
                 return html`
                     <a
-                        href="${globalAK().api.base}if/flow/${this.flowSlug}/"
+                        href="${APIConfig.base}if/flow/${this.flowSlug}/"
                         class="pf-c-button pf-m-primary"
                     >
                         ${msg("Open settings")}
