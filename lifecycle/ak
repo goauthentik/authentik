@@ -62,12 +62,12 @@ function prepare_debug {
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server libkrb5-dev gcc
-    VIRTUAL_ENV=/ak-root/venv poetry install --no-ansi --no-interaction
+    VIRTUAL_ENV=/ak-root/.venv uv sync --frozen
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }
 
-if [[ "$(python -m authentik.lib.config debugger 2> /dev/null)" == "True" ]]; then
+if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
 

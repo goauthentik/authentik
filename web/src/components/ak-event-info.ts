@@ -271,9 +271,10 @@ export class EventInfo extends AKElement {
                         <tbody role="rowgroup">
                             ${Object.keys(diff).map((key) => {
                                 const value = diff[key];
-                                const previousCol = value.previous_value
-                                    ? JSON.stringify(value.previous_value, null, 4)
-                                    : msg("-");
+                                const previousCol =
+                                    value.previous_value !== null
+                                        ? JSON.stringify(value.previous_value, null, 4)
+                                        : msg("-");
                                 let newCol = html``;
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">
