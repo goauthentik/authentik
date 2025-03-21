@@ -3,35 +3,10 @@ title: Integrate with Applications
 sidebar_label: Applications
 ---
 
-# Applications
-
 import DocCardList from "@theme/DocCardList";
-import SupportBadge from "@site/src/components/SupportBadge";
 
-Below is a list of all applications that are known to work with authentik.
+Most third-party services which support authentication protocols such as SAML, OAuth, and OpenID Connect can be integrated with authentik, allowing users to log in to these services using their authentik credentials.
 
-:::info{title="Support Levels"}
-All app integrations will have one of these badges:
-
-|                                     |                                                            |
-| ----------------------------------- | ---------------------------------------------------------- |
-| <SupportBadge level="community" />  | The integration is community maintained.                   |
-| <SupportBadge level="vendor" />     | The integration is supported by the vendor.                |
-| <SupportBadge level="authentik" />  | The integration is regularly tested by the authentik team. |
-| <SupportBadge level="deprecated" /> | The integration is deprecated and may be removed.          |
-
-:::
-
-### Add a new application
-
-To add documentation for a new application (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) file from our GitHub repo. You can download the template file using the following command:
-
-```shell
-wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/template/service.md
-```
-
-Don't forget to edit the `sidebarsIntegrations.js` file to add your new integration to the lefthand navigation bar.
-
-## Integration categories
+If you don't see an application you're looking for, you can reach us on [GitHub](https://github.com/goauthentik/authentik), [Discord](https://discord.com/channels/809154715984199690/809154716507963434), or via email to [hello@goauthentik.io](mailto:hello@goauthentik.io).
 
 <DocCardList />
