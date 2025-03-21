@@ -11,11 +11,12 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
+        migrations.RenameField(
             model_name="notificationtransport",
-            name="webhook_mapping",
+            old_name="webhook_mapping",
+            new_name="webhook_mapping_body",
         ),
-        migrations.AddField(
+        migrations.AlterField(
             model_name="notificationtransport",
             name="webhook_mapping_body",
             field=models.ForeignKey(
