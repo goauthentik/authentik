@@ -1,9 +1,9 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/buttons/ActionButton";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/events/LogViewer";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
