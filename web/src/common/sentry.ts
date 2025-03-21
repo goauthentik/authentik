@@ -19,8 +19,6 @@ export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
 export async function configureSentry(canDoPpi = false): Promise<Config> {
     const cfg = await config();
 
-    if (Date.now()) return cfg;
-
     if (cfg.errorReporting.enabled) {
         init({
             dsn: cfg.errorReporting.sentryDsn,
