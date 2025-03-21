@@ -4,7 +4,7 @@ title: Style Guide
 
 This Style Guide provides guidelines to ensure that the authentik documentation is consistent, clear, and easy to follow. It standardizes aspects like phrasing, formatting, tone, and structure across all documentation.
 
-We appreciate all contributions to our documentation — whether it's fixing a typo, adding new content, or writing an entirely new topic. To help us review and merge your contributions more efficiently, please follow our [writing documentation](./writing-documentation.md) guidelines. If you notice any inconsistencies, feel free to open an [Issue](https://github.com/goauthentik/authentik/issues) or submit a [Pull Request](https://github.com/goauthentik/authentik/pulls) to address them.
+We appreciate all contributions to our documentation — whether it's fixing a typo, adding new content, or writing an entirely new topic. To help us review and merge your contributions more efficiently, please follow our [writing documentation](./writing-documentation.md) guidelines. If you notice any inconsistencies, feel free to open an [Issue](https://github.com/goauthentik/authentik/issues) or submit a [Pull Request](https://github.com/goauthentik/authentik/pulls) to fix them.
 
 - [General Style Guidelines](#general-style-guidelines)
 - [Terminology](#terminology)
@@ -22,19 +22,25 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 
 ### Logical order
 
-Documentation should be structured to follow the natural order of tasks, making it easier for users to follow. Organize sections in a manner that reflects the actual workflow used to complete tasks.
+- Documentation should be structured to follow the natural order of tasks, making it easier for users to follow. Organize sections in a manner that reflects the actual workflow used to complete tasks.
+
+- When writing procedural documentation (How Tos) the steps should follow the workflow in the UI, specifying the exact pages to navigate and the precise fields, tabs, etc., to select or complete. Present the UI components in the document in the same order they appear in the UI.
 
 ### Headings
 
 Use headings (sub-titles) to break up large blocks of text, making it easier for users to navigate the content and find specific sections quickly.
 
+### Look and feel of the docs
+
+In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large call0outs or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
+
 ### Cross-references
 
 Always include cross-references to related content. If a concept is referenced elsewhere in the documentation, link to the relevant section to provide users with additional context or instructions.
 
-### Relative paths
+### Relative vs. absolute paths
 
-Use relative paths when linking to documentation files. This will ensure links are automatically updated if file paths change in the future.
+Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between our Integration Guides and our regular technical docs, then use an absolute path.
 
 ### Markdown file type
 
@@ -92,16 +98,19 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 ### Fonts and Font Styling
 
+- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
+
+- When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
+
 - Use **bold** to highlight:
 
     - UI elements such as field names, labels, buttons, or options (e.g., **Save** button, **Username** field).
     - Key actions in instructions (e.g., **Click Next**).
-    - Important terms or concepts on first mention in a section.
 
 - Use _italic_ for:
 
-    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_).
-    - Emphasis, but sparingly, to avoid overuse.
+    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_). Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
+    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section.
 
 - Use `code formatting` for:
 
@@ -110,8 +119,14 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
     - Inline code snippets (e.g., `.env`).
 
 - When handling URLs:
-    - For URLs that users need to enter as values, apply `code formatting` and _italicize_ the placeholder variables to indicate user-defined inputs (e.g., `<kbd>https://<em>your-domain</em>/application/oauth/callback/</kbd>`).
-    - When referring to URLs within sentences or instructions, do not use code formatting. Instead, use regular text (e.g., "Navigate to https://example.com to begin the configuration process").
+
+    - For URLs entered as values or defined in fields _italicize_ any variables within them to emphasize that placeholders require user input.
+
+        In Markdown, use this syntax: `<kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>`
+
+        Rendered formatting: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
+
+    - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
 
 ### Titles and headers
 
@@ -127,16 +142,16 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 ### Examples
 
-When showing an example, use a new line, **bold** text, and a semi-colon to mark it as an example:
+When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
 
-**Example**:
-This expression policy checks the user's name before taking action.
+    **Example**:
 
-```
-if request.context["pending_user"].username == "marie":
-  return True
-return False
-```
+    This expression policy uses an expression based on the user's name:
+        ```
+        if request.context["pending_user"].username == "marie":
+            return True
+            return False
+        ```
 
 ## Component-Based Formatting
 
