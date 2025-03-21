@@ -9694,6 +9694,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Custom CSS to apply to pages when this brand is active.</source>
   <target>当品牌启用时，应用到页面的自定义 CSS。</target>
 </trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+  <target>默认流程背景</target>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+  <target>流程执行过程中使用的默认背景。可以按流程单独覆盖。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
