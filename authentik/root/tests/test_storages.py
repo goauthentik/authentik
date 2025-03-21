@@ -228,6 +228,7 @@ class TestS3Storage(TestCase):
         """Set up test environment"""
         super().setUp()
         self.mock_client = MagicMock()
+        self.mock_s3_client = MagicMock()
         self.mock_bucket = MagicMock()
         self.mock_object = MagicMock()
 
@@ -243,8 +244,8 @@ class TestS3Storage(TestCase):
         )
 
         # Setup successful validation by default
-        self.mock_client.list_buckets.return_value = {"Buckets": [{"Name": "test-bucket"}]}
-        self.mock_client.head_bucket.return_value = {}
+        self.mock_s3_client.list_buckets.return_value = {"Buckets": [{"Name": "test-bucket"}]}
+        self.mock_s3_client.head_bucket.return_value = {}
 
         # Mock the configuration before creating the storage instance
         self.config_patcher = patch("authentik.lib.config.CONFIG.refresh")
@@ -263,8 +264,16 @@ class TestS3Storage(TestCase):
         # Create test storage with mocked client
         self.session_patcher = patch("boto3.Session")
         self.mock_session = self.session_patcher.start()
-        self.mock_session.return_value.client.return_value = self.mock_client
+        mock_session_instance = self.mock_session.return_value
+        mock_session_instance.resource.return_value = self.mock_client
+        mock_session_instance.client.return_value = self.mock_s3_client
+
+        # Create the storage instance
         self.storage = S3Storage()
+
+        # Inject our mocks directly into the instance
+        self.storage._client = self.mock_client
+        self.storage._s3_client = self.mock_s3_client
         self.storage._bucket = self.mock_bucket
 
     def tearDown(self):

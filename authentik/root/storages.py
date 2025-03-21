@@ -260,7 +260,7 @@ class TenantAwareStorage:
         Returns:
             str: Path prefixed with tenant identifier for proper isolation.
         """
-        return str(Path(self.tenant_prefix) / name)
+        return f"{self.tenant_prefix}/{name}"
 
 
 class FileStorage(TenantAwareStorage, FileSystemStorage):
@@ -412,16 +412,16 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             SuspiciousOperation: If the file path attempts to traverse outside the storage directory
         """
         # Apply tenant prefix if not already included in the name
-        if not name.startswith(self.tenant_prefix):
+        if not name.startswith(f"{self.tenant_prefix}/"):
             tenant_path = self.get_tenant_path(name)
         else:
             tenant_path = name
 
         # Normalize the path to prevent path traversal
-        name = self._validate_path(tenant_path)
+        clean_name = self._validate_path(tenant_path)
 
         # Join the base location with the validated name
-        return str(self.base_location / name)
+        return os.path.join(self.location, clean_name.replace(f"{self.tenant_prefix}/", "", 1))
 
     def _save(self, name: str, content) -> str:
         """Save the file with content validation and tenant prefix application.
@@ -444,8 +444,11 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
                 LOGGER.warning("Image validation failed", name=name, error=str(e))
                 raise
 
-        # Apply tenant prefix to ensure isolation
-        tenant_name = self.get_tenant_path(name)
+        # Apply tenant prefix if it's not already there
+        if not name.startswith(f"{self.tenant_prefix}/"):
+            tenant_name = self.get_tenant_path(name)
+        else:
+            tenant_name = name
 
         # Perform regular file save
         file_path = self.path(tenant_name)
@@ -457,9 +460,7 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         LOGGER.debug("Saving file", name=name, path=file_path)
 
         # Call parent class _save with the tenant-prefixed path
-        saved_name = super()._save(tenant_name, content)
-
-        return saved_name
+        return super()._save(tenant_name, content)
 
 
 class S3Storage(TenantAwareStorage, BaseS3Storage):
@@ -485,6 +486,11 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         Raises:
             ImproperlyConfigured: If AWS credentials or configuration is invalid
         """
+        # Initialize client/bucket references
+        self._client = None
+        self._s3_client = None
+        self._bucket = None
+
         # Pre-fetch configuration values
         self._session_profile = self._get_config_value("session_profile")
         self._access_key = self._get_config_value("access_key")
@@ -555,9 +561,6 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             )
             raise
 
-        self._client = None
-        self._s3_client = None
-        self._bucket = None
         self._file_mapping = {}
 
     def _get_config_value(self, key: str) -> str | None:
