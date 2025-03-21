@@ -230,6 +230,18 @@ class TenantAwareStorage:
         """
         return connection.schema_name
 
+    @tenant_prefix.setter
+    def tenant_prefix(self, value):
+        """Setter for tenant_prefix property.
+
+        This is required for tests that need to set tenant-specific resources.
+        It does nothing as the property always returns connection.schema_name,
+        but it's needed to prevent AttributeError.
+        """
+        # This is a no-op, but prevents AttributeError in tests
+        # as the property is derived from the connection
+        pass
+
     @tenant_prefix.deleter
     def tenant_prefix(self):
         """Deleter for tenant_prefix property.

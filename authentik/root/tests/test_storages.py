@@ -65,13 +65,15 @@ class TestImageValidation(TestCase):
     def test_invalid_content_type(self):
         """Test validation with invalid content type"""
         png_file = self.create_test_image("PNG", "application/octet-stream")
-        self.assertFalse(validate_image_file(png_file))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(png_file)
 
     def test_invalid_extension(self):
         """Test validation with invalid extension"""
         png_file = self.create_test_image("PNG", "image/png")
         png_file.name = "test.txt"
-        self.assertFalse(validate_image_file(png_file))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(png_file)
 
     def test_svg_validation(self):
         """Test SVG validation"""
@@ -90,14 +92,16 @@ class TestImageValidation(TestCase):
         invalid_svg = InMemoryUploadedFile(
             io.BytesIO(b"not an svg"), "meta_icon", "test.svg", "image/svg+xml", 10, None
         )
-        self.assertFalse(validate_image_file(invalid_svg))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(invalid_svg)
 
     def test_non_image_file(self):
         """Test validation of non-image file"""
         text_file = InMemoryUploadedFile(
             io.BytesIO(b"test content"), "meta_icon", "test.txt", "text/plain", 12, None
         )
-        self.assertFalse(validate_image_file(text_file))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(text_file)
 
     def test_corrupted_image(self):
         """Test validation of corrupted image files"""
@@ -112,7 +116,8 @@ class TestImageValidation(TestCase):
         data[20:25] = b"XXXXX"  # Corrupt some bytes in the middle
 
         corrupted_file = ContentFile(bytes(data), name="corrupted.png")
-        self.assertFalse(validate_image_file(corrupted_file))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(corrupted_file)
 
     def test_truncated_image(self):
         """Test validation of truncated image files"""
@@ -126,7 +131,8 @@ class TestImageValidation(TestCase):
         data = img_io.getvalue()[:100]  # Only take first 100 bytes
 
         truncated_file = ContentFile(data, name="truncated.png")
-        self.assertFalse(validate_image_file(truncated_file))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(truncated_file)
 
     def test_invalid_svg_content(self):
         """Test validation with malformed SVG content"""
@@ -139,7 +145,8 @@ class TestImageValidation(TestCase):
             11,
             None,
         )
-        self.assertFalse(validate_image_file(incomplete_svg))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(incomplete_svg)
 
         # Test with non-SVG XML
         non_svg_xml = InMemoryUploadedFile(
@@ -150,7 +157,8 @@ class TestImageValidation(TestCase):
             11,
             None,
         )
-        self.assertFalse(validate_image_file(non_svg_xml))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(non_svg_xml)
 
         # Test with malformed XML
         malformed_xml = InMemoryUploadedFile(
@@ -161,7 +169,8 @@ class TestImageValidation(TestCase):
             11,
             None,
         )
-        self.assertFalse(validate_image_file(malformed_xml))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(malformed_xml)
 
         # Test with valid SVG
         valid_svg = InMemoryUploadedFile(
@@ -196,7 +205,8 @@ class TestImageValidation(TestCase):
             4,
             None,
         )
-        self.assertFalse(validate_image_file(invalid_ico))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(invalid_ico)
 
         # Test with truncated ICO
         truncated_ico = InMemoryUploadedFile(
@@ -207,7 +217,8 @@ class TestImageValidation(TestCase):
             2,
             None,
         )
-        self.assertFalse(validate_image_file(truncated_ico))
+        with self.assertRaises(FileValidationError):
+            validate_image_file(truncated_ico)
 
 
 class TestS3Storage(TestCase):
@@ -756,32 +767,31 @@ class TestFileStorage(TestCase):
 
     def test_base_location(self):
         """Test base_location property"""
-        # Mock tenant prefix
-        with patch.object(self.storage, "tenant_prefix", return_value="test_tenant"):
-            self.assertEqual(self.storage.base_location, Path(self.temp_dir) / "test_tenant")
+        # Use the mocked connection
+        self.mock_connection.schema_name = "test_tenant"
+        self.assertEqual(self.storage.base_location, Path(self.temp_dir) / "test_tenant")
 
     def test_location(self):
         """Test location property"""
-        # Mock tenant prefix
-        with patch.object(self.storage, "tenant_prefix", return_value="test_tenant"):
-            self.assertEqual(
-                self.storage.location, os.path.abspath(Path(self.temp_dir) / "test_tenant")
-            )
+        # Use the mocked connection
+        self.mock_connection.schema_name = "test_tenant"
+        self.assertEqual(
+            self.storage.location, os.path.abspath(Path(self.temp_dir) / "test_tenant")
+        )
 
     def test_base_url(self):
         """Test base_url property"""
-        # Mock tenant prefix
-        with patch.object(self.storage, "tenant_prefix", return_value="test_tenant"):
-            self.assertEqual(self.storage.base_url, "/media/test_tenant/")
+        # Use the mocked connection
+        self.mock_connection.schema_name = "test_tenant"
+        self.assertEqual(self.storage.base_url, "/media/test_tenant/")
 
     def test_path(self):
         """Test path calculation"""
         # Set up tenant-aware path testing
-        with patch("django.db.connection") as mock_conn:
-            mock_conn.schema_name = "test_tenant"
-            # Full path to a file should include tenant prefix
-            expected_path = os.path.abspath(Path(self.temp_dir) / "test_tenant" / "test.txt")
-            self.assertEqual(self.storage.path("test.txt"), expected_path)
+        self.mock_connection.schema_name = "test_tenant"
+        # Full path to a file should include tenant prefix
+        expected_path = os.path.join(self.temp_dir, "test_tenant", "test.txt")
+        self.assertEqual(self.storage.path("test.txt"), expected_path)
 
     def test_get_valid_name(self):
         """Test filename sanitization"""
@@ -808,25 +818,35 @@ class TestFileStorage(TestCase):
 
     def test_save(self):
         """Test _save method"""
+        self.mock_connection.schema_name = "test_tenant"
         content = ContentFile(b"test content")
         name = self.storage._save("test.txt", content)
 
+        # Verify name has tenant prefix
+        self.assertTrue(name.startswith("test_tenant/"))
+
         # Verify file was saved
-        self.assertTrue(os.path.exists(os.path.join(self.temp_dir, name)))
+        tenant_path = os.path.join(self.temp_dir, name)
+        self.assertTrue(os.path.exists(tenant_path))
 
         # Verify content
-        with open(os.path.join(self.temp_dir, name), "rb") as f:
+        with open(tenant_path, "rb") as f:
             self.assertEqual(f.read(), b"test content")
 
         # Test with nested directory
         content = ContentFile(b"nested content")
         name = self.storage._save("dir/test.txt", content)
 
+        # Verify name has tenant prefix and includes the directory
+        self.assertTrue(name.startswith("test_tenant/"))
+        self.assertIn("dir/test.txt", name)
+
         # Verify file was saved
-        self.assertTrue(os.path.exists(os.path.join(self.temp_dir, name)))
+        tenant_path = os.path.join(self.temp_dir, name)
+        self.assertTrue(os.path.exists(tenant_path))
 
         # Verify content
-        with open(os.path.join(self.temp_dir, name), "rb") as f:
+        with open(tenant_path, "rb") as f:
             self.assertEqual(f.read(), b"nested content")
 
     def test_file_operations(self):

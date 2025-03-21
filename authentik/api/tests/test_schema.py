@@ -16,7 +16,6 @@ def represent_str_class(dumper, data):
 
 
 add_representer(type, represent_type)
-add_representer(str, represent_str_class)
 
 
 class TestSchemaGeneration(APITestCase):
