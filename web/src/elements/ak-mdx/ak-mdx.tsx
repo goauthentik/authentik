@@ -72,8 +72,56 @@ export class AKMDX extends AKElement {
             PFList,
             PFContent,
             css`
+                a {
+                    --pf-global--link--Color: var(--pf-global--link--Color--light);
+                    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+                    --pf-global--link--Color--visited: var(--pf-global--link--Color);
+                }
+
+                /*
+                Note that order of anchor pseudo-selectors must follow:
+                    1. link
+                    2. visited
+                    3. hover
+                    4. active
+                */
+
+                a:link {
+                    color: var(--pf-global--link--Color);
+                }
+
+                a:visited {
+                    color: var(--pf-global--link--Color--visited);
+                }
+
+                a:hover {
+                    color: var(--pf-global--link--Color--hover);
+                }
+
+                a:active {
+                    color: var(--pf-global--link--Color);
+                }
+
                 h2:first-of-type {
                     margin-top: 0;
+                }
+
+                table thead,
+                table tr:nth-child(2n) {
+                    background-color: var(
+                        --ak-table-stripe-background,
+                        var(--pf-global--BackgroundColor--light-200)
+                    );
+                }
+
+                table td,
+                table th {
+                    border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
+                    padding: var(--pf-global--spacer--md);
+                }
+
+                pre:has(.hljs) {
+                    padding: var(--pf-global--spacer--md);
                 }
 
                 svg[id^="mermaid-svg-"] {
