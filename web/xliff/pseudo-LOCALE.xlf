@@ -9417,4 +9417,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6171ded034da4e96">
   <source>Custom CSS to apply to pages when this brand is active.</source>
 </trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+</trans-unit>
 </body></file></xliff>
