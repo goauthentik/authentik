@@ -1,20 +1,14 @@
-/**
- * @import {Plugin} from 'unified'
- * @import {Root, List} from 'mdast'
- * @import {VFile} from 'vfile'
- */
+import type { List, Root } from "mdast";
+import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
+import type { VFile } from "vfile";
 
 /**
- * Remark plugin to process links
- * @type {Plugin<[unknown], Root, VFile>}
+ * Remark plugin to process lists.
  */
-export const remarkLists = () => {
+export const remarkLists: Plugin<[unknown], Root, VFile> = () => {
     return function transformer(tree) {
-        /**
-         * @param {List} node
-         */
-        const visitor = (node) => {
+        const visitor = (node: List) => {
             node.data = node.data || {};
 
             node.data.hProperties = {

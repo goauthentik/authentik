@@ -228,25 +228,6 @@ a:active {
     padding-inline-start: 0;
 }
 
-/* #region Mermaid */
-
-svg[id^="mermaid-svg-"] {
-    .rect {
-        fill: var(
-            --ak-mermaid-box-background-color,
-            var(--pf-global--BackgroundColor--light-300)
-        ) !important;
-    }
-
-    .messageText {
-        stroke-width: 4;
-        fill: var(--ak-mermaid-message-text) !important;
-        paint-order: stroke;
-    }
-}
-
-/* #endregion */
-
 /* #region Tables */
 
 table thead,

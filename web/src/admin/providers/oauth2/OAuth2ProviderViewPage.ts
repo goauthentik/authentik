@@ -8,8 +8,8 @@ import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
@@ -357,20 +357,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
-                        <ak-markdown
-                            .content=${MDProviderOAuth2}
+                        <ak-mdx
+                            .url=${MDProviderOAuth2}
                             .replacers=${[
                                 (input: string) => {
                                     if (!this.provider) {
                                         return input;
                                     }
                                     return input.replaceAll(
-                                        "&lt;application slug&gt;",
+                                        "<application slug>",
                                         this.provider.assignedApplicationSlug,
                                     );
                                 },
                             ]}
-                        ></ak-markdown>
+                        ></ak-mdx>
                     </div>
                 </div>
             </div>`;
