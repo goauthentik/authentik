@@ -19,7 +19,7 @@ def make_many_groups(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_scim", "0013_scimprovider_filter_groups_and_more"),
+        ("authentik_providers_scim", "0014_scimprovider_filter_groups_and_more"),
     ]
 
     operations = [migrations.RunPython(make_many_groups)]

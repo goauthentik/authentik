@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_providers_scim", "0014_scimprovider_migrate_filter_groups"),
+        ("authentik_providers_scim", "0015_scimprovider_migrate_filter_groups"),
     ]
 
     operations = [

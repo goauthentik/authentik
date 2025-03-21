@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_core", "0043_alter_group_options"),
-        ("authentik_providers_scim", "0012_scimprovider_compatibility_mode"),
+        ("authentik_providers_scim", "0013_scimprovidergroup_attributes_and_more"),
     ]
 
     operations = [
