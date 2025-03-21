@@ -46890,10 +46890,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -46921,10 +46929,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -51358,10 +51374,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
