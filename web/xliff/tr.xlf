@@ -5655,11 +5655,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Web Kancası URL'si</target>
         
       </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Web Kancası Haritalama</target>
-        
-      </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
         <source>Send once</source>
         <target>Bir kez gönder</target>
@@ -8325,10 +8320,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
   <source>Finished with errors</source>
   <target>Hatalarla tamamlandı</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target><x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>) Tamamlandı</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>Senkronizasyon şu anda çalışıyor</target>
@@ -9479,6 +9470,18 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sea64900dbcf879c8">
   <source>Default background used during flow execution. Can be overridden per flow.</source>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
 </trans-unit>
     </body>
   </file>
