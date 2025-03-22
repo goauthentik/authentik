@@ -117,6 +117,74 @@ class TestProviderSAML(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
+    )
+    @apply_blueprint(
+        "system/providers-saml.yaml",
+    )
+    @reconcile_app("authentik_crypto")
+    def test_sp_initiated_implicit_post(self):
+        """test SAML Provider flow SP-initiated flow (implicit consent)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        provider: SAMLProvider = SAMLProvider.objects.create(
+            name="saml-test",
+            acs_url="http://localhost:9009/saml/acs",
+            audience="authentik-e2e",
+            issuer="authentik-e2e",
+            sp_binding=SAMLBindings.POST,
+            authorization_flow=authorization_flow,
+            signing_kp=create_test_cert(),
+        )
+        provider.property_mappings.set(SAMLPropertyMapping.objects.all())
+        provider.save()
+        Application.objects.create(
+            name="SAML",
+            slug="authentik-saml",
+            provider=provider,
+        )
+        self.setup_client(provider, True)
+        self.driver.get("http://localhost:9009")
+        self.login()
+        self.wait_for_url("http://localhost:9009/")
+
+        body = loads(self.driver.find_element(By.CSS_SELECTOR, "pre").text)
+
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
+            [self.user.name],
+        )
+        self.assertEqual(
+            body["attr"][
+                "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+            ],
+            [self.user.username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/username"],
+            [self.user.username],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.goauthentik.io/2021/02/saml/uid"],
+            [str(self.user.pk)],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"],
+            [self.user.email],
+        )
+        self.assertEqual(
+            body["attr"]["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn"],
+            [self.user.email],
+        )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
         "default/flow-default-provider-authorization-explicit-consent.yaml",
     )
     @apply_blueprint(
