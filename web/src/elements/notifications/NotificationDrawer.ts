@@ -144,7 +144,7 @@ export class NotificationDrawer extends AKElement {
         new EventsApi(DEFAULT_CONFIG).eventsNotificationsMarkAllSeenCreate().then(() => {
             showMessage({
                 level: MessageLevel.success,
-                message: msg("Successfully cleared notifications"),
+                title: msg("Successfully cleared notifications"),
             });
             this.firstUpdated();
             this.dispatchEvent(

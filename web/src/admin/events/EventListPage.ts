@@ -1,5 +1,5 @@
 import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventUser, formatGeoEvent } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -80,7 +80,7 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+                <small>${formatGeoEvent(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>

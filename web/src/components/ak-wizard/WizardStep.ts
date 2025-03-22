@@ -185,13 +185,6 @@ export class WizardStep extends AKElement {
         this.dispatchEvent(new WizardCloseEvent());
     }
 
-    @bound
-    onSidebarNav(ev: PointerEvent) {
-        ev.stopPropagation();
-        const target = (ev.target as HTMLButtonElement).value;
-        this.dispatchEvent(new WizardNavigationEvent(target));
-    }
-
     getButtonLabel(button: WizardButton) {
         return button.label ?? BUTTON_KIND_TO_LABEL[button.kind];
     }
@@ -269,7 +262,7 @@ export class WizardStep extends AKElement {
                     <button
                         class=${classMap(buttonClasses)}
                         ?disabled=${!step.enabled}
-                        @click=${this.onSidebarNav}
+                        @click=${WizardNavigationEvent.toListener(this, step.id)}
                         value=${step.id}
                     >
                         ${step.label}

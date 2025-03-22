@@ -65,7 +65,7 @@ export const Default = () => {
                         class="pf-m-secondary"
                         .apiRequest=${() => {
                             showMessage({
-                                message: "This would have shown the wizard",
+                                title: "This would have shown the wizard",
                                 level: MessageLevel.success,
                             });
                         }}
@@ -92,7 +92,7 @@ export const WithTitle = () => {
                         class="pf-m-secondary"
                         .apiRequest=${() => {
                             showMessage({
-                                message: "This would have shown the wizard",
+                                title: "This would have shown the wizard",
                                 level: MessageLevel.success,
                             });
                         }}
@@ -119,7 +119,7 @@ export const WithTitleAndFooter = () => {
                         class="pf-m-secondary"
                         .apiRequest=${() => {
                             showMessage({
-                                message: "This would have shown the wizard",
+                                title: "This would have shown the wizard",
                                 level: MessageLevel.success,
                             });
                         }}

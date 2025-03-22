@@ -11,17 +11,16 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export interface APIMessage {
     level: MessageLevel;
-    tags?: string;
-    message: string;
+    title: string;
     description?: string;
 }
 
-const LEVEL_ICON_MAP: { [key: string]: string } = {
+const LEVEL_ICON_MAP = {
     error: "fas fa-exclamation-circle",
     warning: "fas fa-exclamation-triangle",
     success: "fas fa-check-circle",
     info: "fas fa-info",
-};
+} as const satisfies Record<MessageLevel, string>;
 
 @customElement("ak-message")
 export class Message extends AKElement {
@@ -57,7 +56,7 @@ export class Message extends AKElement {
                 <div class="pf-c-alert__icon">
                     <i class="${this.message ? LEVEL_ICON_MAP[this.message.level] : ""}"></i>
                 </div>
-                <p class="pf-c-alert__title">${this.message?.message}</p>
+                <p class="pf-c-alert__title">${this.message?.title}</p>
                 ${this.message?.description &&
                 html`<div class="pf-c-alert__description">
                     <p>${this.message.description}</p>

@@ -8,13 +8,10 @@ export interface EventUser {
     is_anonymous?: boolean;
 }
 
-export interface EventContext {
-    [key: string]: EventContext | EventModel | string | number | string[];
-}
-
-export interface EventWithContext extends Event {
-    user: EventUser;
-    context: EventContext;
+export interface EventGeo {
+    city?: string;
+    country?: string;
+    continent?: string;
 }
 
 export interface EventModel {
@@ -27,4 +24,14 @@ export interface EventModel {
 export interface EventRequest {
     path: string;
     method: string;
+}
+
+export interface EventContext {
+    [key: string]: EventContext | EventModel | EventGeo | string | number | string[] | undefined;
+    geo?: EventGeo;
+}
+
+export interface EventWithContext extends Event {
+    user: EventUser;
+    context: EventContext;
 }

@@ -1,4 +1,4 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventUser, formatGeoEvent } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -76,7 +76,7 @@ export class ObjectChangelog extends Table<Event> {
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
 
-                <small>${EventGeo(item)}</small>`,
+                <small>${formatGeoEvent(item)}</small>`,
         ];
     }
 

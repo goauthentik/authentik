@@ -1,4 +1,4 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
+import { EventUser, formatGeoEvent } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
@@ -10,6 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -68,7 +69,7 @@ export class RecentEventsCard extends Table<Event> {
         </div>`;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
@@ -76,12 +77,16 @@ export class RecentEventsCard extends Table<Event> {
             html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html` <div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeo(item)}</small>`,
+                <small>${formatGeoEvent(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+        if (this.error) {
+            return super.renderEmpty(inner);
+        }
+
         return super.renderEmpty(
             html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>

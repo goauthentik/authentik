@@ -106,7 +106,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                             .then((res) => {
                                 showMessage({
                                     level: MessageLevel.info,
-                                    message: msg(str`Successfully imported ${res.count} devices.`),
+                                    title: msg(str`Successfully imported ${res.count} devices.`),
                                 });
                                 const modal = this.parentElement as ModalForm;
                                 modal.open = false;

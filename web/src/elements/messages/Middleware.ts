@@ -10,7 +10,7 @@ export class MessageMiddleware implements Middleware {
         if (context.response.status >= 500) {
             showMessage({
                 level: MessageLevel.error,
-                message: msg("API request failed"),
+                title: msg("API request failed"),
                 description: `${context.init.method} ${context.url}: ${context.response.status}`,
             });
         }

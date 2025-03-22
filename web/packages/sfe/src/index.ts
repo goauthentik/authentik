@@ -515,7 +515,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     throw new Error(`Error when validating assertion on server: ${err}`);
                 }
             })
-            .catch((error) => {
+            .catch((error: unknown) => {
                 console.warn(error);
                 this.deviceChallenge = undefined;
                 this.render();
