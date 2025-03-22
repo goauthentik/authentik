@@ -82,7 +82,14 @@ export class AppIcon extends AKElement implements IAppIcon {
             .with([P._, P.string.startsWith("fa://")],
                 ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
             .with([P._, P.string],
-                ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
+                ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" @error=${(e: Event) => {
+                    const img = e.target as HTMLImageElement;
+                    img.style.display = 'none';
+                    const div = img.parentElement;
+                    if (div) {
+                        div.innerHTML = '<i class="icon fas fa-question-circle"></i>';
+                    }
+                }} />`)
             .with([P.string, undefined],
                 ([name]) => html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`)
             .exhaustive();

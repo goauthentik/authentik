@@ -2,7 +2,20 @@
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
-from yaml import safe_load
+from yaml import add_representer, safe_load
+
+
+def represent_type(dumper, data):
+    """Custom representer for type objects"""
+    return dumper.represent_scalar("tag:yaml.org,2002:str", str(data))
+
+
+def represent_str_class(dumper, data):
+    """Custom representer for str class object (not string instances)"""
+    return dumper.represent_scalar("tag:yaml.org,2002:str", str(data))
+
+
+add_representer(type, represent_type)
 
 
 class TestSchemaGeneration(APITestCase):

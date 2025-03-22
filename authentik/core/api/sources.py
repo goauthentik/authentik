@@ -98,7 +98,10 @@ class SourceViewSet(
         },
         responses={
             200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
         },
     )
     @action(
@@ -118,7 +121,10 @@ class SourceViewSet(
         request=FilePathSerializer,
         responses={
             200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
         },
     )
     @action(
