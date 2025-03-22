@@ -1,6 +1,5 @@
 """authentik access helper classes"""
 
-from json import dumps
 from typing import Any
 from uuid import uuid4
 
@@ -159,12 +158,12 @@ class BufferView(TemplateView):
 
     def get_context_data(self, **kwargs):
         buf_id = self.request.GET.get(QS_BUFFER_ID)
-        buffer = self.request.session.get(SESSION_KEY_BUFFER % buf_id)
-        kwargs["method"] = buffer["method"]
-        kwargs["post"] = dumps(buffer["post"])
+        buffer: dict = self.request.session.get(SESSION_KEY_BUFFER % buf_id)
+        kwargs["auth_req_method"] = buffer["method"]
+        kwargs["auth_req_body"] = buffer["body"]
+        kwargs["auth_req_url"] = url_with_qs(buffer["url"], **{QS_SKIP_BUFFER: True})
         kwargs["check_auth_url"] = reverse("authentik_api:user-me")
-        kwargs["redirect_url"] = url_with_qs(buffer["url"], **{QS_BUFFER_ID: buf_id})
-        kwargs["auth_url"] = url_with_qs(buffer["url"], **{QS_SKIP_BUFFER: True})
+        kwargs["continue_url"] = url_with_qs(buffer["url"], **{QS_BUFFER_ID: buf_id})
         return super().get_context_data(**kwargs)
 
 
@@ -182,10 +181,9 @@ class BufferedPolicyAccessView(PolicyAccessView):
             return super().handle_no_permission()
         buffer_id = str(uuid4())
         self.request.session[SESSION_KEY_BUFFER % buffer_id] = {
-            "get": self.request.GET,
-            "post": self.request.POST,
+            "body": self.request.POST,
             "url": self.request.build_absolute_uri(self.request.get_full_path()),
-            "method": self.request.method,
+            "method": self.request.method.lower(),
         }
         return redirect(
             reverse("authentik_policies:buffer")
@@ -201,5 +199,4 @@ class BufferedPolicyAccessView(PolicyAccessView):
         response = super().dispatch(request, *args, **kwargs)
         if QS_BUFFER_ID in self.request.GET:
             self.request.session.pop(SESSION_KEY_BUFFER % self.request.GET[QS_BUFFER_ID])
-        print(self.request.session.items())
         return response
