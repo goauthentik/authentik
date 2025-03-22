@@ -6,7 +6,9 @@
 {% block head %}
 {{ block.super }}
 <script>
+  let redirecting = false;
   const checkAuth = async () => {
+    if (redirecting) return true;
     const url = "{{ check_auth_url }}";
     console.debug("authentik/policies/buffer: Checking authentication...");
     try {
@@ -17,6 +19,7 @@
         return false
       }
       console.debug("authentik/policies/buffer: Continuing");
+      redirecting = true;
       if ("{{ auth_req_method }}" === "post") {
         document.querySelector("form").submit();
       } else {

@@ -173,13 +173,17 @@ class BufferedPolicyAccessView(PolicyAccessView):
     def handle_no_permission(self):
         plan: FlowPlan | None = self.request.session.get(SESSION_KEY_PLAN)
         if not plan:
+            LOGGER.debug("Not buffering request, no flow plan active")
             return super().handle_no_permission()
         flow = Flow.objects.filter(pk=plan.flow_pk).first()
         if not flow or flow.designation != FlowDesignation.AUTHENTICATION:
+            LOGGER.debug("Not buffering request, no flow or flow not for authentication")
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
+            LOGGER.debug("Not buffering request, explicit skip")
             return super().handle_no_permission()
         buffer_id = str(uuid4())
+        LOGGER.debug("Buffering access request", bf_id=buffer_id)
         self.request.session[SESSION_KEY_BUFFER % buffer_id] = {
             "body": self.request.POST,
             "url": self.request.build_absolute_uri(self.request.get_full_path()),
@@ -192,5 +196,5 @@ class BufferedPolicyAccessView(PolicyAccessView):
     def dispatch(self, request, *args, **kwargs):
         response = super().dispatch(request, *args, **kwargs)
         if QS_BUFFER_ID in self.request.GET:
-            self.request.session.pop(SESSION_KEY_BUFFER % self.request.GET[QS_BUFFER_ID])
+            self.request.session.pop(SESSION_KEY_BUFFER % self.request.GET[QS_BUFFER_ID], None)
         return response
