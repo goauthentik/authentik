@@ -1,23 +1,37 @@
 """authentik access helper classes"""
 
+from json import dumps
 from typing import Any
+from uuid import uuid4
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin
 from django.contrib.auth.views import redirect_to_login
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, QueryDict
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.http import urlencode
 from django.utils.translation import gettext as _
-from django.views.generic.base import View
+from django.views.generic.base import TemplateView, View
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, Provider, User
-from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_POST
+from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.planner import FlowPlan
+from authentik.flows.views.executor import (
+    SESSION_KEY_APPLICATION_PRE,
+    SESSION_KEY_PLAN,
+    SESSION_KEY_POST,
+)
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
+QS_BUFFER_ID = "bf_id"
+QS_SKIP_BUFFER = "skip_buffer"
+SESSION_KEY_BUFFER = "authentik/policies/pav_buffer/%s"
 
 
 class RequestValidationError(SentryIgnoredException):
@@ -125,3 +139,56 @@ class PolicyAccessView(AccessMixin, View):
             for message in result.messages:
                 messages.error(self.request, _(message))
         return result
+
+
+class BufferView(TemplateView):
+    """Buffer view"""
+
+    template_name = "policies/buffer.html"
+
+    def get_context_data(self, **kwargs):
+        buf_id = self.request.GET.get(QS_BUFFER_ID)
+        buffer = self.request.session.pop(SESSION_KEY_BUFFER % buf_id)
+        kwargs["url"] = buffer["url"]
+        kwargs["method"] = buffer["method"]
+        kwargs["post"] = dumps(buffer["post"])
+        kwargs["check_auth_url"] = reverse("authentik_api:user-me")
+        # append ?skip_buffer to the URL correctly
+        _url_parts = buffer["url"].split("?")
+        if len(_url_parts) == 1:
+            kwargs["auth_url"] = _url_parts[0] + f"?{QS_SKIP_BUFFER}"
+        else:
+            qs = QueryDict(_url_parts[1], mutable=True)
+            qs[QS_SKIP_BUFFER] = True
+            kwargs["auth_url"] = _url_parts[0] + "?" + urlencode(qs.items())
+        return super().get_context_data(**kwargs)
+
+
+class BufferedPolicyAccessView(PolicyAccessView):
+    """PolicyAccessView which buffers access requests in case the user is not logged in"""
+
+    def handle_no_permission(self):
+        plan: FlowPlan | None = self.request.session.get(SESSION_KEY_PLAN)
+        if not plan:
+            return super().handle_no_permission()
+        flow = Flow.objects.filter(pk=plan.flow_pk).first()
+        if not flow or flow.designation != FlowDesignation.AUTHENTICATION:
+            return super().handle_no_permission()
+        if self.request.GET.get(QS_SKIP_BUFFER):
+            return super().handle_no_permission()
+        buffer_id = str(uuid4())
+        self.request.session[SESSION_KEY_BUFFER % buffer_id] = {
+            "get": self.request.GET,
+            "post": self.request.POST,
+            "url": self.request.build_absolute_uri(self.request.get_full_path()),
+            "method": self.request.method,
+        }
+        return redirect(
+            reverse("authentik_policies:buffer")
+            + "?"
+            + urlencode(
+                {
+                    QS_BUFFER_ID: buffer_id,
+                }
+            )
+        )

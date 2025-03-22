@@ -1,0 +1,73 @@
+{% extends 'login/base_full.html' %}
+
+{% load static %}
+{% load i18n %}
+
+{% block head %}
+{{ block.super }}
+<script>
+  const origRequest = {
+    url: "{{ url|escapejs }}",
+    method: "{{ method }}",
+    body: JSON.parse('{{ post|escapejs }}'),
+  }
+  const checkAuth = async () => {
+    const url = "{{ check_auth_url }}";
+    try {
+      const result = await fetch(url, {
+        method: "HEAD",
+      });
+      if (result.status >= 400) {
+        return false
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  };
+  const redirect = () => {
+    if (origRequest.method.toLowerCase() === "get") {
+      window.location.assign(origRequest.url);
+    }
+  };
+  const main = async () => {
+    if (await checkAuth()) {
+      clearInterval(checker);
+      redirect();
+    }
+  }
+  let checker = setInterval(main, 150);
+  main();
+</script>
+{% endblock %}
+
+{% block title %}
+{% trans 'Waiting for authentication...' %} - {{ brand.branding_title }}
+{% endblock %}
+
+{% block card_title %}
+{% trans 'Waiting for authentication...' %}
+{% endblock %}
+
+{% block card %}
+<form class="pf-c-form">
+    {% csrf_token %}
+    <div class="pf-c-empty-state">
+      <div class="pf-c-empty-state__content">
+        <div class="pf-c-empty-state__icon">
+          <span class="pf-c-spinner pf-m-xl" role="progressbar">
+            <span class="pf-c-spinner__clipper"></span>
+            <span class="pf-c-spinner__lead-ball"></span>
+            <span class="pf-c-spinner__tail-ball"></span>
+          </span>
+        </div>
+        <h1 class="pf-c-title pf-m-lg">
+          You're already authenticating in another tab. This page will refresh once authentication is completed.
+        </h1>
+        <div class="pf-c-empty-state__primary">
+          <a href="{{auth_url}}" class="pf-c-button pf-m-primary pf-m-block">Authenticate in this tab</a>
+        </div>
+      </div>
+    </div>
+</form>
+{% endblock %}
