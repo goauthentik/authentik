@@ -60,10 +60,14 @@ class UsedByMixin:
         model: Model = self.get_object()
         used_by = []
         shadows = []
-        for attr_name, manager in getmembers(model, lambda x: isinstance(x, Manager)):
+        for attr_name, attr_value in getmembers(model):
+            # Skip if not a manager
+            if not isinstance(attr_value, Manager):
+                continue
+            # Skip objects manager
             if attr_name == "objects":  # pragma: no cover
                 continue
-            manager: Manager
+            manager: Manager = attr_value
             if manager.model._meta.abstract:
                 continue
             app = manager.model._meta.app_label
