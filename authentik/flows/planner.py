@@ -143,10 +143,12 @@ class FlowPlan:
         request: HttpRequest,
         flow: Flow,
         allowed_silent_types: list["StageView"] | None = None,
+        **get_params,
     ) -> HttpResponse:
         """Redirect to the flow executor for this flow plan"""
         from authentik.flows.views.executor import (
             SESSION_KEY_PLAN,
+            FlowContainer,
             FlowExecutorView,
         )
 
@@ -157,6 +159,7 @@ class FlowPlan:
             # No unskippable stages found, so we can directly return the response of the last stage
             final_stage: type[StageView] = self.bindings[-1].stage.view
             temp_exec = FlowExecutorView(flow=flow, request=request, plan=self)
+            temp_exec.container = FlowContainer(request)
             temp_exec.current_stage = self.bindings[-1].stage
             temp_exec.current_stage_view = final_stage
             temp_exec.setup(request, flow.slug)
@@ -173,6 +176,9 @@ class FlowPlan:
             or request.user.has_perm("authentik_flows.inspect_flow")
         ):
             get_qs["inspector"] = "available"
+
+        for key, value in get_params:
+            get_qs[key] = value
 
         return redirect_with_qs(
             "authentik_core:if-flow",
