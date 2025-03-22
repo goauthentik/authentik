@@ -29,7 +29,7 @@ from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
-QS_BUFFER_ID = "bf_id"
+QS_BUFFER_ID = "af_bf_id"
 QS_SKIP_BUFFER = "skip_buffer"
 SESSION_KEY_BUFFER = "authentik/policies/pav_buffer/%s"
 
@@ -141,6 +141,17 @@ class PolicyAccessView(AccessMixin, View):
         return result
 
 
+def url_with_qs(url: str, **kwargs):
+    """Update/set querystring of `url` with the parameters in `kwargs`. Original query string
+    parameters are retained"""
+    if "?" not in url:
+        return url + f"?{urlencode(kwargs)}"
+    url, _, qs = url.partition("?")
+    qs = QueryDict(qs, mutable=True)
+    qs.update(kwargs)
+    return url + f"?{urlencode(qs.items())}"
+
+
 class BufferView(TemplateView):
     """Buffer view"""
 
@@ -148,19 +159,12 @@ class BufferView(TemplateView):
 
     def get_context_data(self, **kwargs):
         buf_id = self.request.GET.get(QS_BUFFER_ID)
-        buffer = self.request.session.pop(SESSION_KEY_BUFFER % buf_id)
-        kwargs["url"] = buffer["url"]
+        buffer = self.request.session.get(SESSION_KEY_BUFFER % buf_id)
         kwargs["method"] = buffer["method"]
         kwargs["post"] = dumps(buffer["post"])
         kwargs["check_auth_url"] = reverse("authentik_api:user-me")
-        # append ?skip_buffer to the URL correctly
-        _url_parts = buffer["url"].split("?")
-        if len(_url_parts) == 1:
-            kwargs["auth_url"] = _url_parts[0] + f"?{QS_SKIP_BUFFER}"
-        else:
-            qs = QueryDict(_url_parts[1], mutable=True)
-            qs[QS_SKIP_BUFFER] = True
-            kwargs["auth_url"] = _url_parts[0] + "?" + urlencode(qs.items())
+        kwargs["redirect_url"] = url_with_qs(buffer["url"], **{QS_BUFFER_ID: buf_id})
+        kwargs["auth_url"] = url_with_qs(buffer["url"], **{QS_SKIP_BUFFER: True})
         return super().get_context_data(**kwargs)
 
 
@@ -192,3 +196,10 @@ class BufferedPolicyAccessView(PolicyAccessView):
                 }
             )
         )
+
+    def dispatch(self, request, *args, **kwargs):
+        response = super().dispatch(request, *args, **kwargs)
+        if QS_BUFFER_ID in self.request.GET:
+            self.request.session.pop(SESSION_KEY_BUFFER % self.request.GET[QS_BUFFER_ID])
+        print(self.request.session.items())
+        return response

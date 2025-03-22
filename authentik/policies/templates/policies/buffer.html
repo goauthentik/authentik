@@ -7,7 +7,7 @@
 {{ block.super }}
 <script>
   const origRequest = {
-    url: "{{ url|escapejs }}",
+    url: "{{ redirect_url|escapejs }}",
     method: "{{ method }}",
     body: JSON.parse('{{ post|escapejs }}'),
   }
