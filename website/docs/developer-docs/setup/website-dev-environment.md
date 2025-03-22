@@ -1,5 +1,11 @@
 ---
-title: Website development environment
+title: Docs development environment
+sidebar_label: Docs development
+tags:
+    - development
+    - contributor
+    - docs
+    - docusaurus
 ---
 
 If you want to only make changes to the website, you only need node.
