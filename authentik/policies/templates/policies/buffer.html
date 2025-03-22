@@ -52,9 +52,11 @@
 
 {% block card %}
 <form class="pf-c-form" method="{{ auth_req_method }}" action="{{ continue_url }}">
-  {% for key, value in auth_req_body.items %}
-    <input type="hidden" name="{{ key }}" value="{{ value }}" />
-  {% endfor %}
+  {% if auth_req_method == "post" %}
+    {% for key, value in auth_req_body.items %}
+      <input type="hidden" name="{{ key }}" value="{{ value }}" />
+    {% endfor %}
+  {% endif %}
   <div class="pf-c-empty-state">
     <div class="pf-c-empty-state__content">
       <div class="pf-c-empty-state__icon">
@@ -65,12 +67,14 @@
         </span>
       </div>
       <h1 class="pf-c-title pf-m-lg">
-        You're already authenticating in another tab. This page will refresh once authentication is completed.
+        {% trans "You're already authenticating in another tab. This page will refresh once authentication is completed." %}
       </h1>
     </div>
   </div>
   <div class="pf-c-form__group pf-m-action">
-    <a href="{{ auth_req_url }}" class="pf-c-button pf-m-primary pf-m-block">Authenticate in this tab</a>
+    <a href="{{ auth_req_url }}" class="pf-c-button pf-m-primary pf-m-block">
+      {% trans "Authenticate in this tab" %}
+    </a>
   </div>
 </form>
 {% endblock %}
