@@ -243,7 +243,7 @@ export class SCIMProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">
                     <div class="pf-c-card__body">
-                        <ak-mdx .content=${MDSCIMProvider}></ak-mdx>
+                        <ak-mdx .url=${MDSCIMProvider}></ak-mdx>
                     </div>
                 </div>
             </div>`;
