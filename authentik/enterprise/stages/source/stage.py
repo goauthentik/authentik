@@ -11,13 +11,14 @@ from guardian.shortcuts import get_anonymous_user
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import (
     SESSION_KEY_OVERRIDE_FLOW_TOKEN,
+    SESSION_KEY_SOURCE_FLOW_CONTEXT,
     SESSION_KEY_SOURCE_FLOW_STAGES,
 )
 from authentik.core.types import UILoginButton
 from authentik.enterprise.stages.source.models import SourceStage
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.models import FlowToken, in_memory_stage
-from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED
+from authentik.flows.planner import PLAN_CONTEXT_IS_REDIRECTED, PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView, StageView
 from authentik.lib.utils.time import timedelta_from_string
 
@@ -53,6 +54,9 @@ class SourceStageView(ChallengeStageView):
         resume_token = self.create_flow_token()
         self.request.session[SESSION_KEY_OVERRIDE_FLOW_TOKEN] = resume_token
         self.request.session[SESSION_KEY_SOURCE_FLOW_STAGES] = [in_memory_stage(SourceStageFinal)]
+        self.request.session[SESSION_KEY_SOURCE_FLOW_CONTEXT] = {
+            PLAN_CONTEXT_IS_REDIRECTED: self.executor.flow,
+        }
         return self.login_button.challenge
 
     def create_flow_token(self) -> FlowToken:
