@@ -23,27 +23,22 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-1. Create a new OAuth2/OpenID Provider under **Applications** > **Providers** using the following settings:
-    - **Name**: Immich
-    - **Authentication flow**: default-authentication-flow
-    - **Authorization flow**: default-provider-authorization-explicit-consent
-    - **Client type**: Confidential
-    - **Client ID**: Either create your own Client ID or use the auto-populated ID
-    - **Client Secret**: Either create your own Client Secret or use the auto-populated secret
-      :::note
-      Take note of the `Client ID` and `Client Secret` as they are required when configuring Immich.
-      :::
-    - **Redirect URIs/Origins (RegEx)**:
-      :::note
-      Please note that the following URIs are just examples. Be sure to include all of the domains / URLs that you will use to access Immich.
-      :::
-        - app.immich:///oauth-callback
-        - https://immich.company/auth/login
-        - https://immich.company/user-settings
-    - **Signing Key**: authentik Self-signed Certificate
-    - Leave everything else as default
-2. Open the new provider you've just created.
-3. Make a note of the **OpenID Configuration Issuer**.
+To support the integration of Immich with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Add three `Strict` redirect URIs and set them to <kbd>app.immich:///oauth-callback</kbd>, <kbd>https://<em>immich.company</em>/auth/login</kbd>, and <kbd>https://<em>immich.company</em>/user-settings</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Immich configuration
 
@@ -51,7 +46,7 @@ Immich documentation can be found here: https://immich.app/docs/administration/o
 
 1. In Immich, navigate to **Administration** > **Settings** > **OAuth Authentication**
 2. Configure Immich as follows:
-    - **Issuer URL**: Populate this field with the `OpenID Configuration Issuer`
+    - **Issuer URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>application-slug</em>/</kbd>
     - **Client ID**: Enter your Client ID from authentik
     - **Client Secret**: Enter your Client Secret from authentik
     - **Scope**: `openid email profile`

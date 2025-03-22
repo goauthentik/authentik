@@ -23,25 +23,32 @@ This documentation lists only the settings that you need to change from their de
 
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 
-## In Veeam Enterprise Manager
+## Veeam Enterprise Manager pre-configuration
 
 Login to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
 
 Check the checkbox called "Enable SAML 2.0". Further down the site, click the "Download" button, to download the metadata.
 
-## In authentik
+## authentik configuration
 
-Navigate to Providers in the sidebar. Click on the create dropdown, and select "SAML Provider from Metadata".
+To support the integration of Veeam Enterprise Manage with authentik, you need to create an application/provider pair in authentik.
 
-Give the provider a new, and selection an authorization flow. Select the XML file you just downloaded and confirm.
+### Create an application and provider in authentik
 
-Now that you've created the provider, create an Application. Select the provider that has just been created. Set the launch URL to "https://veeam.company:9443/Saml2/SignIn" and confirm.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **Create** to create a provider.
 
-Click on the application to assign access policies.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - todo: saml metadata
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 Go back to the Provider sidebar and locate the Veeam Enterprise Manager. Click the Download Metadata button.
 
-## Finish in Veeam Enterprise Manager
+## Veeam Enterprise Manager configuration
 
 Back on Veeam Enterprise Manager, click on "Import from File", and select the XML file that you've downloaded from authentik. Make sure the "Enable SAML 2.0" checkbox is still enabled, and click save.
 
