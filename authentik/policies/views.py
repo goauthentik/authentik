@@ -186,13 +186,7 @@ class BufferedPolicyAccessView(PolicyAccessView):
             "method": self.request.method.lower(),
         }
         return redirect(
-            reverse("authentik_policies:buffer")
-            + "?"
-            + urlencode(
-                {
-                    QS_BUFFER_ID: buffer_id,
-                }
-            )
+            url_with_qs(reverse("authentik_policies:buffer"), **{QS_BUFFER_ID: buffer_id})
         )
 
     def dispatch(self, request, *args, **kwargs):
