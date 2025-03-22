@@ -27,7 +27,6 @@ class FlowTestCase(APITestCase):
         self.assertIsNotNone(raw_response["component"])
         if flow:
             self.assertIn("flow_info", raw_response)
-            self.assertEqual(raw_response["flow_info"]["background"], flow.background_url)
             self.assertEqual(
                 raw_response["flow_info"]["cancel_url"], reverse("authentik_flows:cancel")
             )

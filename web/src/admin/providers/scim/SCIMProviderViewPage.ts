@@ -9,11 +9,11 @@ import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDSCIMProvider from "@goauthentik/docs/add-secure-apps/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -243,10 +243,7 @@ export class SCIMProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">
                     <div class="pf-c-card__body">
-                        <ak-markdown
-                            .md=${MDSCIMProvider}
-                            meta="providers/scim/index.md"
-                        ></ak-markdown>
+                        <ak-mdx .url=${MDSCIMProvider}></ak-mdx>
                     </div>
                 </div>
             </div>`;

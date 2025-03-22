@@ -8,7 +8,7 @@ import path from "path";
  * @returns {string}
  */
 export function serializeCustomEventToStream(event) {
-    // @ts-ignore
+    // @ts-expect-error - TS doesn't know about the detail property
     const data = event.detail ?? {};
 
     const eventContent = [`event: ${event.type}`, `data: ${JSON.stringify(data)}`];

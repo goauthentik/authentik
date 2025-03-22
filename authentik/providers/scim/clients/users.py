@@ -77,21 +77,24 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 if len(users_res) < 1:
                     raise exc
                 return SCIMProviderUser.objects.create(
-                    provider=self.provider, user=user, scim_id=users_res[0]["id"]
+                    provider=self.provider,
+                    user=user,
+                    scim_id=users_res[0]["id"],
+                    attributes=users_res[0],
                 )
             else:
                 scim_id = response.get("id")
                 if not scim_id or scim_id == "":
                     raise StopSync("SCIM Response with missing or invalid `id`")
                 return SCIMProviderUser.objects.create(
-                    provider=self.provider, user=user, scim_id=scim_id
+                    provider=self.provider, user=user, scim_id=scim_id, attributes=response
                 )
 
     def update(self, user: User, connection: SCIMProviderUser):
         """Update existing user"""
         scim_user = self.to_schema(user, connection)
         scim_user.id = connection.scim_id
-        self._request(
+        response = self._request(
             "PUT",
             f"/Users/{connection.scim_id}",
             json=scim_user.model_dump(
@@ -99,3 +102,5 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
                 exclude_unset=True,
             ),
         )
+        connection.attributes = response
+        connection.save()
