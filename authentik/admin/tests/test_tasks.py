@@ -11,6 +11,7 @@ from authentik.admin.tasks import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
+from authentik.tasks.tests import TaskTestCase
 
 RESPONSE_VALID = {
     "$schema": "https://version.goauthentik.io/schema.json",
@@ -23,7 +24,7 @@ RESPONSE_VALID = {
 }
 
 
-class TestAdminTasks(TestCase):
+class TestAdminTasks(TaskTestCase):
     """test admin tasks"""
 
     def test_version_valid_response(self):

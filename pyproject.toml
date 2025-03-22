@@ -20,6 +20,7 @@ dependencies = [
     "django-guardian",
     "django-model-utils",
     "django-pglock",
+    "django-pgtrigger",
     "django-prometheus",
     "django-redis",
     "django-storages[s3]",
@@ -27,6 +28,7 @@ dependencies = [
     "djangorestframework ==3.14.0",
     "djangorestframework-guardian",
     "docker",
+    "dramatiq[watch]",
     "drf-orjson-renderer",
     "drf-spectacular",
     "dumb-init",
@@ -61,6 +63,7 @@ dependencies = [
     "setproctitle",
     "structlog",
     "swagger-spec-validator",
+    "tenacity",
     "tenant-schemas-celery",
     "twilio",
     "ua-parser",
@@ -135,6 +138,7 @@ skip = [
     "./gen-go-api",
     "*.api.mdx",
     "./htmlcov",
+    "./web/custom-elements.json",
 ]
 dictionary = ".github/codespell-dictionary.txt,-"
 ignore-words = ".github/codespell-words.txt"
