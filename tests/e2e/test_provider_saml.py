@@ -40,7 +40,7 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_ENTITY_ID": provider.issuer,
                 "SP_SSO_BINDING": "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
                 "SP_METADATA_URL": metadata_url,
-                **kwargs
+                **kwargs,
             },
         )
 
