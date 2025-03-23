@@ -179,11 +179,15 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
-    def background_url(self, request: HttpRequest) -> str:
+    def background_url(self, request: HttpRequest | None = None) -> str:
         """Get the URL to the background image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.background:
-            return request.brand.branding_default_flow_background_url()
+            if request:
+                return request.brand.branding_default_flow_background_url()
+            return (
+                CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
+            )
         if self.background.name.startswith("http"):
             return self.background.name
         if self.background.name.startswith("/static"):
