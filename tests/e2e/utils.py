@@ -141,6 +141,7 @@ class DockerTestCase(TestCase):
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
+    host = "0.0.0.0"
     wait_timeout: int
     user: User
 
