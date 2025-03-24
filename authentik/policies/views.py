@@ -19,6 +19,7 @@ from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import (
     SESSION_KEY_APPLICATION_PRE,
+    SESSION_KEY_AUTH_STARTED,
     SESSION_KEY_PLAN,
     SESSION_KEY_POST,
 )
@@ -172,12 +173,14 @@ class BufferedPolicyAccessView(PolicyAccessView):
 
     def handle_no_permission(self):
         plan: FlowPlan | None = self.request.session.get(SESSION_KEY_PLAN)
-        if not plan:
+        authenticating = self.request.session.get(SESSION_KEY_AUTH_STARTED)
+        if plan:
+            flow = Flow.objects.filter(pk=plan.flow_pk).first()
+            if not flow or flow.designation != FlowDesignation.AUTHENTICATION:
+                LOGGER.debug("Not buffering request, no flow or flow not for authentication")
+                return super().handle_no_permission()
+        if not plan and authenticating is None:
             LOGGER.debug("Not buffering request, no flow plan active")
-            return super().handle_no_permission()
-        flow = Flow.objects.filter(pk=plan.flow_pk).first()
-        if not flow or flow.designation != FlowDesignation.AUTHENTICATION:
-            LOGGER.debug("Not buffering request, no flow or flow not for authentication")
             return super().handle_no_permission()
         if self.request.GET.get(QS_SKIP_BUFFER):
             LOGGER.debug("Not buffering request, explicit skip")
