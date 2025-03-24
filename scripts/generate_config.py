@@ -43,6 +43,9 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
                 "enabled": False,
                 "api_key": generate_id(),
             },
+            "worker": {
+                "embedded": True,
+            },
         },
         _config,
         default_flow_style=False,
