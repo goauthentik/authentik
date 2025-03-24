@@ -56,3 +56,34 @@ def trim_user_password_history(user_pk: int):
     LOGGER.debug(
         "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
     )
+
+
+@CELERY_APP.task()
+def trim_all_password_histories():
+    """Trim password history for all users who have password history entries.
+    This is run on a schedule to ensure password histories don't grow indefinitely.
+    """
+    from django.db.models import Count
+
+    # Get all users who have password history entries
+    users_with_history = (
+        UserPasswordHistory.objects.values("user")
+        .annotate(count=Count("user"))
+        .filter(count__gt=0)
+        .values_list("user", flat=True)
+    )
+
+    for user_pk in users_with_history:
+        trim_user_password_history.delay(user_pk)
+
+    LOGGER.debug("Scheduled password history trimming for users", count=len(users_with_history))
+
+
+@CELERY_APP.task()
+def check_and_purge_password_history():
+    """Check if any UniquePasswordPolicy is in use, and if not, purge the password history table.
+    This is run on a schedule instead of being triggered by policy binding deletion.
+    """
+    if not UniquePasswordPolicy.is_in_use():
+        UserPasswordHistory.objects.all().delete()
+        LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")
