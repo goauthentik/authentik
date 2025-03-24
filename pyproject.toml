@@ -102,6 +102,9 @@ dev = [
     "selenium",
 ]
 
+[tool.uv]
+build-constraint-dependencies = ["setuptools<78"]
+
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" }
