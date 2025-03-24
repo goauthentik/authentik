@@ -50,7 +50,7 @@ def trim_user_password_history(user_pk: int):
             )
 
     entries = UserPasswordHistory.objects.filter(user__pk=user_pk)
-    to_keep = entries.order_by('-created_at')[:num_rows_to_preserve]
+    to_keep = entries.order_by("-created_at")[:num_rows_to_preserve]
     num_deleted, _ = entries.difference(to_keep).delete()
 
     LOGGER.debug(

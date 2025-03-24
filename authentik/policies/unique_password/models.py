@@ -128,7 +128,4 @@ class UserPasswordHistory(models.Model):
         verbose_name = _("User Password History")
 
     def __str__(self) -> str:
-        return (
-            f"Previous Password (user: {self.user_id}, "
-            f"recorded: {self.created_at:%Y/%m/%d %X})"
-        )
+        return f"Previous Password (user: {self.user_id}, recorded: {self.created_at:%Y/%m/%d %X})"
