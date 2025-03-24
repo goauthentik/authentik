@@ -3,16 +3,91 @@ import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/events/LogViewer";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html, nothing } from "lit";
+import { msg } from "@lit/localize";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SyncStatus, SystemTask, SystemTaskStatusEnum } from "@goauthentik/api";
+
+@customElement("ak-sync-status-table")
+export class SyncStatusTable extends Table<SystemTask> {
+    @property({ attribute: false })
+    tasks: SystemTask[] = [];
+
+    expandable = true;
+
+    static get styles() {
+        return super.styles.concat(css`
+            code:not(:last-of-type)::after {
+                content: "-";
+                margin: 0 0.25rem;
+            }
+        `);
+    }
+
+    async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
+        return {
+            pagination: {
+                next: 0,
+                previous: 0,
+                count: this.tasks.length,
+                current: 1,
+                totalPages: 1,
+                startIndex: 0,
+                endIndex: this.tasks.length,
+            },
+            results: this.tasks,
+        };
+    }
+
+    columns(): TableColumn[] {
+        return [
+            new TableColumn(msg("Task")),
+            new TableColumn(msg("Status")),
+            new TableColumn(msg("Finished")),
+        ];
+    }
+
+    row(item: SystemTask): TemplateResult[] {
+        const nameParts = item.fullName.split(":");
+        nameParts.shift();
+        return [
+            html`<div>${item.name}</div>
+                <small>${nameParts.map((part) => html`<code>${part}</code>`)}</small>`,
+            html`<ak-status-label
+                ?good=${item.status === SystemTaskStatusEnum.Successful}
+                good-label=${msg("Finished successfully")}
+                bad-label=${msg("Finished with errors")}
+            ></ak-status-label>`,
+            html`<div>${getRelativeTime(item.finishTimestamp)}</div>
+                <small>${item.finishTimestamp.toLocaleString()}</small>`,
+        ];
+    }
+
+    renderExpanded(item: SystemTask): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
+            </div>
+        </td>`;
+    }
+
+    renderToolbarContainer() {
+        return html``;
+    }
+
+    renderTablePagination() {
+        return html``;
+    }
+}
 
 @customElement("ak-sync-status-card")
 export class SyncStatusCard extends AKElement {
@@ -29,7 +104,7 @@ export class SyncStatusCard extends AKElement {
     triggerSync!: () => Promise<unknown>;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard];
+        return [PFBase, PFCard, PFTable];
     }
 
     firstUpdated() {
@@ -38,25 +113,6 @@ export class SyncStatusCard extends AKElement {
             this.syncState = status;
             this.loading = false;
         });
-    }
-
-    renderSyncTask(task: SystemTask): TemplateResult {
-        return html`<li>
-            ${(this.syncState?.tasks || []).length > 1 ? html`<span>${task.name}</span>` : nothing}
-            <span
-                ><ak-status-label
-                    ?good=${task.status === SystemTaskStatusEnum.Successful}
-                    good-label=${msg("Finished successfully")}
-                    bad-label=${msg("Finished with errors")}
-                ></ak-status-label
-            ></span>
-            <span
-                >${msg(
-                    str`Finished ${getRelativeTime(task.finishTimestamp)} (${task.finishTimestamp.toLocaleString()})`,
-                )}</span
-            >
-            <ak-log-viewer .logs=${task?.messages}></ak-log-viewer>
-        </li> `;
     }
 
     renderSyncStatus(): TemplateResult {
@@ -72,13 +128,7 @@ export class SyncStatusCard extends AKElement {
         if (this.syncState.tasks.length < 1) {
             return html`${msg("Not synced yet.")}`;
         }
-        return html`
-            <ul class="pf-c-list">
-                ${this.syncState.tasks.map((task) => {
-                    return this.renderSyncTask(task);
-                })}
-            </ul>
-        `;
+        return html`<ak-sync-status-table .tasks=${this.syncState.tasks}></ak-sync-status-table>`;
     }
 
     render(): TemplateResult {
@@ -120,6 +170,7 @@ export class SyncStatusCard extends AKElement {
 
 declare global {
     interface HTMLElementTagNameMap {
+        "ak-sync-status-table": SyncStatusTable;
         "ak-sync-status-card": SyncStatusCard;
     }
 }

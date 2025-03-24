@@ -31,6 +31,12 @@ const createConfig = (): Config => {
                 },
                 items: [
                     {
+                        to: "https://goauthentik.io/features",
+                        label: "Features",
+                        position: "left",
+                        target: "_self",
+                    },
+                    {
                         to: "https://goauthentik.io/blog",
                         label: "Blog",
                         position: "left",

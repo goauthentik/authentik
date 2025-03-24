@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-13 00:10+0000\n"
+"POT-Creation-Date: 2025-03-20 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1955,6 +1955,20 @@ msgid ""
 msgstr ""
 "Configure la manière dont la valeur NameID sera créée. Si laissé vide, la "
 "NameIDPolicy de la requête entrante sera prise en compte"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr "Mappage de propriété AuthnContextClassRef"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+"Configure comment la valeur AuthnContextClassRef sera créée. Lorsque non "
+"sélectionné, AuthnContextClassRef sera défini en fonction de quelle méthode "
+"d'authentification l'utilisateur a utilisé pour s'authentifier."
 
 #: authentik/providers/saml/models.py
 msgid ""
