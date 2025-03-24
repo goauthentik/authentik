@@ -1,10 +1,10 @@
-from django.utils.translation import gettext_lazy as _
 from enum import StrEnum, auto
 from uuid import uuid4
-import pgtrigger
 
+import pgtrigger
 from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.models import SerializerModel
 from authentik.tenants.models import Tenant

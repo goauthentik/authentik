@@ -1,5 +1,5 @@
-from dramatiq import Worker, get_broker
 from django.test import TransactionTestCase
+from dramatiq import Worker, get_broker
 
 
 class TaskTestCase(TransactionTestCase):

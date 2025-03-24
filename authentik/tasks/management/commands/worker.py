@@ -1,10 +1,10 @@
 import os
-
-from django.utils.module_loading import module_has_submodule
-from authentik.lib.utils.reflection import get_apps
 import sys
 
 from django.core.management.base import BaseCommand
+from django.utils.module_loading import module_has_submodule
+
+from authentik.lib.utils.reflection import get_apps
 
 
 class Command(BaseCommand):

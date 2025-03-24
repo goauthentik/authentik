@@ -2,11 +2,11 @@ import os
 import sys
 import warnings
 
-from authentik.lib.config import CONFIG
 from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV
 
+from authentik.lib.config import CONFIG
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 
@@ -40,6 +40,6 @@ if (
 ):
     run_migrations()
 
-import django
+import django  # noqa: E402
 
 django.setup()

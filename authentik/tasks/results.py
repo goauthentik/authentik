@@ -4,7 +4,7 @@ from django.utils import timezone
 from dramatiq.message import Message, get_encoder
 from dramatiq.results.backend import Missing, MResult, Result, ResultBackend
 
-from authentik.tasks.models import Task, TaskState
+from authentik.tasks.models import Task
 
 
 class PostgresBackend(ResultBackend):

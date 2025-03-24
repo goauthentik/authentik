@@ -1,5 +1,3 @@
-from dramatiq.middleware import Middleware
-from psycopg import sql
 import functools
 import logging
 import time
@@ -24,13 +22,14 @@ from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
 from dramatiq.message import Message
+from dramatiq.middleware import Middleware
 from dramatiq.results import Results
 from pglock.core import _cast_lock_id
-from psycopg import Notify
+from psycopg import Notify, sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
-from authentik.tasks.models import Task, CHANNEL_PREFIX, ChannelIdentifier, TaskState
+from authentik.tasks.models import CHANNEL_PREFIX, ChannelIdentifier, Task, TaskState
 from authentik.tasks.results import PostgresBackend
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant

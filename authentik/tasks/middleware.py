@@ -1,6 +1,8 @@
 import contextvars
+
 from dramatiq.message import Message
 from dramatiq.middleware import Middleware
+
 from authentik.tasks.models import Task
 
 
