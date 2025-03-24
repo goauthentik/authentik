@@ -85,7 +85,7 @@ jobs:
           postgresql_version: ${{ matrix.psql }}
         continue-on-error: true
       - name: run migrations to stable
-        run: poetry run python -m lifecycle.migrate
+        run: uv run python -m lifecycle.migrate
       - name: checkout current code
         run: |
           set -x
