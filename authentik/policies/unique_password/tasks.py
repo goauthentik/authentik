@@ -18,19 +18,12 @@ def purge_password_history_table(self: SystemTask):
         # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
         self.set_status(
             TaskStatus.SUCCESSFUL,
-            """Did not purge UserPasswordHistory table. 
+            """Did not purge UserPasswordHistory table.
             Bindings for Unique Password Policy still exist.""",
         )
         return
 
-    try:
-        # n.b. a performance optimization to execute TRUNCATE
-        # instead of all().delete() would eliminate any FK checks.
-        UserPasswordHistory.objects.all().delete()
-    except Exception as err:
-        LOGGER.debug("Failed to purge UserPasswordHistory table.")
-        self.set_error(err)
-        return
+    UserPasswordHistory.objects.all().delete()
     self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
 
 
