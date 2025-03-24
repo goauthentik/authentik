@@ -59,6 +59,7 @@ dependencies = [
     "sentry-sdk",
     "service_identity",
     "setproctitle",
+    "setuptools<78",
     "structlog",
     "swagger-spec-validator",
     "tenant-schemas-celery",
