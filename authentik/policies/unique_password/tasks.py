@@ -49,12 +49,9 @@ def trim_user_password_history(user_pk: int):
                 num_rows_to_preserve, binding.policy.num_historical_passwords
             )
 
-    preservable_row_ids = (
-        UserPasswordHistory.objects.filter(user__pk=user_pk)
-        .order_by("-created_at")[:num_rows_to_preserve]
-        .values_list("id", flat=True)
-    )
-    num_deleted, _ = UserPasswordHistory.objects.exclude(pk__in=list(preservable_row_ids)).delete()
+    entries = UserPasswordHistory.objects.filter(user__pk=user_pk)
+    to_keep = entries.order_by('-created_at')[:num_rows_to_preserve]
+    num_deleted, _ = entries.difference(to_keep).delete()
 
     LOGGER.debug(
         "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
