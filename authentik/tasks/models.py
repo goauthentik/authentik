@@ -83,10 +83,7 @@ class Task(SerializerModel):
                 func=f"""
                     PERFORM pg_notify(
                         '{CHANNEL_PREFIX}.' || NEW.queue_name || '.{ChannelIdentifier.ENQUEUE.value}',
-                        CASE WHEN octet_length(NEW.message::text) >= 8000
-                        THEN jsonb_build_object('message_id', NEW.message_id)::text
-                        ELSE NEW.message::text
-                        END
+                        NEW.message_id::text
                     );
                     RETURN NEW;
                 """,  # noqa: E501

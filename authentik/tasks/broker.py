@@ -68,7 +68,7 @@ class DbConnectionMiddleware(Middleware):
 
 
 class TenantMiddleware(Middleware):
-    def before_process_message(self, broker, message):
+    def before_process_message(self, broker: Broker, message: Message):
         Task.objects.select_related("tenant").get(message_id=message.message_id).tenant.activate()
 
     def after_process_message(self, *args, **kwargs):
@@ -152,7 +152,6 @@ class PostgresBroker(Broker):
         self.declare_queue(canonical_queue_name)
         self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
         self.emit_before("enqueue", message, delay)
-        encoded = message.encode()
         query = {
             "message_id": message.message_id,
         }
@@ -160,7 +159,7 @@ class PostgresBroker(Broker):
             "tenant": get_current_tenant(),
             "queue_name": message.queue_name,
             "state": TaskState.QUEUED,
-            "message": encoded,
+            "message": message.encode(),
         }
         create_defaults = {
             **query,
@@ -262,7 +261,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.CONSUMED,
         ).update(
             state=TaskState.DONE,
-            message=message.encode().decode(),
+            message=message.encode(),
         )
         self.in_processing.remove(message.message_id)
 
@@ -275,7 +274,7 @@ class _PostgresConsumer(Consumer):
             state__ne=TaskState.REJECTED,
         ).update(
             state=TaskState.REJECTED,
-            message=message.encode().decode(),
+            message=message.encode(),
         )
         self.in_processing.remove(message.message_id)
 
@@ -357,14 +356,8 @@ class _PostgresConsumer(Consumer):
         # If we have some notifies, loop to find one to do
         while self.notifies:
             notify = self.notifies.pop(0)
-            if "kwargs" in notify.payload:
-                full_payload = notify.payload
-            else:
-                truncated_payload = orjson.loads(notify.payload)
-                full_payload = self.query_set.get(
-                    message_id=truncated_payload["message_id"]
-                ).message
-            message = Message.decode(full_payload.encode())
+            task = self.query_set.get(message_id=notify.payload)
+            message = Message.decode(task.message)
             if self._consume_one(message):
                 self.in_processing.add(message.message_id)
                 return MessageProxy(message)
