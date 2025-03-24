@@ -57,7 +57,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
             + https://fleet.company/api/v1/fleet/mdm/sso/callback
             ```
 
-            You will also need to configure Fleet with additional settings to enable the EULA. For more information, refer to the [end user authentication guide](https://fleetdm.com/docs/using-fleet/mdm-macos-setup-experience#end-user-authentication-and-eula).
+            You will also need to configure Fleet with additional settings to enable the EULA. For more information, refer to Fleet's [end user authentication guide](https://fleetdm.com/docs/using-fleet/mdm-macos-setup-experience#end-user-authentication-and-eula).
             :::
 
         - **Issuer**: `authentik`
