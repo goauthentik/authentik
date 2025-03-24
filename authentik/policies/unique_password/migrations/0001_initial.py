@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 (
                     "num_historical_passwords",
                     models.PositiveIntegerField(
-                        default=0, help_text="Number of passwords to check against."
+                        default=1, help_text="Number of passwords to check against."
                     ),
                 ),
             ],
