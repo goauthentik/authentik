@@ -188,29 +188,22 @@ class PostgresBroker(Broker):
     def join(
         self,
         queue_name: str,
-        min_successes: int = 10,
-        idle_time: int = 100,
+        interval: int = 100,
         *,
         timeout: int | None = None,
     ):
         deadline = timeout and time.monotonic() + timeout / 1000
-        successes = 0
-        while successes < min_successes:
+        while True:
             if deadline and time.monotonic() >= deadline:
                 raise QueueJoinTimeout(queue_name)
 
-            if (
-                self.query_set.filter(
-                    queue_name=queue_name,
-                    state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-                )
-                == 0
-            ):
-                successes += 1
-            else:
-                successes = 0
+            if self.query_set.filter(
+                queue_name=queue_name,
+                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
+            ).exists():
+                return
 
-            time.sleep(idle_time / 1000)
+            time.sleep(interval / 1000)
 
 
 class _PostgresConsumer(Consumer):

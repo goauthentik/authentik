@@ -16,3 +16,7 @@ class TaskTestCase(TransactionTestCase):
         self.worker.stop()
 
         super()._post_teardown()
+
+    def tasks_join(self, queue_name: str):
+        self.broker.join(queue_name)
+        self.worker.join()

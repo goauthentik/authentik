@@ -30,7 +30,8 @@ class TestAdminTasks(TaskTestCase):
         """Test Update checker with valid response"""
         with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
             mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
-            update_latest_version.delay().get()
+            update_latest_version.send()
+            self.tasks_join(update_latest_version.queue_name)
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
             self.assertTrue(
                 Event.objects.filter(
@@ -40,7 +41,8 @@ class TestAdminTasks(TaskTestCase):
                 ).exists()
             )
             # test that a consecutive check doesn't create a duplicate event
-            update_latest_version.delay().get()
+            update_latest_version.send()
+            self.tasks_join(update_latest_version.queue_name)
             self.assertEqual(
                 len(
                     Event.objects.filter(
@@ -56,7 +58,8 @@ class TestAdminTasks(TaskTestCase):
         """Test Update checker with invalid response"""
         with Mocker() as mocker:
             mocker.get("https://version.goauthentik.io/version.json", status_code=400)
-            update_latest_version.delay().get()
+            update_latest_version.send()
+            self.tasks_join(update_latest_version.queue_name)
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
             self.assertFalse(
                 Event.objects.filter(
@@ -67,7 +70,8 @@ class TestAdminTasks(TaskTestCase):
     def test_version_disabled(self):
         """Test Update checker while its disabled"""
         with CONFIG.patch("disable_update_check", True):
-            update_latest_version.delay().get()
+            update_latest_version.send()
+            self.tasks_join(update_latest_version.queue_name)
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "0.0.0")
 
     def test_clear_update_notifications(self):
@@ -77,7 +81,8 @@ class TestAdminTasks(TaskTestCase):
         )
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"})
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={})
-        clear_update_notifications()
+        clear_update_notifications.send()
+        self.tasks_join(clear_update_notifications.queue_name)
         self.assertFalse(
             Event.objects.filter(
                 action=EventAction.UPDATE_AVAILABLE, context__new_version="1.1"
