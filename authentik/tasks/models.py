@@ -6,7 +6,10 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from authentik.events.logs import LogEvent
+from authentik.events.utils import sanitize_item
 from authentik.lib.models import SerializerModel
+from authentik.lib.utils.errors import exception_to_string
 from authentik.tenants.models import Tenant
 
 CHANNEL_PREFIX = "authentik.tasks"
@@ -47,10 +50,21 @@ class ChannelIdentifier(StrEnum):
 
 
 class TaskState(models.TextChoices):
+    """Task system-state. Reported by the task runners"""
+
     QUEUED = "queued"
     CONSUMED = "consumed"
     REJECTED = "rejected"
     DONE = "done"
+
+
+class TaskStatus(models.TextChoices):
+    """Task soft-state. Self-reported by the task"""
+
+    UNKNOWN = "unknown"
+    SUCCESSFUL = "successful"
+    WARNING = "warning"
+    ERROR = "error"
 
 
 class Task(SerializerModel):
@@ -67,6 +81,7 @@ class Task(SerializerModel):
 
     uid = models.TextField(blank=True, editable=False)
     description = models.TextField(blank=True, editable=False)
+    status = models.TextField(blank=True, choices=TaskStatus.choices, editable=False)
     messages = models.JSONField(default=list, editable=False)
 
     class Meta:
@@ -97,3 +112,25 @@ class Task(SerializerModel):
     def serializer(self):
         # TODO: fixme
         pass
+
+    def set_uid(self, uid: str):
+        """Set UID, so in the case of an unexpected error its saved correctly"""
+        self.uid = uid
+
+    def set_status(self, status: TaskStatus, *messages: LogEvent | str):
+        """Set result for current run, will overwrite previous result."""
+        self.status = status
+        self.messages = list(messages)
+        for idx, msg in enumerate(self.messages):
+            if not isinstance(msg, LogEvent):
+                self.messages[idx] = LogEvent(msg, logger=self.__name__, log_level="info")
+        self.messages = sanitize_item(self.messages)
+
+    def set_error(self, exception: Exception, *messages: LogEvent | str):
+        """Set result to error and save exception"""
+        self.status = TaskStatus.ERROR
+        self.messages = list(messages)
+        self.messages.extend(
+            [LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")]
+        )
+        self.messages = sanitize_item(self.messages)
