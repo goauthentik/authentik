@@ -56,7 +56,7 @@ def trim_user_password_history(user_pk: int):
     if count > num_rows_to_preserve:
         # Keep newest records, delete the rest
         to_keep_ids = entries.order_by("-created_at")[:num_rows_to_preserve].values_list(
-            'id', flat=True
+            "id", flat=True
         )
         num_deleted, _ = entries.exclude(id__in=to_keep_ids).delete()
         LOGGER.debug(
