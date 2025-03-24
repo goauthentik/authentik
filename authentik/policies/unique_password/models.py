@@ -27,7 +27,7 @@ class UniquePasswordPolicy(Policy):
     # Limit on the number of previous passwords the policy evaluates
     # Also controls number of old passwords the system stores.
     num_historical_passwords = models.PositiveIntegerField(
-        default=0,
+        default=1,
         help_text=_("Number of passwords to check against."),
     )
 
