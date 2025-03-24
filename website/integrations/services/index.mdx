@@ -4,6 +4,26 @@ sidebar_label: Applications
 ---
 
 import DocCardList from "@theme/DocCardList";
+import SupportBadge from "@site/src/components/SupportBadge";
+
+Below is a list of all applications that are known to work with authentik.
+
+All app integrations will have one of these badges:
+
+- <SupportBadge level="community" />: Community maintained.
+- <SupportBadge level="vendor" />: Supported by the vendor.
+- <SupportBadge level="authentik" />: Regularly tested by the authentik team.
+- <SupportBadge level="deprecated" />: Deprecated and may be removed.
+
+### Add a new application
+
+To add documentation for a new application (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) file from our GitHub repo. You can download the template file using the following command:
+
+```shell
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integrations/template/service.md
+```
+
+Don't forget to edit the `sidebarsIntegrations.js` file to add your new integration to the lefthand navigation bar.
 
 Most third-party services that support authentication protocols such as SAML, OAuth, and OpenID Connect can be integrated with authentik, allowing users to log in to these services using their authentik credentials.
 
