@@ -60,7 +60,7 @@ class Task(SerializerModel):
     tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
     state = models.CharField(default=TaskState.QUEUED, choices=TaskState.choices, editable=False)
     mtime = models.DateTimeField(default=timezone.now, editable=False)
-    message = models.TextField(null=True, editable=False)
+    message = models.BinaryField(null=True, editable=False)
 
     result = models.TextField(null=True, editable=False)
     result_ttl = models.DateTimeField(null=True, editable=False)

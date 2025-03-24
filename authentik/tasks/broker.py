@@ -152,7 +152,7 @@ class PostgresBroker(Broker):
         self.declare_queue(canonical_queue_name)
         self.logger.debug(f"Enqueueing message {message.message_id} on queue {queue_name}")
         self.emit_before("enqueue", message, delay)
-        encoded = message.encode().decode()
+        encoded = message.encode()
         query = {
             "message_id": message.message_id,
         }
