@@ -4,6 +4,7 @@ from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
+from channels.layers import get_channel_layer
 from django.http.request import QueryDict
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -23,6 +24,9 @@ RAC_CLIENT_GROUP_SESSION = "group_rac_client_%(session)s"
 # is just one connection, however this is used to disconnect the connection
 # when the token is deleted
 RAC_CLIENT_GROUP_TOKEN = "group_rac_token_%(token)s"  # nosec
+# A group for all connections to a specific endpoint from a session
+# Used to disconnect existing connections when a new connection is made to the same endpoint
+RAC_CLIENT_GROUP_SESSION_ENDPOINT = "group_rac_session_%(session)s_endpoint_%(endpoint)s"  # nosec
 
 # Step 1: Client connects to this websocket endpoint
 # Step 2: We prepare all the connection args for Guac
@@ -52,6 +56,21 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         )
         await self.init_outpost_connection()
 
+        # After initializing the connection, add this channel to the session-endpoint group
+        if hasattr(self, "token") and self.token:
+            await self.channel_layer.group_add(
+                RAC_CLIENT_GROUP_TOKEN % {"token": self.token.token},
+                self.channel_name,
+            )
+            await self.channel_layer.group_add(
+                RAC_CLIENT_GROUP_SESSION_ENDPOINT
+                % {
+                    "session": self.scope["session"].session_key,
+                    "endpoint": str(self.token.endpoint.pk),
+                },
+                self.channel_name,
+            )
+
     async def disconnect(self, code):
         self.logger.debug("Disconnecting")
         # Tell the outpost we're disconnecting
@@ -61,6 +80,25 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 "type": "event.disconnect",
             },
         )
+
+        # Clean up group memberships
+        if hasattr(self, "token") and self.token:
+            await self.channel_layer.group_discard(
+                RAC_CLIENT_GROUP_TOKEN % {"token": self.token.token},
+                self.channel_name,
+            )
+            await self.channel_layer.group_discard(
+                RAC_CLIENT_GROUP_SESSION_ENDPOINT
+                % {
+                    "session": self.scope["session"].session_key,
+                    "endpoint": str(self.token.endpoint.pk),
+                },
+                self.channel_name,
+            )
+
+        # Always delete the token on disconnect to ensure clean connections
+        # This is necessary to fix the issue where connections go to the wrong endpoint
+        await self.delete_token_on_disconnect()
 
     @database_sync_to_async
     def init_outpost_connection(self):
@@ -72,6 +110,19 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         )
         if not self.token:
             raise DenyConnection()
+
+        # Before establishing a new connection, send a disconnect message to any existing
+        # connections for the same session and endpoint
+        layer = get_channel_layer()
+        session_key = self.scope["session"].session_key
+        endpoint_pk = str(self.token.endpoint.pk)
+
+        # Disconnect any existing connections to the same endpoint for this session
+        async_to_sync(layer.group_send)(
+            RAC_CLIENT_GROUP_SESSION_ENDPOINT % {"session": session_key, "endpoint": endpoint_pk},
+            {"type": "event.disconnect", "reason": "new_connection_to_same_endpoint"},
+        )
+
         self.provider = self.token.provider
         params = self.token.get_settings()
         self.logger = get_logger().bind(
@@ -112,6 +163,17 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             )
         if self.provider and self.provider.delete_token_on_disconnect:
             self.logger.info("Deleting connection token to prevent reconnect", token=self.token)
+            self.token.delete()
+
+    @database_sync_to_async
+    def delete_token_on_disconnect(self):
+        """Delete the token when disconnecting to ensure clean connections
+        This is called regardless of the provider's delete_token_on_disconnect setting
+        to ensure that users can properly connect to different endpoints."""
+        if hasattr(self, "token") and self.token:
+            self.logger.info(
+                "Deleting connection token on disconnect to prevent conflicts", token=self.token
+            )
             self.token.delete()
 
     async def receive(self, text_data=None, bytes_data=None):
