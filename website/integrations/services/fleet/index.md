@@ -32,11 +32,11 @@ The following placeholders are used in this guide:
 
 The workflow to configure authentik as a single sign-on for Fleet involves creating an application and SAML provider pair. Following this configuration process will generate the necessary metadata you will use to configure Fleet to trust authentik as an identity provider.
 
-### 1. Create an application and provider
+### Create an application and provider
 
 1. From the authentik Admin interface, navigate to **Applications -> Applications** and click **Create with Provider** to create an application and provider pair.
 
-2. Enter "Fleet" for the **App name** and click **Next**.
+2. For the **App name** enter `Fleet` and click **Next**.
 
 3. Choose **SAML** as the **Provider Type** and click **Next**.
 
@@ -65,14 +65,14 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
         - **Service Provider Binding**: `Post`
         - **Audience**: `https://fleet.company`
         - **Advanced protocol settings**:
-          Any fields that can be left as their default values are omitted from the list.
+          (Any fields that can be left as their default values are omitted from the list below).
 
             - **Signing Certificate**: Select a certificate enable **Sign assertions** and **Sign responses**.
             - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
 
 5. Click **Next**, review the configuration details, and click **Submit**.
 
-### 2. Retrieve provider metadata
+### Retrieve provider metadata
 
 1. From the authentik Admin interface, navigate to **Applications -> Providers** and click the Fleet SAML provider.
 
@@ -112,9 +112,9 @@ With these prerequisites in place, authentik is now configured to act as a singl
 
 ## Configuration verification
 
-To verify that the authentik and Fleet are correctly configured, you can test the SSO flow with a user account.
+To verify that authentik and Fleet are correctly configured, you can test the SSO flow with a user account.
 
-### 1. Create a test user
+### Create a test user
 
 1. From the authentik Admin interface, navigate to **Directory -> Users** and click **Create**.
 2. Enter the following details for the test user. All other fields can be left as their default values.
@@ -135,12 +135,12 @@ To verify that the authentik and Fleet are correctly configured, you can test th
 
 6. Click **Add** and verify that the user is listed in the **Users** table.
 
-### 2. Test the SSO flow
+### Test the SSO flow
 
 1. In a private browsing window, navigate to your Fleet instance and click **Sign on with authentik**.
 2. After being redirected to the authentik login page, enter the test user's email address and password.
 
-Once authenticated, you should be redirected back to the Fleet and logged in as the test user. This confirms that the SSO flow is working as expected.
+After you are authenticated, you should be redirected back to the Fleet and logged in as the test user. This confirms that the SSO flow is working as expected.
 
 #### Troubleshooting
 
