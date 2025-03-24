@@ -50,12 +50,18 @@ def trim_user_password_history(user_pk: int):
             )
 
     entries = UserPasswordHistory.objects.filter(user__pk=user_pk)
-    to_keep = entries.order_by("-created_at")[:num_rows_to_preserve]
-    num_deleted, _ = entries.difference(to_keep).delete()
+    count = entries.count()
 
-    LOGGER.debug(
-        "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
-    )
+    # Only delete if we have more entries than we need to preserve
+    if count > num_rows_to_preserve:
+        # Keep newest records, delete the rest
+        to_keep_ids = entries.order_by("-created_at")[:num_rows_to_preserve].values_list(
+            'id', flat=True
+        )
+        num_deleted, _ = entries.exclude(id__in=to_keep_ids).delete()
+        LOGGER.debug(
+            "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
+        )
 
 
 @CELERY_APP.task()
