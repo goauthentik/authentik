@@ -15,6 +15,11 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Device Management",
+                    items: ["services/apple/index"],
+                },
+                {
+                    type: "category",
                     label: "Chat, Communication & Collaboration",
                     items: [
                         "services/bookstack/index",
@@ -136,11 +141,13 @@ module.exports = {
                         "services/immich/index",
                         "services/jellyfin/index",
                         "services/komga/index",
+                        "services/miniflux/index",
                         "services/node-red/index",
                         "services/open-webui/index",
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
+                        "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
                         "services/zipline/index",
@@ -150,6 +157,7 @@ module.exports = {
                     type: "category",
                     label: "Monitoring",
                     items: [
+                        "services/beszel/index",
                         "services/chronograf/index",
                         "services/gatus/index",
                         "services/glitchtip/index",

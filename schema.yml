@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.1
+  version: 2025.2.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4447,6 +4447,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: branding_default_flow_background
+        schema:
+          type: string
       - in: query
         name: branding_favicon
         schema:
@@ -22192,6 +22196,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: authn_context_class_ref_mapping
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -25745,7 +25754,7 @@ paths:
           description: ''
     delete:
       operationId: sources_all_destroy
-      description: Source Viewset
+      description: Prevent deletion of built-in sources
       parameters:
       - in: path
         name: slug
@@ -41140,6 +41149,10 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41197,6 +41210,11 @@ components:
           type: string
           minLength: 1
         branding_favicon:
+          type: string
+          minLength: 1
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
@@ -42091,6 +42109,8 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -42117,6 +42137,7 @@ components:
           type: string
           readOnly: true
       required:
+      - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
@@ -46869,10 +46890,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -46900,10 +46929,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -50120,6 +50157,11 @@ components:
         branding_favicon:
           type: string
           minLength: 1
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
+          type: string
+          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -51332,10 +51374,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -52228,6 +52278,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55183,6 +55241,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55348,6 +55414,14 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
+        authn_context_class_ref_mapping:
+          type: string
+          format: uuid
+          nullable: true
+          title: AuthnContextClassRef Property Mapping
+          description: Configure how the AuthnContextClassRef value will be created.
+            When left empty, the AuthnContextClassRef will be set based on which authentication
+            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55897,7 +55971,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - group
       - group_obj
       - id
@@ -55984,7 +56061,10 @@ components:
           readOnly: true
         provider:
           type: integer
+        attributes:
+          readOnly: true
       required:
+      - attributes
       - id
       - provider
       - scim_id

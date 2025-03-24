@@ -180,6 +180,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "session_valid_not_on_or_after",
             "property_mappings",
             "name_id_mapping",
+            "authn_context_class_ref_mapping",
             "digest_algorithm",
             "signature_algorithm",
             "signing_kp",

@@ -31,6 +31,12 @@ const createConfig = (): Config => {
                 },
                 items: [
                     {
+                        to: "https://goauthentik.io/features",
+                        label: "Features",
+                        position: "left",
+                        target: "_self",
+                    },
+                    {
                         to: "https://goauthentik.io/blog",
                         label: "Blog",
                         position: "left",
@@ -71,7 +77,8 @@ const createConfig = (): Config => {
                 copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
             },
             tableOfContents: {
-                maxHeadingLevel: 5,
+                minHeadingLevel: 2,
+                maxHeadingLevel: 3,
             },
             colorMode: {
                 respectPrefersColorScheme: true,
@@ -107,6 +114,7 @@ const createConfig = (): Config => {
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
+
                         beforeDefaultRemarkPlugins: [
                             remarkDirective,
                             remarkVersionDirective,
