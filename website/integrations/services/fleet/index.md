@@ -68,7 +68,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
             - **Signing Certificate**: Select a certificate enable **Sign assertions** and **Sign responses**.
             - **NameID Property Mapping**: `authentik default SAML Mapping: Email`
 
-5. Click **Next**, review the configuration details, and click **Submit**.
+4. Click **Next**, review the configuration details, and click **Submit**.
 
 ### Retrieve provider metadata
 
