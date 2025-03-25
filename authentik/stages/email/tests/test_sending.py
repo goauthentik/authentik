@@ -95,7 +95,7 @@ class TestEmailStageSending(FlowTestCase):
             )
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")
-            self.assertEqual(mail.outbox[0].to, [f"Test User  Many Words  <{long_user.email}>"])
+            self.assertEqual(mail.outbox[0].to, [f"Test User   Many Words   <{long_user.email}>"])
 
     def test_pending_fake_user(self):
         """Test with pending (fake) user"""
