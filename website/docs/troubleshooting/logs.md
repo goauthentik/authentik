@@ -37,7 +37,7 @@ This command will stream logs into the terminal until stopped.
 To capture logs from a container deployed via kubernetes, you can run the command below to output logs into the terminal:
 
 ```shell
-kubectl logs --since 5m <pod_name_or_id>/<container_name_or_id>
+kubectl logs --timestamps --since 5m <pod_name_or_id>/<container_name_or_id>
 ```
 
 This command will output logs from the specified container for the last 5 minutes.
@@ -52,7 +52,7 @@ More information on this option and others can be found in the `kubectl logs` co
 To continuously output logs from a container deployed via kubernetes, you can include the _follow_ option (`-f`, `--follow`):
 
 ```shell
-kubectl logs -f <pod_name_or_id>/<container_name_or_id>
+kubectl logs -f --timestamps <pod_name_or_id>/<container_name_or_id>
 ```
 
 This command will stream logs into the terminal until stopped.
