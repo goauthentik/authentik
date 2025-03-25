@@ -15,7 +15,7 @@ If you're focusing solely on frontend development, you can create a minimal deve
 - [Node.js](https://nodejs.org/en) (22 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2 is recommended)
-- Make 3 or later
+- [Make](https://www.gnu.org/software/make/) (3 or later)
 
 :::info
 
