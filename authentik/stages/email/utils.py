@@ -34,7 +34,7 @@ class TemplateEmailMessage(EmailMultiAlternatives):
         for recipient_name, recipient_email in to:
             # Remove any newline characters from name and email before sanitizing
             clean_name = (
-                recipient_name.replace("\n", "").replace("\r", "") if recipient_name else ""
+                recipient_name.replace("\n", " ").replace("\r", "") if recipient_name else ""
             )
             clean_email = (
                 recipient_email.replace("\n", "").replace("\r", "") if recipient_email else ""
