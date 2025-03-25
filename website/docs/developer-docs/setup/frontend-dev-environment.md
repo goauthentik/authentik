@@ -8,7 +8,7 @@ tags:
     - docker
 ---
 
-If you're only working on the frontend, you can set up a minimal development environment using Docker and Node.js. This setup will allow you to make changes to the frontend and see them in real-time without needing to rebuild the backend.
+If you're focusing solely on frontend development, you can create a minimal development environment using Docker and Node.js. This setup allows you to make and preview changes to the frontend in real-time, without needing to interact with the backend.
 
 ### Prerequisites
 
