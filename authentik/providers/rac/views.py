@@ -140,6 +140,7 @@ class RACFinalStage(RedirectStage):
             endpoint=self.endpoint,
             settings=self.executor.plan.context.get("connection_settings", {}),
             session=current_session,
+            session_id=current_session.pk,
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )
