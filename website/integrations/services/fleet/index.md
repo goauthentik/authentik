@@ -38,9 +38,7 @@ The workflow to configure authentik as a single sign-on for Fleet involves creat
 
 2. For the **App name** enter `Fleet` and click **Next**.
 
-3. Choose **SAML** as the **Provider Type** and click **Next**.
-
-4. For the **Provider Type** select **SAML**, click **Next**, and use the following values.
+3. For the **Provider Type** select **SAML**, click **Next**, and use the following values.
 
     - **Name**: `Fleet`
     - **Authorization flow**: Select a flow that suits your organization's requirements.
