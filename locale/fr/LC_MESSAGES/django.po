@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-20 00:10+0000\n"
+"POT-Creation-Date: 2025-03-22 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -675,6 +675,22 @@ msgstr "Webhook Slack (ou Discord)"
 #: authentik/stages/authenticator_validate/models.py
 msgid "Email"
 msgstr "Courriel"
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+"Personnalise le corps de la requête. Le mappage doit renvoyer des données "
+"sérialisables en JSON."
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Configure les en-têtes supplémentaires à envoyer. Le mappage doit renvoyer "
+"un dictionnaire de paires clé-valeur."
 
 #: authentik/events/models.py
 msgid ""

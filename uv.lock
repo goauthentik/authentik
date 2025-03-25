@@ -307,7 +307,7 @@ requires-dist = [
     { name = "ldap3" },
     { name = "lxml" },
     { name = "msgraph-sdk" },
-    { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" },
+    { name = "opencontainers", git = "https://github.com/BeryJu/oci-python?rev=c791b19056769cd67957322806809ab70f5bead8" },
     { name = "packaging" },
     { name = "paramiko" },
     { name = "psycopg", extras = ["c"] },
@@ -1252,9 +1252,12 @@ wheels = [
 
 [[package]]
 name = "durationpy"
-version = "0.7"
+version = "0.9"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8b/b8/074abdcc251bec87da6c5b19b88d7898ec7996c6780d40c6ac5000d3dd47/durationpy-0.7.tar.gz", hash = "sha256:8447c43df4f1a0b434e70c15a38d77f5c9bd17284bfc1ff1d430f233d5083732", size = 3168 }
+sdist = { url = "https://files.pythonhosted.org/packages/31/e9/f49c4e7fccb77fa5c43c2480e09a857a78b41e7331a75e128ed5df45c56b/durationpy-0.9.tar.gz", hash = "sha256:fd3feb0a69a0057d582ef643c355c40d2fa1c942191f914d12203b1a01ac722a", size = 3186 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4c/a3/ac312faeceffd2d8f86bc6dcb5c401188ba5a01bc88e69bed97578a0dfcd/durationpy-0.9-py3-none-any.whl", hash = "sha256:e65359a7af5cedad07fb77a2dd3f390f8eb0b74cb845589fa6c057086834dd38", size = 3461 },
+]
 
 [[package]]
 name = "email-validator"
@@ -2151,7 +2154,7 @@ wheels = [
 [[package]]
 name = "opencontainers"
 version = "0.0.14"
-source = { git = "https://github.com/vsoch/oci-python?rev=20d69d9cc50a0fef31605b46f06da0c94f1ec3cf#20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" }
+source = { git = "https://github.com/BeryJu/oci-python?rev=c791b19056769cd67957322806809ab70f5bead8#c791b19056769cd67957322806809ab70f5bead8" }
 
 [[package]]
 name = "opentelemetry-api"

@@ -9694,15 +9694,19 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
+  <target>Tâche</target>
 </trans-unit>
 <trans-unit id="sbb99d4ec27fbb263">
   <source>Finished</source>
+  <target>Finie</target>
 </trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
+  <target>Mappage de corps de Webhook</target>
 </trans-unit>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
+  <target>Mappage d'en-têtes de Webhook</target>
 </trans-unit>
     </body>
   </file>
