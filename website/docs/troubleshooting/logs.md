@@ -30,14 +30,14 @@ docker logs <container_name_or_id> -f --timestamps
 This command will stream logs into the terminal until stopped.
 
 
-## Kubernetes logs
+## Kubernetes Logs
 
 ### Capturing Past Logs
 
 To capture logs from a container deployed via kubernetes, you can run the command below to output logs into the terminal:
 
 ```shell
-kubectl logs -f --since 5m <pod_name_or_id>/<container_name_or_id>
+kubectl logs --since 5m <pod_name_or_id>/<container_name_or_id>
 ```
 
 This command will output logs from the specified container for the last 5 minutes.
