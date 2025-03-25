@@ -8,7 +8,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
@@ -66,6 +66,36 @@ class TestEmailStageSending(FlowTestCase):
             self.assertEqual(event.context["subject"], "authentik")
             self.assertEqual(event.context["to_email"], [f"{self.user.name} <{self.user.email}>"])
             self.assertEqual(event.context["from_email"], "system@authentik.local")
+
+    def test_newlines_long_name(self):
+        """Test with pending user"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        long_user = create_test_user()
+        long_user.name = "Test User\r\n Many Words\r\n"
+        long_user.save()
+        plan.context[PLAN_CONTEXT_PENDING_USER] = long_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.post(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                response_errors={
+                    "non_field_errors": [{"string": "email-sent", "code": "email-sent"}]
+                },
+            )
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "authentik")
+            self.assertEqual(mail.outbox[0].to, [f"Test User Many Words <{long_user.email}>"])
 
     def test_pending_fake_user(self):
         """Test with pending (fake) user"""
