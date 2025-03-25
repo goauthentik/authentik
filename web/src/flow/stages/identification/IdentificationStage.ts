@@ -179,7 +179,7 @@ export class IdentificationStage extends BaseStage<
         this.form.appendChild(totp);
     }
 
-    cleanup(): void {
+    onSubmitSuccess(): void {
         if (this.form) {
             this.form.remove();
         }
