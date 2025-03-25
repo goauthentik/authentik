@@ -28,7 +28,7 @@ kubectl logs --timestamps --since 5m <pod_name>
 
 ## Continuously Capturing Logs
 
-To continuously display logs from a Docker container or a pod deployed via Kubernetes, you can include the _follow_ option (`-f`, `--follow`). This option will stream logs into the terminal until stopped.
+To continuously display logs from a Docker container or a pod deployed via Kubernetes, you can include the _follow_ option (`-f`, `--follow`). This option will stream logs into the terminal until stopped (`Ctrl + C` or closing the terminal).
 
 ### Docker
 
