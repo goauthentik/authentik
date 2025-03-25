@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
-from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tenants.models import Tenant
 

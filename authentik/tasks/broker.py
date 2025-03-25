@@ -5,7 +5,6 @@ from collections.abc import Iterable
 from queue import Empty, Queue
 from random import randint
 
-import orjson
 import tenacity
 from django.db import (
     DEFAULT_DB_ALIAS,
