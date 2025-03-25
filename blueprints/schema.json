@@ -3209,6 +3209,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_tasks_schedules.schedule"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_tasks_schedules.schedule_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_tasks_schedules.schedule"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_brands.brand"
                             },
                             "id": {
@@ -4647,6 +4687,7 @@
                     "enum": [
                         null,
                         "authentik.tenants",
+                        "authentik.tasks",
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
@@ -4697,6 +4738,7 @@
                         "authentik.stages.user_login",
                         "authentik.stages.user_logout",
                         "authentik.stages.user_write",
+                        "authentik.tasks.schedules",
                         "authentik.brands",
                         "authentik.blueprints",
                         "authentik.core",
@@ -4798,6 +4840,7 @@
                         "authentik_stages_user_login.userloginstage",
                         "authentik_stages_user_logout.userlogoutstage",
                         "authentik_stages_user_write.userwritestage",
+                        "authentik_tasks_schedules.schedule",
                         "authentik_brands.brand",
                         "authentik_blueprints.blueprintinstance",
                         "authentik_core.group",
@@ -7330,6 +7373,12 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
+                            "authentik_tasks.add_task",
+                            "authentik_tasks.change_task",
+                            "authentik_tasks.delete_task",
+                            "authentik_tasks.view_task",
+                            "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
                             "authentik_tenants.change_domain",
@@ -12988,6 +13037,41 @@
                 }
             }
         },
+        "model_authentik_tasks_schedules.schedule": {
+            "type": "object",
+            "properties": {
+                "crontab": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Crontab"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_tasks_schedules.schedule_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "change_schedule",
+                            "view_schedule"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_brands.brand": {
             "type": "object",
             "properties": {
@@ -13845,6 +13929,12 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
+                            "authentik_tasks.add_task",
+                            "authentik_tasks.change_task",
+                            "authentik_tasks.delete_task",
+                            "authentik_tasks.view_task",
+                            "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
                             "authentik_tenants.change_domain",

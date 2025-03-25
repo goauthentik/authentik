@@ -24426,6 +24426,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
       - in: query
@@ -24670,6 +24671,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
       - in: query
@@ -38932,6 +38934,165 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/schedules/:
+    get:
+      operationId: tasks_schedules_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedScheduleList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/schedules/{id}/:
+    get:
+      operationId: tasks_schedules_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: tasks_schedules_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: tasks_schedules_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        description: A unique value identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScheduleRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tenants/domains/:
     get:
       operationId: tenants_domains_list
@@ -39475,6 +39636,7 @@ components:
     AppEnum:
       enum:
       - authentik.tenants
+      - authentik.tasks
       - authentik.admin
       - authentik.api
       - authentik.crypto
@@ -39525,6 +39687,7 @@ components:
       - authentik.stages.user_login
       - authentik.stages.user_logout
       - authentik.stages.user_write
+      - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
       - authentik.core
@@ -46725,6 +46888,7 @@ components:
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
       - authentik_stages_user_write.userwritestage
+      - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_core.group
@@ -49106,6 +49270,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SSFStream'
+      required:
+      - pagination
+      - results
+    PaginatedScheduleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Schedule'
       required:
       - pagination
       - results
@@ -52620,6 +52796,12 @@ components:
           items:
             type: integer
         event_retention:
+          type: string
+          minLength: 1
+    PatchedScheduleRequest:
+      type: object
+      properties:
+        crontab:
           type: string
           minLength: 1
     PatchedScopeMappingRequest:
@@ -56486,6 +56668,35 @@ components:
       - pk
       - provider
       - provider_obj
+    Schedule:
+      type: object
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+          description: Schedule display name
+        crontab:
+          type: string
+        next_run:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - crontab
+      - id
+      - name
+      - next_run
+    ScheduleRequest:
+      type: object
+      properties:
+        crontab:
+          type: string
+          minLength: 1
+      required:
+      - crontab
     ScopeMapping:
       type: object
       description: ScopeMapping Serializer

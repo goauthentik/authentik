@@ -38,7 +38,8 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-class Task(SerializerModel):
+# class Task(SerializerModel):
+class Task(models.Model):
     message_id = models.UUIDField(primary_key=True, default=uuid4)
     queue_name = models.TextField(default="default", help_text=_("Queue name"))
 
@@ -89,10 +90,10 @@ class Task(SerializerModel):
     def __str__(self):
         return str(self.message_id)
 
-    @property
-    def serializer(self):
-        # TODO: fixme
-        pass
+    # @property
+    # def serializer(self):
+    #     # TODO: fixme
+    #     pass
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""

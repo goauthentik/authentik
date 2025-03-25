@@ -19,11 +19,16 @@ class Schedule(SerializerModel):
     class Meta:
         verbose_name = _("Schedule")
         verbose_name_plural = _("Schedules")
+        default_permissions = (
+            "change",
+            "view",
+        )
 
     def __str__(self):
         return self.name
 
     @property
     def serializer(self):
-        # TODO: fixme
-        pass
+        from authentik.tasks.schedules.api import ScheduleSerializer
+
+        return ScheduleSerializer
