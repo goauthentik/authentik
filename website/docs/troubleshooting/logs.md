@@ -2,7 +2,7 @@
 title: Capturing logs
 ---
 
-## Docker logs
+## Docker Logs
 
 ### Capturing Past Logs
 
