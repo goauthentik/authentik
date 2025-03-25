@@ -33,5 +33,5 @@ class PostgresBackend(ResultBackend):
         self.query_set.filter(message_id=message_key).update(
             mtime=timezone.now(),
             result=encoder.encode(result),
-            result_ttl=timezone.now() + timezone.timedelta(milliseconds=ttl),
+            result_expiry=timezone.now() + timezone.timedelta(milliseconds=ttl),
         )

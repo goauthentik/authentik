@@ -15,35 +15,6 @@ from authentik.tenants.models import Tenant
 CHANNEL_PREFIX = "authentik.tasks"
 
 
-# class Schedule(SerializerModel):
-#     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-#
-#     name = models.TextField(editable=False)
-#     func = models.TextField(editable=False)
-#     args = models.TextField(editable=False)
-#     kwargs = models.TextField(editable=False)
-#
-#     class Meta:
-#         verbose_name = _("Schedule")
-#         verbose_name_plural = _("Schedules")
-#         indexes = (
-#             models.Index(
-#                 fields=(
-#                     "name",
-#                     "func",
-#                 ),
-#             ),
-#         )
-#
-#     def __str__(self):
-#         return self.name
-#
-#     @property
-#     def serializer(self):
-#         # TODO: fixme
-#         pass
-
-
 class ChannelIdentifier(StrEnum):
     ENQUEUE = auto()
     LOCK = auto()
@@ -68,21 +39,31 @@ class TaskStatus(models.TextChoices):
 
 
 class Task(SerializerModel):
-    message_id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    queue_name = models.TextField(default="default", editable=False)
+    message_id = models.UUIDField(primary_key=True, default=uuid4)
+    queue_name = models.TextField(default="default", help_text=_("Queue name"))
 
-    tenant = models.ForeignKey(Tenant, on_delete=models.CASCADE, editable=False)
-    state = models.CharField(default=TaskState.QUEUED, choices=TaskState.choices, editable=False)
-    mtime = models.DateTimeField(default=timezone.now, editable=False)
-    message = models.BinaryField(null=True, editable=False)
+    tenant = models.ForeignKey(
+        Tenant,
+        on_delete=models.CASCADE,
+        help_text=_("Tenant this task belongs to"),
+    )
+    actor_name = models.TextField(help_text=_("Dramatiq actor name"))
+    message = models.BinaryField(null=True, help_text=_("Message body"))
+    state = models.CharField(
+        default=TaskState.QUEUED,
+        choices=TaskState.choices,
+        help_text=_("Task status"),
+    )
+    mtime = models.DateTimeField(default=timezone.now, help_text=_("Task last modified time"))
 
-    result = models.TextField(null=True, editable=False)
-    result_ttl = models.DateTimeField(null=True, editable=False)
+    result = models.BinaryField(null=True, help_text=_("Task result"))
+    result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
 
-    uid = models.TextField(blank=True, editable=False)
-    description = models.TextField(blank=True, editable=False)
-    status = models.TextField(blank=True, choices=TaskStatus.choices, editable=False)
-    messages = models.JSONField(default=list, editable=False)
+    # Probably only have one `logs` field
+    uid = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    status = models.TextField(blank=True, choices=TaskStatus.choices)
+    messages = models.JSONField(default=list)
 
     class Meta:
         verbose_name = _("Task")

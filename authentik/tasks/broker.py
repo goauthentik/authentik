@@ -158,6 +158,7 @@ class PostgresBroker(Broker):
         defaults = {
             "tenant": get_current_tenant(),
             "queue_name": message.queue_name,
+            "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
             "message": message.encode(),
         }
@@ -283,7 +284,8 @@ class _PostgresConsumer(Consumer):
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")
         notifies = self.query_set.filter(
-            state__in=(TaskState.QUEUED, TaskState.CONSUMED), queue_name=self.queue_name
+            state__in=(TaskState.QUEUED, TaskState.CONSUMED),
+            queue_name=self.queue_name,
         ).values_list("message_id", flat=True)
         channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
         return [Notify(pid=0, channel=channel, payload=item) for item in notifies]
@@ -309,8 +311,14 @@ class _PostgresConsumer(Consumer):
                 message_id=message.message_id,
                 state__in=(TaskState.QUEUED, TaskState.CONSUMED),
             )
-            .extra(where=["pg_try_advisory_lock(%s)"], params=[self._get_message_lock_id(message)])
-            .update(state=TaskState.CONSUMED, mtime=timezone.now())
+            .extra(
+                where=["pg_try_advisory_lock(%s)"],
+                params=[self._get_message_lock_id(message)],
+            )
+            .update(
+                state=TaskState.CONSUMED,
+                mtime=timezone.now(),
+            )
         )
         return result == 1
 
@@ -383,5 +391,6 @@ class _PostgresConsumer(Consumer):
         count = self.query_set.filter(
             state__in=(TaskState.DONE, TaskState.REJECTED),
             mtime__lte=timezone.now() - timezone.timedelta(days=30),
+            result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info(f"Purged {count} messages in all queues")
