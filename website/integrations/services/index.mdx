@@ -6,16 +6,23 @@ sidebar_label: Applications
 import DocCardList from "@theme/DocCardList";
 import SupportBadge from "@site/src/components/SupportBadge";
 
-Below is a list of all applications that are known to work with authentik.
+Most third-party services that support authentication protocols such as SAML, OAuth, and OpenID Connect can be integrated with authentik, allowing users to log in to these services using their authentik credentials.
 
-All app integrations will have one of these badges:
+If you don't see an application you're looking for, let us know. You can reach us on [GitHub](https://github.com/goauthentik/authentik), [Discord](https://goauthentik.io/discord), or via email to [hello@goauthentik.io](mailto:hello@goauthentik.io). You can also add your own documentation for a new application integration following [these instructions](#add-new).
+
+All documented app integrations will have one of these badges:
 
 - <SupportBadge level="community" />: Community maintained.
 - <SupportBadge level="vendor" />: Supported by the vendor.
 - <SupportBadge level="authentik" />: Regularly tested by the authentik team.
 - <SupportBadge level="deprecated" />: Deprecated and may be removed.
 
+## Integration categories
+
+<DocCardList />
+
 ### Add a new application
+<a id="add-new"></a>
 
 To add documentation for a new application (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) file from our GitHub repo. You can download the template file using the following command:
 
@@ -24,9 +31,3 @@ wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/integr
 ```
 
 Don't forget to edit the `sidebarsIntegrations.js` file to add your new integration to the lefthand navigation bar.
-
-Most third-party services that support authentication protocols such as SAML, OAuth, and OpenID Connect can be integrated with authentik, allowing users to log in to these services using their authentik credentials.
-
-If you don't see an application you're looking for, let us know. You can reach us on [GitHub](https://github.com/goauthentik/authentik), [Discord](https://discord.com/channels/809154715984199690/809154716507963434), or via email to [hello@goauthentik.io](mailto:hello@goauthentik.io).
-
-<DocCardList />
