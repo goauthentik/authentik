@@ -75,7 +75,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 6. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 
     ```shell
-    docker-compose up
+    docker compose up
     ```
 
 You can now access authentik on http://localhost:9000 (or https://localhost:9443).
