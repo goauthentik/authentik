@@ -6,7 +6,7 @@ When troubleshooting issues it is useful to investigate the [event logs](../sys-
 
 ## Capturing Past Logs
 
-The `--since` option can be used with both `docker logs` and `kubectl logs` commands. It can accept a Go durating string (e.g. `1m30s`, `3h`) or a specific date/time (e.g. `2006-01-02T07:00`, `2006-01-02`).
+The `--since` option can be used with both `docker logs` and `kubectl logs` commands. It can accept a Go durating string (e.g. `1m30s`, `3h`) or a specific date/time (e.g. `2006-01-02T07:00`, `2006-01-02`). When used, the command will output logs for the specified time period.
 
 More information on this option and others can be found in the [`docker logs` command documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` command documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
 
@@ -18,8 +18,6 @@ To capture and display the logs of a Docker container in the terminal, use the f
 docker logs <container_name_or_id> --timestamps --since 5m
 ```
 
-This command will output logs from the specified container for the last 5 minutes.
-
 ### Kubernetes
 
 To capture and display the logs from a pod deployed via Kubernetes, use the following command:
@@ -27,8 +25,6 @@ To capture and display the logs from a pod deployed via Kubernetes, use the foll
 ```shell
 kubectl logs --timestamps --since 5m <pod_name>
 ```
-
-This command will output logs from the specified container for the last 5 minutes.
 
 ## Continuously Capturing Logs
 
