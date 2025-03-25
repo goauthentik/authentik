@@ -19,7 +19,7 @@ authentik_preview: true
 
 By the end of this integration, your users will be able to log into Fleet using their authentik credentials.
 
-Your authentik and Fleet instance must both be running and accessible on an HTTPS domain.
+Your authentik and Fleet instances must both be running and accessible on an HTTPS domain.
 
 ### Placeholders
 
