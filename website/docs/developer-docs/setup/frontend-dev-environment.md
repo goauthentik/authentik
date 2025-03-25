@@ -72,7 +72,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
     make web-watch
     ```
 
-6. From the cloned repository root (in a new terminal), start Docker Compose to run the backend services.
+6. In a new terminal, navigate to the cloned repository root and start the backend containers with Docker Compose.
 
     ```shell
     docker-compose up
