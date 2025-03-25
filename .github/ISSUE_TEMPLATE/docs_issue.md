@@ -17,3 +17,6 @@ A clear and concise description of what you want to happen.
 
 **Additional context**
 Add any other context or screenshots about the documentation issue here.
+
+**Consider opening a PR!**
+If the issue is one that you can fix, or even make a good pass at, we'd appreciate a PR. For more information about making a contribution to the docs, and using our Style Guide and our templates, refer to ["Writing documentation"](https://docs.goauthentik.io/docs/developer-docs/docs/writing-documentation.)
