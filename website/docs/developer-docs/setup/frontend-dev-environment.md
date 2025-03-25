@@ -66,7 +66,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
     npm ci
     ```
 
-5. From the cloned repository root, start the front-end build script.
+5. From the cloned repository root, run the front-end build script.
 
     ```shell
     make web-watch
