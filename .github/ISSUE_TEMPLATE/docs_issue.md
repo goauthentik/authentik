@@ -1,5 +1,5 @@
 ---
-name: Documentatiotn issue
+name: Documentation issue
 about: Suggest an improvement or report a problem
 title: ""
 labels: documentation
