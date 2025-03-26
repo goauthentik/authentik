@@ -1,4 +1,6 @@
+
 {
+	"extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         "types": ["jquery"],
         "esModuleInterop": true,
