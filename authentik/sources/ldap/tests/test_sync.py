@@ -188,11 +188,16 @@ class LDAPSyncTests(TestCase):
             membership_sync = MembershipLDAPSynchronizer(self.source)
             membership_sync.sync_full()
 
-            self.assertTrue(User.objects.filter(username="user4_sn").exists(), "User does not exist")
+            self.assertTrue(
+                User.objects.filter(username="user4_sn").exists(), "User does not exist"
+            )
             # Test if membership mapping based on memberOf works.
             memberof_group = Group.objects.filter(name="reverse-lookup-group")
             self.assertTrue(memberof_group.exists(), "Group does not exist")
-            self.assertTrue(memberof_group.first().users.filter(username="user4_sn").exists(), "User not a member of the group")
+            self.assertTrue(
+                memberof_group.first().users.filter(username="user4_sn").exists(),
+                "User not a member of the group",
+            )
 
     def test_sync_groups_ad(self):
         """Test group sync"""

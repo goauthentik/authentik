@@ -104,8 +104,8 @@ def mock_freeipa_connection(password: str) -> Connection:
             "uid": "user4_sn",
             "objectClass": "person",
             "memberOf": [
-              "cn=reverse-lookup-group,ou=groups,dc=goauthentik,dc=io",
-            ]
+                "cn=reverse-lookup-group,ou=groups,dc=goauthentik,dc=io",
+            ],
         },
     )
     connection.strategy.add_entry(
