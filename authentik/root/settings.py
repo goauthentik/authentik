@@ -84,7 +84,6 @@ TENANT_APPS = [
     "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
-    # "authentik.policies.unique_password",
     "authentik.policies",
     "authentik.providers.ldap",
     "authentik.providers.oauth2",

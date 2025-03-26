@@ -13,10 +13,7 @@ LOGGER = get_logger()
 
 
 class UniquePasswordPolicy(Policy):
-    """This policy prevents users from reusing old passwords.
-    Once activated, Authentik automatically saves a hashed (secure) version of a user's
-    previous passwords each time they create a new one.
-    """
+    """This policy prevents users from reusing old passwords."""
 
     password_field = models.TextField(
         default="password",
