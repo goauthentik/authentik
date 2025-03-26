@@ -62,7 +62,7 @@ https://github.com/goauthentik/authentik/issues/9086#issuecomment-2620098764
 
 ## Omni configuration
 
-Add the folliwng environment variables to your Omni configuration. Make sure to fill in the authentik FQDN from your authentik instance and the application slug generated in the last section.
+Add the following environment variables to your Omni configuration. Make sure to fill in the authentik FQDN from your authentik instance and the application slug generated in the last section.
 
 ```shell
 auth-saml-enabled=true
