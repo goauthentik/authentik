@@ -48,7 +48,7 @@ To support the integration of FortiGate with authentik, you need to create an ap
     - Set the **Issuer** to <kbd>https://<em>authentik.company</em></kbd>.
     - Set the **Audience** to <kbd>https://<em>fgt.company</em>/metadata</kbd>.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section, then select an availible **Signing Certificate**.
+    - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section, then select an available **Signing Certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.

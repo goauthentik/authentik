@@ -42,9 +42,7 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 
 ### Create the users and administrator groups
 
-Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create**. ArgoCD lets you to set up administrator users and read-only users by creating groups named `ArgoCD Admins` and `ArgoCD Viewers`.
-
-After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
+Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create** to create two required groups: `ArgoCD Admins` for administrator users and `ArgoCD Viewers` for read-only users.
 
 ## Terraform provider
 

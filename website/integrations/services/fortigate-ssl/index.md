@@ -34,7 +34,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create a user group
 
-1. Log in to authentik as an admin and navigate to the admin Inteface.
+1. Log in to authentik as an admin and navigate to the admin Interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a descriptive name for the group (e.g. "FortiGate SSLVPN Users").
 4. Add the users who should have access to the SSLVPN.
@@ -42,7 +42,7 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin and navigate to the admin Inteface.
+1. Log in to authentik as an admin and navigate to the admin Interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
 
 - **Application**: provide a descriptive name (e.g. "FortiGate SSLVPN"), an optional group for the type of application, the policy engine mode, and optional UI settings.
