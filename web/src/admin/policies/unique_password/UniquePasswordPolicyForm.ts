@@ -35,7 +35,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
     renderForm(): TemplateResult {
         return html` <span>
                 ${msg(
-                    "Ensure the user's new password is not the same as their previous passwords. The number of passwords checked is configurable.",
+                    "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",
                 )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
