@@ -1,10 +1,6 @@
 ---
 title: Create a Google Workspace provider
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-
+authentik_enterprise: true
 ---
 
 For more information about using a Google Workspace provider, see the [Overview](./index.md) documentation.
@@ -23,7 +19,7 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
 
 2. In the Admin interface, navigate to **Applications -> Providers**.
 
-3. Click **Create**, and select **Google Workspace Provider**, and in the **New provider** modal box, define the following fields:
+3. Click **Create**, and select **Google Workspace Provider**, and in the **New provider** box, define the following fields:
 
     - **Name**: define a descriptive name, such as "GWS provider".
 
@@ -54,7 +50,7 @@ When adding the Google Workspace provider in authentik, you must define the **Ba
    :::info
    If you have also configured Google Workspace to log in using authentik following [these](https://docs.goauthentik.io/integrations/services/google/index), then this configuration can be done on the same app by adding this new provider as a backchannel provider on the existing app instead of creating a new app.
    :::
-3. Click **Create**, and in the **New provider** modal box, and define the following fields:
+3. Click **Create**, and in the **New provider** box, and define the following fields:
 
     - **Slug**: enter the name of the app as you want it to appear in the URL.
     - **Provider**: when _not_ used in conjunction with the Google SAML configuration should be left empty.

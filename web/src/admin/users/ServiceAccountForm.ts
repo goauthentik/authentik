@@ -59,7 +59,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 ?required=${true}
                 name="name"
             >
-                <input type="text" value="" class="pf-c-form-control" required />
+                <input
+                    type="text"
+                    value=""
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                />
                 <p class="pf-c-form__helper-text">
                     ${msg("User's primary identifier. 150 characters or fewer.")}
                 </p>

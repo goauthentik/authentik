@@ -7,12 +7,12 @@ import "@goauthentik/components/events/ObjectChangelog";
 import MDSourceKerberosBrowser from "@goauthentik/docs/users-sources/sources/protocols/kerberos/browser.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -186,11 +186,7 @@ export class KerberosSourceViewPage extends AKElement {
                     ${this.renderSyncCards()}
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
-                            <ak-markdown
-                                .md=${MDSourceKerberosBrowser}
-                                meta="users-sources/protocols/kerberos/browser.md"
-                                ;
-                            ></ak-markdown>
+                            <ak-mdx .url=${MDSourceKerberosBrowser}></ak-mdx>
                         </div>
                     </div>
                 </div>
@@ -216,7 +212,7 @@ export class KerberosSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesKerberosKerberossource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesKerberosKerberossource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

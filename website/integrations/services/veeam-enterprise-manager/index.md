@@ -1,11 +1,8 @@
 ---
 title: Integrate with Veeam Enterprise Manager
 sidebar_label: Veeam Enterprise Manager
+support_level: community
 ---
-
-# Veeam Enterprise Manager
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Veeam Enterprise Manager
 
@@ -17,8 +14,12 @@ sidebar_label: Veeam Enterprise Manager
 
 The following placeholders are used in this guide:
 
-- `veeam.company` is the FQDN of the Veeam Enterprise Manager install.
-- `authentik.company` is the FQDN of the authentik install.
+- `veeam.company` is the FQDN of the Veeam Enterprise Manager installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 You will need an existing group or multiple in authentik to assign roles in Veeam Enterprise Manager to.
 

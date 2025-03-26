@@ -89,7 +89,7 @@ export async function findWizardTitle() {
 async function passByPoliciesAndCommit() {
     const title = await findWizardTitle();
     // Expect to be on the Bindings panel
-    await expect(await title.getText()).toEqual("Configure Policy Bindings");
+    await expect(await title.getText()).toEqual("Configure Policy/User/Group Bindings");
     await (await ApplicationWizardView.nextButton()).click();
     await ApplicationWizardView.pause();
     await (await ApplicationWizardView.submitPage()).waitForDisplayed();

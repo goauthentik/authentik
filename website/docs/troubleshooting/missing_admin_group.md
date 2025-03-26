@@ -7,7 +7,7 @@ If all of the Admin groups have been deleted, or misconfigured during sync, you 
 Run the following command, where _username_ is the user you want to add to the newly created group:
 
 ```shell
-docker compose run --rm server create_admin_group username
+docker compose run --rm server ak create_admin_group username
 ```
 
 or, for Kubernetes, run

@@ -9,7 +9,12 @@ from hashlib import sha256
 from typing import Any
 from urllib.parse import urlparse, urlunparse
 
-from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
+from cryptography.hazmat.primitives.asymmetric.ec import (
+    SECP256R1,
+    SECP384R1,
+    SECP521R1,
+    EllipticCurvePrivateKey,
+)
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
 from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite import Config
@@ -114,6 +119,22 @@ class JWTAlgorithms(models.TextChoices):
     HS256 = "HS256", _("HS256 (Symmetric Encryption)")
     RS256 = "RS256", _("RS256 (Asymmetric Encryption)")
     ES256 = "ES256", _("ES256 (Asymmetric Encryption)")
+    ES384 = "ES384", _("ES384 (Asymmetric Encryption)")
+    ES512 = "ES512", _("ES512 (Asymmetric Encryption)")
+
+    @classmethod
+    def from_private_key(cls, private_key: PrivateKeyTypes | None) -> str:
+        if isinstance(private_key, RSAPrivateKey):
+            return cls.RS256
+        if isinstance(private_key, EllipticCurvePrivateKey):
+            curve = private_key.curve
+            if isinstance(curve, SECP256R1):
+                return cls.ES256
+            if isinstance(curve, SECP384R1):
+                return cls.ES384
+            if isinstance(curve, SECP521R1):
+                return cls.ES512
+        raise ValueError(f"Invalid private key type: {type(private_key)}")
 
 
 class ScopeMapping(PropertyMapping):
@@ -263,11 +284,7 @@ class OAuth2Provider(WebfingerProvider, Provider):
             return self.client_secret, JWTAlgorithms.HS256
         key: CertificateKeyPair = self.signing_key
         private_key = key.private_key
-        if isinstance(private_key, RSAPrivateKey):
-            return private_key, JWTAlgorithms.RS256
-        if isinstance(private_key, EllipticCurvePrivateKey):
-            return private_key, JWTAlgorithms.ES256
-        raise ValueError(f"Invalid private key type: {type(private_key)}")
+        return private_key, JWTAlgorithms.from_private_key(private_key)
 
     def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
@@ -281,7 +298,6 @@ class OAuth2Provider(WebfingerProvider, Provider):
                 },
             )
             return request.build_absolute_uri(url)
-
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 

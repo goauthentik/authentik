@@ -1,11 +1,8 @@
 ---
 title: Integrate with FortiGate SSLVPN
 sidebar_label: FortiGate SSLVPN
+support_level: community
 ---
-
-# FortiGate SSLVPN
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## FortiGate SSLVPN
 
@@ -35,6 +32,10 @@ The following placeholders are used in this guide:
 - `ak.cert` = The authentik remote certificate you have uploaded before starting the guide.
 - `fgt.user.group` = This will be the name of the user group in your Fortigate that you will use in your SSLVPN portal mapping and Firewall rules
 - `ak.user.group` = This is the user group name that you will use in authentik if you plan on limiting access to the sslvpn via groups.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## FortiGate configuration
 

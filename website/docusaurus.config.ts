@@ -2,10 +2,14 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+import remarkGithub, { BuildUrlValues } from "remark-github";
+import { defaultBuildUrl } from "remark-github";
+import remarkDirective from "remark-directive";
+import remarkVersionDirective from "./remark/version-directive";
+import remarkPreviewDirective from "./remark/preview-directive";
+import remarkSupportDirective from "./remark/support-directive";
 
-module.exports = async function (): Promise<Config> {
-    const remarkGithub = (await import("remark-github")).default;
-    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
+const createConfig = (): Config => {
     return {
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
@@ -26,6 +30,12 @@ module.exports = async function (): Promise<Config> {
                     target: "_self",
                 },
                 items: [
+                    {
+                        to: "https://goauthentik.io/features",
+                        label: "Features",
+                        position: "left",
+                        target: "_self",
+                    },
                     {
                         to: "https://goauthentik.io/blog",
                         label: "Blog",
@@ -67,7 +77,8 @@ module.exports = async function (): Promise<Config> {
                 copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
             },
             tableOfContents: {
-                maxHeadingLevel: 5,
+                minHeadingLevel: 2,
+                maxHeadingLevel: 3,
             },
             colorMode: {
                 respectPrefersColorScheme: true,
@@ -80,7 +91,16 @@ module.exports = async function (): Promise<Config> {
             prism: {
                 theme: prismThemes.oneLight,
                 darkTheme: prismThemes.oneDark,
-                additionalLanguages: ["python", "diff", "json", "http"],
+                additionalLanguages: [
+                    // ---
+                    "apacheconf",
+                    "diff",
+                    "http",
+                    "json",
+                    "nginx",
+                    "python",
+                    "bash",
+                ],
             },
         },
         presets: [
@@ -90,16 +110,24 @@ module.exports = async function (): Promise<Config> {
                     docs: {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
+                        showLastUpdateTime: false,
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
+
+                        beforeDefaultRemarkPlugins: [
+                            remarkDirective,
+                            remarkVersionDirective,
+                            remarkPreviewDirective,
+                            remarkSupportDirective,
+                        ],
                         remarkPlugins: [
                             [
                                 remarkGithub,
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: function (values) {
+                                    buildUrl: (values: BuildUrlValues) => {
                                         return values.type === "issue" ||
                                             values.type === "mention"
                                             ? defaultBuildUrl(values)
@@ -134,7 +162,7 @@ module.exports = async function (): Promise<Config> {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yaml",
+                            specPath: "static/schema.yml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
@@ -148,6 +176,11 @@ module.exports = async function (): Promise<Config> {
         markdown: {
             mermaid: true,
         },
+        future: {
+            experimental_faster: true,
+        },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };
+
+module.exports = createConfig;

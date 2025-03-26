@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jellyfin
 sidebar_label: Jellyfin
+support_level: community
 ---
-
-# Jellyfin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jellyfin
 
@@ -29,11 +26,15 @@ An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 
 The following placeholders are used in this guide:
 
-- `jellyfin.company` is the FQDN of the Jellyfin install.
-- `authentik.company` is the FQDN of the authentik install.
+- `jellyfin.company` is the FQDN of the Jellyfin installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `ldap.company` the FQDN of the LDAP outpost.
 - `dc=company,dc=com` the Base DN of the LDAP outpost.
 - `ldap_bind_user` the username of the desired LDAP Bind User
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## LDAP Configuration
 
@@ -122,8 +123,8 @@ Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
 ### Jellyfin Configuration
 
 1. Log in to Jellyfin with an admin account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
-2. Go to **Dashboard > Plugins > Catalog**.
-3. Click the gear icon in the top left, then click **+** to add a new repository. Use the following URL and name it "SSO-Auth":
+2. Go to **Dashboard > Plugins > Repositories**.
+3. Click the **+** in the top left to add a new repository. Use the following URL and name it "SSO-Auth":
 
 ```
 https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json

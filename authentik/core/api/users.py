@@ -236,9 +236,11 @@ class UserSerializer(ModelSerializer):
             "path",
             "type",
             "uuid",
+            "password_change_date",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
+            "password_change_date": {"read_only": True},
         }
 
 
@@ -427,7 +429,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email", "uuid"]
+    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
     filterset_class = UsersFilter
 
     def get_queryset(self):

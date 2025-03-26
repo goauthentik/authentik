@@ -44,6 +44,7 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = SAMLSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",
