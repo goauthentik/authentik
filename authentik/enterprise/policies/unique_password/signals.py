@@ -5,7 +5,10 @@ from django.http import HttpRequest
 
 from authentik.core.models import User
 from authentik.core.signals import password_changed
-from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
+from authentik.enterprise.policies.unique_password.models import (
+    UniquePasswordPolicy,
+    UserPasswordHistory,
+)
 
 
 @receiver(password_changed)
