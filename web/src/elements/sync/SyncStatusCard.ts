@@ -35,6 +35,9 @@ export class SyncStatusTable extends Table<SystemTask> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
+        if (this.tasks.length === 1) {
+            this.expandedElements = this.tasks;
+        }
         return {
             pagination: {
                 next: 0,
