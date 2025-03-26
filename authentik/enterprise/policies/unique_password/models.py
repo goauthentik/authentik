@@ -33,7 +33,7 @@ class UniquePasswordPolicy(Policy):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.policies.unique_password.api import UniquePasswordPolicySerializer
+        from authentik.enterprise.policies.unique_password.api import UniquePasswordPolicySerializer
 
         return UniquePasswordPolicySerializer
 
@@ -42,7 +42,7 @@ class UniquePasswordPolicy(Policy):
         return "ak-policy-password-uniqueness-form"
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        from authentik.policies.unique_password.models import UserPasswordHistory
+        from authentik.enterprise.policies.unique_password.models import UserPasswordHistory
 
         password = request.context.get(PLAN_CONTEXT_PROMPT, {}).get(
             self.password_field, request.context.get(self.password_field)

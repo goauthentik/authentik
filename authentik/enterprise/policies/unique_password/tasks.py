@@ -1,8 +1,11 @@
 from structlog import get_logger
 
+from authentik.enterprise.policies.unique_password.models import (
+    UniquePasswordPolicy,
+    UserPasswordHistory,
+)
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.policies.models import PolicyBinding
-from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

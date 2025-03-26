@@ -4,14 +4,17 @@ from django.test import TestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_user
-from authentik.policies.models import PolicyBinding, PolicyBindingModel
-from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
-from authentik.policies.unique_password.tasks import (
+from authentik.enterprise.policies.unique_password.models import (
+    UniquePasswordPolicy,
+    UserPasswordHistory,
+)
+from authentik.enterprise.policies.unique_password.tasks import (
     check_and_purge_password_history,
     purge_password_history_table,
     trim_all_password_histories,
     trim_user_password_history,
 )
+from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
 
 class TestUniquePasswordPolicyModel(TestCase):
@@ -113,7 +116,9 @@ class TestTrimAllPasswordHistories(TestCase):
         # Mock the delay method to verify it's called for each user
         from unittest import mock
 
-        task_path = "authentik.policies.unique_password.tasks.trim_user_password_history.delay"
+        task_path = (
+            "authentik.enterprise.policies.unique_password.tasks.trim_user_password_history.delay"
+        )
         with mock.patch(task_path) as mock_delay:
             trim_all_password_histories()
             # Verify it was called twice (once for each user)

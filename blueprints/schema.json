@@ -609,46 +609,6 @@
                         ],
                         "properties": {
                             "model": {
-                                "const": "authentik_policies_unique_password.uniquepasswordpolicy"
-                            },
-                            "id": {
-                                "type": "string"
-                            },
-                            "state": {
-                                "type": "string",
-                                "enum": [
-                                    "absent",
-                                    "present",
-                                    "created",
-                                    "must_created"
-                                ],
-                                "default": "present"
-                            },
-                            "conditions": {
-                                "type": "array",
-                                "items": {
-                                    "type": "boolean"
-                                }
-                            },
-                            "permissions": {
-                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
-                            },
-                            "attrs": {
-                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
-                            },
-                            "identifiers": {
-                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
-                            }
-                        }
-                    },
-                    {
-                        "type": "object",
-                        "required": [
-                            "model",
-                            "identifiers"
-                        ],
-                        "properties": {
-                            "model": {
                                 "const": "authentik_policies.policybinding"
                             },
                             "id": {
@@ -3569,6 +3529,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_google_workspace.googleworkspaceprovider"
                             },
                             "id": {
@@ -4699,7 +4699,6 @@
                         "authentik.policies.geoip",
                         "authentik.policies.password",
                         "authentik.policies.reputation",
-                        "authentik.policies.unique_password",
                         "authentik.policies",
                         "authentik.providers.ldap",
                         "authentik.providers.oauth2",
@@ -4743,6 +4742,7 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
@@ -4774,7 +4774,6 @@
                         "authentik_policies_geoip.geoippolicy",
                         "authentik_policies_password.passwordpolicy",
                         "authentik_policies_reputation.reputationpolicy",
-                        "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_policies.policybinding",
                         "authentik_providers_ldap.ldapprovider",
                         "authentik_providers_oauth2.scopemapping",
@@ -4848,6 +4847,7 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
@@ -5494,61 +5494,6 @@
                             "change_reputationpolicy",
                             "delete_reputationpolicy",
                             "view_reputationpolicy"
-                        ]
-                    },
-                    "user": {
-                        "type": "integer"
-                    },
-                    "role": {
-                        "type": "string"
-                    }
-                }
-            }
-        },
-        "model_authentik_policies_unique_password.uniquepasswordpolicy": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Name"
-                },
-                "execution_logging": {
-                    "type": "boolean",
-                    "title": "Execution logging",
-                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
-                },
-                "password_field": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Password field",
-                    "description": "Field key to check, field keys defined in Prompt stages are available."
-                },
-                "num_historical_passwords": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 2147483647,
-                    "title": "Num historical passwords",
-                    "description": "Number of passwords to check against."
-                }
-            },
-            "required": []
-        },
-        "model_authentik_policies_unique_password.uniquepasswordpolicy_permissions": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "required": [
-                    "permission"
-                ],
-                "properties": {
-                    "permission": {
-                        "type": "string",
-                        "enum": [
-                            "add_uniquepasswordpolicy",
-                            "change_uniquepasswordpolicy",
-                            "delete_uniquepasswordpolicy",
-                            "view_uniquepasswordpolicy"
                         ]
                     },
                     "user": {
@@ -14238,6 +14183,61 @@
                             "change_license",
                             "delete_license",
                             "view_license"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "password_field": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Password field",
+                    "description": "Field key to check, field keys defined in Prompt stages are available."
+                },
+                "num_historical_passwords": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Num historical passwords",
+                    "description": "Number of passwords to check against."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_uniquepasswordpolicy",
+                            "change_uniquepasswordpolicy",
+                            "delete_uniquepasswordpolicy",
+                            "view_uniquepasswordpolicy"
                         ]
                     },
                     "user": {

@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.enterprise.policies.unique_password.models import UniquePasswordPolicy
 from authentik.policies.api.policies import PolicySerializer
-from authentik.policies.unique_password.models import UniquePasswordPolicy
 
 
 class UniquePasswordPolicySerializer(PolicySerializer):

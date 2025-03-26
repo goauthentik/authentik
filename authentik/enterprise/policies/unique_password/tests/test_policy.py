@@ -5,8 +5,11 @@ from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import User
+from authentik.enterprise.policies.unique_password.models import (
+    UniquePasswordPolicy,
+    UserPasswordHistory,
+)
 from authentik.policies.types import PolicyRequest, PolicyResult
-from authentik.policies.unique_password.models import UniquePasswordPolicy, UserPasswordHistory
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 
