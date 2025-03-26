@@ -1,7 +1,6 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
-from time import sleep
 
 from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
@@ -56,17 +55,7 @@ class TestProviderLDAP(SeleniumTestCase):
         outpost.providers.add(ldap)
 
         self.start_ldap(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
+        self.wait_for_outpost(outpost)
         return outpost
 
     @retry()
