@@ -1,0 +1,28 @@
+# Prettier Ignorefile
+
+## Static Files
+**/LICENSE
+
+## Build asset directories
+/build
+coverage
+dist
+out
+
+## Environment
+*.env
+
+## Secrets
+*.secrets
+
+## Yarn
+.yarn/**/*
+
+## Node
+node_modules
+
+## Configs
+*.log
+*.yaml
+*.yml
+

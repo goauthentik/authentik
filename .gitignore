@@ -213,3 +213,25 @@ source_docs/
 
 ### Docker ###
 docker-compose.override.yml
+
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+node_modules/
+
+
+# Wireit's cache
+.wireit
+
+custom-elements.json
+
+
+### Development ###
+.drafts
