@@ -49,6 +49,8 @@ export class IdentificationStage extends BaseStage<
 
     @state()
     captchaToken = "";
+    @state()
+    captchaRefreshedAt = new Date();
 
     static get styles(): CSSResult[] {
         return [
@@ -185,6 +187,10 @@ export class IdentificationStage extends BaseStage<
         }
     }
 
+    onSubmitFailure(): void {
+        this.captchaRefreshedAt = new Date();
+    }
+
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
         return html`<li class="pf-c-login__main-footer-links-item">
@@ -287,6 +293,7 @@ export class IdentificationStage extends BaseStage<
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
                           }}
+                          .refreshedAt=${this.captchaRefreshedAt}
                           embedded
                       ></ak-stage-captcha>
                   `
