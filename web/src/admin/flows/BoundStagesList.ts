@@ -113,7 +113,10 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                                 "These bindings control if this stage will be applied to the flow.",
                             )}
                         </p>
-                        <ak-bound-policies-list .target=${item.policybindingmodelPtrId}>
+                        <ak-bound-policies-list
+                            .target=${item.policybindingmodelPtrId}
+                            .policyEngineMode=${item.policyEngineMode}
+                        >
                         </ak-bound-policies-list>
                     </div>
                 </div>
