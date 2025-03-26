@@ -45974,7 +45974,7 @@ components:
         lookup_groups_from_user:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
-            a group attribute.This allows nested group resolution on systems like
+            a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
       required:
       - base_dn
@@ -46175,7 +46175,7 @@ components:
         lookup_groups_from_user:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
-            a group attribute.This allows nested group resolution on systems like
+            a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
       required:
       - base_dn
@@ -51278,7 +51278,7 @@ components:
         lookup_groups_from_user:
           type: boolean
           description: Lookup group membership based on a user attribute instead of
-            a group attribute.This allows nested group resolution on systems like
+            a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
     PatchedLicenseRequest:
       type: object
