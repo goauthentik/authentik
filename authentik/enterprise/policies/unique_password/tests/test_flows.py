@@ -47,9 +47,7 @@ class TestUniquePasswordPolicyFlow(FlowTestCase):
         FlowStageBinding.objects.create(target=self.flow, stage=stage, order=2)
 
         # Seed the user's password history
-        UserPasswordHistory.objects.create(
-            user=self.user, old_password=make_password(self.REUSED_PASSWORD)
-        )
+        UserPasswordHistory.create_for_user(self.user, make_password(self.REUSED_PASSWORD))
 
     def test_prompt_data(self):
         """Test policy attached to a prompt stage"""

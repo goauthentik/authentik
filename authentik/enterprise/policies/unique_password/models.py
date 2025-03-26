@@ -1,4 +1,6 @@
-from django.contrib.auth.hashers import identify_hasher
+from hashlib import sha1
+
+from django.contrib.auth.hashers import identify_hasher, make_password
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
@@ -120,9 +122,30 @@ class UserPasswordHistory(models.Model):
     old_password = models.CharField(max_length=128)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    hibp_prefix_sha1 = models.CharField(max_length=5)
+    hibp_pw_hash = models.TextField()
+
     class Meta:
         verbose_name = _("User Password History")
 
     def __str__(self) -> str:
         timestamp = f"{self.created_at:%Y/%m/%d %X}" if self.created_at else "N/A"
         return f"Previous Password (user: {self.user_id}, recorded: {timestamp})"
+
+    @classmethod
+    def create_for_user(cls, user: User, password: str):
+        # To check users' passwords against Have I been Pwned, we need the first 5 chars
+        # of the password hashed with SHA1 without a salt...
+        pw_hash_sha1 = sha1(password.encode("utf-8")).hexdigest()  # nosec
+        # ...however that'll give us a list of hashes from HIBP, and to compare that we still
+        # need a full unsalted SHA1 of the password. We don't want to save that directly in
+        # the database, so we hash that SHA1 again with a modern hashing alg,
+        # and then when we check users' passwords against HIBP we can use `check_password`
+        # which will take care of this.
+        hibp_hash_hash = make_password(pw_hash_sha1)
+        return cls.objects.create(
+            user=user,
+            old_password=password,
+            hibp_prefix_sha1=pw_hash_sha1[:5],
+            hibp_pw_hash=hibp_hash_hash,
+        )
