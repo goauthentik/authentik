@@ -19,6 +19,10 @@ This policy stores a history of user passwords and checks any new password again
 
 The password history is maintained automatically when this policy is in use. Old password hashes are stored securely in authentik's database.
 
+:::info
+This policy takes effect after the first password change following policy activation. Before that first change, there's no password history data to compare against.
+:::
+
 ## Configuration options
 
 The Password Uniqueness Policy has two configuration options:
