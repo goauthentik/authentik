@@ -2,9 +2,10 @@ import functools
 import logging
 import time
 from collections.abc import Iterable
-from queue import Empty, Queue
+from queue import Empty, PriorityQueue, Queue
 from random import randint
 
+from dramatiq.worker import Worker, has_results_middleware, _ConsumerThread, _WorkerThread
 import tenacity
 from django.db import (
     DEFAULT_DB_ALIAS,
@@ -19,7 +20,7 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
-from dramatiq.errors import ConnectionError, QueueJoinTimeout
+from dramatiq.errors import ConnectionError, QueueJoinTimeout, RateLimitExceeded, Retry
 from dramatiq.message import Message
 from dramatiq.middleware import (
     AgeLimit,
@@ -29,6 +30,7 @@ from dramatiq.middleware import (
     Prometheus,
     Retries,
     ShutdownNotifications,
+    SkipMessage,
     TimeLimit,
     default_middleware,
 )
@@ -191,7 +193,7 @@ class PostgresBroker(Broker):
             **query,
             **defaults,
         }
-        obj, created = self.query_set.update_or_create(
+        self.query_set.update_or_create(
             **query,
             defaults=defaults,
             create_defaults=create_defaults,
@@ -317,6 +319,7 @@ class _PostgresConsumer(Consumer):
             state=TaskState.QUEUED,
         )
         # We don't care about locks, requeue occurs on worker stop
+        # TODO: this is not true, we need to handle them
 
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")

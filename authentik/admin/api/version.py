@@ -37,7 +37,7 @@ class VersionSerializer(PassiveSerializer):
         """Get latest version from cache"""
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover
-            update_latest_version.delay()
+            update_latest_version.send()
             return __version__
         return version_in_cache
 

@@ -1,5 +1,6 @@
 import dramatiq
 from dramatiq.encoder import PickleEncoder
+from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
 
@@ -12,10 +13,11 @@ class AuthentikTasksConfig(ManagedAppConfig):
 
     def ready(self) -> None:
         from authentik.tasks.broker import PostgresBroker
+        from authentik.tasks.test import TestBroker
         from authentik.tasks.middleware import CurrentTask, FullyQualifiedActorName
 
         dramatiq.set_encoder(PickleEncoder())
-        broker = PostgresBroker()
+        broker = PostgresBroker() if not settings.TEST else TestBroker()
         broker.add_middleware(FullyQualifiedActorName())
         # broker.add_middleware(Prometheus())
         broker.add_middleware(CurrentTask())
