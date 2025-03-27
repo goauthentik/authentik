@@ -4,15 +4,71 @@ title: Capturing logs
 
 When troubleshooting issues it is useful to investigate the [event logs](../sys-mgmt/events/index.md) that are continuosuly outputted by authentik.
 
-## Enable Debugging
+## Enable `TRACE` or `DEBUG` modes
 
-Debugging mode can be enabled so that authentik produces more detailed logs.
+Both `TRACE` and `DEBUG` modes can be enabled so that authentik produces more detailed logs.
 
-To enable debugging, add the following environment variable to your authentik configuration:
+To enable `TRACE` mode:
+
+<Tabs
+groupId="platform"
+defaultValue="docker-compose"
+values={[
+{label: 'docker-compose', value: 'docker-compose'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker-compose">
+Add the following block to your `.env` file:
+
+```shell
+AUTHENTIK_LOG_LEVEL=trace
+```
+
+Afterwards, run `docker compose up -d`.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+Add the following block to your `values.yml` file:
+
+```yaml
+authentik:
+    log_level: trace
+```
+
+Afterwards, upgrade helm release.
+
+  </TabItem>
+
+To enable `DEBUGGING` mode:
+
+<Tabs
+groupId="platform"
+defaultValue="docker-compose"
+values={[
+{label: 'docker-compose', value: 'docker-compose'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker-compose">
+Add the following block to your `.env` file:
 
 ```shell
 AUTHENTIK_LOG_LEVEL=debug
 ```
+
+Afterwards, run `docker compose up -d`.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+Add the following block to your `values.yml` file:
+
+```yaml
+authentik:
+    log_level: debug
+```
+
+Afterwards, upgrade helm release.
+
+  </TabItem>
 
 ## Capturing Past Logs
 
