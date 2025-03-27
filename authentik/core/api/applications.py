@@ -281,16 +281,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
     @action(
         detail=True,
         pagination_class=None,
@@ -298,24 +288,40 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        request={
+            "multipart/form-data": FileUploadSerializer,
+        },
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
+    )
     def set_icon(self, request: Request, slug: str):
         """Set application icon"""
         app: Application = self.get_object()
         return set_file(request, app, "meta_icon")
 
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
     @action(
         detail=True,
         pagination_class=None,
         filter_backends=[],
         methods=["POST"],
+    )
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        request=FilePathSerializer,
+        responses={
+            200: OpenApiResponse(description="Success"),
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
     )
     def set_icon_url(self, request: Request, slug: str):
         """Set application icon (as URL)"""
