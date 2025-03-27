@@ -15,14 +15,14 @@ LOGGER = get_logger()
 @prefill_task
 def purge_password_history_table(self: SystemTask):
     """Remove all entries from the UserPasswordHistory table"""
-    unique_pwd_policy_bindings = PolicyBinding.in_use.for_policy(UniquePasswordPolicy)
+    unique_pwd_policy_count = UniquePasswordPolicy.objects.count()
 
-    if unique_pwd_policy_bindings.count() > 1:
-        # No-op; A UniquePasswordPolicy binding other than the one being deleted still exists
+    if unique_pwd_policy_count > 0:
+        # No-op; A UniquePasswordPolicy exists, no need to purge the table
         self.set_status(
             TaskStatus.SUCCESSFUL,
-            """Did not purge UserPasswordHistory table.
-            Bindings for Unique Password Policy still exist.""",
+            """No need to purge UserPasswordHistory table.
+            A Unique Password Policy instance still exists.""",
         )
         return
 
@@ -90,9 +90,9 @@ def trim_all_password_histories():
 
 @CELERY_APP.task()
 def check_and_purge_password_history():
-    """Check if any UniquePasswordPolicy is in use, and if not, purge the password history table.
+    """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
     This is run on a schedule instead of being triggered by policy binding deletion.
     """
-    if not UniquePasswordPolicy.is_in_use():
+    if not UniquePasswordPolicy.objects.exists():
         UserPasswordHistory.objects.all().delete()
         LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")

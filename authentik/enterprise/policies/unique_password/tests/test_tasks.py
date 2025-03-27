@@ -62,6 +62,27 @@ class TestPurgePasswordHistory(TestCase):
         purge_password_history_table.delay().get()
         self.assertFalse(UserPasswordHistory.objects.all())
 
+    def test_purge_password_history_table_with_multiple_policies(self):
+        """Tests the task doesn't purge UserPasswordHistory when multiple policies exist"""
+        # Create password history entries
+        UserPasswordHistory.objects.bulk_create(
+            [
+                UserPasswordHistory(user=self.user, old_password="hunter1"),  # nosec B106
+                UserPasswordHistory(user=self.user, old_password="hunter2"),  # nosec B106
+            ]
+        )
+
+        # Create multiple UniquePasswordPolicy objects
+        UniquePasswordPolicy.objects.create(name="Policy 1", num_historical_passwords=3)
+        UniquePasswordPolicy.objects.create(name="Policy 2", num_historical_passwords=5)
+
+        # Run the purge task
+        purge_password_history_table.delay().get()
+
+        # Verify the password history entries still exist
+        self.assertTrue(UserPasswordHistory.objects.exists())
+        self.assertEqual(UserPasswordHistory.objects.count(), 2)
+
 
 class TestTrimAllPasswordHistories(TestCase):
     """Test the task that trims password history for all users"""
