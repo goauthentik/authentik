@@ -84,7 +84,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                     if (!navigator.clipboard) {
                                         showMessage({
                                             level: MessageLevel.info,
-                                            message: this.challenge?.configUrl,
+                                            title: this.challenge?.configUrl,
                                         });
                                         return;
                                     }
@@ -93,7 +93,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                         .then(() => {
                                             showMessage({
                                                 level: MessageLevel.success,
-                                                message: msg("Successfully copied TOTP Config."),
+                                                title: msg("Successfully copied TOTP Config."),
                                             });
                                         });
                                 }}

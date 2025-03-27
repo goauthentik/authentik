@@ -1,3 +1,4 @@
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { DeleteForm } from "@goauthentik/elements/forms/DeleteForm";
@@ -11,15 +12,19 @@ import { customElement } from "lit/decorators.js";
 export class UserActiveForm extends DeleteForm {
     onSuccess(): void {
         showMessage({
-            message: msg(str`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
+            title: msg(str`Successfully updated ${this.objectLabel} ${this.obj?.name}`),
             level: MessageLevel.success,
         });
     }
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`Failed to update ${this.objectLabel}: ${e.toString()}`),
-            level: MessageLevel.error,
+    onError(error: unknown): Promise<void> {
+        return parseAPIResponseError(error).then((parsedError) => {
+            showMessage({
+                title: msg(
+                    str`Failed to update ${this.objectLabel}: ${pluckErrorDetail(parsedError)}`,
+                ),
+                level: MessageLevel.error,
+            });
         });
     }
 

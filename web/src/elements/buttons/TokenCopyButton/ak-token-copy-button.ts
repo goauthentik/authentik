@@ -61,10 +61,10 @@ export class TokenCopyButton extends BaseTaskButton {
         const wroteToClipboard = await writeToClipboard(token.key as string);
         const info: Pick<APIMessage, "message" | "description"> = wroteToClipboard
             ? {
-                  message: msg("The token has been copied to your clipboard"),
+                  title: msg("The token has been copied to your clipboard"),
               }
             : {
-                  message: token.key,
+                  title: token.key,
                   description: msg(
                       "The token was displayed because authentik does not have permission to write to the clipboard",
                   ),
@@ -84,7 +84,7 @@ export class TokenCopyButton extends BaseTaskButton {
 
         showMessage({
             level: MessageLevel.error,
-            message,
+            title: message,
         });
     }
 }

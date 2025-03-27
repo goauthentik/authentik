@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -33,23 +34,25 @@ export class ConfirmationForm extends ModalButton {
                     }),
                 );
             })
-            .catch((e) => {
-                this.onError(e);
-                throw e;
+            .catch(async (error: unknown) => {
+                await this.onError(error);
+                throw error;
             });
     }
 
     onSuccess(): void {
         showMessage({
-            message: this.successMessage,
+            title: this.successMessage,
             level: MessageLevel.success,
         });
     }
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`${this.errorMessage}: ${e.toString()}`),
-            level: MessageLevel.error,
+    onError(error: unknown): Promise<void> {
+        return parseAPIResponseError(error).then((parsedError) => {
+            showMessage({
+                title: msg(str`${this.errorMessage}: ${pluckErrorDetail(parsedError)}`),
+                level: MessageLevel.error,
+            });
         });
     }
 

@@ -1,6 +1,5 @@
 import { config } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { me } from "@goauthentik/common/users";
 import {
     ErrorEvent,
@@ -12,6 +11,11 @@ import {
 } from "@sentry/browser";
 
 import { CapabilitiesEnum, Config, ResponseError } from "@goauthentik/api";
+
+/**
+ * A generic error that can be thrown without triggering Sentry's reporting.
+ */
+export class SentryIgnoredError extends Error {}
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";

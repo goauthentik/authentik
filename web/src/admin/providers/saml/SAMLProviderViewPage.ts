@@ -165,7 +165,7 @@ export class SAMLProviderViewPage extends AKElement {
                                         return Promise.resolve(
                                             showMessage({
                                                 level: MessageLevel.info,
-                                                message: this.provider?.urlDownloadMetadata || "",
+                                                title: this.provider?.urlDownloadMetadata || "",
                                             }),
                                         );
                                     }
@@ -473,7 +473,7 @@ export class SAMLProviderViewPage extends AKElement {
                                               return Promise.resolve(
                                                   showMessage({
                                                       level: MessageLevel.info,
-                                                      message:
+                                                      title:
                                                           this.provider?.urlDownloadMetadata || "",
                                                   }),
                                               );

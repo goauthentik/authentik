@@ -4,16 +4,33 @@ export type NavigationUpdate = {
     hidden?: string[];
 };
 
-export class WizardNavigationEvent extends Event {
+export class WizardNavigationEvent<D extends string = string> extends Event {
     static readonly eventName = "ak-wizard-navigation";
 
-    destination?: string;
+    destination?: D;
     details?: NavigationUpdate;
 
-    constructor(destination?: string, details?: NavigationUpdate) {
+    constructor(destination?: D, details?: NavigationUpdate) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
         this.details = details;
+    }
+
+    /**
+     * Given an event target, bind the destination and details for dispatching.
+     */
+    static toListener<D extends string = string>(
+        target: EventTarget,
+        destination: D,
+        details?: NavigationUpdate,
+    ) {
+        const wizardNavigationListener = (event?: Event) => {
+            event?.preventDefault?.();
+
+            return target.dispatchEvent(new WizardNavigationEvent(destination, details));
+        };
+
+        return wizardNavigationListener;
     }
 }
 

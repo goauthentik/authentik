@@ -182,14 +182,14 @@ export class DeleteBulkForm<T> extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: msg(str`Successfully deleted ${this.objects.length} ${this.objectLabel}`),
+            title: msg(str`Successfully deleted ${this.objects.length} ${this.objectLabel}`),
             level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
+            title: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
             level: MessageLevel.error,
         });
     }
