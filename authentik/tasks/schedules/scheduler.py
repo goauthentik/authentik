@@ -1,4 +1,4 @@
-import pickle
+import pickle  # nosec
 
 import pglock
 from django.db import router, transaction
@@ -26,8 +26,8 @@ class Scheduler:
 
         actor = self.broker.get_actor(schedule.actor_name)
         actor.send_with_options(
-            args=pickle.loads(schedule.args),
-            kwargs=pickle.loads(schedule.kwargs),
+            args=pickle.loads(schedule.args),  # nosec
+            kwargs=pickle.loads(schedule.kwargs),  # nosec
             options={
                 "schedule_uid": schedule.uid,
             },

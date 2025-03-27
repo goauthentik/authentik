@@ -68,7 +68,7 @@ class Command(BaseCommand):
             *tasks_modules,
         ]
 
-        os.execvp(executable_path, process_args)
+        os.execvp(executable_path, process_args)  # nosec
 
     def _resolve_executable(self, exec_name: str):
         bin_dir = os.path.dirname(sys.executable)

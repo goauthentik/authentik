@@ -356,7 +356,7 @@ class _PostgresConsumer(Consumer):
         if not self.notifies:
             self._poll_for_notify()
 
-        if not self.notifies and not randint(0, 300):
+        if not self.notifies and not randint(0, 300):  # nosec
             # If there aren't any more notifies, randomly poll for missed/crashed messages.
             # Since this method is called every second, this condition limits polling to
             # on average one SELECT every five minutes of inactivity.
@@ -393,7 +393,7 @@ class _PostgresConsumer(Consumer):
     def _auto_purge(self):
         # Automatically purge messages on average every 100k iteration.
         # Dramatiq defaults to 1s, so this means one purge every 28 hours.
-        if randint(0, 100_000):
+        if randint(0, 100_000):  # nosec
             return
         self.logger.debug("Running garbage collector")
         count = self.query_set.filter(
