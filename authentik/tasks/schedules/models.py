@@ -1,10 +1,10 @@
 from uuid import uuid4
-from cron_converter import Cron
 
+from cron_converter import Cron
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import datetime
+from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.models import SerializerModel
 

@@ -1,13 +1,13 @@
-from django.db import router, transaction
-from structlog.stdlib import get_logger
-from authentik.tasks.schedules.models import Schedule
-from django.utils.timezone import now
-from dramatiq.broker import Broker
 import pickle
 
-from authentik.tenants.models import Tenant
 import pglock
+from django.db import router, transaction
+from django.utils.timezone import now
+from dramatiq.broker import Broker
+from structlog.stdlib import get_logger
 
+from authentik.tasks.schedules.models import Schedule
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
