@@ -77,7 +77,7 @@ openid-username-claim-type=preferred_username
 
 ### Self Signed Certificates
 
-If using a self signed certificate it is required to add the certificate of the associated Certificate Authority to `/etc/ssl/certs/ca-certificates.crt` and `/opt/java/openjkd/jre/lib/security/cacerts` on your Apache Guacamole deployment.
+When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjkd/jre/lib/security/cacerts` keystore on your Apache Guacamole deployment. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
 
 #### Adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
 
@@ -87,7 +87,7 @@ This section depends on the operating system hosting Apache Guacamole.
 
 For _Debian_ based operating systems:
 
-1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory. Ensure that the filetype is `.crt`.
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory on the Apache Guacamole host. Ensure that the file extension is `.crt`.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
@@ -97,7 +97,7 @@ update-ca-certificates
 
 For _Synology_ systems:
 
-1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory. Ensure that the filetype is `.crt`.
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the filetype is `.crt`.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
@@ -107,13 +107,13 @@ update-ca-certificates.sh
 
 #### Adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
 
-1. To export the certificate of the Certificate Authority, use the following command:
+1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 
 ```shell
 openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
 ```
 
-2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore, use the following command:
+2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
 
 ```shell
 keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
