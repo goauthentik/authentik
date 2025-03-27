@@ -81,6 +81,8 @@ If using a self signed certificate it is required to add the certificate of the 
 
 #### adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
 
+This section depends on the operating system hosting Apache Guacamole. This particlar example applies to Debian based operating systems.
+
 1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory. Ensure that the filetype is `.crt`.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
