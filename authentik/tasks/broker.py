@@ -21,7 +21,17 @@ from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
 from dramatiq.message import Message
-from dramatiq.middleware import Middleware, Prometheus, default_middleware
+from dramatiq.middleware import (
+    AgeLimit,
+    Callbacks,
+    Middleware,
+    Pipelines,
+    Prometheus,
+    Retries,
+    ShutdownNotifications,
+    TimeLimit,
+    default_middleware,
+)
 from dramatiq.results import Results
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
@@ -77,7 +87,7 @@ class TenantMiddleware(Middleware):
 
 class PostgresBroker(Broker):
     def __init__(self, *args, db_alias: str = DEFAULT_DB_ALIAS, results: bool = True, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, middleware=[], **kwargs)
         self.logger = get_logger().bind()
 
         self.queues = set()
@@ -89,9 +99,14 @@ class PostgresBroker(Broker):
         self.middleware = []
         self.add_middleware(DbConnectionMiddleware())
         self.add_middleware(TenantMiddleware())
-        for middleware in default_middleware:
-            if middleware == Prometheus:
-                pass
+        for middleware in (
+            AgeLimit,
+            TimeLimit,
+            ShutdownNotifications,
+            Callbacks,
+            Pipelines,
+            Retries,
+        ):
             self.add_middleware(middleware())
         if results:
             self.backend = PostgresBackend()

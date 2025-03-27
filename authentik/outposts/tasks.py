@@ -19,13 +19,13 @@ from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import TaskStatus, Task
 from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -103,20 +103,10 @@ def outpost_service_connection_monitor(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
-def outpost_controller_all():
-    """Launch Controller for all Outposts which support it"""
-    for outpost in Outpost.objects.exclude(service_connection=None):
-        outpost_controller.delay(outpost.pk.hex, "up", from_cache=False)
-
-
-@CELERY_APP.task(bind=True, base=SystemTask)
-def outpost_controller(
-    self: SystemTask, outpost_pk: str, action: str = "up", from_cache: bool = False
-):
+@actor
+def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
+    self: Task = CurrentTask.get_task()
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -144,11 +134,11 @@ def outpost_controller(
         self.set_status(TaskStatus.SUCCESSFUL, *logs)
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def outpost_token_ensurer(self: SystemTask):
+@actor
+def outpost_token_ensurer():
     """Periodically ensure that all Outposts have valid Service Accounts
     and Tokens"""
+    self: Task = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
@@ -159,7 +149,7 @@ def outpost_token_ensurer(self: SystemTask):
     )
 
 
-@CELERY_APP.task()
+@actor
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 
@@ -174,7 +164,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, Outpost):
         LOGGER.debug("Trigger reconcile for outpost", instance=instance)
-        outpost_controller.delay(str(instance.pk))
+        outpost_controller.send(instance.pk)
 
     if isinstance(instance, OutpostModel | Outpost):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
@@ -182,7 +172,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        outpost_service_connection_monitor.send(str(instance.pk))
+        outpost_service_connection_monitor.send(instance.pk)
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
@@ -229,12 +219,10 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
 
-@CELERY_APP.task(
-    base=SystemTask,
-    bind=True,
-)
-def outpost_connection_discovery(self: SystemTask):
+@actor
+def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
+    self: Task = CurrentTask.get_task()
     messages = []
     if not CONFIG.get_bool("outposts.discover"):
         messages.append("Outpost integration discovery is disabled")

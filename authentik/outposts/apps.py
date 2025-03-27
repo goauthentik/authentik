@@ -5,6 +5,8 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 LOGGER = get_logger()
 
@@ -60,3 +62,15 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 outpost.save()
         else:
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
+
+    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.outposts.tasks.outpost_token_ensurer",
+                crontab=f"{fqdn_rand('outpost_token_ensurer')} */8 * * *",
+            ),
+            ScheduleSpec(
+                actor_name="authentik.outposts.tasks.outpost_connection_discovery",
+                crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",
+            ),
+        ]
