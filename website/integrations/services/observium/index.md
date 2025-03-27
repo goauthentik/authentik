@@ -40,19 +40,22 @@ apt install ./libapache2-mod-auth-openidc_2.4.15.7-1.bookworm_amd64.deb
 
 ## authentik configuration
 
-1. In authentik, under **Providers**, create an **OAuth2/OpenID Provider** with these settings:
+To support the integration of Observium with authentik, you need to create an application/provider pair in authentik.
 
-    - Name: Observium
-    - Client ID: Copy this for later
-    - Client Secret: Copy this for later
-    - Redirect URIs/Origins: `https://observium.company/secure/redirect_uri` (This can be any location on the domain that doesn't point to actual content)
-    - Signing Key: Select any available signing key
+### Create an application and provider in authentik
 
-2. In authentik, under **Applications**, create an Application with these settings:
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-    - Name: Observium
-    - Slug: observium
-    - Provider: Select `Observium`
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>observium.company</em>/secure/redirect_uri</kbd>. Note that the Redirect URI can be anything, as long as it does not point to existing content.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Observium configuration
 

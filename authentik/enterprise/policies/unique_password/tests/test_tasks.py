@@ -159,10 +159,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
     def test_purge_when_no_policy_in_use(self):
         """Test that the task purges the table when no policy is in use"""
         # Create some password history entries
-        UserPasswordHistory.objects.create(
-            user=self.user,
-            old_password="hunter2",  # nosec B106
-        )
+        UserPasswordHistory.create_for_user(self.user, "hunter2")
 
         # Verify we have entries
         self.assertTrue(UserPasswordHistory.objects.exists())
@@ -185,10 +182,7 @@ class TestCheckAndPurgePasswordHistory(TestCase):
         )
 
         # Create some password history entries
-        UserPasswordHistory.objects.create(
-            user=self.user,
-            old_password="hunter2",  # nosec B106
-        )
+        UserPasswordHistory.create_for_user(self.user, "hunter2")
 
         # Verify we have entries
         self.assertTrue(UserPasswordHistory.objects.exists())
@@ -245,7 +239,7 @@ class TestTrimPasswordHistory(TestCase):
         """Test no passwords removed if policy binding is disabled"""
 
         # Insert a record to ensure it's not deleted after executing task
-        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")  # nosec B106
+        UserPasswordHistory.create_for_user(self.user, "hunter2")
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=1)
         PolicyBinding.objects.create(
@@ -260,7 +254,7 @@ class TestTrimPasswordHistory(TestCase):
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
         """Test no passwords deleted if fewer passwords exist than limit"""
 
-        UserPasswordHistory.objects.create(user=self.user, old_password="hunter2")  # nosec B106
+        UserPasswordHistory.create_for_user(self.user, "hunter2")
 
         policy = UniquePasswordPolicy.objects.create(num_historical_passwords=2)
         PolicyBinding.objects.create(

@@ -5689,11 +5689,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Webhook URL</target>
         
       </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Webhook 映射</target>
-        
-      </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
         <source>Send once</source>
         <target>发送一次</target>
@@ -8368,10 +8363,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Finished with errors</source>
   <target>已完成但有错误</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target><x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/>（<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>） 完成</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>当前正在同步</target>
@@ -9669,6 +9660,54 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s054cb3c0a84eefe5">
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
   <target>更改 authentik 的行为，以兼容特定厂商的 SCIM 实现。</target>
+</trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+  <target>AuthnContextClassRef 属性映射</target>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>配置如何创建 AuthnContextClassRef 值。留空时，AuthnContextClassRef 会基于用户使用的身份验证方式设置。</target>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+  <target>SSF URL</target>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+  <target>无分配应用</target>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+  <target>自定义 CSS</target>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>当品牌启用时，应用到页面的自定义 CSS。</target>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+  <target>默认流程背景</target>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+  <target>流程执行过程中使用的默认背景。可以按流程单独覆盖。</target>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+  <target>任务</target>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+  <target>已完成</target>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+  <target>Webhook 主体映射</target>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
+  <target>Webhook 标头映射</target>
 </trans-unit>
     </body>
   </file>

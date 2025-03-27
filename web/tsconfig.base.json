@@ -13,6 +13,7 @@
             "expect-webdriverio",
             "grecaptcha"
         ],
+        "jsx": "react-jsx",
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
