@@ -6,11 +6,7 @@ support_level: community
 
 ## What is Tower
 
-From
-
-> Red Hat Ansible Automation Platform (RHAAP) (formerly ‘AWX’) is a web-based solution that makes Ansible even more easy to use for IT teams of all kinds. It’s designed to be the hub for all of your automation tasks.
->
-> Tower allows you to control access to who can access what, even allowing sharing of SSH credentials without someone being able to transfer those credentials. Inventory can be graphically managed or synced with a wide variety of cloud sources. It logs all of your jobs, integrates well with LDAP, and has an amazing browsable REST API. Command line tools are available for easy integration with Jenkins as well. Provisioning callbacks provide great support for autoscaling topologies.
+> Red Hat Ansible Automation Platform (RHAAP) (formerly ‘AWX’) is a web-based solution that makes Ansible even more easy to use for IT teams of all kinds. It’s designed to be the hub for all of your automation tasks. Tower allows you to control access to who can access what, even allowing sharing of SSH credentials without someone being able to transfer those credentials. Inventory can be graphically managed or synced with a wide variety of cloud sources. It logs all of your jobs, integrates well with LDAP, and has an amazing browsable REST API. Command line tools are available for easy integration with Jenkins as well. Provisioning callbacks provide great support for autoscaling topologies.
 >
 > -- https://docs.ansible.com/ansible/latest/reference_appendices/tower.html
 
@@ -29,14 +25,26 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+## authentik configuration
 
-- ACS URL: `https://awx.company/sso/complete/saml/`
-- Audience: `awx`
-- Service Provider Binding: Post
-- Issuer: `https://awx.company/sso/metadata/saml/`
+To support the integration of AWX Tower with authentik, you need to create an application/provider pair in authentik.
 
-You can of course use a custom signing certificate, and adjust durations.
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://<em>awx.company</em>/sso/complete/saml/</kbd>.
+    - Set the **Audience** to <kbd>awx</kbd>.
+    - Set the **Issuer** to <kbd>https://<em>awx.company</em>/sso/metadata/saml/</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, select an available signing certificate.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## AWX Configuration
 

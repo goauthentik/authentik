@@ -5688,11 +5688,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>URL Webhoo</target>
         
       </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Mappage de Webhook</target>
-        
-      </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
         <source>Send once</source>
         <target>Envoyer une seule fois</target>
@@ -8367,10 +8362,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Finished with errors</source>
   <target>Fini avec erreurs</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target>Fini <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>Synchronisation en cours</target>
@@ -9668,6 +9659,54 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s054cb3c0a84eefe5">
   <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
   <target>Change le comportement d'authentik en fonction des spécificités d'implémentations des fournisseurs SCIM.</target>
+</trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+  <target>Mappage de propriété AuthnContextClassRef</target>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>Configure comment la valeur AuthnContextClassRef sera créée. Lorsque non sélectionné, AuthnContextClassRef sera défini en fonction de quelle méthode d'authentification l'utilisateur a utilisé pour s'authentifier.</target>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+  <target>URL SSF</target>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+  <target>Aucune application assignée</target>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+  <target>CSS personnalisé</target>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>CSS personnalisé à appliquer sur les pages lorsque cette marque est active.</target>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+  <target>Arrière-plan des flux par défaut</target>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+  <target>Arrière plan utilisé lors de l'exécution des flux. Peut être personnalisé au niveau de chaque flux.</target>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+  <target>Tâche</target>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+  <target>Finie</target>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+  <target>Mappage de corps de Webhook</target>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
+  <target>Mappage d'en-têtes de Webhook</target>
 </trans-unit>
     </body>
   </file>

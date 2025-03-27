@@ -243,9 +243,10 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             if user.value not in users_should:
                 users_to_remove.append(user.value)
         # Check users that should be in the group and add them
-        for user in users_should:
-            if len([x for x in current_group.members if x.value == user]) < 1:
-                users_to_add.append(user)
+        if current_group.members is not None:
+            for user in users_should:
+                if len([x for x in current_group.members if x.value == user]) < 1:
+                    users_to_add.append(user)
         # Only send request if we need to make changes
         if len(users_to_add) < 1 and len(users_to_remove) < 1:
             return

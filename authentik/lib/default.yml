@@ -45,6 +45,8 @@ redis:
 #   url: ""
 #   transport_options: ""
 
+http_timeout: 30
+
 cache:
   # url: ""
   timeout: 300

@@ -3,7 +3,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import "@goauthentik/elements/Markdown";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -89,7 +89,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
+                    <ak-mdx .url=${MDApplication}></ak-mdx>
                 </div>
             </div>
         </div>`;
