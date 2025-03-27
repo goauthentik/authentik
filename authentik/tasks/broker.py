@@ -32,6 +32,7 @@ from authentik.tasks.models import CHANNEL_PREFIX, ChannelIdentifier, Task, Task
 from authentik.tasks.results import PostgresBackend
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
+from authentik.tasks.schedules.scheduler import Scheduler
 
 LOGGER = get_logger()
 
@@ -111,6 +112,7 @@ class PostgresBroker(Broker):
     def consume(self, queue_name: str, prefetch: int = 1, timeout: int = 30000) -> Consumer:
         self.declare_queue(queue_name)
         return self.consumer_class(
+            broker=self,
             db_alias=self.db_alias,
             queue_name=queue_name,
             prefetch=prefetch,
@@ -216,10 +218,20 @@ class PostgresBroker(Broker):
 
 
 class _PostgresConsumer(Consumer):
-    def __init__(self, *args, db_alias, queue_name, prefetch, timeout, **kwargs):
+    def __init__(
+        self,
+        *args,
+        broker: Broker,
+        db_alias: str,
+        queue_name: str,
+        prefetch: int,
+        timeout: int,
+        **kwargs,
+    ):
         self.logger = get_logger().bind()
 
         self.notifies: list[Notify] = []
+        self.broker = broker
         self.db_alias = db_alias
         self.queue_name = queue_name
         self.timeout = timeout // 1000
@@ -228,6 +240,8 @@ class _PostgresConsumer(Consumer):
         self.prefetch = prefetch
         self.misses = 0
         self._listen_connection: DatabaseWrapper | None = None
+
+        self.scheduler = Scheduler(self.broker)
 
     @property
     def connection(self) -> DatabaseWrapper:
@@ -376,6 +390,7 @@ class _PostgresConsumer(Consumer):
         # No message to process
         self._purge_locks()
         self._auto_purge()
+        self._run_scheduler()
 
     def _purge_locks(self):
         while True:
@@ -402,3 +417,10 @@ class _PostgresConsumer(Consumer):
             result_expiry__lte=timezone.now(),
         ).delete()
         self.logger.info(f"Purged {count} messages in all queues")
+
+    def _run_scheduler(self):
+        # Same as above, run on average once every minute
+        if randint(0, 60):  # nosec
+            return
+        self.logger.debug("Running scheduler")
+        self.scheduler.run()
