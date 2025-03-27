@@ -21,14 +21,13 @@ The password history is maintained automatically when this policy is in use. Old
 
 ## Configuration options
 
-The Password Uniqueness  Policy has two configuration options:
+The Password Uniqueness Policy has two configuration options:
 
 - **Password Field**: The field key to check for the new password. Default is _password_. This should match the field name used in your Prompt stage.
 
 - **Number of Historical Passwords**: The number of previous passwords to check against. Default is 1. This also controls how many old passwords the system stores for each user.
 
-  For example, setting this to 3 ensures a user cannot reuse any of their last 3 passwords.
-
+    For example, setting this to 3 ensures a user cannot reuse any of their last 3 passwords.
 
 ## Integration with other policies
 
