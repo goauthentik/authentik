@@ -34,7 +34,7 @@ def _set_prom_info():
     )
 
 
-@actor(throws=(DatabaseError, ProgrammingError, InternalError))
+@actor(queue_name="startup", throws=(DatabaseError, ProgrammingError, InternalError))
 def clear_update_notifications():
     """Clear update notifications on startup if the notification was for the version
     we're running now."""
