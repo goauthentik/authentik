@@ -89,6 +89,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_tasks.task"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_tasks.task_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_tasks.task"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_tasks.task"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_crypto.certificatekeypair"
                             },
                             "id": {
@@ -4129,6 +4169,77 @@
                 }
             }
         },
+        "model_authentik_tasks.task": {
+            "type": "object",
+            "properties": {
+                "message_id": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Message id"
+                },
+                "queue_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Queue name",
+                    "description": "Queue name"
+                },
+                "actor_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Actor name",
+                    "description": "Dramatiq actor name"
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "queued",
+                        "consumed",
+                        "rejected",
+                        "done"
+                    ],
+                    "title": "State",
+                    "description": "Task status"
+                },
+                "mtime": {
+                    "type": "string",
+                    "format": "date-time",
+                    "title": "Mtime",
+                    "description": "Task last modified time"
+                },
+                "schedule_uid": {
+                    "type": "string",
+                    "title": "Schedule uid"
+                },
+                "uid": {
+                    "type": "string",
+                    "title": "Uid"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_tasks.task_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "view_task"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_crypto.certificatekeypair": {
             "type": "object",
             "properties": {
@@ -4762,6 +4873,7 @@
                     "enum": [
                         null,
                         "authentik_tenants.domain",
+                        "authentik_tasks.task",
                         "authentik_crypto.certificatekeypair",
                         "authentik_flows.flow",
                         "authentik_flows.flowstagebinding",
@@ -7373,9 +7485,6 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
-                            "authentik_tasks.add_task",
-                            "authentik_tasks.change_task",
-                            "authentik_tasks.delete_task",
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.view_schedule",
@@ -13929,9 +14038,6 @@
                             "authentik_stages_user_write.change_userwritestage",
                             "authentik_stages_user_write.delete_userwritestage",
                             "authentik_stages_user_write.view_userwritestage",
-                            "authentik_tasks.add_task",
-                            "authentik_tasks.change_task",
-                            "authentik_tasks.delete_task",
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
                             "authentik_tasks_schedules.view_schedule",

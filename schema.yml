@@ -24426,6 +24426,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks.task
           - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
@@ -24671,6 +24672,7 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
+          - authentik_tasks.task
           - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
@@ -38993,7 +38995,8 @@ paths:
         name: id
         schema:
           type: string
-        description: A unique value identifying this Schedule.
+          format: uuid
+        description: A UUID string identifying this Schedule.
         required: true
       tags:
       - tasks
@@ -39025,7 +39028,8 @@ paths:
         name: id
         schema:
           type: string
-        description: A unique value identifying this Schedule.
+          format: uuid
+        description: A UUID string identifying this Schedule.
         required: true
       tags:
       - tasks
@@ -39063,7 +39067,8 @@ paths:
         name: id
         schema:
           type: string
-        description: A unique value identifying this Schedule.
+          format: uuid
+        description: A UUID string identifying this Schedule.
         required: true
       tags:
       - tasks
@@ -46810,6 +46815,7 @@ components:
     ModelEnum:
       enum:
       - authentik_tenants.domain
+      - authentik_tasks.task
       - authentik_crypto.certificatekeypair
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
@@ -56673,6 +56679,7 @@ components:
       properties:
         id:
           type: string
+          format: uuid
           readOnly: true
         name:
           type: string

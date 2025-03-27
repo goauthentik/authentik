@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from authentik.events.logs import LogEvent
 from authentik.events.utils import sanitize_item
+from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.tenants.models import Tenant
 
@@ -37,8 +38,7 @@ class TaskStatus(models.TextChoices):
     ERROR = "error"
 
 
-# class Task(SerializerModel):
-class Task(models.Model):
+class Task(SerializerModel):
     message_id = models.UUIDField(primary_key=True, default=uuid4)
     queue_name = models.TextField(default="default", help_text=_("Queue name"))
 
@@ -69,6 +69,7 @@ class Task(models.Model):
     class Meta:
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
+        default_permissions = ("view",)
         indexes = (models.Index(fields=("state", "mtime")),)
         triggers = (
             pgtrigger.Trigger(
@@ -90,10 +91,11 @@ class Task(models.Model):
     def __str__(self):
         return str(self.message_id)
 
-    # @property
-    # def serializer(self):
-    #     # TODO: fixme
-    #     pass
+    @property
+    def serializer(self):
+        from authentik.tasks.api import TaskSerializer
+
+        return TaskSerializer
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
