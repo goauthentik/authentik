@@ -1,7 +1,8 @@
-import "construct-style-sheets-polyfill";
+import "@formatjs/intl-listformat/locale-data/en";
+import "@formatjs/intl-listformat/polyfill";
 import "@webcomponents/webcomponentsjs";
-import "lit/polyfill-support.js";
+import "construct-style-sheets-polyfill";
+
 import "core-js/actual";
 
-import "@formatjs/intl-listformat/polyfill";
-import "@formatjs/intl-listformat/locale-data/en";
+import "lit/polyfill-support.js";

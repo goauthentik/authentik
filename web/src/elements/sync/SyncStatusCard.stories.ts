@@ -20,7 +20,7 @@ export const Running: StoryObj = {
             tasks: [],
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -61,7 +61,7 @@ export const SingleTask: StoryObj = {
             ],
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card
@@ -144,7 +144,7 @@ export const MultipleTasks: StoryObj = {
             ],
         } as SyncStatus,
     },
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ status }: SyncStatus) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <ak-sync-status-card

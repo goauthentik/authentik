@@ -20,7 +20,7 @@ const metadata: Meta<Alert> = {
         inline: { control: "boolean" },
         level: { control: "text" },
         icon: { control: "text" },
-        // @ts-ignore
+        // @ts-expect-error TODO: Clarify
         message: { control: "text" },
     },
 };
@@ -33,7 +33,7 @@ export const DefaultStory: StoryObj = {
         message: "You should be alarmed.",
     },
 
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ inline, level, icon, message }: IAlertForTesting) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <style>

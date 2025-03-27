@@ -25,11 +25,11 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                 policyUuid: this.instance.pk || "",
                 dummyPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-                dummyPolicyRequest: data,
-            });
         }
+
+        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
+            dummyPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

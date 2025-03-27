@@ -25,11 +25,10 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                 policyUuid: this.instance.pk || "",
                 passwordExpiryPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
-                passwordExpiryPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
+            passwordExpiryPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

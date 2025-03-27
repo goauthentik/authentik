@@ -28,11 +28,10 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorEndpointGDTCStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
-                authenticatorEndpointGDTCStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEndpointGdtcCreate({
+            authenticatorEndpointGDTCStageRequest: data,
+        });
     }
 
     static get styles() {

@@ -24,11 +24,10 @@ export class PropertyMappingProviderSAMLForm extends BasePropertyMappingForm<SAM
                 pmUuid: this.instance.pk,
                 sAMLPropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlCreate({
-                sAMLPropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderSamlCreate({
+            sAMLPropertyMappingRequest: data,
+        });
     }
 
     renderExtraFields(): TemplateResult {

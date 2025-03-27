@@ -1,7 +1,8 @@
-import test from "node:test";
-import assert from "node:assert";
-import sidebar from "../sidebarsIntegrations.js";
 import glob from "glob";
+import assert from "node:assert";
+import test from "node:test";
+
+import sidebar from "../sidebarsIntegrations.js";
 
 const getSidebarItems = () => {
     const allItems = [];
@@ -21,7 +22,7 @@ const getSidebarItems = () => {
     return allItems.sort();
 };
 
-test("ensure all services have a sidebar entry", (t) => {
+test("ensure all services have a sidebar entry", () => {
     // All services in the sidebar
     const services = getSidebarItems()
         .filter((entry) => entry.startsWith("services/"))
@@ -39,7 +40,7 @@ test("ensure all services have a sidebar entry", (t) => {
     });
 });
 
-test("ensure all sources have a sidebar entry", (t) => {
+test("ensure all sources have a sidebar entry", () => {
     // All sources in the sidebar
     const sources = getSidebarItems()
         .filter((entry) => entry.startsWith("sources/"))

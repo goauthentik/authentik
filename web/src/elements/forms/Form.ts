@@ -156,9 +156,12 @@ export function serializeForm<T extends KeyUnknown>(
  *
  *
  */
-
-export abstract class Form<T> extends AKElement {
-    abstract send(data: T): Promise<unknown>;
+export abstract class Form<FormData> extends AKElement {
+    /**
+     * Send the data to the server.
+     *
+     */
+    abstract send(data: FormData): Promise<unknown>;
 
     viewportCheck = true;
 
@@ -270,39 +273,45 @@ export abstract class Form<T> extends AKElement {
      * Convert the elements of the form to JSON.[4]
      *
      */
-    serializeForm(): T | undefined {
+    serializeForm(): FormData | undefined {
         const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
             "ak-form-element-horizontal",
         );
         if (!elements) {
-            return {} as T;
+            return {} as FormData;
         }
-        return serializeForm(elements) as T;
+        return serializeForm(elements) as FormData;
     }
     /**
-     * Serialize and send the form to the destination. The `send()` method must be overridden for
-     * this to work. If processing the data results in an error, we catch the error, distribute
+     * Serialize and send the form to the destination.
+     *
+     * The `send()` method must be overridden for this to work.
+     *
+     * If processing the data results in an error, we catch the error, distribute
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
      */
-    async submit(ev: Event): Promise<unknown | undefined> {
-        ev.preventDefault();
+    async submit(event: Event): Promise<unknown> {
+        event.preventDefault();
+
         try {
             const data = this.serializeForm();
-            if (!data) {
-                return;
-            }
+            if (!data) return null;
+
             const response = await this.send(data);
+
             showMessage({
                 level: MessageLevel.success,
                 message: this.getSuccessMessage(),
             });
+
             this.dispatchEvent(
                 new CustomEvent(EVENT_REFRESH, {
                     bubbles: true,
                     composed: true,
                 }),
             );
+
             return response;
         } catch (ex) {
             if (ex instanceof ResponseError) {

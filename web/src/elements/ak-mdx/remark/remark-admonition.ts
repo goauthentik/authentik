@@ -33,7 +33,7 @@ export const remarkAdmonition: Plugin<[unknown], Root, VFile> = () => {
             }
         };
 
-        // @ts-ignore - visit cannot infer the type of the visitor.
+        // @ts-expect-error - Cannot infer the type of the visitor.
         visit(tree, visitor);
     };
 };

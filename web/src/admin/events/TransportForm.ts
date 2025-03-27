@@ -47,11 +47,10 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                notificationTransportRequest: data,
-            });
         }
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+            notificationTransportRequest: data,
+        });
     }
 
     onModeChange(mode: string | undefined): void {

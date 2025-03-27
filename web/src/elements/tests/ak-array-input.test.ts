@@ -14,12 +14,12 @@ const sampleItems: FooterLink[] = [
 ];
 
 describe("ak-array-input", () => {
-    afterEach(async () => {
-        await browser.execute(async () => {
-            await document.body.querySelector("ak-array-input")?.remove();
-            if (document.body["_$litPart$"]) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body["_$litPart$"];
+    afterEach(() => {
+        return browser.execute(() => {
+            document.body.querySelector("ak-array-input")?.remove();
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
         });
     });
@@ -38,16 +38,16 @@ describe("ak-array-input", () => {
         );
 
     it("should render an empty control", async () => {
-        await component();
-        const link = await $("ak-array-input");
+        component();
+        const link = $("ak-array-input");
         await browser.pause(500);
         await expect(await link.getProperty("isValid")).toStrictEqual(true);
         await expect(await link.getProperty("toJson")).toEqual([]);
     });
 
     it("should render a populated component", async () => {
-        await component(sampleItems);
-        const link = await $("ak-array-input");
+        component(sampleItems);
+        const link = $("ak-array-input");
         await browser.pause(500);
         await expect(await link.getProperty("isValid")).toStrictEqual(true);
         await expect(await link.getProperty("toJson")).toEqual(sampleItems);

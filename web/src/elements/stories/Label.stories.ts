@@ -20,7 +20,7 @@ const metadata: Meta<Label> = {
         compact: { control: "boolean" },
         color: { control: "text" },
         icon: { control: "text" },
-        // @ts-ignore
+        // @ts-expect-error TODO: Clarify.
         message: { control: "text" },
     },
 };
@@ -33,7 +33,7 @@ export const DefaultStory: StoryObj = {
         message: "Eat at Joe's.",
     },
 
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ compact, color, icon, message }: ILabelForTesting) => {
         return html` <div style="background-color: #f0f0f0; padding: 1rem;">
             <style>

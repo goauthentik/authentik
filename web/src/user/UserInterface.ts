@@ -112,7 +112,6 @@ const customStyles = css`
 // trusts that we actually used it. Hence the double ignore below:
 
 @customElement("ak-interface-user-presentation")
-// @ts-ignore
 class UserInterfacePresentation extends AKElement {
     static get styles() {
         return [
@@ -295,6 +294,7 @@ export class UserInterface extends AuthenticatedInterface {
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
             const { ESBuildObserver } = await import("@goauthentik/common/client");
 
+            // eslint-disable-next-line no-new
             new ESBuildObserver(process.env.WATCHER_URL);
         }
     }
@@ -321,8 +321,9 @@ export class UserInterface extends AuthenticatedInterface {
     }
 
     fetchConfigurationDetails() {
-        me().then((me: SessionUser) => {
-            this.me = me;
+        me().then((session: SessionUser) => {
+            this.me = session;
+
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
                     seen: false,

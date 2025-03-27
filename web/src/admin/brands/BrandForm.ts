@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -43,11 +43,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                 brandUuid: this.instance.brandUuid,
                 brandRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
-                brandRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+            brandRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

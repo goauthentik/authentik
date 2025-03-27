@@ -14,6 +14,11 @@ export async function renderStatic(input: TemplateResult): Promise<string> {
     return await collectResult(render(input));
 }
 
+/**
+ * Purify a template result using DOMPurify.
+ *
+ * @param input Template result to purify
+ */
 export function purify(input: TemplateResult): TemplateResult {
     return html`${until(
         (async () => {

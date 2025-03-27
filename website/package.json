@@ -1,8 +1,6 @@
 {
-    "name": "@goauthentik/website-docs",
-    "version": "0.0.0",
-    "private": true,
-    "license": "MIT",
+    "name": "@goauthentik/docs",
+    "version": "1.0.0",
     "scripts": {
         "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "build-bundled": "cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
@@ -16,8 +14,18 @@
         "test": "node --test",
         "watch": "cp -f ../schema.yml ./static/schema.yml && docusaurus gen-api-docs all && docusaurus start"
     },
+    "devDependencies": {
+        "@docusaurus/module-type-aliases": "^3.3.2",
+        "@docusaurus/tsconfig": "^3.7.0",
+        "@docusaurus/types": "^3.3.2",
+        "@types/react": "^18.3.13",
+        "@types/semver": "^7.5.8",
+        "cross-env": "^7.0.3",
+        "prettier": "3.5.3",
+        "typescript": "~5.8.2",
+        "wireit": "^0.14.11"
+    },
     "dependencies": {
-        "semver": "^7.7.1",
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/faster": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
@@ -39,8 +47,11 @@
         "react-toggle": "^4.1.3",
         "react-tooltip": "^5.28.0",
         "remark-directive": "^4.0.0",
-        "remark-github": "^12.0.0"
+        "remark-github": "^12.0.0",
+        "semver": "^7.7.1"
     },
+    "private": true,
+    "license": "MIT",
     "browserslist": {
         "production": [
             ">0.2%",
@@ -53,30 +64,22 @@
             "last 1 safari version"
         ]
     },
-    "devDependencies": {
-        "@types/semver": "^7.5.8",
-        "@docusaurus/module-type-aliases": "^3.3.2",
-        "@docusaurus/tsconfig": "^3.7.0",
-        "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.13",
-        "cross-env": "^7.0.3",
-        "prettier": "3.5.3",
-        "typescript": "~5.8.2",
-        "wireit": "^0.14.11"
-    },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.2.8",
         "@rspack/binding-linux-arm64-gnu": "1.2.8",
         "@rspack/binding-linux-x64-gnu": "1.2.8",
-        "lightningcss-darwin-arm64": "1.29.3",
-        "lightningcss-linux-arm64-gnu": "1.29.3",
-        "lightningcss-linux-x64-gnu": "1.29.3",
         "@swc/core-darwin-arm64": "1.11.12",
         "@swc/core-linux-arm64-gnu": "1.11.12",
         "@swc/core-linux-x64-gnu": "1.11.12",
         "@swc/html-darwin-arm64": "1.11.13",
         "@swc/html-linux-arm64-gnu": "1.11.13",
-        "@swc/html-linux-x64-gnu": "1.11.13"
+        "@swc/html-linux-x64-gnu": "1.11.13",
+        "lightningcss-darwin-arm64": "1.29.3",
+        "lightningcss-linux-arm64-gnu": "1.29.3",
+        "lightningcss-linux-x64-gnu": "1.29.3"
+    },
+    "engines": {
+        "node": ">=20"
     },
     "wireit": {
         "lint:lockfile": {
@@ -84,8 +87,5 @@
             "shell": true,
             "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
         }
-    },
-    "engines": {
-        "node": ">=20"
     }
 }

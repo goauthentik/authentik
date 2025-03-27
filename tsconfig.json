@@ -19,9 +19,8 @@
     "files": [],
     "references": [
         // Note that references are in the order we want them to be built.
-        { "path": "./packages/tsconfig" },
         { "path": "./packages/prettier-config" },
         { "path": "./packages/eslint-config" },
-        { "path": "./packages/sfe" }
+        { "path": "./web" }
     ]
 }

@@ -37,11 +37,10 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                eventMatcherPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
+            eventMatcherPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

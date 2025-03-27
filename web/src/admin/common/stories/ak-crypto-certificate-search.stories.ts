@@ -29,7 +29,7 @@ const metadata: Meta<AkCryptoCertificateSearch> = {
     argTypes: {
         // Typescript is unaware that arguments for components are treated as properties, and
         // properties are typically renamed to lower case, even if the variable is not.
-        // @ts-expect-error
+        // @ts-expect-error TODO: Explain.
         nokey: {
             control: "boolean",
             description:
@@ -75,7 +75,7 @@ export const CryptoCertificateSearch = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const showMessage = (ev: CustomEvent<any>) => {
         const detail = ev.detail;
-        delete detail["target"];
+        delete detail.target;
         document.getElementById("message-pad")!.innerText = `Event: ${JSON.stringify(
             detail,
             null,

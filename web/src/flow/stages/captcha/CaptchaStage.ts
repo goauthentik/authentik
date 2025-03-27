@@ -1,4 +1,4 @@
-///<reference types="@hcaptcha/types"/>
+/// <reference types="@hcaptcha/types"/>
 import { renderStatic } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import { akEmptyState } from "@goauthentik/elements/EmptyState";
@@ -205,7 +205,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     console.debug(`authentik/stages/captcha: Unknown message: ${message}`);
                 },
             )
-            .otherwise(() => {});
+            .otherwise(() => null);
     }
 
     async renderGReCaptchaFrame() {

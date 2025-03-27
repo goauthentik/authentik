@@ -28,10 +28,7 @@
           "type": {
             "description": "A label indicating the type of resource, e.g., 'User' or 'Group'.",
             "type": "string",
-            "enum": [
-              "User",
-              "Group"
-            ],
+            "enum": ["User", "Group"],
             "readOnly": true
           }
         },
@@ -39,7 +36,5 @@
       }
     }
   },
-  "required": [
-    "displayName"
-  ]
+  "required": ["displayName"]
 }

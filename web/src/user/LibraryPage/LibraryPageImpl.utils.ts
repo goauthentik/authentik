@@ -9,9 +9,9 @@ const isAuthentikSpecial = (url: string) => isAuthentikSpecialRe.test(url);
 
 export const appHasLaunchUrl = (app: Application) => {
     const url = app.launchUrl;
-    return !!(
+    return Boolean(
         typeof url === "string" &&
-        url !== "" &&
-        (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url))
+            url !== "" &&
+            (isHttp(url) || isNotFullUrl(url) || isAuthentikSpecial(url)),
     );
 };

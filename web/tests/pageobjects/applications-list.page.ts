@@ -10,12 +10,12 @@ class ApplicationsListPage extends AdminPage {
      * define selectors using getter methods
      */
 
-    async startWizardButton() {
-        return await $('>>>button[data-ouia-component-id="start-application-wizard"]');
+    startWizardButton() {
+        return $('>>>button[data-ouia-component-id="start-application-wizard"]');
     }
 
-    async open() {
-        return await super.open("if/admin/#/core/applications");
+    open() {
+        return super.open("if/admin/#/core/applications");
     }
 }
 

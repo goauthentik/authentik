@@ -1,6 +1,7 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
+        "baseUrl": ".",
         "checkJs": true,
         "emitDeclarationOnly": true
     }

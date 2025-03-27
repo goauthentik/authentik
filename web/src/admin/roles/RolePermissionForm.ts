@@ -26,6 +26,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     @property()
     roleUuid?: string;
 
+    // eslint-disable-next-line no-empty-function
     async load(): Promise<void> {}
 
     loadInstance(): Promise<RolePermissionAssign> {

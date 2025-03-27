@@ -1,7 +1,17 @@
 /**
+ * @file Prettier configuration for authentik.
+ *
+ * @import { Config as PrettierConfig } from "prettier";
+ * @import { PluginConfig as SortPluginConfig } from "@trivago/prettier-plugin-sort-imports";
+ *
+ * @typedef {object} PackageJSONPluginConfig
+ * @property {string[]} [packageSortOrder] Custom ordering array.
+ */
+
+/**
  * authentik Prettier configuration.
  *
- * @type {import("prettier").Config}
+ * @type {PrettierConfig & SortPluginConfig & PackageJSONPluginConfig}
  * @internal
  */
 export const AuthentikPrettierConfig = {
@@ -28,6 +38,12 @@ export const AuthentikPrettierConfig = {
     importOrderParserPlugins: ["typescript", "jsx", "classProperties", "decorators-legacy"],
     overrides: [
         {
+            files: "schemas/**/*.json",
+            options: {
+                tabWidth: 2,
+            },
+        },
+        {
             files: "tsconfig.json",
             options: {
                 trailingComma: "none",
@@ -41,9 +57,22 @@ export const AuthentikPrettierConfig = {
                     "name",
                     "version",
                     "description",
+                    "license",
+                    "private",
+                    "author",
+                    "authors",
                     "scripts",
-                    "devDependencies",
+                    "main",
+                    "type",
+                    "exports",
+                    "imports",
                     "dependencies",
+                    "devDependencies",
+                    "peerDependencies",
+                    "optionalDependencies",
+                    "wireit",
+                    "resolutions",
+                    "engines",
                 ],
             },
         },

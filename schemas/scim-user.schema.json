@@ -99,11 +99,7 @@
           "type": {
             "description": "A label indicating the attribute's function, e.g., 'work' or 'home'.",
             "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "other"
-            ]
+            "enum": ["work", "home", "other"]
           },
           "primary": {
             "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred mailing address or primary email address.  The primary attribute value 'true' MUST appear no more than once.",
@@ -129,14 +125,7 @@
           "type": {
             "description": "A label indicating the attribute's function, e.g., 'work', 'home', 'mobile'.",
             "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "mobile",
-              "fax",
-              "pager",
-              "other"
-            ]
+            "enum": ["work", "home", "mobile", "fax", "pager", "other"]
           },
           "primary": {
             "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred phone number or primary phone number.  The primary attribute value 'true' MUST appear no more than once.",
@@ -162,16 +151,7 @@
           "type": {
             "description": "A label indicating the attribute's function, e.g., 'aim', 'gtalk', 'xmpp'.",
             "type": "string",
-            "enum": [
-              "aim",
-              "gtalk",
-              "icq",
-              "xmpp",
-              "msn",
-              "skype",
-              "qq",
-              "yahoo"
-            ]
+            "enum": ["aim", "gtalk", "icq", "xmpp", "msn", "skype", "qq", "yahoo"]
           },
           "primary": {
             "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred messenger or primary messenger.  The primary attribute value 'true' MUST appear no more than once.",
@@ -198,10 +178,7 @@
           "type": {
             "description": "A label indicating the attribute's function, i.e., 'photo' or 'thumbnail'.",
             "type": "string",
-            "enum": [
-              "photo",
-              "thumbnail"
-            ]
+            "enum": ["photo", "thumbnail"]
           },
           "primary": {
             "description": "A Boolean value indicating the 'primary' or preferred attribute value for this attribute, e.g., the preferred photo or thumbnail.  The primary attribute value 'true' MUST appear no more than once.",
@@ -243,11 +220,7 @@
           "type": {
             "description": "A label indicating the attribute's function, e.g., 'work' or 'home'.",
             "type": "string",
-            "enum": [
-              "work",
-              "home",
-              "other"
-            ]
+            "enum": ["work", "home", "other"]
           }
         }
       }
@@ -277,10 +250,7 @@
           "type": {
             "description": "A label indicating the attribute's function, e.g., 'direct' or 'indirect'.",
             "type": "string",
-            "enum": [
-              "direct",
-              "indirect"
-            ],
+            "enum": ["direct", "indirect"],
             "readOnly": true
           }
         },
@@ -366,7 +336,5 @@
       }
     }
   },
-  "required": [
-    "userName"
-  ]
+  "required": ["userName"]
 }

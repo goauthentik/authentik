@@ -14,13 +14,15 @@
             "import": "./react-config.js",
             "types": "./out/react-config.d.ts"
         },
+        "./javascript-config": {
+            "import": "./javascript-config.js",
+            "types": "./out/javascript-config.d.ts"
+        },
         "./typescript-config": {
             "import": "./typescript-config.js",
             "types": "./out/typescript-config.d.ts"
         }
     },
-    "types": "./out/index.d.ts",
-    "prettier": "@goauthentik/prettier-config",
     "dependencies": {
         "eslint": "^9.23.0",
         "eslint-plugin-import": "^2.31.0",
@@ -30,13 +32,12 @@
     "devDependencies": {
         "@goauthentik/tsconfig": "1.0.0",
         "@types/eslint": "^9.6.1",
-        "@types/eslint__js": "^9.14.0",
         "typescript": "^5.8.2",
-        "typescript-eslint": "^8.27.0"
+        "typescript-eslint": "^8.29.0"
     },
     "peerDependencies": {
         "typescript": "^5.8.2",
-        "typescript-eslint": "^8.27.0"
+        "typescript-eslint": "^8.29.0"
     },
     "optionalDependencies": {
         "react": "^18.3.1"
@@ -44,6 +45,8 @@
     "engines": {
         "node": ">=20.11"
     },
+    "types": "./out/index.d.ts",
+    "prettier": "@goauthentik/prettier-config",
     "publishConfig": {
         "access": "public"
     }

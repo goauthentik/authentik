@@ -1,5 +1,5 @@
-import { execSync } from "child_process";
-import path from "path";
+import { execSync } from "node:child_process";
+import * as path from "node:path";
 
 const projectRoot = execSync("git rev-parse --show-toplevel", { encoding: "utf8" }).replace(
     "\n",

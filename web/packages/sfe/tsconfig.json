@@ -1,8 +1,8 @@
-
 {
-	"extends": "@goauthentik/tsconfig",
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "types": ["jquery"],
+        "emitDeclarationOnly": true,
+        "baseUrl": ".",
         "esModuleInterop": true,
         "lib": ["DOM", "ES2015", "ES2017"]
     }

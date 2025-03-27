@@ -215,13 +215,11 @@ export class RacInterface extends Interface {
                 );
                 return;
             }
-        } else {
-            if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
-                this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
-                );
-                return;
-            }
+        } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+            this.reconnectingMessage = msg(
+                str`Connection failed after ${this.connectionAttempt} attempts.`,
+            );
+            return;
         }
         const delay = 500 * this.connectionAttempt;
         this.reconnectingMessage = msg(
@@ -267,14 +265,12 @@ export class RacInterface extends Interface {
 
             this.client.sendMouseState(mouseState);
         };
-        // @ts-ignore
-        mouse.onEach(["mouseup", "mousedown"], (ev: Guacamole.Mouse.Event) => {
+        mouse.onEach(["mouseup", "mousedown"], (event) => {
             this.container?.focus();
-            handler(ev.state);
+            handler((event as Guacamole.Mouse.Event).state);
         });
-        // @ts-ignore
-        mouse.on("mousemove", (ev: Guacamole.Mouse.Event) => {
-            handler(ev.state, true);
+        mouse.on("mousemove", (event) => {
+            handler((event as Guacamole.Mouse.Event).state, true);
         });
     }
 
@@ -337,11 +333,11 @@ export class RacInterface extends Interface {
     }
 
     renderOverlay() {
-        if (!this.clientState || this.clientState == GuacClientState.CONNECTED) {
+        if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
         let message = html`${GuacStateToString(this.clientState)}`;
-        if (this.clientState == GuacClientState.WAITING) {
+        if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
         if (this.hasConnected) {

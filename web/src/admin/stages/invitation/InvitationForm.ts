@@ -6,7 +6,7 @@ import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -34,11 +34,10 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 inviteUuid: this.instance.pk || "",
                 invitationRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-                invitationRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
+            invitationRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

@@ -34,12 +34,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            data.intent = this.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        data.intent = this.intent;
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -69,7 +68,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
-            ${this.intent == IntentEnum.AppPassword
+            ${this.intent === IntentEnum.AppPassword
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
                       <input
                           type="datetime-local"

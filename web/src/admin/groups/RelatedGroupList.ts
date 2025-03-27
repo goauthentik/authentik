@@ -125,7 +125,8 @@ export class RelatedGroupList extends Table<Group> {
             buttonLabel=${msg("Remove")}
             .objects=${this.selectedElements}
             .delete=${(item: Group) => {
-                if (!this.targetUser) return;
+                if (!this.targetUser) return null;
+
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsRemoveUserCreate({
                     groupUuid: item.pk,
                     userAccountRequest: {

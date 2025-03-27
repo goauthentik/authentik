@@ -44,7 +44,7 @@ const providerValues: Pair[] = [["oauth2", "oauth2Provider"]];
 providerValues.forEach(([value, name]: Pair) => {
     Object.defineProperties(ProviderWizardView.prototype, {
         [name]: {
-            get: function () {
+            get() {
                 return this.providerList.$(`>>>input[id="ak-provider-${value}-form"]`);
             },
         },

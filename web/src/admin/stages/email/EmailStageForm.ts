@@ -37,11 +37,10 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 stageUuid: this.instance.pk || "",
                 patchedEmailStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesEmailCreate({
-                emailStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesEmailCreate({
+            emailStageRequest: data,
+        });
     }
 
     renderConnectionSettings(): TemplateResult {

@@ -1,12 +1,15 @@
-import replace from "@rollup/plugin-replace";
 import type { StorybookConfig } from "@storybook/web-components-vite";
-import { cwd } from "process";
+import { cwd } from "node:process";
 import modify from "rollup-plugin-modify";
 import postcssLit from "rollup-plugin-postcss-lit";
+import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export const isProdBuild = process.env.NODE_ENV === "production";
 export const apiBasePath = process.env.AK_API_BASE_PATH || "";
+
+const NODE_ENV = process.env.NODE_ENV || "development";
+const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
 
 const importInlinePatterns = [
     'import AKGlobal from "(\\.\\./)*common/styles/authentik\\.css',
@@ -53,8 +56,14 @@ const config: StorybookConfig = {
         autodocs: "tag",
     },
     async viteFinal(config) {
-        return {
-            ...config,
+        return mergeConfig(config, {
+            define: {
+                "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
+                "process.env.CWD": JSON.stringify(cwd()),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(AK_API_BASE_PATH),
+                "process.env.WATCHER_URL": "",
+            },
+
             plugins: [
                 modify({
                     find: importInlineRegexp,
@@ -62,19 +71,10 @@ const config: StorybookConfig = {
                         return `${match}?inline`;
                     },
                 }),
-                replace({
-                    "process.env.NODE_ENV": JSON.stringify(
-                        isProdBuild ? "production" : "development",
-                    ),
-                    "process.env.CWD": JSON.stringify(cwd()),
-                    "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                    "preventAssignment": true,
-                }),
-                ...config.plugins,
                 postcssLit(),
                 tsconfigPaths(),
             ],
-        };
+        });
     },
 };
 

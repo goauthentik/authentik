@@ -16,7 +16,7 @@ const metadata: Meta<LoadingOverlay> = {
     },
     argTypes: {
         topmost: { control: "boolean" },
-        // @ts-ignore
+        // @ts-expect-error TODO: Clarify
         message: { control: "text" },
     },
 };
@@ -52,12 +52,12 @@ export class Container extends LitElement {
 export const DefaultStory: StoryObj = {
     args: {
         topmost: undefined,
-        // @ts-ignore
         message: undefined,
     },
 
-    // @ts-ignore
+    // @ts-expect-error TODO: Clarify
     render: ({ topmost, message }: ILoadingOverlay) => {
+        // eslint-disable-next-line no-param-reassign
         message = typeof message === "string" ? html`<span>${message}</span>` : message;
         const content = html` <ak-loading-overlay ?topmost=${topmost}
             >${message ?? ""}

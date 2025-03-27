@@ -80,8 +80,7 @@
     transform: scale(1.1);
 }
 
-.integration-codeblock__copy-btn--copied
-    .integration-codeblock__copy-success-icon {
+.integration-codeblock__copy-btn--copied .integration-codeblock__copy-success-icon {
     opacity: 1;
     transform: scale(1);
     color: #10b981;

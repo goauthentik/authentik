@@ -34,11 +34,10 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                 stageUuid: this.instance.pk || "",
                 authenticatorTOTPStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
-                authenticatorTOTPStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpCreate({
+            authenticatorTOTPStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

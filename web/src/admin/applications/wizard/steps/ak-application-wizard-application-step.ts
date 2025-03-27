@@ -37,7 +37,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     errors = new Map<string, string>();
 
     @query("form#applicationform")
-    form!: HTMLFormElement;
+    declare form: HTMLFormElement;
 
     constructor() {
         super();
@@ -61,18 +61,18 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         this.errors = new Map();
         const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 
-        if (values["name"] === "") {
+        if (values.name === "") {
             this.errors.set("name", msg("An application name is required"));
         }
         if (
             !(
-                isStr(values["metaLaunchUrl"]) &&
-                (values["metaLaunchUrl"] === "" || URL.canParse(values["metaLaunchUrl"]))
+                isStr(values.metaLaunchUrl) &&
+                (values.metaLaunchUrl === "" || URL.canParse(values.metaLaunchUrl))
             )
         ) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
-        if (!(isStr(values["slug"]) && values["slug"] !== "" && isSlug(values["slug"]))) {
+        if (!(isStr(values.slug) && values.slug !== "" && isSlug(values.slug))) {
             this.errors.set("slug", msg("Not a valid slug"));
         }
         return this.errors.size === 0;

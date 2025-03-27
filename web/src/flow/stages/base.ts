@@ -83,7 +83,7 @@ export class BaseStage<
         if (!("non_field_errors" in errors)) {
             return nothing;
         }
-        const nonFieldErrors = errors["non_field_errors"];
+        const nonFieldErrors = errors.non_field_errors;
         if (!nonFieldErrors) {
             return nothing;
         }

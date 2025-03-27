@@ -15,13 +15,13 @@ describe("ak-aggregate-card-promise", () => {
         const promise = runThis(DELAY, text);
         render(html`<ak-aggregate-card-promise .promise=${promise}></ak-aggregate-card-promise>`);
 
-        const component = await $("ak-aggregate-card-promise");
+        const component = $("ak-aggregate-card-promise");
         // Assert we're in pre-resolve mode
-        await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
-        await expect(await component.$(">>>ak-spinner")).toExist();
+        await expect(component.$(">>>.pf-c-card__header a")).not.toExist();
+        await expect(component.$(">>>ak-spinner")).toExist();
         await promise;
-        await expect(await component.$(">>>ak-spinner")).not.toExist();
-        await expect(await component.$(">>>.pf-c-card__body")).toHaveText("RESULT");
+        await expect(component.$(">>>ak-spinner")).not.toExist();
+        await expect(component.$(">>>.pf-c-card__body")).toHaveText("RESULT");
     });
 
     it("should render the promise card and display failure after a 1 second timeout", async () => {
@@ -36,15 +36,15 @@ describe("ak-aggregate-card-promise", () => {
             ></ak-aggregate-card-promise>`,
         );
 
-        const component = await $("ak-aggregate-card-promise");
+        const component = $("ak-aggregate-card-promise");
         // Assert we're in pre-resolve mode
-        await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
-        await expect(await component.$(">>>ak-spinner")).toExist();
+        await expect(component.$(">>>.pf-c-card__header a")).not.toExist();
+        await expect(component.$(">>>ak-spinner")).toExist();
         try {
             await promise;
         } catch (_e: unknown) {
-            await expect(await component.$(">>>ak-spinner")).not.toExist();
-            await expect(await component.$(">>>.pf-c-card__body")).toHaveText(text);
+            await expect(component.$(">>>ak-spinner")).not.toExist();
+            await expect(component.$(">>>.pf-c-card__body")).toHaveText(text);
         }
     });
 });

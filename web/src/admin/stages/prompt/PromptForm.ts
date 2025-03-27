@@ -56,11 +56,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
-                promptRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+            promptRequest: data,
+        });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
@@ -73,10 +72,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     async refreshPreview(prompt?: Prompt): Promise<void> {
         if (!prompt) {
+            // TODO: Clarify this behavior.
+            // eslint-disable-next-line no-param-reassign
             prompt = this.serializeForm();
-            if (!prompt) {
-                return;
-            }
+
+            if (!prompt) return;
         }
         try {
             this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({

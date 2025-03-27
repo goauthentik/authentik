@@ -8,6 +8,24 @@ import { globalAK } from "@goauthentik/common/global";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
+export function getMetaContent(key: string): string {
+    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
+    if (!metaEl) return "";
+    return metaEl.content;
+}
+
+export const DEFAULT_CONFIG = new Configuration({
+    basePath: `${globalAK().api.base}api/v3`,
+    headers: {
+        "sentry-trace": getMetaContent("sentry-trace"),
+    },
+    middleware: [
+        new CSRFMiddleware(),
+        new EventMiddleware(),
+        new LoggingMiddleware(globalAK().brand),
+    ],
+});
+
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
     if (!globalConfigPromise) {
@@ -60,24 +78,6 @@ export function brand(): Promise<CurrentBrand> {
     }
     return globalBrandPromise;
 }
-
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
-export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
-    middleware: [
-        new CSRFMiddleware(),
-        new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
-    ],
-});
 
 // This is just a function so eslint doesn't complain about
 // missing-whitespace-between-attributes or

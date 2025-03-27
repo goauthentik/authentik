@@ -120,16 +120,20 @@ export class LibraryPageApplicationSearch extends AKElement {
         this.dispatchEvent(new LibraryPageSearchReset());
     }
 
-    onInput(ev: InputEvent) {
+    onInput(ev: InputEvent): void {
         this.query = (ev.target as HTMLInputElement).value;
+
         if (this.query === "") {
-            return this.resetSearch();
+            this.resetSearch();
+            return;
         }
+
         updateURLParams({
             search: this.query,
         });
 
         const apps = this.fuse.search(this.query);
+
         if (apps.length < 1) {
             this.dispatchEvent(new LibraryPageSearchEmpty());
             return;

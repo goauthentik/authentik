@@ -7,54 +7,28 @@ import tseslint from "typescript-eslint";
 export const typescriptConfig = tseslint.config({
     rules: {
         "@typescript-eslint/ban-ts-comment": [
-            "warn",
+            "error",
             {
-                "ts-ignore": "allow-with-description",
+                "ts-expect-error": "allow-with-description",
+                "ts-ignore": true,
+                "ts-nocheck": "allow-with-description",
+                "ts-check": false,
+                "minimumDescriptionLength": 5,
             },
         ],
-        "@typescript-eslint/ban-types": "off",
-        "@typescript-eslint/no-empty-interface": "off",
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-extra-semi": "off",
-        "@typescript-eslint/no-misused-new": "off",
-        "@typescript-eslint/no-non-null-assertion": "off",
-        "@typescript-eslint/no-shadow": [
-            "warn",
-            {
-                ignoreFunctionTypeParameterNameValueShadow: true,
-                ignoreTypeValueShadow: true,
-            },
-        ],
+        "no-use-before-define": "off",
+        "@typescript-eslint/no-use-before-define": "error",
+        "no-invalid-this": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-unused-vars": [
             "warn",
             {
-                args: "all",
                 argsIgnorePattern: "^_",
-                caughtErrors: "all",
+                varsIgnorePattern: "^_",
                 caughtErrorsIgnorePattern: "^_",
-                destructuredArrayIgnorePattern: "^_",
-                // Ignore all variables, since Prettier takes care of this.
-                varsIgnorePattern: "^\\w",
-                ignoreRestSiblings: true,
             },
         ],
-        "@typescript-eslint/no-var-requires": "off",
-
-        "eqeqeq": ["error", "always", { null: "ignore" }],
-        "no-shadow": "off",
-        "no-extra-semi": "off",
-        "no-undef": "off",
-        "no-unused-vars": "off",
-        "object-shorthand": [
-            "warn",
-            "always",
-            {
-                avoidQuotes: true,
-                ignoreConstructors: true,
-                avoidExplicitReturnArrows: false,
-            },
-        ],
-        "prefer-const": "warn",
     },
 });
 

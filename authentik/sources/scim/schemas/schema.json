@@ -323,12 +323,7 @@
                         "multiValued": false,
                         "description": "Indicates whether or not an attribute is modifiable.",
                         "required": false,
-                        "canonicalValues": [
-                            "readOnly",
-                            "readWrite",
-                            "immutable",
-                            "writeOnly"
-                        ],
+                        "canonicalValues": ["readOnly", "readWrite", "immutable", "writeOnly"],
                         "caseExact": false,
                         "mutability": "readOnly",
                         "returned": "default",
@@ -340,12 +335,7 @@
                         "multiValued": false,
                         "description": "Indicates when an attribute is returned in a response (e.g., to a query).",
                         "required": false,
-                        "canonicalValues": [
-                            "always",
-                            "never",
-                            "default",
-                            "request"
-                        ],
+                        "canonicalValues": ["always", "never", "default", "request"],
                         "caseExact": false,
                         "mutability": "readOnly",
                         "returned": "default",
@@ -369,12 +359,7 @@
                         "multiValued": true,
                         "description": "Used only with an attribute of type 'reference'.  Specifies a SCIM resourceType that a reference attribute MAY refer to, e.g., 'User'.",
                         "required": false,
-                        "canonicalValues": [
-                            "resource",
-                            "external",
-                            "uri",
-                            "url"
-                        ],
+                        "canonicalValues": ["resource", "external", "uri", "url"],
                         "caseExact": false,
                         "mutability": "readOnly",
                         "returned": "default",

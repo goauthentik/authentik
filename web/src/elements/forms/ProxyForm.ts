@@ -8,6 +8,7 @@ export abstract class ProxyForm extends Form<unknown> {
     @property()
     type!: string;
 
+    // TODO: Is this used anywhere?
     @property({ attribute: false })
     args: Record<string, unknown> = {};
 
@@ -28,24 +29,29 @@ export abstract class ProxyForm extends Form<unknown> {
         return this.innerElement?.getSuccessMessage() || "";
     }
 
-    async requestUpdate(name?: PropertyKey | undefined, oldValue?: unknown): Promise<unknown> {
-        const result = await super.requestUpdate(name, oldValue);
-        await this.innerElement?.requestUpdate();
+    requestUpdate(name?: PropertyKey | undefined, oldValue?: unknown): void {
+        const result = super.requestUpdate(name, oldValue);
+        this.innerElement?.requestUpdate();
         return result;
     }
 
     renderVisible(): TemplateResult {
         let elementName = this.type;
+
         if (this.type in this.typeMap) {
             elementName = this.typeMap[this.type];
         }
+
         if (!this.innerElement) {
             this.innerElement = document.createElement(elementName) as Form<unknown>;
         }
+
         this.innerElement.viewportCheck = this.viewportCheck;
-        for (const k in this.args) {
-            this.innerElement.setAttribute(k, this.args[k] as string);
-            (this.innerElement as unknown as Record<string, unknown>)[k] = this.args[k];
+
+        for (const [key, value] of Object.entries(this.args)) {
+            this.innerElement.setAttribute(key, value as string);
+
+            (this.innerElement as unknown as Record<string, string>)[key] = value as string;
         }
         return html`${this.innerElement}`;
     }

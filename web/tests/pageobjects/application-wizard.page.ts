@@ -28,29 +28,28 @@ class ApplicationWizardView extends AdminPage {
     radius = RadiusForm;
     app = ApplicationForm;
 
-    async wizardTitle() {
-        return await $(">>>.pf-c-wizard__title");
+    wizardTitle() {
+        return $(">>>.pf-c-wizard__title");
     }
 
-    async providerList() {
-        return await $(">>>ak-application-wizard-provider-choice-step");
+    providerList() {
+        return $(">>>ak-application-wizard-provider-choice-step");
     }
 
-    async nextButton() {
-        return await $('>>>button[data-ouid-button-kind="wizard-next"]');
+    nextButton() {
+        return $('>>>button[data-ouid-button-kind="wizard-next"]');
     }
 
-    async getProviderType(type: string) {
-        // @ts-expect-error "TSC does not understand the ChainablePromiseElement type at all."
-        return await this.providerList().$(`>>>input[value="${type}"]`);
+    getProviderType(type: string) {
+        return this.providerList().$(`>>>input[value="${type}"]`);
     }
 
-    async submitPage() {
-        return await $(">>>ak-application-wizard-submit-step");
+    submitPage() {
+        return $(">>>ak-application-wizard-submit-step");
     }
 
-    async successMessage() {
-        return await $('>>>[data-ouid-component-state="submitted"]');
+    successMessage() {
+        return $('>>>[data-ouid-component-state="submitted"]');
     }
 }
 
@@ -70,10 +69,8 @@ const providerValues: Pair[] = [
 providerValues.forEach(([value, name]: Pair) => {
     Object.defineProperties(ApplicationWizardView.prototype, {
         [name]: {
-            get: async function () {
-                return await (
-                    await this.providerList()
-                ).$(`>>>div[data-ouid-component-name="${value}"]`);
+            get: function (this: ApplicationWizardView) {
+                return this.providerList().$(`>>>div[data-ouid-component-name="${value}"]`);
             },
         },
     });

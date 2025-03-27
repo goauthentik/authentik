@@ -2,8 +2,8 @@
     "name": "@goauthentik/prettier-config",
     "version": "1.0.0",
     "description": "authentik's Prettier config",
-    "type": "module",
     "license": "MIT",
+    "type": "module",
     "exports": {
         "./package.json": "./package.json",
         ".": {
@@ -13,9 +13,9 @@
     },
     "types": "./out/index.d.ts",
     "peerDependencies": {
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "prettier-plugin-organize-imports": "^4.1.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
+        "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-packagejson": "^2.5.10"
     },
     "engines": {

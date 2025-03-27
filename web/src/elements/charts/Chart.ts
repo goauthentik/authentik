@@ -48,11 +48,14 @@ export class RGBAColor {
 export function getColorFromString(stringInput: string): RGBAColor {
     let hash = 0;
     for (let i = 0; i < stringInput.length; i++) {
+        // eslint-disable-next-line no-bitwise
         hash = stringInput.charCodeAt(i) + ((hash << 5) - hash);
+        // eslint-disable-next-line no-bitwise
         hash = hash & hash;
     }
     const rgb = [0, 0, 0];
     for (let i = 0; i < 3; i++) {
+        // eslint-disable-next-line no-bitwise
         const value = (hash >> (i * 8)) & 255;
         rgb[i] = value;
     }

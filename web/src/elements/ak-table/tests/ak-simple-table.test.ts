@@ -2,6 +2,7 @@ import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, browser } from "@wdio/globals";
 import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
+import type { ChainablePromiseElement } from "webdriverio";
 
 import { html } from "lit";
 
@@ -15,15 +16,14 @@ const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) 
 }));
 
 describe("Simple Table", () => {
-    let table: WebdriverIO.Element;
+    let table: ChainablePromiseElement;
 
     beforeEach(async () => {
         await render(
             html`<ak-simple-table .content=${content} .columns=${columns}> </ak-simple-table>`,
-            document.body,
+            document,
         );
-        // @ts-ignore
-        table = await $("ak-simple-table").$(">>>table");
+        table = $("ak-simple-table").$(">>>table");
     });
 
     it("it should render a simple table", async () => {
@@ -36,13 +36,12 @@ describe("Simple Table", () => {
         expect(rows.length).toBe(content.length);
     });
 
-    afterEach(async () => {
-        await browser.execute(() => {
+    afterEach(() => {
+        return browser.execute(() => {
             document.body.querySelector("ak-simple-table")?.remove();
-            // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
         });
     });

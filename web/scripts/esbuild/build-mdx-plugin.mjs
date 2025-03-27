@@ -40,22 +40,13 @@ const name = "mdx-plugin";
  * @returns {Plugin} Plugin.
  */
 export function mdxPlugin({ root }) {
-    return { name, setup };
-
     /**
      * @param {PluginBuild} build
-     *   Build.
-     * @returns {undefined}
-     *   Nothing.
      */
     function setup(build) {
-        build.onLoad({ filter: /\.mdx?$/ }, onload);
-
         /**
-         * @param {LoadData} data
-         *   Data.
-         * @returns {Promise<OnLoadResult>}
-         *   Result.
+         * @param {LoadData} data Data.
+         * @returns {Promise<OnLoadResult>} Result.
          */
         async function onload(data) {
             const content = String(
@@ -77,5 +68,9 @@ export function mdxPlugin({ root }) {
                 loader: "file",
             };
         }
+
+        build.onLoad({ filter: /\.mdx?$/ }, onload);
     }
+
+    return { name, setup };
 }

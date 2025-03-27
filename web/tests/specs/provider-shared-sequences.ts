@@ -1,7 +1,7 @@
 import {
-    type TestProvider,
+    type TestAction,
     type TestSequence,
-    checkIsPresent,
+    assertVisible,
     clickButton,
     clickToggleGroup,
     setFormGroup,
@@ -11,9 +11,8 @@ import {
     setTextareaInput,
     setToggle,
     setTypeCreate,
-} from "pageobjects/controls.js";
-
-import { ascii_letters, digits, randomString } from "../utils";
+} from "../pageobjects/controls.js";
+import { ascii_letters, digits, randomString } from "../utils/index.js";
 import { randomId } from "../utils/index.js";
 
 const newObjectName = (prefix: string) => `${prefix} - ${randomId()}`;
@@ -39,14 +38,14 @@ const newObjectName = (prefix: string) => `${prefix} - ${randomId()}`;
 // - issuer_mode
 // - jwks_sources
 //
-export const simpleOAuth2ProviderForm: TestProvider = () => [
+export const simpleOAuth2ProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "OAuth2/OpenID Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Oauth2 Provider")],
     [setSearchSelect, "authorizationFlow", /default-provider-authorization-explicit-consent/],
 ];
 
-export const completeOAuth2ProviderForm: TestProvider = () => [
+export const completeOAuth2ProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "OAuth2/OpenID Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Oauth2 Provider")],
@@ -55,8 +54,8 @@ export const completeOAuth2ProviderForm: TestProvider = () => [
     [setRadio, "clientType", "Public"],
     // Switch back so we can make sure `clientSecret` is available.
     [setRadio, "clientType", "Confidential"],
-    [checkIsPresent, '[name="clientId"]'],
-    [checkIsPresent, '[name="clientSecret"]'],
+    [assertVisible, '[name="clientId"]'],
+    [assertVisible, '[name="clientSecret"]'],
     [setSearchSelect, "signingKey", /authentik Self-signed Certificate/],
     [setSearchSelect, "encryptionKey", /authentik Self-signed Certificate/],
     [setFormGroup, /Advanced flow settings/, "open"],
@@ -67,12 +66,12 @@ export const completeOAuth2ProviderForm: TestProvider = () => [
     [setTextInput, "accessTokenValidity", "minutes=10"],
     [setTextInput, "refreshTokenValidity", "days=40"],
     [setToggle, "includeClaimsInIdToken", false],
-    [checkIsPresent, '[name="redirectUris"]'],
+    [assertVisible, '[name="redirectUris"]'],
     [setRadio, "subMode", "Based on the User's username"],
     [setRadio, "issuerMode", "Same identifier is used for all providers"],
     [setFormGroup, /Machine-to-Machine authentication settings/, "open"],
-    [checkIsPresent, '[name="jwtFederationSources"]'],
-    [checkIsPresent, '[name="jwtFederationProviders"]'],
+    [assertVisible, '[name="jwtFederationSources"]'],
+    [assertVisible, '[name="jwtFederationProviders"]'],
 ];
 
 // components.schemas.LDAPProviderRequest
@@ -90,7 +89,7 @@ export const completeOAuth2ProviderForm: TestProvider = () => [
 // - bind_mode
 // - mfa_support
 //
-export const simpleLDAPProviderForm: TestProvider = () => [
+export const simpleLDAPProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "LDAP Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New LDAP Provider")],
@@ -100,7 +99,7 @@ export const simpleLDAPProviderForm: TestProvider = () => [
     [setSearchSelect, "invalidationFlow", /default-invalidation-flow/],
 ];
 
-export const completeLDAPProviderForm: TestProvider = () => [
+export const completeLDAPProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "LDAP Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New LDAP Provider")],
@@ -110,7 +109,7 @@ export const completeLDAPProviderForm: TestProvider = () => [
     [setSearchSelect, "invalidationFlow", /default-invalidation-flow/],
     [setTextInput, "baseDn", "DC=ldap-2,DC=goauthentik,DC=io"],
     [setSearchSelect, "certificate", /authentik Self-signed Certificate/],
-    [checkIsPresent, '[name="tlsServerName"]'],
+    [assertVisible, '[name="tlsServerName"]'],
     [setTextInput, "uidStartNumber", "2001"],
     [setTextInput, "gidStartNumber", "4001"],
     [setRadio, "searchMode", "Direct querying"],
@@ -118,14 +117,14 @@ export const completeLDAPProviderForm: TestProvider = () => [
     [setToggle, "mfaSupport", false],
 ];
 
-export const simpleRadiusProviderForm: TestProvider = () => [
+export const simpleRadiusProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "Radius Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Radius Provider")],
     [setSearchSelect, "authorizationFlow", /default-authentication-flow/],
 ];
 
-export const completeRadiusProviderForm: TestProvider = () => [
+export const completeRadiusProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "Radius Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Radius Provider")],
@@ -137,7 +136,7 @@ export const completeRadiusProviderForm: TestProvider = () => [
     [setTextInput, "clientNetworks", ""],
     [setTextInput, "clientNetworks", "0.0.0.0/0, ::/0"],
     [setTextInput, "sharedSecret", randomString(128, ascii_letters + digits)],
-    [checkIsPresent, '[name="propertyMappings"]'],
+    [assertVisible, '[name="propertyMappings"]'],
 ];
 
 // provider_components.schemas.SAMLProviderRequest.yml
@@ -164,7 +163,7 @@ export const completeRadiusProviderForm: TestProvider = () => [
 // - sp_binding
 // - default_relay_state
 //
-export const simpleSAMLProviderForm: TestProvider = () => [
+export const simpleSAMLProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "SAML Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New SAML Provider")],
@@ -172,7 +171,7 @@ export const simpleSAMLProviderForm: TestProvider = () => [
     [setTextInput, "acsUrl", "http://example.com:8000/"],
 ];
 
-export const completeSAMLProviderForm: TestProvider = () => [
+export const completeSAMLProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "SAML Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New SAML Provider")],
@@ -185,7 +184,7 @@ export const completeSAMLProviderForm: TestProvider = () => [
     [setSearchSelect, "invalidationFlow", /default-invalidation-flow/],
     [setSearchSelect, "authenticationFlow", /default-source-authentication/],
     [setFormGroup, /Advanced protocol settings/, "open"],
-    [checkIsPresent, '[name="propertyMappings"]'],
+    [assertVisible, '[name="propertyMappings"]'],
     [setSearchSelect, "signingKp", /authentik Self-signed Certificate/],
     [setSearchSelect, "verificationKp", /authentik Self-signed Certificate/],
     [setSearchSelect, "encryptionKp", /authentik Self-signed Certificate/],
@@ -193,7 +192,7 @@ export const completeSAMLProviderForm: TestProvider = () => [
     [setTextInput, "assertionValidNotBefore", "minutes=-10"],
     [setTextInput, "assertionValidNotOnOrAfter", "minutes=10"],
     [setTextInput, "sessionValidNotOnOrAfter", "minutes=172800"],
-    [checkIsPresent, '[name="defaultRelayState"]'],
+    [assertVisible, '[name="defaultRelayState"]'],
     [setRadio, "digestAlgorithm", "SHA512"],
     [setRadio, "signatureAlgorithm", "RSA-SHA512"],
     // These are only available after the signingKp is defined.
@@ -212,7 +211,7 @@ export const completeSAMLProviderForm: TestProvider = () => [
 // - exclude_users_service_account
 // - filter_group
 //
-export const simpleSCIMProviderForm: TestProvider = () => [
+export const simpleSCIMProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "SCIM Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New SCIM Provider")],
@@ -220,7 +219,7 @@ export const simpleSCIMProviderForm: TestProvider = () => [
     [setTextInput, "token", "insert-real-token-here"],
 ];
 
-export const completeSCIMProviderForm: TestProvider = () => [
+export const completeSCIMProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "SCIM Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New SCIM Provider")],
@@ -232,8 +231,8 @@ export const completeSCIMProviderForm: TestProvider = () => [
     [setToggle, "excludeUsersServiceAccount", false],
     [setSearchSelect, "filterGroup", /authentik Admins/],
     [setFormGroup, /Attribute mapping/, "open"],
-    [checkIsPresent, '[name="propertyMappings"]'],
-    [checkIsPresent, '[name="propertyMappingsGroup"]'],
+    [assertVisible, '[name="propertyMappings"]'],
+    [assertVisible, '[name="propertyMappingsGroup"]'],
 ];
 
 // provider_components.schemas.ProxyProviderRequest.yml
@@ -261,7 +260,7 @@ export const completeSCIMProviderForm: TestProvider = () => [
 // - internal_host_ssl_validation
 //   - only on ProxyMode
 
-export const simpleProxyProviderForm: TestProvider = () => [
+export const simpleProxyProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "Proxy Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Proxy Provider")],
@@ -271,7 +270,7 @@ export const simpleProxyProviderForm: TestProvider = () => [
     [setTextInput, "internalHost", "http://example.com:8001/"],
 ];
 
-export const simpleForwardAuthProxyProviderForm: TestProvider = () => [
+export const simpleForwardAuthProxyProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "Proxy Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Forward Auth Provider")],
@@ -280,7 +279,7 @@ export const simpleForwardAuthProxyProviderForm: TestProvider = () => [
     [setTextInput, "externalHost", "http://example.com:8000/"],
 ];
 
-export const simpleForwardAuthDomainProxyProviderForm: TestProvider = () => [
+export const simpleForwardAuthDomainProxyProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "Proxy Provider"],
     [clickButton, "Next"],
     [setTextInput, "name", newObjectName("New Forward Auth Domain Level Provider")],
@@ -290,11 +289,11 @@ export const simpleForwardAuthDomainProxyProviderForm: TestProvider = () => [
     [setTextInput, "cookieDomain", "somedomain.tld"],
 ];
 
-const proxyModeCompletions: TestSequence = [
+const proxyModeCompletions: TestAction[] = [
     [setTextInput, "accessTokenValidity", "hours=36"],
     [setFormGroup, /Advanced protocol settings/, "open"],
     [setSearchSelect, "certificate", /authentik Self-signed Certificate/],
-    [checkIsPresent, '[name="propertyMappings"]'],
+    [assertVisible, '[name="propertyMappings"]'],
     [setTextareaInput, "skipPathRegex", "."],
     [setFormGroup, /Authentication settings/, "open"],
     [setToggle, "interceptHeaderAuth", false],
@@ -304,22 +303,22 @@ const proxyModeCompletions: TestSequence = [
     [setFormGroup, /Advanced flow settings/, "open"],
     [setSearchSelect, "authenticationFlow", /default-source-authentication/],
     [setSearchSelect, "invalidationFlow", /default-invalidation-flow/],
-    [checkIsPresent, '[name="jwtFederationSources"]'],
-    [checkIsPresent, '[name="jwtFederationProviders"]'],
+    [assertVisible, '[name="jwtFederationSources"]'],
+    [assertVisible, '[name="jwtFederationProviders"]'],
 ];
 
-export const completeProxyProviderForm: TestProvider = () => [
+export const completeProxyProviderForm: TestSequence = () => [
     ...simpleProxyProviderForm(),
     [setToggle, "internalHostSslValidation", false],
     ...proxyModeCompletions,
 ];
 
-export const completeForwardAuthProxyProviderForm: TestProvider = () => [
+export const completeForwardAuthProxyProviderForm: TestSequence = () => [
     ...simpleForwardAuthProxyProviderForm(),
     ...proxyModeCompletions,
 ];
 
-export const completeForwardAuthDomainProxyProviderForm: TestProvider = () => [
+export const completeForwardAuthDomainProxyProviderForm: TestSequence = () => [
     ...simpleForwardAuthProxyProviderForm(),
     ...proxyModeCompletions,
 ];

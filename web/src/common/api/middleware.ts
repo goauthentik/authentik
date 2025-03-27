@@ -39,8 +39,20 @@ export class LoggingMiddleware implements Middleware {
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
+        const csrfToken = getCookie("authentik_csrf");
+
+        if (!context.init.headers) {
+            context.init.headers = {
+                [CSRFHeaderName]: csrfToken,
+            };
+        } else if (Array.isArray(context.init.headers)) {
+            context.init.headers.push([CSRFHeaderName, csrfToken]);
+        } else if (context.init.headers instanceof Headers) {
+            context.init.headers.set(CSRFHeaderName, csrfToken);
+        } else {
+            context.init.headers[CSRFHeaderName] = csrfToken;
+        }
+
         return Promise.resolve(context);
     }
 }

@@ -6,7 +6,7 @@ import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -47,12 +47,11 @@ export class UserForm extends ModelForm<User, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
-        } else {
-            if (this.group) {
-                return msg(str`Successfully created user and added to group ${this.group.name}`);
-            }
-            return msg("Successfully created user.");
         }
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
+        return msg("Successfully created user.");
     }
 
     async send(data: User): Promise<User> {

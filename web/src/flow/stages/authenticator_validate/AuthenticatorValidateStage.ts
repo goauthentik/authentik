@@ -100,8 +100,10 @@ export class AuthenticatorValidateStage
             flowSlug: this.host?.flowSlug || "",
             query: window.location.search.substring(1),
             flowChallengeResponseRequest: {
-                // @ts-ignore
-                component: this.challenge.component || "",
+                // TODO: Our generated API unions `FlowChallengeResponseRequest`
+                // in an opaque way. We should fix this in the generator.
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                component: (this.challenge.component || "") as any,
                 selectedChallenge: value,
             },
         });

@@ -1,5 +1,5 @@
 import * as http from "http";
-import path from "path";
+import * as path from "node:path";
 
 /**
  * Serializes a custom event to a text stream.
@@ -13,7 +13,7 @@ export function serializeCustomEventToStream(event) {
 
     const eventContent = [`event: ${event.type}`, `data: ${JSON.stringify(data)}`];
 
-    return eventContent.join("\n") + "\n\n";
+    return `${eventContent.join("\n")}\n\n`;
 }
 
 /**
@@ -70,6 +70,13 @@ export function buildObserverPlugin({ serverURL, logPrefix, relativeRoot }) {
         dispatcher.addEventListener("esbuild:error", listener);
         dispatcher.addEventListener("esbuild:end", listener);
 
+        const keepAliveInterval = setInterval(() => {
+            console.timeStamp("🏓 Keep-alive");
+
+            res.write("event: keep-alive\n\n");
+            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
+        }, 15_000);
+
         req.on("close", () => {
             console.log("🔌 Client disconnected");
 
@@ -79,13 +86,6 @@ export function buildObserverPlugin({ serverURL, logPrefix, relativeRoot }) {
             dispatcher.removeEventListener("esbuild:error", listener);
             dispatcher.removeEventListener("esbuild:end", listener);
         });
-
-        const keepAliveInterval = setInterval(() => {
-            console.timeStamp("🏓 Keep-alive");
-
-            res.write("event: keep-alive\n\n");
-            res.write(serializeCustomEventToStream(new CustomEvent("esbuild:keep-alive")));
-        }, 15_000);
     });
 
     return {

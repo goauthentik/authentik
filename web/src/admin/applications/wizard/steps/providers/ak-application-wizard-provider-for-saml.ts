@@ -22,7 +22,7 @@ export class ApplicationWizardProviderSamlForm extends ApplicationWizardProvider
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
+            this.hasSigningKp = Boolean(target.selectedKeypair);
         };
 
         return html` <ak-wizard-title>${this.label}</ak-wizard-title>

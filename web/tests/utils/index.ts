@@ -3,7 +3,7 @@ export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const ascii_letters = ascii_lowercase + ascii_uppercase;
 export const digits = "0123456789";
-export const hexdigits = digits + "abcdef" + "ABCDEF";
+export const hexdigits = `${digits}abcdef` + `ABCDEF`;
 export const octdigits = "01234567";
 export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
@@ -17,12 +17,21 @@ export function randomString(len: number, charset: string): string {
     return chars.join("");
 }
 
+/**
+ * Generate a random string.
+ *
+ * @deprecated We should use the `randomId` function in our elements utils.
+ */
 export function randomId() {
     let dt = new Date().getTime();
+
     return "xxxxxxxx".replace(/x/g, (c) => {
         const r = (dt + Math.random() * 16) % 16 | 0;
+
         dt = Math.floor(dt / 16);
-        return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
+
+        // eslint-disable-next-line no-bitwise
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
 }
 

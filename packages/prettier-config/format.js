@@ -1,4 +1,5 @@
 import { format } from "prettier";
+
 import { AuthentikPrettierConfig } from "./config.js";
 
 /**

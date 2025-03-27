@@ -1,10 +1,9 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
+/// <reference types="mdast-util-to-hast" />
+/// <reference types="mdast-util-directive" />
 import { h } from "hastscript";
 import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
 import { coerce } from "semver";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * MDAST plugin to transform `ak-version` directives into version badges.
@@ -22,8 +21,8 @@ import { coerce } from "semver";
  * ```
  */
 function remarkVersionDirective() {
-    return function (tree: Root) {
-        visit(tree, "textDirective", function (node) {
+    return (tree: Root) => {
+        visit(tree, "textDirective", (node) => {
             if (node.name !== "ak-version") return SKIP;
 
             const firstChild = node.children[0];
@@ -40,19 +39,17 @@ function remarkVersionDirective() {
             const yearCutoff = new Date().getFullYear() - 2;
 
             if (parsed.major <= yearCutoff) {
-                throw new Error(
-                    `Semver version <= ${yearCutoff} is not supported: ${semver}`,
-                );
+                throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
             }
 
             const data = node.data || (node.data = {});
 
             const hast = h("span", {
                 ...node.attributes,
-                className: "badge badge--version",
-                title: `Available in authentik ${parsed.format()} and later`,
+                "className": "badge badge--version",
+                "title": `Available in authentik ${parsed.format()} and later`,
                 "aria-description": "Version badge",
-                role: "img",
+                "role": "img",
             });
 
             data.hName = hast.tagName;

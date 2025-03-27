@@ -58,13 +58,15 @@ export default class Page {
     async setSearchSelect(name: string, value: string) {
         const control = await (async () => {
             try {
-                const control = await $(`ak-search-select[name="${name}"]`);
-                await control.waitForExist({ timeout: 500 });
-                return control;
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+                const searchSelectElement = await $(`ak-search-select[name="${name}"]`);
+                await searchSelectElement.waitForExist({ timeout: 500 });
+
+                return searchSelectElement;
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (_e: any) {
-                const control = await $(`ak-search-selects-ez[name="${name}"]`);
-                return control;
+                const fallbackSelectElement = await $(`ak-search-selects-ez[name="${name}"]`);
+
+                return fallbackSelectElement;
             }
         })();
 
@@ -96,7 +98,7 @@ export default class Page {
     }
 
     async setTextInput(name: string, value: string) {
-        const control = await $(`input[name="${name}"}`);
+        const control = await $(`input[name="${name}"]}`);
         await control.scrollIntoView();
         await control.setValue(value);
     }
@@ -124,7 +126,7 @@ export default class Page {
         await match([await toggle.getAttribute("expanded"), setting])
             .with(["false", "open"], async () => await toggle.click())
             .with(["true", "closed"], async () => await toggle.click())
-            .otherwise(async () => {});
+            .otherwise(async () => undefined);
     }
 
     public async logout() {

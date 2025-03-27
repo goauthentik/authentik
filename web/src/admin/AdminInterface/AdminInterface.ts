@@ -125,6 +125,7 @@ export class AdminInterface extends AuthenticatedInterface {
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
             const { ESBuildObserver } = await import("@goauthentik/common/client");
 
+            // eslint-disable-next-line no-new
             new ESBuildObserver(process.env.WATCHER_URL);
         }
     }

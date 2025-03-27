@@ -8,7 +8,7 @@ function computedStyleIsVisible(element: HTMLElement) {
     return (
         isStyledVisible(computedStyle) &&
         (isDisplayContents(computedStyle) ||
-            !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length))
+            Boolean(element.offsetWidth || element.offsetHeight || element.getClientRects().length))
     );
 }
 

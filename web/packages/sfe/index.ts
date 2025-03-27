@@ -1,3 +1,6 @@
+/**
+ * @file Simple Flow Executor entry point.
+ */
 import { fromByteArray } from "base64-js";
 import "formdata-polyfill";
 import $ from "jquery";
@@ -31,82 +34,6 @@ function ak(): GlobalAuthentik {
             authentik: GlobalAuthentik;
         }
     ).authentik;
-}
-
-class SimpleFlowExecutor {
-    challenge?: ChallengeTypes;
-    flowSlug: string;
-    container: HTMLDivElement;
-
-    constructor(container: HTMLDivElement) {
-        this.flowSlug = window.location.pathname.split("/")[3];
-        this.container = container;
-    }
-
-    get apiURL() {
-        return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
-    }
-
-    start() {
-        $.ajax({
-            type: "GET",
-            url: this.apiURL,
-            success: (data) => {
-                this.challenge = ChallengeTypesFromJSON(data);
-                this.renderChallenge();
-            },
-        });
-    }
-
-    submit(data: { [key: string]: unknown } | FormData) {
-        $("button[type=submit]").addClass("disabled")
-            .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                <span role="status">Loading...</span>`);
-        let finalData: { [key: string]: unknown } = {};
-        if (data instanceof FormData) {
-            finalData = {};
-            data.forEach((value, key) => {
-                finalData[key] = value;
-            });
-        } else {
-            finalData = data;
-        }
-        $.ajax({
-            type: "POST",
-            url: this.apiURL,
-            data: JSON.stringify(finalData),
-            success: (data) => {
-                this.challenge = ChallengeTypesFromJSON(data);
-                this.renderChallenge();
-            },
-            contentType: "application/json",
-            dataType: "json",
-        });
-    }
-
-    renderChallenge() {
-        switch (this.challenge?.component) {
-            case "ak-stage-identification":
-                new IdentificationStage(this, this.challenge).render();
-                return;
-            case "ak-stage-password":
-                new PasswordStage(this, this.challenge).render();
-                return;
-            case "xak-flow-redirect":
-                new RedirectStage(this, this.challenge).render();
-                return;
-            case "ak-stage-autosubmit":
-                new AutosubmitStage(this, this.challenge).render();
-                return;
-            case "ak-stage-authenticator-validate":
-                new AuthenticatorValidateStage(this, this.challenge).render();
-                return;
-            default:
-                this.container.innerText =
-                    "Unsupported stage: " + this.challenge?.component;
-                return;
-        }
-    }
 }
 
 export interface FlowInfoChallenge {
@@ -271,13 +198,10 @@ export interface AuthAssertion {
 }
 
 class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge> {
-    deviceChallenge?: DeviceChallenge;
+    declare deviceChallenge?: DeviceChallenge;
 
     b64enc(buf: Uint8Array): string {
-        return fromByteArray(buf)
-            .replace(/\+/g, "-")
-            .replace(/\//g, "_")
-            .replace(/=/g, "");
+        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/[=]/g, "");
     }
 
     b64RawEnc(buf: Uint8Array): string {
@@ -285,9 +209,8 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     u8arr(input: string): Uint8Array {
-        return Uint8Array.from(
-            atob(input.replace(/_/g, "/").replace(/-/g, "+")),
-            (c) => c.charCodeAt(0),
+        return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
+            c.charCodeAt(0),
         );
     }
 
@@ -295,13 +218,8 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         if ("credentials" in navigator) {
             return true;
         }
-        if (
-            window.location.protocol === "http:" &&
-            window.location.hostname !== "localhost"
-        ) {
-            console.warn(
-                "WebAuthn requires this page to be accessed via HTTPS.",
-            );
+        if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+            console.warn("WebAuthn requires this page to be accessed via HTTPS.");
             return false;
         }
         console.warn("WebAuthn not supported by browser.");
@@ -322,9 +240,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         // string, then a byte array, re-encode it and wrap that in an array.
         const stringId = decodeURIComponent(window.atob(userId));
         user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
-        const challenge = this.u8arr(
-            credentialCreateOptions.challenge.toString(),
-        );
+        const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
 
         return Object.assign({}, credentialCreateOptions, {
             challenge,
@@ -337,28 +253,19 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
      * for posting to the server.
      * @param {PublicKeyCredential} newAssertion
      */
-    transformNewAssertionForServer(
-        newAssertion: PublicKeyCredential,
-    ): Assertion {
+    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
         const attObj = new Uint8Array(
-            (
-                newAssertion.response as AuthenticatorAttestationResponse
-            ).attestationObject,
+            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
         );
-        const clientDataJSON = new Uint8Array(
-            newAssertion.response.clientDataJSON,
-        );
+        const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
         const rawId = new Uint8Array(newAssertion.rawId);
 
-        const registrationClientExtensions =
-            newAssertion.getClientExtensionResults();
+        const registrationClientExtensions = newAssertion.getClientExtensionResults();
         return {
             id: newAssertion.id,
             rawId: this.b64enc(rawId),
             type: newAssertion.type,
-            registrationClientExtensions: JSON.stringify(
-                registrationClientExtensions,
-            ),
+            registrationClientExtensions: JSON.stringify(registrationClientExtensions),
             response: {
                 clientDataJSON: this.b64enc(clientDataJSON),
                 attestationObject: this.b64enc(attObj),
@@ -369,16 +276,14 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     transformCredentialRequestOptions(
         credentialRequestOptions: PublicKeyCredentialRequestOptions,
     ): PublicKeyCredentialRequestOptions {
-        const challenge = this.u8arr(
-            credentialRequestOptions.challenge.toString(),
-        );
+        const challenge = this.u8arr(credentialRequestOptions.challenge.toString());
 
-        const allowCredentials = (
-            credentialRequestOptions.allowCredentials || []
-        ).map((credentialDescriptor) => {
-            const id = this.u8arr(credentialDescriptor.id.toString());
-            return Object.assign({}, credentialDescriptor, { id });
-        });
+        const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
+            (credentialDescriptor) => {
+                const id = this.u8arr(credentialDescriptor.id.toString());
+                return Object.assign({}, credentialDescriptor, { id });
+            },
+        );
 
         return Object.assign({}, credentialRequestOptions, {
             challenge,
@@ -390,25 +295,19 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
      * Encodes the binary data in the assertion into strings for posting to the server.
      * @param {PublicKeyCredential} newAssertion
      */
-    transformAssertionForServer(
-        newAssertion: PublicKeyCredential,
-    ): AuthAssertion {
-        const response =
-            newAssertion.response as AuthenticatorAssertionResponse;
+    transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
+        const response = newAssertion.response as AuthenticatorAssertionResponse;
         const authData = new Uint8Array(response.authenticatorData);
         const clientDataJSON = new Uint8Array(response.clientDataJSON);
         const rawId = new Uint8Array(newAssertion.rawId);
         const sig = new Uint8Array(response.signature);
-        const assertionClientExtensions =
-            newAssertion.getClientExtensionResults();
+        const assertionClientExtensions = newAssertion.getClientExtensionResults();
 
         return {
             id: newAssertion.id,
             rawId: this.b64enc(rawId),
             type: newAssertion.type,
-            assertionClientExtensions: JSON.stringify(
-                assertionClientExtensions,
-            ),
+            assertionClientExtensions: JSON.stringify(assertionClientExtensions),
 
             response: {
                 clientDataJSON: this.b64RawEnc(clientDataJSON),
@@ -421,8 +320,10 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
 
     render() {
         if (!this.deviceChallenge) {
-            return this.renderChallengePicker();
+            this.renderChallengePicker();
+            return;
         }
+
         switch (this.deviceChallenge.deviceClass) {
             case "static":
             case "totp":
@@ -437,12 +338,10 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 
     renderChallengePicker() {
-        const challenges = this.challenge.deviceChallenges.filter(
-            (challenge) =>
-                challenge.deviceClass === "webauthn" &&
-                !this.checkWebAuthnSupport()
-                    ? undefined
-                    : challenge,
+        const challenges = this.challenge.deviceChallenges.filter((challenge) =>
+            challenge.deviceClass === "webauthn" && !this.checkWebAuthnSupport()
+                ? undefined
+                : challenge,
         );
         this.html(`<form id="picker-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
@@ -480,12 +379,13 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     .join("")}
             </form>`);
         this.challenge.deviceChallenges.forEach((challenge) => {
-            $(
-                `#picker-form button#${challenge.deviceClass}-${challenge.deviceUid}`,
-            ).on("click", () => {
-                this.deviceChallenge = challenge;
-                this.render();
-            });
+            $(`#picker-form button#${challenge.deviceClass}-${challenge.deviceUid}`).on(
+                "click",
+                () => {
+                    this.deviceChallenge = challenge;
+                    this.render();
+                },
+            );
         });
     }
 
@@ -523,8 +423,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         navigator.credentials
             .get({
                 publicKey: this.transformCredentialRequestOptions(
-                    this.deviceChallenge
-                        ?.challenge as PublicKeyCredentialRequestOptions,
+                    this.deviceChallenge?.challenge as PublicKeyCredentialRequestOptions,
                 ),
             })
             .then((assertion) => {
@@ -534,19 +433,16 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                 try {
                     // we now have an authentication assertion! encode the byte arrays contained
                     // in the assertion data as strings for posting to the server
-                    const transformedAssertionForServer =
-                        this.transformAssertionForServer(
-                            assertion as PublicKeyCredential,
-                        );
+                    const transformedAssertionForServer = this.transformAssertionForServer(
+                        assertion as PublicKeyCredential,
+                    );
 
                     // post the assertion to the server for verification.
                     this.executor.submit({
                         webauthn: transformedAssertionForServer,
                     });
                 } catch (err) {
-                    throw new Error(
-                        `Error when validating assertion on server: ${err}`,
-                    );
+                    throw new Error(`Error when validating assertion on server: ${err}`);
                 }
             })
             .catch((error) => {
@@ -557,7 +453,87 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     }
 }
 
-const sfe = new SimpleFlowExecutor(
-    $("#flow-sfe-container")[0] as HTMLDivElement,
-);
+class SimpleFlowExecutor {
+    challenge?: ChallengeTypes;
+    flowSlug: string;
+    container: HTMLDivElement;
+
+    constructor(container: HTMLDivElement) {
+        this.flowSlug = window.location.pathname.split("/")[3] || "";
+        this.container = container;
+    }
+
+    get apiURL() {
+        return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
+    }
+
+    start() {
+        $.ajax({
+            type: "GET",
+            url: this.apiURL,
+            success: (data) => {
+                this.challenge = ChallengeTypesFromJSON(data);
+                this.renderChallenge();
+            },
+        });
+    }
+
+    submit(payload: { [key: string]: unknown } | FormData) {
+        $("button[type=submit]").addClass("disabled")
+            .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                <span role="status">Loading...</span>`);
+        let finalData: { [key: string]: unknown } = {};
+        if (payload instanceof FormData) {
+            finalData = {};
+            payload.forEach((value, key) => {
+                finalData[key] = value;
+            });
+        } else {
+            finalData = payload;
+        }
+        $.ajax({
+            type: "POST",
+            url: this.apiURL,
+            data: JSON.stringify(finalData),
+            success: (data) => {
+                this.challenge = ChallengeTypesFromJSON(data);
+                this.renderChallenge();
+            },
+            contentType: "application/json",
+            dataType: "json",
+        });
+    }
+
+    renderChallenge() {
+        switch (this.challenge?.component) {
+            case "ak-stage-identification":
+                new IdentificationStage(this, this.challenge).render();
+                return;
+            case "ak-stage-password":
+                new PasswordStage(this, this.challenge).render();
+                return;
+            case "xak-flow-redirect":
+                new RedirectStage(this, this.challenge).render();
+                return;
+            case "ak-stage-autosubmit":
+                new AutosubmitStage(this, this.challenge).render();
+                return;
+            case "ak-stage-authenticator-validate":
+                new AuthenticatorValidateStage(this, this.challenge).render();
+                return;
+            default:
+                this.container.innerText = `Unsupported stage: ${this.challenge?.component}`;
+                return;
+        }
+    }
+}
+
+const [flowContainer] = $<HTMLDivElement>("#flow-sfe-container");
+
+if (!flowContainer) {
+    throw new Error("No flow container element found");
+}
+
+const sfe = new SimpleFlowExecutor(flowContainer);
+
 sfe.start();

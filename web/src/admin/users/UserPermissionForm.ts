@@ -26,6 +26,7 @@ export class UserPermissionForm extends ModelForm<UserPermissionAssign, number> 
     @property({ type: Number })
     userId?: number;
 
+    // eslint-disable-next-line no-empty-function
     async load(): Promise<void> {}
 
     loadInstance(): Promise<UserPermissionAssign> {

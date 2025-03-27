@@ -19,7 +19,7 @@ export class BaseDeviceStage<
     Tout,
 > extends BaseStage<Tin, Tout> {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    declare deviceChallenge?: DeviceChallenge;
 
     @property({ type: Boolean })
     showBackButton = false;

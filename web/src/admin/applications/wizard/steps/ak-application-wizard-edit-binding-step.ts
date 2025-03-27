@@ -45,7 +45,7 @@ export class ApplicationWizardEditBindingStep extends ApplicationWizardStep {
     hide = true;
 
     @query("form#bindingform")
-    form!: HTMLFormElement;
+    declare form: HTMLFormElement;
 
     @query(".policy-search-select")
     searchSelect!: SearchSelectBase<Policy> | SearchSelectBase<Group> | SearchSelectBase<User>;

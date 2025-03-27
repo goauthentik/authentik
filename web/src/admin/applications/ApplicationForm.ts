@@ -79,7 +79,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             });
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["metaIcon"];
+            const icon = this.getFormFiles().metaIcon;
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
@@ -117,7 +117,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
         if (!(ev instanceof InputEvent) || !ev.target) {
             return;
         }
-        this.clearIcon = !!(ev.target as HTMLInputElement).checked;
+        this.clearIcon = Boolean((ev.target as HTMLInputElement).checked);
     }
 
     renderForm(): TemplateResult {

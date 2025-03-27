@@ -210,8 +210,9 @@ export class FlowExecutor extends Interface implements StageHost {
     ): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-expect-error
-        payload.component = this.challenge.component;
+        // TODO: Fix this in the generated API.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        payload.component = this.challenge.component as any;
         if (!options?.invisible) {
             this.loading = true;
         }

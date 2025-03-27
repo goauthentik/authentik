@@ -37,11 +37,10 @@ export class TokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderExpiry(): TemplateResult {

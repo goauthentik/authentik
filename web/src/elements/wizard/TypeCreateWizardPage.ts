@@ -1,4 +1,5 @@
 import "@goauthentik/admin/common/ak-license-notice";
+import { assertUnreachable } from "@goauthentik/common/assertions";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
@@ -105,7 +106,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"} ${this.selectedType == type
+                        : "pf-m-selectable-raised"} ${this.selectedType === type
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}
@@ -181,9 +182,9 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return this.renderGrid();
             case TypeCreateWizardPageLayouts.list:
                 return this.renderList();
-            default:
-                throw new Error(`Unknown layout: ${this.layout}`) as never;
         }
+
+        return assertUnreachable(this.layout);
     }
 }
 

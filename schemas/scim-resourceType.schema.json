@@ -51,10 +51,7 @@
               "readOnly": true
             }
           },
-          "required": [
-            "schema",
-            "required"
-          ],
+          "required": ["schema", "required"],
           "additionalProperties": true
         }
       ],
@@ -62,11 +59,6 @@
       "readOnly": true
     }
   },
-  "required": [
-    "name",
-    "endpoint",
-    "schema",
-    "schemaExtensions"
-  ],
+  "required": ["name", "endpoint", "schema", "schemaExtensions"],
   "additionalProperties": true
 }

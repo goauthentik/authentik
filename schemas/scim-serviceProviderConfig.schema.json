@@ -21,9 +21,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "supported"
-      ],
+      "required": ["supported"],
       "readOnly": true
     },
     "bulk": {
@@ -36,9 +34,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "supported"
-      ],
+      "required": ["supported"],
       "readOnly": true
     },
     "filter": {
@@ -56,9 +52,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "supported"
-      ],
+      "required": ["supported"],
       "readOnly": true
     },
     "changePassword": {
@@ -71,9 +65,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "supported"
-      ],
+      "required": ["supported"],
       "readOnly": true
     },
     "sort": {
@@ -86,9 +78,7 @@
           "readOnly": true
         }
       },
-      "required": [
-        "supported"
-      ],
+      "required": ["supported"],
       "readOnly": true
     },
     "authenticationSchemes": {
@@ -119,21 +109,11 @@
             "readOnly": true
           }
         },
-        "required": [
-          "name",
-          "description"
-        ],
+        "required": ["name", "description"],
         "readOnly": true
       },
       "readOnly": true
     }
   },
-  "required": [
-    "patch",
-    "bulk",
-    "filter",
-    "changePassword",
-    "sort",
-    "authenticationSchemes"
-  ]
+  "required": ["patch", "bulk", "filter", "changePassword", "sort", "authenticationSchemes"]
 }

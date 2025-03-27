@@ -1,10 +1,8 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
+/// <reference types="mdast-util-to-hast" />
+/// <reference types="mdast-util-directive" />
 import { h } from "hastscript";
 import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
-import { coerce } from "semver";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Support levels for authentik.
@@ -32,8 +30,8 @@ export function isSupportLevel(input: string): input is SupportLevel {
  * MDAST plugin to transform `ak-support` directives into preview badges.
  */
 function remarkSupportDirective() {
-    return function (tree: Root) {
-        visit(tree, "textDirective", function (node) {
+    return (tree: Root) => {
+        visit(tree, "textDirective", (node) => {
             if (node.name !== "ak-support") return SKIP;
 
             const firstChild = node.children[0];
@@ -52,10 +50,10 @@ function remarkSupportDirective() {
 
             const hast = h("span", {
                 ...node.attributes,
-                className: `badge badge--support-${level}`,
-                title: `This feature is supported at the ${label} level.`,
+                "className": `badge badge--support-${level}`,
+                "title": `This feature is supported at the ${label} level.`,
                 "aria-description": "Support level badge",
-                role: "img",
+                "role": "img",
             });
 
             data.hName = hast.tagName;

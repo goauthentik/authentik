@@ -1,14 +1,14 @@
-import { execFileSync } from "child_process";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import findFreePorts from "find-free-ports";
 import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
+import { execFileSync } from "node:child_process";
+import { cwd } from "node:process";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 import * as path from "path";
-import { cwd } from "process";
-import process from "process";
-import { fileURLToPath } from "url";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
@@ -117,6 +117,7 @@ const BASE_ESBUILD_OPTIONS = {
     write: true,
     sourcemap: true,
     minify: NODE_ENV === "production",
+    legalComments: "external",
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],

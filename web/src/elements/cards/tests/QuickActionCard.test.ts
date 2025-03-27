@@ -22,12 +22,10 @@ describe("ak-quick-actions-card", () => {
                 .actions=${ACTIONS}
             ></ak-quick-actions-card>`,
         );
-        const component = await $("ak-quick-actions-card");
-        const items = await component.$$(">>>.pf-c-list li");
-        // @ts-expect-error "Another ChainablePromise mistake"
+        const component = $("ak-quick-actions-card");
+        const items = component.$$(">>>.pf-c-list li");
+
         await expect(Array.from(items).length).toEqual(5);
-        await expect(await component.$(">>>.pf-c-list li:nth-of-type(4)")).toHaveText(
-            "Manage users",
-        );
+        await expect(component.$(">>>.pf-c-list li:nth-of-type(4)")).toHaveText("Manage users");
     });
 });

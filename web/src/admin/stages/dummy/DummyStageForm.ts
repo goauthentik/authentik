@@ -24,11 +24,10 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                 stageUuid: this.instance.pk || "",
                 dummyStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
-                dummyStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
+            dummyStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

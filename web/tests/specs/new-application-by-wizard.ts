@@ -1,12 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
-// ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
-// via `defineProperties` is how we installed the OUID finders for the various
-// wizard types.
 import { expect } from "@wdio/globals";
 
 import ApplicationWizardView from "../pageobjects/application-wizard.page.js";
 import ApplicationsListPage from "../pageobjects/applications-list.page.js";
+import { type TestAction, type TestSequence, runTestSequence } from "../pageobjects/controls.js";
+import { checkIfElementVisible, findElement } from "../pageobjects/selectors.js";
 import { randomId } from "../utils/index.js";
 import { login } from "../utils/login.js";
 import {
@@ -27,7 +24,6 @@ import {
     simpleSAMLProviderForm,
     simpleSCIMProviderForm,
 } from "./provider-shared-sequences.js";
-import { type TestSequence } from "./shared-sequences";
 
 const SUCCESS_MESSAGE = "Your application has been saved";
 
@@ -36,68 +32,53 @@ async function reachTheApplicationsPage() {
     await login();
     await ApplicationsListPage.open();
     await ApplicationsListPage.pause();
-    await expect(await ApplicationsListPage.pageHeader()).toBeDisplayed();
-    await expect(await ApplicationsListPage.pageHeader()).toHaveText("Applications");
+    await expect(ApplicationsListPage.pageHeader()).toBeDisplayed();
+    await expect(ApplicationsListPage.pageHeader()).toHaveText("Applications");
 }
 
 async function fillOutTheApplication(title: string) {
     const newPrefix = randomId();
 
-    await (await ApplicationsListPage.startWizardButton()).click();
-    await (await ApplicationWizardView.wizardTitle()).waitForDisplayed();
-    await expect(await ApplicationWizardView.wizardTitle()).toHaveText("New application");
-    await (await ApplicationWizardView.app.name()).setValue(`${title} - ${newPrefix}`);
-    await (await ApplicationWizardView.app.uiSettings()).scrollIntoView();
-    await (await ApplicationWizardView.app.uiSettings()).click();
-    await (await ApplicationWizardView.app.launchUrl()).scrollIntoView();
-    await (await ApplicationWizardView.app.launchUrl()).setValue("http://example.goauthentik.io");
-    await (await ApplicationWizardView.nextButton()).click();
+    await ApplicationsListPage.startWizardButton().click();
+    await ApplicationWizardView.wizardTitle().waitForDisplayed();
+    await expect(ApplicationWizardView.wizardTitle()).toHaveText("New application");
+    await ApplicationWizardView.app.name().setValue(`${title} - ${newPrefix}`);
+    await ApplicationWizardView.app.uiSettings().scrollIntoView();
+    await ApplicationWizardView.app.uiSettings().click();
+    await ApplicationWizardView.app.launchUrl().scrollIntoView();
+    await ApplicationWizardView.app.launchUrl().setValue("http://example.goauthentik.io");
+    await ApplicationWizardView.nextButton().click();
     await ApplicationWizardView.pause();
 }
 
 async function getCommitMessage() {
-    await (await ApplicationWizardView.successMessage()).waitForDisplayed();
-    return await ApplicationWizardView.successMessage();
+    await ApplicationWizardView.successMessage().waitForDisplayed();
+    return ApplicationWizardView.successMessage();
 }
 
-async function fillOutTheProviderAndProceed(provider: TestSequence) {
+async function fillOutTheProviderAndProceed(provider: TestAction[]) {
     // The wizard automagically provides a name.  If it doesn't, that's a bug.
     const wizardProvider = provider.filter((p) => p.length < 2 || p[1] !== "name");
     await $(">>>ak-wizard-page-type-create").waitForDisplayed();
-    for await (const field of wizardProvider) {
-        const thefunc = field[0];
-        const args = field.slice(1);
-        console.log(`Running ${args.join(", ")}`);
-        // @ts-expect-error "This is a pretty alien call; I'm not surprised Typescript hates it."
-        await thefunc.apply($, args);
-    }
 
-    await (await ApplicationWizardView.nextButton()).click();
+    await runTestSequence(wizardProvider);
+
+    await ApplicationWizardView.nextButton().click();
     await ApplicationWizardView.pause();
-}
-
-export async function findWizardTitle() {
-    return await (async () => {
-        for await (const item of $$(">>>ak-wizard-title")) {
-            if ((await item.isExisting()) && (await item.isDisplayed())) {
-                return item;
-            }
-        }
-    })();
 }
 
 async function passByPoliciesAndCommit() {
-    const title = await findWizardTitle();
+    const title = await findElement($$(">>>ak-wizard-title"), checkIfElementVisible);
     // Expect to be on the Bindings panel
-    await expect(await title.getText()).toEqual("Configure Policy/User/Group Bindings");
-    await (await ApplicationWizardView.nextButton()).click();
+    await expect(title.getText()).toEqual("Configure Policy/User/Group Bindings");
+    await ApplicationWizardView.nextButton().click();
     await ApplicationWizardView.pause();
-    await (await ApplicationWizardView.submitPage()).waitForDisplayed();
-    await (await ApplicationWizardView.nextButton()).click();
-    await expect(await getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
+    await ApplicationWizardView.submitPage().waitForDisplayed();
+    await ApplicationWizardView.nextButton().click();
+    await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
 }
 
-async function itShouldConfigureApplicationsViaTheWizard(name: string, provider: TestSequence) {
+async function itShouldConfigureApplicationsViaTheWizard(name: string, provider: TestAction[]) {
     it(`Should successfully configure an application with a ${name} provider`, async () => {
         await reachTheApplicationsPage();
         await fillOutTheApplication(name);
@@ -106,7 +87,7 @@ async function itShouldConfigureApplicationsViaTheWizard(name: string, provider:
     });
 }
 
-const providers = [
+const providers: [string, TestSequence][] = [
     ["Simple LDAP", simpleLDAPProviderForm],
     ["Simple OAuth2", simpleOAuth2ProviderForm],
     ["Simple Radius", simpleRadiusProviderForm],

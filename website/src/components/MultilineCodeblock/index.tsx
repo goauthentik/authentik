@@ -1,12 +1,6 @@
-import React, {
-    ReactNode,
-    useState,
-    isValidElement,
-    useCallback,
-    useEffect,
-    useRef,
-} from "react";
 import createDOMPurify from "dompurify";
+import React, { ReactNode, isValidElement, useCallback, useEffect, useRef, useState } from "react";
+
 import "./styles.css";
 
 type IntegrationsMultilineCodeblockProps = {
@@ -41,9 +35,10 @@ const domPurifyInstance = getDOMPurify();
  * - Handles both string and JSX content
  * - Provides copy-to-clipboard functionality
  */
-const IntegrationsMultilineCodeblock: React.FC<
-    IntegrationsMultilineCodeblockProps
-> = ({ children, className = "" }) => {
+const IntegrationsMultilineCodeblock: React.FC<IntegrationsMultilineCodeblockProps> = ({
+    children,
+    className = "",
+}) => {
     // State for managing copy button appearance and behavior
     const [copyState, setCopyState] = useState<CopyButtonState>({
         isCopied: false,
@@ -51,9 +46,7 @@ const IntegrationsMultilineCodeblock: React.FC<
     });
 
     // State for storing sanitized content after processing
-    const [sanitizedContent, setSanitizedContent] = useState<string | null>(
-        null,
-    );
+    const [sanitizedContent, setSanitizedContent] = useState<string | null>(null);
 
     // Ref to access the actual DOM element for text extraction
     const codeRef = useRef<HTMLElement>(null);
@@ -82,8 +75,8 @@ const IntegrationsMultilineCodeblock: React.FC<
      * @returns Sanitized HTML string
      */
     const processContent = useCallback(
-        (children: ReactNode): string => {
-            const rawText = childrenAsString(children);
+        (content: ReactNode): string => {
+            const rawText = childrenAsString(content);
 
             // Client-side sanitization with DOMPurify
             if (domPurifyInstance) {
@@ -121,9 +114,7 @@ const IntegrationsMultilineCodeblock: React.FC<
                 className: "integration-codeblock__copy-btn--copied",
             });
             setTimeout(() => {
-                setCopyState((prev) =>
-                    prev.isCopied ? { isCopied: false, className: "" } : prev,
-                );
+                setCopyState((prev) => (prev.isCopied ? { isCopied: false, className: "" } : prev));
             }, 2000);
         } catch (error) {
             console.error("Failed to copy content:", error);
@@ -165,10 +156,7 @@ const IntegrationsMultilineCodeblock: React.FC<
                 type="button"
                 disabled={copyState.isCopied}
             >
-                <span
-                    className="integration-codeblock__copy-icons"
-                    aria-hidden="true"
-                >
+                <span className="integration-codeblock__copy-icons" aria-hidden="true">
                     {/* Copy icon */}
                     <Icon
                         className="integration-codeblock__copy-icon"
