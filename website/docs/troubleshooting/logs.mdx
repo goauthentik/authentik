@@ -4,42 +4,13 @@ title: Capturing logs
 
 When troubleshooting issues it is useful to investigate the [event logs](../sys-mgmt/events/index.md) that are continuosuly outputted by authentik.
 
-## Enable `TRACE` or `DEBUG` modes
+## Changing Log Level
 
-Both `TRACE` and `DEBUG` modes can be enabled so that authentik produces more detailed logs.
+There are several log levels available for the server and worker containers: `debug`, `info`, `warning`, `error`.
 
-To enable `TRACE` mode:
+The default loglevel is `info`.
 
-<Tabs
-groupId="platform"
-defaultValue="docker-compose"
-values={[
-{label: 'docker-compose', value: 'docker-compose'},
-{label: 'Kubernetes', value: 'kubernetes'},
-]}>
-<TabItem value="docker-compose">
-Add the following block to your `.env` file:
-
-```shell
-AUTHENTIK_LOG_LEVEL=trace
-```
-
-Afterwards, run `docker compose up -d`.
-
-  </TabItem>
-  <TabItem value="kubernetes">
-Add the following block to your `values.yml` file:
-
-```yaml
-authentik:
-    log_level: trace
-```
-
-Afterwards, upgrade helm release.
-
-  </TabItem>
-
-To enable `DEBUGGING` mode:
+To enable a different log level:
 
 <Tabs
 groupId="platform"
@@ -64,6 +35,47 @@ Add the following block to your `values.yml` file:
 ```yaml
 authentik:
     log_level: debug
+```
+
+Afterwards, upgrade helm release.
+
+  </TabItem>
+
+### `trace` Mode
+
+You can also set the log level to `trace`. This has no effect on the core authentik server, but shows additional messages for the embedded outpost.
+
+:::danger
+Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
+
+Logs generated with `trace` should be treated with care as they can give others access to your instance, and can potentially include things like session cookies to authentik **and other pages**.
+:::
+
+To enable `trace` log level:
+
+<Tabs
+groupId="platform"
+defaultValue="docker-compose"
+values={[
+{label: 'docker-compose', value: 'docker-compose'},
+{label: 'Kubernetes', value: 'kubernetes'},
+]}>
+<TabItem value="docker-compose">
+Add the following block to your `.env` file:
+
+```shell
+AUTHENTIK_LOG_LEVEL=trace
+```
+
+Afterwards, run `docker compose up -d`.
+
+  </TabItem>
+  <TabItem value="kubernetes">
+Add the following block to your `values.yml` file:
+
+```yaml
+authentik:
+    log_level: trace
 ```
 
 Afterwards, upgrade helm release.
