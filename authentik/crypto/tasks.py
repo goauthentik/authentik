@@ -7,13 +7,13 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509.base import load_pem_x509_certificate
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
@@ -36,10 +36,10 @@ def ensure_certificate_valid(body: str):
     return body
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def certificate_discovery(self: SystemTask):
+@actor
+def certificate_discovery():
     """Discover, import and update certificates from the filesystem"""
+    self: Task = CurrentTask.get_task()
     certs = {}
     private_keys = {}
     discovered = 0

@@ -48,8 +48,8 @@ def clear_update_notifications():
 
 @actor
 def update_latest_version():
-    self: Task = CurrentTask.get_task()
     """Update latest version info"""
+    self: Task = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.set_status(TaskStatus.WARNING, "Version check disabled.")

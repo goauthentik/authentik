@@ -1,12 +1,15 @@
 from uuid import uuid4
 
 from cron_converter import Cron
+from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import datetime
 from django.utils.translation import gettext_lazy as _
 
 from authentik.lib.models import SerializerModel
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 def validate_crontab(value):
@@ -27,6 +30,10 @@ class Schedule(SerializerModel):
     args = models.BinaryField(editable=False, help_text=_("Args to send to the actor"))
     kwargs = models.BinaryField(editable=False, help_text=_("Kwargs to send to the actor"))
 
+    rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    rel_obj_id = models.TextField(null=True)
+    rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
+
     crontab = models.TextField(validators=[validate_crontab], help_text=_("When to schedule tasks"))
 
     next_run = models.DateTimeField(auto_now_add=True, editable=False)
@@ -38,6 +45,7 @@ class Schedule(SerializerModel):
             "change",
             "view",
         )
+        indexes = (models.Index(fields=("rel_obj_content_type", "rel_obj_id")),)
 
     def __str__(self):
         return self.uid
@@ -50,3 +58,16 @@ class Schedule(SerializerModel):
 
     def calculate_next_run(self, next_run: datetime) -> datetime:
         return Cron(self.crontab).schedule(next_run).next()
+
+
+class ScheduledModel(models.Model):
+    schedules = GenericRelation(
+        Schedule, content_type_field="rel_obj_content_type", object_id_field="rel_obj_id"
+    )
+
+    class Meta:
+        abstract = True
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        raise NotImplementedError

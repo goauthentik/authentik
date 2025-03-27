@@ -13,6 +13,7 @@ from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models.base import Model
 from django.utils.text import slugify
 from docker.constants import DEFAULT_UNIX_SOCKET
+from dramatiq.actor import actor
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
@@ -77,8 +78,8 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     return None
 
 
-@CELERY_APP.task()
-def outpost_service_connection_state(connection_pk: Any):
+@actor
+def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
         OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
@@ -100,23 +101,6 @@ def outpost_service_connection_state(connection_pk: Any):
         LOGGER.warning("Failed to get client status", exc=exc)
         return
     cache.set(connection.state_key, state, timeout=None)
-
-
-@CELERY_APP.task(
-    bind=True,
-    base=SystemTask,
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
-@prefill_task
-def outpost_service_connection_monitor(self: SystemTask):
-    """Regularly check the state of Outpost Service Connections"""
-    connections = OutpostServiceConnection.objects.all()
-    for connection in connections.iterator():
-        outpost_service_connection_state.delay(connection.pk)
-    self.set_status(
-        TaskStatus.SUCCESSFUL,
-        f"Successfully updated {len(connections)} connections.",
-    )
 
 
 @CELERY_APP.task(
@@ -198,7 +182,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        outpost_service_connection_state.delay(str(instance.pk))
+        outpost_service_connection_monitor.send(str(instance.pk))
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
