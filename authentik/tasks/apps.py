@@ -1,8 +1,5 @@
-from datetime import timedelta
-
 import dramatiq
 from dramatiq.encoder import PickleEncoder
-from dramatiq.middleware import AgeLimit, Retries, TimeLimit
 
 from authentik.blueprints.apps import ManagedAppConfig
 
@@ -21,9 +18,6 @@ class AuthentikTasksConfig(ManagedAppConfig):
         broker = PostgresBroker()
         broker.add_middleware(FullyQualifiedActorName())
         # broker.add_middleware(Prometheus())
-        broker.add_middleware(AgeLimit(max_age=timedelta(days=30).total_seconds() * 1000))
-        broker.add_middleware(TimeLimit())
-        broker.add_middleware(Retries(max_retries=3))
         broker.add_middleware(CurrentTask())
         dramatiq.set_broker(broker)
         return super().ready()

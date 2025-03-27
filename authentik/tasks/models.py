@@ -59,8 +59,9 @@ class Task(models.Model):
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
 
-    # Probably only have one `logs` field
+    schedule_uid = models.TextField(blank=True)
     uid = models.TextField(blank=True)
+    # Probably only have one `logs` field
     description = models.TextField(blank=True)
     status = models.TextField(blank=True, choices=TaskStatus.choices)
     messages = models.JSONField(default=list)

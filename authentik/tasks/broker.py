@@ -21,7 +21,7 @@ from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
 from dramatiq.message import Message
-from dramatiq.middleware import Middleware
+from dramatiq.middleware import Middleware, Prometheus, default_middleware
 from dramatiq.results import Results
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
@@ -80,10 +80,18 @@ class PostgresBroker(Broker):
         self.logger = get_logger().bind()
 
         self.queues = set()
+        self.actor_options = {
+            "schedule_uid",
+        }
 
         self.db_alias = db_alias
+        self.middleware = []
         self.add_middleware(DbConnectionMiddleware())
         self.add_middleware(TenantMiddleware())
+        for middleware in default_middleware:
+            if middleware == Prometheus:
+                pass
+            self.add_middleware(middleware())
         if results:
             self.backend = PostgresBackend()
             self.add_middleware(Results(backend=self.backend))
@@ -160,6 +168,7 @@ class PostgresBroker(Broker):
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
             "message": message.encode(),
+            "schedule_uid": message.options.get("schedule_uid", ""),
         }
         create_defaults = {
             **query,

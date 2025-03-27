@@ -9,6 +9,7 @@ dependencies = [
     "celery",
     "channels",
     "channels-redis",
+    "cron-converter",
     "cryptography",
     "dacite",
     "deepmerge",
