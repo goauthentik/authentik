@@ -4031,9 +4031,6 @@ doesn't pass when either or both of the selected options are equal or above the 
 <trans-unit id="s6873bdbfa24615fb">
   <source>Webhook URL</source>
 </trans-unit>
-<trans-unit id="s25ec2846f6b88214">
-  <source>Webhook Mapping</source>
-</trans-unit>
 <trans-unit id="sca2879d96f58a39c">
   <source>Send once</source>
 </trans-unit>
@@ -5222,9 +5219,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s46f1d86ffec6223c">
   <source>Finished with errors</source>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
 </trans-unit>
@@ -6214,6 +6208,24 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6171ded034da4e96">
   <source>Custom CSS to apply to pages when this brand is active.</source>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
 </trans-unit>
 </body>
 </file>

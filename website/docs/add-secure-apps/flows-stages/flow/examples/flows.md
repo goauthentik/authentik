@@ -42,7 +42,7 @@ By default, the captcha test keys are used. You can get a proper key [here](http
 
 ## Recovery with email verification
 
-Flow: right-click [here](/blueprints/example/flows-recovery-email-verification.yaml) and save the file.
+Flow: right-click [here](https://version-2024-12.goauthentik.io/assets/files/flows-recovery-email-verification-408d6afeff2fbf276bf43a949e332ef6.yaml) and save the file.
 
 Recovery flow, the user is sent an email after they've identified themselves. After they click on the link in the email, they are prompted for a new password and immediately logged on.
 

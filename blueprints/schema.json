@@ -14911,9 +14911,15 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
-                "webhook_mapping": {
+                "webhook_mapping_body": {
                     "type": "integer",
-                    "title": "Webhook mapping"
+                    "title": "Webhook mapping body",
+                    "description": "Customize the body of the request. Mapping should return data that is JSON-serializable."
+                },
+                "webhook_mapping_headers": {
+                    "type": "integer",
+                    "title": "Webhook mapping headers",
+                    "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
                 "send_once": {
                     "type": "boolean",
