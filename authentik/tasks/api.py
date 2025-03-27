@@ -30,6 +30,7 @@ class TaskViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
+    queryset = Task.objects.none()
     serializer_class = TaskSerializer
     search_fields = (
         "message_id",

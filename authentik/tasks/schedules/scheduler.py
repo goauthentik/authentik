@@ -51,6 +51,6 @@ class Scheduler:
                     self.process_schedule(schedule)
 
     def run(self):
-        for tenant in Tenant.objects.filter(enabled=True):
+        for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 self.run_per_tenant(tenant)
