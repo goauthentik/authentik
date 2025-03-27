@@ -30,9 +30,9 @@ from structlog.stdlib import get_logger
 
 from authentik.tasks.models import CHANNEL_PREFIX, ChannelIdentifier, Task, TaskState
 from authentik.tasks.results import PostgresBackend
+from authentik.tasks.schedules.scheduler import Scheduler
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
-from authentik.tasks.schedules.scheduler import Scheduler
 
 LOGGER = get_logger()
 
@@ -176,7 +176,7 @@ class PostgresBroker(Broker):
             **query,
             **defaults,
         }
-        self.query_set.update_or_create(
+        obj, created = self.query_set.update_or_create(
             **query,
             defaults=defaults,
             create_defaults=create_defaults,

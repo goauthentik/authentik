@@ -107,7 +107,7 @@ class Task(SerializerModel):
         self.messages = list(messages)
         for idx, msg in enumerate(self.messages):
             if not isinstance(msg, LogEvent):
-                self.messages[idx] = LogEvent(msg, logger=self.__name__, log_level="info")
+                self.messages[idx] = LogEvent(msg, logger=str(self), log_level="info")
         self.messages = sanitize_item(self.messages)
 
     def set_error(self, exception: Exception, *messages: LogEvent | str):
@@ -115,6 +115,6 @@ class Task(SerializerModel):
         self.status = TaskStatus.ERROR
         self.messages = list(messages)
         self.messages.extend(
-            [LogEvent(exception_to_string(exception), logger=self.__name__, log_level="error")]
+            [LogEvent(exception_to_string(exception), logger=str(self), log_level="error")]
         )
         self.messages = sanitize_item(self.messages)

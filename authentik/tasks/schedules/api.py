@@ -14,7 +14,8 @@ class ScheduleSerializer(ModelSerializer):
         model = Schedule
         fields = [
             "id",
-            "name",
+            "uid",
+            "actor_name",
             "crontab",
             "next_run",
         ]
@@ -30,6 +31,6 @@ class ScheduleViewSet(
     serializer_class = ScheduleSerializer
     search_fields = (
         "id",
-        "name",
+        "uid",
     )
-    ordering = ("id",)
+    ordering = ("-next_run", "uid")

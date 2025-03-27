@@ -21,17 +21,15 @@ def validate_crontab(value):
 
 class Schedule(SerializerModel):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    uid = models.TextField(unique=True, editable=False)
-
-    name = models.TextField(editable=False, help_text=_("Schedule display name"))
+    uid = models.TextField(unique=True, editable=False, help_text=_("Unique schedule identifier"))
 
     actor_name = models.TextField(editable=False, help_text=_("Dramatiq actor to call"))
     args = models.BinaryField(editable=False, help_text=_("Args to send to the actor"))
     kwargs = models.BinaryField(editable=False, help_text=_("Kwargs to send to the actor"))
 
-    crontab = models.TextField(validators=[validate_crontab])
+    crontab = models.TextField(validators=[validate_crontab], help_text=_("When to schedule tasks"))
 
-    next_run = models.DateTimeField(auto_now_add=True)
+    next_run = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         verbose_name = _("Schedule")
@@ -42,7 +40,7 @@ class Schedule(SerializerModel):
         )
 
     def __str__(self):
-        return self.name
+        return self.uid
 
     @property
     def serializer(self):

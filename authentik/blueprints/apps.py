@@ -1,8 +1,10 @@
 """authentik Blueprints app"""
 
+import pickle  # nosec
 from collections.abc import Callable
 from importlib import import_module
 from inspect import ismethod
+from typing import Any
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -80,6 +82,35 @@ class ManagedAppConfig(AppConfig):
         func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY
         return func
 
+    def get_tenant_schedules(self) -> list[dict[str, Any]]:
+        return []
+
+    def get_global_schedules(self) -> list[dict[str, Any]]:
+        return []
+
+    def _reconcile_schedules(self, schedules: list[dict[str, Any]]):
+        from authentik.tasks.schedules.models import Schedule
+
+        for schedule in schedules:
+            query = {
+                "uid": schedule.get("uid", schedule["actor_name"]),
+            }
+            defaults = {
+                **query,
+                "actor_name": schedule["actor_name"],
+                "args": pickle.dumps(schedule.get("args", ())),
+                "kwargs": pickle.dumps(schedule.get("kwargs", {})),
+            }
+            create_defaults = {
+                **defaults,
+                "crontab": schedule["crontab"],
+            }
+            Schedule.objects.update_or_create(
+                **query,
+                defaults=defaults,
+                create_defaults=create_defaults,
+            )
+
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
@@ -92,6 +123,7 @@ class ManagedAppConfig(AppConfig):
         for tenant in tenants:
             with tenant:
                 self._reconcile(self.RECONCILE_TENANT_CATEGORY)
+                self._reconcile_schedules(self.get_tenant_schedules())
 
     def _reconcile_global(self) -> None:
         """
@@ -102,6 +134,7 @@ class ManagedAppConfig(AppConfig):
 
         with schema_context(get_public_schema_name()):
             self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
+            self._reconcile_schedules(self.get_global_schedules())
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
