@@ -74,3 +74,35 @@ openid-username-claim-type=preferred_username
 
   </TabItem>
 </Tabs>
+
+### Self Signed Certificates
+
+If using a self signed certificate it is required to add the certificate of the associated Certificate Authority to `/etc/ssl/certs/ca-certificates.crt` and `/opt/java/openjkd/jre/lib/security/cacerts` on your Apache Guacamole deployment.
+
+#### adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
+
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory. Ensure that the filetype is `.crt`.
+
+2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
+
+```shell
+update-ca-certificates
+```
+
+#### adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
+
+1. To export the certificate of the Certificate Authority, use the following command:
+
+```shell
+openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+```
+
+2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore, use the following command:
+
+```shell
+keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+```
+
+:::note
+More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/17/docs/specs/man/keytool.html)
+:::
