@@ -776,6 +776,7 @@ export default {
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
+                "troubleshooting/logs",
                 "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",

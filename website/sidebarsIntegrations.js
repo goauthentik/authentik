@@ -16,7 +16,7 @@ module.exports = {
                 {
                     type: "category",
                     label: "Device Management",
-                    items: ["services/apple/index"],
+                    items: ["services/apple/index", "services/fleet/index"],
                 },
                 {
                     type: "category",
