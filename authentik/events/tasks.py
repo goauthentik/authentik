@@ -15,6 +15,7 @@ from authentik.events.models import (
     TaskStatus,
 )
 from authentik.events.system_tasks import SystemTask, prefill_task
+from authentik.lib.utils.db import qs_batch_iter
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -129,7 +130,8 @@ def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
     LOGGER.debug("GDPR cleanup, removing events from user", events=events.count())
-    events.delete()
+    for event in qs_batch_iter(events):
+        event.delete()
 
 
 @CELERY_APP.task(bind=True, base=SystemTask)
@@ -138,6 +140,7 @@ def notification_cleanup(self: SystemTask):
     """Cleanup seen notifications and notifications whose event expired."""
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
-    notifications.delete()
+    for notification in qs_batch_iter(notifications):
+        notification.delete()
     LOGGER.debug("Expired notifications", amount=amount)
     self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")
