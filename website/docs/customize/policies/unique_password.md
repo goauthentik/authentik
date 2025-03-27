@@ -15,7 +15,7 @@ The Password Uniqueness Policy prevents users from reusing their previous passwo
 
 ## How it works
 
-This policy stores a history of user passwords and checks any new password against this history. If a match is found with a previous password, the policy fails and the user is required to choose a different password.
+This policy maintains a record of previously used passwords for each user. When a new password is created, it is compared against this historical log. If a match is found with any previous password, the policy is not met, and the user is required to choose a different password.
 
 The password history is maintained automatically when this policy is in use. Old password hashes are stored securely in authentik's database.
 
