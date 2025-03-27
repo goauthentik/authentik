@@ -191,6 +191,7 @@ class ChallengeStageView(StageView):
                 )
                 flow_info.is_valid()
                 challenge.initial_data["flow_info"] = flow_info.data
+            challenge.initial_data["xid"] = self.executor.container.exec_id
             if isinstance(challenge, WithUserInfoChallenge):
                 # If there's a pending user, update the `username` field
                 # this field is only used by password managers.
