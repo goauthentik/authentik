@@ -30,11 +30,17 @@
     }
   };
   let timeout = 100;
+  let offset = 20;
+  let attempt = 0;
   const main = async () => {
+    attempt += 1;
     await checkAuth();
     console.debug(`authentik/policies/buffer: Waiting ${timeout}ms...`);
     setTimeout(main, timeout);
-    timeout += 10;
+    timeout += (offset * attempt);
+    if (timeout >= 2000) {
+      timeout = 2000;
+    }
   }
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden) return;
