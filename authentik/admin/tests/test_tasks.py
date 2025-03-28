@@ -1,5 +1,6 @@
 """test admin tasks"""
 
+import dramatiq
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker

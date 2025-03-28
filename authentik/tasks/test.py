@@ -14,7 +14,7 @@ class TestWorker(Worker):
                 broker=self.broker,
                 queue_name=queue_name,
                 prefetch=2,
-                work_queue=None,
+                work_queue=self.work_queue,
                 worker_timeout=1,
             ),
         }
@@ -26,18 +26,17 @@ class TestWorker(Worker):
         self._worker = _WorkerThread(
             broker=self.broker,
             consumers=self.consumers,
-            work_queue=None,
+            work_queue=self.work_queue,
             worker_timeout=1,
         )
 
         self.broker.emit_before("worker_boot", self)
         self.broker.emit_after("worker_boot", self)
-        self.broker.emit_before("worker_thread_boot", self)
-        self.broker.emit_after("worker_thread_boot", self)
 
     def process_message(self, message: MessageProxy):
         self.logger.error(f"processing message {message}")
         self.work_queue.put(message)
+        self.consumers[message.queue_name].consumer.in_processing.add(message.message_id)
         self._worker.process_message(message)
 
 

@@ -4,6 +4,8 @@ import os
 from argparse import ArgumentParser
 from unittest import TestCase
 
+from django.apps import apps
+from django.test.testcases import apps
 import pytest
 from django.conf import settings
 from django.test.runner import DiscoverRunner
@@ -51,6 +53,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         pre_startup.send(sender=self, mode="test")
         startup.send(sender=self, mode="test")
         post_startup.send(sender=self, mode="test")
+
+        apps.get_app_config("authentik_tasks").use_test_broker()
 
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):

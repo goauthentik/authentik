@@ -68,8 +68,11 @@ class DbConnectionMiddleware(Middleware):
     def _close_old_connections(self, *args, **kwargs):
         close_old_connections()
 
-    before_process_message = _close_old_connections
-    after_process_message = _close_old_connections
+    # TODO: figure out if we really need this, it seems a bit excessive to close connections after each message
+    # and if fails in tests
+
+    # before_process_message = _close_old_connections
+    # after_process_message = _close_old_connections
 
     def _close_connections(self, *args, **kwargs):
         connections.close_all()

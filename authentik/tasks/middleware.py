@@ -41,5 +41,6 @@ class CurrentTask(Middleware):
         task: Task | None = self._TASK.get()
         if task is None:
             LOGGER.warn("Task was None, not saving. This should not happen")
-        task.save()
+        else:
+            task.save()
         self._TASK.set(None)
