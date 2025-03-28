@@ -7,6 +7,7 @@ type Config struct {
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
 	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
+	Worker         WorkerConfig         `yaml:"worker" env:", prefix=AUTHENTIK_WORKER__"`
 
 	// Config for core and embedded outpost
 	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
@@ -76,4 +77,8 @@ type OutpostConfig struct {
 
 type WebConfig struct {
 	Path string `yaml:"path" env:"PATH, overwrite"`
+}
+
+type WorkerConfig struct {
+	Embedded string `yaml:"embedded" env:"EMBEDDED, overwrite"`
 }

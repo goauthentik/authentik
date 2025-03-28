@@ -39,14 +39,14 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
-        outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
+        outpost_controller.send(instance.pk.hex, action="down", from_cache=True)
 
 
 @receiver(m2m_changed, sender=Outpost.providers.through)
 def m2m_changed_update(sender, instance: Model, action: str, **_):
     """Update outpost on m2m change, when providers are added or removed"""
     if action in ["post_add", "post_remove", "post_clear"]:
-        outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
+        outpost_post_save.send(class_to_path(instance.__class__), instance.pk)
 
 
 @receiver(post_save)
@@ -64,7 +64,7 @@ def post_save_update(sender, instance: Model, created: bool, **_):
     if isinstance(instance, Outpost) and created:
         LOGGER.info("New outpost saved, ensuring initial token and user are created")
         _ = instance.token
-    outpost_post_save.delay(class_to_path(instance.__class__), instance.pk)
+    outpost_post_save.send(class_to_path(instance.__class__), instance.pk)
 
 
 @receiver(pre_delete, sender=Outpost)
@@ -72,4 +72,4 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     """Ensure that Outpost's user is deleted (which will delete the token through cascade)"""
     instance.user.delete()
     cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
-    outpost_controller.delay(instance.pk.hex, action="down", from_cache=True)
+    outpost_controller.send(instance.pk.hex, action="down", from_cache=True)

@@ -22,6 +22,7 @@ import (
 	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
+	"goauthentik.io/internal/worker"
 )
 
 type WebServer struct {
@@ -35,6 +36,7 @@ type WebServer struct {
 
 	g              *gounicorn.GoUnicorn
 	gunicornReady  bool
+	worker         *worker.Worker
 	mainRouter     *mux.Router
 	loggingRouter  *mux.Router
 	log            *log.Entry

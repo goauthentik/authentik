@@ -46,6 +46,9 @@ def generate_local_config():
             "enabled": False,
             "api_key": generate_id(),
         },
+        "worker": {
+            "embedded": True,
+        },
     }
 
 
