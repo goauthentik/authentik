@@ -30,7 +30,7 @@ from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import BufferedPolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
@@ -328,7 +328,7 @@ class OAuthAuthorizationParams:
         return code
 
 
-class AuthorizationFlowInitView(PolicyAccessView):
+class AuthorizationFlowInitView(BufferedPolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
