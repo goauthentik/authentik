@@ -9,10 +9,10 @@ import "@goauthentik/components/events/ObjectChangelog";
 import MDSCIMProvider from "@goauthentik/docs/add-secure-apps/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
