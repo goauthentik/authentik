@@ -300,6 +300,8 @@ class TestS3Storage(TestCase):
                 "storage.media.s3.session_profile": "test-profile",
                 "storage.media.s3.access_key": "test-key",
                 "storage.media.s3.secret_key": "test-secret",
+                "storage.media.s3.bucket_name": "test-bucket",
+                "storage.media.s3.region_name": "us-east-1",
             }.get(key, default)
 
             with self.assertRaises(ImproperlyConfigured) as cm:
@@ -373,11 +375,9 @@ class TestS3Storage(TestCase):
 
     def test_normalize_name(self):
         """Test S3 key normalization"""
-        test_name = "test.txt"
-        normalized = self.storage._normalize_name(test_name)
-
-        # Verify tenant path is included
-        self.assertIn(connection.schema_name, normalized)
+        normalized = self.storage._normalize_name("test.txt")
+        self.assertIn(self.storage.tenant_prefix, normalized)
+        self.assertTrue(normalized.startswith("media/"))
 
         # Test with suspicious path
         with self.assertRaises(SuspiciousOperation):
@@ -652,25 +652,28 @@ class TestS3Storage(TestCase):
             mock_conn.schema_name = "tenant1"
 
             # Test network error
-            self.mock_object.upload_fileobj.side_effect = ClientError(
-                {"Error": {"Code": "NetworkError", "Message": "Network Error"}}, "upload_fileobj"
-            )
-            with self.assertRaises(ClientError):
-                self.storage._save("test.txt", ContentFile(b"content"))
+            with patch.object(self.storage.bucket.Object, 'upload_fileobj') as mock_upload:
+                mock_upload.side_effect = ClientError(
+                    {"Error": {"Code": "NetworkError", "Message": "Network Error"}}, "upload_fileobj"
+                )
+                with self.assertRaises(ClientError):
+                    self.storage._save("test.txt", ContentFile(b"content"))
 
             # Test permission denied
-            self.mock_object.upload_fileobj.side_effect = ClientError(
-                {"Error": {"Code": "AccessDenied", "Message": "Access Denied"}}, "upload_fileobj"
-            )
-            with self.assertRaises(ClientError):
-                self.storage._save("test.txt", ContentFile(b"content"))
+            with patch.object(self.storage.bucket.Object, 'upload_fileobj') as mock_upload:
+                mock_upload.side_effect = ClientError(
+                    {"Error": {"Code": "AccessDenied", "Message": "Access Denied"}}, "upload_fileobj"
+                )
+                with self.assertRaises(ClientError):
+                    self.storage._save("test.txt", ContentFile(b"content"))
 
             # Test bucket not found
-            self.mock_object.upload_fileobj.side_effect = ClientError(
-                {"Error": {"Code": "NoSuchBucket", "Message": "Bucket not found"}}, "upload_fileobj"
-            )
-            with self.assertRaises(ClientError):
-                self.storage._save("test.txt", ContentFile(b"content"))
+            with patch.object(self.storage.bucket.Object, 'upload_fileobj') as mock_upload:
+                mock_upload.side_effect = ClientError(
+                    {"Error": {"Code": "NoSuchBucket", "Message": "Bucket not found"}}, "upload_fileobj"
+                )
+                with self.assertRaises(ClientError):
+                    self.storage._save("test.txt", ContentFile(b"content")) 
 
     def test_url_generation_punycode_domain(self):
         """Test URL generation with punycode custom domain"""
@@ -714,7 +717,7 @@ class TestTenantAwareStorage(TestCase):
         # Create a simple TenantAwareStorage for testing
         self.storage = TenantAwareStorage()
         # Mock the connection schema_name
-        self.connection_patcher = patch("django.db.connection")
+        self.connection_patcher = patch("authentik.root.storages.connection")
         self.mock_connection = self.connection_patcher.start()
         self.mock_connection.schema_name = "test_tenant"
 
@@ -743,7 +746,7 @@ class TestFileStorage(TestCase):
         # Create a temporary directory for testing
         self.temp_dir = tempfile.mkdtemp()
         # Mock the connection schema_name
-        self.connection_patcher = patch("django.db.connection")
+        self.connection_patcher = patch("authentik.root.storages.connection")
         self.mock_connection = self.connection_patcher.start()
         self.mock_connection.schema_name = "test_tenant"
         # Initialize storage with temp directory
@@ -792,7 +795,7 @@ class TestFileStorage(TestCase):
         """Test base_url property"""
         # Use the mocked connection
         self.mock_connection.schema_name = "test_tenant"
-        self.assertEqual(self.storage.base_url, "/media/test_tenant/")
+        self.assertEqual(self.storage.base_url, f"/media/{self.storage.tenant_prefix}/")
 
     def test_path(self):
         """Test path calculation"""

@@ -281,7 +281,8 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             OSError: If storage directory cannot be created due to filesystem errors
         """
         super().__init__(*args, **kwargs)
-        self._base_path = Path(self.location)
+        # Initialize _base_path from kwargs or settings
+        self._base_path = Path(kwargs.get('location', settings.MEDIA_ROOT))
         try:
             # Ensure the base directory exists with correct permissions
             os.makedirs(self._base_path, exist_ok=True)
@@ -294,6 +295,9 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
                 "Storage directories initialized",
                 base_path=str(self._base_path),
                 tenant_dir=str(tenant_dir),
+                pid=os.getpid(),
+                schema_name=connection.schema_name,
+                domain_url=None,
             )
         except PermissionError as e:
             LOGGER.error(
@@ -333,7 +337,7 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         Returns:
             Path: Complete path to tenant-specific storage directory
         """
-        return Path(settings.MEDIA_ROOT) / self.tenant_prefix
+        return Path(self._base_path) / self.tenant_prefix
 
     @property
     def location(self) -> str:
@@ -563,6 +567,12 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
         self._file_mapping = {}
 
+        transfer_config = CONFIG.refresh("storage.media.s3.transfer_config", None)
+        if transfer_config:
+            settings["transfer_config"] = transfer_config
+        super().__init__(**settings)
+
+
     def _get_config_value(self, key: str) -> str | None:
         """Get refreshed configuration value from environment.
 
@@ -593,9 +603,14 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             LOGGER.error("Missing required S3 configuration: region_name")
             raise ImproperlyConfigured("Missing required S3 configuration: region_name")
 
-        # Check that either session_profile or (access_key and secret_key) are set
         has_profile = bool(self._session_profile)
         has_credentials = bool(self._access_key) and bool(self._secret_key)
+
+        # Check that session profile is not provided with access key and secret key
+        if has_profile and has_credentials:
+            raise ImproperlyConfigured(
+                "AWS session profile should not be provided with access key and secret key"
+            )
 
         if not (has_profile or has_credentials):
             LOGGER.error(
@@ -886,14 +901,9 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         if not filename:
             raise SuspiciousOperation("Could not derive file name from empty string")
 
-        # Split the filename into base and extension
         base_name, ext = os.path.splitext(os.path.basename(filename))
-
-        # Generate UUID
         unique_id = str(uuid.uuid4())
-
-        # Create new filename with UUID and original extension
-        randomized = f"{unique_id}{ext}"
+        randomized = f"{unique_id}_{base_name}{ext}"
 
         LOGGER.debug("Randomized filename", original=filename, randomized=randomized)
 
