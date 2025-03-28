@@ -159,7 +159,7 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 },
                 status=400,
             )
-        result = duo_import_devices.delay(str(stage.pk)).get()
+        result = duo_import_devices.send(str(stage.pk)).get_result()
         return Response(data=result, status=200 if result["error"] == "" else 400)
 
 
