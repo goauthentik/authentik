@@ -27,7 +27,7 @@ This policy takes effect after the first password change following policy activa
 
 The Password Uniqueness Policy has two configuration options:
 
-- **Password Field**: The field key to check for the new password. Default is _password_. This should match the field name used in your Prompt stage.
+- **Password Field**: The field key to check for the new password. Default is `password`. This should match the field name used in your Prompt stage.
 
 - **Number of Historical Passwords**: This setting determines how many previous passwords are checked and stored for each user, with a default of 1. For instance, if set to 3, users will not be able to reuse any of their last 3 passwords.
 
