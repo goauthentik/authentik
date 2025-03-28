@@ -85,7 +85,7 @@ When using a self-signed certificate, it is necessary to incorporate the certifi
 This section depends on the operating system hosting Apache Guacamole.
 :::
 
-For _Debian_ based operating systems:
+##### For _Debian_ based operating systems:
 
 1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory on the Apache Guacamole host. Ensure that the file extension is `.crt`.
 
@@ -95,7 +95,7 @@ For _Debian_ based operating systems:
 update-ca-certificates
 ```
 
-For _Synology_ systems:
+##### For _Synology_ systems:
 
 1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the filetype is `.crt`.
 
