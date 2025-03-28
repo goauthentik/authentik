@@ -770,6 +770,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return property mapping type used by this object"""
         if self.managed == self.MANAGED_INBUILT:
             from authentik.core.models import PropertyMapping
+
             return PropertyMapping
         raise NotImplementedError
 

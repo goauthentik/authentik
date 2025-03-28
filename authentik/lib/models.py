@@ -19,8 +19,13 @@ class SerializerModel(models.Model):
     def serializer(self) -> type[BaseSerializer]:
         """Get serializer for this model"""
         # Special handling for built-in source
-        if hasattr(self, 'managed') and hasattr(self, 'MANAGED_INBUILT') and self.managed == self.MANAGED_INBUILT:
+        if (
+            hasattr(self, "managed")
+            and hasattr(self, "MANAGED_INBUILT")
+            and self.managed == self.MANAGED_INBUILT
+        ):
             from authentik.core.api.sources import SourceSerializer
+
             return SourceSerializer
         raise NotImplementedError
 
