@@ -54,7 +54,7 @@
         ]
     },
     "devDependencies": {
-        "@types/semver": "^7.5.8",
+        "@types/semver": "^7.7.0",
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
@@ -71,12 +71,12 @@
         "lightningcss-darwin-arm64": "1.29.3",
         "lightningcss-linux-arm64-gnu": "1.29.3",
         "lightningcss-linux-x64-gnu": "1.29.3",
-        "@swc/core-darwin-arm64": "1.11.11",
-        "@swc/core-linux-arm64-gnu": "1.11.11",
-        "@swc/core-linux-x64-gnu": "1.11.11",
-        "@swc/html-darwin-arm64": "1.11.11",
-        "@swc/html-linux-arm64-gnu": "1.11.11",
-        "@swc/html-linux-x64-gnu": "1.11.11"
+        "@swc/core-darwin-arm64": "1.11.13",
+        "@swc/core-linux-arm64-gnu": "1.11.13",
+        "@swc/core-linux-x64-gnu": "1.11.13",
+        "@swc/html-darwin-arm64": "1.11.13",
+        "@swc/html-linux-arm64-gnu": "1.11.13",
+        "@swc/html-linux-x64-gnu": "1.11.13"
     },
     "wireit": {
         "lint:lockfile": {

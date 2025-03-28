@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models
+from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
@@ -178,11 +179,12 @@ class Flow(SerializerModel, PolicyBindingModel):
         help_text=_("Required level of authentication and authorization to access a flow."),
     )
 
-    @property
-    def background_url(self) -> str:
+    def background_url(self, request: HttpRequest | None = None) -> str:
         """Get the URL to the background image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.background:
+            if request:
+                return request.brand.branding_default_flow_background_url()
             return (
                 CONFIG.get("web.path", "/")[:-1] + "/static/dist/assets/images/flow_background.jpg"
             )

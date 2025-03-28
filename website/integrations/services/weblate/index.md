@@ -22,58 +22,63 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
+## authentik configuration
 
-- ACS URL: `https://weblate.company/accounts/complete/saml/`
-- Audience: `https://weblate.company/accounts/metadata/saml/`
-- Service Provider Binding: Post
-- Issuer: `https://authentik.company/application/saml/weblate-slug/sso/binding/redirect/`
+To support the integration of Weblate with authentik, you need to create an application/provider pair in authentik.
 
-You can of course use a custom signing certificate, and adjust durations.
+### Create property mappings
 
-## Property mappings
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create four **SAML Provider Property Mapping**s with the following settings:
+    - **Full Name Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>urn:oid:2.5.4.3</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**:
+        ```python
+        return request.user.name
+        ```
+    - **OID_USERID Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>urn:oid:0.9.2342.19200300.100.1.1</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**:
+        ```python
+        return request.user.username
+        ```
+    - **Username Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>username</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**:
+        ```python
+        return request.user.username
+        ```
+    - **Email Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>email</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**:
+        ```python
+        return request.user.email
+        ```
 
-We need to create some property mappings so our application will work. After you create the property mappings, assign them to the provider.
+### Create an application and provider in authentik
 
-### Full name
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-- Name: `Weblate - Full name`
-- SAML Attribute Name: `urn:oid:2.5.4.3`
-- Expression
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://<em>weblate.company</em>/accounts/complete/saml/</kbd>.
+    - Set the **Audience** to <kbd>https://<em>weblate.company</em>/accounts/metadata/saml/</kbd>.
+    - Set the **Issuer** to <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, select an available signing certificate. Then, under **Property mappings**, add the ones you just created.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-```python
-return request.user.name
-```
-
-### OID_USERID
-
-- Name: `Weblate - OID_USERID`
-- SAML Attribute Name: `urn:oid:0.9.2342.19200300.100.1.1`
-- Expression
-
-```python
-return request.user.username
-```
-
-### Username
-
-- Name: `Weblate - Username`
-- SAML Attribute Name: `username`
-- Expression
-
-```python
-return request.user.username
-```
-
-### Email
-
-- Name: `Weblate - Email`
-- SAML Attribute Name: `email`
-- Expression
-
-```python
-return request.user.email
-```
+3. Click **Submit** to save the new application and provider.
 
 ## Weblate configuration
 

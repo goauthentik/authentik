@@ -1,25 +1,18 @@
-/**
- * @import {Plugin} from 'unified'
- * @import {Directives} from 'mdast-util-directive'
- * @import {} from 'mdast-util-to-hast'
- * @import {Root} from 'mdast'
- * @import {VFile} from 'vfile'
- */
 import { h } from "hastscript";
+import type { Root } from "mdast";
+import type { Directives } from "mdast-util-directive";
+import type { Plugin } from "unified";
 import { visit } from "unist-util-visit";
+import type { VFile } from "vfile";
 
 const ADMONITION_TYPES = new Set(["info", "warning", "danger", "note"]);
 
 /**
- * Remark plugin to process links
- * @type {Plugin<[unknown], Root, VFile>}
+ * Remark plugin to add admonition classes to directives.
  */
-export function remarkAdmonition() {
+export const remarkAdmonition: Plugin<[unknown], Root, VFile> = () => {
     return function transformer(tree) {
-        /**
-         * @param {Directives} node
-         */
-        const visitor = (node) => {
+        const visitor = (node: Directives) => {
             if (
                 node.type === "containerDirective" ||
                 node.type === "leafDirective" ||
@@ -43,4 +36,4 @@ export function remarkAdmonition() {
         // @ts-ignore - visit cannot infer the type of the visitor.
         visit(tree, visitor);
     };
-}
+};

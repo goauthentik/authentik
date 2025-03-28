@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.2
+  version: 2025.2.3
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4447,6 +4447,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: branding_default_flow_background
+        schema:
+          type: string
       - in: query
         name: branding_favicon
         schema:
@@ -41145,6 +41149,10 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
+          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41202,6 +41210,11 @@ components:
           type: string
           minLength: 1
         branding_favicon:
+          type: string
+          minLength: 1
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
@@ -42096,6 +42109,8 @@ components:
           type: string
         branding_favicon:
           type: string
+        branding_custom_css:
+          type: string
         ui_footer_links:
           type: array
           items:
@@ -42122,6 +42137,7 @@ components:
           type: string
           readOnly: true
       required:
+      - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
@@ -46874,10 +46890,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -46905,10 +46929,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -50125,6 +50157,11 @@ components:
         branding_favicon:
           type: string
           minLength: 1
+        branding_custom_css:
+          type: string
+        branding_default_flow_background:
+          type: string
+          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -51337,10 +51374,18 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping:
+        webhook_mapping_body:
           type: string
           format: uuid
           nullable: true
+          description: Customize the body of the request. Mapping should return data
+            that is JSON-serializable.
+        webhook_mapping_headers:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure additional headers to be sent. Mapping should return
+            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook

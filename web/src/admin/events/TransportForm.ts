@@ -66,7 +66,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -74,7 +74,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
                         this.onModeChange(ev.detail.value);
@@ -106,7 +106,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook URL")}
                 name="webhookUrl"
-                ?required=${true}
+                required
             >
                 <input
                     type="text"
@@ -116,8 +116,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Mapping")}
-                name="webhookMapping"
+                label=${msg("Webhook Body Mapping")}
+                name="webhookMappingBody"
             >
                 <ak-search-select
                     .fetchObjects=${async (
@@ -141,9 +141,42 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         return item?.pk;
                     }}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMapping === item.pk;
+                        return this.instance?.webhookMappingBody === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Header Mapping")}
+                name="webhookMappingHeaders"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new PropertymappingsApi(
+                            DEFAULT_CONFIG,
+                        ).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.webhookMappingHeaders === item.pk;
+                    }}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>

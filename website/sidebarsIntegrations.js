@@ -16,7 +16,7 @@ module.exports = {
                 {
                     type: "category",
                     label: "Device Management",
-                    items: ["services/apple/index"],
+                    items: ["services/apple/index", "services/fleet/index"],
                 },
                 {
                     type: "category",
@@ -141,11 +141,13 @@ module.exports = {
                         "services/immich/index",
                         "services/jellyfin/index",
                         "services/komga/index",
+                        "services/miniflux/index",
                         "services/node-red/index",
                         "services/open-webui/index",
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
+                        "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
                         "services/zipline/index",

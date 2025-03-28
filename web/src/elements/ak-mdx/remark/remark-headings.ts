@@ -1,22 +1,16 @@
-/**
- * @import {Plugin} from 'unified'
- * @import {Root, Heading} from 'mdast'
- * @import {VFile} from 'vfile'
- */
 import { kebabCase } from "change-case";
+import { Heading, Root } from "mdast";
 import { toString } from "mdast-util-to-string";
+import { Plugin } from "unified";
 import { visit } from "unist-util-visit";
+import { VFile } from "vfile";
 
 /**
- * Remark plugin to process links
- * @type {Plugin<[unknown], Root, VFile>}
+ * Remark plugin to add IDs to headings.
  */
-export const remarkHeadings = () => {
+export const remarkHeadings: Plugin<[unknown], Root, VFile> = () => {
     return function transformer(tree) {
-        /**
-         * @param {Heading} node
-         */
-        const visitor = (node) => {
+        const visitor = (node: Heading) => {
             const textContent = toString(node);
             const id = kebabCase(textContent);
 

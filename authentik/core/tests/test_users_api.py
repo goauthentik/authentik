@@ -1,6 +1,7 @@
 """Test Users API"""
 
 from datetime import datetime
+from json import loads
 
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
@@ -15,7 +16,11 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_brand,
+    create_test_flow,
+)
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
@@ -40,6 +45,32 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_filter_is_superuser(self):
+        """Test API filtering by superuser status"""
+        self.client.force_login(self.admin)
+        # Test superuser
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["username"], self.admin.username)
+        # Test non-superuser
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1, body)
+        self.assertEqual(body["results"][0]["username"], self.user.username)
 
     def test_list_with_groups(self):
         """Test listing with groups"""
