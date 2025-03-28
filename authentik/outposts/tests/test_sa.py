@@ -8,10 +8,9 @@ from guardian.models import UserObjectPermission
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
-from authentik.tasks.tests import TaskTestCase
 
 
-class OutpostTests(TaskTestCase):
+class OutpostTests(TestCase):
     """Outpost Tests"""
 
     def setUp(self) -> None:
@@ -30,7 +29,6 @@ class OutpostTests(TaskTestCase):
             name="test",
             type=OutpostType.PROXY,
         )
-        self.tasks_join()
 
         # Before we add a provider, the user should only have access to the outpost
         permissions = UserObjectPermission.objects.filter(user=outpost.user)
