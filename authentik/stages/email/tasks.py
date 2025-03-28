@@ -105,6 +105,9 @@ def send_mail(
         message_object.attach(logo_data())
 
         LOGGER.debug("Sending mail", to=message_object.to)
+        message_object.to=[message_object.to[0].replace("\n", "").replace("\r", "")]
+        LOGGER.debug("Sending mail2", to=message_object.to)
+        LOGGER.debug("Sending mail3", message_object=dir(message_object))
         backend.send_messages([message_object])
         Event.new(
             EventAction.EMAIL_SENT,
