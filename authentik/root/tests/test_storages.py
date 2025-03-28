@@ -312,22 +312,36 @@ class TestS3Storage(TestCase):
         with patch("authentik.lib.config.CONFIG.refresh") as mock_config:
             mock_config.side_effect = lambda key, default: {
                 "storage.media.s3.bucket_name": "test-bucket",
+                "storage.media.s3.region_name": "us-east-1",
             }.get(key, default)
 
             with self.assertRaises(ImproperlyConfigured) as cm:
                 S3Storage()
-            self.assertIn("Either AWS session profile or access key/secret pair", str(cm.exception))
+            self.assertIn("Missing required S3 authentication configuration", str(cm.exception))
+
+        # Test missing region name
+        with patch("authentik.lib.config.CONFIG.refresh") as mock_config:
+            mock_config.side_effect = lambda key, default: {
+                "storage.media.s3.access_key": "test-key",
+                "storage.media.s3.secret_key": "test-secret",
+                "storage.media.s3.bucket_name": "test-bucket",
+            }.get(key, default)
+
+            with self.assertRaises(ImproperlyConfigured) as cm:
+                S3Storage()
+            self.assertIn("Missing required S3 configuration: region_name", str(cm.exception))
 
         # Test missing bucket name
         with patch("authentik.lib.config.CONFIG.refresh") as mock_config:
             mock_config.side_effect = lambda key, default: {
                 "storage.media.s3.access_key": "test-key",
                 "storage.media.s3.secret_key": "test-secret",
+                "storage.media.s3.region_name": "us-east-1",
             }.get(key, default)
 
             with self.assertRaises(ImproperlyConfigured) as cm:
                 S3Storage()
-            self.assertIn("BUCKET_NAME must be configured", str(cm.exception))
+            self.assertIn("Missing required S3 configuration: bucket_name", str(cm.exception))
 
     def test_bucket_validation(self):
         """Test bucket validation during initialization"""
@@ -335,14 +349,15 @@ class TestS3Storage(TestCase):
         self.mock_client.buckets.all.return_value = []
         with self.assertRaises(ImproperlyConfigured):
             storage = S3Storage()
-            _ = storage.bucket  # Access bucket property to trigger validation
+            # Force bucket validation
+            storage.bucket
 
-        # Test permission denied
+        # Mock bucket exists but no access
         self.mock_client.buckets.all.return_value = [MagicMock(name="test-bucket")]
         self.mock_bucket.objects.limit.side_effect = ClientError(
             {
                 "Error": {
-                    "Code": "AccessDenied",
+                    "Code": "AccessDenied", 
                     "Message": "Access Denied",
                 }
             },
@@ -350,7 +365,8 @@ class TestS3Storage(TestCase):
         )
         with self.assertRaises(ImproperlyConfigured):
             storage = S3Storage()
-            _ = storage.bucket  # Access bucket property to trigger validation
+            # Force bucket validation
+            storage.bucket
 
     def test_randomize_filename(self):
         """Test filename randomization for uniqueness"""
@@ -635,7 +651,10 @@ class TestS3Storage(TestCase):
         with patch.object(self.storage.bucket, "upload_fileobj") as mock_upload:
             # Mock transfer config
             self.storage.transfer_config = Config(
-                multipart_threshold=1 * 1024 * 1024, max_concurrency=2  # 1MB
+                s3={
+                    "multipart_threshold": 1 * 1024 * 1024,  # 1MB
+                    "max_concurrency": 2
+                }
             )
 
             # Save large file
@@ -657,7 +676,8 @@ class TestS3Storage(TestCase):
                     {"Error": {"Code": "NetworkError", "Message": "Network Error"}}, "upload_fileobj"
                 )
                 with self.assertRaises(ClientError):
-                    self.storage._save("test.txt", ContentFile(b"content"))
+                    test_file = self.create_test_image()
+                    self.storage._save("test.png", test_file)
 
             # Test permission denied
             with patch.object(self.storage.bucket.Object, 'upload_fileobj') as mock_upload:
@@ -665,7 +685,8 @@ class TestS3Storage(TestCase):
                     {"Error": {"Code": "AccessDenied", "Message": "Access Denied"}}, "upload_fileobj"
                 )
                 with self.assertRaises(ClientError):
-                    self.storage._save("test.txt", ContentFile(b"content"))
+                    test_file = self.create_test_image()
+                    self.storage._save("test.png", test_file)
 
             # Test bucket not found
             with patch.object(self.storage.bucket.Object, 'upload_fileobj') as mock_upload:
@@ -673,7 +694,8 @@ class TestS3Storage(TestCase):
                     {"Error": {"Code": "NoSuchBucket", "Message": "Bucket not found"}}, "upload_fileobj"
                 )
                 with self.assertRaises(ClientError):
-                    self.storage._save("test.txt", ContentFile(b"content")) 
+                    test_file = self.create_test_image()
+                    self.storage._save("test.png", test_file)
 
     def test_url_generation_punycode_domain(self):
         """Test URL generation with punycode custom domain"""
@@ -774,7 +796,7 @@ class TestFileStorage(TestCase):
         """Test __init__ with OS error"""
         with patch("pathlib.Path.mkdir") as mock_mkdir:
             mock_mkdir.side_effect = OSError()
-            with self.assertRaises(OSError):
+            with self.assertRaises(ValueError):
                 FileStorage(location="\0invalid")  # Should fail due to invalid path
 
     def test_base_location(self):

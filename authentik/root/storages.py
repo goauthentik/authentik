@@ -569,7 +569,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
         transfer_config = CONFIG.refresh("storage.media.s3.transfer_config", None)
         if transfer_config:
-            settings["transfer_config"] = transfer_config
+            settings["transfer_config"] = Config(s3=transfer_config)
         super().__init__(**settings)
 
 
@@ -1129,6 +1129,11 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             FileValidationError: If image validation fails
             ClientError: If S3 upload fails
         """
+        # Check if the file is an image by extension
+        ext = os.path.splitext(name.lower())[1] if name else ""
+        if ext not in ALLOWED_IMAGE_EXTENSIONS:
+            raise SuspiciousOperation("S3Storage only accepts valid image files")
+
         # First validate content if it's an image
         if hasattr(content, "content_type") and content.content_type.startswith("image/"):
             try:
@@ -1136,7 +1141,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             except FileValidationError as e:
                 LOGGER.warning("Image validation failed", name=name, error=str(e))
                 raise
-
+        
         # Generate a randomized filename to prevent conflicts
         randomized_name = self._randomize_filename(name)
 
