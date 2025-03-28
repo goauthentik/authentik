@@ -6,6 +6,7 @@ from unittest import TestCase
 
 from django.apps import apps
 from django.test.testcases import apps
+from django.test.utils import setup_test_environment, teardown_test_environment
 import pytest
 from django.conf import settings
 from django.test.runner import DiscoverRunner
