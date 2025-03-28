@@ -1,96 +1,104 @@
 ---
-title: Capturing logs
+title: Capturing Logs in authentik
 ---
 
-When troubleshooting issues it is useful to investigate the [event logs](../sys-mgmt/events/index.md) that are continuosuly outputted by authentik.
+When troubleshooting issues in authentik, reviewing the [event logs](../sys-mgmt/events/index.md) can be invaluable. These logs provide continuous output, helping to diagnose problems effectively.
 
-## Changing Log Level
+## Adjusting Log Levels
 
-There are several log levels available for the server and worker containers: `debug`, `info`, `warning`, `error`.
+The server and worker containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
 
-The default loglevel is `info`.
-
-To enable a different log level:
+To modify the log level, follow the steps for your platform:
 
 <Tabs
 groupId="platform"
 defaultValue="docker-compose"
-values={[
+values=[
 {label: 'docker-compose', value: 'docker-compose'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
 <TabItem value="docker-compose">
-Add the following block to your `.env` file:
 
-```shell
-AUTHENTIK_LOG_LEVEL=debug
-```
+### Docker Compose
 
-Afterwards, run `docker compose up -d`.
+1. Add the following entry to your `.env` file:
 
-  </TabItem>
+    ```shell
+    AUTHENTIK_LOG_LEVEL=debug
+    ```
+
+2. Restart your containers to apply the changes.
+    </TabItem>
+
   <TabItem value="kubernetes">
-Add the following block to your `values.yml` file:
 
-```yaml
-authentik:
-    log_level: debug
-```
+### Kubernetes
 
-Afterwards, upgrade helm release.
+1. Add the following configuration to your `values.yml` file:
 
-  </TabItem>
+    ```yaml
+    authentik:
+        log_level: debug
+    ```
 
-### `trace` Mode
+2. Restart your containers to apply the changes.
+      </TabItem>
+</Tabs>
 
-You can also set the log level to `trace`.
+## Enabling `trace` Mode
+
+The `trace` log level provides deeper insights but also includes sensitive details.
 
 :::danger
-Setting the log level to `trace` will include sensitive details in logs, so it shouldn't be used in most cases.
-
-Logs generated with `trace` should be treated with care as they can give others access to your instance, and can potentially include things like session cookies to authentik **and other pages**.
+Using `trace` logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using `trace` unless absolutely necessary.
 :::
 
-To enable `trace` log level:
+To enable `trace` logging, follow the platform-specific steps below:
 
 <Tabs
 groupId="platform"
 defaultValue="docker-compose"
-values={[
+values=[
 {label: 'docker-compose', value: 'docker-compose'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
 <TabItem value="docker-compose">
-Add the following block to your `.env` file:
 
-```shell
-AUTHENTIK_LOG_LEVEL=trace
-```
+### Docker Compose
 
-Afterwards, run `docker compose up -d`.
+1. Add the following to your `.env` file:
 
-  </TabItem>
+    ```shell
+    AUTHENTIK_LOG_LEVEL=trace
+    ```
+
+2. Restart your containers to apply the changes.
+    </TabItem>
+
   <TabItem value="kubernetes">
-Add the following block to your `values.yml` file:
 
-```yaml
-authentik:
-    log_level: trace
-```
+### Kubernetes
 
-Afterwards, upgrade helm release.
+1. Modify your `values.yml` file:
 
-  </TabItem>
+    ```yaml
+    authentik:
+        log_level: trace
+    ```
 
-## Capturing Past Logs
+2. Restart your containers to apply the changes.
+      </TabItem>
+</Tabs>
 
-The `--since` option can be used with both `docker logs` and `kubectl logs` commands. It can accept a Go durating string (e.g. `1m30s`, `3h`) or a specific date/time (e.g. `2006-01-02T07:00`, `2006-01-02`). When used, the command will output logs for the specified time period.
+## Viewing Past Logs
 
-More information on this option and others can be found in the [`docker logs` command documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` command documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
+To review historical logs, use the `--since` option with `docker logs` or `kubectl logs`. This option accepts either a Go duration string (e.g., `1m30s`, `3h`) or a timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`).
+
+For more details, see the [`docker logs` documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
 
 ### Docker
 
-To capture and display the logs of a Docker container in the terminal, use the following command:
+To retrieve logs from a specific timeframe, use:
 
 ```shell
 docker logs <container_name_or_id> --since 5m
@@ -98,27 +106,27 @@ docker logs <container_name_or_id> --since 5m
 
 ### Kubernetes
 
-To capture and display the logs from a pod deployed via Kubernetes, use the following command:
+To fetch logs from a Kubernetes pod:
 
 ```shell
 kubectl logs --since 5m <pod_name>
 ```
 
-## Continuously Capturing Logs
+## Streaming Logs in Real-Time
 
-To continuously display logs from a Docker container or a pod deployed via Kubernetes, you can include the _follow_ option (`-f`, `--follow`). This option will stream logs into the terminal until stopped (`Ctrl + C` or closing the terminal).
+To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
 
 ### Docker
 
-To stream the logs from a Docker container, use the following command:
+To follow logs in real time:
 
 ```shell
 docker logs <container_name_or_id> -f
 ```
 
-### Kubernetes Logs
+### Kubernetes
 
-To stream the logs from a pod deployed via Kubernetes, use the following command:
+To stream logs from a Kubernetes pod:
 
 ```shell
 kubectl logs -f <pod_name>
