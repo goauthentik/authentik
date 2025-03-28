@@ -1,13 +1,14 @@
 """User API Views"""
 
 from datetime import timedelta
+from importlib import import_module
 from json import loads
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import Permission
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
+from django.contrib.sessions.backends.base import SessionBase
 from django.db.models.functions import ExtractHour
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -91,6 +92,7 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+SessionStore: SessionBase = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 class UserGroupSerializer(ModelSerializer):
@@ -769,7 +771,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not instance.is_active:
             sessions = AuthenticatedSession.objects.filter(user=instance)
             session_ids = sessions.values_list("session_key", flat=True)
-            cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
+            for session in session_ids:
+                SessionStore(session).delete()
             sessions.delete()
             LOGGER.debug("Deleted user's sessions", user=instance.username)
         return response
