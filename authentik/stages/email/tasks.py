@@ -103,11 +103,10 @@ def send_mail(
         # Add the logo (we can't add it in the previous message since MIMEImage
         # can't be converted to json)
         message_object.attach(logo_data())
-
         LOGGER.debug("Sending mail", to=message_object.to)
-        message_object.to = [message_object.to[0].replace("\n", "").replace("\r", "")]
-        LOGGER.debug("Sending mail2", to=message_object.to)
-        LOGGER.debug("Sending mail3", message_object=dir(message_object))
+        if message_object.to[0].startswith("=?utf-8?b?"):
+            message_object.to = [message_object.to[0].split()[-1].replace("<", "").replace(">", "")]
+        LOGGER.debug("Sending mail", to=message_object.to)
         backend.send_messages([message_object])
         Event.new(
             EventAction.EMAIL_SENT,
