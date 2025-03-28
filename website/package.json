@@ -54,7 +54,7 @@
         ]
     },
     "devDependencies": {
-        "@types/semver": "^7.5.8",
+        "@types/semver": "^7.7.0",
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
