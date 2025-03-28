@@ -706,7 +706,7 @@ export default {
                     items: [
                         {
                             type: "category",
-                            label: "2024",
+                            label: "2025",
                             items: ["security/cves/CVE-2025-29928"],
                         },
                         {
