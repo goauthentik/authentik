@@ -131,39 +131,39 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         this.state = "running";
 
-        return (
-            new CoreApi(DEFAULT_CONFIG)
-                .coreTransactionalApplicationsUpdate({
-                    transactionApplicationRequest: request,
-                })
-                .then((_response: TransactionApplicationResponse) => {
-                    this.dispatchCustomEvent(EVENT_REFRESH);
-                    this.state = "submitted";
-                })
+        try {
+            const response = await new CoreApi(DEFAULT_CONFIG).coreTransactionalApplicationsUpdate({
+                transactionApplicationRequest: request,
+            });
+            this.dispatchCustomEvent(EVENT_REFRESH);
+            this.state = "submitted";
+            return response;
+        } catch (error: any) {
+            const errors = (await parseAPIError(error)) as ExtendedValidationError;
 
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                .catch(async (resolution: any) => {
-                    const errors = (await parseAPIError(
-                        await resolution,
-                    )) as ExtendedValidationError;
+            // Handle file upload errors
+            if (error.response?.data?.error) {
+                errors.provider = errors.provider || {};
+                errors.provider.icon = [error.response.data.error];
+            }
 
-                    // THIS is a really gross special case; if the user is duplicating the name of
-                    // an existing provider, the error appears on the `app` (!) error object. We
-                    // have to move that to the `provider.name` error field so it shows up in the
-                    // right place.
-                    if (Array.isArray(errors?.app?.provider)) {
-                        const providerError = errors.app.provider;
-                        errors.provider = errors.provider ?? {};
-                        errors.provider.name = providerError;
-                        delete errors.app.provider;
-                        if (Object.keys(errors.app).length === 0) {
-                            delete errors.app;
-                        }
-                    }
-                    this.handleUpdate({ errors });
-                    this.state = "reviewing";
-                })
-        );
+            // THIS is a really gross special case; if the user is duplicating the name of
+            // an existing provider, the error appears on the `app` (!) error object. We
+            // have to move that to the `provider.name` error field so it shows up in the
+            // right place.
+            if (Array.isArray(errors?.app?.provider)) {
+                const providerError = errors.app.provider;
+                errors.provider = errors.provider ?? {};
+                errors.provider.name = providerError;
+                delete errors.app.provider;
+                if (Object.keys(errors.app).length === 0) {
+                    delete errors.app;
+                }
+            }
+            this.handleUpdate({ errors });
+            this.state = "reviewing";
+            throw error;
+        }
     }
 
     override handleButton(button: WizardButton) {
@@ -249,7 +249,12 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                         html`<p>${msg("There was an error in the provider.")}</p>
                             <p>
                                 <a @click=${navTo("provider")}>${msg("Review the provider.")}</a>
-                            </p>`,
+                            </p>
+                            ${errors.provider?.icon
+                                ? html`<p class="pf-c-form__helper-text pf-m-error">
+                                      ${errors.provider.icon.join(", ")}
+                                  </p>`
+                                : nothing}`,
                 )
                 .with(
                     { detail: P.nonNullable },
@@ -269,14 +274,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                             </ul>
                             <p>${msg("Please go back and review the application.")}</p>`,
                 )
-                .otherwise(
-                    () =>
-                        html`<p>
-                            ${msg(
-                                "There was an error creating the application, but no error message was sent. Please review the server logs.",
-                            )}
-                        </p>`,
-                )}`;
+                .otherwise(() => nothing)}`;
     }
 
     renderReview(app: Partial<ApplicationRequest>, provider: OneOfProvider) {

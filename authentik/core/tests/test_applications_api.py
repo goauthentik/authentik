@@ -1,11 +1,14 @@
 """Test Applications API"""
 
+import io
 from json import loads
 
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.test.client import BOUNDARY, MULTIPART_CONTENT, encode_multipart
 from django.urls import reverse
-from rest_framework.test import APITestCase
+from PIL import Image
+from rest_framework.test import APITransactionTestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -17,7 +20,7 @@ from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.saml.models import SAMLProvider
 
 
-class TestApplicationsAPI(APITestCase):
+class TestApplicationsAPI(APITransactionTestCase):
     """Test applications API"""
 
     def setUp(self) -> None:
@@ -40,6 +43,30 @@ class TestApplicationsAPI(APITestCase):
             policy=DummyPolicy.objects.create(name="deny", result=False, wait_min=1, wait_max=2),
             order=0,
         )
+        self.test_files = []
+
+    def tearDown(self) -> None:
+        # Clean up any test files
+        for app in [self.allowed, self.denied]:
+            if app.meta_icon:
+                app.meta_icon.delete()
+        super().tearDown()
+
+    def create_test_image(self, name="test.png") -> ContentFile:
+        """Create a valid test PNG image file.
+
+        Args:
+            name: The name to give the test file
+
+        Returns:
+            ContentFile: A ContentFile containing a valid PNG image
+        """
+        # Create a small test image
+        image = Image.new("RGB", (1, 1), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format="PNG")
+        img_io.seek(0)
+        return ContentFile(img_io.getvalue(), name=name)
 
     def test_formatted_launch_url(self):
         """Test formatted launch URL"""
@@ -58,19 +85,38 @@ class TestApplicationsAPI(APITestCase):
         )
 
     def test_set_icon(self):
-        """Test set_icon"""
-        file = ContentFile(b"text", "name")
+        """Test set_icon and cleanup"""
+        # Create a test image file with a valid image
+        image = Image.new("RGB", (100, 100), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format="PNG")
+        img_io.seek(0)
+        file = InMemoryUploadedFile(
+            img_io,
+            "file",
+            "test_icon.png",
+            "image/png",
+            len(img_io.getvalue()),
+            None,
+        )
         self.client.force_login(self.user)
+
+        # Test setting icon
         response = self.client.post(
             reverse(
                 "authentik_api:application-set-icon",
                 kwargs={"slug": self.allowed.slug},
             ),
-            data=encode_multipart(data={"file": file}, boundary=BOUNDARY),
+            data=encode_multipart(BOUNDARY, {"file": file}),
             content_type=MULTIPART_CONTENT,
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.status_code,
+            200,
+            msg=f"Unexpected status code: {response.status_code}, Response: {response.content}",
+        )
 
+        # Verify icon was set correctly
         app_raw = self.client.get(
             reverse(
                 "authentik_api:application-detail",
@@ -80,7 +126,40 @@ class TestApplicationsAPI(APITestCase):
         app = loads(app_raw.content)
         self.allowed.refresh_from_db()
         self.assertEqual(self.allowed.get_meta_icon, app["meta_icon"])
-        self.assertEqual(self.allowed.meta_icon.read(), b"text")
+        file.seek(0)
+        self.assertEqual(self.allowed.meta_icon.read(), file.read())
+
+        # Test icon replacement
+        new_image = Image.new("RGB", (100, 100), color="blue")
+        new_img_io = io.BytesIO()
+        new_image.save(new_img_io, format="PNG")
+        new_img_io.seek(0)
+        new_file = InMemoryUploadedFile(
+            new_img_io,
+            "file",
+            "new_icon.png",
+            "image/png",
+            len(new_img_io.getvalue()),
+            None,
+        )
+        response = self.client.post(
+            reverse(
+                "authentik_api:application-set-icon",
+                kwargs={"slug": self.allowed.slug},
+            ),
+            data=encode_multipart(BOUNDARY, {"file": new_file}),
+            content_type=MULTIPART_CONTENT,
+        )
+        self.assertEqual(
+            response.status_code,
+            200,
+            msg=f"Unexpected status code: {response.status_code}, Response: {response.content}",
+        )
+
+        # Verify new icon was set and old one was cleaned up
+        self.allowed.refresh_from_db()
+        new_file.seek(0)
+        self.assertEqual(self.allowed.meta_icon.read(), new_file.read())
 
     def test_check_access(self):
         """Test check_access operation"""
