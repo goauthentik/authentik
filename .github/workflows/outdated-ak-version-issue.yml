@@ -1,0 +1,80 @@
+name: Check authentik version in new issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  check-version:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      id-token: write
+    steps:
+      - name: Check body for version
+        id: version_check
+        run: |
+          if [[ ! "${{ github.event.issue.body }}" =~ [0-9]{4}\.[0-9]+\.[0-9]+ ]]; then
+            echo "No version found in issue body"
+            exit 78
+          fi
+
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Extract version from body
+        id: extract_version
+        run: |
+          body="${{ github.event.issue.body }}"
+          [[ "$body" =~ ([0-9]{4}\.[0-9]+\.[0-9]+) ]]
+          echo "ISSUE_VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+
+      - name: Get current version info
+        id: get_current_version
+        run: |
+          response=$(curl -s https://version.goauthentik.io/version.json)
+          CURRENT_VERSION=$(echo "$response" | jq -r .stable.version)
+          CHANGELOG_URL=$(echo "$response" | jq -r .stable.changelog_url)
+          
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_ENV
+          echo "CHANGELOG_URL=$CHANGELOG_URL" >> $GITHUB_ENV
+
+      - name: Compare versions
+        id: version_comparison
+        run: |
+          IFS='.' read -ra ISSUE <<< "$ISSUE_VERSION"
+          IFS='.' read -ra CURRENT <<< "$CURRENT_VERSION"
+
+          outdated=false
+          for i in {0..2}; do
+            if (( ${ISSUE[$i]} < ${CURRENT[$i]} )); then
+              outdated=true
+              break
+            elif (( ${ISSUE[$i]} > ${CURRENT[$i]} )); then
+              break
+            fi
+          done
+
+          echo "OUTDATED=$outdated" >> $GITHUB_ENV
+
+      - name: Notify outdated version
+        if: ${{ env.OUTDATED == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+            -f body="Hi there! 👋 We noticed you're mentioning authentik version $ISSUE_VERSION. 
+
+            Our latest stable version is **$CURRENT_VERSION** which includes important updates and improvements. 
+            
+            📋 You can check out the changelog here: $CHANGELOG_URL
+            
+            Please consider updating to the latest version to ensure you have all the latest features and security fixes. Let us know if you need any help with the upgrade! 🚀"
