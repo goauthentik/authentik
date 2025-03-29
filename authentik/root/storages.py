@@ -27,6 +27,19 @@ from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
+# Storage subdirectories
+STORAGE_DIR_APPLICATION_ICONS = "application-icons"
+STORAGE_DIR_SOURCE_ICONS = "source-icons"
+STORAGE_DIR_FLOW_BACKGROUNDS = "flow-backgrounds"
+STORAGE_DIR_PUBLIC = "public"
+
+STORAGE_DIRS = [
+    STORAGE_DIR_APPLICATION_ICONS,
+    STORAGE_DIR_SOURCE_ICONS,
+    STORAGE_DIR_FLOW_BACKGROUNDS,
+    STORAGE_DIR_PUBLIC,
+]
+
 # Mapping of allowed file extensions to their corresponding MIME types
 ALLOWED_IMAGE_EXTENSIONS = {
     ".jpg": "image/jpeg",
@@ -291,6 +304,10 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             tenant_dir = self._base_path / self.tenant_prefix
             os.makedirs(tenant_dir, exist_ok=True)
 
+            # Create standard subdirectories
+            for subdir in STORAGE_DIRS:
+                os.makedirs(tenant_dir / subdir, exist_ok=True)
+
             LOGGER.debug(
                 "Storage directories initialized",
                 base_path=str(self._base_path),
@@ -427,6 +444,33 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         # Join the base location with the validated name
         return os.path.join(self.location, clean_name.replace(f"{self.tenant_prefix}/", "", 1))
 
+    def _get_file_subdirectory(self, name: str, content_type: str | None = None) -> str:
+        """Determine the appropriate subdirectory for a file based on its name and content type.
+
+        Args:
+            name (str): Original filename
+            content_type (str | None): Content type of the file if available
+
+        Returns:
+            str: Subdirectory path where the file should be stored
+        """
+        name_lower = name.lower()
+        
+        # Application icons
+        if any(x in name_lower for x in ['app-icon', 'application-icon']):
+            return STORAGE_DIR_APPLICATION_ICONS
+        
+        # Source icons
+        if any(x in name_lower for x in ['source-icon', 'source-logo']):
+            return STORAGE_DIR_SOURCE_ICONS
+        
+        # Flow backgrounds
+        if any(x in name_lower for x in ['flow-bg', 'flow-background']):
+            return STORAGE_DIR_FLOW_BACKGROUNDS
+        
+        # Default to public for other files
+        return STORAGE_DIR_PUBLIC
+
     def _save(self, name: str, content) -> str:
         """Save the file with content validation and tenant prefix application.
 
@@ -448,14 +492,34 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
                 LOGGER.warning("Image validation failed", name=name, error=str(e))
                 raise
 
+        # Preserve the original directory structure
+        original_dir = os.path.dirname(name)
+        base_name, ext = os.path.splitext(os.path.basename(name))
+        unique_id = str(uuid.uuid4())
+        randomized_name = f"{unique_id}{ext}"
+
+        # Get appropriate subdirectory
+        subdirectory = self._get_file_subdirectory(
+            name, 
+            getattr(content, "content_type", None)
+        )
+
+        # Create symlink directory structure
+        if original_dir:
+            symlink_dir = os.path.join(self.path(self.get_tenant_path(original_dir)))
+            os.makedirs(symlink_dir, exist_ok=True)
+
+        # Combine subdirectory with randomized name for actual storage
+        full_path = f"{subdirectory}/{randomized_name}"
+
         # Apply tenant prefix if it's not already there
-        if not name.startswith(f"{self.tenant_prefix}/"):
-            tenant_name = self.get_tenant_path(name)
+        if not full_path.startswith(f"{self.tenant_prefix}/"):
+            tenant_path = self.get_tenant_path(full_path)
         else:
-            tenant_name = name
+            tenant_path = full_path
 
         # Perform regular file save
-        file_path = self.path(tenant_name)
+        file_path = self.path(tenant_path)
 
         # Ensure the directory exists
         directory = os.path.dirname(file_path)
@@ -463,8 +527,17 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
 
         LOGGER.debug("Saving file", name=name, path=file_path)
 
-        # Call parent class _save with the tenant-prefixed path
-        return super()._save(tenant_name, content)
+        # Save the file in the storage location
+        saved_name = super()._save(tenant_path, content)
+
+        # Create a symlink from the original path to the stored file
+        if original_dir:
+            symlink_path = os.path.join(symlink_dir, os.path.basename(name))
+            if os.path.lexists(symlink_path):
+                os.unlink(symlink_path)
+            os.symlink(os.path.abspath(self.path(saved_name)), symlink_path)
+
+        return saved_name
 
 
 class S3Storage(TenantAwareStorage, BaseS3Storage):
@@ -600,8 +673,8 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             raise ImproperlyConfigured("Missing required S3 configuration: bucket_name")
 
         if not self._region_name:
-            LOGGER.error("Missing required S3 configuration: region_name")
-            raise ImproperlyConfigured("Missing required S3 configuration: region_name")
+            LOGGER.info("No region_name specified, defaulting to us-east-1")
+            self._region_name = "us-east-1"
 
         has_profile = bool(self._session_profile)
         has_credentials = bool(self._access_key) and bool(self._secret_key)
@@ -624,7 +697,8 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
         # Validate bucket exists and is accessible
         try:
-            self.client.head_bucket(Bucket=self._bucket_name)
+            _ = self.client  # Ensure client is initialized
+            self._s3_client.head_bucket(Bucket=self._bucket_name)
         except ClientError as e:
             error_code = e.response.get("Error", {}).get("Code", "Unknown")
             if error_code == "404":
@@ -1115,6 +1189,17 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             )
         raise e
 
+    def _get_file_subdirectory(self, filename: str) -> str:
+        """Get the appropriate subdirectory for a file based on its name"""
+        filename = filename.lower()
+        if "app-icon" in filename or "application-icon" in filename:
+            return STORAGE_DIR_APPLICATION_ICONS
+        if "source-icon" in filename or "source-logo" in filename:
+            return STORAGE_DIR_SOURCE_ICONS
+        if "flow-bg" in filename or "flow-background" in filename:
+            return STORAGE_DIR_FLOW_BACKGROUNDS
+        return STORAGE_DIR_PUBLIC
+
     def _save(self, name: str, content) -> str:
         """Save file to S3 with validation and error handling.
 
@@ -1142,39 +1227,45 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 LOGGER.warning("Image validation failed", name=name, error=str(e))
                 raise
         
-        # Generate a randomized filename to prevent conflicts
-        randomized_name = self._randomize_filename(name)
-
-        # Add tenant prefix for isolation
-        tenant_path = self.get_tenant_path(randomized_name)
-
-        # Normalize the name for S3 (no leading slash)
-        normalized_name = self._normalize_name(tenant_path)
+        # Get the appropriate subdirectory
+        subdirectory = self._get_file_subdirectory(name)
+        
+        # Generate a random filename with the original extension
+        random_name = f"{uuid.uuid4()}{ext}"
+        
+        # Combine subdirectory and random name
+        final_name = f"{subdirectory}/{random_name}"
+        
+        # Add tenant prefix
+        name = self.get_tenant_path(final_name)
+        
+        # Normalize the name for S3
+        name = self._normalize_name(name)
 
         # Log the save attempt
-        self._log_save_attempt(name, randomized_name, normalized_name, content)
+        self._log_save_attempt(name, random_name, name, content)
 
         # Get S3 object for this file
-        obj = self.bucket.Object(normalized_name)
+        obj = self.bucket.Object(name)
 
         try:
             # Upload the file to S3
-            self._upload_to_s3(normalized_name, content)
+            self._upload_to_s3(name, content)
 
             # Verify the upload was successful
-            self._verify_upload(obj, normalized_name)
+            self._verify_upload(obj, name)
 
             # Log successful save
-            self._log_save_success(normalized_name, name)
+            self._log_save_success(name, name)
 
             # Return the name with tenant prefix to ensure proper path reference
-            return tenant_path
+            return name
         except Exception as e:
             # Clean up failed upload attempts
-            self._cleanup_failed_upload(obj, normalized_name)
+            self._cleanup_failed_upload(obj, name)
 
             # Handle errors based on type
-            self._handle_save_error(e, name, normalized_name)
+            self._handle_save_error(e, name, name)
 
             # Re-raise the exception after cleanup and logging
             raise
@@ -1275,7 +1366,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                         (
                             parsed.scheme,
                             self._custom_domain,
-                            normalized_name,
+                            "/" + normalized_name,
                             "",
                             urlencode(query_params, doseq=True),  # Keep all AWS signing params
                             "",

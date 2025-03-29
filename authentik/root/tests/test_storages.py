@@ -18,10 +18,14 @@ from django.test import TestCase
 from PIL import Image
 
 from authentik.root.storages import (
+    STORAGE_DIRS,
     FileStorage,
     FileValidationError,
     S3Storage,
     TenantAwareStorage,
+    _validate_ico_content,
+    _validate_pillow_image,
+    _validate_svg_content,
     validate_image_file,
 )
 
@@ -268,13 +272,8 @@ class TestS3Storage(TestCase):
         mock_session_instance.resource.return_value = self.mock_client
         mock_session_instance.client.return_value = self.mock_s3_client
 
-        # Create the storage instance
+        # Create storage instance
         self.storage = S3Storage()
-
-        # Inject our mocks directly into the instance
-        self.storage._client = self.mock_client
-        self.storage._s3_client = self.mock_s3_client
-        self.storage._bucket = self.mock_bucket
 
     def tearDown(self):
         """Clean up test environment"""
@@ -319,7 +318,7 @@ class TestS3Storage(TestCase):
                 S3Storage()
             self.assertIn("Missing required S3 authentication configuration", str(cm.exception))
 
-        # Test missing region name
+        # Test default region name
         with patch("authentik.lib.config.CONFIG.refresh") as mock_config:
             mock_config.side_effect = lambda key, default: {
                 "storage.media.s3.access_key": "test-key",
@@ -327,9 +326,8 @@ class TestS3Storage(TestCase):
                 "storage.media.s3.bucket_name": "test-bucket",
             }.get(key, default)
 
-            with self.assertRaises(ImproperlyConfigured) as cm:
-                S3Storage()
-            self.assertIn("Missing required S3 configuration: region_name", str(cm.exception))
+            storage = S3Storage()
+            self.assertEqual(storage._region_name, "us-east-1")
 
         # Test missing bucket name
         with patch("authentik.lib.config.CONFIG.refresh") as mock_config:
@@ -455,6 +453,8 @@ class TestS3Storage(TestCase):
         # Mock tenant_prefix
         with patch.object(self.storage, "tenant_prefix", "test_tenant"):
             filename = "test.png"
+            # Configure mock to return a URL with tenant prefix
+            self.mock_s3_client.generate_presigned_url.return_value = f"https://test-bucket.s3.amazonaws.com/media/test_tenant/{filename}"
             url = self.storage.url(filename)
 
             # Verify URL was generated and contains tenant prefix
@@ -516,7 +516,8 @@ class TestS3Storage(TestCase):
 
         # Save initial icon
         old_key = self.storage._save("test_icon.png", test_file)
-        old_mock_object = self.mock_objects[old_key]
+        # Use normalized path (with media/ prefix) to access mock object
+        old_mock_object = self.mock_objects[f"media/{old_key}"]
 
         # Replace with new icon
         new_file = self.create_test_image()
@@ -526,7 +527,7 @@ class TestS3Storage(TestCase):
         old_mock_object.delete.assert_called_once()
 
         # Verify new file was saved
-        new_mock_object = self.mock_objects[new_key]
+        new_mock_object = self.mock_objects[f"media/{new_key}"]
         new_mock_object.load.assert_called_once()
 
     def test_file_listing(self):
@@ -539,7 +540,7 @@ class TestS3Storage(TestCase):
         ]
 
         # Test listing with tenant isolation
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant1"
 
             # List root directory
@@ -582,7 +583,7 @@ class TestS3Storage(TestCase):
 
         self.mock_client.head_object = MagicMock(side_effect=mock_head_object)
 
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant1"
 
             # Test existing file
@@ -629,7 +630,7 @@ class TestS3Storage(TestCase):
             mock_obj = MagicMock()
             self.mock_objects[f"tenant1/{filename}"] = mock_obj
 
-            with patch("django.db.connection") as mock_conn:
+            with patch("authentik.root.storages.connection") as mock_conn:
                 mock_conn.schema_name = "tenant1"
 
                 if should_succeed:
@@ -667,7 +668,7 @@ class TestS3Storage(TestCase):
 
     def test_error_handling(self):
         """Test various error conditions"""
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant1"
 
             # Test network error
@@ -729,6 +730,110 @@ class TestS3Storage(TestCase):
         self.assertTrue("X-Amz-SignedHeaders=host" in url)
         self.assertTrue("X-Amz-Signature=test" in url)
 
+    def test_get_file_subdirectory(self):
+        """Test subdirectory determination based on filename"""
+        test_cases = [
+            ("app-icon-test.png", "application-icons"),
+            ("application-icon-logo.jpg", "application-icons"),
+            ("source-icon-provider.png", "source-icons"),
+            ("source-logo-oauth.jpg", "source-icons"),
+            ("flow-bg-dark.png", "flow-backgrounds"),
+            ("flow-background-light.jpg", "flow-backgrounds"),
+            ("random-image.png", "public"),
+            ("test.jpg", "public"),
+        ]
+
+        for filename, expected_dir in test_cases:
+            result = self.storage._get_file_subdirectory(filename)
+            self.assertEqual(
+                result,
+                expected_dir,
+                f"File {filename} should go to {expected_dir}, got {result}"
+            )
+
+    def test_save_file_structure(self):
+        """Test file saving with proper directory structure"""
+        # Create test files for different categories
+        test_files = [
+            ("app-icon-test.png", "application-icons"),
+            ("source-icon-test.png", "source-icons"),
+            ("flow-bg-test.png", "flow-backgrounds"),
+            ("random-test.png", "public"),
+        ]
+
+        for filename, expected_dir in test_files:
+            # Create a valid test image file
+            image = Image.new("RGB", (10, 10), color="red")
+            img_io = io.BytesIO()
+            image.save(img_io, format="PNG")
+            img_io.seek(0)
+
+            # Create a test file with proper image content type
+            content = ContentFile(img_io.getvalue())
+            content.content_type = "image/png"
+            content.name = filename
+
+            # Mock successful upload
+            self.mock_object.load.return_value = None
+
+            # Save the file
+            saved_name = self.storage._save(filename, content)
+
+            # Verify the saved path structure
+            self.assertTrue(
+                saved_name.startswith(f"{self.storage.tenant_prefix}/{expected_dir}/"),
+                f"Saved path {saved_name} should start with tenant/{expected_dir}/"
+            )
+
+            # Verify the filename format (should be UUID only)
+            file_part = saved_name.split('/')[-1]
+            uuid_part = file_part.replace('.png', '')
+            try:
+                uuid.UUID(uuid_part)
+            except ValueError:
+                self.fail(f"Filename {file_part} is not a valid UUID with extension")
+
+            # Verify S3 object was created with correct key
+            normalized_name = self.storage._normalize_name(saved_name)
+            self.mock_bucket.Object.assert_any_call(normalized_name)
+
+    def test_save_file_name_format(self):
+        """Test that saved files use UUID-only names"""
+        # Create a test image
+        image = Image.new("RGB", (10, 10), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format="PNG")
+        img_io.seek(0)
+
+        content = ContentFile(img_io.getvalue())
+        content.content_type = "image/png"
+        content.name = "test-original-name.png"
+
+        # Mock successful upload
+        self.mock_object.load.return_value = None
+
+        # Save the file
+        saved_name = self.storage._save(content.name, content)
+
+        # Get just the filename part
+        filename = os.path.basename(saved_name)
+        name_part, ext = os.path.splitext(filename)
+
+        # Verify extension
+        self.assertEqual(ext, ".png")
+
+        # Verify name is just a UUID
+        try:
+            uuid.UUID(name_part)
+        except ValueError:
+            self.fail(f"Filename {filename} is not a valid UUID with extension")
+
+        # Verify original filename is not in the saved name
+        self.assertNotIn("test-original-name", saved_name)
+
+        # Verify file was saved in public directory (default)
+        self.assertIn("/public/", saved_name)
+
 
 class TestTenantAwareStorage(TestCase):
     """Test tenant-aware storage functionality"""
@@ -779,6 +884,125 @@ class TestFileStorage(TestCase):
         shutil.rmtree(self.temp_dir)
         self.connection_patcher.stop()
         super().tearDown()
+
+    def test_init_creates_directories(self):
+        """Test storage directory creation on init"""
+        # Check base directory
+        self.assertTrue(os.path.exists(self.temp_dir))
+        self.assertTrue(os.path.isdir(self.temp_dir))
+
+        # Check tenant directory
+        tenant_dir = os.path.join(self.temp_dir, "test_tenant")
+        self.assertTrue(os.path.exists(tenant_dir))
+        self.assertTrue(os.path.isdir(tenant_dir))
+
+        # Check subdirectories
+        expected_subdirs = ['application-icons', 'source-icons', 'flow-backgrounds', 'public']
+        for subdir in expected_subdirs:
+            subdir_path = os.path.join(tenant_dir, subdir)
+            self.assertTrue(
+                os.path.exists(subdir_path),
+                f"Subdirectory {subdir} was not created"
+            )
+            self.assertTrue(
+                os.path.isdir(subdir_path),
+                f"Path {subdir} exists but is not a directory"
+            )
+
+    def test_get_file_subdirectory(self):
+        """Test subdirectory determination based on filename"""
+        test_cases = [
+            ("app-icon-test.png", "application-icons"),
+            ("application-icon-logo.jpg", "application-icons"),
+            ("source-icon-provider.png", "source-icons"),
+            ("source-logo-oauth.jpg", "source-icons"),
+            ("flow-bg-dark.png", "flow-backgrounds"),
+            ("flow-background-light.jpg", "flow-backgrounds"),
+            ("random-image.png", "public"),
+            ("test.jpg", "public"),
+        ]
+
+        for filename, expected_dir in test_cases:
+            result = self.storage._get_file_subdirectory(filename)
+            self.assertEqual(
+                result,
+                expected_dir,
+                f"File {filename} should go to {expected_dir}, got {result}"
+            )
+
+    def test_save_file_structure(self):
+        """Test file saving with proper directory structure"""
+        # Create test files for different categories
+        test_files = [
+            ("app-icon-test.png", "application-icons"),
+            ("source-icon-test.png", "source-icons"),
+            ("flow-bg-test.png", "flow-backgrounds"),
+            ("random-test.png", "public"),
+        ]
+
+        for filename, expected_dir in test_files:
+            # Create a valid test image file
+            image = Image.new("RGB", (10, 10), color="red")
+            img_io = io.BytesIO()
+            image.save(img_io, format="PNG")
+            img_io.seek(0)
+
+            # Create a test file with proper image content type
+            content = ContentFile(img_io.getvalue())
+            content.content_type = "image/png"
+            content.name = filename
+
+            # Save the file
+            saved_name = self.storage._save(filename, content)
+
+            # Verify the saved path structure
+            self.assertTrue(saved_name.startswith(f"test_tenant/{expected_dir}/"))
+            
+            # Verify the filename format (should be UUID only)
+            file_part = saved_name.split('/')[-1]
+            uuid_part = file_part.replace('.png', '')
+            try:
+                uuid.UUID(uuid_part)
+            except ValueError:
+                self.fail(f"Filename {file_part} is not a valid UUID with extension")
+
+            # Verify file exists in correct location
+            full_path = os.path.join(self.temp_dir, saved_name)
+            self.assertTrue(
+                os.path.exists(full_path),
+                f"File not found at {full_path}"
+            )
+
+    def test_save_file_name_format(self):
+        """Test that saved files use UUID-only names"""
+        # Create a test image
+        image = Image.new("RGB", (10, 10), color="red")
+        img_io = io.BytesIO()
+        image.save(img_io, format="PNG")
+        img_io.seek(0)
+
+        content = ContentFile(img_io.getvalue())
+        content.content_type = "image/png"
+        content.name = "test-original-name.png"
+
+        # Save the file
+        saved_name = self.storage._save(content.name, content)
+
+        # Get just the filename part
+        filename = os.path.basename(saved_name)
+        name_part, ext = os.path.splitext(filename)
+
+        # Verify extension
+        self.assertEqual(ext, ".png")
+
+        # Verify name is just a UUID
+        try:
+            uuid.UUID(name_part)
+        except ValueError:
+            self.fail(f"Filename {filename} is not a valid UUID with extension")
+
+        # Verify original filename is not in the saved name
+        self.assertNotIn("test-original-name", saved_name)
 
     def test_init_creates_directory(self):
         """Test storage directory creation on init"""
@@ -923,14 +1147,14 @@ class TestFileStorage(TestCase):
         content.name = "test.png"
 
         # Test with first tenant
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant1"
             name1 = self.storage._save("test.png", content)
             self.assertTrue(name1.startswith("tenant1/"))
             self.assertTrue(self.storage.exists(name1))
 
         # Test with second tenant
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant2"
             # Same filename should create different path
             name2 = self.storage._save("test.png", content)
@@ -995,7 +1219,7 @@ class TestFileStorage(TestCase):
         content.name = "test.png"
 
         # Create files in subdirectories
-        with patch("django.db.connection") as mock_conn:
+        with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "test_tenant"
             subdir1 = "subdir1/test.png"
             subdir2 = "subdir2/nested/test.png"
@@ -1052,3 +1276,21 @@ class TestFileStorage(TestCase):
         # Test invalid mode
         with self.assertRaises(ValueError):
             self.storage.open("test.txt", "invalid_mode")
+
+    def test_directory_initialization(self):
+        """Test that storage directories are properly initialized"""
+        storage = FileStorage()
+        tenant_dir = storage._base_path / storage.tenant_prefix
+        
+        # Check that all expected subdirectories exist
+        expected_subdirs = STORAGE_DIRS
+        for subdir in expected_subdirs:
+            subdir_path = tenant_dir / subdir
+            self.assertTrue(
+                subdir_path.exists(),
+                f"Expected subdirectory {subdir} does not exist"
+            )
+            self.assertTrue(
+                subdir_path.is_dir(),
+                f"Expected subdirectory {subdir} is not a directory"
+            )
