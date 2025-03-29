@@ -39,9 +39,14 @@ class FilePathSerializer(PassiveSerializer):
 
 def set_file(request: Request, obj: Model, field_name: str):
     """Upload file"""
+    # Use serializer for validation
+    serializer = FileUploadSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+    
     field = getattr(obj, field_name)
     file = request.FILES.get("file", None)
-    clear = request.data.get("clear", "false").lower() == "true"
+    clear = serializer.validated_data.get("clear", False)
 
     # If clearing or replacing, delete the old file first
     if (clear or file) and field:
@@ -95,10 +100,16 @@ def set_file(request: Request, obj: Model, field_name: str):
 
 def set_file_url(request: Request, obj: Model, field: str):
     """Set file field to URL"""
-    field = getattr(obj, field)
-    url = request.data.get("url", None)
+    # Use serializer for validation
+    serializer = FilePathSerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=400)
+    
+    field_obj = getattr(obj, field)
+    url = serializer.validated_data.get("url")
     if url is None:
-        return HttpResponseBadRequest()
-    field.name = url
+        return Response({"error": "URL is required"}, status=400)
+    
+    field_obj.name = url
     obj.save()
     return Response({})

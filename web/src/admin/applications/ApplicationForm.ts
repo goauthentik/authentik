@@ -1,5 +1,6 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
+import { clearApplicationIcon, setApplicationIcon, setApplicationIconUrl } from "@goauthentik/common/api/applications";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { first } from "@goauthentik/common/utils";
@@ -84,54 +85,44 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             const icon = this.getFormFiles()["metaIcon"];
             if (this.clearIcon) {
                 try {
-                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                        slug: app.slug,
-                        clear: true,
-                    });
-                } catch (e: any) {
+                    await clearApplicationIcon(app.slug);
+                } catch (e: unknown) {
+                    const error = e as Error;
                     showMessage({
                         level: MessageLevel.error,
-                        message: e.response?.data?.error || "Failed to clear icon",
+                        message: error.message || "Failed to clear icon",
                     });
                 }
             } else if (icon) {
                 try {
-                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                        slug: app.slug,
-                        file: icon,
-                    });
-                } catch (e: any) {
+                    await setApplicationIcon(app.slug, icon);
+                } catch (e: unknown) {
+                    const error = e as Error;
                     showMessage({
                         level: MessageLevel.error,
-                        message: e.response?.data?.error || "Failed to upload icon",
+                        message: error.message || "Failed to upload icon",
                     });
                 }
             }
         } else {
             if (this.clearIcon) {
                 try {
-                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                        slug: app.slug,
-                        clear: true,
-                    });
-                } catch (e: any) {
+                    await clearApplicationIcon(app.slug);
+                } catch (e: unknown) {
+                    const error = e as Error;
                     showMessage({
                         level: MessageLevel.error,
-                        message: e.response?.data?.error || "Failed to clear icon",
+                        message: error.message || "Failed to clear icon",
                     });
                 }
             } else if (data.metaIcon) {
                 try {
-                    await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                        slug: app.slug,
-                        filePathRequest: {
-                            url: data.metaIcon,
-                        },
-                    });
-                } catch (e: any) {
+                    await setApplicationIconUrl(app.slug, data.metaIcon);
+                } catch (e: unknown) {
+                    const error = e as Error;
                     showMessage({
                         level: MessageLevel.error,
-                        message: e.response?.data?.error || "Failed to set icon URL",
+                        message: error.message || "Failed to set icon URL",
                     });
                 }
             }
