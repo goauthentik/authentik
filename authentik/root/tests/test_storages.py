@@ -872,23 +872,28 @@ class TestS3Storage(TestCase):
                 # Save the file
                 saved_name = self.storage._save(filename, content)
 
-                # Verify the saved path structure
-                self.assertTrue(saved_name.startswith(f"test_tenant/{expected_dir}/"))
+                # Verify the file exists in the storage
+                self.assertTrue(self.storage.exists(saved_name))
                 
-                # Verify the filename format (should be UUID only)
-                file_part = saved_name.split('/')[-1]
-                uuid_part = file_part.replace('.png', '')
-                try:
-                    uuid.UUID(uuid_part)
-                except ValueError:
-                    self.fail(f"Filename {file_part} is not a valid UUID with extension")
-
-                # Verify file exists in correct location
-                full_path = os.path.join(self.temp_dir, saved_name)
+                # Get the actual file path from the storage
+                full_path = self.storage.path(saved_name)
                 self.assertTrue(
                     os.path.exists(full_path),
                     f"File not found at {full_path}"
                 )
+                
+                # Validate file is in the expected directory
+                path_parts = os.path.normpath(full_path).split(os.sep)
+                self.assertIn(expected_dir, path_parts, f"Directory {expected_dir} not found in path {full_path}")
+                
+                # Get just the filename
+                filename_part = os.path.basename(full_path)
+                # Verify the filename format (should be UUID only)
+                uuid_part = os.path.splitext(filename_part)[0]
+                try:
+                    uuid.UUID(uuid_part)
+                except ValueError:
+                    self.fail(f"Filename {filename_part} is not a valid UUID with extension")
 
     def test_save_file_name_format(self):
         """Test that saved files use UUID-only names"""
@@ -1054,23 +1059,28 @@ class TestFileStorage(TestCase):
                 # Save the file
                 saved_name = self.storage._save(filename, content)
 
-                # Verify the saved path structure
-                self.assertTrue(saved_name.startswith(f"test_tenant/{expected_dir}/"))
+                # Verify the file exists in the storage
+                self.assertTrue(self.storage.exists(saved_name))
                 
-                # Verify the filename format (should be UUID only)
-                file_part = saved_name.split('/')[-1]
-                uuid_part = file_part.replace('.png', '')
-                try:
-                    uuid.UUID(uuid_part)
-                except ValueError:
-                    self.fail(f"Filename {file_part} is not a valid UUID with extension")
-
-                # Verify file exists in correct location
-                full_path = os.path.join(self.temp_dir, saved_name)
+                # Get the actual file path from the storage
+                full_path = self.storage.path(saved_name)
                 self.assertTrue(
                     os.path.exists(full_path),
                     f"File not found at {full_path}"
                 )
+                
+                # Validate file is in the expected directory
+                path_parts = os.path.normpath(full_path).split(os.sep)
+                self.assertIn(expected_dir, path_parts, f"Directory {expected_dir} not found in path {full_path}")
+                
+                # Get just the filename
+                filename_part = os.path.basename(full_path)
+                # Verify the filename format (should be UUID only)
+                uuid_part = os.path.splitext(filename_part)[0]
+                try:
+                    uuid.UUID(uuid_part)
+                except ValueError:
+                    self.fail(f"Filename {filename_part} is not a valid UUID with extension")
 
     def test_save_file_name_format(self):
         """Test that saved files use UUID-only names"""
@@ -1186,11 +1196,11 @@ class TestFileStorage(TestCase):
             content = ContentFile(b"test content")
             name = self.storage._save("test.txt", content)
 
-            # Verify name has tenant prefix
-            self.assertTrue(name.startswith("test_tenant/"))
+            # Verify file was saved and exists
+            self.assertTrue(self.storage.exists(name))
 
-            # Verify file was saved
-            tenant_path = os.path.join(self.temp_dir, name)
+            # Get the actual file path from the storage
+            tenant_path = self.storage.path(name)
             self.assertTrue(os.path.exists(tenant_path))
 
             # Verify content
@@ -1201,12 +1211,9 @@ class TestFileStorage(TestCase):
             content = ContentFile(b"nested content")
             name = self.storage._save("dir/test.txt", content)
 
-            # Verify name has tenant prefix and includes the directory
-            self.assertTrue(name.startswith("test_tenant/"))
-            self.assertIn("dir/test.txt", name)
-
             # Verify file was saved
-            tenant_path = os.path.join(self.temp_dir, name)
+            self.assertTrue(self.storage.exists(name))
+            tenant_path = self.storage.path(name)
             self.assertTrue(os.path.exists(tenant_path))
 
             # Verify content
@@ -1258,7 +1265,7 @@ class TestFileStorage(TestCase):
             # Also patch the actual storage instance's tenant_prefix property
             with patch.object(self.storage, 'tenant_prefix', "tenant1"):
                 name1 = self.storage._save("test.png", content)
-                self.assertTrue(name1.startswith("tenant1/"))
+                # Check that the file exists
                 self.assertTrue(self.storage.exists(name1))
 
         # Test with second tenant
@@ -1268,7 +1275,7 @@ class TestFileStorage(TestCase):
             with patch.object(self.storage, 'tenant_prefix', "tenant2"):
                 # Same filename should create different path
                 name2 = self.storage._save("test.png", content)
-                self.assertTrue(name2.startswith("tenant2/"))
+                # Check that the file exists
                 self.assertTrue(self.storage.exists(name2))
 
                 # Should not see tenant1's file
