@@ -657,12 +657,12 @@ class TestS3Storage(TestCase):
         """Test file existence checks"""
 
         # Setup mock responses
-        def mock_head_object(Key):
+        def mock_head_object(Bucket, Key):
             if Key == "tenant1/exists.txt":
                 return {}
             raise ClientError({"Error": {"Code": "404", "Message": "Not Found"}}, "head_object")
 
-        self.mock_client.head_object = MagicMock(side_effect=mock_head_object)
+        self.mock_s3_client.head_object = MagicMock(side_effect=mock_head_object)
 
         with patch("authentik.root.storages.connection") as mock_conn:
             mock_conn.schema_name = "tenant1"

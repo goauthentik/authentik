@@ -1457,14 +1457,14 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             bool: True if file exists, False otherwise
         """
         # NOTE: The test mocks head_object to accept Key="tenant1/exists.txt"
-        tenant_prefixed_name = f"{connection.schema_name}/{name}"
+        tenant_prefixed_name = self._normalize_name(name)
         LOGGER.debug(
             "Checking if file exists", name=name, tenant_prefixed_name=tenant_prefixed_name
         )
 
         try:
-            # In the test, the mock is expecting a positional argument
-            self.client.head_object(tenant_prefixed_name)
+            # Use the S3 client to check if the object exists
+            self._s3_client.head_object(Bucket=self._bucket_name, Key=tenant_prefixed_name)
             LOGGER.debug("File exists", name=name, tenant_prefixed_name=tenant_prefixed_name)
             return True
         except ClientError as e:
