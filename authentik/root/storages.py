@@ -1007,10 +1007,6 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         if ".." in clean_name.split("/"):
             raise SuspiciousOperation(f"Invalid characters in filename '{name}'")
 
-        # Add media prefix if not already present
-        if not clean_name.startswith("media/"):
-            clean_name = f"media/{clean_name}"
-
         # Final validation
         try:
             safe_join("", clean_name)
@@ -1072,27 +1068,6 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 error_type=type(e).__name__,
                 tenant=self.tenant_prefix,
             )
-
-    def _upload_to_s3(self, normalized_name: str, content) -> None:
-        """Upload the file to S3 and verify the upload."""
-        LOGGER.debug(
-            "Creating S3 object for upload",
-            key=normalized_name,
-            tenant=self.tenant_prefix,
-        )
-        obj = self.bucket.Object(normalized_name)
-
-        LOGGER.debug(
-            "Uploading file to S3",
-            key=normalized_name,
-            tenant=self.tenant_prefix,
-        )
-        upload_kwargs = {}
-        if hasattr(content, "content_type") and content.content_type:
-            upload_kwargs["ContentType"] = content.content_type
-
-        obj.upload_fileobj(content, ExtraArgs=upload_kwargs if upload_kwargs else None)
-        self._verify_upload(obj, normalized_name)
 
     def _verify_upload(self, obj, normalized_name: str) -> None:
         """Verify that the upload was successful."""
@@ -1240,33 +1215,60 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         name = self.get_tenant_path(final_name)
         
         # Normalize the name for S3
-        name = self._normalize_name(name)
+        normalized_name = self._normalize_name(name)
 
         # Log the save attempt
-        self._log_save_attempt(name, random_name, name, content)
+        self._log_save_attempt(name, random_name, normalized_name, content)
 
         # Get S3 object for this file
-        obj = self.bucket.Object(name)
+        obj = self.bucket.Object(normalized_name)
 
         try:
             # Upload the file to S3
-            self._upload_to_s3(name, content)
+            LOGGER.debug(
+                "Uploading file to S3",
+                key=normalized_name,
+                tenant=self.tenant_prefix,
+            )
+            upload_kwargs = {}
+            if hasattr(content, "content_type") and content.content_type:
+                upload_kwargs["ContentType"] = content.content_type
+
+            try:
+                obj.upload_fileobj(content, ExtraArgs=upload_kwargs if upload_kwargs else None)
+            except ClientError as e:
+                # Log the error
+                error_code = e.response.get("Error", {}).get("Code", "Unknown")
+                error_message = e.response.get("Error", {}).get("Message", "Unknown error")
+                LOGGER.error(
+                    "S3 upload failed with ClientError",
+                    name=name,
+                    key=normalized_name,
+                    error_code=error_code,
+                    message=error_message,
+                    response=str(e.response),
+                    tenant=self.tenant_prefix,
+                )
+                # Clean up failed upload attempts
+                self._cleanup_failed_upload(obj, normalized_name)
+                # Re-raise the ClientError directly
+                raise
 
             # Verify the upload was successful
-            self._verify_upload(obj, name)
+            self._verify_upload(obj, normalized_name)
 
             # Log successful save
-            self._log_save_success(name, name)
+            self._log_save_success(name, normalized_name)
 
             # Return the name with tenant prefix to ensure proper path reference
             return name
         except Exception as e:
-            # Clean up failed upload attempts
-            self._cleanup_failed_upload(obj, name)
-
-            # Handle errors based on type
-            self._handle_save_error(e, name, name)
-
+            # Handle exceptions that aren't ClientError (already handled above)
+            if not isinstance(e, ClientError):
+                # Clean up failed upload attempts
+                self._cleanup_failed_upload(obj, normalized_name)
+                # Handle errors based on type
+                self._handle_save_error(e, name, normalized_name)
             # Re-raise the exception after cleanup and logging
             raise
 
@@ -1424,3 +1426,15 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 tenant=self.tenant_prefix,
             )
             raise
+
+    def size(self, name: str) -> int:
+        """Get the size of a file.
+
+        Args:
+            name (str): Name of the file
+
+        Returns:
+            int: Size of the file in bytes
+        """
+        obj = self.bucket.Object(name)
+        return obj.content_length
