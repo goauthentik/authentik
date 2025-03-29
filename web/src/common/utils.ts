@@ -157,23 +157,26 @@ export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): Ad
     return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
 }
 
-const _timeUnits = new Map<Intl.RelativeTimeFormatUnit, number>([
-    ["year", 24 * 60 * 60 * 1000 * 365],
-    ["month", (24 * 60 * 60 * 1000 * 365) / 12],
-    ["day", 24 * 60 * 60 * 1000],
-    ["hour", 60 * 60 * 1000],
-    ["minute", 60 * 1000],
-    ["second", 1000],
-]);
-
 export function getRelativeTime(d1: Date, d2: Date = new Date()): string {
-    const rtf = new Intl.RelativeTimeFormat("default", { numeric: "auto" });
     const elapsed = d1.getTime() - d2.getTime();
+    const rtf = new Intl.RelativeTimeFormat("default", { numeric: "auto" });
 
-    // "Math.abs" accounts for both "past" & "future" scenarios
+    const _timeUnits: [Intl.RelativeTimeFormatUnit, number][] = [
+        ["year", 1000 * 60 * 60 * 24 * 365],
+        ["month", (24 * 60 * 60 * 1000 * 365) / 12],
+        ["day", 1000 * 60 * 60 * 24],
+        ["hour", 1000 * 60 * 60],
+        ["minute", 1000 * 60],
+        ["second", 1000],
+    ];
+
     for (const [key, value] of _timeUnits) {
-        if (Math.abs(elapsed) > value || key == "second") {
-            return rtf.format(Math.round(elapsed / value), key);
+        if (Math.abs(elapsed) > value || key === "second") {
+            let rounded = Math.round(elapsed / value);
+            if (!isFinite(rounded)) {
+                rounded = 0;
+            }
+            return rtf.format(rounded, key);
         }
     }
     return rtf.format(Math.round(elapsed / 1000), "second");
