@@ -10,7 +10,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallenge,
+    WithUserInfoChallengeMixin,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
@@ -31,7 +31,7 @@ class ConsentPermissionSerializer(PassiveSerializer):
     id = CharField()
 
 
-class ConsentChallenge(WithUserInfoChallenge):
+class ConsentChallenge(WithUserInfoChallengeMixin, Challenge):
     """Challenge info for consent screens"""
 
     header_text = CharField(required=False)

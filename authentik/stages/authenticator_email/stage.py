@@ -12,7 +12,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallenge,
+    WithUserInfoChallengeMixin,
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.stage import ChallengeStageView
@@ -33,7 +33,7 @@ PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
 
-class AuthenticatorEmailChallenge(WithUserInfoChallenge):
+class AuthenticatorEmailChallenge(WithUserInfoChallengeMixin, Challenge):
     """Authenticator Email Setup challenge"""
 
     # Set to true if no previous prompt stage set the email

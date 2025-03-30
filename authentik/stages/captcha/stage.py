@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallenge,
+    WithUserInfoChallengeMixin,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.http import get_http_session
@@ -21,7 +21,7 @@ LOGGER = get_logger()
 PLAN_CONTEXT_CAPTCHA = "captcha"
 
 
-class CaptchaChallenge(WithUserInfoChallenge):
+class CaptchaChallenge(WithUserInfoChallengeMixin, Challenge):
     """Site public key"""
 
     component = CharField(default="ak-stage-captcha")
