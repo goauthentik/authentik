@@ -15,7 +15,8 @@ jobs:
       - name: Check body for version
         id: version_check
         run: |
-          if [[ ! "${{ github.event.issue.body }}" =~ [0-9]{4}\.[0-9]+\.[0-9]+ ]]; then
+          body=$(jq -r .issue.body <<< '${{ toJSON(github.event) }}')
+          if ! echo "$body" | grep -E -q '[0-9]{4}\.[0-9]+\.[0-9]+'; then
             echo "No version found in issue body"
             exit 78
           fi
@@ -30,9 +31,9 @@ jobs:
       - name: Extract version from body
         id: extract_version
         run: |
-          body="${{ github.event.issue.body }}"
-          [[ "$body" =~ ([0-9]{4}\.[0-9]+\.[0-9]+) ]]
-          echo "ISSUE_VERSION=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+          body=$(jq -r .issue.body <<< '${{ toJSON(github.event) }}')
+          ISSUE_VERSION=$(echo "$body" | grep -Eo '[0-9]{4}\.[0-9]+\.[0-9]+' | head -n1)
+          echo "ISSUE_VERSION=$ISSUE_VERSION" >> $GITHUB_ENV
 
       - name: Get current version info
         id: get_current_version
