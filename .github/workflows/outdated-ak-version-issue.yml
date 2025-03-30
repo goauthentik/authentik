@@ -12,21 +12,29 @@ jobs:
       issues: write
       id-token: write
     steps:
-      - name: Check body for version
-        id: version_check
-        run: |
-          body=$(jq -r .issue.body <<< '${{ toJSON(github.event) }}')
-          if ! echo "$body" | grep -E -q '[0-9]{4}\.[0-9]+\.[0-9]+'; then
-            echo "No version found in issue body"
-            exit 78
-          fi
-
       - name: Generate GitHub App Token
         id: generate_token
         uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+
+      - name: Check body for version
+        id: version_check
+        run: |
+          body=$(jq -r .issue.body <<< '${{ toJSON(github.event) }}')
+          if ! echo "$body" | grep -E -q '[0-9]{4}\.[0-9]+\.[0-9]+'; then
+            if echo "$body" | grep -qi 'authentik version: \[e\.g\.'; then
+              gh api \
+                --method POST \
+                -H "Accept: application/vnd.github+json" \
+                /repos/${{ github.repository }}/issues/${{ github.event.issue.number }}/comments \
+                -f body="Hi there! 👋 It looks like you used a placeholder for the authentik version (e.g. 2025.2.0). 
+
+                Could you update your issue with the actual version number? This will help us assist you better. Thanks! 😊"
+            fi
+            exit 0
+          fi
 
       - name: Extract version from body
         id: extract_version
