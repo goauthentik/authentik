@@ -113,6 +113,8 @@ __internal_models = []
 
 
 def internal_model(cls):
+    """Mark a model class as an internal model, which means it cannot be
+    managed by blueprints, and creations/changes will not be logged in the events."""
     __internal_models.append(cls)
     return cls
 

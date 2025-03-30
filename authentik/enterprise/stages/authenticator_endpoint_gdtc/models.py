@@ -11,7 +11,7 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.flows.stage import StageView
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, internal_model
 from authentik.stages.authenticator.models import Device
 
 
@@ -63,6 +63,7 @@ class AuthenticatorEndpointGDTCStage(ConfigurableStage, FriendlyNamedStage, Stag
         verbose_name_plural = _("Endpoint Authenticator Google Device Trust Connector Stages")
 
 
+@internal_model
 class EndpointDevice(SerializerModel, Device):
     """Endpoint Device for a single user"""
 
@@ -91,6 +92,7 @@ class EndpointDevice(SerializerModel, Device):
         verbose_name_plural = _("Endpoint Devices")
 
 
+@internal_model
 class EndpointDeviceConnection(models.Model):
     device = models.ForeignKey(EndpointDevice, on_delete=models.CASCADE)
     stage = models.ForeignKey(AuthenticatorEndpointGDTCStage, on_delete=models.CASCADE)

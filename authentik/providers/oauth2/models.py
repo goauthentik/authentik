@@ -550,6 +550,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
+@internal_model
 class DeviceToken(ExpiringModel):
     """Temporary device token for OAuth device flow"""
 
