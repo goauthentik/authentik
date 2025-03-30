@@ -18,9 +18,9 @@ from scim2_filter_parser.transpilers.django_q_object import get_query
 from structlog import BoundLogger
 from structlog.stdlib import get_logger
 
+from authentik.common.sync.mapper import PropertyMappingManager
 from authentik.core.models import Group, User
 from authentik.core.sources.mapper import SourceMapper
-from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
 

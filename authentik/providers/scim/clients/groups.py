@@ -9,14 +9,14 @@ from pydanticscim.responses import PatchOp
 
 from authentik.common.scim.schema import SCIM_GROUP_SCHEMA, PatchOperation, PatchRequest
 from authentik.common.scim.schema import Group as SCIMGroupSchema
-from authentik.core.models import Group
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import (
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.base import Direction
+from authentik.common.sync.outgoing.exceptions import (
     NotFoundSyncException,
     ObjectExistsSyncException,
     StopSync,
 )
+from authentik.core.models import Group
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (

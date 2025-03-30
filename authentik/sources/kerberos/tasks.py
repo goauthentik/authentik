@@ -3,11 +3,11 @@
 from django.core.cache import cache
 from structlog.stdlib import get_logger
 
+from authentik.common.sync.outgoing.exceptions import StopSync
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.lib.config import CONFIG
-from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.kerberos.models import KerberosSource

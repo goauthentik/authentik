@@ -10,21 +10,21 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
+from authentik.common.sync.outgoing.base import Direction
+from authentik.common.sync.outgoing.exceptions import (
+    BadRequestSyncException,
+    DryRunRejected,
+    StopSync,
+    TransientSyncException,
+)
+from authentik.common.sync.outgoing.models import OutgoingSyncProvider
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
-from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import (
-    BadRequestSyncException,
-    DryRunRejected,
-    StopSync,
-    TransientSyncException,
-)
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 

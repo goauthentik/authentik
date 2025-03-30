@@ -6,12 +6,12 @@ from django.db.models import Q
 from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.sync.outgoing.exceptions import StopSync
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction, SystemTask
 from authentik.events.system_tasks import TaskStatus
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer

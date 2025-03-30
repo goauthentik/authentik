@@ -10,6 +10,8 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
+from authentik.common.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 from authentik.core.models import (
     BackchannelProvider,
     Group,
@@ -18,8 +20,6 @@ from authentik.core.models import (
     UserTypes,
 )
 from authentik.lib.models import SerializerModel, internal_model
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 
 
 @internal_model

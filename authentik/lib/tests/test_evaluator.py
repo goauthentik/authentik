@@ -5,9 +5,9 @@ from django.urls import reverse
 from jwt import decode
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.expression.evaluator import BaseEvaluator
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.events.models import Event
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 

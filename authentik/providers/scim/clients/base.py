@@ -7,14 +7,14 @@ from pydantic import ValidationError
 from requests import RequestException, Session
 
 from authentik.common.scim.schema import ServiceProviderConfiguration
-from authentik.lib.sync.outgoing import (
+from authentik.common.sync.outgoing import (
     HTTP_CONFLICT,
     HTTP_NO_CONTENT,
     HTTP_SERVICE_UNAVAILABLE,
     HTTP_TOO_MANY_REQUESTS,
 )
-from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import (
+from authentik.common.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
+from authentik.common.sync.outgoing.exceptions import (
     DryRunRejected,
     NotFoundSyncException,
     ObjectExistsSyncException,

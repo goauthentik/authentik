@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
+from authentik.common.expression.evaluator import BaseEvaluator
 from authentik.common.saml.constants import (
     DSA_SHA1,
     ECDSA_SHA1,
@@ -43,7 +44,6 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.challenge import RedirectChallenge
 from authentik.flows.models import Flow
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 

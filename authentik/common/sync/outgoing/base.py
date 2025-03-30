@@ -7,19 +7,19 @@ from deepmerge import always_merger
 from django.db import DatabaseError
 from structlog.stdlib import get_logger
 
+from authentik.common.expression.exceptions import ControlFlowException
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
 )
 from authentik.events.models import Event, EventAction
-from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import NotFoundSyncException, StopSync
 from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from django.db.models import Model
 
-    from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+    from authentik.common.sync.outgoing.models import OutgoingSyncProvider
 
 
 class Direction(StrEnum):

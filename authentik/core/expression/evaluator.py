@@ -7,10 +7,10 @@ from django.db.models import Model
 from django.http import HttpRequest
 from prometheus_client import Histogram
 
+from authentik.common.expression.evaluator import BaseEvaluator
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.types import PolicyRequest
 

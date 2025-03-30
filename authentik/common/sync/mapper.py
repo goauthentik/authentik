@@ -3,12 +3,12 @@ from collections.abc import Generator
 from django.db.models import QuerySet
 from django.http import HttpRequest
 
+from authentik.common.expression.exceptions import ControlFlowException
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
 )
 from authentik.core.models import PropertyMapping, User
-from authentik.lib.expression.exceptions import ControlFlowException
 
 
 class PropertyMappingManager:

@@ -3,11 +3,11 @@ from typing import Any
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.common.sync.mapper import PropertyMappingManager
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, PropertyMapping, Source, User
 from authentik.events.models import Event, EventAction
 from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.policies.utils import delete_none_values
 
 LOGGER = get_logger()

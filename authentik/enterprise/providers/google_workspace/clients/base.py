@@ -6,10 +6,9 @@ from googleapiclient.errors import Error, HttpError
 from googleapiclient.http import HttpRequest
 from httplib2 import HttpLib2Error, HttpLib2ErrorWithResponse
 
-from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
-from authentik.lib.sync.outgoing import HTTP_CONFLICT
-from authentik.lib.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.exceptions import (
+from authentik.common.sync.outgoing import HTTP_CONFLICT
+from authentik.common.sync.outgoing.base import SAFE_METHODS, BaseOutgoingSyncClient
+from authentik.common.sync.outgoing.exceptions import (
     BadRequestSyncException,
     DryRunRejected,
     NotFoundSyncException,
@@ -17,6 +16,7 @@ from authentik.lib.sync.outgoing.exceptions import (
     StopSync,
     TransientSyncException,
 )
+from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 
 
 class GoogleWorkspaceSyncClient[TModel: Model, TConnection: Model, TSchema: dict](

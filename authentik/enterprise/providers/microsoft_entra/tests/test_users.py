@@ -13,6 +13,7 @@ from msgraph.generated.models.verified_domain import VerifiedDomain
 from rest_framework.test import APITestCase
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.enterprise.providers.microsoft_entra.models import (
@@ -23,7 +24,6 @@ from authentik.enterprise.providers.microsoft_entra.models import (
 from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.tenants.models import Tenant
 
 

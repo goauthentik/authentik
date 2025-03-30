@@ -7,6 +7,8 @@ from django.db import IntegrityError, transaction
 from kadmin import KAdmin
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.exceptions import StopSync
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
     SkipObjectException,
@@ -15,8 +17,6 @@ from authentik.core.models import Group, User, UserTypes
 from authentik.core.sources.mapper import SourceMapper
 from authentik.core.sources.matcher import Action, SourceMatcher
 from authentik.events.models import Event, EventAction
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.kerberos.models import (
     GroupKerberosSourceConnection,
     KerberosSource,

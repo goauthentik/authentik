@@ -6,9 +6,9 @@ from pydantic import ValidationError
 
 from authentik.common.scim.schema import SCIM_USER_SCHEMA
 from authentik.common.scim.schema import User as SCIMUserSchema
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.core.models import User
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import ObjectExistsSyncException, StopSync
 from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider, SCIMProviderUser

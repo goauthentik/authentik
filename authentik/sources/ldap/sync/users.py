@@ -6,6 +6,7 @@ from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
 from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
+from authentik.common.sync.outgoing.exceptions import StopSync
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
     SkipObjectException,
@@ -13,7 +14,6 @@ from authentik.core.expression.exceptions import (
 from authentik.core.models import User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
-from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.sources.ldap.models import (
     LDAP_UNIQUENESS,
     LDAPSource,

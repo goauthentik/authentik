@@ -18,9 +18,9 @@ from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
-from authentik.core.models import User
+from authentik.common.expression.exceptions import ControlFlowException
+from authentik.core.models import AuthenticatedSession, User
 from authentik.events.models import Event
-from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
