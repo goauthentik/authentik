@@ -31,7 +31,6 @@ from authentik.flows.challenge import (
     ChallengeResponse,
     FlowErrorChallenge,
     HttpChallengeResponse,
-    LoginChallenge,
     RedirectChallenge,
     ShellChallenge,
     WithUserInfoChallenge,
@@ -79,7 +78,7 @@ def challenge_types():
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
     for cls in all_subclasses(Challenge):
-        if cls in [WithUserInfoChallenge, LoginChallenge]:
+        if cls in [WithUserInfoChallenge]:
             continue
         mapping[cls().fields["component"].default] = cls
     return mapping

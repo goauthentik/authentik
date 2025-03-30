@@ -60,10 +60,6 @@ class Challenge(PassiveSerializer):
     )
 
 
-class LoginChallenge(Challenge):
-    """Base class for extended login challenges"""
-
-
 class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
