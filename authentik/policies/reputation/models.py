@@ -13,7 +13,7 @@ from structlog import get_logger
 
 from authentik.core.models import ExpiringModel
 from authentik.lib.config import CONFIG
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, internal_model
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware
@@ -68,6 +68,7 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
+@internal_model
 class Reputation(ExpiringModel, SerializerModel):
     """Reputation for user and or IP."""
 

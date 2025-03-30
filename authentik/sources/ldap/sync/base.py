@@ -6,9 +6,9 @@ from django.conf import settings
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.sync.mapper import PropertyMappingManager
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.config import CONFIG
-from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.ldap.models import LDAPSource
 
 

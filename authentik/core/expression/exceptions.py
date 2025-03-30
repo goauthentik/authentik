@@ -1,6 +1,6 @@
 """authentik core exceptions"""
 
-from authentik.lib.expression.exceptions import ControlFlowException
+from authentik.common.expression.exceptions import ControlFlowException
 from authentik.lib.sentry import SentryIgnoredException
 
 

@@ -14,11 +14,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.common.sync.outgoing.api import SyncStatusSerializer
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.sync.outgoing.api import SyncStatusSerializer
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 

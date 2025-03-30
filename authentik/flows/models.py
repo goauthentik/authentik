@@ -16,7 +16,11 @@ from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
 from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
+from authentik.lib.models import (
+    InheritanceForeignKey,
+    SerializerModel,
+    internal_model,
+)
 from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.models import PolicyBindingModel
 
@@ -75,6 +79,7 @@ class FlowDesignation(models.TextChoices):
     STAGE_CONFIGURATION = "stage_configuration"
 
 
+@internal_model
 class Stage(SerializerModel):
     """Stage is an instance of a component used in a flow. This can verify the user,
     enroll the user or offer a way of recovery"""
@@ -297,6 +302,7 @@ class FriendlyNamedStage(models.Model):
         abstract = True
 
 
+@internal_model
 class FlowToken(Token):
     """Subclass of a standard Token, stores the currently active flow plan upon creation.
     Can be used to later resume a flow."""

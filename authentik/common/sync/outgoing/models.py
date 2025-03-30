@@ -5,8 +5,8 @@ from django.db import connection, models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
 
+from authentik.common.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 
 
 class OutgoingSyncDeleteAction(TextChoices):

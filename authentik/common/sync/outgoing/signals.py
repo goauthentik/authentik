@@ -5,10 +5,10 @@ from django.db.models import Model
 from django.db.models.query import Q
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 
+from authentik.common.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
+from authentik.common.sync.outgoing.base import Direction
+from authentik.common.sync.outgoing.models import OutgoingSyncProvider
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
-from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path
 
 

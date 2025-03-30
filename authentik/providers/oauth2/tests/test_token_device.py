@@ -6,14 +6,14 @@ from django.test import RequestFactory
 from django.urls import reverse
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Application
-from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.lib.generators import generate_code_fixed_length, generate_id
-from authentik.providers.oauth2.constants import (
+from authentik.common.oauth.constants import (
     GRANT_TYPE_DEVICE_CODE,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
 )
+from authentik.core.models import Application
+from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
     DeviceToken,

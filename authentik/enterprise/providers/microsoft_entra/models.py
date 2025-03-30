@@ -10,6 +10,8 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
+from authentik.common.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 from authentik.core.models import (
     BackchannelProvider,
     Group,
@@ -17,11 +19,10 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.lib.models import SerializerModel, internal_model
 
 
+@internal_model
 class MicrosoftEntraProviderUser(SerializerModel):
     """Mapping of a user and provider to a Microsoft user ID"""
 
@@ -48,6 +49,7 @@ class MicrosoftEntraProviderUser(SerializerModel):
         return f"Microsoft Entra Provider User {self.user_id} to {self.provider_id}"
 
 
+@internal_model
 class MicrosoftEntraProviderGroup(SerializerModel):
     """Mapping of a group and provider to a Microsoft group ID"""
 

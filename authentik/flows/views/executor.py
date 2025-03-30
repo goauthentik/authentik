@@ -78,7 +78,7 @@ def challenge_types():
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
     for cls in all_subclasses(Challenge):
-        if cls == WithUserInfoChallenge:
+        if cls in [WithUserInfoChallenge]:
             continue
         mapping[cls().fields["component"].default] = cls
     return mapping

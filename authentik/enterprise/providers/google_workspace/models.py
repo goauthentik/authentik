@@ -10,6 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
+from authentik.common.sync.outgoing.base import BaseOutgoingSyncClient
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 from authentik.core.models import (
     BackchannelProvider,
     Group,
@@ -17,9 +19,7 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel
-from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.lib.models import SerializerModel, internal_model
 
 
 def default_scopes() -> list[str]:
@@ -31,6 +31,7 @@ def default_scopes() -> list[str]:
     ]
 
 
+@internal_model
 class GoogleWorkspaceProviderUser(SerializerModel):
     """Mapping of a user and provider to a Google user ID"""
 
@@ -57,6 +58,7 @@ class GoogleWorkspaceProviderUser(SerializerModel):
         return f"Google Workspace Provider User {self.user_id} to {self.provider_id}"
 
 
+@internal_model
 class GoogleWorkspaceProviderGroup(SerializerModel):
     """Mapping of a group and provider to a Google group ID"""
 

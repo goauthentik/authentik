@@ -8,14 +8,11 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import FieldError
 from django.db.models import Model
 from django.db.models.query_utils import Q
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -31,109 +28,18 @@ from authentik.blueprints.v1.common import (
     EntryInvalidError,
 )
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
-from authentik.core.models import (
-    AuthenticatedSession,
-    GroupSourceConnection,
-    PropertyMapping,
-    Provider,
-    Source,
-    User,
-    UserSourceConnection,
-)
+from authentik.core.models import User
 from authentik.enterprise.license import LicenseKey
-from authentik.enterprise.models import LicenseUsage
-from authentik.enterprise.providers.google_workspace.models import (
-    GoogleWorkspaceProviderGroup,
-    GoogleWorkspaceProviderUser,
-)
-from authentik.enterprise.providers.microsoft_entra.models import (
-    MicrosoftEntraProviderGroup,
-    MicrosoftEntraProviderUser,
-)
-from authentik.enterprise.providers.ssf.models import StreamEvent
-from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
-    EndpointDevice,
-    EndpointDeviceConnection,
-)
 from authentik.events.logs import LogEvent, capture_logs
-from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
-from authentik.flows.models import FlowToken, Stage
-from authentik.lib.models import SerializerModel
+from authentik.lib.models import SerializerModel, excluded_models
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.reflection import get_apps
-from authentik.outposts.models import OutpostServiceConnection
-from authentik.policies.models import Policy, PolicyBindingModel
-from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import (
-    AccessToken,
-    AuthorizationCode,
-    DeviceToken,
-    RefreshToken,
-)
-from authentik.providers.rac.models import ConnectionToken
-from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
-from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
-from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
-from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
 # Update website/docs/customize/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
-
-
-def excluded_models() -> list[type[Model]]:
-    """Return a list of all excluded models that shouldn't be exposed via API
-    or other means (internal only, base classes, non-used objects, etc)"""
-
-    from django.contrib.auth.models import Group as DjangoGroup
-    from django.contrib.auth.models import User as DjangoUser
-
-    return (
-        # Django only classes
-        DjangoUser,
-        DjangoGroup,
-        ContentType,
-        Permission,
-        UserObjectPermission,
-        # Base classes
-        Provider,
-        Source,
-        PropertyMapping,
-        UserSourceConnection,
-        GroupSourceConnection,
-        Stage,
-        OutpostServiceConnection,
-        Policy,
-        PolicyBindingModel,
-        # Classes that have other dependencies
-        AuthenticatedSession,
-        # Classes which are only internally managed
-        # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
-        FlowToken,
-        LicenseUsage,
-        SCIMProviderGroup,
-        SCIMProviderUser,
-        Tenant,
-        SystemTask,
-        ConnectionToken,
-        AuthorizationCode,
-        AccessToken,
-        RefreshToken,
-        Reputation,
-        WebAuthnDeviceType,
-        SCIMSourceUser,
-        SCIMSourceGroup,
-        GoogleWorkspaceProviderUser,
-        GoogleWorkspaceProviderGroup,
-        MicrosoftEntraProviderUser,
-        MicrosoftEntraProviderGroup,
-        EndpointDevice,
-        EndpointDeviceConnection,
-        DeviceToken,
-        StreamEvent,
-    )
 
 
 def is_model_allowed(model: type[Model]) -> bool:

@@ -24,16 +24,17 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
+from authentik.common.expression.exceptions import ControlFlowException
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
-from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
+    internal_model,
 )
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
@@ -406,6 +407,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         return get_avatar(self)
 
 
+@internal_model
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
@@ -675,6 +677,7 @@ class SourceGroupMatchingModes(models.TextChoices):
     )
 
 
+@internal_model
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -809,6 +812,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ]
 
 
+@internal_model
 class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""
 
@@ -829,6 +833,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
+@internal_model
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between Group and Source."""
 
@@ -958,6 +963,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         ).save()
 
 
+@internal_model
 class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
@@ -997,6 +1003,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+@internal_model
 class AuthenticatedSession(ExpiringModel):
     """Additional session class for authenticated users. Augments the standard django session
     to achieve the following:

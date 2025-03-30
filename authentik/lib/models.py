@@ -2,9 +2,13 @@
 
 import re
 
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import URLValidator
 from django.db import models
+from django.db.models import Model
 from django.utils.regex_helper import _lazy_re_compile
+from guardian.models import UserObjectPermission
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 
@@ -94,3 +98,32 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
             re.IGNORECASE,
         )
         self.schemes = ["http", "https", "blank"] + list(self.schemes)
+
+
+__internal_models = []
+
+
+def internal_model(cls):
+    """Mark a model class as an internal model, which means it cannot be
+    managed by blueprints, and creations/changes will not be logged in the events."""
+    __internal_models.append(cls)
+    return cls
+
+
+def excluded_models() -> list[type[Model]]:
+    """Return a list of all excluded models that shouldn't be exposed via API
+    or other means (internal only, base classes, non-used objects, etc)"""
+
+    from django.apps import apps
+    from django.contrib.auth.models import Group as DjangoGroup
+    from django.contrib.auth.models import User as DjangoUser
+
+    static = [
+        # Django only classes
+        DjangoUser,
+        DjangoGroup,
+        ContentType,
+        Permission,
+        UserObjectPermission,
+    ]
+    return tuple(static + [x for x in apps.get_models() if x in __internal_models])

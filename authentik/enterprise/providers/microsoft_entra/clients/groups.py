@@ -4,6 +4,15 @@ from msgraph.generated.groups.groups_request_builder import GroupsRequestBuilder
 from msgraph.generated.models.group import Group as MSGroup
 from msgraph.generated.models.reference_create import ReferenceCreate
 
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.base import Direction
+from authentik.common.sync.outgoing.exceptions import (
+    NotFoundSyncException,
+    ObjectExistsSyncException,
+    StopSync,
+    TransientSyncException,
+)
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.core.models import Group
 from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
 from authentik.enterprise.providers.microsoft_entra.models import (
@@ -12,15 +21,6 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.base import Direction
-from authentik.lib.sync.outgoing.exceptions import (
-    NotFoundSyncException,
-    ObjectExistsSyncException,
-    StopSync,
-    TransientSyncException,
-)
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 
 
 class MicrosoftEntraGroupClient(

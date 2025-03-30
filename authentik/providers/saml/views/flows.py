@@ -8,6 +8,8 @@ from django.utils.http import urlencode
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.encoding import deflate_and_base64_encode, nice64
+from authentik.common.saml.exceptions import SAMLException
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -24,8 +26,6 @@ from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
-from authentik.providers.saml.utils.encoding import deflate_and_base64_encode, nice64
-from authentik.sources.saml.exceptions import SAMLException
 
 LOGGER = get_logger()
 URL_VALIDATOR = URLValidator(schemes=("http", "https"))

@@ -63,15 +63,15 @@ class Challenge(PassiveSerializer):
 class RedirectChallenge(Challenge):
     """Challenge type to redirect the client"""
 
-    to = CharField()
     component = CharField(default="xak-flow-redirect")
+    to = CharField()
 
 
 class ShellChallenge(Challenge):
     """challenge type to render HTML as-is"""
 
-    body = CharField()
     component = CharField(default="xak-flow-shell")
+    body = CharField()
 
 
 class WithUserInfoChallenge(Challenge):
