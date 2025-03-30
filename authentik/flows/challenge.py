@@ -74,7 +74,7 @@ class ShellChallenge(Challenge):
     body = CharField()
 
 
-class WithUserInfoChallengeMixin:
+class WithUserInfoChallenge(Challenge):
     """Challenge base which shows some user info"""
 
     pending_user = CharField(allow_blank=True)
@@ -107,7 +107,7 @@ class FlowErrorChallenge(Challenge):
                 self.initial_data["traceback"] = exception_to_string(error)
 
 
-class AccessDeniedChallenge(WithUserInfoChallengeMixin, Challenge):
+class AccessDeniedChallenge(WithUserInfoChallenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
     component = CharField(default="ak-stage-access-denied")
@@ -115,7 +115,7 @@ class AccessDeniedChallenge(WithUserInfoChallengeMixin, Challenge):
     error_message = CharField(required=False)
 
 
-class SessionEndChallenge(WithUserInfoChallengeMixin, Challenge):
+class SessionEndChallenge(WithUserInfoChallenge):
     """Challenge for ending a session"""
 
     component = CharField(default="ak-stage-session-end")

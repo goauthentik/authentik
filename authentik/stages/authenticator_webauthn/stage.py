@@ -30,7 +30,7 @@ from authentik.core.models import User
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallengeMixin,
+    WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import (
@@ -44,7 +44,7 @@ from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
 
 
-class AuthenticatorWebAuthnChallenge(WithUserInfoChallengeMixin, Challenge):
+class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
     """WebAuthn Challenge"""
 
     registration = JSONDictField()

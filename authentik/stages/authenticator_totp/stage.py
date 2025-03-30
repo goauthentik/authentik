@@ -11,7 +11,7 @@ from rest_framework.serializers import ValidationError
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallengeMixin,
+    WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
@@ -20,7 +20,7 @@ from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
 SESSION_TOTP_DEVICE = "totp_device"
 
 
-class AuthenticatorTOTPChallenge(WithUserInfoChallengeMixin, Challenge):
+class AuthenticatorTOTPChallenge(WithUserInfoChallenge):
     """TOTP Setup challenge"""
 
     config_url = CharField()

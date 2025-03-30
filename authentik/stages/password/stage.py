@@ -18,7 +18,7 @@ from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallengeMixin,
+    WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, Stage
@@ -69,7 +69,7 @@ def authenticate(
     )
 
 
-class PasswordChallenge(WithUserInfoChallengeMixin, Challenge):
+class PasswordChallenge(WithUserInfoChallenge):
     """Password challenge UI fields"""
 
     recovery_url = CharField(required=False)

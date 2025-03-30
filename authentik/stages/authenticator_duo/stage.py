@@ -8,7 +8,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    WithUserInfoChallengeMixin,
+    WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
@@ -17,7 +17,7 @@ from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, Duo
 SESSION_KEY_DUO_ENROLL = "authentik/stages/authenticator_duo/enroll"
 
 
-class AuthenticatorDuoChallenge(WithUserInfoChallengeMixin, Challenge):
+class AuthenticatorDuoChallenge(WithUserInfoChallenge):
     """Duo Challenge"""
 
     activation_barcode = CharField()
