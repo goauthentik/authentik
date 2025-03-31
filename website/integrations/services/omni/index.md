@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `omni.company` is the FQDN of the Omni installation. (Remove this for SaaS)
+- `omni.company` is the FQDN of the Omni installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -25,7 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of _Omni_ with authentik, you need to create a property mapping and application/provider pair in authentik.
 
-### Create a property mapping, application and provider in authentik
+### Create a Property Mapping, Application and Provider in authentik
 
 https://github.com/goauthentik/authentik/issues/9086#issuecomment-2620098764
 
@@ -47,14 +47,14 @@ https://github.com/goauthentik/authentik/issues/9086#issuecomment-2620098764
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
-    - ACS URL: `https://omni.company/saml/acs`
+    - ACS URL: `<kbd>https://<em>omni.company</em>/saml/acs</kbd>`
     - Service Provider Binding: `Post`
-    - Audience: `https://omni.company/saml/metadata`
+    - Audience: `<kbd>https://<em>omni.company</em>/saml/metadata</kbd>`
     - Signing Certificate: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
     - Sign assertions: `true`
     - Sign responses: `true`
-    - Property mappings: `<property_mapping_name>`
-    - NameID Property Mapping: `<property_mapping_name>`
+    - Property mappings: `<property_mapping_name>` (e.g. `Omni Mapping`)
+    - NameID Property Mapping: `<property_mapping_name>` (e.g. `Omni Mapping`)
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -66,11 +66,9 @@ Add the following environment variables to your Omni configuration. Make sure to
 
 ```shell
 auth-saml-enabled=true
-auth-saml-url=https://authentik.company/application/saml/<application_slug>/metadata/
+auth-saml-url=https://<em>authentik.company</em>/application/saml/<em><application_slug></em>/metadata/
 ```
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with _Omni_, log out and log back in via authentik."
-
-If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
+To confirm that authentik is properly configured with _Omni_, log out and log back in via the SAML button.
