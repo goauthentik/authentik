@@ -71,7 +71,7 @@ Service accounts, like regular user accounts, can:
 
 1. Be assigned to groups to inherit group permissions.
 2. Grant specific permissions directly to the service account.
-3. Be restricted to specific applications or resources.
+3. Restrict the service account to specific applications or resources.
 
 We recommend following the principle of least privilege and only grant service accounts the permissions they absolutely need.
 
