@@ -1,7 +1,7 @@
 from django.db import DEFAULT_DB_ALIAS
 from django.db.models import QuerySet
 from django.utils import timezone
-from dramatiq.message import Message, get_encoder
+from dramatiq.message import Message
 from dramatiq.results.backend import Missing, MResult, Result, ResultBackend
 
 from authentik.tasks.models import Task
@@ -29,9 +29,8 @@ class PostgresBackend(ResultBackend):
         return self.encoder.decode(data)
 
     def _store(self, message_key: str, result: Result, ttl: int) -> None:
-        encoder = get_encoder()
         self.query_set.filter(message_id=message_key).update(
             mtime=timezone.now(),
-            result=encoder.encode(result),
+            result=self.encoder.encode(result),
             result_expiry=timezone.now() + timezone.timedelta(milliseconds=ttl),
         )

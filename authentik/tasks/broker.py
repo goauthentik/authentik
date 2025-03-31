@@ -26,18 +26,17 @@ from dramatiq.middleware import (
     Callbacks,
     Middleware,
     Pipelines,
+    Prometheus,
     Retries,
     ShutdownNotifications,
     TimeLimit,
 )
-from dramatiq.results import Results
 from pglock.core import _cast_lock_id
 from psycopg import Notify, sql
 from psycopg.errors import AdminShutdown
 from structlog.stdlib import get_logger
 
 from authentik.tasks.models import CHANNEL_PREFIX, ChannelIdentifier, Task, TaskState
-from authentik.tasks.results import PostgresBackend
 from authentik.tasks.schedules.scheduler import Scheduler
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import get_current_tenant
@@ -87,7 +86,13 @@ class TenantMiddleware(Middleware):
 
 
 class PostgresBroker(Broker):
-    def __init__(self, *args, db_alias: str = DEFAULT_DB_ALIAS, results: bool = True, **kwargs):
+    def __init__(
+        self,
+        *args,
+        middleware: list[Middleware] | None = None,
+        db_alias: str = DEFAULT_DB_ALIAS,
+        **kwargs,
+    ):
         super().__init__(*args, middleware=[], **kwargs)
         self.logger = get_logger().bind()
 
@@ -100,18 +105,19 @@ class PostgresBroker(Broker):
         self.middleware = []
         self.add_middleware(DbConnectionMiddleware())
         self.add_middleware(TenantMiddleware())
-        for middleware in (
-            AgeLimit,
-            TimeLimit,
-            ShutdownNotifications,
-            Callbacks,
-            Pipelines,
-            Retries,
-        ):
-            self.add_middleware(middleware())
-        if results:
-            self.backend = PostgresBackend()
-            self.add_middleware(Results(backend=self.backend))
+        if middleware is None:
+            for m in (
+                Prometheus,
+                AgeLimit,
+                TimeLimit,
+                ShutdownNotifications,
+                Callbacks,
+                Pipelines,
+                Retries,
+            ):
+                self.add_middleware(m())
+        for m in middleware or []:
+            self.add_middleware(m)
 
     @property
     def connection(self) -> DatabaseWrapper:

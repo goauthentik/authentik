@@ -103,7 +103,6 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer], **
     return signatures
 
 
-# Need to store results to be able to wait for the task above
 @actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""

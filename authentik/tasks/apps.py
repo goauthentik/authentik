@@ -1,6 +1,16 @@
 import dramatiq
 from dramatiq.broker import Broker, get_broker
 from dramatiq.encoder import PickleEncoder
+from dramatiq.middleware import (
+    AgeLimit,
+    Callbacks,
+    Pipelines,
+    # Prometheus,
+    Retries,
+    ShutdownNotifications,
+    TimeLimit,
+)
+from dramatiq.results.middleware import Results
 
 from authentik.blueprints.apps import ManagedAppConfig
 
@@ -13,9 +23,19 @@ class AuthentikTasksConfig(ManagedAppConfig):
 
     def _set_dramatiq_middlewares(self, broker: Broker) -> None:
         from authentik.tasks.middleware import CurrentTask, FullyQualifiedActorName
+        from authentik.tasks.results import PostgresBackend
 
-        broker.add_middleware(FullyQualifiedActorName())
+        # TODO: fixme
         # broker.add_middleware(Prometheus())
+        broker.add_middleware(AgeLimit())
+        # Task timeout, 5 minutes by default for all tasks
+        broker.add_middleware(TimeLimit(time_limit=600 * 1000))
+        broker.add_middleware(ShutdownNotifications())
+        broker.add_middleware(Callbacks())
+        broker.add_middleware(Pipelines())
+        broker.add_middleware(Retries())
+        broker.add_middleware(Results(backend=PostgresBackend(), store_results=True))
+        broker.add_middleware(FullyQualifiedActorName())
         broker.add_middleware(CurrentTask())
 
     def ready(self) -> None:
