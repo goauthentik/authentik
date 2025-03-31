@@ -47,7 +47,7 @@ To create a new token for a service account:
 1. Click **Create**.
 2. Set the identifier for your token.
 3. In the user dropdown, select your service account.
-4. Under **Intent**, choose one of the following:
+4. For **Intent**, choose one of the following:
     - **API Token**: Used to access the API programmatically (30-minute default lifespan).
     - **App password**: Used for logging in using a flow executor (1-year default lifespan).
 5. Click **Create** to generate the new token.
