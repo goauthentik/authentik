@@ -1357,7 +1357,7 @@ msgid ""
 "authentication is completed."
 msgstr ""
 "Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
-"se rafraîchira lorsque l'authentification sera complète."
+"se rafraîchira lorsque l'authentification sera terminée."
 
 #: authentik/policies/templates/policies/buffer.html
 msgid "Authenticate in this tab"
