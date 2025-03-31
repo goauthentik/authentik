@@ -15,7 +15,6 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `firezone.company` is the FQDN of the Firezone installation.
-- `authentik` is the unique ID used to generate logins for this provider.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -43,29 +42,29 @@ To support the integration of Firezone with authentik, you need to create an app
 
 ## Firezone configuration
 
-- Click _Security_ under Settings
-- Under _Single Sign-On_, click on _Add OpenID Connect Provider_
-- Config ID: `authentik`
-- Label: `Text to display on the Login button`
-- Scope: `(leave default of "openid email profile")`
-- Response type: `(leave default of 'code')
-- Client ID: `Taken from Authentik Provider Config`
-- Client Secret: `Taken from Authentik Provider Config`
-- Discovery Document URI: `OpenID Configuration URL from Authentik`
-- Redirect URI: `https://firezone.company/auth/oidc/<ConfigID>/callback/`
-  :::note
-  You should be able to leave the default Rediret URL
-  :::
-- Auto-create Users: Enabled in order to automatically provision users when signing in the first time.
-- Click _Save_,
-
-Although local authentication is quick and easy to get started with, you can limit attack surface by disabling local authentication altogether. For production deployments it's usually a good idea to disable local authentication and enforce MFA through authentik.
+To configure OpenID Connect authentication with Firezone, navigate to **Settings** > **Security** of your Firezone installation and click **Add OpenID Connect Provider** under **Single Sign-On**.
 
 :::info
-In case something goes wrong with the configuration, you can temporarily re-enable local authentication via the REST API or by following instructions from https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli.
-:::
+In the event of a configuration errorm it is possible to re-enable local authentication, if previously disabled, by following instructions provided on [Firezone's troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli).
+:::info
 
-## Additional Resources
+Set the following values in the Firezone UI:
 
-- https://www.firezone.dev/docs/authenticate/oidc/
-- https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli
+- **Config ID**: `authentik`
+- **Label**: `authentik` (This is the label that is shown on the login page)
+- **Scopes**: Keep the default value: `openid email profile`
+- **Response type**: Keep the default value: `code`
+- **Client ID**: Use the Client ID from authentik
+- **Client Secret**: Use the Client Secret from authentik
+- **Discovery Document URI**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/.well-known/openid-configuration</kbd>
+- **Redirect URI**: <kbd>https://<em>firezone.company</em>/auth/oidc/authentik/callback/</kbd>
+- **Auth-create Users**: Turn this on
+
+## Ressources
+
+- [Firezone administration documentation on OpenID Connect authentication](https://www.firezone.dev/docs/authenticate/oidc/)
+- [Firezone OIDC troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli)
+
+## Configuration verification
+
+To verify that authentik is correctly set up with Firezone, navigate to your Firezone installation and click **authentik**. A successful login should redirect you to the main page of your installation.

@@ -4,6 +4,14 @@ sidebar_label: Apache Guacamole™
 support_level: authentik
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import IntegrationsMultilineCodeblock from "@site/src/components/Integrations/IntegrationsCodeblock";
+
+# Integrate with Apache Guacamole™
+
+<span class="badge badge--primary">Support level: authentik</span>
+
 ## What is Apache Guacamole™
 
 > Apache Guacamole is a clientless remote desktop gateway. It supports standard protocols like VNC, RDP, and SSH.
@@ -41,12 +49,13 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 
 3. Click **Submit** to save the new application and provider.
 
-## Guacamole configuration
+## Apache Guacamole Configuration
 
-It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the username of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
+It is recommended to create an admin account in Guacamole before configuring Single Sign-On to simplify the process. Create a user in Guacamole using the same username as in authentik and grant them admin permissions. This step is important to avoid losing access to the Guacamole admin settings, as you may need to revert your changes without it.
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+:::warning
+You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::
 
 <Tabs
   defaultValue="docker"
@@ -55,29 +64,49 @@ import TabItem from "@theme/TabItem";
     { label: 'Standalone', value: 'standalone' },
   ]}>
   <TabItem value="docker">
-    The Docker containers are configured via environment variables. The following variables are required:
+Docker containers are typically configured using environment variables. To ensure proper integration, add the following variables to your `.env` file:
 
-```yaml
-OPENID_AUTHORIZATION_ENDPOINT: https://authentik.company/application/o/authorize/
-OPENID_CLIENT_ID: # client ID from above
-OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
-OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
-OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
-OPENID_USERNAME_CLAIM_TYPE: preferred_username
-```
+<IntegrationsMultilineCodeblock>
+    {`
+OPENID_AUTHORIZATION_ENDPOINT=https://<em>authentik.company</em>/application/o/authorize/
+OPENID_CLIENT_ID=<em>Client ID from authentik</em>
+OPENID_ISSUER=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/
+OPENID_JWKS_ENDPOINT=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/jwks/
+OPENID_REDIRECT_URI=https://<em>guacamole.company</em>/ # Must match Redirect URI in authentik
+OPENID_USERNAME_CLAIM_TYPE=preferred_username
+`}
+</IntegrationsMultilineCodeblock>
+
+Additionally, ensure your `guacamole.properties` file (typically located in `/etc/guacamole/`) includes the following line. This setting allows environment variables to be evaluated before static configuration files:
+
+<IntegrationsMultilineCodeblock>
+    {`
+enable-environment-properties: true
+`}
+</IntegrationsMultilineCodeblock>
 
   </TabItem>
   <TabItem value="standalone">
-    Standalone Guacamole is configured using the `guacamole.properties` file. Add the following settings:
+    To set up Apache Guacamole in a standalone environment, you'll need to adjust the settings in the `guacamole.properties` file, usually found in the `/etc/guacamole/` directory. Add the following settings:
 
-```
-openid-authorization-endpoint=https://authentik.company/application/o/authorize/
-openid-client-id=# client ID from above
-openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
-openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
-openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
+<IntegrationsMultilineCodeblock>
+    {`
+openid-authorization-endpoint=https://<em>authentik.company</em>/application/o/authorize/
+openid-client-id=<em>Client ID from authentik</em>
+openid-issuer=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/
+openid-jwks-endpoint=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/jwks/
+openid-redirect-uri=https://<em>guacamole.company</em>/ # This must match the Redirect URI set in authentik (Including trailing slash).
 openid-username-claim-type=preferred_username
-```
+`}
+</IntegrationsMultilineCodeblock>
 
   </TabItem>
 </Tabs>
+
+## Ressources
+
+- [Apache Guacamole official documentation on OpenID Connect integrations](https://guacamole.apache.org/doc/gug/openid-auth.html#configuring-guacamole-for-single-sign-on-with-openid-connect)
+
+## Configuration verification
+
+To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom left of the login page.
