@@ -60,4 +60,4 @@ Then, go to **Access** > **Identity Provider** and enter the following informati
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with _mailcow_, log out and log back in via authentik.
+To confirm that authentik is properly configured with mailcow, log out and log back in via authentik.
