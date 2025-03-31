@@ -73,7 +73,7 @@ Service accounts, like regular user accounts, can:
 2. Be given specific permissions directly.
 3. Be restricted to specific applications or resources.
 
-It's recommended to follow the principle of least privilege and only grant service accounts the permissions they absolutely need.
+We recommend following the principle of least privilege and only grant service accounts the permissions they absolutely need.
 
 ## Common Use Cases
 
