@@ -37,7 +37,7 @@ Service accounts authenticate using [HTTP Basic Authentication](https://datatrac
 
 Tokens for service accounts can be managed through the authentik **Admin interface**:
 
-1. Navigate to **Admin Interface** > **Directory** > **Tokens and App passwords**.
+1. Log in to the Admin interface and navigate to **Directory** > **Tokens and App passwords**.
 2. Here you can view, create, copy, delete, and manage tokens.
 
 ### Creating New Tokens
