@@ -761,11 +761,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
+        if self.managed == self.MANAGED_INBUILT:
+            return ""
         raise NotImplementedError
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
         """Return property mapping type used by this object"""
+        if self.managed == self.MANAGED_INBUILT:
+            from authentik.core.models import PropertyMapping
+
+            return PropertyMapping
         raise NotImplementedError
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
@@ -780,10 +786,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
+        if self.managed == self.MANAGED_INBUILT:
+            return {}
         raise NotImplementedError
 
     def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a group to build final properties upon."""
+        if self.managed == self.MANAGED_INBUILT:
+            return {}
         raise NotImplementedError
 
     def __str__(self):
