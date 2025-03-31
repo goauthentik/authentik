@@ -43,7 +43,8 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
                 LOGGER.warning("Failed to load OAuth Source", exc=exc)
         return super().import_related()
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.sources.oauth.tasks.update_well_known_jwks",

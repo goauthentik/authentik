@@ -15,14 +15,6 @@ class AuthentikCoreConfig(ManagedAppConfig):
     mountpoint = ""
     default = True
 
-    @ManagedAppConfig.reconcile_global
-    def debug_worker_hook(self):
-        """Dispatch startup tasks inline when debugging"""
-        if settings.DEBUG:
-            from authentik.root.celery import worker_ready_hook
-
-            worker_ready_hook()
-
     @ManagedAppConfig.reconcile_tenant
     def source_inbuilt(self):
         """Reconcile inbuilt source"""
@@ -36,7 +28,8 @@ class AuthentikCoreConfig(ManagedAppConfig):
             managed=Source.MANAGED_INBUILT,
         )
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.core.tasks.clean_expired_models",

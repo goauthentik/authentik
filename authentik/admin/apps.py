@@ -17,7 +17,14 @@ class AuthentikAdminConfig(ManagedAppConfig):
     verbose_name = "authentik Admin"
     default = True
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @ManagedAppConfig.reconcile_tenant
+    def clear_update_notifications(self):
+        from authentik.admin.tasks import clear_update_notifications
+
+        clear_update_notifications.send()
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.admin.tasks.update_latest_version",

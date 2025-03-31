@@ -10,6 +10,8 @@ from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import actor
+from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
 from watchdog.events import (
     FileCreatedEvent,
@@ -31,15 +33,13 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.logs import capture_logs
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
-_file_watcher_started = False
 
 
 @dataclass
@@ -53,22 +53,20 @@ class BlueprintFile:
     meta: BlueprintMetadata | None = field(default=None)
 
 
-def start_blueprint_watcher():
-    """Start blueprint watcher, if it's not running already."""
-    # This function might be called twice since it's called on celery startup
+class BlueprintWatcherMiddleware(Middleware):
+    def start_blueprint_watcher(self):
+        """Start blueprint watcher"""
+        observer = Observer()
+        kwargs = {}
+        if platform.startswith("linux"):
+            kwargs["event_filter"] = (FileCreatedEvent, FileModifiedEvent)
+        observer.schedule(
+            BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True, **kwargs
+        )
+        observer.start()
 
-    global _file_watcher_started  # noqa: PLW0603
-    if _file_watcher_started:
-        return
-    observer = Observer()
-    kwargs = {}
-    if platform.startswith("linux"):
-        kwargs["event_filter"] = (FileCreatedEvent, FileModifiedEvent)
-    observer.schedule(
-        BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True, **kwargs
-    )
-    observer.start()
-    _file_watcher_started = True
+    def before_worker_boot(self, broker, worker):
+        self.start_blueprint_watcher()
 
 
 class BlueprintEventHandler(FileSystemEventHandler):
@@ -92,7 +90,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
         LOGGER.debug("new blueprint file created, starting discovery")
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                blueprints_discovery.delay()
+                blueprints_discovery.send()
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""
@@ -103,10 +101,10 @@ class BlueprintEventHandler(FileSystemEventHandler):
             with tenant:
                 for instance in BlueprintInstance.objects.filter(path=rel_path, enabled=True):
                     LOGGER.debug("modified blueprint file, starting apply", instance=instance)
-                    apply_blueprint.delay(instance.pk.hex)
+                    apply_blueprint.send(instance.pk)
 
 
-@CELERY_APP.task(
+@actor(
     throws=(DatabaseError, ProgrammingError, InternalError),
 )
 def blueprints_find_dict():
@@ -146,12 +144,10 @@ def blueprints_find() -> list[BlueprintFile]:
     return blueprints
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError), base=SystemTask, bind=True
-)
-@prefill_task
-def blueprints_discovery(self: SystemTask, path: str | None = None):
+@actor(throws=(DatabaseError, ProgrammingError, InternalError))
+def blueprints_discovery(path: str | None = None):
     """Find blueprints and check if they need to be created in the database"""
+    self: Task = CurrentTask.get_task()
     count = 0
     for blueprint in blueprints_find():
         if path and blueprint.path != path:
@@ -187,16 +183,15 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         )
     if instance.last_applied_hash != blueprint.hash:
         LOGGER.info("Applying blueprint due to changed file", instance=instance, path=instance.path)
-        apply_blueprint.delay(str(instance.pk))
+        apply_blueprint.send(instance.pk)
 
 
-@CELERY_APP.task(
-    bind=True,
-    base=SystemTask,
-)
-def apply_blueprint(self: SystemTask, instance_pk: str):
+@actor
+def apply_blueprint(instance_pk: str):
     """Apply single blueprint"""
-    self.save_on_success = False
+    self: Task = CurrentTask.get_task()
+    # TODO: fixme
+    # self.save_on_success = False
     instance: BlueprintInstance | None = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
@@ -241,7 +236,7 @@ def apply_blueprint(self: SystemTask, instance_pk: str):
             instance.save()
 
 
-@CELERY_APP.task()
+@actor
 def clear_failed_blueprints():
     """Remove blueprints which couldn't be fetched"""
     # Exclude OCI blueprints as those might be temporarily unavailable

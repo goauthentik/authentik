@@ -29,7 +29,8 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
 
         return LicenseKey.cached_summary().status.is_valid
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.enterprise.tasks.enterprise_update_usage",

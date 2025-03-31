@@ -1,4 +1,5 @@
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class AuthentikTasksSchedulesConfig(ManagedAppConfig):
@@ -7,7 +8,8 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
     verbose_name = "authentik Tasks Schedules"
     default = True
 
-    def get_tenant_schedule_specs(self):
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.tasks.schedules.models import ScheduledModel
 
         schedules = []

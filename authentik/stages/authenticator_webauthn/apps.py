@@ -13,7 +13,8 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
     verbose_name = "authentik Stages.Authenticator.WebAuthn"
     default = True
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.stages.authenticator_webauthn.tasks.webauthn_mds_import",

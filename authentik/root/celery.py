@@ -1,7 +1,6 @@
 """authentik core celery"""
 
 import os
-from collections.abc import Callable
 from contextvars import ContextVar
 from logging.config import dictConfig
 from pathlib import Path
@@ -16,12 +15,9 @@ from celery.signals import (
     task_internal_error,
     task_postrun,
     task_prerun,
-    worker_ready,
 )
 from celery.worker.control import inspect_command
 from django.conf import settings
-from django.db import ProgrammingError
-from django_tenants.utils import get_public_schema_name
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
@@ -85,55 +81,6 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
         Event.new(
             EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
         ).save()
-
-
-def _get_startup_tasks_default_tenant() -> list[Callable]:
-    """Get all tasks to be run on startup for the default tenant"""
-    # from authentik.outposts.tasks import outpost_connection_discovery
-
-    # TODO: figure out what to do with this
-    return [
-        # outpost_connection_discovery,
-    ]
-
-
-def _get_startup_tasks_all_tenants() -> list[Callable]:
-    """Get all tasks to be run on startup for all tenants"""
-    # from authentik.admin.tasks import clear_update_notifications
-    # from authentik.providers.proxy.tasks import proxy_set_defaults
-
-    # TODO: figure out what to do with this
-    return [
-        # clear_update_notifications,
-        # proxy_set_defaults,
-    ]
-
-
-@worker_ready.connect
-def worker_ready_hook(*args, **kwargs):
-    """Run certain tasks on worker start"""
-    from authentik.tenants.models import Tenant
-
-    LOGGER.info("Dispatching startup tasks...")
-
-    def _run_task(task: Callable):
-        try:
-            task.delay()
-        except ProgrammingError as exc:
-            LOGGER.warning("Startup task failed", task=task, exc=exc)
-
-    for task in _get_startup_tasks_default_tenant():
-        with Tenant.objects.get(schema_name=get_public_schema_name()):
-            _run_task(task)
-
-    for task in _get_startup_tasks_all_tenants():
-        for tenant in Tenant.objects.filter(ready=True):
-            with tenant:
-                _run_task(task)
-
-    from authentik.blueprints.v1.tasks import start_blueprint_watcher
-
-    start_blueprint_watcher()
 
 
 class LivenessProbe(bootsteps.StartStopStep):

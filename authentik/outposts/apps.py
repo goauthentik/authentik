@@ -63,12 +63,24 @@ class AuthentikOutpostConfig(ManagedAppConfig):
         else:
             Outpost.objects.filter(managed=MANAGED_OUTPOST).delete()
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @ManagedAppConfig.reconcile_global
+    def outpost_connection_discovery(self):
+        from authentik.outposts.tasks import outpost_connection_discovery
+
+        outpost_connection_discovery.send()
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.outposts.tasks.outpost_token_ensurer",
                 crontab=f"{fqdn_rand('outpost_token_ensurer')} */8 * * *",
             ),
+        ]
+
+    @property
+    def global_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
             ScheduleSpec(
                 actor_name="authentik.outposts.tasks.outpost_connection_discovery",
                 crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",

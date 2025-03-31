@@ -70,7 +70,8 @@ class AuthentikCryptoConfig(ManagedAppConfig):
             },
         )
 
-    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
                 actor_name="authentik.crypto.tasks.certificate_discovery",
