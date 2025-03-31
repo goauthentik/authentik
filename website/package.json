@@ -27,10 +27,19 @@
         "@docusaurus/theme-mermaid": "^3.7.0",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
+<<<<<<< HEAD
         "disqus-react": "^1.1.6",
         "docusaurus-plugin-openapi-docs": "4.3.4",
         "docusaurus-theme-openapi-docs": "4.3.4",
         "postcss": "^8.5.3",
+=======
+        "disqus-react": "^1.1.5",
+        "docusaurus-plugin-openapi-docs": "^4.3.4",
+        "docusaurus-theme-openapi-docs": "^4.3.4",
+        "dompurify": "^3.2.4",
+        "jsdom": "^26.0.0",
+        "postcss": "^8.5.2",
+>>>>>>> 3f5fb3e9c (make it build?)
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
