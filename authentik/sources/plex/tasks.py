@@ -1,30 +1,24 @@
 """Plex tasks"""
 
+from dramatiq.actor import actor
 from requests import RequestException
 
-from authentik.events.models import Event, EventAction, TaskStatus
-from authentik.events.system_tasks import SystemTask
+from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-from authentik.root.celery import CELERY_APP
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 
-@CELERY_APP.task()
-def check_plex_token_all():
-    """Check plex token for all plex sources"""
-    for source in PlexSource.objects.all():
-        check_plex_token.delay(source.slug)
-
-
-@CELERY_APP.task(bind=True, base=SystemTask)
-def check_plex_token(self: SystemTask, source_slug: int):
+@actor
+def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
-    sources = PlexSource.objects.filter(slug=source_slug)
+    self: Task = CurrentTask.get_task()
+    sources = PlexSource.objects.filter(pk=source_pk)
     if not sources.exists():
         return
     source: PlexSource = sources.first()
-    self.set_uid(source.slug)
     auth = PlexAuth(source, source.plex_token)
     try:
         auth.get_user_info()
