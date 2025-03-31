@@ -1,6 +1,5 @@
 """authentik core signals"""
 
-
 from django.contrib.auth.signals import user_logged_in
 from django.core.cache import cache
 from django.core.signals import Signal
@@ -71,9 +70,3 @@ def expiring_model_pre_save(sender: type[Model], instance: Model, **_):
         return
     if instance.expiring and instance.expires is None:
         instance.expires = default_token_duration()
-
-
-@receiver(post_delete)
-def authenticated_session_post_delete(sender: type[Model], instance: AuthenticatedSession, **_):
-    """Ensure Session objects associated with an AuthenticatedSession are also deleted"""
-    Session.objects.filter(pk=instance.pk).delete()
