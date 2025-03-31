@@ -56,7 +56,7 @@ To create a new token for a service account:
 
 - To copy a token's value, use the copy button under the **Actions** column.
 - To delete a token, select it from the list and click the **Delete** button.
-- To regenerate a token, delete the existing token and create a new one with the same settings, ensuring you select the same username under the User dropdown.
+- To regenerate a token, delete the existing token and create a new one with the same settings, ensuring you select the same username under the **User** dropdown list.
 
 ### Token Properties
 
