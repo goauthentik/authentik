@@ -360,18 +360,7 @@ CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
     "worker_concurrency": CONFIG.get_int("worker.concurrency"),
-    "beat_schedule": {
-        "clean_expired_models": {
-            "task": "authentik.core.tasks.clean_expired_models",
-            "schedule": crontab(minute="2-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
-        "user_cleanup": {
-            "task": "authentik.core.tasks.clean_temporary_users",
-            "schedule": crontab(minute="9-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
-    },
+    "beat_schedule": {},
     "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",

@@ -3,6 +3,7 @@
 from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
@@ -34,3 +35,15 @@ class AuthentikCoreConfig(ManagedAppConfig):
             },
             managed=Source.MANAGED_INBUILT,
         )
+
+    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.core.tasks.clean_expired_models",
+                crontab="2-59/5 * * * *",
+            ),
+            ScheduleSpec(
+                actor_name="authentik.core.tasks.clean_temporary_users",
+                crontab="9-59/5 * * * *",
+            ),
+        ]
