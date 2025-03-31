@@ -15,27 +15,19 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
-from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync_single
 from authentik.stages.prompt.signals import password_validate
 
 LOGGER = get_logger()
 
 
 @receiver(post_save, sender=LDAPSource)
-def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
+def sync_ldap_source_on_save(sender, instance: LDAPSource, created: bool, **_):
     """Ensure that source is synced on save (if enabled)"""
-    if not instance.enabled:
+    # On creation, schedules are automatically run
+    if created or not instance.enabled:
         return
-    ldap_connectivity_check.delay(instance.pk)
-    # Don't sync sources when they don't have any property mappings. This will only happen if:
-    # - the user forgets to set them or
-    # - the source is newly created, this is the first save event
-    #   and the mappings are created with an m2m event
-    if instance.sync_users and not instance.user_property_mappings.exists():
-        return
-    if instance.sync_groups and not instance.group_property_mappings.exists():
-        return
-    ldap_sync_single.delay(instance.pk)
+    for schedule in instance.schedules.all():
+        schedule.send()
 
 
 @receiver(password_validate)

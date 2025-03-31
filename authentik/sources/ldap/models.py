@@ -19,6 +19,9 @@ from authentik.core.models import Group, PropertyMapping, Source
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"
@@ -47,7 +50,7 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
-class LDAPSource(Source):
+class LDAPSource(ScheduledModel, Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
     server_uri = models.TextField(
@@ -132,6 +135,25 @@ class LDAPSource(Source):
         from authentik.sources.ldap.api import LDAPSourceSerializer
 
         return LDAPSourceSerializer
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.sources.ldap.tasks.ldap_sync",
+                uid=self.pk,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
+                description=_(f"Sync LDAP source '{self.name}'"),
+            ),
+            ScheduleSpec(
+                actor_name="authentik.sources.ldap.tasks.ldap_connectivity_check",
+                uid=self.pk,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",
+                description=_(f"Check connectivity for LDAP source '{self.name}'"),
+            ),
+        ]
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":

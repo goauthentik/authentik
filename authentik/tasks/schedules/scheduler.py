@@ -1,9 +1,6 @@
-import pickle  # nosec
-
 import pglock
 from django.db import router, transaction
 from django.utils.timezone import now, timedelta
-from dramatiq.actor import Actor
 from dramatiq.broker import Broker
 from structlog.stdlib import get_logger
 
@@ -27,12 +24,7 @@ class Scheduler:
             next_run += timedelta(minutes=2)
         schedule.next_run = next_run
 
-        actor: Actor = self.broker.get_actor(schedule.actor_name)
-        actor.send_with_options(
-            args=pickle.loads(schedule.args),  # nosec
-            kwargs=pickle.loads(schedule.kwargs),  # nosec
-            schedule_uid=schedule.uid,
-        )
+        schedule.send(self.broker)
 
         schedule.save()
 

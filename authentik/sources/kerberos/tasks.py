@@ -28,7 +28,7 @@ def kerberos_connectivity_check(pk: str):
     cache.set(CACHE_KEY_STATUS + source.slug, status, timeout=timeout)
 
 
-@actor(time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5)
+@actor(time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5 * 1000)
 def kerberos_sync(pk: str):
     """Sync a single source"""
     self: Task = CurrentTask.get_task()

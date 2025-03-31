@@ -1,3 +1,4 @@
+import pickle  # nosec
 from uuid import uuid4
 
 from cron_converter import Cron
@@ -7,6 +8,9 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import datetime
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
+from dramatiq.broker import Broker, get_broker
+from dramatiq.message import Message
 
 from authentik.lib.models import SerializerModel
 from authentik.tasks.schedules.lib import ScheduleSpec
@@ -56,6 +60,16 @@ class Schedule(SerializerModel):
 
         return ScheduleSerializer
 
+    def send(self, broker: Broker | None = None) -> Message:
+        broker = broker or get_broker()
+        actor: Actor = broker.get_actor(self.actor_name)
+        return actor.send_with_options(
+            args=pickle.loads(self.args),  # nosec
+            kwargs=pickle.loads(self.kwargs),  # nosec
+            schedule_uid=self.uid,
+        )
+
+    # TODO: actually do loop here
     def calculate_next_run(self, next_run: datetime) -> datetime:
         return Cron(self.crontab).schedule(next_run).next()
 
