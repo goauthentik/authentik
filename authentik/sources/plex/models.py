@@ -83,7 +83,7 @@ class PlexSource(ScheduledModel, Source):
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand(self.pk)} */3 * * *",
-                description=_(f"Check the token validity for the Plex source {self.name}"),
+                description=_(f"Check the token validity for the Plex source '{self.name}'"),
             ),
         ]
 

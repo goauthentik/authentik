@@ -5,7 +5,7 @@ from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
 from authentik.sources.kerberos.sync import KerberosSync
-from authentik.sources.kerberos.tasks import kerberos_sync_all
+from authentik.sources.kerberos.tasks import kerberos_sync
 from authentik.sources.kerberos.tests.utils import KerberosTestCase
 
 
@@ -69,7 +69,7 @@ class TestKerberosSync(KerberosTestCase):
 
     def test_tasks(self):
         """Test Scheduled tasks"""
-        kerberos_sync_all.delay().get()
+        kerberos_sync.send(self.source.pk)
         self.assertTrue(
             User.objects.filter(username=self.realm.user_princ.rsplit("@", 1)[0]).exists()
         )

@@ -18,6 +18,9 @@ from kadmin import KAdmin, KAdminApiVersion
 from kadmin.exceptions import PyKAdminException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 from authentik.core.models import (
     GroupSourceConnection,
@@ -43,7 +46,7 @@ class KAdminType(models.TextChoices):
     OTHER = "other"
 
 
-class KerberosSource(Source):
+class KerberosSource(ScheduledModel, Source):
     """Federate Kerberos realm with authentik"""
 
     realm = models.TextField(help_text=_("Kerberos realm"), unique=True)
@@ -134,6 +137,25 @@ class KerberosSource(Source):
         if not icon:
             return static("authentik/sources/kerberos.png")
         return icon
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.sources.kerberos.tasks.kerberos_sync",
+                uid=self.pk,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_sync/' + str(self.pk))} */2 * * *",
+                description=_(f"Sync Kerberos source '{self.name}'"),
+            ),
+            ScheduleSpec(
+                actor_name="authentik.sources.kerberos.tasks.kerberos_connectivity_check",
+                uid=self.pk,
+                args=(self.pk,),
+                crontab=f"{fqdn_rand('kerberos_connectivity_check/' + str(self.pk))} * * * *",
+                description=_(f"Check connectivity for Kerberos source '{self.name}'"),
+            ),
+        ]
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
         return UILoginButton(
