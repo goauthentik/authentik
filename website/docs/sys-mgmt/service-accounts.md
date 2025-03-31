@@ -14,6 +14,18 @@ authentik distinguishes between two types of service accounts:
 1. **User-created Service Accounts**: Created by administrators for integrating with external systems or for automation purposes.
 2. **Internal Service Accounts**: Created and managed automatically by authentik for internal purposes, such as outpost communications. These cannot be created manually.
 
+## Limitations
+
+Service accounts have certain limitations compared to regular user accounts:
+
+1. Cannot log in through the UI.
+2. Cannot have a password (they use tokens exclusively).
+3. Cannot participate in multi-factor authentication flows.
+4. Cannot be used for interactive sessions that require human interaction.
+5. Cannot have permissions assigned directly if they are internal service accounts.
+6. Cannot change their own password or manage their own account settings.
+7. Are subject to token expiration policies that differ from regular user accounts.
+
 ## Creating a Service Account
 
 To create a service account:
@@ -27,15 +39,20 @@ To create a service account:
     - **Expires on**: Sets the expiration date (defaults to 1 year from the creation date).
 4. Click **Create Service Account**.
 
-After creating the service account, you'll see a confirmation screen that shows the username and generated password (token). The password is a long, randomly generated string that will be valid for 360 days by default. Make sure to copy this information somewhere secure as you'll need it for authentication.
+After creating the service account, you'll see a confirmation screen that shows the username and generated password (token). Make sure to copy this information somewhere secure as you'll need it for authentication.
 
-## Authentication with Service Accounts
+## Token Properties
 
-Service accounts authenticate using [HTTP Basic Authentication](https://datatracker.ietf.org/doc/html/rfc7617). The username and password (token) generated during account creation are used as credentials.
+Service account tokens have the following properties:
+
+- **Expiration**: By default, tokens expire after 360 days but can be configured to be non-expiring.
+- **Custom Expiration Date**: You can set a specific expiration date when creating the service account.
+- **Revocation**: Tokens can be revoked at any time by deleting them or generating new ones.
+- **Automatic Rotation**: When a token expires, it's automatically rotated to maintain security.
 
 ## Managing Service Account Tokens
 
-Tokens for service accounts can be managed through the authentik **Admin interface**:
+Tokens for service accounts are managed through the authentik Admin interface:
 
 1. Log in to the Admin interface and navigate to **Directory** > **Tokens and App passwords**.
 2. Here you can view, create, copy, delete, and manage tokens.
@@ -58,12 +75,9 @@ To create a new token for a service account:
 - To delete a token, select it from the list and click the **Delete** button.
 - To regenerate a token, delete the existing token and create a new one with the same settings, ensuring you select the same username under the **User** dropdown list.
 
-### Token Properties
+## Authentication with Service Accounts
 
-- **Expiration**: By default, tokens expire after 360 days but can be configured to be non-expiring.
-- **Custom Expiration Date**: You can set a specific expiration date when creating the service account.
-- **Revocation**: Tokens can be revoked at any time by deleting them or generating new ones.
-- **Automatic Rotation**: When a token expires, it's automatically rotated to maintain security.
+Service accounts authenticate using [HTTP Basic Authentication](https://datatracker.ietf.org/doc/html/rfc7617). The username and password (token) generated during account creation are used as credentials.
 
 ## Permissions and Access Control
 
@@ -94,15 +108,3 @@ When using service accounts, follow these security practices:
 3. **Token Rotation**: Rotate tokens periodically for sensitive integrations.
 4. **Use Expiration**: Set appropriate token expiration dates for your use case.
 5. **Audit Usage**: Monitor service account activity for unexpected behavior.
-
-## Limitations
-
-Service accounts have certain limitations compared to regular user accounts:
-
-1. Cannot log in through the UI.
-2. Cannot have a password (they use tokens exclusively).
-3. Cannot participate in multi-factor authentication flows.
-4. Cannot be used for interactive sessions that require human interaction.
-5. Cannot have permissions assigned directly if they are internal service accounts.
-6. Cannot change their own password or manage their own account settings.
-7. Are subject to token expiration policies that differ from regular user accounts.
