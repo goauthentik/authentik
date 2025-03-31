@@ -6,9 +6,13 @@ support_level: community
 
 ## What is mailcow
 
-> mailcow: dockerized is an open source groupware/email suite based on docker. mailcow relies on many well known and long used components, which in combination result in an all around carefree email server.
+> mailcow is a Dockerized, open-source groupware and email suite based on Docker. It relies on many well-known and long-used components, which, when combined, result in a comprehensive email server solution.
 >
 > -- https://mailcow.email/
+
+:::info
+In order to use authentik in mailcow, at least version `2025-03` of mailcow is required.
+:::
 
 ## Preparation
 
@@ -28,13 +32,13 @@ To support the integration of mailcow with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://mailcow.company`.
+    - Set a `Strict` redirect URI to <kbd>https://<em>mailcow.company</em></kbd>.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -42,16 +46,18 @@ To support the integration of mailcow with authentik, you need to create an appl
 
 ## mailcow configuration
 
-Login to mailcow with admin permissions. Go to _System_ → _Configuration_.
-Press _Access_ → _Identity_ _Provider_ and enter the following:
+To configure mailcow with authentik, log in as an administrator and navigate to **System** > **Configuration**. 
+Then, go to **Access** > **Identity Provider** and enter the following information in the form:
 
-- Identity Provider: `Generic-OIDC`
-- Authorization endpoint: `https://mailcow.company/application/o/authorize/`
-- Token endpoint: `https://mailcow.company/application/o/token/`
-- User info endpoint: `https://mailcow.company/application/o/userinfo/`
-- Client ID: The 'Client ID' from the authentik provider
-- Client Secret: The 'Client secret' from the authentik provider
-- Redirect Url: `https://mailcow.company`
-- Client Scopes: `openid profile email`
+- **Identity Provider**: <kbd>Generic-OIDC</kbd>
+- **Authorization endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/authorize/</kbd>
+- **Token endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/token/</kbd>
+- **User info endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/userinfo/</kbd>
+- **Client ID**: The 'Client ID' from the authentik provider
+- **Client Secret**: The 'Client secret' from the authentik provider
+- **Redirect Url**: <kbd>https://<em>mailcow.company</em></kbd>
+- **Client Scopes**: <kbd>openid profile email</kbd>
 
-Save changes and test the connection.
+## Configuration verification
+
+To confirm that authentik is properly configured with _mailcow_, log out and log back in via authentik.
