@@ -52245,9 +52245,8 @@ components:
             format: uuid
         acs_url:
           type: string
-          format: uri
           minLength: 1
-          maxLength: 200
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -52404,16 +52403,14 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
-          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          maxLength: 200
+          format: uri
         slo_url:
           type: string
-          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          maxLength: 200
+          format: uri
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -55214,7 +55211,6 @@ components:
         acs_url:
           type: string
           format: uri
-          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55381,9 +55377,8 @@ components:
             format: uuid
         acs_url:
           type: string
-          format: uri
           minLength: 1
-          maxLength: 200
+          format: uri
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55556,15 +55551,13 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
-          format: uri
           description: URL that the initial Login request is sent to.
-          maxLength: 200
+          format: uri
         slo_url:
           type: string
-          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          maxLength: 200
+          format: uri
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -55747,16 +55740,14 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
-          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          maxLength: 200
+          format: uri
         slo_url:
           type: string
-          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          maxLength: 200
+          format: uri
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
