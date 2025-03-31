@@ -3,6 +3,8 @@
 from django.conf import settings
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class EnterpriseConfig(ManagedAppConfig):
@@ -26,3 +28,11 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
         from authentik.enterprise.license import LicenseKey
 
         return LicenseKey.cached_summary().status.is_valid
+
+    def get_tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.enterprise.tasks.enterprise_update_usage",
+                crontab=f"{fqdn_rand('enterprise_update_usage')} */2 * * *",
+            ),
+        ]
