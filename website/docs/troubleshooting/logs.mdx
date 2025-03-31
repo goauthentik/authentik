@@ -1,10 +1,10 @@
 ---
-title: Capturing Logs in authentik
+title: Capturing logs in authentik
 ---
 
 When troubleshooting issues in authentik, reviewing the [event logs](../sys-mgmt/events/index.md) can be invaluable. These logs provide continuous output, helping to diagnose problems effectively.
 
-## Adjusting Log Levels
+## Adjusting log levels
 
 The server and worker containers support multiple log levels: `debug`, `info`, `warning`, and `error`. By default, the log level is set to `info`.
 
@@ -13,7 +13,7 @@ To modify the log level, follow the steps for your platform:
 <Tabs
 groupId="platform"
 defaultValue="docker-compose"
-values=[
+values={[
 {label: 'docker-compose', value: 'docker-compose'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
@@ -42,10 +42,10 @@ values=[
     ```
 
 2. Restart your containers to apply the changes.
-   </TabItem>
-    </Tabs>
+    </TabItem>
+ </Tabs>
 
-## Enabling `trace` Mode
+## Enabling `trace` mode
 
 The `trace` log level provides deeper insights but also includes sensitive details.
 
@@ -58,7 +58,7 @@ To enable `trace` logging, follow the platform-specific steps below:
 <Tabs
 groupId="platform"
 defaultValue="docker-compose"
-values=[
+values={[
 {label: 'docker-compose', value: 'docker-compose'},
 {label: 'Kubernetes', value: 'kubernetes'},
 ]}>
@@ -87,10 +87,10 @@ values=[
     ```
 
 2. Restart your containers to apply the changes.
-   </TabItem>
-    </Tabs>
+    </TabItem>
+ </Tabs>
 
-## Viewing Past Logs
+## Viewing past logs
 
 To review historical logs, use the `--since` option with `docker logs` or `kubectl logs`. This option accepts either a Go duration string (e.g., `1m30s`, `3h`) or a timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`).
 
@@ -112,7 +112,7 @@ To fetch logs from a Kubernetes pod:
 kubectl logs --since 5m <pod_name>
 ```
 
-## Streaming Logs in Real-Time
+## Streaming logs in real-time
 
 To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
 
