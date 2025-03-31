@@ -27,8 +27,6 @@ To support the integration of _Omni_ with authentik, you need to create a proper
 
 ### Create a Property Mapping, Application and Provider in authentik
 
-https://github.com/goauthentik/authentik/issues/9086#issuecomment-2620098764
-
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Cusotmization** > **Property Mappings** and click **Create** to create a property mapping.
 
