@@ -313,21 +313,18 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
-        specs = []
-        if self.service_connection is not None:
-            specs.append(
-                ScheduleSpec(
-                    actor_name="authentik.outposts.tasks.outpost_controller",
-                    uid=self.pk,
-                    args=(self.pk, "up"),
-                    kwargs={"action": "up", "from_cache": False},
-                    crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
-                    description=_(
-                        f"Create/update/monitor/delete the deployment for the {self.name} outpost"
-                    ),
-                )
-            )
-        return specs
+        return [
+            ScheduleSpec(
+                actor_name="authentik.outposts.tasks.outpost_controller",
+                uid=self.pk,
+                args=(self.pk, "up"),
+                kwargs={"action": "up", "from_cache": False},
+                crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
+                description=_(
+                    f"Create/update/monitor/delete the deployment for the {self.name} outpost"
+                ),
+            ),
+        ]
 
     def build_user_permissions(self, user: User):
         """Create per-object and global permissions for outpost service-account"""

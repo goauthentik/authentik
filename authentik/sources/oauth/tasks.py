@@ -2,21 +2,22 @@
 
 from json import dumps
 
+from dramatiq.actor import actor
 from requests import RequestException
 from structlog.stdlib import get_logger
 
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
-from authentik.root.celery import CELERY_APP
 from authentik.sources.oauth.models import OAuthSource
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-def update_well_known_jwks(self: SystemTask):
+@actor
+def update_well_known_jwks():
     """Update OAuth sources' config from well_known, and JWKS info from the configured URL"""
+    self: Task = CurrentTask.get_task()
     session = get_http_session()
     messages = []
     for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):
