@@ -67,7 +67,7 @@ To create a new token for a service account:
 
 ## Permissions and Access Control
 
-Service accounts, like regular user accounts, can:
+Like regular user accounts, with service accounts you can assign [permissions and use RBAC](../users-sources/access-control/manage_permissions).
 
 1. Assign the service account to groups to inherit group permissions.
 2. Grant specific permissions directly to the service account.
