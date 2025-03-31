@@ -69,7 +69,7 @@ To create a new token for a service account:
 
 Service accounts, like regular user accounts, can:
 
-1. Be assigned to groups to inherit group permissions.
+1. Assign the service account to groups to inherit group permissions.
 2. Grant specific permissions directly to the service account.
 3. Restrict the service account to specific applications or resources.
 
