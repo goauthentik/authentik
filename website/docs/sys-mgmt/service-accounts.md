@@ -44,7 +44,7 @@ Tokens for service accounts can be managed through the authentik **Admin interfa
 
 To create a new token for a service account:
 
-1. Click the **Create** button.
+1. Click **Create**.
 2. Set the identifier for your token.
 3. In the user dropdown, select your service account.
 4. Under **Intent**, choose one of the following:
