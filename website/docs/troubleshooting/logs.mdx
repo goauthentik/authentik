@@ -11,13 +11,13 @@ The server and worker containers support multiple log levels: `debug`, `info`, `
 To modify the log level, follow the steps for your platform:
 
 <Tabs
-groupId="platform"
-defaultValue="docker-compose"
-values={[
-{label: 'docker-compose', value: 'docker-compose'},
-{label: 'Kubernetes', value: 'kubernetes'},
-]}>
-<TabItem value="docker-compose">
+  groupId="platform"
+  defaultValue="docker-compose"
+  values={[
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
 
 ### Docker Compose
 
@@ -28,8 +28,7 @@ values={[
     ```
 
 2. Restart your containers to apply the changes.
-    </TabItem>
-
+  </TabItem>
   <TabItem value="kubernetes">
 
 ### Kubernetes
@@ -42,8 +41,9 @@ values={[
     ```
 
 2. Restart your containers to apply the changes.
-    </TabItem>
- </Tabs>
+
+  </TabItem>
+</Tabs>
 
 ## Enabling `trace` mode
 
@@ -56,13 +56,13 @@ Using `trace` logs can expose sensitive information, including session cookies. 
 To enable `trace` logging, follow the platform-specific steps below:
 
 <Tabs
-groupId="platform"
-defaultValue="docker-compose"
-values={[
-{label: 'docker-compose', value: 'docker-compose'},
-{label: 'Kubernetes', value: 'kubernetes'},
-]}>
-<TabItem value="docker-compose">
+  groupId="platform"
+  defaultValue="docker-compose"
+  values={[
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
 
 ### Docker Compose
 
@@ -73,8 +73,8 @@ values={[
     ```
 
 2. Restart your containers to apply the changes.
-    </TabItem>
 
+  </TabItem>
   <TabItem value="kubernetes">
 
 ### Kubernetes
@@ -87,8 +87,9 @@ values={[
     ```
 
 2. Restart your containers to apply the changes.
-    </TabItem>
- </Tabs>
+
+  </TabItem>
+</Tabs>
 
 ## Viewing past logs
 
