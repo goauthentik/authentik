@@ -53,7 +53,7 @@ Then, go to **Access** > **Identity Provider** and enter the following informati
 - **Authorization endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/authorize/</kbd>
 - **Token endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/token/</kbd>
 - **User info endpoint**: <kbd>https://<em>mailcow.company</em>/application/o/userinfo/</kbd>
-- **Client ID**: The 'Client ID' from the authentik provider
+- **Client ID**: The `Client ID` from the authentik provider
 - **Client Secret**: The 'Client secret' from the authentik provider
 - **Redirect Url**: <kbd>https://<em>mailcow.company</em></kbd>
 - **Client Scopes**: <kbd>openid profile email</kbd>
