@@ -6,7 +6,6 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from celery.schedules import crontab
 from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace

@@ -1,6 +1,7 @@
-from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
-from dramatiq.broker import Broker, MessageProxy
 from queue import PriorityQueue
+
+from dramatiq.broker import Broker, MessageProxy
+from dramatiq.worker import Worker, _ConsumerThread, _WorkerThread
 
 from authentik.tasks.broker import PostgresBroker
 

@@ -1,7 +1,5 @@
 """email stage tasks"""
 
-from dramatiq.actor import actor
-
 from email.utils import make_msgid
 from smtplib import SMTPException
 from typing import Any
@@ -9,16 +7,17 @@ from typing import Any
 from django.core.mail import EmailMultiAlternatives
 from django.core.mail.utils import DNS_NAME
 from django.utils.text import slugify
-from structlog.stdlib import get_logger
-from authentik.tasks.models import Task, TaskStatus
-from authentik.tasks.middleware import CurrentTask
-
+from dramatiq.actor import actor
 from dramatiq.composition import group
+from structlog.stdlib import get_logger
+
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.utils import logo_data
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 

@@ -2,10 +2,9 @@ import functools
 import logging
 import time
 from collections.abc import Iterable
-from queue import Empty, PriorityQueue, Queue
+from queue import Empty, Queue
 from random import randint
 
-from dramatiq.worker import Worker, has_results_middleware, _ConsumerThread, _WorkerThread
 import tenacity
 from django.db import (
     DEFAULT_DB_ALIAS,
@@ -20,19 +19,16 @@ from django.db.models import QuerySet
 from django.utils import timezone
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
-from dramatiq.errors import ConnectionError, QueueJoinTimeout, RateLimitExceeded, Retry
+from dramatiq.errors import ConnectionError, QueueJoinTimeout
 from dramatiq.message import Message
 from dramatiq.middleware import (
     AgeLimit,
     Callbacks,
     Middleware,
     Pipelines,
-    Prometheus,
     Retries,
     ShutdownNotifications,
-    SkipMessage,
     TimeLimit,
-    default_middleware,
 )
 from dramatiq.results import Results
 from pglock.core import _cast_lock_id
@@ -68,8 +64,8 @@ class DbConnectionMiddleware(Middleware):
     def _close_old_connections(self, *args, **kwargs):
         close_old_connections()
 
-    # TODO: figure out if we really need this, it seems a bit excessive to close connections after each message
-    # and if fails in tests
+    # TODO: figure out if we really need this, it seems a bit excessive to close connections after
+    # each message and if fails in tests
 
     # before_process_message = _close_old_connections
     # after_process_message = _close_old_connections

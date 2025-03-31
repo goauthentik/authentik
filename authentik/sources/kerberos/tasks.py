@@ -9,8 +9,8 @@ from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
-from authentik.tasks.models import Task, TaskStatus
 from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"

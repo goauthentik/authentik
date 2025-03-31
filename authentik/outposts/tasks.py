@@ -9,7 +9,6 @@ from urllib.parse import urlparse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models.base import Model
 from django.utils.text import slugify
 from docker.constants import DEFAULT_UNIX_SOCKET
@@ -24,8 +23,6 @@ from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import TaskStatus, Task
 from authentik.outposts.controllers.kubernetes import KubernetesClient
 from authentik.outposts.models import (
     DockerServiceConnection,
@@ -44,6 +41,8 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"

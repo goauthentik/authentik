@@ -18,9 +18,6 @@ from kadmin import KAdmin, KAdminApiVersion
 from kadmin.exceptions import PyKAdminException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
-from authentik.lib.utils.time import fqdn_rand
-from authentik.tasks.schedules.lib import ScheduleSpec
-from authentik.tasks.schedules.models import ScheduledModel
 
 from authentik.core.models import (
     GroupSourceConnection,
@@ -31,6 +28,9 @@ from authentik.core.models import (
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.flows.challenge import RedirectChallenge
+from authentik.lib.utils.time import fqdn_rand
+from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 LOGGER = get_logger()
 
