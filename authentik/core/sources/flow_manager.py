@@ -36,6 +36,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
+from authentik.lib.utils.urls import is_url_absolute
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -48,6 +49,7 @@ LOGGER = get_logger()
 
 PLAN_CONTEXT_SOURCE_GROUPS = "source_groups"
 SESSION_KEY_SOURCE_FLOW_STAGES = "authentik/flows/source_flow_stages"
+SESSION_KEY_SOURCE_FLOW_CONTEXT = "authentik/flows/source_flow_context"
 SESSION_KEY_OVERRIDE_FLOW_TOKEN = "authentik/flows/source_override_flow_token"  # nosec
 
 
@@ -208,6 +210,8 @@ class SourceFlowManager:
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
+        if not is_url_absolute(final_redirect):
+            final_redirect = "authentik_core:if-user"
         flow_context.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
@@ -261,6 +265,7 @@ class SourceFlowManager:
                 plan.append_stage(stage)
         for stage in self.request.session.get(SESSION_KEY_SOURCE_FLOW_STAGES, []):
             plan.append_stage(stage)
+        plan.context.update(self.request.session.get(SESSION_KEY_SOURCE_FLOW_CONTEXT, {}))
         return plan.to_redirect(self.request, flow)
 
     def handle_auth(

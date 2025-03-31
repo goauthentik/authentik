@@ -1,5 +1,8 @@
 """authentik core signals"""
 
+from importlib import import_module
+
+from django.conf import settings
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.core.cache import cache
 from django.core.signals import Signal
@@ -25,6 +28,7 @@ password_changed = Signal()
 login_failed = Signal()
 
 LOGGER = get_logger()
+SessionStore: SessionBase = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 @receiver(post_save, sender=Application)
@@ -49,12 +53,10 @@ def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
         session.save()
 
 
-@receiver(user_logged_out)
-def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
-    """Delete AuthenticatedSession if it exists"""
-    if not request.session or not request.session.session_key:
-        return
-    AuthenticatedSession.objects.filter(session__session_key=request.session.session_key).delete()
+@receiver(post_delete, sender=AuthenticatedSession)
+def authenticated_session_delete(sender: type[Model], instance: "AuthenticatedSession", **_):
+    """Delete session when authenticated session is deleted"""
+    Session.objects.filter(session_key=instance.pk).delete()
 
 
 @receiver(pre_save)

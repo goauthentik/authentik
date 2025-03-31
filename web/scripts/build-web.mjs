@@ -1,5 +1,7 @@
 import { execFileSync } from "child_process";
+import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
+import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import findFreePorts from "find-free-ports";
 import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
@@ -52,7 +54,6 @@ const definitions = Object.fromEntries(
 const assetsFileMappings = [
     ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
     ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
-    ["src/custom.css", "."],
     ["src/common/styles/**", "."],
     ["src/assets/images/**", "./assets/images"],
     ["./icons/*", "./assets/icons"],
@@ -109,7 +110,7 @@ const entryPoints = [
 ];
 
 /**
- * @satisfies {import("esbuild").BuildOptions}
+ * @type {import("esbuild").BuildOptions}
  */
 const BASE_ESBUILD_OPTIONS = {
     bundle: true,
@@ -122,11 +123,19 @@ const BASE_ESBUILD_OPTIONS = {
     tsconfig: "./tsconfig.json",
     loader: {
         ".css": "text",
-        ".md": "text",
     },
+    plugins: [
+        polyfillNode({
+            polyfills: {
+                path: true,
+            },
+        }),
+        mdxPlugin({
+            root: authentikProjectRoot,
+        }),
+    ],
     define: definitions,
     format: "esm",
-    plugins: [mdxPlugin()],
     logOverride: {
         /**
          * HACK: Silences issue originating in ESBuild.
@@ -163,22 +172,33 @@ function composeVersionID() {
 function createEntryPointOptions([source, dest], overrides = {}) {
     const outdir = path.join(__dirname, "..", "dist", dest);
 
-    return {
-        ...BASE_ESBUILD_OPTIONS,
+    /**
+     * @type {esbuild.BuildOptions}
+     */
+
+    const entryPointConfig = {
         entryPoints: [`./src/${source}`],
         entryNames: `[dir]/[name]-${composeVersionID()}`,
+        publicPath: path.join("/static", "dist", dest),
         outdir,
-        ...overrides,
     };
+
+    /**
+     * @type {esbuild.BuildOptions}
+     */
+    const mergedConfig = deepmerge(BASE_ESBUILD_OPTIONS, entryPointConfig, overrides);
+
+    return mergedConfig;
 }
 
 /**
  * Build all entry points in parallel.
  *
  * @param {EntryPoint[]} entryPoints
+ * @returns {Promise<esbuild.BuildResult[]>}
  */
 async function buildParallel(entryPoints) {
-    await Promise.allSettled(
+    return Promise.all(
         entryPoints.map((entryPoint) => {
             return esbuild.build(createEntryPointOptions(entryPoint));
         }),
@@ -210,7 +230,6 @@ async function doWatch() {
             return esbuild.context(
                 createEntryPointOptions(entryPoint, {
                     plugins: [
-                        ...BASE_ESBUILD_OPTIONS.plugins,
                         buildObserverPlugin({
                             serverURL,
                             logPrefix: entryPoint[1],

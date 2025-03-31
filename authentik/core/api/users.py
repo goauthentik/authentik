@@ -1,9 +1,11 @@
 """User API Views"""
 
 from datetime import timedelta
+from importlib import import_module
 from json import loads
 from typing import Any
 
+from django.conf import settings
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import Permission
 from django.db.models.functions import ExtractHour
@@ -89,6 +91,7 @@ from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 LOGGER = get_logger()
+SessionStore: SessionBase = import_module(settings.SESSION_ENGINE).SessionStore
 
 
 class UserGroupSerializer(ModelSerializer):
@@ -327,9 +330,8 @@ class UserMetricsSerializer(PassiveSerializer):
         user = self.context["user"]
         request = self.context["request"]
         return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.LOGIN, user__pk=user.pk
-            )
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN, user__pk=user.pk)
             # 3 data points per day, so 8 hour spans
             .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
@@ -340,9 +342,8 @@ class UserMetricsSerializer(PassiveSerializer):
         user = self.context["user"]
         request = self.context["request"]
         return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.LOGIN_FAILED, context__username=user.username
-            )
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(action=EventAction.LOGIN_FAILED, context__username=user.username)
             # 3 data points per day, so 8 hour spans
             .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
@@ -353,9 +354,8 @@ class UserMetricsSerializer(PassiveSerializer):
         user = self.context["user"]
         request = self.context["request"]
         return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
-            )
+            get_objects_for_user(request.user, "authentik_events.view_event")
+            .filter(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
             # 3 data points per day, so 8 hour spans
             .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
@@ -371,7 +371,7 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
-    is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
+    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -388,6 +388,11 @@ class UsersFilter(FilterSet):
         field_name="ak_groups",
         queryset=Group.objects.all().order_by("name"),
     )
+
+    def filter_is_superuser(self, queryset, name, value):
+        if value:
+            return queryset.filter(ak_groups__is_superuser=True).distinct()
+        return queryset.exclude(ak_groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""

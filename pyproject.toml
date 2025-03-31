@@ -1,9 +1,9 @@
 [project]
 name = "authentik"
-version = "2025.2.2"
+version = "2025.2.3"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
-requires-python = "~=3.12"
+requires-python = "==3.12.*"
 dependencies = [
     "argon2-cffi",
     "celery",
@@ -44,7 +44,7 @@ dependencies = [
     "ldap3",
     "lxml",
     "msgraph-sdk",
-    "opencontainers[reggie]",
+    "opencontainers",
     "packaging",
     "paramiko",
     "psycopg[c]",
@@ -70,7 +70,7 @@ dependencies = [
     "watchdog",
     "webauthn",
     "wsproto",
-    "xmlsec",
+    "xmlsec <= 1.3.14",
     "zxcvbn",
 ]
 
@@ -103,7 +103,7 @@ dev = [
 
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" }
+opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"

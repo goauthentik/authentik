@@ -2,18 +2,18 @@ declare module "*.css";
 
 declare module "*.md" {
     /**
-     * The HTML content of the markdown file.
+     * The serialized JSON content of an MD file.
      */
-    const html: string;
-    export default html;
+    const serializedJSON: string;
+    export default serializedJSON;
 }
 
 declare module "*.mdx" {
     /**
-     * The HTML content of the markdown file.
+     * The serialized JSON content of an MDX file.
      */
-    const html: string;
-    export default html;
+    const serializedJSON: string;
+    export default serializedJSON;
 }
 
 declare namespace Intl {

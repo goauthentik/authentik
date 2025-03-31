@@ -1,5 +1,12 @@
 ---
 title: Full development environment
+sidebar_label: Full development
+tags:
+    - development
+    - contributor
+    - backend
+    - frontend
+    - docker
 ---
 
 import Tabs from "@theme/Tabs";
@@ -8,13 +15,14 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 ## Requirements
 
-- [Python](https://www.python.org/) 3.12
-- [uv](https://docs.astral.sh/uv/getting-started/installation/), which is used to manage dependencies
-- [Go](https://go.dev/) 1.23 or newer
-- [Node.js](https://nodejs.org/en) 22 or newer
-- [PostgreSQL](https://www.postgresql.org/) 16 or newer
-- [Redis](https://redis.io/) (any recent version will do)
-- [Docker](https://www.docker.com/) (Community Edition will do)
+- [Python](https://www.python.org/) (3.12 or later)
+- [uv](https://docs.astral.sh/uv/getting-started/installation/), (Latest stable release)
+- [Go](https://go.dev/) (1.23 or later)
+- [Node.js](https://nodejs.org/en) (22 or later)
+- [PostgreSQL](https://www.postgresql.org/) (16 or later)
+- [Redis](https://redis.io/) (7 or later)
+- [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
+- [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 
 ## Services Setup
 
@@ -81,7 +89,6 @@ instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
 ```shell
 make install               # Installs all required dependencies for Python and Javascript, including development dependencies
-source .venv/bin/activate  # Active the Python virtual environment
 ```
 
 2. Configure authentik to use the local databases using a local config file. To generate this file, run the following command in the same directory as your local authentik git repository:
@@ -131,7 +138,7 @@ make web   # Formats the frontend code
 Now that the backend and frontend have been setup and built, you can start authentik by running the following command in the same directory as your local authentik git repository:
 
 ```shell
-ak server   # Starts authentik server
+make run   # Starts authentik server
 ```
 
 And now, authentik should now be accessible at `http://localhost:9000`.
