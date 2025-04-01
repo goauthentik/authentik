@@ -302,7 +302,8 @@ class SCIMUserTests(TestCase):
             email=f"{uid}@goauthentik.io",
         )
 
-        sync_tasks.trigger_single_task(self.provider, scim_sync).get_result()
+        for schedule in self.provider.schedules.all():
+            schedule.send().get_result()
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
@@ -374,7 +375,8 @@ class SCIMUserTests(TestCase):
                 email=f"{uid}@goauthentik.io",
             )
 
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get_result()
+            for schedule in self.provider.schedules.all():
+                schedule.send().get_result()
 
             self.assertEqual(mock.call_count, 3)
             for request in mock.request_history:

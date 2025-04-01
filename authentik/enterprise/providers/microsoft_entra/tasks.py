@@ -16,7 +16,7 @@ def microsoft_entra_sync_objects(*args, **kwargs):
 @actor
 def microsoft_entra_sync(provider_pk: int, *args, **kwargs):
     """Run full sync for Microsoft Entra provider"""
-    return sync_tasks.sync_single(provider_pk, microsoft_entra_sync_objects)
+    return sync_tasks.sync(provider_pk, microsoft_entra_sync_objects)
 
 
 @actor

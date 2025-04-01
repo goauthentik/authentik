@@ -45,7 +45,7 @@ class SyncObjectResultSerializer(PassiveSerializer):
 class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
-    sync_single_task: type[Actor] = None
+    sync_task: type[Actor] = None
     sync_objects_task: type[Actor] = None
 
     @extend_schema(
@@ -64,9 +64,10 @@ class OutgoingSyncProviderStatusMixin:
     def sync_status(self, request: Request, pk: int) -> Response:
         """Get provider's sync status"""
         provider: OutgoingSyncProvider = self.get_object()
+        # TODO: fixme
         tasks = list(
             get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-                name=self.sync_single_task.__name__,
+                name=self.sync_task.__name__,
                 uid=slugify(provider.name),
             )
         )

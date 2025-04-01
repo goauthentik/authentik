@@ -79,7 +79,8 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get_result()
+            for schedule in self.provider.schedules.all():
+                schedule.send().get_result()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -169,7 +170,8 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get_result()
+            for schedule in self.provider.schedules.all():
+                schedule.send().get_result()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")
@@ -287,7 +289,8 @@ class SCIMMembershipTests(TestCase):
             )
 
             self.configure()
-            sync_tasks.trigger_single_task(self.provider, scim_sync).get_result()
+            for schedule in self.provider.schedules.all():
+                schedule.send().get_result()
 
             self.assertEqual(mocker.call_count, 6)
             self.assertEqual(mocker.request_history[0].method, "GET")

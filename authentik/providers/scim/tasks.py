@@ -16,7 +16,7 @@ def scim_sync_objects(*args, **kwargs):
 @actor
 def scim_sync(provider_pk: int, *args, **kwargs):
     """Run full sync for SCIM provider"""
-    return sync_tasks.sync_single(provider_pk, scim_sync_objects)
+    return sync_tasks.sync(provider_pk, scim_sync_objects)
 
 
 @actor

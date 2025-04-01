@@ -92,7 +92,7 @@ def ldap_sync(source_pk: str):
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer], **options) -> list:
     """Return a list of task signatures with LDAP pagination data"""
     sync_inst: BaseLDAPSynchronizer = sync(source)
-    signatures = []
+    tasks = []
     for page in sync_inst.get_objects():
         page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
         cache.set(page_cache_key, page, 60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
@@ -100,8 +100,8 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer], **
             args=(source.pk, class_to_path(sync), page_cache_key),
             **options,
         )
-        signatures.append(page_sync)
-    return signatures
+        tasks.append(page_sync)
+    return tasks
 
 
 @actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)

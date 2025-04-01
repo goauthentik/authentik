@@ -71,7 +71,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 uid=self.pk,
                 args=(self.pk,),
                 options={
-                    "time_limit": self.get_sync_time_limit(),
+                    "time_limit": self.get_sync_time_limit() * 1000,
                 },
                 send_on_save=True,
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",

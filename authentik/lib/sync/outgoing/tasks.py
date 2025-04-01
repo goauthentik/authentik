@@ -6,8 +6,8 @@ from django.db.models.query import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
+from dramatiq.composition import group
 from dramatiq.errors import Retry
-from dramatiq.message import Message
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import SkipObjectException
@@ -38,15 +38,25 @@ class SyncTasks:
         super().__init__()
         self._provider_model = provider_model
 
-    def trigger_single_task(self, provider: OutgoingSyncProvider, sync_task: Actor) -> Message:
-        """Wrapper single sync task that correctly sets time limits based
-        on the amount of objects that will be synced"""
-        return sync_task.send_with_options(
-            args=(provider.pk,),
-            time_limit=provider.get_sync_time_limit(),
-        )
+    def sync_paginator(
+        self,
+        provider_pk: int,
+        sync_objects: Actor,
+        paginator: Paginator,
+        object_type: type[User | Group],
+        **options,
+    ):
+        tasks = []
+        for page in paginator.page_range:
+            page_sync = sync_objects.message_with_options(
+                args=(class_to_path(object_type), page, provider_pk),
+                time_limit=PAGE_TIMEOUT * 1000,
+                **options,
+            )
+            tasks.append(page_sync)
+        return tasks
 
-    def sync_single(
+    def sync(
         self,
         provider_pk: int,
         sync_objects: Actor,
@@ -56,7 +66,7 @@ class SyncTasks:
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
         )
-        provider = self._provider_model.objects.filter(
+        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
@@ -73,20 +83,24 @@ class SyncTasks:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
-                for page in users_paginator.page_range:
-                    messages.append(_("Syncing page {page} of users".format(page=page)))
-                    for msg in sync_objects.send_with_options(
-                        args=(class_to_path(User), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                    ).get_result(block=True, timeout=PAGE_TIMEOUT * 1000):
-                        messages.append(LogEvent(**msg))
-                for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page {page} of groups".format(page=page)))
-                    for msg in sync_objects.send_with_options(
-                        args=(class_to_path(Group), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                    ).get_result(block=True, timeout=PAGE_TIMEOUT * 1000):
-                        messages.append(LogEvent(**msg))
+                tasks = group(
+                    self.sync_paginator(
+                        provider_pk=provider_pk,
+                        sync_objects=sync_objects,
+                        paginator=users_paginator,
+                        object_type=User,
+                        schedule_uid=task.schedule_uid,
+                    )
+                    + self.sync_paginator(
+                        provider_pk=provider_pk,
+                        sync_objects=sync_objects,
+                        paginator=groups_paginator,
+                        object_type=Group,
+                        schedule_uid=task.schedule_uid,
+                    )
+                )
+                tasks.run()
+                tasks.wait(timeout=provider.get_sync_time_limit() * 1000)
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 raise Retry() from exc
@@ -104,7 +118,9 @@ class SyncTasks:
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        messages = []
+        messages = [
+            f"Syncing page {page} of {_object_type._meta.verbose_name_plural}",
+        ]
         provider = self._provider_model.objects.filter(pk=provider_pk).first()
         if not provider:
             return messages
