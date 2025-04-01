@@ -72,7 +72,9 @@ export class BaseStage<
         }
         return this.host?.submit(object as unknown as Tout).then((successful) => {
             if (successful) {
-                this.cleanup();
+                this.onSubmitSuccess();
+            } else {
+                this.onSubmitFailure();
             }
             return successful;
         });
@@ -80,13 +82,13 @@ export class BaseStage<
 
     renderNonFieldErrors() {
         const errors = this.challenge?.responseErrors || {};
-        if (!("non_field_errors" in errors)) {
-            return nothing;
-        }
+
+        if (!("non_field_errors" in errors)) return nothing;
+
         const nonFieldErrors = errors.non_field_errors;
-        if (!nonFieldErrors) {
-            return nothing;
-        }
+
+        if (!nonFieldErrors) return nothing;
+
         return html`<div class="pf-c-form__alert">
             ${nonFieldErrors.map((err) => {
                 return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
@@ -124,7 +126,12 @@ export class BaseStage<
         `;
     }
 
-    cleanup(): void {
+    onSubmitSuccess(): void {
+        // Method that can be overridden by stages
+        return;
+    }
+
+    onSubmitFailure(): void {
         // Method that can be overridden by stages
         return;
     }

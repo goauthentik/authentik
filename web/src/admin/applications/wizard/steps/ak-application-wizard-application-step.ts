@@ -1,14 +1,13 @@
 import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { isSlug } from "@goauthentik/common/utils.js";
+import { isSlug, isURLInput } from "@goauthentik/common/utils.js";
 import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -21,13 +20,25 @@ import { type ApplicationRequest } from "@goauthentik/api";
 
 import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
 
-const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
+/**
+ * Plucks the specified keys from an object, trimming their values if they are strings.
+ *
+ * @template T - The type of the input object.
+ * @template K - The keys to be plucked from the input object.
+ *
+ * @param {T} input - The input object.
+ * @param {Array<K>} keys - The keys to be plucked from the input object.
+ */
+function trimMany<T extends object, K extends keyof T>(input: T, keys: Array<K>): Pick<T, K> {
+    const result: Partial<T> = {};
 
-const trimMany = (o: KeyUnknown, vs: string[]) =>
-    Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
+    for (const key of keys) {
+        const value = input[key];
+        result[key] = (typeof value === "string" ? value.trim() : value) as T[K];
+    }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isStr = (v: any): v is string => typeof v === "string";
+    return result as Pick<T, K>;
+}
 
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
@@ -54,27 +65,34 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     }
 
     get buttons(): WizardButton[] {
-        return [{ kind: "next", destination: "provider-choice" }, { kind: "cancel" }];
+        return [
+            // ---
+            { kind: "next", destination: "provider-choice" },
+            { kind: "cancel" },
+        ];
     }
 
     get valid() {
         this.errors = new Map();
-        const values = trimMany(this.formValues ?? {}, ["metaLaunchUrl", "name", "slug"]);
 
-        if (values.name === "") {
+        const trimmed = trimMany((this.formValues || {}) as Partial<ApplicationRequest>, [
+            "name",
+            "slug",
+            "metaLaunchUrl",
+        ]);
+
+        if (!trimmed.name) {
             this.errors.set("name", msg("An application name is required"));
         }
-        if (
-            !(
-                isStr(values.metaLaunchUrl) &&
-                (values.metaLaunchUrl === "" || URL.canParse(values.metaLaunchUrl))
-            )
-        ) {
+
+        if (!isURLInput(trimmed.metaLaunchUrl)) {
             this.errors.set("metaLaunchUrl", msg("Not a valid URL"));
         }
-        if (!(isStr(values.slug) && values.slug !== "" && isSlug(values.slug))) {
+
+        if (!isSlug(trimmed.slug)) {
             this.errors.set("slug", msg("Not a valid slug"));
         }
+
         return this.errors.size === 0;
     }
 
@@ -82,27 +100,39 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (button.kind === "next") {
             if (!this.valid) {
                 this.handleEnabling({
-                    disabled: ["provider-choice", "provider", "bindings", "submit"],
+                    disabled: [
+                        // ---
+                        "provider-choice",
+                        "provider",
+                        "bindings",
+                        "submit",
+                    ],
                 });
+
                 return;
             }
+
             const app: Partial<ApplicationRequest> = this.formValues as Partial<ApplicationRequest>;
 
             let payload: ApplicationWizardStateUpdate = {
                 app: this.formValues,
                 errors: this.removeErrors("app"),
             };
+
             if (app.name && (this.wizard.provider?.name ?? "").trim() === "") {
                 payload = {
                     ...payload,
                     provider: { name: `Provider for ${app.name}` },
                 };
             }
+
             this.handleUpdate(payload, button.destination, {
                 enable: "provider-choice",
             });
+
             return;
         }
+
         super.handleButton(button);
     }
 
@@ -181,6 +211,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
         if (!(this.wizard.app && this.wizard.errors)) {
             throw new Error("Application Step received uninitialized wizard context.");
         }
+
         return this.renderForm(
             this.wizard.app as ApplicationRequest,
             this.wizard.errors?.app ?? {},

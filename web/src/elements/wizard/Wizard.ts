@@ -187,7 +187,11 @@ export class Wizard extends ModalButton {
     /**
      * Reset the wizard to it's initial state.
      */
-    reset = () => {
+    reset = (ev?: Event) => {
+        if (ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+        }
         this.open = false;
 
         this.querySelectorAll("[data-wizardmanaged=true]").forEach((el) => {
@@ -332,9 +336,7 @@ export class Wizard extends ModalButton {
                               <button
                                   class="pf-c-button pf-m-link"
                                   type="button"
-                                  @click=${() => {
-                                      this.reset();
-                                  }}
+                                  @click=${this.reset}
                               >
                                   ${msg("Cancel")}
                               </button>

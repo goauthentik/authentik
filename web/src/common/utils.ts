@@ -25,10 +25,35 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
-export function isSlug(text: string): boolean {
-    const lowered = text.toLowerCase();
-    const forbidden = /([^\w-]|\s)/.test(lowered);
-    return lowered === text && !forbidden;
+/**
+ * Type guard to check if a given string is a valid URL slug, i.e.
+ * only containing alphanumeric characters, dashes, and underscores.
+ */
+export function isSlug(input: unknown): input is string {
+    if (typeof input !== "string") return false;
+    if (!input) return false;
+
+    const lowered = input.toLowerCase();
+    if (input !== lowered) return false;
+
+    return /([^\w-]|\s)/.test(lowered);
+}
+
+/**
+ * Type guard to check if a given input is parsable as a URL.
+ *
+ * ```js
+ * isURLInput("https://example.com") // true
+ * isURLInput("invalid-url") // false
+ * isURLInput(new URL("https://example.com")) // true
+ * ```
+ */
+export function isURLInput(input: unknown): input is string | URL {
+    if (typeof input !== "string" && !(input instanceof URL)) return false;
+
+    if (!input) return false;
+
+    return URL.canParse(input);
 }
 
 /**
