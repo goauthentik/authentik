@@ -102,6 +102,7 @@ class TestEmailStageSending(FlowTestCase):
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         utf8_user = create_test_user()
         utf8_user.name = "Cirilo ЉМНЊ el cirilico И̂ӢЙӤ "
+        utf8_user.email = "cyrillic@authentik.local"
         utf8_user.save()
         plan.context[PLAN_CONTEXT_PENDING_USER] = utf8_user
         session = self.client.session

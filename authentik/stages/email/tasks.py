@@ -104,8 +104,13 @@ def send_mail(
         # can't be converted to json)
         message_object.attach(logo_data())
         LOGGER.debug("Sending mail", to=message_object.to)
-        if message_object.to[0].startswith("=?utf-8?b?"):
-            message_object.to = [message_object.to[0].split()[-1].replace("<", "").replace(">", "")]
+        if (
+            message_object.to
+            and isinstance(message_object.to[0], str)
+            and "=?utf-8?" in message_object.to[0]
+        ):
+            message_object.to = [message_object.to[0].split("<")[-1].replace(">", "")]
+
         LOGGER.debug("Sending mail", to=message_object.to)
         backend.send_messages([message_object])
         Event.new(
