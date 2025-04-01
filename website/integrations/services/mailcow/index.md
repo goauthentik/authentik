@@ -46,7 +46,7 @@ To support the integration of mailcow with authentik, you need to create an appl
 
 ## mailcow configuration
 
-To configure mailcow with authentik, log in as an administrator and navigate to **System** > **Configuration**. 
+To configure mailcow with authentik, log in as an administrator and navigate to **System** > **Configuration**.
 Then, go to **Access** > **Identity Provider** and enter the following information in the form:
 
 - **Identity Provider**: <kbd>Generic-OIDC</kbd>
