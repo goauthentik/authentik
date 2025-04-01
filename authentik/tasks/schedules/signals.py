@@ -10,4 +10,6 @@ def post_save_schedule_mixin(sender, instance: ScheduledModel, **_):
         return
     for spec in instance.schedule_specs:
         spec.rel_obj = instance
-        spec.update_or_create()
+        schedule = spec.update_or_create()
+        if spec.send_on_save:
+            schedule.send()

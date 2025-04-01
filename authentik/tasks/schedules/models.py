@@ -33,6 +33,7 @@ class Schedule(SerializerModel):
     actor_name = models.TextField(editable=False, help_text=_("Dramatiq actor to call"))
     args = models.BinaryField(editable=False, help_text=_("Args to send to the actor"))
     kwargs = models.BinaryField(editable=False, help_text=_("Kwargs to send to the actor"))
+    options = models.BinaryField(editable=False, help_text=_("Options to send to the actor"))
 
     rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
     rel_obj_id = models.TextField(null=True)
@@ -67,6 +68,7 @@ class Schedule(SerializerModel):
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec
             schedule_uid=self.uid,
+            **pickle.loads(self.options),  # nosec
         )
 
     # TODO: actually do loop here

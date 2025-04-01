@@ -1,4 +1,5 @@
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.utils.reflection import all_subclasses
 from authentik.tasks.schedules.lib import ScheduleSpec
 
 
@@ -14,6 +15,8 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
 
         schedules = []
         for Model in ScheduledModel.__subclasses__():
+            if Model._meta.abstract:
+                continue
             for obj in Model.objects.all():
                 for spec in obj.schedule_specs:
                     spec.rel_obj = obj

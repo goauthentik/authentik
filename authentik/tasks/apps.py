@@ -21,7 +21,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
     verbose_name = "authentik Tasks"
     default = True
 
-    def _set_dramatiq_middlewares(self, broker: Broker) -> None:
+    def _set_dramatiq_middlewares(self, broker: Broker, max_retries: int = 20) -> None:
         from authentik.tasks.middleware import CurrentTask, FullyQualifiedActorName
         from authentik.tasks.results import PostgresBackend
 
@@ -33,7 +33,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
         broker.add_middleware(ShutdownNotifications())
         broker.add_middleware(Callbacks())
         broker.add_middleware(Pipelines())
-        broker.add_middleware(Retries())
+        broker.add_middleware(Retries(max_retries=max_retries))
         broker.add_middleware(Results(backend=PostgresBackend(), store_results=True))
         broker.add_middleware(FullyQualifiedActorName())
         broker.add_middleware(CurrentTask())
@@ -43,7 +43,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
 
         dramatiq.set_encoder(PickleEncoder())
 
-        broker = PostgresBroker()
+        broker = PostgresBroker(middleware=[])
         self._set_dramatiq_middlewares(broker)
         dramatiq.set_broker(broker)
 
@@ -53,8 +53,8 @@ class AuthentikTasksConfig(ManagedAppConfig):
         from authentik.tasks.test import TestBroker
 
         old_broker = get_broker()
-        broker = TestBroker()
-        self._set_dramatiq_middlewares(broker)
+        broker = TestBroker(middleware=[])
+        self._set_dramatiq_middlewares(broker, max_retries=0)
         dramatiq.set_broker(broker)
         for actor_name in old_broker.get_declared_actors():
             actor = old_broker.get_actor(actor_name)

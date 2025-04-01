@@ -324,7 +324,7 @@ class GoogleWorkspaceGroupTests(TestCase):
             "authentik.enterprise.providers.google_workspace.models.GoogleWorkspaceProvider.google_credentials",
             MagicMock(return_value={"developerKey": self.api_key, "http": http}),
         ):
-            google_workspace_sync.delay(self.provider.pk).get()
+            google_workspace_sync.send(self.provider.pk).get_result()
             self.assertTrue(
                 GoogleWorkspaceProviderGroup.objects.filter(
                     group=different_group, provider=self.provider

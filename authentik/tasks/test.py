@@ -35,7 +35,6 @@ class TestWorker(Worker):
         self.broker.emit_after("worker_boot", self)
 
     def process_message(self, message: MessageProxy):
-        self.logger.error(f"processing message {message}")
         self.work_queue.put(message)
         self.consumers[message.queue_name].consumer.in_processing.add(message.message_id)
         self._worker.process_message(message)

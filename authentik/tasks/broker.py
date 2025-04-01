@@ -309,7 +309,8 @@ class _PostgresConsumer(Consumer):
         self.query_set.filter(
             message_id=message.message_id,
             queue_name=message.queue_name,
-            state__ne=TaskState.REJECTED,
+        ).exclude(
+            state=TaskState.REJECTED,
         ).update(
             state=TaskState.REJECTED,
             message=message.encode(),
