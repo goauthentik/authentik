@@ -3,13 +3,11 @@
 from json import loads
 
 from django.test import TestCase
-from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider

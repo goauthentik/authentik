@@ -1,7 +1,7 @@
 from typing import Any, Self
 
-from django.core.paginator import Paginator
 import pglock
+from django.core.paginator import Paginator
 from django.db import connection, models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _

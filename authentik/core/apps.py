@@ -1,7 +1,5 @@
 """authentik core app config"""
 
-from django.conf import settings
-
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.tasks.schedules.lib import ScheduleSpec
 

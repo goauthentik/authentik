@@ -54,18 +54,19 @@ def ldap_sync(source_pk: str):
         return
     # Don't sync sources when they don't have any property mappings. This will only happen if:
     # - the user forgets to set them or
-    # - the source is newly created, the mappings are save a bit later, which might cause invalid data
+    # - the source is newly created, the mappings are save a bit later, which might cause invalid
+    #   data
     if source.sync_users and not source.user_property_mappings.exists():
         # TODO: add to task messages
         LOGGER.warning(
-            "LDAP source has user sync enabled but does not have user property mappings configured, not syncing",
+            "LDAP source has user sync enabled but does not have user property mappings configured, not syncing",  # noqa: E501
             source=source.slug,
         )
         return
     if source.sync_groups and not source.group_property_mappings.exists():
         # TODO: add to task messages
         LOGGER.warning(
-            "LDAP source has group sync enabled but does not have group property mappings configured, not syncing",
+            "LDAP source has group sync enabled but does not have group property mappings configured, not syncing",  # noqa: E501
             source=source.slug,
         )
         return
