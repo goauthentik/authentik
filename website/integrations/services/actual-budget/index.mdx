@@ -4,14 +4,19 @@ sidebar_label: Actual Budget
 support_level: community
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
+
+# Actual Budget
+
+<span class="badge badge--secondary">Support level: Community</span>
+
 ## What is Actual Budget
 
-> Actual Budget is a web-based financial management software. It helps users track and manage their income, expenses, and budgets in real time.
-> The software compares actual spending with planned budgets to improve financial decisions.
+> Actual Budget is a web-based financial management software. It helps users track and manage their income, expenses, and budgets in real time. The software compares actual spending with planned budgets to improve financial decisions.
 >
 > -- https://actualbudget.org/
->
-> This guide explains how to configure Actual Budget to use authentik as the OAuth provider for logging in to the Web GUI.
 
 ## Preparation
 
@@ -45,33 +50,71 @@ To support the integration of Actual Budget with authentik, you need to create a
 
 ## Actual Budget configuration
 
-1. Sign in to Actual Budget with a browser of your choice and access your budget by clicking on its name.
+<Tabs
+  defaultValue="env"
+  values={[
+    { label: 'With Environment Variables', value: 'env' },
+    { label: 'By editing the JSON file', value: 'json' },
+    { label: 'Using the UI', value: 'ui' },
+  ]}>
+  <TabItem value="env">
+  You can configure OpenID Connect with Actual Budget by adding the following variables to your `.env` file.
 
-2. Click your budget in the top-left corner to open the dropdown menu and select **Settings**.
+<IntegrationsMultilineCodeblock>
+    {`
+ACTUAL_OPENID_DISCOVERY_URL=<kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>
+ACTUAL_OPENID_CLIENT_ID=<em>Client ID from authentik</em>
+ACTUAL_OPENID_CLIENT_SECRET=<em>Client Secret from authentik</em>
+ACTUAL_OPENID_SERVER_HOSTNAME=https://<em>actual.company</em>
+`}
+</IntegrationsMultilineCodeblock>
 
-3. Scroll to the bottom and select **Show advanced settings**. Scroll again and select **I understand the risks, show experimental features**.
+  </TabItem>
+  <TabItem value="json">
 
-4. To enable the option **OpenID authentication method** select the checkbox next to it.
+You can configure Actual Budget to authenticate users with OpenID Connect by modifying the `config.json` file to include the following block. This file is located in the `/data` folder of your installation or the directory specified by the `ACTUAL_DATA_DIR` variable.
 
-5. Scroll up to the new option **Authentication method...** and click **Start using OpenID**.
+<IntegrationsMultilineCodeblock>
+    {`
+    "openId": {
+            "issuer": "<kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>",
+            "client_id": "<em>Client ID from authentik</em>",
+            "client_secret": "<em>Client Secret from authentik</em>",
+            "server_hostname": "https://<em>actual.company</em>",
+            "authMethod": "openid"
+        }
+`}
+</IntegrationsMultilineCodeblock>
 
-6. Set the following values from the authentik provider:
-    - Set **OpenID Provider** to **authentik**
-    - Set **OpenID provider URL** to https://_authentik.company_/application/o/_actual_/
-    - Set **Client ID** to _client-id_
-    - Set **Client secret** to _client-secret_
+  </TabItem>
+  <TabItem value="ui">
+
+Alternatively, it is possible to configure OpenID Connect via the UI.
+
+      1. Sign in to Actual Budget and select your budget by clicing its name.
+      2. In the top-left corner, click your budget name to open the dropdown and choose **Settings**.
+      3. Scroll down and select **Show advanced settings**, then enable **I understand the risks, show experimental features**.
+      4. Enable **OpenID authentication method**.
+      5. Scroll up and click **Start using OpenID** under the **Authentication method** section.
+      6. Fill in the following values:
+          - **OpenID Provider**: authentik
+          - **OpenID provider URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>
+          - **Client ID**: Enter the **Client ID** from authentik
+          - **Client Secret**: Enter the **Client Secret** from authentik
+
+  </TabItem>
+</Tabs>
 
 :::warning
-The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. For more information on how to create additional users, see the Note below.
+The first user to log into Actual Budget via OpenID will become the owner and administrator with the highest privileges for the budget. You should also note that users are not created automatically in Actual Budget. The owner must manually add users.
+
+To do so, navigate to **Server online** > **User Directory**, and create users matching exiting authentik usernames. Then, grant access to the budget via the **User Access** tab.
 :::
 
-## Test the login
+## Ressources
 
-- Open a browser of your choice and navigate to https://_actual.company_.
-- Select the OpenID login method in the dropdown menu and click **Sign in with OpenID**.
-- You should be redirected to authentik (with the login flows you created), and then authentik will redirect you back to the https://_actual.company_ URL.
-- If you are redirected back to the https://_actual.company_ URL and can see the budget file selection page, the setup was successful.
+- [Official Actual Budget documentation on OpenID Connect integration](https://actualbudget.org/docs/experimental/oauth-auth/)
 
-:::info
-Users are not automatically created when logging in with authentik. The owner must manually create each user in Actual Budget. To do so, click **Server online** at the top next to your name and select **User Directory**. Add a new user. The `Username` must match the one in authentik. You can now grant the new user access to your budget by clicking **Server online** next to your name at the top and selecting **User Access**.
-:::
+## Configuration validation
+
+To confirm that authentik is properly configured with Actual Budget, visit your Actual Budget installation, select the OpenID login method from the dropdown menu, and click **Sign in with OpenID**.
