@@ -37,7 +37,7 @@ To support the integration of _Omni_ with authentik, you need to create a proper
     - SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - Expression: `return request.user.email`
 
-3. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+3. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, application slug, an optional group for the type of application, the policy engine mode, and optional UI settings.
 
