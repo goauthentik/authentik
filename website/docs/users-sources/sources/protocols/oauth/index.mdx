@@ -53,3 +53,12 @@ The following variables are available to OAuth source property mappings:
     ```
 - `client`: An OAuth client object to make requests to the Source with authentication built-in.
 - `token`: A Python dictionary containing OAuth tokens.
+
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+
+```python
+if info.get("email") == "example@examply.xyz":
+    raise SkipObject
+```

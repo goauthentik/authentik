@@ -70,3 +70,12 @@ The following variables are available in the expression:
     :::info
     Top-level keys which include symbols not allowed in python syntax are converted to `_`.
     :::
+
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+
+```python
+if <blah>.get("<blahblah>") == "doNotSync":
+    raise SkipObject
+```

@@ -139,6 +139,15 @@ When the property mapping is invoked from a synchronization context, the followi
 
 - `principal_obj`: a [`Principal`](https://kadmin-rs.readthedocs.io/latest/kadmin.html#kadmin.Principal) object retrieved from the KAdmin API
 
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+
+```python
+if <blah>.get("<blahblah>") == "doNotSync":
+    raise SkipObject
+```
+
 ## Troubleshooting
 
 You can start authentik with the `KRB5_TRACE=/dev/stderr` environment variable for Kerberos to print errors in the logs.

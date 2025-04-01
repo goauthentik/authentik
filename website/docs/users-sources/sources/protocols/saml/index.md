@@ -91,3 +91,12 @@ The following variables are available to SAML source property mappings:
 
 - `root`: An XML `ETree` object containing data from the source.
 - `name_id`: An XML `Element` object identifying the user.
+
+### Additional expression semantics
+
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+
+```python
+if <blah>.get("<blahblah>") == "doNotSync":
+    raise SkipObject
+```
