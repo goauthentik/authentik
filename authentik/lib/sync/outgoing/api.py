@@ -1,5 +1,5 @@
-from celery import Task
 from django.utils.text import slugify
+from dramatiq.actor import Actor
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
@@ -45,8 +45,8 @@ class SyncObjectResultSerializer(PassiveSerializer):
 class OutgoingSyncProviderStatusMixin:
     """Common API Endpoints for Outgoing sync providers"""
 
-    sync_single_task: type[Task] = None
-    sync_objects_task: type[Task] = None
+    sync_single_task: type[Actor] = None
+    sync_objects_task: type[Actor] = None
 
     @extend_schema(
         responses={
@@ -94,7 +94,7 @@ class OutgoingSyncProviderStatusMixin:
         provider: OutgoingSyncProvider = self.get_object()
         params = SyncObjectSerializer(data=request.data)
         params.is_valid(raise_exception=True)
-        res: list[LogEvent] = self.sync_objects_task.delay(
+        res: list[LogEvent] = self.sync_objects_task.send(
             params.validated_data["sync_object_model"],
             page=1,
             provider_pk=provider.pk,

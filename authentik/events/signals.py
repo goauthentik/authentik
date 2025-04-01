@@ -114,14 +114,14 @@ def on_password_changed(sender, user: User, password: str, request: HttpRequest 
 @receiver(post_save, sender=Event)
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
-    event_notification_handler.delay(instance.event_uuid.hex)
+    event_notification_handler.send(instance.event_uuid.hex)
 
 
 @receiver(pre_delete, sender=User)
 def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     if get_current_tenant().gdpr_compliance:
-        gdpr_cleanup.delay(instance.pk)
+        gdpr_cleanup.send(instance.pk)
 
 
 @receiver(monitoring_set)
