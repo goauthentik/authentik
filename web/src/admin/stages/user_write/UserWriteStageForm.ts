@@ -35,11 +35,10 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                 stageUuid: this.instance.pk || "",
                 userWriteStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                userWriteStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
+            userWriteStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

@@ -49,6 +49,7 @@ export function getColorFromString(stringInput: string): RGBAColor {
     let hash = 0;
     for (let i = 0; i < stringInput.length; i++) {
         hash = stringInput.charCodeAt(i) + ((hash << 5) - hash);
+
         hash = hash & hash;
     }
     const rgb = [0, 0, 0];

@@ -154,7 +154,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
                     </ak-empty-state>
                     ${this.challenge?.responseErrors
                         ? html`<p class="pf-m-block">
-                              ${this.challenge.responseErrors["response"][0].string}
+                              ${this.challenge.responseErrors.response[0].string}
                           </p>`
                         : nothing}
                     <div class="pf-c-form__group pf-m-action">

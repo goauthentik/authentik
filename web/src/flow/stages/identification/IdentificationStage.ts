@@ -135,9 +135,10 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
             password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key == "Enter") {
+                if (ev.key === "Enter") {
                     this.submitForm(ev);
                 }
+
                 const el = ev.target as HTMLInputElement;
                 // Because the password field is not actually on this page,
                 // and we want to 'prefill' the password for the user,
@@ -160,7 +161,7 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
         totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
+            if (ev.key === "Enter") {
                 this.submitForm(ev);
             }
             const el = ev.target as HTMLInputElement;
@@ -258,7 +259,7 @@ export class IdentificationStage extends BaseStage<
                 label=${label}
                 required
                 class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {})["uid_field"]}
+                .errors=${(this.challenge.responseErrors || {}).uid_field}
             >
                 <input
                     type=${type}
@@ -278,9 +279,9 @@ export class IdentificationStage extends BaseStage<
                           inputId="ak-stage-identification-password"
                           required
                           class="pf-c-form__group"
-                          .errors=${(this.challenge?.responseErrors || {})["password"]}
+                          .errors=${(this.challenge?.responseErrors || {}).password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
-                          prefill=${PasswordManagerPrefill["password"] ?? ""}
+                          prefill=${PasswordManagerPrefill.password ?? ""}
                       ></ak-flow-input-password>
                   `
                 : nothing}

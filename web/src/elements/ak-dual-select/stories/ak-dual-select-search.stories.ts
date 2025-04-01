@@ -38,15 +38,13 @@ const container = (testItem: TemplateResult) =>
         <div id="action-button-message-pad-2" style="margin-top: 1em"></div>
     </div>`;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const displayMessage = (result: any) => {
+const displayMessage = (result: string) => {
     const doc = new DOMParser().parseFromString(`<p><i>Content</i>: ${result}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad");
     target!.replaceChildren(doc.firstChild!);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const displayMessage2 = (result: any) => {
+const displayMessage2 = (result: string) => {
     console.debug("Huh.");
     const doc = new DOMParser().parseFromString(`<p><i>Behavior</i>: ${result}</p>`, "text/xml");
     const target = document.querySelector("#action-button-message-pad-2");

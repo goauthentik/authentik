@@ -30,7 +30,7 @@ export class FormElement extends AKElement {
 
     @property({ attribute: false })
     set errors(value: ErrorDetail[] | undefined) {
-        this._errors = value;
+        this.#errors = value;
         const hasError = (value || []).length > 0;
         this.querySelectorAll("input").forEach((input) => {
             input.setAttribute("aria-invalid", hasError.toString());
@@ -38,7 +38,11 @@ export class FormElement extends AKElement {
         this.requestUpdate();
     }
 
-    _errors?: ErrorDetail[];
+    get errors(): ErrorDetail[] | undefined {
+        return this.#errors;
+    }
+
+    #errors?: ErrorDetail[];
 
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
@@ -55,7 +59,7 @@ export class FormElement extends AKElement {
                     : html``}
             </label>
             <slot></slot>
-            ${(this._errors || []).map((error) => {
+            ${(this.#errors || []).map((error) => {
                 return html`<p class="pf-c-form__helper-text pf-m-error">
                     <span class="pf-c-form__helper-text-icon">
                         <i class="fas fa-exclamation-circle" aria-hidden="true"></i> </span

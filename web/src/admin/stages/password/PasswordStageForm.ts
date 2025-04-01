@@ -34,11 +34,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                passwordStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+            passwordStageRequest: data,
+        });
     }
 
     isBackendSelected(field: BackendsEnum): boolean {

@@ -60,7 +60,7 @@ export class UserSettingsFlowExecutor
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
-        // @ts-ignore
+        // @ts-expect-error TODO: Type this correctly in the API.
         payload.component = this.challenge.component;
         this.loading = true;
         return new FlowsApi(DEFAULT_CONFIG)

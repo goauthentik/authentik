@@ -17,7 +17,7 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({
             id: pk,
         });
-        this.hasSigningKp = !!provider.signingKp;
+        this.hasSigningKp = Boolean(provider.signingKp);
         return provider;
     }
 
@@ -27,18 +27,17 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-                sAMLProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
+            sAMLProviderRequest: data,
+        });
     }
 
     renderForm() {
         const setHasSigningKp = (ev: InputEvent) => {
             const target = ev.target as AkCryptoCertificateSearch;
             if (!target) return;
-            this.hasSigningKp = !!target.selectedKeypair;
+            this.hasSigningKp = Boolean(target.selectedKeypair);
         };
 
         return renderForm(this.instance ?? {}, [], setHasSigningKp, this.hasSigningKp);

@@ -22,11 +22,10 @@ export class RadiusProviderFormPage extends WithBrandConfig(BaseProviderForm<Rad
                 id: this.instance.pk,
                 radiusProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRadiusCreate({
-                radiusProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersRadiusCreate({
+            radiusProviderRequest: data,
+        });
     }
 
     renderForm() {

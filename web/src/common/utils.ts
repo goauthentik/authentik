@@ -9,7 +9,7 @@ export function getCookie(name: string): string {
         for (let i = 0; i < cookies.length; i++) {
             const cookie = cookies[i].trim();
             // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === name + "=") {
+            if (cookie.substring(0, name.length + 1) === `${name}=`) {
                 cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                 break;
             }
@@ -25,18 +25,42 @@ export function convertToSlug(text: string): string {
         .replace(/[^\w-]+/g, "");
 }
 
-export function isSlug(text: string): boolean {
-    const lowered = text.toLowerCase();
-    const forbidden = /([^\w-]|\s)/.test(lowered);
-    return lowered === text && !forbidden;
+/**
+ * Type guard to check if a given string is a valid URL slug, i.e.
+ * only containing alphanumeric characters, dashes, and underscores.
+ */
+export function isSlug(input: unknown): input is string {
+    if (typeof input !== "string") return false;
+    if (!input) return false;
+
+    const lowered = input.toLowerCase();
+    if (input !== lowered) return false;
+
+    return /([^\w-]|\s)/.test(lowered);
+}
+
+/**
+ * Type guard to check if a given input is parsable as a URL.
+ *
+ * ```js
+ * isURLInput("https://example.com") // true
+ * isURLInput("invalid-url") // false
+ * isURLInput(new URL("https://example.com")) // true
+ * ```
+ */
+export function isURLInput(input: unknown): input is string | URL {
+    if (typeof input !== "string" && !(input instanceof URL)) return false;
+
+    if (!input) return false;
+
+    return URL.canParse(input);
 }
 
 /**
  * Truncate a string based on maximum word count
  */
-export function truncateWords(string: string, length = 10): string {
-    string = string || "";
-    const array = string.trim().split(" ");
+export function truncateWords(input: string = "", length = 10): string {
+    const array = input.trim().split(" ");
     const ellipsis = array.length > length ? "..." : "";
 
     return array.slice(0, length).join(" ") + ellipsis;
@@ -89,7 +113,7 @@ export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 export const ascii_letters = ascii_lowercase + ascii_uppercase;
 export const digits = "0123456789";
-export const hexdigits = digits + "abcdef" + "ABCDEF";
+export const hexdigits = `${digits}abcdef` + `ABCDEF`;
 export const octdigits = "01234567";
 export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 

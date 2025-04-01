@@ -10,7 +10,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -32,9 +32,8 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
         }
+        return msg("Successfully created provider.");
     }
 
     async send(data: RACProvider): Promise<RACProvider> {
@@ -43,11 +42,10 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 id: this.instance.pk,
                 rACProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
-                rACProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
+            rACProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

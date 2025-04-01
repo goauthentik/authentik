@@ -40,11 +40,10 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                 id: this.instance.pk,
                 microsoftEntraProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
-                microsoftEntraProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersMicrosoftEntraCreate({
+            microsoftEntraProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

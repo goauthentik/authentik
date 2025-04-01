@@ -34,11 +34,10 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorDuoStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
-                authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
+            authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
+        });
     }
 
     renderForm(): TemplateResult {

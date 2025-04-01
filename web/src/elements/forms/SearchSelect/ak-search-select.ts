@@ -54,28 +54,28 @@ export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelec
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
     @property({ attribute: false })
-    fetchObjects!: (query?: string) => Promise<T[]>;
+    declare fetchObjects: (query?: string) => Promise<T[]>;
 
     // A function passed to this object that extracts a string representation of items of the
     // collection under search.
     @property({ attribute: false })
-    renderElement!: (element: T) => string;
+    declare renderElement: (element: T) => string;
 
     // A function passed to this object that extracts an HTML representation of additional
     // information for items of the collection under search.
     @property({ attribute: false })
-    renderDescription?: (element: T) => string | TemplateResult;
+    declare renderDescription?: (element: T) => string | TemplateResult;
 
     // A function which returns the currently selected object's primary key, used for serialization
     // into forms.
     @property({ attribute: false })
-    value!: (element: T | undefined) => string;
+    declare value: (element: T | undefined) => string;
 
     // A function passed to this object that determines an object in the collection under search
     // should be automatically selected. Only used when the search itself is responsible for
     // fetching the data; sets an initial default value.
     @property({ attribute: false })
-    selected?: (element: T, elements: T[]) => boolean;
+    declare selected?: (element: T, elements: T[]) => boolean;
 
     // A function passed to this object (or using the default below) that groups objects in the
     // collection under search into categories.

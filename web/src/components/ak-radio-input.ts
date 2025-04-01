@@ -9,7 +9,7 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent";
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends HorizontalLightComponent<T> {
     @property({ type: Object })
-    value!: T;
+    declare value: T;
 
     @property({ type: Array })
     options: RadioOption<T>[] = [];

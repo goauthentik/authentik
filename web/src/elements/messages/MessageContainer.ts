@@ -59,7 +59,7 @@ export class MessageContainer extends AKElement {
 
     addMessage(message: APIMessage, unique = false): void {
         if (unique) {
-            const matchingMessages = this.messages.filter((m) => m.message == message.message);
+            const matchingMessages = this.messages.filter((m) => m.message === message.message);
             if (matchingMessages.length > 0) {
                 return;
             }

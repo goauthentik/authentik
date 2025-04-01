@@ -39,11 +39,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 policyUuid: this.instance.pk || "",
                 geoIPPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
-                geoIPPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
+            geoIPPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

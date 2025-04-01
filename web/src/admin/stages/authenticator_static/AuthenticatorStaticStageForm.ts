@@ -32,11 +32,10 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                 stageUuid: this.instance.pk || "",
                 authenticatorStaticStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
-                authenticatorStaticStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
+            authenticatorStaticStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

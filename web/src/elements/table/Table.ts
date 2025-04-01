@@ -79,7 +79,7 @@ export class TableColumn {
 
     render(table: TableLike): TemplateResult {
         const classes = {
-            "pf-c-table__sort": !!this.orderBy,
+            "pf-c-table__sort": Boolean(this.orderBy),
             "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
         };
 
@@ -220,10 +220,10 @@ export abstract class Table<T> extends AKElement implements TableLike {
     }
 
     public async fetch(): Promise<void> {
-        if (this.isLoading) {
-            return;
-        }
+        if (this.isLoading) return;
+
         this.isLoading = true;
+
         try {
             this.data = await this.apiEndpoint();
             this.error = undefined;

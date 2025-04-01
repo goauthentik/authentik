@@ -19,7 +19,7 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
     static get styles() {
-        return super.styles.concat(
+        return ModalButton.styles.concat(
             PFAbout,
             css`
                 .pf-c-about-modal-box__hero {
@@ -59,7 +59,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
 
     renderModal() {
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
-        if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
         return html`<div

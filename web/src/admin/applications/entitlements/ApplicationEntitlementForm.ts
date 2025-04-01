@@ -6,7 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
@@ -31,9 +31,8 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     getSuccessMessage(): string {
         if (this.instance?.pbmUuid) {
             return msg("Successfully updated entitlement.");
-        } else {
-            return msg("Successfully created entitlement.");
         }
+        return msg("Successfully created entitlement.");
     }
 
     static get styles(): CSSResult[] {
@@ -49,11 +48,10 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                 pbmUuid: this.instance.pbmUuid || "",
                 applicationEntitlementRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
-                applicationEntitlementRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreApplicationEntitlementsCreate({
+            applicationEntitlementRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

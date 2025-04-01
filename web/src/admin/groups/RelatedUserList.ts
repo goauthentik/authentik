@@ -46,8 +46,12 @@ import {
     User,
 } from "@goauthentik/api";
 
+interface AddUsersToGroupFormData {
+    users: number[];
+}
+
 @customElement("ak-user-related-add")
-export class RelatedUserAdd extends Form<{ users: number[] }> {
+export class RelatedUserAdd extends Form<AddUsersToGroupFormData> {
     @property({ attribute: false })
     group?: Group;
 
@@ -58,7 +62,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return msg("Successfully added user(s).");
     }
 
-    async send(data: { users: number[] }): Promise<{ users: number[] }> {
+    async send(data: AddUsersToGroupFormData): Promise<AddUsersToGroupFormData> {
         await Promise.all(
             data.users.map((user) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -69,6 +73,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                 });
             }),
         );
+
         return data;
     }
 
@@ -133,7 +138,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
+        return Table.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {

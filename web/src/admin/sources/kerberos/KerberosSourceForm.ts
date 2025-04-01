@@ -42,6 +42,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
         const source = await new SourcesApi(DEFAULT_CONFIG).sourcesKerberosRetrieve({
             slug: pk,
         });
+
         this.clearIcon = false;
         return source;
     }
@@ -63,7 +64,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.getFormFiles().icon;
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,

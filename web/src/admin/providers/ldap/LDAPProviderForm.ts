@@ -24,11 +24,10 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 id: this.instance.pk,
                 lDAPProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
-                lDAPProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
+            lDAPProviderRequest: data,
+        });
     }
 
     renderForm() {

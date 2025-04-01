@@ -96,10 +96,6 @@ export class AuthenticatedInterface extends Interface {
     @state()
     version?: Version;
 
-    constructor() {
-        super();
-    }
-
     _initContexts(): void {
         super._initContexts();
         this[enterpriseContext] = new EnterpriseContextController(this);

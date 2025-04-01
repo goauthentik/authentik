@@ -32,11 +32,10 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-                dockerServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+            dockerServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

@@ -8,7 +8,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -59,11 +59,10 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 instanceUuid: this.instance.pk,
                 blueprintInstanceRequest: data,
             });
-        } else {
-            return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
-                blueprintInstanceRequest: data,
-            });
         }
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
+            blueprintInstanceRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

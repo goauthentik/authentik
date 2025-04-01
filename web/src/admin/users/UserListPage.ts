@@ -126,7 +126,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
+        return [...TablePage.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
     }
 
     constructor() {
@@ -167,8 +167,8 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
-        const shouldShowWarning = this.selectedElements.find((el) => {
-            return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
+        const shouldShowWarning = this.selectedElements.find((user) => {
+            return user.pk === currentUser?.user.pk || user.pk === currentUser?.original?.pk;
         });
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}

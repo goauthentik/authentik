@@ -42,11 +42,10 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 id: this.instance.pk,
                 googleWorkspaceProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleWorkspaceProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
+            googleWorkspaceProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

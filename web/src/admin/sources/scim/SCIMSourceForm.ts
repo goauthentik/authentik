@@ -33,11 +33,10 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 slug: this.instance.slug,
                 patchedSCIMSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
-                sCIMSourceRequest: data as unknown as SCIMSourceRequest,
-            });
         }
+        return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
+            sCIMSourceRequest: data as unknown as SCIMSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {

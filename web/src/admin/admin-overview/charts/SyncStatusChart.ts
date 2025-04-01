@@ -127,7 +127,7 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
                 msg("LDAP Source"),
             ),
         ];
-        this.centerText = statuses.reduce((total, el) => (total += el.total), 0).toString();
+        this.centerText = statuses.reduce((total, el) => total + el.total, 0).toString();
         return statuses;
     }
 

@@ -60,6 +60,9 @@ export function ModeToLabel(action?: ProxyMode): string {
     }
 }
 
+/**
+ * Predicate to determine if a given proxy mode should forward.
+ */
 export function isForward(mode: ProxyMode): boolean {
     switch (mode) {
         case ProxyMode.Proxy:
@@ -156,13 +159,12 @@ export class ProxyProviderViewPage extends AKElement {
             (input: string): string => {
                 // The generated config is pretty unreliable currently so
                 // put it behind a flag
-                if (!getURLParam("generatedConfig", false)) {
-                    return input;
-                }
-                if (!this.provider) {
-                    return input;
-                }
+                if (!getURLParam("generatedConfig", false)) return input;
+
+                if (!this.provider) return input;
+
                 const extHost = new URL(this.provider.externalHost);
+
                 // See website/docs/add-secure-apps/providers/proxy/forward_auth.mdx
                 if (this.provider?.mode === ProxyMode.ForwardSingle) {
                     return input
@@ -170,13 +172,16 @@ export class ProxyProviderViewPage extends AKElement {
                         .replaceAll("outpost.company:9000", window.location.hostname)
                         .replaceAll("https://app.company", extHost.toString())
                         .replaceAll("app.company", extHost.hostname);
-                } else if (this.provider?.mode == ProxyMode.ForwardDomain) {
+                }
+
+                if (this.provider?.mode === ProxyMode.ForwardDomain) {
                     return input
                         .replaceAll("authentik.company", window.location.hostname)
                         .replaceAll("outpost.company:9000", extHost.toString())
                         .replaceAll("https://app.company", extHost.toString())
                         .replaceAll("app.company", extHost.hostname);
                 }
+
                 return input;
             },
         ];

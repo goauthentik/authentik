@@ -21,11 +21,10 @@ export class PropertyMappingNotification extends BasePropertyMappingForm<Notific
                 pmUuid: this.instance.pk,
                 notificationWebhookMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationCreate({
-                notificationWebhookMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationCreate({
+            notificationWebhookMappingRequest: data,
+        });
     }
 }
 

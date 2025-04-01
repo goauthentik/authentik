@@ -19,7 +19,7 @@ const metadata: Meta<AkDualSelectSelectedPane> = {
         },
     },
     argTypes: {
-        // @ts-ignore
+        // @ts-expect-error TODO: Clarify why this is an error.
         options: {
             type: "string",
             description: "An array of [key, label] pairs of what to show",

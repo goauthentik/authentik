@@ -40,11 +40,10 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 stageUuid: this.instance.pk || "",
                 authenticatorEmailStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
-                authenticatorEmailStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
+            authenticatorEmailStageRequest: data,
+        });
     }
 
     renderConnectionSettings(): TemplateResult {

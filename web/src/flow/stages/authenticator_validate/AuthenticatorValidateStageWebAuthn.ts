@@ -22,7 +22,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     AuthenticatorValidationChallengeResponseRequest
 > {
     @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
+    declare deviceChallenge?: DeviceChallenge;
 
     @property()
     errorMessage?: string;

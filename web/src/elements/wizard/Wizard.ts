@@ -112,7 +112,7 @@ export class Wizard extends ModalButton {
             const stepElement = document.createElement(step);
 
             stepElement.slot = step;
-            stepElement.dataset["wizardmanaged"] = "true";
+            stepElement.dataset.wizardmanaged = "true";
 
             this.appendChild(stepElement);
         }
@@ -249,7 +249,7 @@ export class Wizard extends ModalButton {
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
                           aria-label="${msg("Close")}"
-                          @click=${(ev: Event) => this.reset(ev)}
+                          @click=${this.reset}
                       >
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
@@ -336,7 +336,7 @@ export class Wizard extends ModalButton {
                               <button
                                   class="pf-c-button pf-m-link"
                                   type="button"
-                                  @click=${(ev: Event) => this.reset(ev)}
+                                  @click=${this.reset}
                               >
                                   ${msg("Cancel")}
                               </button>

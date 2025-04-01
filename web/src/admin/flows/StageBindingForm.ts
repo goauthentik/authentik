@@ -39,9 +39,8 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
-        } else {
-            return msg("Successfully created binding.");
         }
+        return msg("Successfully created binding.");
     }
 
     send(data: FlowStageBinding): Promise<unknown> {
@@ -50,14 +49,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 fsbUuid: this.instance.pk,
                 patchedFlowStageBindingRequest: data,
             });
-        } else {
-            if (this.targetPk) {
-                data.target = this.targetPk;
-            }
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
-                flowStageBindingRequest: data,
-            });
         }
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
+        return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
+            flowStageBindingRequest: data,
+        });
     }
 
     async getOrder(): Promise<number> {

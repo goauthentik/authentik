@@ -9,7 +9,7 @@ import type { Ref } from "lit/directives/ref.js";
 import { globalVariables, searchStyles } from "./search.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { SearchbarEvent } from "../types";
+import type { SearchbarEventDetail } from "../types";
 
 const styles = [PFBase, globalVariables, searchStyles];
 
@@ -40,7 +40,7 @@ export class AkSearchbar extends CustomEmitterElement(AKElement) {
         if (this.input.value) {
             this.value = this.input.value.value;
         }
-        this.dispatchCustomEvent<SearchbarEvent>("ak-search", {
+        this.dispatchCustomEvent<SearchbarEventDetail>("ak-search", {
             source: this.name,
             value: this.value,
         });
