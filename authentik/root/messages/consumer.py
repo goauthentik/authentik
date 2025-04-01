@@ -1,5 +1,6 @@
 """websocket Message consumer"""
 
+from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from django.core.cache import cache
 
@@ -13,6 +14,8 @@ class MessageConsumer(JsonWebsocketConsumer):
     session_key: str
 
     def connect(self):
+        if not self.scope["user"].is_authenticated():
+            raise DenyConnection()
         self.accept()
         self.session_key = self.scope["session"].session_key
         if not self.session_key:
