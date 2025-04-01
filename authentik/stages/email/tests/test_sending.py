@@ -97,6 +97,37 @@ class TestEmailStageSending(FlowTestCase):
             self.assertEqual(mail.outbox[0].subject, "authentik")
             self.assertEqual(mail.outbox[0].to, [f"Test User   Many Words   <{long_user.email}>"])
 
+    def test_utf8_name(self):
+        """Test with pending user"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        utf8_user = create_test_user()
+        utf8_user.name = "Cirilo ЉМНЊ el cirilico И̂ӢЙӤ "
+        utf8_user.email = "cyrillic@authentik.local"
+        utf8_user.save()
+        plan.context[PLAN_CONTEXT_PENDING_USER] = utf8_user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        Event.objects.filter(action=EventAction.EMAIL_SENT).delete()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        with patch(
+            "authentik.stages.email.models.EmailStage.backend_class",
+            PropertyMock(return_value=EmailBackend),
+        ):
+            response = self.client.post(url)
+            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                self.flow,
+                response_errors={
+                    "non_field_errors": [{"string": "email-sent", "code": "email-sent"}]
+                },
+            )
+            self.assertEqual(len(mail.outbox), 1)
+            self.assertEqual(mail.outbox[0].subject, "authentik")
+            self.assertEqual(mail.outbox[0].to, [f"{utf8_user.email}"])
+
     def test_pending_fake_user(self):
         """Test with pending (fake) user"""
         self.flow.designation = FlowDesignation.RECOVERY
