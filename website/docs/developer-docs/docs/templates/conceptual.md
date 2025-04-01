@@ -24,7 +24,7 @@ In this optional section, provide some example use cases for the feature. Who wo
 
 Dive deeper into explaining the concepts behind the feature/component.
 
-Write about the feature/functionalilty from the user's perspective. What is this feature used for, why should they use it, are there situations where they should **_not_** use it?
+Write about the feature/functionality from the user's perspective. What is this feature used for, why should they use it, are there situations where they should **_not_** use it?
 
 > Pro Tip: If you were writing the related procedural topic, and you found that you had a lot to say about the topic, this is exactly where that info would go (not crowded up at the top of the procedural topic!).
 

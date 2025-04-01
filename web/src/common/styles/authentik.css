@@ -1,3 +1,5 @@
+/* #region Global */
+
 :root {
     --ak-accent: #fd4b2d;
 
@@ -45,6 +47,10 @@ html > form > input {
     left: -2000px;
 }
 
+/* #endregion */
+
+/* #region Icons */
+
 .pf-icon {
     display: inline-block;
     font-style: normal;
@@ -54,21 +60,33 @@ html > form > input {
     vertical-align: middle;
 }
 
+.pf-c-form-control {
+    --pf-c-form-control--m-caps-lock--BackgroundUrl: url("data:image/svg+xml;charset=utf8,%3Csvg fill='%23aaabac' viewBox='0 0 56 56' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 20.7812 37.6211 L 35.2421 37.6211 C 38.5233 37.6211 40.2577 35.6992 40.2577 32.6055 L 40.2577 28.4570 L 49.1404 28.4570 C 51.0859 28.4570 52.6329 27.3086 52.6329 25.5039 C 52.6329 24.4024 52.0703 23.5351 51.0158 22.6211 L 30.9062 4.8789 C 29.9452 4.0351 29.0546 3.4727 27.9999 3.4727 C 26.9687 3.4727 26.0780 4.0351 25.1171 4.8789 L 4.9843 22.6445 C 3.8828 23.6055 3.3671 24.4024 3.3671 25.5039 C 3.3671 27.3086 4.9140 28.4570 6.8828 28.4570 L 15.7421 28.4570 L 15.7421 32.6055 C 15.7421 35.6992 17.4999 37.6211 20.7812 37.6211 Z M 21.1562 34.0820 C 20.2655 34.0820 19.6562 33.4961 19.6562 32.6055 L 19.6562 25.7149 C 19.6562 25.1524 19.4452 24.9180 18.8828 24.9180 L 8.6640 24.9180 C 8.4999 24.9180 8.4296 24.8476 8.4296 24.7305 C 8.4296 24.6367 8.4530 24.5430 8.5702 24.4492 L 27.5077 7.9961 C 27.7187 7.8086 27.8359 7.7383 27.9999 7.7383 C 28.1640 7.7383 28.3046 7.8086 28.4921 7.9961 L 47.4532 24.4492 C 47.5703 24.5430 47.5939 24.6367 47.5939 24.7305 C 47.5939 24.8476 47.4998 24.9180 47.3356 24.9180 L 37.1406 24.9180 C 36.5780 24.9180 36.3671 25.1524 36.3671 25.7149 L 36.3671 32.6055 C 36.3671 33.4727 35.7109 34.0820 34.8671 34.0820 Z M 19.7733 52.5273 L 36.0624 52.5273 C 38.7577 52.5273 40.3046 51.0273 40.3046 48.3086 L 40.3046 44.9336 C 40.3046 42.2148 38.7577 40.6680 36.0624 40.6680 L 19.7733 40.6680 C 17.0546 40.6680 15.5077 42.2383 15.5077 44.9336 L 15.5077 48.3086 C 15.5077 51.0039 17.0546 52.5273 19.7733 52.5273 Z M 20.3124 49.2227 C 19.4921 49.2227 19.0468 48.8008 19.0468 47.9805 L 19.0468 45.2617 C 19.0468 44.4414 19.4921 43.9727 20.3124 43.9727 L 35.5233 43.9727 C 36.3202 43.9727 36.7655 44.4414 36.7655 45.2617 L 36.7655 47.9805 C 36.7655 48.8008 36.3202 49.2227 35.5233 49.2227 Z'/%3E%3C/svg%3E");
+}
+
+.pf-c-form-control.pf-m-icon.pf-m-caps-lock {
+    --pf-c-form-control--m-icon--BackgroundUrl: var(
+        --pf-c-form-control--m-caps-lock--BackgroundUrl
+    );
+}
+
+/* #endregion */
+
 .pf-c-page__header {
     z-index: 0;
     background-color: var(--ak-dark-background-light);
     box-shadow: var(--pf-global--BoxShadow--lg-bottom);
 }
 
-/*****************************
-* Login adjustments
-*****************************/
+/* #region Login adjustments */
+
 /* Ensure card is displayed on small screens */
 .pf-c-login__main {
     display: block;
     position: relative;
     width: 100%;
 }
+
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
     width: 35rem;
@@ -76,30 +94,34 @@ html > form > input {
     flex-direction: column;
     justify-content: space-between;
 }
+
 .pf-c-login__header {
     flex-grow: 1;
 }
+
 .pf-c-login__footer {
     flex-grow: 2;
     display: flex;
     justify-content: end;
     flex-direction: column;
 }
+
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
     padding: 2rem 0;
 }
-/*****************************
-* End Login adjustments
-*****************************/
+
+/* #endregion */
 
 .pf-c-content h1 {
     display: flex;
     align-items: flex-start;
 }
+
 .pf-c-content h1 i {
     font-style: normal;
 }
+
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
 }
@@ -113,16 +135,31 @@ html > form > input {
 .pf-m-success {
     color: var(--pf-global--success-color--100) !important;
 }
+
 .pf-m-warning {
     color: var(--pf-global--warning-color--100);
 }
+
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
 }
 
+/* #region Fonts */
+
+.pf-m-monospace {
+    font-family: var(--pf-global--FontFamily--monospace);
+}
+
+/* #endregion */
+
 .pf-c-description-list__description .pf-c-button {
     margin-right: 6px;
     margin-bottom: 6px;
+}
+
+.pf-m-pressable {
+    cursor: pointer;
+    user-select: none;
 }
 
 /* Flow-card adjustments for static pages */
@@ -140,6 +177,7 @@ html > form > input {
     justify-content: center;
     width: 100%;
 }
+
 .ak-brand img {
     padding: 0 2rem;
     max-height: inherit;
@@ -154,3 +192,11 @@ html > form > input {
 .pf-c-data-list {
     padding-inline-start: 0;
 }
+
+/* #region Code blocks */
+
+pre:has(.hljs) {
+    padding: var(--pf-global--spacer--md);
+}
+
+/* #endregion */

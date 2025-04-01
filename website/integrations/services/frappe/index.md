@@ -1,11 +1,8 @@
 ---
 title: Integrate with Frappe
 sidebar_label: Frappe
+support_level: community
 ---
-
-# Frappe
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 :::note
 These instructions apply to all projects in the Frappe Family.
@@ -13,7 +10,7 @@ These instructions apply to all projects in the Frappe Family.
 
 ## What is Frappe
 
-> Frappe is a full stack, batteries-included, web framework written in Python and Javascript.
+> Frappe is a full stack, batteries-included, web framework written in Python and JavaScript.
 >
 > -- https://frappe.io/
 
@@ -21,29 +18,33 @@ These instructions apply to all projects in the Frappe Family.
 
 The following placeholders are used in this guide:
 
-- `frappe.company` is the FQDN of the Frappe install.
-- `authentik.company` is the FQDN of the authentik install.
+- `frappe.company` is the FQDN of the Frappe installation.
+- `authentik.company` is the FQDN of the authentik installation.
 - `provider` is the name for the social login provider in Frappe.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik configuration
 
-1. Log in to authentik as an admin, and go to the Admin interface.
-2. Create a new OAuth2/OpenID Provider under **Applications** -> **Providers** using the following settings:
+To support the integration of Frappe with authentik, you need to create an application/provider pair in authentik.
 
-    - **Name**: Frappe
-    - **Client type**: Confidential
-    - **Client ID**: Use the auto-populated ID
-    - **Client Secret**: Use the auto-populated secret
-    - **Redirect URIs/Origins (RegEx)**:
-        - `https://frappe.company/api/method/frappe.integrations.oauth2_logins.custom/provider`
-    - **Scopes**: `email`, `openid`, `profile`
-    - **Subject mode**: `Based on the Users's username`
-    - **Include claims in id_token**: `True`
-    - Leave everything else as default
+### Create an application and provider in authentik
 
-    Take note of **Client ID** and **Client Secret** as you will need them later.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-3. Create a new application under **Applications** -> **Applications**, pick a name and a slug, and assign the provider that you have just created.
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>frappe.company</em>/api/method/frappe.integrations.oauth2_logins.custom/provider</kbd>.
+    - Select any available signing key.
+    - Under **Advanced Protocol Settings**, set **Subject mode** to be `Based on the Users's username`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Frappe configuration
 

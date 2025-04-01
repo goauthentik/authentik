@@ -1,11 +1,8 @@
 ---
 title: Integrate with FortiGate Admin Login
 sidebar_label: FortiGate Admin Login
+support_level: community
 ---
-
-# FortiGate Admin Login
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FortiGate
 
@@ -18,40 +15,43 @@ sidebar_label: FortiGate Admin Login
 
 The following placeholders are used in this guide:
 
-- `fgt.company` is the FQDN of the FortiGate install.
-- `authentik.company` is the FQDN of the authentik install.
-- `fgt.mapping` is the name of the SAML Property Mapping.
-- `ak.cert` = The authentik self-signed certificate you use for the service provider.
+- `fgt.company` is the FQDN of the FortiGate installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-> [!IMPORTANT]
-> If you have changed the port of the admin login from 443 to anything else you have to append it behind `fgt.company`. So f.e. `fgt.company:10443`.
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-## Custom Property Mapping
+## authentik configuration
 
-Create a new SAML Property Mapping under the Customization settings.
+To support the integration of FortiGate with authentik, you need to create an application/provider pair in authentik.
 
-- `fgt.mapping` is the value for the Name.
-- `username` is the value for the SAML Attribute Name.
-- `return request.user.email` is the value for the Expression.
+### Create property mapping
 
-Create an application and SAML provider in authentik, and note the slug, because this will be used later. Create a SAML provider with the following parameters:
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
 
-Provider:
+- **Name**: Choose a descriptive name
+- **SAML Attribute Name**: <kbd>username</kbd>
+- **Friendly Name**: Leave blank
+- **Expression**: <kbd>return request.user.email</kbd>
 
-- ACS URL: `https://fgt.company/saml/?acs`
-- Issuer: `https://authentik.company`
-- Service Provider Binding: Post
-- Audience: `https://fgt.company/metadata/`
-- Signing Certificate: `ak.cert`
-- Property mappings: `fgt.mapping`
+### Create an application and provider in authentik
 
-You can of course adjust durations.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-Application:
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://<em>fgt.company</em>/saml/?acs</kbd>.
+    - Set the **Issuer** to <kbd>https://<em>authentik.company</em></kbd>.
+    - Set the **Audience** to <kbd>https://<em>fgt.company</em>/metadata</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section, then select an available **Signing Certificate**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-- Name: `Fortigate`
-- Slug: `fortigate`
-- Launch URL: `https://fgt.company/`
+3. Click **Submit** to save the new application and provider.
 
 ## FortiGate Configuration
 

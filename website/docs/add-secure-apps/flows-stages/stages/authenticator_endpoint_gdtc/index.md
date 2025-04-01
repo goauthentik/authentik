@@ -1,11 +1,8 @@
 ---
 title: Endpoint Authenticator Google Device Trust Connector Stage
----
-
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--preview">Preview</span>
-<span class="badge badge--version">authentik 2024.10+</span>
-
+authentik_version: "2024.10"
+authentik_preview: true
+authentik_enterprise: true
 ---
 
 With this stage, authentik can validate users' Chrome browsers and ensure that users' devices are compliant and up-to-date.
@@ -18,17 +15,18 @@ This stage only works with Google Chrome, as it relies on the [Chrome Verified A
 
 The main steps to set up your Google workspace are as follows:
 
-1. [Create your Google Cloud Project](#create-a-google-cloud-project)
-2. [Create a service account](#create-a-service-account)
-3. [Set credentials for the service account](#set-credentials-for-the-service-account)
-4. [Define access and scope in the Admin Console](#set-credentials-for-the-service-account)
+- [Configuration](#configuration)
+    - [Create a Google cloud project](#create-a-google-cloud-project)
+    - [Create a service account](#create-a-service-account)
+    - [Set credentials for the service account](#set-credentials-for-the-service-account)
+    - [Create the stage](#create-the-stage)
 
 For detailed instructions, refer to Google documentation.
 
 ### Create a Google cloud project
 
 1. Open the Google Cloud Console (https://cloud.google.com/cloud-console).
-2. In upper left, click the drop-down box to open the **Select a project** modal box, and then select **New Project**.
+2. In upper left, click the drop-down box to open the **Select a project** box, and then select **New Project**.
 3. Create a new project and give it a name like "authentik GWS".
 4. Use the search bar at the top of your new project page to search for "API Library".
 5. On the **API Library** page, use the search bar again to find "Chrome Verified Access API".
@@ -49,7 +47,7 @@ For detailed instructions, refer to Google documentation.
 
 1. On the **Service accounts** page, click the account that you just created.
 2. Click the **Keys** tab at top of the page, the click **Add Key -> Create new key**.
-3. In the Create modal box, select JSON as the key type, and then click **Create**.
+3. In the Create box, select JSON as the key type, and then click **Create**.
    A pop-up displays with the private key, and the key is saved to your computer as a JSON file.
    Later, when you create the stage in authentik, you will add this key in the **Credentials** field.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
@@ -66,7 +64,7 @@ For detailed instructions, refer to Google documentation.
 
 2. In the Admin interface, navigate to **Flows -> Stages**.
 
-3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** modal box, define the following fields:
+3. Click **Create**, and select **Endpoint Authenticator Google Device Trust Connector Stage**, and in the **New stage** box, define the following fields:
 
     - **Name**: define a descriptive name, such as "chrome-device-trust".
 
@@ -76,4 +74,4 @@ For detailed instructions, refer to Google documentation.
 
 4. Click **Finish**.
 
-After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.md), this stage only verifies the users' browser.
+After creating the stage, it can be used in any flow. Compared to other Authenticator stages, this stage does not require enrollment. Instead of adding an [Authenticator Validation Stage](../authenticator_validate/index.mdx), this stage only verifies the users' browser.

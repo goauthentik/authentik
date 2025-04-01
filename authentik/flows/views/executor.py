@@ -69,6 +69,7 @@ SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
+SESSION_KEY_AUTH_STARTED = "authentik/flows/auth_started"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
 
@@ -103,7 +104,7 @@ class FlowExecutorView(APIView):
 
     permission_classes = [AllowAny]
 
-    flow: Flow
+    flow: Flow = None
 
     plan: FlowPlan | None = None
     current_binding: FlowStageBinding | None = None
@@ -114,7 +115,8 @@ class FlowExecutorView(APIView):
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if not self.flow:
+            self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
         set_tag("authentik.flow", self.flow.slug)
 
@@ -452,6 +454,7 @@ class FlowExecutorView(APIView):
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
+            SESSION_KEY_AUTH_STARTED,
             # We might need the initial POST payloads for later requests
             # SESSION_KEY_POST,
             # We don't delete the history on purpose, as a user might

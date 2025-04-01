@@ -1,11 +1,8 @@
 ---
 title: Integrate with GlobalProtect
 sidebar_label: GlobalProtect
+support_level: community
 ---
-
-# GlobalProtect
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is GlobalProtect
 
@@ -20,29 +17,37 @@ sidebar_label: GlobalProtect
 The following placeholders are used in this guide:
 
 - `gp.company` is the FQDN of the GlobalProtect portal.
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 :::caution
 A trusted web certificate is required to be bound to the GlobalProtect Portal. This can be signed by a trusted internal Root Certificate Authority (CA); however, a self signed certificate, a certificate outside of its validity, or a non-standard confirming certificate (such as a lifespan not trusted by modern browsers) will error out on SAML authentication.
 :::
 
-## authentik configuration
+## authentik Configuration
 
-1. In the Admin interface of authentik, under _Providers_, create a SAML provider with these settings:
+To support the integration of GlobalProtect with authentik, you need to create an application/provider pair in authentik.
 
-- ACS URL: `https://gp.company:443/SAML20/SP/ACS` (Note the absence of the trailing slash, and the inclusion of the web interface port)
-- Issuer: `https://authentik.company/application/saml/fgm/sso/binding/redirect/`
-- Service Provider Binding: Post
-- You can of course use a custom signing certificate, and adjust durations.
+### Create an Application and Provider in authentik
 
-2.  Select the newly created Provider and download the metadata using the tool on the 'Overview' tab.
+1. Log in to authentik as an admin and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider**.
+    - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
+    - **Choose a Provider type**: Select **SAML Provider**.
+    - **Configure the Provider**:
+        - Set the **ACS URL** to <kbd>https://<em>gp.company:443</em>/SAML20/SP/ACS</kbd>. (Note the absence of the trailing slash and the inclusion of the web interface port)
+        - Set the **Issuer** to <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>.
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**, select an available signing certificate.
+3. Click **Submit** to save the new application and provider.
 
-3.  In the Admin interface of authentik, under _Application_, create an application with these settings:
+### Download the metadata
 
-- Launch URL: `blank://blank` (This setting hides the application, while still granting access)
-- Use the _Provider_ and _Slug_ previously set in the first step.
-
-4. Set the bindings appropriately to those who will be allowed to authenticate.
+1. Log in to authentik as an admin and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** > **_Provider Name_** and download the SAML metadata.
 
 ## GlobalProtect configuration
 

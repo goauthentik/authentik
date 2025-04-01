@@ -1,11 +1,8 @@
 ---
 title: Integrate with sssd
 sidebar_label: sssd
+support_level: community
 ---
-
-# sssd
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is sssd
 
@@ -22,7 +19,7 @@ Kerberos is also not supported.
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
+- `authentik.company` is the FQDN of the authentik LDAP outpost installation.
 - `ldap.baseDN` is the Base DN you configure in the LDAP provider.
 - `ldap.domain` is (typically) an FQDN for your domain. Usually
   it is just the components of your base DN. For example, if
@@ -34,26 +31,19 @@ The following placeholders are used in this guide:
 - `sssd.serviceAccountToken` is the service account token generated
   by authentik.
 
-Create an LDAP Provider if you don't already have one setup.
-This guide assumes you will be running with TLS and that you've
-correctly setup certificates both in authentik and on the host
-running sssd. See the [ldap provider docs](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap) for setting up SSL on the authentik side.
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-Remember the Base DN you have configured for the provider as you'll
-need it in the sssd configuration.
+:::warning
+The provider configuration assumes that connections to the outpost use LDAPS, with properly configured certificates on both authentik and the host running sssd. LDAPS is the recommended protocol for secure communication. For details on setting up SSL and StartTLS on the outpost, refer to [authentik’s LDAP provider documentation](../../../docs/add-secure-apps/providers/ldap#ssl--starttls).
+:::
 
-Create a new service account for all of your hosts to use to connect
-to LDAP and perform searches. Make sure this service account is added
-to `ldap.searchGroup`.
+## authentik configuration
 
-## Deployment
+Follow [official documentation](../../../docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
 
-Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/add-secure-apps/outposts). Deploy this Outpost either on the same host or a different host that your
-host(s) running sssd can access.
-
-The outpost will connect to authentik and configure itself.
-
-## Client Configuration
+## sssd configuration
 
 First, install the necessary sssd packages on your host. Very likely
 the package is just `sssd`.

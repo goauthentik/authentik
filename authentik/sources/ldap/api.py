@@ -110,6 +110,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",

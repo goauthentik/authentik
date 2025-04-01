@@ -43,7 +43,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -76,7 +76,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
@@ -93,38 +93,59 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 5: Python dependencies
-FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips-full AS python-deps
+# Stage 5: Download uv
+FROM ghcr.io/astral-sh/uv:0.6.11 AS uv
+# Stage 6: Base python image
+FROM ghcr.io/goauthentik/fips-python:3.12.9-slim-bookworm-fips AS python-base
+
+ENV VENV_PATH="/ak-root/.venv" \
+    PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
+    UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    UV_NATIVE_TLS=1 \
+    UV_PYTHON_DOWNLOADS=0
+
+WORKDIR /ak-root/
+
+COPY --from=uv /uv /uvx /bin/
+
+# Stage 7: Python dependencies
+FROM python-base AS python-deps
 
 ARG TARGETARCH
 ARG TARGETVARIANT
 
-WORKDIR /ak-root/poetry
-
-ENV VENV_PATH="/ak-root/venv" \
-    POETRY_VIRTUALENVS_CREATE=false \
-    PATH="/ak-root/venv/bin:$PATH"
-
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
+
+ENV PATH="/root/.cargo/bin:$PATH"
 
 RUN --mount=type=cache,id=apt-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/var/cache/apt \
     apt-get update && \
     # Required for installing pip packages
-    apt-get install -y --no-install-recommends build-essential pkg-config libpq-dev libkrb5-dev
+    apt-get install -y --no-install-recommends \
+    # Build essentials
+    build-essential pkg-config libffi-dev git \
+    # cryptography
+    curl \
+    # libxml
+    libxslt-dev zlib1g-dev \
+    # postgresql
+    libpq-dev \
+    # python-kadmin-rs
+    clang libkrb5-dev sccache \
+    # xmlsec
+    libltdl-dev && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
 
-RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
-    --mount=type=bind,target=./poetry.lock,src=./poetry.lock \
-    --mount=type=cache,target=/root/.cache/pip \
-    --mount=type=cache,target=/root/.cache/pypoetry \
-    python -m venv /ak-root/venv/ && \
-    bash -c "source ${VENV_PATH}/bin/activate && \
-    pip3 install --upgrade pip && \
-    pip3 install poetry && \
-    poetry install --only=main --no-ansi --no-interaction --no-root && \
-    pip install --force-reinstall /wheels/*"
+ENV UV_NO_BINARY_PACKAGE="cryptography lxml python-kadmin-rs xmlsec"
 
-# Stage 6: Run
-FROM ghcr.io/goauthentik/fips-python:3.12.7-slim-bookworm-fips-full AS final-image
+RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
+    --mount=type=bind,target=uv.lock,src=uv.lock \
+    --mount=type=cache,target=/root/.cache/uv \
+    uv sync --frozen --no-install-project --no-dev
+
+# Stage 8: Run
+FROM python-base AS final-image
 
 ARG VERSION
 ARG GIT_BUILD_HASH
@@ -140,10 +161,12 @@ WORKDIR /
 
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
+    apt-get upgrade -y && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 && \
+    apt-get install -y --no-install-recommends libpq5 libmaxminddb0 ca-certificates libkrb5-3 libkadm5clnt-mit12 libkdb5-10 libltdl7 libxslt1.1 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
+    pip3 install --no-cache-dir --upgrade pip && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
@@ -154,7 +177,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
-COPY ./poetry.lock /
+COPY ./uv.lock /
 COPY ./schemas /schemas
 COPY ./locale /locale
 COPY ./tests /tests
@@ -163,7 +186,7 @@ COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
-COPY --from=python-deps /ak-root/venv /ak-root/venv
+COPY --from=python-deps /ak-root/.venv /ak-root/.venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/build/ /website/help/
@@ -174,11 +197,7 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
-    VENV_PATH="/ak-root/venv" \
-    POETRY_VIRTUALENVS_CREATE=false
-
-ENV GOFIPS=1
+    GOFIPS=1
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 

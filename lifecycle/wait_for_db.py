@@ -63,7 +63,9 @@ def wait_for_db():
     # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
     if CONFIG.get("secret_key") is None or len(CONFIG.get("secret_key")) == 0:
         CONFIG.log("info", "----------------------------------------------------------------------")
-        CONFIG.log("info", "Secret key missing, check https://goauthentik.io/docs/installation/.")
+        CONFIG.log(
+            "info", "Secret key missing, check https://docs.goauthentik.io/docs/install-config/"
+        )
         CONFIG.log("info", "----------------------------------------------------------------------")
         sysexit(1)
     check_postgres()

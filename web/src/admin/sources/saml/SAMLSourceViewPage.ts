@@ -220,7 +220,7 @@ export class SAMLSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesSamlSamlsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesSamlSamlsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

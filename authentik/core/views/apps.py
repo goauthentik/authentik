@@ -55,7 +55,7 @@ class RedirectToAppLaunch(View):
             )
         except FlowNonApplicableException:
             raise Http404 from None
-        plan.insert_stage(in_memory_stage(RedirectToAppStage))
+        plan.append_stage(in_memory_stage(RedirectToAppStage))
         return plan.to_redirect(request, flow)
 
 

@@ -1,8 +1,7 @@
 ---
 title: Mailcow
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Mailcow credentials
 
@@ -10,8 +9,8 @@ Allows users to authenticate using their Mailcow credentials
 
 The following placeholders are used in this guide:
 
-- `authentik.company` is the FQDN of the authentik install.
-- `mailcow.company` is the FQDN of the mailcow install.
+- `authentik.company` is the FQDN of the authentik installation.
+- `mailcow.company` is the FQDN of the mailcow installation.
 
 ## Mailcow
 

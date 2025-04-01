@@ -1,11 +1,8 @@
 ---
 title: Integrate with Mastodon
 sidebar_label: Mastodon
+support_level: community
 ---
-
-# Mastodon
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Mastodon
 
@@ -17,27 +14,33 @@ sidebar_label: Mastodon
 
 The following placeholders are used in this guide:
 
-- `mastodon.company` is the FQDN of the mastodon install.
-- `authentik.company` is the FQDN of the authentik install.
+- `mastodon.company` is the FQDN of the mastodon installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-## authentik Configuration
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-### Step 1 - OAuth2/OpenID Provider
+## authentik configuration
 
-Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
+To support the integration of Mastodon with authentik, you need to create an application/provider pair in authentik.
 
-- Name : mastodon
-- Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
+### Create an application and provider in authentik
 
-### Step 3 - Application
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-Create an application (under _Resources/Applications_) with these settings:
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>mastodon.company</em>/auth/auth/openid_connect/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-- Name: Mastodon
-- Slug: mastodon
-- Provider: mastodon
+3. Click **Submit** to save the new application and provider.
 
-## Mastodon Setup
+## Mastodon configuration
 
 Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
 

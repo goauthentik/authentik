@@ -1,11 +1,8 @@
 ---
 title: Integrate with Wiki.js
 sidebar_label: Wiki.js
+support_level: community
 ---
-
-# Wiki.js
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Wiki.js
 
@@ -21,27 +18,39 @@ This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ betw
 
 The following placeholders are used in this guide:
 
-- `wiki.company` is the FQDN of Wiki.js.
-- `authentik.company` is the FQDN of authentik.
+- `wiki.company` is the FQDN of Wiki.js installation.
+- `authentik.company` is the FQDN of authentik installation.
 
-### Step 1
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Wiki.js pre-configuration
 
 In Wiki.js, navigate to the _Authentication_ section in the _Administration_ interface.
 
-Add a _Generic OpenID Connect / OAuth2_ strategy and note the _Callback URL / Redirect URI_ in the _Configuration Reference_ section at the bottom.
+Add a _Generic OpenID Connect / OAuth2_ strategy and take note of the _Callback URL / Redirect URI_ in the _Configuration Reference_ section at the bottom.
 
-### Step 2
+## authentik configuration
 
-In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+To support the integration of Wiki.js with authentik, you need to create an application/provider pair in authentik.
 
-- Redirect URI: The _Callback URL / Redirect URI_ you noted from the previous step.
-- Signing Key: Select any available key
+### Create an application and provider in authentik
 
-Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
 
-![](./authentik_provider.png)
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>wiki.company</em>/login/<em>id-from-wiki</em>/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-### Step 3
+3. Click **Submit** to save the new application and provider.
+
+## Wiki.js configuration
 
 In Wiki.js, configure the authentication strategy with these settings:
 
@@ -64,11 +73,3 @@ You do not have to enable "Allow self-registration" and select a group to which 
 :::note
 If you're using self-signed certificates for authentik, you need to set the root certificate of your CA as trusted in WikiJS by setting the NODE_EXTRA_CA_CERTS variable as explained here: https://github.com/Requarks/wiki/discussions/3387.
 :::
-
-### Step 5
-
-In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-
-Set the Launch URL to the _Callback URL / Redirect URI_ without the `/callback` at the end, as shown below. This will skip Wiki.js' login prompt and log you in directly.
-
-![](./authentik_application.png)

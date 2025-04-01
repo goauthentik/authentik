@@ -165,13 +165,21 @@ class UserInterfacePresentation extends AKElement {
         }
 
         return html`<a
-            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-            href="${globalAK().api.base}if/admin/"
-            slot="extra"
-        >
-            ${msg("Admin interface")}
-        </a>`;
+                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                href="${globalAK().api.base}if/admin/"
+                slot="extra"
+            >
+                ${msg("Admin interface")}
+            </a>
+            <a
+                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
+                href="${globalAK().api.base}if/admin/"
+                slot="extra"
+            >
+                ${msg("Admin")}
+            </a>`;
     }
+
     render() {
         // The `!` in the field definitions above only re-assure typescript and eslint that the
         // values *should* be available, not that they *are*. Thus this contract check; it asserts
@@ -278,11 +286,17 @@ export class UserInterface extends AuthenticatedInterface {
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
     }
 
-    connectedCallback() {
+    async connectedCallback() {
         super.connectedCallback();
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+
+        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
+            const { ESBuildObserver } = await import("@goauthentik/common/client");
+
+            new ESBuildObserver(process.env.WATCHER_URL);
+        }
     }
 
     disconnectedCallback() {

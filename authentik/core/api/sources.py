@@ -5,6 +5,7 @@ from collections.abc import Iterable
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
@@ -85,7 +86,7 @@ class SourceViewSet(
     serializer_class = SourceSerializer
     lookup_field = "slug"
     search_fields = ["slug", "name"]
-    filterset_fields = ["slug", "name", "managed"]
+    filterset_fields = ["slug", "name", "managed", "pbm_uuid"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
@@ -153,6 +154,17 @@ class SourceViewSet(
                 LOGGER.warning(source_settings.errors)
             matching_sources.append(source_settings.validated_data)
         return Response(matching_sources)
+
+    def destroy(self, request: Request, *args, **kwargs):
+        """Prevent deletion of built-in sources"""
+        instance: Source = self.get_object()
+
+        if instance.managed == Source.MANAGED_INBUILT:
+            raise ValidationError(
+                {"detail": "Built-in sources cannot be deleted"}, code="protected"
+            )
+
+        return super().destroy(request, *args, **kwargs)
 
 
 class UserSourceConnectionSerializer(SourceSerializer):

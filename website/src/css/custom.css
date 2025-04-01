@@ -1,3 +1,5 @@
+/* #region root */
+
 :root {
     --ifm-color-primary: #fd4b2d;
     --ifm-color-primary-dark: #fd320f;
@@ -11,6 +13,10 @@
     --ifm-navbar-link-hover-color: var(--ifm-color-gray-1000);
 }
 
+/* #endregion */
+
+/* #region Buttons */
+
 .button.button--outline {
     color: var(--white) !important;
     --ifm-button-border-color: var(--white) !important;
@@ -20,6 +26,10 @@
     color: var(--ifm-color-gray-1000) !important;
     --ifm-button-background-color: var(--white);
 }
+
+/* #endregion */
+
+/* #region Navbar */
 
 .navbar {
     background-color: var(--ifm-color-primary);
@@ -36,6 +46,10 @@
     color: var(--white);
     stroke: var(--white);
 }
+
+/* #endregion */
+
+/* #region Header */
 
 .header-github-link:hover {
     opacity: 0.6;
@@ -63,6 +77,8 @@
         no-repeat;
 }
 
+/* #endregion */
+
 @media (min-width: 1600px) {
     #__docusaurus_skipToContent_fallback > div {
         align-self: center;
@@ -83,11 +99,12 @@
     src: url("https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap");
 }
 
+/* #region Containers */
+
 body {
     font-family: "Roboto", sans-serif;
 }
 
-/* Container styles */
 .content {
     width: 100vw;
     height: 100vh;
@@ -95,6 +112,10 @@ body {
     align-items: center;
     justify-content: center;
 }
+
+/* #endregion */
+
+/* #region Sidebar */
 
 /* styling for version selector in sidebar */
 .theme-doc-sidebar-menu .dropdown {
@@ -112,24 +133,102 @@ body {
     margin-right: -0.5rem;
 }
 
+/* #endregion */
+
+/* #region Navbar */
+
 /* Nav header background color on mobile */
 .navbar-sidebar__brand,
 .navbar-sidebar__items {
     background-color: var(--ifm-color-primary);
 }
 
-.badge--version {
-    --ifm-badge-background-color: var(--ifm-color-primary-contrast-background);
-    color: var(--ifm-color-primary-contrast-foreground);
-    --ifm-badge-border-color: var(--ifm-badge-background-color);
+/* #endregion */
+
+/* #region Badges */
+
+.anchor > .badge {
     font-size: 0.75rem;
     vertical-align: middle;
 }
 
+.anchor > .badge {
+    margin-left: 0.5rem;
+}
+
+.badge--support-vendor {
+    --ifm-badge-background-color: var(--ifm-color-warning-contrast-background);
+    --ifm-badge-color: var(--ifm-color-warning-contrast-foreground);
+    --ifm-badge-border-color: var(--ifm-color-warning-contrast-foreground);
+}
+
+.badge--support-community {
+    --ifm-badge-background-color: var(
+        --ifm-color-secondary-contrast-foreground
+    );
+    --ifm-badge-border-color: var(--ifm-color-secondary-dark);
+    --ifm-badge-color: var(--ifm-color-secondary-contrast-background);
+}
+
+.badge--support-deprecated {
+    --ifm-badge-background-color: var(--ifm-color-danger);
+    --ifm-badge-border-color: var(--ifm-color-danger-contrast-background);
+    --ifm-badge-color: var(--ifm-color-danger-contrast-foreground);
+}
+
+.badge--support-authentik {
+    --ifm-badge-background-color: var(--ifm-color-primary);
+    --ifm-badge-border-color: var(--ifm-color-secondary);
+    --ifm-badge-color: var(--ifm-color-secondary);
+}
+
+.badge--version {
+    --ifm-badge-background-color: var(--ifm-color-primary-contrast-background);
+    --ifm-badge-border-color: var(--ifm-color-primary-contrast-foreground);
+    --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
+}
+
 .badge--preview {
     --ifm-badge-background-color: rgb(115, 188, 247);
-    color: var(--ifm-color-primary-contrast-foreground);
     --ifm-badge-border-color: var(--ifm-badge-background-color);
-    font-size: 0.75rem;
-    vertical-align: middle;
+    --ifm-badge-color: var(--ifm-color-primary-contrast-foreground);
+}
+
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* #endregion */
+
+/* #region Mermaid */
+
+.docusaurus-mermaid-container {
+    /* Improve contrast. */
+    & .messageText {
+        stroke: var(--ifm-background-color) !important;
+        stroke-width: 4;
+        fill: var(--ifm-color-content) !important;
+        paint-order: stroke;
+    }
+}
+/* #endregion */
+
+.markdown {
+    /* Remove empty table headers. */
+    & table > thead:has(> tr > th:empty):not(:has(> tr > th:not(:empty))) {
+        display: none;
+    }
+}
+
+.contains-task-list {
+    input[type="checkbox"] {
+        appearance: none;
+    }
+    input[type="checkbox"]::after {
+        content: "✓";
+        color: var(--ifm-color-success-dark);
+        display: inline-block;
+    }
 }

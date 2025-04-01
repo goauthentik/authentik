@@ -148,7 +148,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.OutpostsOutpost}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikOutpostsOutpost}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

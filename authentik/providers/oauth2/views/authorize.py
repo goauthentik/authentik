@@ -30,7 +30,7 @@ from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
-from authentik.policies.views import PolicyAccessView, RequestValidationError
+from authentik.policies.views import BufferedPolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PKCE_METHOD_PLAIN,
     PKCE_METHOD_S256,
@@ -254,10 +254,10 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
-            if PROMPT_CONSENT not in self.prompt:
-                # Instead of ignoring the `offline_access` scope when `prompt`
-                # isn't set to `consent`, we set override it ourselves
-                self.prompt.add(PROMPT_CONSENT)
+            # Don't explicitly request consent with offline_access, as the spec allows for
+            # "other conditions for processing the request permitting offline access to the
+            # requested resources are in place"
+            # which we interpret as "the admin picks an authorization flow with or without consent"
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
@@ -328,7 +328,7 @@ class OAuthAuthorizationParams:
         return code
 
 
-class AuthorizationFlowInitView(PolicyAccessView):
+class AuthorizationFlowInitView(BufferedPolicyAccessView):
     """OAuth2 Flow initializer, checks access to application and starts flow"""
 
     params: OAuthAuthorizationParams
@@ -499,11 +499,11 @@ class OAuthFulfillmentStage(StageView):
             )
 
             challenge.is_valid()
-
+            self.executor.stage_ok()
             return HttpChallengeResponse(
                 challenge=challenge,
             )
-
+        self.executor.stage_ok()
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
