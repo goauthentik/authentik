@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of _Calibre-Web_ with authentik, you need to create an application/provider pair and a correspdonding group in authentik.
+To support the integration of Calibre-Web with authentik, you need to create an application/provider pair and a correspdonding group in authentik.
 
 ### Create an application and provider in authentik
 
