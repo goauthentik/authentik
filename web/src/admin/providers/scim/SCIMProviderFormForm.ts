@@ -120,7 +120,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 >
                 </ak-switch-input>
 
-                <ak-form-element-horizontal label=${msg("Groups Filter")} name="filterGroups">
+                <ak-form-element-horizontal label=${msg("Filter Groups")} name="filterGroups">
                     <ak-dual-select-dynamic-selected
                         .provider=${groupsProvider}
                         .selector=${groupsSelector(provider?.filterGroups, null)}
