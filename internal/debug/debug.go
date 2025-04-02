@@ -35,7 +35,7 @@ func EnableDebugServer() {
 			if err != nil {
 				return nil
 			}
-			_, err = w.Write([]byte(fmt.Sprintf("<a href='%[1]s'>%[1]s</a><br>", tpl)))
+			_, err = fmt.Fprintf(w, "<a href='%[1]s'>%[1]s</a><br>", tpl)
 			if err != nil {
 				l.WithError(err).Warning("failed to write index")
 				return nil
