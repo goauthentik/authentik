@@ -27,6 +27,7 @@ module.exports = {
                         "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
+                        "services/mailcow/index",
                         "services/mastodon/index",
                         "services/matrix-synapse/index",
                         "services/mautic/index",

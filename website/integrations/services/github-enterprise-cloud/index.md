@@ -21,20 +21,30 @@ The following placeholders are used in this guide:
 - `github.com/enterprises/foo` is your GitHub organization, where `foo` is the name of your enterprise
 - `authentik.company` is the FQDN of the authentik installation.
 
-Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
-
-- ACS URL: `https://github.com/enterprises/foo/saml/consume`
-- Audience: `https://github.com/enterprises/foo`
-- Issuer: `https://github.com/enterprises/foo`
-- Binding: `Post`
-
-Under _Advanced protocol settings_, set a certificate for _Signing Certificate_.
-
-Once the provider is created, it is advised to download the signing certificate as you will need it later.
-
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
+
+## authentik configuration
+
+To support the integration of GitHub Enterprise Cloud with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://github.com/enterprises/foo/saml/consume</kbd>.
+    - Set the **Audience** to <kbd>https://github.com/enterprises/foo</kbd>.
+    - Set the **Issuer** to <kbd>https://github.com/enterprises/foo</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## GitHub Configuration
 

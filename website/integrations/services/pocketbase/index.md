@@ -33,14 +33,22 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-[Create](https://docs.goauthentik.io/docs/add-secure-apps/applications/manage_apps#add-new-applications) an OAuth2/OpenID provider and an application in authentik. Use the following parameters for the OAuth2/OpenID provider:
+To support the integration of Pocketbase with authentik, you need to create an application/provider pair in authentik.
 
-1. In the authentik Admin interface, navigate to **Applications** -> **Applications**.
-2. Use the wizard to create a new application and provider. During this process:
-    - Note the **Client ID**, **Client Secret**, and **slug** values for later use.
-    - Select implicit or explicit authorization flow as desired.
-    - Set the redirect URI to <kbd>https://<em>pocketbase.company</em>/api/oauth2-redirect</kbd>.
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>pocketbase.company</em>/api/oauth2-redirect</kbd>.
     - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## PocketBase configuration
 

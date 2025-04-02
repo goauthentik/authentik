@@ -608,6 +608,7 @@ export default {
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
+                "sys-mgmt/service-accounts",
             ],
         },
         {
@@ -704,6 +705,11 @@ export default {
                     type: "category",
                     label: "CVEs",
                     items: [
+                        {
+                            type: "category",
+                            label: "2025",
+                            items: ["security/cves/CVE-2025-29928"],
+                        },
                         {
                             type: "category",
                             label: "2024",
