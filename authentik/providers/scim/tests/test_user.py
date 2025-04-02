@@ -11,7 +11,6 @@ from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
-from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.models import Tenant
 
 

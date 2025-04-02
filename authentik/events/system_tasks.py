@@ -5,7 +5,6 @@ from time import perf_counter
 from typing import Any
 
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
 from tenant_schemas_celery.task import TenantTask
 
