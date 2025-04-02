@@ -94,9 +94,11 @@ The following variables are available to SAML source property mappings:
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception.
+
+**Example:**
 
 ```python
-if <blah>.get("<blahblah>") == "doNotSync":
+if name_id.get("email") == "example@example.xyz":
     raise SkipObject
 ```

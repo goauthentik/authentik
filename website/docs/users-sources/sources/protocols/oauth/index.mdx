@@ -56,9 +56,11 @@ The following variables are available to OAuth source property mappings:
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception.
+
+**Example:**
 
 ```python
-if info.get("email") == "example@examply.xyz":
+if info.get("email") == "example@example.xyz":
     raise SkipObject
 ```

@@ -141,10 +141,12 @@ When the property mapping is invoked from a synchronization context, the followi
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception.
+
+**Example:**
 
 ```python
-if <blah>.get("<blahblah>") == "doNotSync":
+if principal == "example@realm.company":
     raise SkipObject
 ```
 
