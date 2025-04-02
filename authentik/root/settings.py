@@ -76,6 +76,7 @@ TENANT_APPS = [
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
+    "authentik.events",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -123,7 +124,6 @@ TENANT_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
-    "authentik.tasks.schedules",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
@@ -500,9 +500,9 @@ try:
 except ImportError:
     pass
 
-# Import events after other apps since it relies on tasks and other things from all apps
-# being imported for @prefill_task
-TENANT_APPS.append("authentik.events")
+# Import schedules after other apps since it relies on tasks and ScheduledModel being
+# registered for its startup.
+TENANT_APPS.append("authentik.tasks.schedules")
 
 
 # Load subapps's settings

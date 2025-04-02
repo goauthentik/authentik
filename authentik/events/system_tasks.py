@@ -132,25 +132,3 @@ class SystemTask(TenantTask):
 
     def run(self, *args, **kwargs):
         raise NotImplementedError
-
-
-def prefill_task(func):
-    """Ensure a task's details are always in cache, so it can always be triggered via API"""
-    _prefill_tasks.append(
-        DBSystemTask(
-            name=func.__name__,
-            description=func.__doc__,
-            start_timestamp=now(),
-            finish_timestamp=now(),
-            status=TaskStatus.UNKNOWN,
-            messages=sanitize_item([_("Task has not been run yet.")]),
-            task_call_module=func.__module__,
-            task_call_func=func.__name__,
-            expiring=False,
-            duration=0,
-        )
-    )
-    return func
-
-
-_prefill_tasks = []
