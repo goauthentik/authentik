@@ -25,23 +25,27 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-### Step 1 - authentik
+## authentik configuration
 
-In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+To support the integration of WordPress with authentik, you need to create an application/provider pair in authentik.
 
-:::note
-Only settings that have been modified from default have been listed.
-:::
+### Create an application and provider in authentik
 
-**Protocol Settings**
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- Name: WordPress
-- Client ID: Copy and Save this for Later
-- Client Secret: Copy and Save this for later
-- Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`
-- Scopes: _email_, _offline_access_, _openid_, _profile_
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>wp.company</em>/admin-ajax.php\?action=openid-connect-authorize</kbd>.
+    - Select any available signing key.
+    - Under **Advanced Protocol Settings**, add `offline_access` to the list of available scopes.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-### Step 2 - WordPress
+3. Click **Submit** to save the new application and provider.
+
+## WordPress configuration
 
 :::note
 Assumption is being made that you have successfully downloaded and activated the required plugin "OpenID Connect Generic" by daggerhart
