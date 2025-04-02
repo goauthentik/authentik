@@ -89,7 +89,7 @@ To enable `trace` logging, follow the platform-specific steps below:
 
 ## Viewing past logs
 
-To review historical logs, use the `--since` option with `docker logs` or `kubectl logs`. This option accepts either a Go duration string (e.g., `1m30s`, `3h`) or a timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`).
+To review historical logs, you can use the `--since` option with both `docker logs` and `kubectl logs`. This option allows you to specify either a duration (e.g., `1m30s`, `3h`) or a specific timestamp (e.g., `2006-01-02T07:00`, `2006-01-02`) to view logs generated after that point in time.
 
 For more details, see the [`docker logs` documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
 
