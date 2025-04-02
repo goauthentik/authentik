@@ -146,7 +146,8 @@ If you need to skip synchronization for a specific object, you can raise the `Sk
 **Example:**
 
 ```python
-if principal == "example_username@<REALM.COMPANY>":
+localpart, realm = principal.rsplit("@", 1)
+if localpart == "username":
     raise SkipObject
 ```
 
