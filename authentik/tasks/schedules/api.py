@@ -51,4 +51,4 @@ class ScheduleViewSet(
         "id",
         "uid",
     )
-    ordering = ("-next_run", "uid")
+    ordering = ("next_run", "uid")
