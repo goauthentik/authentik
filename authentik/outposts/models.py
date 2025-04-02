@@ -317,7 +317,7 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
             ScheduleSpec(
                 actor_name="authentik.outposts.tasks.outpost_controller",
                 uid=self.pk,
-                args=(self.pk, "up"),
+                args=(self.pk,),
                 kwargs={"action": "up", "from_cache": False},
                 crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
                 description=_(

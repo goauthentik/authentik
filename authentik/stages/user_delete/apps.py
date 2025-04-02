@@ -1,11 +1,12 @@
 """authentik delete stage app config"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageUserDeleteConfig(AppConfig):
+class AuthentikStageUserDeleteConfig(ManagedAppConfig):
     """authentik delete stage config"""
 
     name = "authentik.stages.user_delete"
     label = "authentik_stages_user_delete"
     verbose_name = "authentik Stages.User Delete"
+    default = True

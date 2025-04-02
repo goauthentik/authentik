@@ -35,8 +35,8 @@ class ScheduleSerializer(ModelSerializer):
         try:
             actor: Actor = get_broker().get_actor(instance.actor_name)
         except ActorNotFound:
-            return None
-        return actor.fn.__doc__
+            return "FIXME this shouldn't happen"
+        return actor.fn.__doc__.strip()
 
 
 class ScheduleViewSet(

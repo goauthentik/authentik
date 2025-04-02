@@ -35,6 +35,7 @@ class AuthentikTasksConfig(ManagedAppConfig):
         broker.add_middleware(Pipelines())
         broker.add_middleware(Retries(max_retries=max_retries))
         broker.add_middleware(Results(backend=PostgresBackend(), store_results=True))
+
         broker.add_middleware(FullyQualifiedActorName())
         broker.add_middleware(CurrentTask())
 

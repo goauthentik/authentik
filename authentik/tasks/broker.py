@@ -319,20 +319,29 @@ class _PostgresConsumer(Consumer):
 
     @raise_connection_error
     def requeue(self, messages: Iterable[Message]):
+        for message in messages:
+            self.unlock_queue.put_nowait(message)
         self.query_set.filter(
             message_id__in=[message.message_id for message in messages],
         ).update(
             state=TaskState.QUEUED,
         )
-        # We don't care about locks, requeue occurs on worker stop
-        # TODO: this is not true, we need to handle them
+        for message in messages:
+            self.in_processing.remove(message.message_id)
+        self._purge_locks()
 
     def _fetch_pending_notifies(self) -> list[Notify]:
         self.logger.debug(f"Polling for lost messages in {self.queue_name}")
-        notifies = self.query_set.filter(
-            state__in=(TaskState.QUEUED, TaskState.CONSUMED),
-            queue_name=self.queue_name,
-        ).values_list("message_id", flat=True)
+        notifies = (
+            self.query_set.filter(
+                state__in=(TaskState.QUEUED, TaskState.CONSUMED),
+                queue_name=self.queue_name,
+            )
+            .exclude(
+                message_id__in=self.in_processing,
+            )
+            .values_list("message_id", flat=True)
+        )
         channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
         return [Notify(pid=0, channel=channel, payload=item) for item in notifies]
 
@@ -383,7 +392,7 @@ class _PostgresConsumer(Consumer):
 
         processing = len(self.in_processing)
         if processing >= self.prefetch:
-            # Wait and don't consume the message, other worker will be fast
+            # Wait and don't consume the message, other worker will be faster
             self.misses, backoff_ms = compute_backoff(self.misses, max_backoff=1000)
             self.logger.debug(
                 f"Too many messages in processing: {processing}. Sleeping {backoff_ms} ms"

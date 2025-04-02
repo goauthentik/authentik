@@ -30,7 +30,7 @@ type Worker struct {
 }
 
 func New(healthcheck func() bool) *Worker {
-	logger := log.WithField("logger", "authentik.router.unicorn")
+	logger := log.WithField("logger", "authentik.router.worker")
 	w := &Worker{
 		Healthcheck:     healthcheck,
 		log:             logger,

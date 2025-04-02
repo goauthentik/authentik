@@ -134,8 +134,9 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
 
 @actor
 def outpost_token_ensurer():
-    """Periodically ensure that all Outposts have valid Service Accounts
-    and Tokens"""
+    """
+    Periodically ensure that all Outposts have valid Service Accounts and Tokens
+    """
     self: Task = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:

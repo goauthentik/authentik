@@ -65,7 +65,7 @@ class BlueprintWatcherMiddleware(Middleware):
         )
         observer.start()
 
-    def before_worker_boot(self, broker, worker):
+    def after_worker_boot(self, broker, worker):
         self.start_blueprint_watcher()
 
 

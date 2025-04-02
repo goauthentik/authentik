@@ -6,6 +6,7 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
+from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.lib.utils.time import fqdn_rand
@@ -92,10 +93,6 @@ class ManagedAppConfig(AppConfig):
         """Get a list of schedule specs that must exist in the default tenant"""
         return []
 
-    def _reconcile_schedules(self, schedules: list[ScheduleSpec]):
-        for schedule in schedules:
-            schedule.update_or_create()
-
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
@@ -108,7 +105,6 @@ class ManagedAppConfig(AppConfig):
         for tenant in tenants:
             with tenant:
                 self._reconcile(self.RECONCILE_TENANT_CATEGORY)
-                self._reconcile_schedules(self.tenant_schedule_specs)
 
     def _reconcile_global(self) -> None:
         """
@@ -119,7 +115,6 @@ class ManagedAppConfig(AppConfig):
 
         with schema_context(get_public_schema_name()):
             self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
-            self._reconcile_schedules(self.global_schedule_specs)
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):
@@ -131,9 +126,15 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     default = True
 
     @ManagedAppConfig.reconcile_global
-    def load_blueprints_v1_tasks(self):
-        """Load v1 tasks"""
-        self.import_module("authentik.blueprints.v1.tasks")
+    def tasks_middlewares(self):
+        from authentik.blueprints.v1.tasks import BlueprintWatcherMiddleware
+
+        get_broker().add_middleware(BlueprintWatcherMiddleware())
+
+    # @ManagedAppConfig.reconcile_global
+    # def load_blueprints_v1_tasks(self):
+    #     """Load v1 tasks"""
+    #     self.import_module("authentik.blueprints.v1.tasks")
 
     @ManagedAppConfig.reconcile_tenant
     def blueprints_discovery(self):

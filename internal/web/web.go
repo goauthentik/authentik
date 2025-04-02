@@ -108,6 +108,7 @@ func NewWebServer() *WebServer {
 func (ws *WebServer) Start() {
 	go ws.runMetricsServer()
 	go ws.attemptStartBackend()
+	go ws.attemptStartWorker()
 	go ws.listenPlain()
 	go ws.listenTLS()
 }
@@ -134,6 +135,12 @@ func (ws *WebServer) attemptStartBackend() {
 				break
 			}
 		}
+	}
+}
+
+func (ws *WebServer) attemptStartWorker() {
+	if ws.worker == nil {
+		return
 	}
 }
 
