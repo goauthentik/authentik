@@ -146,7 +146,7 @@ If you need to skip synchronization for a specific object, you can raise the `Sk
 **Example:**
 
 ```python
-if principal == "example@realm.company":
+if principal == "example_username@<REALM.COMPANY>":
     raise SkipObject
 ```
 
