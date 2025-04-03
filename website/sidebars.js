@@ -608,6 +608,7 @@ export default {
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
+                "sys-mgmt/service-accounts",
             ],
         },
         {

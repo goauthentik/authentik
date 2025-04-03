@@ -27,6 +27,7 @@ module.exports = {
                         "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
+                        "services/mailcow/index",
                         "services/mastodon/index",
                         "services/matrix-synapse/index",
                         "services/mautic/index",
@@ -132,6 +133,7 @@ module.exports = {
                     items: [
                         "services/actual-budget/index",
                         "services/adventurelog/index",
+                        "services/calibre-web/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
