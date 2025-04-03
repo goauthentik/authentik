@@ -84,7 +84,7 @@ openid-username-claim-type=preferred_username
 
 ### Self Signed Certificates
 
-When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjkd/jre/lib/security/cacerts` keystore on your Apache Guacamole deployment. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
+When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjkd/jre/lib/security/cacerts` keystore on your Apache Guacamole host. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
 
 #### Adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
 
