@@ -24426,7 +24426,6 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
-          - authentik_tasks.task
           - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
@@ -24672,7 +24671,6 @@ paths:
           - authentik_stages_user_login.userloginstage
           - authentik_stages_user_logout.userlogoutstage
           - authentik_stages_user_write.userwritestage
-          - authentik_tasks.task
           - authentik_tasks_schedules.schedule
           - authentik_tenants.domain
         required: true
@@ -39098,6 +39096,120 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/tasks/:
+    get:
+      operationId: tasks_tasks_list
+      parameters:
+      - in: query
+        name: actor_name
+        schema:
+          type: string
+      - in: query
+        name: exclude_scheduled
+        schema:
+          type: boolean
+          default: false
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: queue_name
+        schema:
+          type: string
+      - in: query
+        name: schedule_uid
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: state
+        schema:
+          type: string
+          enum:
+          - consumed
+          - done
+          - queued
+          - rejected
+        description: |+
+          Task status
+
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaskList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /tasks/tasks/{message_id}/:
+    get:
+      operationId: tasks_tasks_retrieve
+      parameters:
+      - in: path
+        name: message_id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Task.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tenants/domains/:
     get:
       operationId: tenants_domains_list
@@ -39645,6 +39757,7 @@ components:
       - authentik.admin
       - authentik.api
       - authentik.crypto
+      - authentik.events
       - authentik.flows
       - authentik.outposts
       - authentik.policies.dummy
@@ -39692,7 +39805,6 @@ components:
       - authentik.stages.user_login
       - authentik.stages.user_logout
       - authentik.stages.user_write
-      - authentik.tasks.schedules
       - authentik.brands
       - authentik.blueprints
       - authentik.core
@@ -39703,7 +39815,7 @@ components:
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.source
-      - authentik.events
+      - authentik.tasks.schedules
       type: string
     AppleChallengeResponseRequest:
       type: object
@@ -46815,8 +46927,12 @@ components:
     ModelEnum:
       enum:
       - authentik_tenants.domain
-      - authentik_tasks.task
       - authentik_crypto.certificatekeypair
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
       - authentik_flows.flow
       - authentik_flows.flowstagebinding
       - authentik_outposts.dockerserviceconnection
@@ -46894,7 +47010,6 @@ components:
       - authentik_stages_user_login.userloginstage
       - authentik_stages_user_logout.userlogoutstage
       - authentik_stages_user_write.userwritestage
-      - authentik_tasks_schedules.schedule
       - authentik_brands.brand
       - authentik_blueprints.blueprintinstance
       - authentik_core.group
@@ -46910,11 +47025,7 @@ components:
       - authentik_providers_ssf.ssfprovider
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_source.sourcestage
-      - authentik_events.event
-      - authentik_events.notificationtransport
-      - authentik_events.notification
-      - authentik_events.notificationrule
-      - authentik_events.notificationwebhookmapping
+      - authentik_tasks_schedules.schedule
       type: string
     NameIdPolicyEnum:
       enum:
@@ -49384,6 +49495,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TOTPDevice'
+      required:
+      - pagination
+      - results
+    PaginatedTaskList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
       required:
       - pagination
       - results
@@ -52807,6 +52930,7 @@ components:
         crontab:
           type: string
           minLength: 1
+          description: When to schedule tasks
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -56672,27 +56796,39 @@ components:
           type: string
           format: uuid
           readOnly: true
-        name:
+        uid:
           type: string
           readOnly: true
-          description: Schedule display name
+          description: Unique schedule identifier
+        actor_name:
+          type: string
+          readOnly: true
+          description: Dramatiq actor to call
         crontab:
           type: string
+          description: When to schedule tasks
         next_run:
           type: string
           format: date-time
           readOnly: true
+        description:
+          type: string
+          nullable: true
+          readOnly: true
       required:
+      - actor_name
       - crontab
+      - description
       - id
-      - name
       - next_run
+      - uid
     ScheduleRequest:
       type: object
       properties:
         crontab:
           type: string
           minLength: 1
+          description: When to schedule tasks
       required:
       - crontab
     ScopeMapping:
@@ -57368,6 +57504,13 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
       required:
       - name
+    StateEnum:
+      enum:
+      - queued
+      - consumed
+      - rejected
+      - done
+      type: string
     StaticDevice:
       type: object
       description: Serializer for static authenticator devices
@@ -57644,6 +57787,32 @@ components:
           maxLength: 64
       required:
       - name
+    Task:
+      type: object
+      properties:
+        message_id:
+          type: string
+          format: uuid
+        queue_name:
+          type: string
+          description: Queue name
+        actor_name:
+          type: string
+          description: Dramatiq actor name
+        state:
+          allOf:
+          - $ref: '#/components/schemas/StateEnum'
+          description: Task status
+        mtime:
+          type: string
+          format: date-time
+          description: Task last modified time
+        schedule_uid:
+          type: string
+        uid:
+          type: string
+      required:
+      - actor_name
     Tenant:
       type: object
       description: Tenant Serializer
