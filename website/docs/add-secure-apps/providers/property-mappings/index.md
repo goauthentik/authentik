@@ -14,7 +14,7 @@ Scope mappings are used by the OAuth2 provider to map information from authentik
 
 ## Skip objects during synchronization
 
-To skip synchronization for a specific object, you can create a property mapping with an expression that triggers the `SkipObject` exception. This functionality is supported by the following providers: [**Google Workspace**](./gws, [**Microsoft Entra ID**](./entra), and [**SCIM**](/scim).
+To skip synchronization for a specific object, you can create a property mapping with an expression that triggers the `SkipObject` exception. This functionality is supported by the following providers: [**Google Workspace**](./gws), [**Microsoft Entra ID**](./entra), and [**SCIM**](/scim).
 
 **Example:**
 
