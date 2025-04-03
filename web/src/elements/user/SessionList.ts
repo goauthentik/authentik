@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -73,9 +73,9 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
                     ${item.lastIp}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
-            html`<div>${getRelativeTime(item.lastUsed)}</div>
+            html`<div>${formatElapsedTime(item.lastUsed)}</div>
                 <small>${item.lastUsed?.toLocaleString()}</small>`,
-            html`<div>${getRelativeTime(item.expires || new Date())}</div>
+            html`<div>${formatElapsedTime(item.expires || new Date())}</div>
                 <small>${item.expires?.toLocaleString()}</small>`,
         ];
     }

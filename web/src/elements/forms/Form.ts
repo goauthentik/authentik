@@ -1,7 +1,8 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
+import { dateToUTC } from "@goauthentik/common/temporal";
+import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";

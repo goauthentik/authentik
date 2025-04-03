@@ -3,7 +3,7 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -78,7 +78,7 @@ export class EventListPage extends TablePage<Event> {
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,

@@ -2,7 +2,7 @@ import { EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -47,7 +47,7 @@ export class UserEvents extends Table<Event> {
         return [
             html`${actionToLabel(item.action)}`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<span>${item.clientIp || msg("-")}</span>`,
         ];
