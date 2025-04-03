@@ -271,7 +271,7 @@ requires-dist = [
     { name = "dacite" },
     { name = "deepmerge" },
     { name = "defusedxml" },
-    { name = "django", specifier = "==5.1.8" },
+    { name = "django" },
     { name = "django-countries" },
     { name = "django-cte" },
     { name = "django-filter" },
