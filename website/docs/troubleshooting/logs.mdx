@@ -22,13 +22,13 @@ import TabItem from "@theme/TabItem";
   ]}>
   <TabItem value="docker-compose">
 
-1. Add the following entry to your `.env` file:
+1. Add the following environment variable to your docker deployment:
 
     ```shell
     AUTHENTIK_LOG_LEVEL=debug
     ```
 
-2. Restart your containers to apply the changes.
+2. Recreate your containers to apply the changes.
 
   </TabItem>
   <TabItem value="kubernetes">
@@ -40,17 +40,15 @@ import TabItem from "@theme/TabItem";
         log_level: debug
     ```
 
-2. Restart your containers to apply the changes.
+2. Recreate your containers to apply the changes.
 
   </TabItem>
 </Tabs>
 
 ## Enabling `trace` mode
 
-The `trace` log level provides deeper insights but also includes sensitive details.
-
 :::danger
-Using `trace` logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using `trace` unless absolutely necessary.
+The trace log level provides deeper insights, but be aware that using trace logs can expose sensitive information, including session cookies. Handle these logs with extreme caution and avoid using trace unless absolutely necessary.
 :::
 
 To enable `trace` logging, follow the platform-specific steps below:
@@ -64,13 +62,13 @@ To enable `trace` logging, follow the platform-specific steps below:
   ]}>
   <TabItem value="docker-compose">
 
-1. Add the following to your `.env` file:
+1. Add the following environment variable to your docker deployment:
 
     ```shell
     AUTHENTIK_LOG_LEVEL=trace
     ```
 
-2. Restart your containers to apply the changes.
+2. Recreate your containers to apply the changes.
 
   </TabItem>
   <TabItem value="kubernetes">
@@ -82,7 +80,7 @@ To enable `trace` logging, follow the platform-specific steps below:
         log_level: trace
     ```
 
-2. Restart your containers to apply the changes.
+2. Recreate your containers to apply the changes.
 
   </TabItem>
 </Tabs>
