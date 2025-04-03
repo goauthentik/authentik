@@ -40,7 +40,9 @@ class Scheduler:
                     tenant=tenant.schema_name,
                 )
             with transaction.atomic(using=router.db_for_write(Schedule)):
-                for schedule in Schedule.objects.select_for_update().filter(next_run__lt=now()):
+                for schedule in Schedule.objects.select_for_update().filter(
+                    next_run__lt=now(), paused=False
+                ):
                     self.process_schedule(schedule)
 
     def run(self):

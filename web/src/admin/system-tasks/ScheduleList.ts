@@ -1,9 +1,9 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/providers/rac/EndpointForm";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
+import "@goauthentik/admin/system-tasks/ScheduleForm";
 import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { getRelativeTime } from "@goauthentik/common/utils";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -55,9 +55,45 @@ export class ScheduleList extends Table<Schedule> {
             html`<div>${item.description}</div>
                 <small>${item.uid.replace(new RegExp("^authentik."), "")}</small>`,
             html`${item.crontab}`,
-            html`<div>${getRelativeTime(item.nextRun)}</div>
-                <small>${item.nextRun.toLocaleString()}</small>`,
-            html``,
+            html`
+                ${item.paused
+                    ? html`Paused`
+                    : html`
+                          <div>${getRelativeTime(item.nextRun)}</div>
+                          <small>${item.nextRun.toLocaleString()}</small>
+                      `}
+            `,
+            html`<ak-action-button
+                    class="pf-m-plain"
+                    .apiRequest=${() => {
+                        return new TasksApi(DEFAULT_CONFIG)
+                            .tasksSchedulesSendCreate({
+                                id: item.id,
+                            })
+                            .then(() => {
+                                this.dispatchEvent(
+                                    new CustomEvent(EVENT_REFRESH, {
+                                        bubbles: true,
+                                        composed: true,
+                                    }),
+                                );
+                            });
+                    }}
+                >
+                </ak-action-button>
+                <pf-tooltip position="top" content=${msg("Run scheduled task now")}>
+                    <i class="fas fa-play" aria-hidden="true"></i>
+                </pf-tooltip>
+                <ak-forms-modal>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Schedule")} </span>
+                    <ak-schedule-form slot="form" .instancePk=${item.id}> </ak-schedule-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal> `,
         ];
     }
 

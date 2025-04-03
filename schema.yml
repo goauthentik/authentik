@@ -39096,6 +39096,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /tasks/schedules/{id}/send/:
+    post:
+      operationId: tasks_schedules_send_create
+      description: Trigger this schedule now
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Schedule.
+        required: true
+      tags:
+      - tasks
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /tasks/tasks/:
     get:
       operationId: tasks_tasks_list
@@ -52931,6 +52966,9 @@ components:
           type: string
           minLength: 1
           description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -56807,6 +56845,9 @@ components:
         crontab:
           type: string
           description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
         next_run:
           type: string
           format: date-time
@@ -56829,6 +56870,9 @@ components:
           type: string
           minLength: 1
           description: When to schedule tasks
+        paused:
+          type: boolean
+          description: Pause this schedule
       required:
       - crontab
     ScopeMapping:

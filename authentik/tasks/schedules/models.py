@@ -40,6 +40,7 @@ class Schedule(SerializerModel):
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
 
     crontab = models.TextField(validators=[validate_crontab], help_text=_("When to schedule tasks"))
+    paused = models.BooleanField(default=False, help_text=_("Pause this schedule"))
 
     next_run = models.DateTimeField(auto_now_add=True, editable=False)
 
@@ -50,6 +51,9 @@ class Schedule(SerializerModel):
             "change",
             "view",
         )
+        permissions = [
+            ("send_schedule", _("Manually trigger a schedule")),
+        ]
         indexes = (models.Index(fields=("rel_obj_content_type", "rel_obj_id")),)
 
     def __str__(self):

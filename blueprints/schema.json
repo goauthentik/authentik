@@ -7754,6 +7754,7 @@
                             "authentik_stages_user_write.view_userwritestage",
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.send_schedule",
                             "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
@@ -14268,6 +14269,7 @@
                             "authentik_stages_user_write.view_userwritestage",
                             "authentik_tasks.view_task",
                             "authentik_tasks_schedules.change_schedule",
+                            "authentik_tasks_schedules.send_schedule",
                             "authentik_tasks_schedules.view_schedule",
                             "authentik_tenants.add_domain",
                             "authentik_tenants.add_tenant",
@@ -15218,6 +15220,11 @@
                     "minLength": 1,
                     "title": "Crontab",
                     "description": "When to schedule tasks"
+                },
+                "paused": {
+                    "type": "boolean",
+                    "title": "Paused",
+                    "description": "Pause this schedule"
                 }
             },
             "required": []
@@ -15233,6 +15240,7 @@
                     "permission": {
                         "type": "string",
                         "enum": [
+                            "send_schedule",
                             "change_schedule",
                             "view_schedule"
                         ]
