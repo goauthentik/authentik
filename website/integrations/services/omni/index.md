@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of _Omni_ with authentik, you need to create a property mapping and application/provider pair in authentik.
+To support the integration of Omni with authentik, you need to create a property mapping and application/provider pair in authentik.
 
 ### Create a Property Mapping, Application and Provider in authentik
 
