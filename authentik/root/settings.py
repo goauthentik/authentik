@@ -137,6 +137,7 @@ PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 GUARDIAN_MONKEY_PATCH = False
 
 SPECTACULAR_SETTINGS = {
+    "SCHEMA_GENERATOR_CLASS": "authentik.api.schema.CompatibilitySchemaGenerator",
     "TITLE": "authentik",
     "DESCRIPTION": "Making authentication simple.",
     "VERSION": __version__,
