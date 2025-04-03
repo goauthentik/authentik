@@ -13,7 +13,7 @@ dependencies = [
     "dacite",
     "deepmerge",
     "defusedxml",
-    "django==5.1.8",
+    "django",
     "django-countries",
     "django-cte",
     "django-filter",
