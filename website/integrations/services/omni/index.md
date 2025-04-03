@@ -45,14 +45,14 @@ To support the integration of Omni with authentik, you need to create a property
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
-    - ACS URL: <kbd>https://<em>omni.company</em>/saml/acs</kbd>
-    - Service Provider Binding: `Post`
-    - Audience: <kbd>https://<em>omni.company</em>/saml/metadata</kbd>
-    - Signing Certificate: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
-    - Sign assertions: `true`
-    - Sign responses: `true`
-    - Property mappings: `*property_mapping_name*` (e.g. `Omni Mapping`)
-    - NameID Property Mapping: `*property_mapping_name*` (e.g. `Omni Mapping`)
+    - **ACS URL**: <kbd>https://<em>omni.company</em>/saml/acs</kbd>
+    - **Service Provider Binding**: `Post`
+    - **Audience**: <kbd>https://<em>omni.company</em>/saml/metadata</kbd>
+    - **Signing Certificate**: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
+    - **Sign assertions**: `true`
+    - **Sign responses**: `true`
+    - **Property mappings**: `*property_mapping_name*` (e.g. `Omni Mapping`)
+    - **NameID Property Mapping**: `*property_mapping_name*` (e.g. `Omni Mapping`)
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
