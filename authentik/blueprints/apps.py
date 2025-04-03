@@ -131,18 +131,18 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
 
         get_broker().add_middleware(BlueprintWatcherMiddleware())
 
-    # @ManagedAppConfig.reconcile_global
-    # def load_blueprints_v1_tasks(self):
-    #     """Load v1 tasks"""
-    #     self.import_module("authentik.blueprints.v1.tasks")
-
     @ManagedAppConfig.reconcile_tenant
     def blueprints_discovery(self):
         """Run blueprint discovery"""
-        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
+        from authentik.tasks.schedules.models import Schedule
 
-        blueprints_discovery.send()
-        clear_failed_blueprints.send()
+        for schedule in Schedule.objects.filter(
+            actor_name__in=(
+                "authentik.blueprints.v1.tasks.blueprints_discovery",
+                "authentik.blueprints.v1.tasks.clear_failed_blueprints",
+            ),
+        ):
+            schedule.send()
 
     def import_models(self):
         super().import_models()

@@ -80,10 +80,10 @@ export class ScheduleList extends Table<Schedule> {
                             });
                     }}
                 >
+                    <pf-tooltip position="top" content=${msg("Run scheduled task now")}>
+                        <i class="fas fa-play" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </ak-action-button>
-                <pf-tooltip position="top" content=${msg("Run scheduled task now")}>
-                    <i class="fas fa-play" aria-hidden="true"></i>
-                </pf-tooltip>
                 <ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Schedule")} </span>
@@ -93,7 +93,7 @@ export class ScheduleList extends Table<Schedule> {
                             <i class="fas fa-edit"></i>
                         </pf-tooltip>
                     </button>
-                </ak-forms-modal> `,
+                </ak-forms-modal>`,
         ];
     }
 

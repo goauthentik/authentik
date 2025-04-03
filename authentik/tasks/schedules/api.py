@@ -2,7 +2,7 @@ from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.mixins import (
     ListModelMixin,
@@ -61,7 +61,14 @@ class ScheduleViewSet(
     ordering = ("next_run", "uid")
 
     @permission_required("authentik_tasks_schedules.send_schedule")
-    @extend_schema(request=OpenApiTypes.NONE)
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            204: OpenApiResponse(description="Schedule sent successfully"),
+            404: OpenApiResponse(description="Schedule not found"),
+            500: OpenApiResponse(description="Failed to send schedule"),
+        },
+    )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def send(self, request: Request, pk=None) -> Response:
         """Trigger this schedule now"""

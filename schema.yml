@@ -39113,12 +39113,12 @@ paths:
       security:
       - authentik: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Schedule'
-          description: ''
+        '204':
+          description: Schedule sent successfully
+        '404':
+          description: Schedule not found
+        '500':
+          description: Failed to send schedule
         '400':
           content:
             application/json:
