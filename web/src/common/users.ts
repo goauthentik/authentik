@@ -1,63 +1,96 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+import { isResponseErrorLike } from "@goauthentik/common/errors/network";
 
-import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
+import { CoreApi, SessionUser } from "@goauthentik/api";
 
-let globalMePromise: Promise<SessionUser> | undefined;
+/**
+ * Create a guest session for unauthenticated users.
+ *
+ * @see {@linkcode me} for the actual session retrieval.
+ */
+function createGuestSession(): SessionUser {
+    const guest: SessionUser = {
+        user: {
+            pk: -1,
+            isSuperuser: false,
+            isActive: true,
+            groups: [],
+            avatar: "",
+            uid: "",
+            username: "",
+            name: "",
+            settings: {},
+            systemPermissions: [],
+        },
+    };
 
+    return guest;
+}
+
+let memoizedSession: SessionUser | null = null;
+
+/**
+ * Refresh the current user session.
+ */
 export function refreshMe(): Promise<SessionUser> {
-    globalMePromise = undefined;
+    memoizedSession = null;
     return me();
 }
 
-export function me(): Promise<SessionUser> {
-    if (!globalMePromise) {
-        globalMePromise = new CoreApi(DEFAULT_CONFIG)
-            .coreUsersMeRetrieve()
-            .then((user) => {
-                if (!user.user.settings || !("locale" in user.user.settings)) {
-                    return user;
-                }
-                const locale: string | undefined = user.user.settings.locale;
-                if (locale && locale !== "") {
-                    console.debug(
-                        `authentik/locale: Activating user's configured locale '${locale}'`,
+/**
+ * Retrieve the current user session.
+ *
+ * This is a memoized function, so it will only make one request per page load.
+ *
+ * @see {@linkcode refreshMe} to force a refresh.
+ */
+export async function me(): Promise<SessionUser> {
+    if (memoizedSession) return memoizedSession;
+
+    return new CoreApi(DEFAULT_CONFIG)
+        .coreUsersMeRetrieve()
+        .then((nextSession) => {
+            const locale: string | undefined = nextSession.user.settings.locale;
+
+            if (locale) {
+                console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
+
+                window.dispatchEvent(
+                    new CustomEvent(EVENT_LOCALE_REQUEST, {
+                        composed: true,
+                        bubbles: true,
+                        detail: { locale },
+                    }),
+                );
+            }
+
+            return nextSession;
+        })
+        .catch(async (error: unknown) => {
+            if (isResponseErrorLike(error)) {
+                const { response } = error;
+
+                if (response.status === 401 || response.status === 403) {
+                    const { pathname, search, hash } = window.location;
+
+                    const authFlowRedirectURL = new URL(
+                        `/flows/-/default/authentication/`,
+                        window.location.origin,
                     );
-                    window.dispatchEvent(
-                        new CustomEvent(EVENT_LOCALE_REQUEST, {
-                            composed: true,
-                            bubbles: true,
-                            detail: { locale },
-                        }),
-                    );
+
+                    authFlowRedirectURL.searchParams.set("next", `${pathname}${search}${hash}`);
+
+                    window.location.assign(authFlowRedirectURL);
                 }
-                return user;
-            })
-            .catch((ex: ResponseError) => {
-                const defaultUser: SessionUser = {
-                    user: {
-                        pk: -1,
-                        isSuperuser: false,
-                        isActive: true,
-                        groups: [],
-                        avatar: "",
-                        uid: "",
-                        username: "",
-                        name: "",
-                        settings: {},
-                        systemPermissions: [],
-                    },
-                };
-                if (ex.response?.status === 401 || ex.response?.status === 403) {
-                    const relativeUrl = window.location
-                        .toString()
-                        .substring(window.location.origin.length);
-                    window.location.assign(
-                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`,
-                    );
-                }
-                return defaultUser;
-            });
-    }
-    return globalMePromise;
+            }
+
+            console.debug("authentik/users: Failed to retrieve user session", error);
+
+            return createGuestSession();
+        })
+        .then((nextSession) => {
+            memoizedSession = nextSession;
+            return nextSession;
+        });
 }
