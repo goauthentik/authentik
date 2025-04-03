@@ -88,7 +88,7 @@ return 540
 
 ## Knocknoc configuration
 
-1. Login to Knocknoc and navigate to **Admin** -> **Settings**
+1. Login to Knocknoc and navigate to **Admin** -> **Settings** -> **SAML**
 2. Set the following configration:
 
     - **Metadata URL**: _download URL that was copied in the previous section._
