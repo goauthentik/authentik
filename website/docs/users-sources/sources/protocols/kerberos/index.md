@@ -141,7 +141,7 @@ When the property mapping is invoked from a synchronization context, the followi
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify your Kerberos property mapping to use an expression to define the object to skip.
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify a Kerberos property mapping to use an expression to define the object to skip.
 
 **Example:**
 
