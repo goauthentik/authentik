@@ -12,7 +12,7 @@ SAML property mappings allow you embed information into the SAML authentication 
 
 Scope mappings are used by the OAuth2 provider to map information from authentik to OAuth2/OpenID claims. Values returned by a scope mapping are added as custom claims to access and ID tokens.
 
-## Use a property mapping to skip objects during synchronization
+## Skip objects during synchronization
 
 To skip synchronization for a specific object, you can create a property mapping with an expression that triggers the `SkipObject` exception. This functionality is supported by the following providers: **Google Workspace**, **Microsoft Entra ID**, and **SCIM**.
 
