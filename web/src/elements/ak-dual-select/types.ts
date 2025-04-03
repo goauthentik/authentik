@@ -30,9 +30,9 @@ export type DataProvision = {
 
 export type DataProvider = (page: number, search?: string) => Promise<DataProvision>;
 
-export interface SearchbarEvent extends CustomEvent {
-    detail: {
-        source: string;
-        value: string;
-    };
+export interface SearchbarEventDetail {
+    source: string;
+    value: string;
 }
+
+export type SearchbarEvent = CustomEvent<SearchbarEventDetail>;
