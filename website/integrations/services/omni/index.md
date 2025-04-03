@@ -51,7 +51,7 @@ To support the integration of Omni with authentik, you need to create a property
     - Signing Certificate: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
     - Sign assertions: `true`
     - Sign responses: `true`
-    - Property mappings: `<property_mapping_name>` (e.g. `Omni Mapping`)
+    - Property mappings: `*property_mapping_name*` (e.g. `Omni Mapping`)
     - NameID Property Mapping: `<property_mapping_name>` (e.g. `Omni Mapping`)
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
