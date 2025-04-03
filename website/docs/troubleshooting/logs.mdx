@@ -91,7 +91,14 @@ To review historical logs, you can use the `--since` option with both `docker lo
 
 For more details, see the [`docker logs` documentation](https://docs.docker.com/reference/cli/docker/container/logs/) and [`kubectl logs` documentation](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_logs/).
 
-### Docker
+<Tabs
+  groupId="platform"
+  defaultValue="docker"
+  values={[
+    {label: 'docker', value: 'docker'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
 
 To retrieve logs from a specific timeframe, use:
 
@@ -99,7 +106,8 @@ To retrieve logs from a specific timeframe, use:
 docker logs <container_name_or_id> --since 5m
 ```
 
-### Kubernetes
+  </TabItem>
+  <TabItem value="kubernetes">
 
 To fetch logs from a Kubernetes pod:
 
@@ -107,11 +115,21 @@ To fetch logs from a Kubernetes pod:
 kubectl logs --since 5m <pod_name>
 ```
 
+  </TabItem>
+</Tabs>
+
 ## Streaming logs in real-time
 
 To continuously monitor logs, use the `--follow` (`-f`) option. This will stream log output to your terminal until manually stopped (`Ctrl + C` or closing the terminal).
 
-### Docker
+<Tabs
+  groupId="platform"
+  defaultValue="docker"
+  values={[
+    {label: 'docker', value: 'docker'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker">
 
 To follow logs in real time:
 
@@ -119,10 +137,14 @@ To follow logs in real time:
 docker logs <container_name_or_id> -f
 ```
 
-### Kubernetes
+  </TabItem>
+  <TabItem value="kubernetes">
 
 To stream logs from a Kubernetes pod:
 
 ```shell
 kubectl logs -f <pod_name>
 ```
+
+  </TabItem>
+</Tabs>
