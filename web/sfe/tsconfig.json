@@ -1,0 +1,46 @@
+{
+    // TODO: Replace with @goauthentik/tsconfig after project compilation.
+    "$schema": "https://json.schemastore.org/tsconfig",
+
+    "compilerOptions": {
+        "paths": {
+            "@goauthentik/web/authentication": ["../authentication/index.js"]
+        },
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "rootDir": "../",
+        "composite": true,
+        "declaration": true,
+        "allowJs": true,
+        "declarationMap": true,
+        "isolatedModules": true,
+        "incremental": true,
+        "emitDeclarationOnly": true,
+        "esModuleInterop": true,
+        "lib": ["DOM", "ES2015", "ES2017"],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "newLine": "lf",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": false,
+        "outDir": "${configDir}/out",
+        "pretty": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "target": "ESNext",
+        "useUnknownInCatchVariables": true
+    },
+    "exclude": [
+        // ---
+        "./out/**/*",
+        "./dist/**/*"
+    ],
+    "include": [
+        // ---
+        "./**/*.js",
+        "../authentication/**/*.js"
+    ]
+}
