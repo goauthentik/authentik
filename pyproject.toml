@@ -52,7 +52,7 @@ dependencies = [
     "pydantic-scim",
     "pyjwt",
     "pyrad",
-    "python-kadmin-rs ==0.5.3",
+    "python-kadmin-rs ==0.6.0",
     "pyyaml",
     "requests-oauthlib",
     "scim2-filter-parser",
