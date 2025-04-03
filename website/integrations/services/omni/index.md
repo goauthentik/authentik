@@ -69,4 +69,4 @@ auth-saml-url=https://<em>authentik.company</em>/application/saml/<em><applicati
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with _Omni_, log out and log back in via the SAML button.
+To confirm that authentik is properly configured with Omni, log out and log back in via the SAML button.
