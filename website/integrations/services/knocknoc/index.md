@@ -70,12 +70,12 @@ return 540
     - **Issuer URL**: <kbd>https://<em>authentik.company</em></kbd>
     - **Service Provider Binding**: `Post`
     - **Audience**: <kbd>https://<em>authentik.company</em>/api/saml/metadata</kbd>
-    - **Property Mappings**: select the property mappings that you created in the previous section and `Authentic default SAML Mapping: Username` e.g.
+    - **Property Mappings**: select the property mappings that you created in the previous section and `Authentik default SAML Mapping: Username` e.g.
         - `SAML to Knocknoc realName`
         - `SAML to Knocknoc groups`
         - `SAML to Knocknoc session duration`
-        - `Authentic default SAML Mapping: Username`
-    - **NameID Property Mapping**: `Authentic default SAML Mapping: Username`
+        - `Authentik default SAML Mapping: Username`
+    - **NameID Property Mapping**: `Authentik default SAML Mapping: Username`
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -89,7 +89,7 @@ return 540
 ## Knocknoc configuration
 
 1. Login to Knocknoc and navigate to **Admin** -> **Settings** -> **SAML**
-2. Set the following configration:
+2. Set the following configuration:
 
     - **Metadata URL**: _download URL that was copied in the previous section._
     - **Public URL**: <kbd>https://<em>knocknoc.company</em></kbd>
