@@ -49,7 +49,7 @@ class Command(BaseCommand):
     ):
         executable_name = "dramatiq-gevent" if use_gevent else "dramatiq"
         executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", "."] if use_watcher or settings.DEBUG else []
+        watch_args = ["--watch", "."] if use_watcher else []
         if watch_args and use_polling_watcher:
             watch_args.append("--watch-use-polling")
 
