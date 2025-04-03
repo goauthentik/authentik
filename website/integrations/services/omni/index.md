@@ -25,7 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Omni with authentik, you need to create a property mapping and application/provider pair in authentik.
 
-### Create a Property Mapping, Application and Provider in authentik
+### Create a Property Mapping, Application, and Provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create** to create a property mapping.
