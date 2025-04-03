@@ -91,6 +91,7 @@ module.exports = {
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/jenkins/index",
+                        "services/knocknoc/index",
                         "services/meshcentral/index",
                         "services/minio/index",
                         "services/netbox/index",
