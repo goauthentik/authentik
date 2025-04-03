@@ -34,7 +34,7 @@ To support the integration of Omni with authentik, you need to create a property
 
 - **Configure the Property Mapping**:
     - **Name**: `*property_mapping_name*` (e.g. `Omni Mapping`)
-    - SAML Attribute Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+    - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
     - Expression: `return request.user.email`
 
 3. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
