@@ -1,3 +1,4 @@
+import { DistDirectory, PackageRoot } from "@goauthentik/web/paths";
 import { execFileSync } from "child_process";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
@@ -170,7 +171,7 @@ function composeVersionID() {
  * @throws {Error} on build failure
  */
 function createEntryPointOptions([source, dest], overrides = {}) {
-    const outdir = path.join(__dirname, "..", "dist", dest);
+    const outdir = path.join(DistDirectory, dest);
 
     /**
      * @type {esbuild.BuildOptions}
@@ -233,7 +234,7 @@ async function doWatch() {
                         buildObserverPlugin({
                             serverURL,
                             logPrefix: entryPoint[1],
-                            relativeRoot: path.join(__dirname, ".."),
+                            relativeRoot: PackageRoot,
                         }),
                     ],
                     define: {
