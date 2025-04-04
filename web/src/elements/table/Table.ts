@@ -7,7 +7,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 
@@ -118,7 +118,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam("tablePage", 1);
+    page = getRouteParameter("tablePage", 1);
 
     /** @prop
      *
@@ -200,7 +200,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             }
         });
         if (this.searchEnabled()) {
-            this.search = getURLParam("search", "");
+            this.search = getRouteParameter("search", "");
         }
     }
 
@@ -441,7 +441,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     renderSearch(): TemplateResult {
         const runSearch = (value: string) => {
             this.search = value;
-            updateURLParams({
+            patchRouteParams({
                 search: value,
             });
             this.fetch();
@@ -524,7 +524,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
     /* A simple pagination display, shown at both the top and bottom of the page. */
     renderTablePagination(): TemplateResult {
         const handler = (page: number) => {
-            updateURLParams({ tablePage: page });
+            patchRouteParams({ tablePage: page });
             this.page = page;
             this.fetch();
         };

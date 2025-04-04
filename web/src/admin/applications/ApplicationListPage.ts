@@ -7,7 +7,7 @@ import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter } from "@goauthentik/elements/router/utils";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -156,7 +156,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     renderObjectCreate(): TemplateResult {
-        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+        return html` <ak-application-wizard .open=${getRouteParameter("createWizard", false)}>
                 <button
                     slot="trigger"
                     class="pf-c-button pf-m-primary"
@@ -165,7 +165,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                     ${msg("Create with Provider")}
                 </button>
             </ak-application-wizard>
-            <ak-forms-modal .open=${getURLParam("createForm", false)}>
+            <ak-forms-modal .open=${getRouteParameter("createForm", false)}>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create Application")} </span>
                 <ak-application-form slot="form"> </ak-application-form>

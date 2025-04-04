@@ -19,7 +19,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -54,7 +54,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     order = "name";
 
     @state()
-    hideManaged = getURLParam<boolean>("hideManaged", true);
+    hideManaged = getRouteParameter<boolean>("hideManaged", true);
 
     async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
@@ -148,7 +148,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                                     this.hideManaged = !this.hideManaged;
                                     this.page = 1;
                                     this.fetch();
-                                    updateURLParams({
+                                    patchRouteParams({
                                         hideManaged: this.hideManaged,
                                     });
                                 }}

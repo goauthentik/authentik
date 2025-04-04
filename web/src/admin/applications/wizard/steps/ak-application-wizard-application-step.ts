@@ -1,7 +1,6 @@
 import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { isSlug } from "@goauthentik/common/utils.js";
 import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
@@ -11,6 +10,7 @@ import { type NavigableButton, type WizardButton } from "@goauthentik/components
 import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import { isSlug } from "@goauthentik/elements/router";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

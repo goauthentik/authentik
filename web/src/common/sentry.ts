@@ -2,6 +2,7 @@ import { config } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { me } from "@goauthentik/common/users";
+import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
 import {
     ErrorEvent,
     EventHint,
@@ -64,7 +65,7 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
         });
         setTag(TAG_SENTRY_CAPABILITIES, cfg.capabilities.join(","));
         if (window.location.pathname.includes("if/")) {
-            setTag(TAG_SENTRY_COMPONENT, `web/${currentInterface()}`);
+            setTag(TAG_SENTRY_COMPONENT, `web/${readInterfaceRouteParam()}`);
         }
         if (cfg.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             const Spotlight = await import("@spotlightjs/spotlight");
@@ -81,14 +82,4 @@ export async function configureSentry(canDoPpi = false): Promise<Config> {
         }
     }
     return cfg;
-}
-
-// Get the interface name from URL
-export function currentInterface(): string {
-    const pathMatches = window.location.pathname.match(/.+if\/(\w+)\//);
-    let currentInterface = "unknown";
-    if (pathMatches && pathMatches.length >= 2) {
-        currentInterface = pathMatches[1];
-    }
-    return currentInterface.toLowerCase();
 }

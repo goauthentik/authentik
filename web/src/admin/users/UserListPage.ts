@@ -9,7 +9,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { createUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
@@ -24,7 +24,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -117,7 +117,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     activePath;
 
     @state()
-    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
+    hideDeactivated = getRouteParameter<boolean>("hideDeactivated", false);
 
     @state()
     userPaths?: UserPath;
@@ -131,8 +131,10 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     constructor() {
         super();
-        const defaultPath = new DefaultUIConfig().defaults.userPath;
-        this.activePath = getURLParam<string>("path", defaultPath);
+
+        const defaultPath = createUIConfig().defaults.userPath;
+        this.activePath = getRouteParameter("path", defaultPath);
+
         uiConfig().then((c) => {
             if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
@@ -143,7 +145,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
         const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ...(await this.defaultEndpointConfig()),
-            pathStartswith: getURLParam("path", ""),
+            pathStartswith: getRouteParameter("path", ""),
             isActive: this.hideDeactivated ? true : undefined,
             includeGroups: false,
         });
@@ -225,7 +227,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                     this.hideDeactivated = !this.hideDeactivated;
                                     this.page = 1;
                                     this.fetch();
-                                    updateURLParams({
+                                    patchRouteParams({
                                         hideDeactivated: this.hideDeactivated,
                                     });
                                 }}

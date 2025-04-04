@@ -1,6 +1,7 @@
-import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/common/constants";
+import { CURRENT_CLASS, EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { ROUTE_SEPARATOR } from "@goauthentik/elements/router";
+import { getRouteParams, patchRouteParams } from "@goauthentik/elements/router/utils";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,6 +11,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
+const SLOT_PREFIX = "page-";
+
 @customElement("ak-tabs")
 export class Tabs extends AKElement {
     @property()
@@ -17,6 +20,14 @@ export class Tabs extends AKElement {
 
     @property()
     currentPage?: string;
+
+    get currentPageParamName(): string | null {
+        if (!this.currentPage) return null;
+
+        return this.currentPage.startsWith(SLOT_PREFIX)
+            ? this.currentPage.slice(SLOT_PREFIX.length)
+            : this.currentPage;
+    }
 
     @property({ type: Boolean })
     vertical = false;
@@ -68,13 +79,30 @@ export class Tabs extends AKElement {
         super.disconnectedCallback();
     }
 
-    onClick(slot?: string): void {
-        this.currentPage = slot;
-        const params: { [key: string]: string | undefined } = {};
-        params[this.pageIdentifier] = slot;
-        updateURLParams(params);
+    /**
+     * Sync route params with the current page.
+     *
+     * @todo This should be moved to a router component.
+     */
+    #syncRouteParams(): void {
+        const { currentPageParamName } = this;
+
+        if (!currentPageParamName) return;
+
+        patchRouteParams({
+            [this.pageIdentifier]: currentPageParamName,
+        });
+    }
+
+    activatePage(nextPage?: string): void {
+        this.currentPage = nextPage;
+
+        this.#syncRouteParams();
+
         const page = this.querySelector(`[slot='${this.currentPage}']`);
+
         if (!page) return;
+
         page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
         page.dispatchEvent(new CustomEvent("activate"));
     }
@@ -82,7 +110,7 @@ export class Tabs extends AKElement {
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
         return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
+            <button class="pf-c-tabs__link" @click=${() => this.activatePage(slot)}>
                 <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
             </button>
         </li>`;
@@ -90,24 +118,41 @@ export class Tabs extends AKElement {
 
     render(): TemplateResult {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
+
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
-            const params = getURLParams();
+            const params = getRouteParams();
+
+            const slotName = params[this.pageIdentifier];
+
             if (
-                this.pageIdentifier in params &&
+                slotName &&
+                typeof slotName === "string" &&
                 !this.currentPage &&
-                this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null
+                this.querySelector(`[slot='${slotName}']`) !== null
             ) {
-                // To update the URL to match with the current slot
-                this.onClick(params[this.pageIdentifier] as string);
+                console.debug(
+                    `authentik/tabs (${this.pageIdentifier}): setting current page to`,
+                    slotName,
+                );
+
+                this.activatePage(slotName);
             }
         }
+
         if (!this.currentPage) {
             if (pages.length < 1) {
                 return html`<h1>${msg("no tabs defined")}</h1>`;
             }
+
             const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
-            this.onClick(wantedPage);
+
+            console.debug(
+                `authentik/tabs (${this.pageIdentifier}): setting current page to`,
+                wantedPage,
+            );
+            this.activatePage(wantedPage);
         }
+
         return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
                 <ul class="pf-c-tabs__list">
                     ${pages.map((page) => this.renderTab(page))}

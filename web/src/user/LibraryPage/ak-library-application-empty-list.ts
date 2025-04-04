@@ -1,6 +1,6 @@
 import { docLink, globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { formatRouteHash } from "@goauthentik/elements/router";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -41,7 +41,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
     isAdmin = false;
 
     renderNewAppButton() {
-        const href = paramURL("/core/applications", {
+        const href = formatRouteHash("/core/applications", {
             createWizard: true,
         });
         return html`

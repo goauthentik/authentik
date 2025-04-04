@@ -16,8 +16,8 @@ import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/RouterOutlet";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
@@ -37,10 +37,10 @@ import "./AdminSidebar";
 @customElement("ak-interface-admin")
 export class AdminInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    notificationDrawerOpen = getRouteParameter("notificationDrawerOpen", false);
 
     @property({ type: Boolean })
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    apiDrawerOpen = getRouteParameter("apiDrawerOpen", false);
 
     ws: WebsocketClient;
 
@@ -93,14 +93,14 @@ export class AdminInterface extends AuthenticatedInterface {
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
-            updateURLParams({
+            patchRouteParams({
                 notificationDrawerOpen: this.notificationDrawerOpen,
             });
         });
 
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
-            updateURLParams({
+            patchRouteParams({
                 apiDrawerOpen: this.apiDrawerOpen,
             });
         });
@@ -123,7 +123,7 @@ export class AdminInterface extends AuthenticatedInterface {
         super.connectedCallback();
 
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
+            const { ESBuildObserver } = await import("src/development/build-observer");
 
             new ESBuildObserver(process.env.WATCHER_URL);
         }
@@ -158,7 +158,7 @@ export class AdminInterface extends AuthenticatedInterface {
                                             class="pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
-                                            defaultUrl="/administration/overview"
+                                            defaultURL="/administration/overview"
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>

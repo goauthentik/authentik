@@ -5,7 +5,6 @@ export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
 export const VERSION = "2025.2.3";
 export const TITLE_DEFAULT = "authentik";
-export const ROUTE_SEPARATOR = ";";
 
 export const EVENT_REFRESH = "ak-refresh";
 export const EVENT_NOTIFICATION_DRAWER_TOGGLE = "ak-notification-toggle";

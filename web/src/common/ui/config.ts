@@ -1,7 +1,7 @@
-import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
+import { isUserRoute } from "@goauthentik/elements/router";
 
-import { UiThemeEnum, UserSelf } from "@goauthentik/api";
+import { UiThemeEnum } from "@goauthentik/api";
 
 export enum UserDisplay {
     username = "username",
@@ -18,15 +18,27 @@ export enum LayoutType {
 
 export interface UIConfig {
     enabledFeatures: {
-        // API Request drawer in navbar
+        /**
+         * Whether to show the API request drawer in the navbar.
+         */
         apiDrawer: boolean;
-        // Notification drawer in navbar
+        /**
+         * Whether to show the notification drawer in the navbar.
+         */
         notificationDrawer: boolean;
-        // Settings in user dropdown
+        /**
+         * Whether to show the settings in the user dropdown.
+         */
         settings: boolean;
-        // Application edit in library (only shown when user is superuser)
+        /**
+         * Whether to show the application edit button in the library.
+         *
+         * This is only shown when the user is a superuser.
+         */
         applicationEdit: boolean;
-        // Search bar
+        /**
+         * Whether to show the search bar.
+         */
         search: boolean;
     };
     navbar: {
@@ -38,68 +50,77 @@ export interface UIConfig {
         cardBackground: string;
     };
     pagination: {
+        /**
+         * Number of items to show per page in paginated lists.
+         */
         perPage: number;
     };
     layout: {
+        /**
+         * Layout type to use for the application.
+         */
         type: LayoutType;
     };
+    /**
+     * Locale to use for the application.
+     */
     locale: string;
+    /**
+     * Default values.
+     */
     defaults: {
+        /**
+         * Default path to use for user API calls.
+         */
         userPath: string;
     };
 }
 
-export class DefaultUIConfig implements UIConfig {
-    enabledFeatures = {
-        apiDrawer: true,
-        notificationDrawer: true,
-        settings: true,
-        applicationEdit: true,
-        search: true,
-    };
-    layout = {
-        type: LayoutType.row,
-    };
-    navbar = {
-        userDisplay: UserDisplay.username,
-    };
-    theme = {
-        base: UiThemeEnum.Automatic,
-        background: "",
-        cardBackground: "",
-    };
-    pagination = {
-        perPage: 20,
-    };
-    locale = "";
-    defaults = {
-        userPath: "users",
+export function createUIConfig(overrides: Partial<UIConfig> = {}): UIConfig {
+    const uiConfig: UIConfig = {
+        enabledFeatures: {
+            // TODO: Is the intent that only user routes should have the API drawer disabled,
+            // or only admin routes?
+            apiDrawer: !isUserRoute(),
+            notificationDrawer: true,
+            settings: true,
+            applicationEdit: true,
+            search: true,
+        },
+        layout: {
+            type: LayoutType.row,
+        },
+        navbar: {
+            userDisplay: UserDisplay.username,
+        },
+        theme: {
+            base: UiThemeEnum.Automatic,
+            background: "",
+            cardBackground: "",
+        },
+        pagination: {
+            perPage: 20,
+        },
+        locale: "",
+        defaults: {
+            userPath: "users",
+        },
     };
 
-    constructor() {
-        if (currentInterface() === "user") {
-            this.enabledFeatures.apiDrawer = false;
-        }
-    }
+    // TODO: Should we deep merge the overrides instead of shallow?
+    Object.assign(uiConfig, overrides);
+
+    return uiConfig;
 }
 
-let globalUiConfig: Promise<UIConfig>;
-
-export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings;
-    let config = new DefaultUIConfig();
-    if (!settings) {
-        return config;
-    }
-    config = Object.assign(new DefaultUIConfig(), settings);
-    return config;
-}
+let cachedUIConfig: UIConfig | null = null;
 
 export function uiConfig(): Promise<UIConfig> {
-    if (!globalUiConfig) {
-        globalUiConfig = me().then((user) => {
-            return getConfigForUser(user.user);
-        });
-    }
-    return globalUiConfig;
+    if (cachedUIConfig) return Promise.resolve(cachedUIConfig);
+
+    return me().then((session) => {
+        cachedUIConfig = createUIConfig(session.user.settings);
+
+        return cachedUIConfig;
+    });
 }

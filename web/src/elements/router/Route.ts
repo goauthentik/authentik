@@ -1,66 +1,60 @@
 import "@goauthentik/elements/EmptyState";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { until } from "lit/directives/until.js";
 
-export const SLUG_REGEX = "[-a-zA-Z0-9_]+";
-export const ID_REGEX = "\\d+";
-export const UUID_REGEX = "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}";
+export type PrimitiveRouteParameter = string | number | boolean | null | undefined;
+export type RouteParameterRecord = { [key: string]: PrimitiveRouteParameter };
 
-export interface RouteArgs {
-    [key: string]: string;
-}
+export type RouteCallback<P = unknown> = (
+    params: P,
+) => SlottedTemplateResult | Promise<SlottedTemplateResult>;
 
-export class Route {
-    url: RegExp;
+export type RouteInitTuple = [string | RegExp, RouteCallback | undefined];
 
-    private element?: TemplateResult;
-    private callback?: (args: RouteArgs) => Promise<TemplateResult>;
+export class Route<P = unknown> {
+    public readonly pattern: URLPattern;
 
-    constructor(url: RegExp, callback?: (args: RouteArgs) => Promise<TemplateResult>) {
-        this.url = url;
-        this.callback = callback;
+    #callback: RouteCallback<P>;
+
+    constructor(patternInit: URLPatternInit | string, callback: RouteCallback<P>) {
+        this.pattern = new URLPattern(
+            typeof patternInit === "string"
+                ? {
+                      pathname: patternInit,
+                  }
+                : patternInit,
+        );
+
+        this.#callback = callback;
     }
 
-    redirect(to: string, raw = false): Route {
-        this.callback = async () => {
+    /**
+     * Create a new redirect route.
+     *
+     * @param patternInit The pattern to match.
+     * @param to The URL to redirect to.
+     * @param raw Whether to use the raw URL or not.
+     */
+    static redirect(patternInit: URLPatternInit | string, to: string, raw = false): Route<unknown> {
+        return new Route(patternInit, () => {
             console.debug(`authentik/router: redirecting ${to}`);
+
             if (!raw) {
                 window.location.hash = `#${to}`;
             } else {
                 window.location.hash = to;
             }
-            return html``;
-        };
-        return this;
+
+            return nothing;
+        });
     }
 
-    then(render: (args: RouteArgs) => TemplateResult): Route {
-        this.callback = async (args) => {
-            return render(args);
-        };
-        return this;
-    }
-
-    thenAsync(render: (args: RouteArgs) => Promise<TemplateResult>): Route {
-        this.callback = render;
-        return this;
-    }
-
-    render(args: RouteArgs): TemplateResult {
-        if (this.callback) {
-            return html`${until(
-                this.callback(args),
-                html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
-            )}`;
-        }
-        if (this.element) {
-            return this.element;
-        }
-        throw new Error("Route does not have callback or element");
-    }
-
-    toString(): string {
-        return `<Route url=${this.url} callback=${this.callback ? "true" : "false"}>`;
+    render(params: P): TemplateResult {
+        return html`${until(
+            this.#callback(params),
+            html`<ak-empty-state ?loading=${true}></ak-empty-state>`,
+        )}`;
     }
 }

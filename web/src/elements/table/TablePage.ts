@@ -1,5 +1,5 @@
 import "@goauthentik/elements/PageHeader";
-import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { patchRouteParams } from "@goauthentik/elements/router/utils";
 import { Table } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
@@ -60,7 +60,7 @@ export abstract class TablePage<T> extends Table<T> {
                 this.search = "";
                 this.requestUpdate();
                 this.fetch();
-                updateURLParams({
+                patchRouteParams({
                     search: "",
                 });
             }}

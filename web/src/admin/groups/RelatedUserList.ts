@@ -22,7 +22,7 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 import { UserOption } from "@goauthentik/elements/user/utils";
@@ -127,7 +127,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     order = "last_login";
 
     @property({ type: Boolean })
-    hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
+    hideServiceAccounts = getRouteParameter<boolean>("hideServiceAccounts", true);
 
     @state()
     me?: SessionUser;
@@ -466,7 +466,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                     this.hideServiceAccounts = !this.hideServiceAccounts;
                                     this.page = 1;
                                     this.fetch();
-                                    updateURLParams({
+                                    patchRouteParams({
                                         hideServiceAccounts: this.hideServiceAccounts,
                                     });
                                 }}

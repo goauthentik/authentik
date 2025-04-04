@@ -2,35 +2,6 @@ import { SentryIgnoredError } from "@goauthentik/common/errors";
 
 import { CSSResult, css } from "lit";
 
-export function getCookie(name: string): string {
-    let cookieValue = "";
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-export function convertToSlug(text: string): string {
-    return text
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-}
-
-export function isSlug(text: string): boolean {
-    const lowered = text.toLowerCase();
-    const forbidden = /([^\w-]|\s)/.test(lowered);
-    return lowered === text && !forbidden;
-}
-
 /**
  * Truncate a string based on maximum word count
  */
@@ -63,17 +34,29 @@ export function snakeToCamel(key: string) {
 
 export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[string, T[]]> {
     const m = new Map<string, T[]>();
+
     objects.forEach((obj) => {
         const group = callback(obj);
         if (!m.has(group)) {
             m.set(group, []);
         }
+
         const tProviders = m.get(group) || [];
         tProviders.push(obj);
     });
+
     return Array.from(m).sort();
 }
 
+/**
+ * Returns the first non-null and non-undefined argument.
+ *
+ * @deprecated Use nullish coalescing operator (??) instead.
+ * @remarks
+ *
+ * This needs a deeper look. Some instances of this function use `new Date()`
+ * which may cause issues during rendering.
+ */
 export function first<T>(...args: Array<T | undefined | null>): T {
     for (let index = 0; index < args.length; index++) {
         const element = args[index];

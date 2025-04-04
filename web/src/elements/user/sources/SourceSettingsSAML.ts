@@ -1,8 +1,10 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { applyNextParam } from "@goauthentik/admin/flows/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { formatInterfaceRoute } from "@goauthentik/elements/router/utils";
 import { BaseUserSettings } from "@goauthentik/elements/user/sources/BaseUserSettings";
 
 import { msg, str } from "@lit/localize";
@@ -57,12 +59,13 @@ export class SourceSettingsSAML extends BaseUserSettings {
             </button>`;
         }
         if (this.configureUrl) {
-            return html`<a
-                class="pf-c-button pf-m-primary"
-                href="${this.configureUrl}${AndNext(
-                    `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
-                )}"
-            >
+            const target = new URL(this.configureUrl);
+
+            const destination = formatInterfaceRoute("user", "settings", { page: "sources" });
+
+            applyNextParam(target, destination);
+
+            return html`<a class="pf-c-button pf-m-primary" href="${target}">
                 ${msg("Connect")}
             </a>`;
         }

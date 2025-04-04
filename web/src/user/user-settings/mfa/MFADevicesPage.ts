@@ -1,4 +1,5 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { createNextSearchParams } from "@goauthentik/admin/flows/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { globalAK } from "@goauthentik/common/global";
 import { deviceTypeName } from "@goauthentik/common/labels";
@@ -8,6 +9,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import { formatInterfaceRoute } from "@goauthentik/elements/router/utils";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -71,13 +73,17 @@ export class MFADevicesPage extends Table<Device> {
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
                     ${settings.map((stage) => {
+                        // TODO: The use `ifDefined` below seems odd. Is it necessary?
+                        const searchParams = createNextSearchParams(
+                            globalAK().api.relBase +
+                                formatInterfaceRoute("user", "settings", {
+                                    page: "mfa",
+                                }),
+                        );
+
                         return html`<li>
                             <a
-                                href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
-                                        page: "page-mfa",
-                                    })}`,
-                                )}"
+                                href="${ifDefined(stage.configureUrl)}?${searchParams.toString()}"
                                 class="pf-c-dropdown__menu-item"
                             >
                                 ${stageToAuthenticatorName(stage)}

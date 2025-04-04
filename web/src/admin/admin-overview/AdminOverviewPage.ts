@@ -16,7 +16,7 @@ import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 import "@goauthentik/elements/cards/QuickActionsCard.js";
 import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { formatRouteHash } from "@goauthentik/elements/router";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -79,10 +79,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     quickActions: QuickAction[] = [
-        [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
-        [msg("Check the logs"), paramURL("/events/log")],
+        [
+            msg("Create a new application"),
+            formatRouteHash("/core/applications", { createForm: true }),
+        ],
+        [msg("Check the logs"), formatRouteHash("/events/log")],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
-        [msg("Manage users"), paramURL("/identity/users")],
+        [msg("Manage users"), formatRouteHash("/identity/users")],
         [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${RELEASE}`, true],
     ];
 
@@ -195,10 +198,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
         const release = `${versionFamily()}#fixed-in-${VERSION.replaceAll(".", "")}`;
 
         const quickActions: [string, string][] = [
-            [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
-            [msg("Check the logs"), paramURL("/events/log")],
+            [
+                msg("Create a new application"),
+                formatRouteHash("/core/applications", { createForm: true }),
+            ],
+            [msg("Check the logs"), formatRouteHash("/events/log")],
             [msg("Explore integrations"), "https://goauthentik.io/integrations/"],
-            [msg("Manage users"), paramURL("/identity/users")],
+            [msg("Manage users"), formatRouteHash("/identity/users")],
             [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${release}`],
         ];
 

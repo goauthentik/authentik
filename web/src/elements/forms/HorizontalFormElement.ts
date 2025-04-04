@@ -1,6 +1,6 @@
-import { convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
+import { formatAsSlug } from "@goauthentik/elements/router";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css } from "lit";
@@ -123,7 +123,7 @@ export class HorizontalFormElement extends AKElement {
         if (this.name === "slug" || this.slugMode) {
             this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
                 input.addEventListener("keyup", () => {
-                    input.value = convertToSlug(input.value);
+                    input.value = formatAsSlug(input.value);
                 });
             });
         }

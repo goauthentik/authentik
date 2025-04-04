@@ -1,10 +1,10 @@
 import "@goauthentik/admin/flows/BoundStagesList";
 import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
+import { DesignationToLabel, applyNextParam, formatFlowURL } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
@@ -151,12 +151,9 @@ export class FlowViewPage extends AKElement {
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-primary"
                                                     @click=${() => {
-                                                        const finalURL = `${
-                                                            window.location.origin
-                                                        }/if/flow/${this.flow.slug}/${AndNext(
-                                                            `${window.location.pathname}#${window.location.hash}`,
-                                                        )}`;
-                                                        window.open(finalURL, "_blank");
+                                                        const url = formatFlowURL(this.flow);
+
+                                                        window.open(url, "_blank");
                                                     }}
                                                 >
                                                     ${msg("Normal")}
@@ -168,12 +165,16 @@ export class FlowViewPage extends AKElement {
                                                             .flowsInstancesExecuteRetrieve({
                                                                 slug: this.flow.slug,
                                                             })
-                                                            .then((link) => {
-                                                                const finalURL = `${
-                                                                    link.link
-                                                                }${AndNext(
-                                                                    `${window.location.pathname}#${window.location.hash}`,
-                                                                )}`;
+                                                            .then(({ link }) => {
+                                                                const finalURL = URL.canParse(link)
+                                                                    ? new URL(link)
+                                                                    : new URL(
+                                                                          link,
+                                                                          window.location.origin,
+                                                                      );
+
+                                                                applyNextParam(finalURL);
+
                                                                 window.open(finalURL, "_blank");
                                                             });
                                                     }}

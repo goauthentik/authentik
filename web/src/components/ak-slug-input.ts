@@ -1,4 +1,4 @@
-import { convertToSlug } from "@goauthentik/common/utils";
+import { formatAsSlug } from "@goauthentik/elements/router";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -34,7 +34,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
     // Do not stop propagation of this event; it must be sent up the tree so that a parent
     // component, such as a custom forms manager, may receive it.
     handleTouch(ev: Event) {
-        this.input.value = convertToSlug(this.input.value);
+        this.input.value = formatAsSlug(this.input.value);
         this.value = this.input.value;
 
         if (this.origin && this.origin.value === "" && this.input.value === "") {
@@ -67,7 +67,7 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         // "any event which adds or removes a character but leaves the rest of the slug looking like
         // the previous iteration, set it to the current iteration."
 
-        const newSlug = convertToSlug(ev.target.value);
+        const newSlug = formatAsSlug(ev.target.value);
         const oldSlug = this.input.value;
         const [shorter, longer] =
             newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];

@@ -1,6 +1,7 @@
-import { AndNext } from "@goauthentik/common/api/config";
+import { createNextSearchParams } from "@goauthentik/admin/flows/utils";
 import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
+import { formatInterfaceRoute } from "@goauthentik/elements/router/utils";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -25,15 +26,21 @@ export class UserSettingsPassword extends AKElement {
     }
 
     render(): TemplateResult {
+        // TODO: The use `ifDefined` below seems odd. Is it necessary?
+        const searchParams = createNextSearchParams(
+            globalAK().api.relBase +
+                formatInterfaceRoute("user", "settings", {
+                    page: "details",
+                }),
+        );
+
         // For this stage we don't need to check for a configureFlow,
         // as the stage won't return any UI Elements if no configureFlow is set.
         return html`<div class="pf-c-card">
             <div class="pf-c-card__title">${msg("Change your password")}</div>
             <div class="pf-c-card__body">
                 <a
-                    href="${ifDefined(this.configureUrl)}${AndNext(
-                        `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
-                    )}"
+                    href="${ifDefined(this.configureUrl)}?${searchParams.toString()}"
                     class="pf-c-button pf-m-primary"
                 >
                     ${msg("Change password")}

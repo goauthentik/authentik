@@ -1,170 +1,60 @@
 /**
- * @file
- * Client-side observer for ESBuild events.
+ * @file Client-side utilities.
  */
-import type { Message as ESBuildMessage } from "esbuild";
+import { TITLE_DEFAULT } from "@goauthentik/common/constants";
+import { isAdminRoute } from "@goauthentik/elements/router";
 
-const logPrefix = "👷 [ESBuild]";
-const log = console.debug.bind(console, logPrefix);
+import { msg } from "@lit/localize";
 
-type BuildEventListener<Data = unknown> = (event: MessageEvent<Data>) => void;
+import type { CurrentBrand } from "@goauthentik/api";
+
+type BrandTitleLike = Partial<Pick<CurrentBrand, "brandingTitle">>;
 
 /**
- * A client-side watcher for ESBuild.
+ * Create a title for the page.
  *
- * Note that this should be conditionally imported in your code, so that
- * ESBuild may tree-shake it out of production builds.
- *
- * ```ts
- * if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
- *   const { ESBuildObserver } = await import("@goauthentik/common/client");
- *
- *   new ESBuildObserver(process.env.WATCHER_URL);
- * }
- * ```
-}
-
+ * @param brand - The brand object to append to the title.
+ * @param segments - The segments to prepend to the title.
  */
-export class ESBuildObserver extends EventSource {
-    /**
-     * Whether the watcher has a recent connection to the server.
-     */
-    alive = true;
+export function formatPageTitle(
+    brand: BrandTitleLike | undefined,
+    ...segments: Array<string | undefined>
+): string;
+/**
+ * Create a title for the page.
+ *
+ * @param segments - The segments to prepend to the title.
+ */
+export function formatPageTitle(...segments: Array<string | undefined>): string;
+/**
+ * Create a title for the page.
+ *
+ * @param args - The segments to prepend to the title.
+ * @param args - The brand object to append to the title.
+ */
+export function formatPageTitle(
+    ...args: [BrandTitleLike | string | undefined, ...Array<string | undefined>]
+): string {
+    const segments: string[] = [];
 
-    /**
-     * The number of errors that have occurred since the watcher started.
-     */
-    errorCount = 0;
-
-    /**
-     * Whether a reload has been requested while offline.
-     */
-    deferredReload = false;
-
-    /**
-     * The last time a message was received from the server.
-     */
-    lastUpdatedAt = Date.now();
-
-    /**
-     * Whether the browser considers itself online.
-     */
-    online = true;
-
-    /**
-     * The ID of the animation frame for the reload.
-     */
-    #reloadFrameID = -1;
-
-    /**
-     * The interval for the keep-alive check.
-     */
-    #keepAliveInterval: ReturnType<typeof setInterval> | undefined;
-
-    #trackActivity = () => {
-        this.lastUpdatedAt = Date.now();
-        this.alive = true;
-    };
-
-    #startListener: BuildEventListener = () => {
-        this.#trackActivity();
-        log("⏰  Build started...");
-    };
-
-    #internalErrorListener = () => {
-        this.errorCount += 1;
-
-        if (this.errorCount > 100) {
-            clearTimeout(this.#keepAliveInterval);
-
-            this.close();
-            log("⛔️  Closing connection");
-        }
-    };
-
-    #errorListener: BuildEventListener<string> = (event) => {
-        this.#trackActivity();
-
-        // eslint-disable-next-line no-console
-        console.group(logPrefix, "⛔️⛔️⛔️  Build error...");
-
-        const esbuildErrorMessages: ESBuildMessage[] = JSON.parse(event.data);
-
-        for (const error of esbuildErrorMessages) {
-            console.warn(error.text);
-
-            if (error.location) {
-                console.debug(
-                    `file://${error.location.file}:${error.location.line}:${error.location.column}`,
-                );
-                console.debug(error.location.lineText);
-            }
-        }
-
-        // eslint-disable-next-line no-console
-        console.groupEnd();
-    };
-
-    #endListener: BuildEventListener = () => {
-        cancelAnimationFrame(this.#reloadFrameID);
-
-        this.#trackActivity();
-
-        if (!this.online) {
-            log("🚫  Build finished while offline.");
-            this.deferredReload = true;
-
-            return;
-        }
-
-        log("🛎️  Build completed! Reloading...");
-
-        // We use an animation frame to keep the reload from happening before the
-        // event loop has a chance to process the message.
-        this.#reloadFrameID = requestAnimationFrame(() => {
-            window.location.reload();
-        });
-    };
-
-    #keepAliveListener: BuildEventListener = () => {
-        this.#trackActivity();
-        log("🏓 Keep-alive");
-    };
-
-    constructor(url: string | URL) {
-        super(url);
-
-        this.addEventListener("esbuild:start", this.#startListener);
-        this.addEventListener("esbuild:end", this.#endListener);
-        this.addEventListener("esbuild:error", this.#errorListener);
-        this.addEventListener("esbuild:keep-alive", this.#keepAliveListener);
-
-        this.addEventListener("error", this.#internalErrorListener);
-
-        window.addEventListener("offline", () => {
-            this.online = false;
-        });
-
-        window.addEventListener("online", () => {
-            this.online = true;
-
-            if (!this.deferredReload) return;
-
-            log("🛎️  Reloading after offline build...");
-            this.deferredReload = false;
-
-            window.location.reload();
-        });
-
-        log("🛎️  Listening for build changes...");
-
-        this.#keepAliveInterval = setInterval(() => {
-            const now = Date.now();
-
-            if (now - this.lastUpdatedAt < 10_000) return;
-
-            this.alive = false;
-            log("👋  Waiting for build to start...");
-        }, 15_000);
+    if (isAdminRoute()) {
+        segments.push(msg("Admin"));
     }
+
+    const [arg1, ...rest] = args;
+
+    if (typeof arg1 === "object") {
+        const { brandingTitle = TITLE_DEFAULT } = arg1;
+        segments.push(brandingTitle);
+    } else {
+        segments.push(TITLE_DEFAULT);
+    }
+
+    for (const segment of rest) {
+        if (segment) {
+            segments.push(segment);
+        }
+    }
+
+    return segments.join(" - ");
 }

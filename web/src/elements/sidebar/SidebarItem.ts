@@ -1,5 +1,5 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
+import { pluckRoute } from "@goauthentik/elements/router";
 
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
@@ -69,9 +69,9 @@ export class SidebarItem extends AKElement {
     }
 
     @property()
-    path?: string;
+    pathname?: string;
 
-    activeMatchers: RegExp[] = [];
+    #activeMatchers: URLPattern[] = [];
 
     @property({ type: Boolean })
     expanded = false;
@@ -94,41 +94,57 @@ export class SidebarItem extends AKElement {
     }
 
     @property({ attribute: false })
-    set activeWhen(regexp: string[]) {
-        regexp.forEach((r) => {
-            this.activeMatchers.push(new RegExp(r));
-        });
+    set activeWhen(nextPathnamePatterns: string[]) {
+        for (const pathname of nextPathnamePatterns) {
+            this.#activeMatchers.push(new URLPattern({ pathname }));
+        }
     }
 
     firstUpdated(): void {
-        this.onHashChange();
-        window.addEventListener("hashchange", () => this.onHashChange());
+        this.#hashListener();
+        window.addEventListener("hashchange", this.#hashListener);
     }
 
-    onHashChange(): void {
-        const activePath = window.location.hash.slice(1, Infinity).split(ROUTE_SEPARATOR)[0];
+    #hashListener = (): void => {
+        const currentPathname = pluckRoute(window.location).pathname;
+
         this.childItems.forEach((item) => {
-            this.expandParentRecursive(activePath, item);
+            this.expandParentRecursive(currentPathname, item);
         });
-        this.isActive = this.matchesPath(activePath);
-    }
 
-    private matchesPath(path: string): boolean {
-        if (!this.path) {
-            return false;
-        }
+        this.isActive = this.matchesPath(currentPathname);
+    };
 
-        const ourPath = this.path.split(";")[0];
-        const pathIsWholePath = new RegExp(`^${ourPath}$`).test(path);
-        const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
-        return pathIsWholePath || pathIsAnActivePath;
+    private matchesPath(targetPathname: string): boolean {
+        if (!this.pathname) return false;
+
+        const criteria = {
+            pathname: targetPathname,
+        };
+
+        const matchesWholePath = new URLPattern({
+            pathname: this.pathname,
+        }).test(criteria);
+
+        const activePath = this.#activeMatchers.some((v) => v.test(criteria));
+
+        return matchesWholePath || activePath;
     }
 
     expandParentRecursive(activePath: string, item: SidebarItem): void {
         if (item.matchesPath(activePath) && item.parent) {
             item.parent.expanded = true;
             this.requestUpdate();
+
+            if (!item.childItems.length) {
+                requestAnimationFrame(() => {
+                    this.scrollIntoView({
+                        block: "nearest",
+                    });
+                });
+            }
         }
+
         item.childItems.forEach((i) => this.expandParentRecursive(activePath, i));
     }
 
@@ -191,7 +207,7 @@ export class SidebarItem extends AKElement {
     renderWithPath() {
         return html`
             <a
-                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                href="${this.isAbsoluteLink ? "" : "#"}${this.pathname}"
                 class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
             >
                 <slot name="label"></slot>
@@ -209,11 +225,11 @@ export class SidebarItem extends AKElement {
 
     renderInner() {
         if (this.childItems.length > 0) {
-            return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
+            return this.pathname ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }
 
         return html`<li class="pf-c-nav__item">
-            ${this.path ? this.renderWithPath() : this.renderWithLabel()}
+            ${this.pathname ? this.renderWithPath() : this.renderWithLabel()}
         </li>`;
     }
 }

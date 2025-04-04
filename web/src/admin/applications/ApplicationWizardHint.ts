@@ -8,7 +8,7 @@ import "@goauthentik/components/ak-hint/ak-hint-body";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter } from "@goauthentik/elements/router/utils";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -110,7 +110,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
                         the same time with our new Application Wizard.
                         <!-- <a href="(link to docs)">Learn more about the wizard here.</a> -->
                     </p>
-                    <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                    <ak-application-wizard .open=${getRouteParameter("createWizard", false)}>
                         <button
                             slot="trigger"
                             class="pf-c-button pf-m-primary"

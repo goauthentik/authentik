@@ -1,6 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { setRouteParams } from "@goauthentik/elements/router/utils";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -84,7 +84,7 @@ export class TreeViewNode extends AKElement {
                             if (this.host) {
                                 this.host.activeNode = this;
                             }
-                            setURLParams({ path: this.fullPath });
+                            setRouteParams({ path: this.fullPath });
                             this.dispatchEvent(
                                 new CustomEvent(EVENT_REFRESH, {
                                     bubbles: true,

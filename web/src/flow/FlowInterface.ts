@@ -15,7 +15,7 @@ import "@goauthentik/flow/stages/password/PasswordStage";
 // end of stage import
 
 if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-    const { ESBuildObserver } = await import("@goauthentik/common/client");
+    const { ESBuildObserver } = await import("src/development/build-observer");
 
     new ESBuildObserver(process.env.WATCHER_URL);
 }

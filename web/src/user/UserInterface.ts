@@ -18,8 +18,8 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/RouterOutlet";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils";
 import "@goauthentik/elements/sidebar/Sidebar";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
@@ -226,7 +226,7 @@ class UserInterfacePresentation extends AKElement {
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
-                                            defaultUrl="/library"
+                                            defaultURL="/library"
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
@@ -263,10 +263,10 @@ class UserInterfacePresentation extends AKElement {
 @customElement("ak-interface-user")
 export class UserInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    notificationDrawerOpen = getRouteParameter("notificationDrawerOpen", false);
 
     @state()
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    apiDrawerOpen = getRouteParameter("apiDrawerOpen", false);
 
     ws: WebsocketClient;
 
@@ -293,7 +293,7 @@ export class UserInterface extends AuthenticatedInterface {
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
 
         if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
+            const { ESBuildObserver } = await import("src/development/build-observer");
 
             new ESBuildObserver(process.env.WATCHER_URL);
         }
@@ -308,14 +308,14 @@ export class UserInterface extends AuthenticatedInterface {
 
     toggleNotificationDrawer() {
         this.notificationDrawerOpen = !this.notificationDrawerOpen;
-        updateURLParams({
+        patchRouteParams({
             notificationDrawerOpen: this.notificationDrawerOpen,
         });
     }
 
     toggleApiDrawer() {
         this.apiDrawerOpen = !this.apiDrawerOpen;
-        updateURLParams({
+        patchRouteParams({
             apiDrawerOpen: this.apiDrawerOpen,
         });
     }

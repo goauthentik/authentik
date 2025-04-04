@@ -1,10 +1,6 @@
-import {
-    EVENT_SIDEBAR_TOGGLE,
-    EVENT_WS_MESSAGE,
-    TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
+import { formatPageTitle } from "@goauthentik/common/client";
+import { EVENT_SIDEBAR_TOGGLE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { currentInterface } from "@goauthentik/common/sentry";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
@@ -125,17 +121,8 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
-    setTitle(header?: string) {
-        const currentIf = currentInterface();
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        if (currentIf === "admin") {
-            title = `${msg("Admin")} - ${title}`;
-        }
-        // Prepend the header to the title
-        if (header !== undefined && header !== "") {
-            title = `${header} - ${title}`;
-        }
-        document.title = title;
+    setTitle(pageTitle?: string) {
+        document.title = formatPageTitle(this.brand, pageTitle);
     }
 
     willUpdate() {

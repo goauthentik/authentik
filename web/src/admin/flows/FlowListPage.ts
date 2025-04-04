@@ -1,7 +1,7 @@
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/flows/FlowImportForm";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DesignationToLabel, formatFlowURL } from "@goauthentik/admin/flows/utils";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ConfirmationForm";
@@ -107,10 +107,9 @@ export class FlowListPage extends TablePage<Flow> {
                 <button
                     class="pf-c-button pf-m-plain"
                     @click=${() => {
-                        const finalURL = `${window.location.origin}/if/flow/${item.slug}/${AndNext(
-                            `${window.location.pathname}#${window.location.hash}`,
-                        )}`;
-                        window.open(finalURL, "_blank");
+                        const url = formatFlowURL(item);
+
+                        window.open(url, "_blank");
                     }}
                 >
                     <pf-tooltip position="top" content=${msg("Execute")}>

@@ -11,7 +11,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-router-404")
 export class Router404 extends AKElement {
     @property()
-    url = "";
+    pathname = "";
 
     static get styles(): CSSResult[] {
         return [PFBase, PFEmptyState, PFTitle];
@@ -23,7 +23,7 @@ export class Router404 extends AKElement {
                 <i class="fas fa-question-circle pf-c-empty-state__icon" aria-hidden="true"></i>
                 <h1 class="pf-c-title pf-m-lg">${msg("Not found")}</h1>
                 <div class="pf-c-empty-state__body">
-                    ${msg(str`The URL "${this.url}" was not found.`)}
+                    ${msg(str`The URL "${this.pathname}" was not found.`)}
                 </div>
                 <a href="#/" class="pf-c-button pf-m-primary" type="button"
                     >${msg("Return home")}</a

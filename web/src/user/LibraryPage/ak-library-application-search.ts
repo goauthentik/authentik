@@ -1,5 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { getRouteParameter, patchRouteParams } from "@goauthentik/elements/router/utils.js";
 import Fuse from "fuse.js";
 import { FuseResult } from "fuse.js";
 
@@ -67,7 +67,7 @@ export class LibraryPageApplicationSearch extends AKElement {
     }
 
     @property()
-    query = getURLParam<string | undefined>("search", undefined);
+    query = getRouteParameter<string | undefined>("search", undefined);
 
     @query("input")
     searchInput?: HTMLInputElement;
@@ -114,7 +114,7 @@ export class LibraryPageApplicationSearch extends AKElement {
             this.searchInput.value = "";
         }
         this.query = "";
-        updateURLParams({
+        patchRouteParams({
             search: this.query,
         });
         this.dispatchEvent(new LibraryPageSearchReset());
@@ -125,7 +125,7 @@ export class LibraryPageApplicationSearch extends AKElement {
         if (this.query === "") {
             return this.resetSearch();
         }
-        updateURLParams({
+        patchRouteParams({
             search: this.query,
         });
 
