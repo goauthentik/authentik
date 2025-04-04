@@ -93,9 +93,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	}.Encode()
 
 	isEmbedded := false
-	if m := server.API().Outpost.Managed.Get(); m != nil {
-		isEmbedded = *m == "goauthentik.io/outposts/embedded"
+	m := server.API().Outpost.Managed.Get()
+	// Only consider it embedded if Managed field explicitly contains "goauthentik.io/outposts/embedded"
+	if m != nil && *m == "goauthentik.io/outposts/embedded" {
+		isEmbedded = true
+		muxLogger.Debug("detected embedded outpost")
+	} else {
+		muxLogger.Debug("detected standalone outpost, using filesystem for session storage")
 	}
+
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
