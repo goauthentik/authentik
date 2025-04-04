@@ -5,6 +5,7 @@ from pickle import dumps, loads  # nosec
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
@@ -224,8 +225,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
 
     fsb_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    target = models.ForeignKey("Flow", on_delete=models.CASCADE)
-    stage = InheritanceForeignKey(Stage, on_delete=models.CASCADE)
+    target = models.ForeignKey("Flow", on_delete=models.CASCADE, null=True, blank=True)
+    stage = InheritanceForeignKey(Stage, on_delete=models.CASCADE, null=True, blank=True)
 
     evaluate_on_plan = models.BooleanField(
         default=False,
@@ -258,7 +259,11 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return FlowStageBindingSerializer
 
     def __str__(self) -> str:
-        return f"Flow-stage binding #{self.order} to {self.target_id}"
+        try:
+            flow = self.target
+        except ObjectDoesNotExist:
+            return f"Flow-stage binding #{self.order} with no target"
+        return f"Flow-stage binding #{self.order} to {flow.name} ({flow.slug})"
 
     class Meta:
         ordering = ["target", "order"]
