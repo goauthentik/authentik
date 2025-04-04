@@ -15,6 +15,10 @@ class SCIMFilterGroupsTests(TestCase):
 
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self) -> None:
+        # Delete all users and groups as to only have the test users and groups
+        User.objects.all().exclude_anonymous().delete()
+        Group.objects.all().delete()
+
         # Set up SCIM Provider
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
