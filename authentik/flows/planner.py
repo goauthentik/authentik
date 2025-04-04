@@ -317,12 +317,26 @@ class FlowPlanner:
                 plan.context = default_context
             # Check Flow policies
             bindings = list(
-                FlowStageBinding.objects.filter(target__pk=self.flow.pk).order_by("order")
+                FlowStageBinding.objects.filter(
+                    target__pk=self.flow.pk, stage__isnull=False
+                ).order_by("order")
             )
+            # Skip if no bindings
+            if not bindings:
+                self._logger.debug("No bindings found for flow, returning empty plan")
+                return plan
             stages = Stage.objects.filter(flowstagebinding__in=[binding.pk for binding in bindings])
             for binding in bindings:
                 binding: FlowStageBinding
-                stage = [stage for stage in stages if stage.pk == binding.stage_id][0]
+                try:
+                    stage = next(stage for stage in stages if stage.pk == binding.stage_id)
+                except StopIteration:
+                    self._logger.warning(
+                        "Could not find stage for binding",
+                        binding_id=binding.pk,
+                        stage_id=binding.stage_id,
+                    )
+                    continue
                 marker = StageMarker()
                 if binding.evaluate_on_plan:
                     self._logger.debug(
