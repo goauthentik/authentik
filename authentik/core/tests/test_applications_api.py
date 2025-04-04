@@ -133,6 +133,8 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "assigned_backchannel_application_name": "",
+                            "assigned_backchannel_application_slug": "",
                             "authentication_flow": None,
                             "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
@@ -186,6 +188,8 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "assigned_backchannel_application_name": "",
+                            "assigned_backchannel_application_slug": "",
                             "authentication_flow": None,
                             "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
