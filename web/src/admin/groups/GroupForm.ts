@@ -10,7 +10,7 @@ import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -55,12 +55,11 @@ export class GroupForm extends ModelForm<Group, string> {
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
-        } else {
-            data.users = [];
-            return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-                groupRequest: data,
-            });
         }
+        data.users = [];
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
+            groupRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

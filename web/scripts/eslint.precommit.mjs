@@ -48,6 +48,7 @@ export default [
             //    "sonarjs/no-duplicate-string": "off",
             //    "sonarjs/no-nested-template-literals": "off",
             "@typescript-eslint/ban-ts-comment": "off",
+
             "@typescript-eslint/no-unused-vars": [
                 "error",
                 {

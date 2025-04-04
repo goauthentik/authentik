@@ -13,6 +13,7 @@ const MAX_PARAMS = 5;
 // const MAX_COGNITIVE_COMPLEXITY = 9;
 
 const rules = {
+    "no-param-reassign": "error",
     "accessor-pairs": "error",
     "array-callback-return": "error",
     "block-scoped-var": "error",
@@ -84,7 +85,6 @@ const rules = {
     "no-obj-calls": "error",
     "no-octal": "error",
     "no-octal-escape": "error",
-    "no-param-reassign": "error",
     "no-proto": "error",
     "no-redeclare": "error",
     "no-regex-spaces": "error",
@@ -134,6 +134,7 @@ const rules = {
     //    "sonarjs/cognitive-complexity": ["off", MAX_COGNITIVE_COMPLEXITY],
     //    "sonarjs/no-duplicate-string": "off",
     //    "sonarjs/no-nested-template-literals": "off",
+    " @typescript-eslint/no-namespace": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-unused-vars": [
         "error",

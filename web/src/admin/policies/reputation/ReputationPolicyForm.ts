@@ -25,11 +25,10 @@ export class ReputationPolicyForm extends BasePolicyForm<ReputationPolicy> {
                 policyUuid: this.instance.pk || "",
                 reputationPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesReputationCreate({
-                reputationPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesReputationCreate({
+            reputationPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

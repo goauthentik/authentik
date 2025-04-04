@@ -5,6 +5,7 @@ import { render } from "@goauthentik/elements/tests/utils.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
+import type { ChainablePromiseElement } from "webdriverio";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -82,34 +83,31 @@ export class MockSearch extends CustomListenerElement(AKElement) {
 
 describe("Search select: event driven startup", () => {
     let select: AkSearchSelectViewDriver;
-    let wrapper: SearchSelect<ViewSample>;
+    let wrapper: ChainablePromiseElement;
 
     beforeEach(async () => {
-        await render(html`<ak-mock-search-group></ak-mock-search-group>`, document.body);
-        // @ts-ignore
-        wrapper = await $(">>>ak-search-select");
+        render(html`<ak-mock-search-group></ak-mock-search-group>`, document);
+        wrapper = $(">>>ak-search-select");
     });
 
     it("should shift from the loading indicator to search select view on fetch event completed", async () => {
-        expect(await wrapper).toBeExisting();
-        expect(await $(">>>ak-search-select-loading-indicator")).toBeDisplayed();
+        expect(wrapper).toBeExisting();
+        expect($(">>>ak-search-select-loading-indicator")).toBeDisplayed();
         await browser.execute(() => {
             const mock = document.querySelector("ak-mock-search-group");
             mock?.dispatchEvent(new Event("resolve"));
         });
-        expect(await $(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
-        // @ts-expect-error "Another ChainablePromise mistake"
-        select = await AkSearchSelectViewDriver.build(await $(">>>ak-search-select-view"));
-        expect(await select).toBeExisting();
+        expect($(">>>ak-search-select-loading-indicator")).not.toBeDisplayed();
+        select = await AkSearchSelectViewDriver.build($(">>>ak-search-select-view"));
+        expect(select.element).toBeExisting();
     });
 
-    afterEach(async () => {
-        await browser.execute(() => {
+    afterEach(() => {
+        return browser.execute(() => {
             document.body.querySelector("ak-mock-search-group")?.remove();
-            // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
         });
     });

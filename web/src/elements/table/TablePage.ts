@@ -12,9 +12,18 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
 export abstract class TablePage<T> extends Table<T> {
-    abstract pageTitle(): string;
-    abstract pageDescription(): string | undefined;
-    abstract pageIcon(): string;
+    /**
+     * Page title. May be overridden by subclasses.
+     */
+    public abstract pageTitle(): string;
+    /**
+     * Page description. May be overridden by subclasses.
+     */
+    public abstract pageDescription(): string | undefined;
+    /**
+     * Page icon. May be overridden by subclasses.
+     */
+    public abstract pageIcon(): string;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFPage, PFContent, PFSidebar);

@@ -43,11 +43,10 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 id: this.instance.pk,
                 sSFProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
-                sSFProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
+            sSFProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

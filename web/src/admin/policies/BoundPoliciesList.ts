@@ -72,9 +72,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             return msg(str`Group ${item.groupObj?.name}`);
         } else if (item.user) {
             return msg(str`User ${item.userObj?.name}`);
-        } else {
-            return msg("-");
         }
+        return msg("-");
     }
 
     getPolicyUserGroupRow(item: PolicyBinding): TemplateResult {
@@ -123,9 +122,8 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${msg("Edit User")}
                 </button>
             </ak-forms-modal>`;
-        } else {
-            return html``;
         }
+        return html``;
     }
 
     renderToolbarSelected(): TemplateResult {

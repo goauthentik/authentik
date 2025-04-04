@@ -47,10 +47,9 @@ export abstract class TableModal<T> extends Table<T> {
     }
 
     public async fetch(): Promise<void> {
-        if (!this.open) {
-            return;
-        }
-        return super.fetch();
+        if (!this.open) return;
+
+        await super.fetch();
     }
 
     closeModal() {

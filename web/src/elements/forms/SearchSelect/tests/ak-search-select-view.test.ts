@@ -6,6 +6,7 @@ import { Key } from "webdriverio";
 import { html } from "lit";
 
 import "../ak-search-select-view.js";
+import type { SearchSelectView } from "../ak-search-select-view.js";
 import { sampleData } from "../stories/sampleData.js";
 import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";
 
@@ -20,10 +21,9 @@ describe("Search select: Test Input Field", () => {
     beforeEach(async () => {
         render(
             html`<ak-search-select-view .options=${longGoodForYouPairs}> </ak-search-select-view>`,
-            document.body,
+            document,
         );
-        // @ts-expect-error "Another ChainablePromise mistake"
-        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
+        select = await AkSearchSelectViewDriver.build($("ak-search-select-view"));
     });
 
     it("should open the menu when the input is clicked", async () => {
@@ -58,8 +58,7 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
         expect(await select.menuIsVisible()).toBe(false);
         await browser.keys("A");
-        // @ts-expect-error "Another ChainablePromise mistake"
-        select = await AkSearchSelectViewDriver.build(await $("ak-search-select-view"));
+        select = await AkSearchSelectViewDriver.build($("ak-search-select-view"));
         expect(await select.open).toBe(true);
         expect(await select.menuIsVisible()).toBe(true);
     });
@@ -68,7 +67,6 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
-        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
     });
@@ -77,7 +75,6 @@ describe("Search select: Test Input Field", () => {
         await select.focusOnInput();
         await browser.keys("Ap");
         await expect(await select.menuIsVisible()).toBe(true);
-        // @ts-expect-error "Another ChainablePromise mistake"
         const elements = Array.from(await select.listElements());
         await expect(elements.length).toBe(2);
         await browser.keys(Key.Tab);
@@ -89,7 +86,7 @@ describe("Search select: Test Input Field", () => {
             "afterbegin",
             '<input id="a-separate-component" type="text" />',
         );
-        const input = await browser.$("#a-separate-component");
+        const input = browser.$("#a-separate-component");
 
         await select.clickInput();
         expect(await select.open).toBe(true);
@@ -97,14 +94,13 @@ describe("Search select: Test Input Field", () => {
         expect(await select.open).toBe(false);
     });
 
-    afterEach(async () => {
-        await browser.execute(() => {
+    afterEach(() => {
+        return browser.execute(() => {
             document.body.querySelector("#a-separate-component")?.remove();
-            document.body.querySelector("ak-search-select-view")?.remove();
-            // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+            document.body.querySelector<SearchSelectView>("ak-search-select-view")?.remove();
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
         });
     });

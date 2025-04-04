@@ -51,11 +51,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 stageUuid: this.instance.pk || "",
                 authenticatorSMSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-                authenticatorSMSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
+            authenticatorSMSStageRequest: data,
+        });
     }
 
     renderProviderTwillio(): TemplateResult {

@@ -10,7 +10,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -129,11 +129,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
-                outpostRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+            outpostRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

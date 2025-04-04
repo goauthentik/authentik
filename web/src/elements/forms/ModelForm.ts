@@ -6,21 +6,29 @@ import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 /**
- * Model form
+ * A base form that automatically tracks a server-side (instance) we're interested in.
  *
- * A base form that automatically tracks the server-side object (instance)
- * that we're interested in.  Handles loading and tracking of the instance.
+ * Handles loading and tracking of the instance.
  */
+export abstract class ModelForm<Data, PrimaryKey extends string | number> extends Form<Data> {
+    /**
+     * Load the instance from the server.
+     *
+     * @param primaryKey The primary key of the instance to load.
+     */
+    public abstract loadInstance(primaryKey: PrimaryKey): Promise<Data>;
 
-export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
-    abstract loadInstance(pk: PKT): Promise<T>;
-
+    /**
+     * Load the form data.
+     *
+     * Override this method to load any additional data needed for the form.
+     */
     async load(): Promise<void> {
         return Promise.resolve();
     }
 
     @property({ attribute: false })
-    set instancePk(value: PKT) {
+    set instancePk(value: PrimaryKey) {
         this._instancePk = value;
         if (this.viewportCheck && !this.isInViewport) {
             return;
@@ -38,7 +46,11 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         });
     }
 
-    private _instancePk?: PKT;
+    get instancePk(): PrimaryKey | undefined {
+        return this._instancePk;
+    }
+
+    private _instancePk?: PrimaryKey;
 
     // Keep track if we've loaded the model instance
     private _initialLoad = false;
@@ -48,14 +60,15 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     private _isLoading = false;
 
     @property({ attribute: false })
-    instance?: T = this.defaultInstance;
+    public instance?: Data = this.defaultInstance;
 
-    get defaultInstance(): T | undefined {
+    get defaultInstance(): Data | undefined {
         return undefined;
     }
 
     constructor() {
         super();
+
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this._instancePk) return;
             this.loadInstance(this._instancePk).then((instance) => {

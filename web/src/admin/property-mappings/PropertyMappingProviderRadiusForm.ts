@@ -21,11 +21,10 @@ export class PropertyMappingProviderRadiusForm extends BasePropertyMappingForm<R
                 pmUuid: this.instance.pk,
                 radiusProviderPropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRadiusCreate({
-                radiusProviderPropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRadiusCreate({
+            radiusProviderPropertyMappingRequest: data,
+        });
     }
 }
 

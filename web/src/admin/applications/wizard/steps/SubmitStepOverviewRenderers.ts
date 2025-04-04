@@ -15,7 +15,6 @@ import {
     ProviderModelEnum,
     ProxyMode,
     ProxyProvider,
-    RACProvider,
     RadiusProvider,
     RedirectURI,
     SAMLProvider,
@@ -51,9 +50,8 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
     ]);
 }
 
-function renderRACOverview(rawProvider: OneOfProvider) {
-    // @ts-expect-error TS6133
-    const _provider = rawProvider as RACProvider;
+function renderRACOverview(_rawProvider: OneOfProvider) {
+    // const _provider = rawProvider as RACProvider;
 }
 
 function formatRedirectUris(uris: RedirectURI[] = []) {

@@ -9,24 +9,27 @@ import { customElement, property } from "lit/decorators.js";
 
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
+// TODO: Do we still support browsers that don't have this?
 window.addEventListener("load", () => {
-    if (!window.HashChangeEvent)
-        (function () {
-            let lastURL = document.URL;
-            window.addEventListener("hashchange", function (event) {
-                Object.defineProperty(event, "oldURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: lastURL,
-                });
-                Object.defineProperty(event, "newURL", {
-                    enumerable: true,
-                    configurable: true,
-                    value: document.URL,
-                });
-                lastURL = document.URL;
-            });
-        })();
+    if (window.HashChangeEvent) return;
+
+    let lastURL = document.URL;
+
+    window.addEventListener("hashchange", (event) => {
+        Object.defineProperty(event, "oldURL", {
+            enumerable: true,
+            configurable: true,
+            value: lastURL,
+        });
+
+        Object.defineProperty(event, "newURL", {
+            enumerable: true,
+            configurable: true,
+            value: document.URL,
+        });
+
+        lastURL = document.URL;
+    });
 });
 
 export function paramURL(url: string, params?: { [key: string]: unknown }): string {
@@ -38,6 +41,7 @@ export function paramURL(url: string, params?: { [key: string]: unknown }): stri
     }
     return finalUrl;
 }
+
 export function navigate(url: string, params?: { [key: string]: unknown }): void {
     window.location.assign(paramURL(url, params));
 }

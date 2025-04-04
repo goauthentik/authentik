@@ -38,11 +38,10 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 policyUuid: this.instance.pk || "",
                 passwordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
-                passwordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
+            passwordPolicyRequest: data,
+        });
     }
 
     renderStaticRules(): TemplateResult {

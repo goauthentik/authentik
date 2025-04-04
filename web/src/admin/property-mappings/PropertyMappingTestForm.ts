@@ -5,7 +5,7 @@ import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";

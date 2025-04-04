@@ -1,6 +1,6 @@
 import { useMDXModule } from "@goauthentik/elements/ak-mdx/MDXModuleContext";
 import { resolve } from "node:path";
-import React, { memo } from "react";
+import { memo } from "react";
 
 const DOCS_DOMAIN = "https://goauthentik.io";
 
@@ -20,6 +20,7 @@ export const MDXAnchor = memo<React.AnchorHTMLAttributes<HTMLAnchorElement>>(
             const nextURL = new URL(nextPathname, DOCS_DOMAIN);
             // Remove trailing .md and .mdx, and trailing "index".
             nextURL.pathname = nextURL.pathname.replace(/(index)?\.mdx?$/, "");
+
             href = nextURL.toString();
         }
 

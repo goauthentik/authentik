@@ -1,13 +1,16 @@
+/**
+ * Debounce a function, so it will only be called after a certain amount of time has passed since the last call.
+ */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Callback = (...args: any[]) => any;
-export function debounce<F extends Callback, T extends object>(callback: F, wait: number) {
+export function debounce<C extends (...args: any[]) => unknown>(
+    callback: C,
+    delayDuration: number,
+) {
     let timeout: ReturnType<typeof setTimeout>;
-    return (...args: Parameters<F>) => {
-        // @ts-ignore
-        const context: T = this satisfies object;
-        if (timeout !== undefined) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(() => callback.apply(context, args), wait);
+
+    return (...args: Parameters<C>) => {
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => callback(args), delayDuration);
     };
 }

@@ -42,11 +42,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                authenticatorWebAuthnStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+            authenticatorWebAuthnStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

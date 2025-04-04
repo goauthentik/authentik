@@ -40,10 +40,6 @@ export class AKElement extends LitElement {
         return this._activeTheme;
     }
 
-    constructor() {
-        super();
-    }
-
     setInitialStyles(root: DocumentOrShadowRoot) {
         const styleRoot: DocumentOrShadowRoot = (
             "ShadyDOM" in window ? document : root
@@ -91,10 +87,7 @@ export class AKElement extends LitElement {
         root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     }
 
-    _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {
-        if (!theme) {
-            theme = UiThemeEnum.Automatic;
-        }
+    _applyTheme(root: DocumentOrShadowRoot, theme: UiThemeEnum = UiThemeEnum.Automatic): void {
         if (theme === UiThemeEnum.Automatic) {
             // Create a media matcher to automatically switch the theme depending on
             // prefers-color-scheme

@@ -17,7 +17,7 @@ import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import YAML from "yaml";
+import * as YAML from "yaml";
 
 import { CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";

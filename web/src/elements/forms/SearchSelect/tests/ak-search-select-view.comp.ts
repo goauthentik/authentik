@@ -1,15 +1,24 @@
 import { $, browser } from "@wdio/globals";
+import type { ChainablePromiseElement } from "webdriverio";
 
 browser.addCommand(
     "focus",
-    function () {
-        browser.execute(function (domElement) {
-            domElement.focus();
-            // @ts-ignore
-        }, this);
+    () => {
+        browser.execute(function applyFocus(this: HTMLElement) {
+            this?.focus?.();
+        });
     },
-    true,
+    true, // Extend to all elements
 );
+
+declare global {
+    // eslint-disable-next-line @typescript-eslint/no-namespace
+    namespace WebdriverIO {
+        interface Element {
+            focus: () => Promise<void>;
+        }
+    }
+}
 
 /**
  * Search Select View Driver
@@ -24,13 +33,13 @@ browser.addCommand(
 
 export class AkSearchSelectViewDriver {
     constructor(
-        public element: WebdriverIO.Element,
-        public menu: WebdriverIO.Element,
+        public element: ChainablePromiseElement,
+        public menu: ChainablePromiseElement,
     ) {
         /* no op */
     }
 
-    static async build(element: WebdriverIO.Element) {
+    static async build(element: ChainablePromiseElement) {
         const tagname = await element.getTagName();
         const comptype = await element.getAttribute("data-ouia-component-type");
         if (comptype !== "ak-search-select-view") {
@@ -39,8 +48,8 @@ export class AkSearchSelectViewDriver {
             );
         }
         const id = await element.getAttribute("data-ouia-component-id");
-        const menu = await $(`[data-ouia-component-id="menu-${id}"]`);
-        // @ts-expect-error "Another ChainablePromise mistake"
+        const menu = $(`[data-ouia-component-id="menu-${id}"]`);
+
         return new AkSearchSelectViewDriver(element, menu);
     }
 
@@ -48,17 +57,16 @@ export class AkSearchSelectViewDriver {
         return this.element.getProperty("open");
     }
 
-    async input() {
-        return await this.element.$(">>>input");
+    input() {
+        return this.element.$(">>>input");
     }
 
     async listElements() {
-        return await this.menu.$$(">>>li");
+        return this.menu.$$(">>>li");
     }
 
     async focusOnInput() {
-        // @ts-ignore
-        await (await this.input()).focus();
+        await (await this.input().getElement()).focus();
     }
 
     async inputIsVisible() {
@@ -70,6 +78,6 @@ export class AkSearchSelectViewDriver {
     }
 
     async clickInput() {
-        return await (await this.input()).click();
+        return await this.input().click();
     }
 }

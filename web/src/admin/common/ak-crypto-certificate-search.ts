@@ -107,7 +107,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     selected(item: CertificateKeyPair, items: CertificateKeyPair[]) {
         return (
             (this.singleton && !this.certificate && items.length === 1) ||
-            (!!this.certificate && this.certificate === item.pk)
+            (Boolean(this.certificate) && this.certificate === item.pk)
         );
     }
 

@@ -5,11 +5,6 @@ import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 
 let globalMePromise: Promise<SessionUser> | undefined;
 
-export function refreshMe(): Promise<SessionUser> {
-    globalMePromise = undefined;
-    return me();
-}
-
 export function me(): Promise<SessionUser> {
     if (!globalMePromise) {
         globalMePromise = new CoreApi(DEFAULT_CONFIG)
@@ -60,4 +55,9 @@ export function me(): Promise<SessionUser> {
             });
     }
     return globalMePromise;
+}
+
+export function refreshMe(): Promise<SessionUser> {
+    globalMePromise = undefined;
+    return me();
 }

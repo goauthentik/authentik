@@ -24,11 +24,10 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                 stageUuid: this.instance.pk || "",
                 invitationStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                invitationStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
+            invitationStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

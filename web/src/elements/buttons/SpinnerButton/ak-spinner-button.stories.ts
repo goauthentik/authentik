@@ -28,8 +28,8 @@ export default metadata;
 
 export const ButtonWithSuccess = () => {
     const run = () =>
-        new Promise<void>(function (resolve) {
-            setTimeout(function () {
+        new Promise<void>((resolve) => {
+            setTimeout(() => {
                 resolve();
             }, 3000);
         });

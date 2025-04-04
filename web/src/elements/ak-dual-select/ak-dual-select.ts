@@ -223,13 +223,16 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
         this.selectedPane.value!.clearMove();
     }
 
-    handleSearch(event: SearchbarEvent) {
+    handleSearch(event: SearchbarEvent): void {
         switch (event.detail.source) {
             case "ak-dual-list-available-search":
-                return this.handleAvailableSearch(event.detail.value);
+                this.handleAvailableSearch(event.detail.value);
+                return;
             case "ak-dual-list-selected-search":
-                return this.handleSelectedSearch(event.detail.value);
+                this.handleSelectedSearch(event.detail.value);
+                return;
         }
+
         event.stopPropagation();
     }
 
@@ -259,7 +262,8 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
     get canRemoveAll() {
         // False if no visible option can be found in the selected list
         return (
-            this.options.length > 0 && !!this.options.find(([key, _]) => this.selectedKeys.has(key))
+            this.options.length > 0 &&
+            Boolean(this.options.find(([key, _]) => this.selectedKeys.has(key)))
         );
     }
 
@@ -286,7 +290,7 @@ export class AkDualSelect extends CustomEmitterElement(CustomListenerElement(AKE
             availableCount > 0 ? msg(str`${availableCount} item(s) marked to add.`) : "&nbsp;";
         const selectedTotalStatus = msg(str`${selectedTotal} item(s) selected.`);
         const selectedCountStatus =
-            selectedCount > 0 ? "  " + msg(str`${selectedCount} item(s) marked to remove.`) : "";
+            selectedCount > 0 ? `  ${msg(str`${selectedCount} item(s) marked to remove.`)}` : "";
         const selectedStatus = `${selectedTotalStatus} ${selectedCountStatus}`;
 
         return html`

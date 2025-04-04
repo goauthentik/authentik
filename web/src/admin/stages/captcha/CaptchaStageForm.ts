@@ -27,11 +27,10 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 stageUuid: this.instance.pk || "",
                 patchedCaptchaStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
-                captchaStageRequest: data as unknown as CaptchaStageRequest,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
+            captchaStageRequest: data as unknown as CaptchaStageRequest,
+        });
     }
 
     renderForm(): TemplateResult {

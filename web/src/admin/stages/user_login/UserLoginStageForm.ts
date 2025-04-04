@@ -26,11 +26,10 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                 stageUuid: this.instance.pk || "",
                 userLoginStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
-                userLoginStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserLoginCreate({
+            userLoginStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
