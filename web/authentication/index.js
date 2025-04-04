@@ -1,10 +1,5 @@
 /**
  * @file WebAuthn utilities.
- *
- * @remarks
- *
- * This duplicates much of the logic in the main web app's WebAuthn utilities.
- * Can we share this code while keeping IE11 support?
  */
 import { fromByteArray } from "base64-js";
 
