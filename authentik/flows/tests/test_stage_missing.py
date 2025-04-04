@@ -1,4 +1,5 @@
 """Test FlowPlanner handling of missing stages"""
+
 from unittest.mock import Mock, patch
 
 from django.test import RequestFactory, TestCase
@@ -38,46 +39,41 @@ class TestFlowPlannerStageMissing(TestCase):
         # First verify the planner works with a valid binding
         planner = FlowPlanner(self.flow)
         planner.allow_empty_flows = True
-        
-        # Instead of trying to create an invalid binding in the database
-        # (which is prevented by foreign key constraints), we'll mock the
-        # necessary components to simulate what happens when a binding has a stage_id
-        # that doesn't correspond to any existing stage
-        
+
         # Mock the Stage.objects.filter to return a stage list that doesn't include
         # a stage for one of the bindings
         mock_binding = Mock()
         mock_binding.pk = "missing-stage-binding"
         mock_binding.stage_id = "non-existent-stage-id"
-        
+
         with patch("authentik.flows.planner.FlowStageBinding.objects.filter") as mock_filter:
             # Create a mock logger that we can inspect later
             mock_logger = Mock()
-            
+
             # Replace the planner's logger with our mock
             original_logger = planner._logger
             planner._logger = mock_logger
-            
+
             # Make filter return both a real binding and our mock binding with missing stage
             mock_filter.return_value.order_by.return_value = [binding, mock_binding]
-            
+
             # Stage.objects.filter should return only the real stage
             with patch("authentik.flows.planner.Stage.objects.filter") as mock_stage_filter:
                 mock_stage_filter.return_value = [self.stage]
-                
+
                 # Run the planner - this should trigger our missing stage handling
                 plan = planner._build_plan(request.user, request, None)
-                
+
                 # Verify warning was logged about the missing stage
                 mock_logger.warning.assert_called_once_with(
                     "Could not find stage for binding",
                     binding_id=mock_binding.pk,
                     stage_id=mock_binding.stage_id,
                 )
-                
+
                 # Restore the original logger
                 planner._logger = original_logger
-                
+
                 # Plan should only contain the valid binding
                 self.assertEqual(len(plan.bindings), 1)
                 self.assertEqual(plan.bindings[0].pk, binding.pk)
