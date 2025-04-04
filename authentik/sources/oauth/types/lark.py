@@ -96,9 +96,9 @@ class LarkType(SourceType):
 
     urls_customizable = True
 
-    authorization_url = "https://open.feishu.cn/open-apis/authen/v1/authorize"
-    access_token_url = "https://open.feishu.cn/open-apis/authen/v2/oauth/token"
-    profile_url = "https://open.feishu.cn/open-apis/authen/v1/user_info"
+    authorization_url = "https://open.feishu.cn/open-apis/authen/v1/authorize"  # nosec
+    access_token_url = "https://open.feishu.cn/open-apis/authen/v2/oauth/token" # nosec
+    profile_url = "https://open.feishu.cn/open-apis/authen/v1/user_info"    # nosec
 
     def get_base_user_properties(
         self,
