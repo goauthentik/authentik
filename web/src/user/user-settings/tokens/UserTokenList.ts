@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -110,7 +110,7 @@ export class UserTokenList extends Table<Token> {
                                               position="top"
                                               .content=${item.expires?.toLocaleString()}
                                           >
-                                              ${getRelativeTime(item.expires!)}
+                                              ${formatElapsedTime(item.expires!)}
                                           </pf-tooltip>`
                                         : msg("-")}
                                 </div>

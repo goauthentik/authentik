@@ -7,8 +7,8 @@ import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { MessageLevel } from "@goauthentik/common/messages";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
@@ -200,7 +200,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
                       <small>${item.lastLogin.toLocaleString()}</small>`
                 : msg("-")}`,
             html`<ak-forms-modal>
