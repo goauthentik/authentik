@@ -157,6 +157,7 @@ web:
   path: /
 
 worker:
+  embedded: false
   concurrency: 2
 
 storage:

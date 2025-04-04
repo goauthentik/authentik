@@ -14,10 +14,10 @@ def logout_proxy_revoke_direct(sender: type[User], request: HttpRequest, **_):
     """Catch logout by direct logout and forward to proxy providers"""
     if not request.session or not request.session.session_key:
         return
-    proxy_on_logout.delay(request.session.session_key)
+    proxy_on_logout.send(request.session.session_key)
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
 def logout_proxy_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
-    proxy_on_logout.delay(instance.session_key)
+    proxy_on_logout.send(instance.session_key)

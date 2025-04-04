@@ -13,6 +13,7 @@ export enum PFColor {
     Green = "pf-m-green",
     Orange = "pf-m-orange",
     Red = "pf-m-red",
+    Blue = "pf-m-blue",
     Grey = "",
 }
 
