@@ -253,6 +253,7 @@ class AccessDeniedStage(ChallengeStageView):
         return AccessDeniedChallenge(
             data={
                 "error_message": str(self.error_message or "Unknown error"),
+                "error": str(self.error_message or "Unknown error"),
                 "component": "ak-stage-access-denied",
             }
         )
