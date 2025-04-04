@@ -10,6 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -68,7 +69,7 @@ export class RecentEventsCard extends Table<Event> {
         </div>`;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
@@ -81,7 +82,11 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+        if (this.error) {
+            return super.renderEmpty(inner);
+        }
+
         return super.renderEmpty(
             html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>

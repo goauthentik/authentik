@@ -7,6 +7,7 @@ import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
+import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
@@ -23,7 +24,7 @@ import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showAPIErrorMessage, showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -39,7 +40,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthentik/api";
+import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
@@ -57,16 +58,7 @@ export const requestRecoveryLink = (user: User) =>
                 }),
             ),
         )
-        .catch((ex: ResponseError) =>
-            ex.response.json().then(() =>
-                showMessage({
-                    level: MessageLevel.error,
-                    message: msg(
-                        "The current brand must have a recovery flow configured to use a recovery link",
-                    ),
-                }),
-            ),
-        );
+        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">

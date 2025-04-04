@@ -1,5 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "@goauthentik/common/errors/network";
 import { globalAK } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
@@ -26,7 +31,6 @@ import {
     FlowErrorChallenge,
     FlowsApi,
     RedirectChallenge,
-    ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -73,8 +77,11 @@ export class UserSettingsFlowExecutor
                 this.challenge = data;
                 return !this.challenge.responseErrors;
             })
-            .catch((e: Error | ResponseError) => {
-                this.errorMessage(e);
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.errorMessage(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -109,16 +116,13 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async errorMessage(error: Error | Response): Promise<void> {
-        let body = "";
-        if (error instanceof Error) {
-            body = error.message;
-        }
+    async errorMessage(error: APIError): Promise<void> {
         const challenge: FlowErrorChallenge = {
             component: "ak-stage-flow-error",
-            error: body,
+            error: pluckErrorDetail(error),
             requestId: "",
         };
+
         this.challenge = challenge as ChallengeTypes;
     }
 

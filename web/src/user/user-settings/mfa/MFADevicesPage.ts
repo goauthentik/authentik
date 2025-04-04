@@ -1,7 +1,7 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { globalAK } from "@goauthentik/common/global";
 import { deviceTypeName } from "@goauthentik/common/labels";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
