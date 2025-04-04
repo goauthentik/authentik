@@ -567,6 +567,7 @@ export default {
                                         "users-sources/sources/social-logins/google/workspace/index",
                                     ],
                                 },
+                                "users-sources/sources/social-logins/lark/index",
                                 "users-sources/sources/social-logins/mailcow/index",
                                 "users-sources/sources/social-logins/twitch/index",
                                 "users-sources/sources/social-logins/plex/index",
