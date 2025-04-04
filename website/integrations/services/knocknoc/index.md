@@ -52,9 +52,10 @@ To support the integration of Knocknoc with authentik, you need to create an app
   `python
 return 540
 `
-  :::Note
-  This will set session duration at 540 minutes. Change the value to match your desired session duration length.
-  :::
+
+:::note
+This will set session duration at 540 minutes. Change the value to match your desired session duration length.
+:::
 
 ### Create an application and provider in authentik
 
@@ -98,7 +99,7 @@ return 540
 
 3. Click on **Save**.
 
-:::Note
+:::note
 Key file and Cert file are currently required fields in Knocknoc. You can generate a certificate and key on a Linux host with this command:
 `openssl req -new -x509 -days 3650 -nodes -subj /CN=Knocknoc/ -out <certificate_filename>.crt -keyout <certificate_key_filename>.key`
 :::
