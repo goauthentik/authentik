@@ -12,7 +12,9 @@ def user_logged_out_oauth_access_token(sender, request: HttpRequest, user: User,
     """Revoke access tokens upon user logout"""
     if not request.session or not request.session.session_key:
         return
-    AccessToken.objects.filter(user=user, session__session_key=request.session.session_key).delete()
+    AccessToken.objects.filter(
+        user=user, session__session__session_key=request.session.session_key
+    ).delete()
 
 
 @receiver(post_save, sender=User)
