@@ -57855,8 +57855,13 @@ components:
           type: string
         uid:
           type: string
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LogEvent'
       required:
       - actor_name
+      - messages
     Tenant:
       type: object
       description: Tenant Serializer

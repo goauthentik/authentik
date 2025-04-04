@@ -6,12 +6,15 @@ from rest_framework.mixins import (
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.utils import ModelSerializer
+from authentik.events.logs import LogEventSerializer
 from authentik.tasks.models import Task
 from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.utils import get_current_tenant
 
 
 class TaskSerializer(ModelSerializer):
+    messages = LogEventSerializer(many=True)
+
     class Meta:
         model = Task
         fields = [
@@ -22,6 +25,7 @@ class TaskSerializer(ModelSerializer):
             "mtime",
             "schedule_uid",
             "uid",
+            "messages",
         ]
 
 

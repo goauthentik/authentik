@@ -1,9 +1,9 @@
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/providers/rac/EndpointForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { getRelativeTime } from "@goauthentik/common/utils";
+import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/LogViewer";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Schedule, Task, TasksApi } from "@goauthentik/api";
+import { Schedule, Task, TasksApi, TasksTasksListStateEnum } from "@goauthentik/api";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -48,11 +48,27 @@ export class TaskList extends Table<Task> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(msg("Task")),
-            new TableColumn(msg("Queue")),
-            new TableColumn(msg("Last updated")),
+            new TableColumn(msg("Task"), "actor_name"),
+            new TableColumn(msg("Queue"), "queue_name"),
+            new TableColumn(msg("Last updated"), "mtime"),
+            new TableColumn(msg("State"), "state"),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    taskState(task: Task): TemplateResult {
+        switch (task.state) {
+            case TasksTasksListStateEnum.Queued:
+                return html`<ak-label color=${PFColor.Grey}>${msg("Waiting to run")}</ak-label>`;
+            case TasksTasksListStateEnum.Consumed:
+                return html`<ak-label color=${PFColor.Blue}>${msg("Running")}</ak-label>`;
+            case TasksTasksListStateEnum.Done:
+                return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
+            case TasksTasksListStateEnum.Rejected:
+                return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
+            default:
+                return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;
+        }
     }
 
     row(item: Task): TemplateResult[] {
@@ -62,19 +78,19 @@ export class TaskList extends Table<Task> {
             html`${item.queueName}`,
             html`<div>${getRelativeTime(item.mtime)}</div>
                 <small>${item.mtime.toLocaleString()}</small>`,
+            this.taskState(item),
             html``,
         ];
     }
 
     renderExpanded(item: Task): TemplateResult {
-        return html` <td></td>
-            <td role="cell" colspan="12">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-c-content">
-                        <p>TODO: ${item.actorName}</p>
-                    </div>
+        return html` <td role="cell" colspan="3">
+            <div class="pf-c-table__expandable-row-content">
+                <div class="pf-c-content">
+                    <ak-log-viewer .logs=${item?.messages}></ak-log-viewer>
                 </div>
-            </td>`;
+            </div>
+        </td>`;
     }
 }
 
