@@ -282,7 +282,7 @@ requires-dist = [
     { name = "django-redis" },
     { name = "django-storages", extras = ["s3"] },
     { name = "django-tenants", git = "https://github.com/rissson/django-tenants.git?branch=authentik-fixes" },
-    { name = "djangorestframework", specifier = "==3.16.0" },
+    { name = "djangorestframework" },
     { name = "djangorestframework-guardian" },
     { name = "docker" },
     { name = "drf-orjson-renderer" },
