@@ -263,6 +263,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
             flow = self.target
         except ObjectDoesNotExist:
             return f"Flow-stage binding #{self.order} with no target"
+        if not flow:
+            return f"Flow-stage binding #{self.order} with no target"
         return f"Flow-stage binding #{self.order} to {flow.name} ({flow.slug})"
 
     class Meta:
