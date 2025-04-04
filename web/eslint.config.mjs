@@ -48,6 +48,9 @@ export default [
             "lit/no-template-bind": "error",
             "no-unused-vars": "off",
             "no-console": ["error", { allow: ["debug", "warn", "error"] }],
+            // TODO: TypeScript already handles this.
+            // Remove after project-wide ESLint config is properly set up.
+            "no-undef": "off",
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",
@@ -71,8 +74,18 @@ export default [
                 ...globals.node,
             },
         },
-        files: ["scripts/**/*.mjs", "*.ts", "*.mjs"],
+        files: [
+            // TODO:Remove after project-wide ESLint config is properly set up.
+            "scripts/**/*.mjs",
+            "authentication/**/*.js",
+            "sfe/**/*.js",
+            "*.ts",
+            "*.mjs",
+        ],
         rules: {
+            "no-undef": "off",
+            // TODO: TypeScript already handles this.
+            // Remove after project-wide ESLint config is properly set up.
             "no-unused-vars": "off",
             // We WANT our scripts to output to the console!
             "no-console": "off",
