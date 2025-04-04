@@ -107,10 +107,6 @@ class UserLoginStageView(ChallengeStageView):
             flow_slug=self.executor.flow.slug,
             session_duration=delta,
         )
-        # Only show success message if we don't have a source in the flow
-        # as sources show their own success messages
-        if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
-            messages.success(self.request, _("Successfully logged in!"))
         if self.executor.current_stage.terminate_other_sessions:
             AuthenticatedSession.objects.filter(
                 user=user,
