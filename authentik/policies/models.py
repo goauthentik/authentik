@@ -86,7 +86,7 @@ class PolicyBinding(SerializerModel):
     )
 
     target = InheritanceForeignKey(
-        PolicyBindingModel, on_delete=models.CASCADE, related_name="bindings"
+        PolicyBindingModel, on_delete=models.CASCADE, related_name="bindings", null=True, blank=True
     )
     negate = models.BooleanField(
         default=False,
@@ -142,11 +142,9 @@ class PolicyBinding(SerializerModel):
 
     def __str__(self) -> str:
         suffix = f"{self.target_type.title()} {self.target_name}"
-        try:
-            return f"Binding from {self.target} #{self.order} to {suffix}"
-        except PolicyBinding.target.RelatedObjectDoesNotExist:
+        if not self.target_id:
             return f"Binding - #{self.order} to {suffix}"
-        return ""
+        return f"Binding from {self.target} #{self.order} to {suffix}"
 
     class Meta:
         verbose_name = _("Policy Binding")
