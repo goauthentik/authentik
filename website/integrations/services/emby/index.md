@@ -33,9 +33,7 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## LDAP Configuration
-
-### authentik Configuration
+## authentik configuration
 
 No additional authentik configuration needs to be configured. Follow the LDAP outpost instructions to create an LDAP outpost and configure access via the outpost.
 
@@ -47,7 +45,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
     - Select **Assign new user** and select you LDAP bind user with "Search full LDAP directory" and "Can view LDAP Provider" enabled
 3. Add the LDAP bind user to the Application Bindings
 
-### Emby configuration
+## Emby configuration
 
 1. Navigate to your Emby installation and log in with the admin account or currently configured local admin
 2. Open the **Administrator dashboard** and go to the **Plugins** section
@@ -68,6 +66,11 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
         - To allow all users: `(&(objectClass=user)(cn={0})`
         - To only allow users in a specific group: `(&(objectClass=user)(memberOf=cn=emby_users,ou=groups,dc=company,dc=com)(cn={0}))` _(Change to the LDAP bind user)_
         - Good Docs on LDAP Filters: [atlassian.com](https://confluence.atlassian.com/kb/how-to-write-ldap-search-filters-792496933.html)
-        - Docs on testing your search filter: [docs.goauthentik.io](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup#ldapsearch-test)
+
 7. Click "Save"
-8. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work
+
+## Configuration verification
+
+Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work
+
+If there are issues with the login, you can try to debug your search filter. Good docs can be found here: [docs.goauthentik.io](https://docs.goauthentik.io/docs/add-secure-apps/providers/ldap/generic_setup#ldapsearch-test)
