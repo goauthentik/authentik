@@ -37,12 +37,16 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.publicHostHTTPClient.Do(req)
-	if err != nil || res.StatusCode > 200 {
-		b, err := io.ReadAll(res.Body)
-		if err != nil {
-			b = []byte(err.Error())
+	if err != nil || res == nil || res.StatusCode > 200 {
+		if res != nil && res.Body != nil {
+			b, readErr := io.ReadAll(res.Body)
+			if readErr != nil {
+				b = []byte(readErr.Error())
+			}
+			a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
+		} else {
+			a.log.WithError(err).Warning("failed to send token request, no response body")
 		}
-		a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
 		return nil
 	}
 	var token TokenResponse
