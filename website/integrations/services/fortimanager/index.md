@@ -6,9 +6,7 @@ support_level: community
 
 ## What is FortiManager
 
-> FortiManager supports network operations use cases for centralized management, best practices compliance, and workflow automation to provide better protection against breaches.
->
-> FortiManager is a paid enterprise product.
+> FortiManager is an enterprise solution that enables centralized network management, ensures compliance with best practices, and automates workflows to enhance breach protection.
 >
 > -- https://www.fortinet.com/products/management/fortimanager
 
@@ -16,11 +14,11 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `fgm.company` is the FQDN of the FortiManager installation.
+- `fortimanager.company` is the FQDN of the FortiManager installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
 ## authentik configuration
@@ -44,22 +42,21 @@ To support the integration of FortiManager with authentik, you need to create an
 
 ## FortiManager Configuration
 
-Navigate to `https://fgm.company/p/app/#!/sys/sso_settings` and select SAML SSO settings to configure SAML.
+1. Navigate to <kbd>https://<em>fortimanager.company</em>/p/app/#!/sys/sso_settings</kbd> and select **SAML SSO Settings** to configure SAML.
+2. Under **Single Sign-On Mode**, choose **Service Provider (SP)** to enable SAML authentication.
+3. Set the **SP Address** field to the FortiManager FQDN, <kbd>fortimanager.company</kbd>. This provides the URLs needed for configuration in authentik.
+4. Choose the **Default Login Page** as either **Normal** or **Single Sign-On**. Selecting **Normal** allows both local and SAML authentication, while **Single Sign-On** restricts login to SAML only.
+5. By default, FortiManager creates a new user if one does not exist. Set the **Default Admin Profile** to assign the desired permissions to new users. A `no_permissions` profile is created by default for this purpose.
+6. Set the **IdP Type** field to **Custom**.
+7. For the **IdP Entity ID** field, enter: <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>
+8. Set the **IdP Login URL** to: <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>
+9. Set the **IdP Logout URL** to: <kbd>https://<em>authentik.company</em>/</kbd>
+10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
 
-Select 'Service Provider (SP)' under Single Sign-On Mode to enable SAML authentication.
+## Ressources
 
-Set the Field 'SP Address' to the FortiManager FQDN 'fgm.company'. (This gives you the URLs to configure in authentik)
+- [Community post on the Fortinet forum](https://community.fortinet.com/t5/FortiAnalyzer/Technical-Tip-Configure-SAML-SSO-login-with-Azure-AD/ta-p/198324)
 
-Set the Default Login Page to either 'Normal' or 'Single-Sign On'. (Normal allows both local and SAML authentication vs only SAML SSO)
+## Configuration verification
 
-FortiManager create a new user by default if one does not exist so you will need to set the Default Admin Profile to the permissions you want any new users to have. (We created a no_permissions profile to assign by default)
-
-Set the Field 'IdP Type' to 'Custom'
-
-Set the Field `IdP entity ID` to `https://authentik.company/application/saml/fgm/sso/binding/redirect/`.
-
-Set the Field `IdP Login URL` to `https://authentik.company/application/saml/fgm/sso/binding/redirect/`.
-
-Set the Field `IdP Logout URL` to `https://authentik.company/`
-
-For the Field 'IdP Certificate" Import your authentik cert. (Self Signed or real)
+To confirm that authentik is properly configured with FortiManager, log out and log back in via authentik.

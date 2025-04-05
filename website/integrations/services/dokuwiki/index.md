@@ -6,9 +6,9 @@ support_level: community
 
 ## What is DokuWiki
 
-From https://en.wikipedia.org/wiki/DokuWiki
-
-> DokuWiki is a wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki. It is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
+> DokuWiki is an open source wiki application licensed under GPLv2 and written in the PHP programming language. It works on plain text files and thus does not need a database. Its syntax is similar to the one used by MediaWiki and it is often recommended as a more lightweight, easier to customize alternative to MediaWiki.
+>
+> -- https://en.wikipedia.org/wiki/DokuWiki
 
 ## Preparation
 
@@ -43,32 +43,43 @@ To support the integration of DocuWiki with authentik, you need to create an app
 
 ## DokuWiki configuration
 
-In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_ interface and install
+From the **Administration** interface of your DocuWiki installation, navigate to **Extension Manager** and install the following extensions:
 
 - https://www.dokuwiki.org/plugin:oauth
 - https://www.dokuwiki.org/plugin:oauthgeneric
 
-Navigate to _Configuration Settings_ section in the _Administration_ interface and change _Oauth_ and _Oauthgeneric_ options:
+Then, under the **Configuration Settings** section, update the **oauth** and **oauthgeneric** options:
 
-For _Oauth_:
+For **oauth**: - Select the following option: `plugin»oauth»register-on-auth`
 
-- Check the _plugin»oauth»register-on-auth_ option
+:::warning
+When using `preferred_username` as the user identifier, ensure that the [Allow users to change username setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. You can configure DocuWiki to use either the `sub` or `preferred_username` as the UID field under `plugin»oauthgeneric»json-user`. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::
 
-For _Oauthgeneric_:
+For **oauthgeneric**:
 
-- plugin»oauthgeneric»key: The Application UID
-- plugin»oauthgeneric»secret: The Application Secret
-- plugin»oauthgeneric»authurl: https://authentik.company/application/o/authorize/
-- plugin»oauthgeneric»tokenurl: https://authentik.company/application/o/token/
-- plugin»oauthgeneric»userurl: https://authentik.company/application/o/userinfo/
-- plugin»oauthgeneric»authmethod: Bearer Header
-- plugin»oauthgeneric»scopes: email, openid, profile, offline_access
-- plugin»oauthgeneric»needs-state: checked
-- plugin»oauthgeneric»json-user: preferred_username
-- plugin»oauthgeneric»json-name: name
-- plugin»oauthgeneric»json-mail: email
-- plugin»oauthgeneric»json-grps: groups
+- Set `plugin»oauthgeneric»key` to the Client ID from authentik
+- Set `plugin»oauthgeneric»secret` to the Client Secret from authentik
+- Set `plugin»oauthgeneric»authurl` to <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
+- Set `plugin»oauthgeneric»tokenurl` to <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
+- Set `plugin»oauthgeneric»userurl` to <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+- Set `plugin»oauthgeneric»authmethod` to `Bearer Header`
+- Set `plugin»oauthgeneric»scopes` to `email, openid, profile, offline_access`
+- Select `plugin»oauthgeneric»needs-state`
+- Set `plugin»oauthgeneric»json-user` to `preferred_username`
+- Set `plugin»oauthgeneric»json-name` to `name`
+- Set `plugin»oauthgeneric»json-mail` to `email`
+- Set `plugin»oauthgeneric»json-grps` to`groups`
 
 ![](./dokuwiki_oauth_generic.png)
 
-In the _Configuration Settings_ section in the _Administration_ interface navigate to _Authentication_ and activate _oauth_ in _Authentication backend_.
+Once that is done, navigate to the **Authentication** sub-section of the **Administration** interface's **Configuration Settings** section and enable **oauth** under **Authentication backend**.
+
+## Ressources
+
+- [DocuWiki OAuth plugin](https://www.dokuwiki.org/plugin:oauth)
+- [DocuWiki plugin for generic OAuth](https://www.dokuwiki.org/plugin:oauthgeneric)
+
+## Configuration verification
+
+To verify that authentik is correctly configured with DocuWiki, log out and log back in through authentik. You should notice a new button on the login page.

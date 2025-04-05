@@ -1,8 +1,11 @@
 ---
 title: Integrate with EspoCRM
 sidebar_label: EspoCRM
-support_level: community
 ---
+
+# Integrate with EspoCRM
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is EspoCRM?
 
@@ -18,9 +21,8 @@ This guide does _not_ cover Team Mapping. Please refer to EspoCRM's [documentati
 
 The following placeholders are used in this guide:
 
-- `crm.<your_company>` is the FQDN of the EspoCRM installation.
-- `authentik.<your_company>` is the FQDN of the authentik installation.
-- `_SLUG_` is the slug you choose upon application create in authentik.
+- `espocrm.company` is the FQDN of the EspoCRM installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -48,38 +50,24 @@ To support the integration of EspoCRM with authentik, you need to create an appl
 
 ## EspoCRM configuration
 
-### Access the OIDC auth
+To configure EspoCRM for OpenID Connect authentication, navigate to your instance and login as an administrator user. Then, navigate to **Administration** > **Authentication** and select the **OIDC method**. A panel allowing you to configure OIDC settings should appear.
 
-1. Login to your admin user at `crm.<your_company>`.
+Configure the following fields:
 
-2. In EspoCRM at Administration > Authentication, select the OIDC method. Below, on the same form, a OIDC panel will appear.
+- **Client ID**: The Client ID from authentik
+- **Client Secret**: The Client Secret from authentik
+- **Authorization Redirect URI**: <kbd>https://<em>espocrm.company</em>/oauth-callback.php</kbd>
+- **Fallback Login**: Toggle this option if you wish to have the option to use EspoCRM's integrated login as a fallback.
+- **Allow OIDC login for admin users**: Toggle this option if you wish to allow administrator users to log in with OIDC.
+- **Authorization Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize</kbd>
+- **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token</kbd>
+- **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</kbd>
+- **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</kbd>
 
-### Configure the OIDC auth
+## Ressources
 
-1. Configure the following variables:
+- [EspoCRM administrator documentation on OpenID Connect authentication](https://docs.espocrm.com/administration/oidc/)
 
-- **Client ID**: enter the `Client ID` from authentik
-- **Client Secret**: enter the `Client Secret` from authentik
-- **Authorization Redirect URI**: `https://crm.<your_company>/oauth-callback.php`
-- **Fallback Login**: _Select this option if you want EspoCRM's login as fallback._
-- **Allow OIDC login for admin users**: _Select this option if you want EspoCRM's admin users to be able to log in via OIDC._
+## Configuration verification
 
-    _The following values are listed as slugs for clarity. An example for the first variable is included._
-
-    You can also view the full URLs on the provider's page in authentik's Admin interface.
-
-- **Authorization Endpoint**: `/application/o/authorize/`
-    - (e.g. `https://crm.<your_company>/application/o/authorize/`)
-- **Token Endpoint**: `/application/o/token/`
-- **JSON Web Key Set Endpoint**: `/application/o/_SLUG_/jwks/`
-- **Logout URL**: `application/o/_SLUG_/end-session/`
-
-### Confirm the configuration
-
-1. Select the `Save` option.
-
-2. Access your EspoCRM instance (e.g. `crm.<your_company>`) in a private browser, and select `Sign In.`
-
-- You will be presented with your authentik log-in screen.
-
-- Enter your authentik credentials to proceed to EspoCRM!
+To confirm that authentik is properly configured with EspoCRM, log out and log back in via authentik. Clicking the "Login" button on the homepage should redirect you to authentik.

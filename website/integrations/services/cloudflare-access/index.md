@@ -54,3 +54,11 @@ To support the integration of Cloudflare Access with authentik, you need to crea
     - **JWKS URL** -> Certificate URL
 4. Click **Save**.
 5. Click **Test** to verify the login provider.
+
+## Ressources
+
+- [Cloudflare Access Generic OIDC documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/generic-oidc/)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Cloudflare Access, click the **Test** button found right next-to the **Save** button from the previous step.
