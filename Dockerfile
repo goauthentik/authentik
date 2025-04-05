@@ -156,6 +156,11 @@ LABEL org.opencontainers.image.description="goauthentik.io Main server image, se
 LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+LABEL org.opencontainers.image.title="Authentik Open Source"
+LABEL org.opencontainers.image.authors="Authentik Open Source Community"
+LABEL org.opencontainers.image.documentation="https://github.com/goauthentik/authentik/pkgs/container/server"
+LABEL org.opencontainers.image.vendor="Authentik Open Source Community"
+LABEL org.opencontainers.image.licenses="https://github.com/goauthentik/authentik/blob/main/LICENSE"
 
 WORKDIR /
 
