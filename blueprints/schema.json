@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.2 Blueprint schema",
+    "title": "authentik 2025.2.3 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -6423,8 +6423,6 @@
                 },
                 "acs_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "ACS URL"
                 },
@@ -8733,8 +8731,6 @@
                 },
                 "sso_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "SSO URL",
                     "description": "URL that the initial Login request is sent to."
@@ -8744,8 +8740,6 @@
                         "string",
                         "null"
                     ],
-                    "format": "uri",
-                    "maxLength": 200,
                     "title": "SLO URL",
                     "description": "Optional URL if your IDP supports Single-Logout."
                 },

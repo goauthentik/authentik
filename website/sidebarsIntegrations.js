@@ -16,7 +16,7 @@ module.exports = {
                 {
                     type: "category",
                     label: "Device Management",
-                    items: ["services/apple/index"],
+                    items: ["services/apple/index", "services/fleet/index"],
                 },
                 {
                     type: "category",
@@ -27,6 +27,7 @@ module.exports = {
                         "services/espoCRM/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
+                        "services/mailcow/index",
                         "services/mastodon/index",
                         "services/matrix-synapse/index",
                         "services/mautic/index",
@@ -93,6 +94,7 @@ module.exports = {
                         "services/meshcentral/index",
                         "services/minio/index",
                         "services/netbox/index",
+                        "services/omni/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
                         "services/plesk/index",
@@ -132,6 +134,7 @@ module.exports = {
                     items: [
                         "services/actual-budget/index",
                         "services/adventurelog/index",
+                        "services/calibre-web/index",
                         "services/engomo/index",
                         "services/frappe/index",
                         "services/freshrss/index",
@@ -147,6 +150,7 @@ module.exports = {
                         "services/semaphore/index",
                         "services/sonar-qube/index",
                         "services/sonarr/index",
+                        "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
                         "services/zipline/index",

@@ -15,8 +15,8 @@ def migrate_custom_css(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     path = Path("/web/dist/custom.css")
     if not path.exists():
         return
-    with path.read_text() as css:
-        Brand.objects.using(db_alias).update(branding_custom_css=css)
+    css = path.read_text()
+    Brand.objects.using(db_alias).update(branding_custom_css=css)
 
 
 class Migration(migrations.Migration):

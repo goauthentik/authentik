@@ -37,10 +37,9 @@ const createConfig = (): Config => {
                         target: "_self",
                     },
                     {
-                        to: "https://goauthentik.io/blog",
-                        label: "Blog",
+                        to: "integrations/",
+                        label: "Integrations",
                         position: "left",
-                        target: "_self",
                     },
                     {
                         to: "docs/",
@@ -48,13 +47,14 @@ const createConfig = (): Config => {
                         position: "left",
                     },
                     {
-                        to: "integrations/",
-                        label: "Integrations",
-                        position: "left",
-                    },
-                    {
                         to: "https://goauthentik.io/pricing/",
                         label: "Pricing",
+                        position: "left",
+                        target: "_self",
+                    },
+                    {
+                        to: "https://goauthentik.io/blog",
+                        label: "Blog",
                         position: "left",
                         target: "_self",
                     },

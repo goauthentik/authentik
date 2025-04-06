@@ -6,14 +6,22 @@ from django.shortcuts import get_object_or_404
 from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
-from authentik.flows.models import Flow
+from authentik.flows.models import Flow, FlowDesignation
+from authentik.flows.views.executor import SESSION_KEY_AUTH_STARTED
 
 
 class FlowInterfaceView(InterfaceView):
     """Flow interface"""
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["flow"] = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        flow = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
+        kwargs["flow"] = flow
+        if (
+            not self.request.user.is_authenticated
+            and flow.designation == FlowDesignation.AUTHENTICATION
+        ):
+            self.request.session[SESSION_KEY_AUTH_STARTED] = True
+            self.request.session.save()
         kwargs["inspector"] = "inspector" in self.request.GET
         return super().get_context_data(**kwargs)
 

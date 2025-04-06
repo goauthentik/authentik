@@ -65,7 +65,7 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider**: select **SAML Provider** as the provider type.
     - **Configure the Provider**:

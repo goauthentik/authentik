@@ -162,13 +162,14 @@ func (c *Config) parseScheme(rawVal string) string {
 	if err != nil {
 		return rawVal
 	}
-	if u.Scheme == "env" {
+	switch u.Scheme {
+	case "env":
 		e, ok := os.LookupEnv(u.Host)
 		if ok {
 			return e
 		}
 		return u.RawQuery
-	} else if u.Scheme == "file" {
+	case "file":
 		d, err := os.ReadFile(u.Path)
 		if err != nil {
 			return u.RawQuery

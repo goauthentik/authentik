@@ -156,7 +156,12 @@ func (ws *WebServer) listenPlain() {
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln, ConnPolicy: utils.GetProxyConnectionPolicy()}
-	defer proxyListener.Close()
+	defer func() {
+		err := proxyListener.Close()
+		if err != nil {
+			ws.log.WithError(err).Warning("failed to close proxy listener")
+		}
+	}()
 
 	ws.log.WithField("listen", config.Get().Listen.HTTP).Info("Starting HTTP server")
 	ws.serve(proxyListener)

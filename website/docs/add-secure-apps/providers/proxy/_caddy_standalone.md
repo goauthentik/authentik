@@ -28,6 +28,6 @@ If you're trying to proxy to an upstream over HTTPS, you need to set the `Host` 
 
 ```conf
 reverse_proxy /outpost.goauthentik.io/* https://outpost.company {
-    header_up Host {http.reverse_proxy.upstream.hostport}
+    header_up Host {http.reverse_proxy.upstream.host}
 }
 ```

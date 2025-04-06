@@ -9695,15 +9695,19 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s03ee3cfb0919c62c">
   <source>Task</source>
+  <target>任务</target>
 </trans-unit>
 <trans-unit id="sbb99d4ec27fbb263">
   <source>Finished</source>
+  <target>已完成</target>
 </trans-unit>
 <trans-unit id="s04fbc36687266544">
   <source>Webhook Body Mapping</source>
+  <target>Webhook 主体映射</target>
 </trans-unit>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
+  <target>Webhook 标头映射</target>
 </trans-unit>
     </body>
   </file>

@@ -11,6 +11,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -34,6 +35,9 @@ export class SyncStatusTable extends Table<SystemTask> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<SystemTask>> {
+        if (this.tasks.length === 1) {
+            this.expandedElements = this.tasks;
+        }
         return {
             pagination: {
                 next: 0,
@@ -104,7 +108,7 @@ export class SyncStatusCard extends AKElement {
     triggerSync!: () => Promise<unknown>;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFTable];
+        return [PFBase, PFButton, PFCard, PFTable];
     }
 
     firstUpdated() {
@@ -133,7 +137,20 @@ export class SyncStatusCard extends AKElement {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-            <div class="pf-c-card__title">${msg("Sync status")}</div>
+            <div class="pf-c-card__header">
+                <div class="pf-c-card__actions">
+                    <button
+                        class="pf-c-button pf-m-plain"
+                        type="button"
+                        @click=${() => {
+                            this.fetch();
+                        }}
+                    >
+                        <i class="fa fa-sync"></i>
+                    </button>
+                </div>
+                <div class="pf-c-card__title">${msg("Sync status")}</div>
+            </div>
             <div class="pf-c-card__body">${this.renderSyncStatus()}</div>
             <div class="pf-c-card__footer">
                 <ak-action-button

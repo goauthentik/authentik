@@ -1,6 +1,7 @@
 """Test Users API"""
 
 from datetime import datetime
+from json import loads
 
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
@@ -15,7 +16,12 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_brand,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
@@ -26,7 +32,7 @@ class TestUsersAPI(APITestCase):
 
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
 
     def test_filter_type(self):
         """Test API filtering by type"""
@@ -40,6 +46,35 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
+
+    def test_filter_is_superuser(self):
+        """Test API filtering by superuser status"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        # Test superuser
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["username"], admin.username)
+        # Test non-superuser
+        user = create_test_user()
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1, body)
+        self.assertEqual(body["results"][0]["username"], user.username)
 
     def test_list_with_groups(self):
         """Test listing with groups"""
@@ -99,6 +134,8 @@ class TestUsersAPI(APITestCase):
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
+        self.user.email = ""
+        self.user.save()
         response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )

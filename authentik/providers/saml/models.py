@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
@@ -40,7 +41,9 @@ class SAMLBindings(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    acs_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    )
     audience = models.TextField(
         default="",
         blank=True,

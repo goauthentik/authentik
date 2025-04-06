@@ -10,10 +10,10 @@ support_level: authentik
 
 ## Preparation
 
-The following placeholder will be used:
+The following placeholders are used in this guide:
 
-- You can use <kbd>slack.<em>company</em>></kbd> or <kbd><em>my-workspace</em>.slack.com</kbd> as the FQDN of your Slack instance.
-- You can use <kbd>authentik.company</kbd> as the FQDN of the authentik installation.
+- <kbd><em>company</em>.slack.com</kbd> is the FQDN of your Slack workspace.
+- `authentik.company` is the FQDN of the authentik installation.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -23,49 +23,38 @@ For additional information about integrating with Slack, refer to their [documen
 
 ## authentik configuration
 
-### Step 1. Create custom property mappings
+To support the integration of Slack with authentik, you need to create an application/provider pair in authentik.
 
-Your Slack integration requires two property mappings, one each for `User.Email` and `User.Username`, so that authentik can retrieve and map these values from Slack.
+### Create property mappings
 
-1. Log in as admin to your authentik instance and then click **Admin interface**.
-2. Navigate to **Customization -> Property Mappings**.
-3. Create the property mapping for `User.Email`.
-    1. On the **Property Mappings** page, click **Create**.
-    2. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
-    3. Define the required values. In the **Expression** field, define `User.Email` as `return request.user.email`.
-4. Click **Finish**.
-5. Create the property mapping for `User.Username`.
-    1. On the **Property Mappings** page, click **Create**.
-    2. On the **New property mapping** modal, select **SAML Property Mapping** and then click **Next**.
-    3. Define the required values. In the **Expression** field, define `User.Username` as `return request.user.username`.
-6. Click **Finish**.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
+    - **Name Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>User.Email</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**: <kbd>return request.user.email</kbd>
+    - **Email Mapping:**
+        - **Name**: Choose a descriptive name
+        - **SAML Attribute Name**: <kbd>User.Username</kbd>
+        - **Friendly Name**: Leave blank
+        - **Expression**: <kbd>return request.user.username</kbd>
 
-### Step 2. Create a new authentication provider
+### Create an application and provider in authentik
 
-1. Navigate to **Applications -> Providers** and then click **Create**.
-2. On the **New provider** modal, select **SAML Provider** and then click **Next**.
-3. Define the following values (values not listed below can be left as default or empty):
-    - **Name**: provide a clear name, such as "slack".
-    - **Authorization flow**: Authorize Application (`default-provider-authorization-implicit-consent`).
-    - **Protocol settings** define the following values:
-        - **ACS URL**: `https://_workspace-name_.slack.com/sso/saml`
-        - **Issuer**: `https://slack.com`.
-        - **Service Provider Binding**: select **Post**
-    - **Advanced protocol settings**
-        - **Signing Certificate**: select the appproriate certificate for Slack.
-        - **Property mappings**: Select the property mappings that you created in Step 1. You can leave the default property mappings and other settings.
-4. Click **Finish** to create the provider.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-### Step 3. Create a new application
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://<em>company</em>.slack.com/sso/saml</kbd>.
+    - Set the **Issuer** to <kbd>https://slack.com</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, add the two **Property Mappings** you created in the previous section, then select a **Signing Certificate**.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-1. Navigate to **Applications -> Applications** and then click **Create**.
-2. Provide a name for the new application.
-3. Set the provider to the one you just created.
-4. Click **Create**.
-
-:::info
-After you have created the provider and application, and the application is connected to the provider (Step 3 above) the **Overview** tab on the provider's detail page in the Admin UI will display additional information that you will need to configure Slack, using the following steps.
-:::
+3. Click **Submit** to save the new application and provider.
 
 ## Slack configuration
 

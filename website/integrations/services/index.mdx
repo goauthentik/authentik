@@ -3,26 +3,25 @@ title: Integrate with Applications
 sidebar_label: Applications
 ---
 
-# Applications
-
 import DocCardList from "@theme/DocCardList";
 import SupportBadge from "@site/src/components/SupportBadge";
 
-Below is a list of all applications that are known to work with authentik.
+# Applications
 
-:::info{title="Support Levels"}
-All app integrations will have one of these badges:
+Most third-party services that support authentication protocols such as SAML, OAuth, and OpenID Connect can be integrated with authentik, allowing users to log in to these services using their authentik credentials.
 
-|                                     |                                                            |
-| ----------------------------------- | ---------------------------------------------------------- |
-| <SupportBadge level="community" />  | The integration is community maintained.                   |
-| <SupportBadge level="vendor" />     | The integration is supported by the vendor.                |
-| <SupportBadge level="authentik" />  | The integration is regularly tested by the authentik team. |
-| <SupportBadge level="deprecated" /> | The integration is deprecated and may be removed.          |
+If you don't see an application you're looking for, let us know. You can reach us on [GitHub](https://github.com/goauthentik/authentik), [Discord](https://goauthentik.io/discord), or via email to [hello@goauthentik.io](mailto:hello@goauthentik.io). You can also add your own documentation for a new application integration following [these instructions](#add-a-new-application).
 
-:::
+All documented app integrations will have one of these badges:
+
+- <SupportBadge level="community" />: Community maintained.
+- <SupportBadge level="vendor" />: Supported by the vendor.
+- <SupportBadge level="authentik" />: Regularly tested by the authentik team.
+- <SupportBadge level="deprecated" />: Deprecated and may be removed.
 
 ### Add a new application
+
+<a id="add-new"></a>
 
 To add documentation for a new application (with support level Community or Vendor), please use the integration template [`service.md`](https://github.com/goauthentik/authentik/blob/main/website/integrations/template/service.md) file from our GitHub repo. You can download the template file using the following command:
 

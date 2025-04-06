@@ -2,6 +2,7 @@ package ak
 
 import (
 	"context"
+	"crypto/fips140"
 	"fmt"
 	"math/rand"
 	"net/http"
@@ -203,7 +204,7 @@ func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 		"golangVersion":  runtime.Version(),
 		"opensslEnabled": cryptobackend.OpensslEnabled,
 		"opensslVersion": cryptobackend.OpensslVersion(),
-		"fipsEnabled":    cryptobackend.FipsEnabled,
+		"fipsEnabled":    fips140.Enabled(),
 	}
 	hostname, err := os.Hostname()
 	if err == nil {

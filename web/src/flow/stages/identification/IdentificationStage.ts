@@ -49,6 +49,8 @@ export class IdentificationStage extends BaseStage<
 
     @state()
     captchaToken = "";
+    @state()
+    captchaRefreshedAt = new Date();
 
     static get styles(): CSSResult[] {
         return [
@@ -179,10 +181,14 @@ export class IdentificationStage extends BaseStage<
         this.form.appendChild(totp);
     }
 
-    cleanup(): void {
+    onSubmitSuccess(): void {
         if (this.form) {
             this.form.remove();
         }
+    }
+
+    onSubmitFailure(): void {
+        this.captchaRefreshedAt = new Date();
     }
 
     renderSource(source: LoginSource): TemplateResult {
@@ -287,6 +293,7 @@ export class IdentificationStage extends BaseStage<
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
                           }}
+                          .refreshedAt=${this.captchaRefreshedAt}
                           embedded
                       ></ak-stage-captcha>
                   `

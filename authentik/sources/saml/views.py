@@ -33,6 +33,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
+from authentik.lib.utils.urls import is_url_absolute
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -73,6 +74,8 @@ class InitiateView(View):
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
+        if not is_url_absolute(final_redirect):
+            final_redirect = "authentik_core:if-user"
         kwargs.update(
             {
                 PLAN_CONTEXT_SSO: True,

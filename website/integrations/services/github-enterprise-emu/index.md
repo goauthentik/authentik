@@ -25,26 +25,45 @@ The following placeholders are used in this guide:
 - `GitHub Users` is an authentik group used for holding GitHub users.
 - `GitHub Admins` is an authentik group used for indicating GitHub administrators.
 
-Note that in order to use the EMU Enterprise, you _must_ set up both SAML and SCIM.
-
-First, create the two groups, in authentik, go to _Groups_, click _Create_ and put in `GitHub Users`, or your chosen user group name. Repeat this step with your Admin group as well.
-
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## SAML Provider
+## authentik configuration
 
-Create a SAML provider with the following parameters:
+To support the integration of GitHub Enterprise Cloud EMU with authentik, you need to create an application/provider pair in authentik.
 
-- ACS URL: `https://github.com/enterprises/foo/saml/consume`
-- Audience: `https://github.com/enterprises/foo`
-- Issuer: `https://github.com/enterprises/foo`
-- Binding: `Post`
+:::note
+In order to use GitHub Enterprise Cloud EMU, SCIM must also be set up.
+:::
 
-Under _Advanced protocol settings_, set a certificate for _Signing Certificate_. Also set your _NameID Property Mapping_ to the _Email_ field. GitHub will create a username for your EMU users based on the SAML NameID, this NameID must also match the SCIM _userName_ attribute. This is covered later.
+:::note
+GitHub will create usenames for your EMU users based on the SAML `NameID` property which must also match SCIM's `_userName_` attribute.
+:::note
 
-Once the provider is created, it is advised to download the signing certificate as you will need it later.
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://github.com/enterprises/foo/saml/consume</kbd>.
+    - Set the **Audience** to <kbd>https://github.com/enterprises/foo</kbd>.
+    - Set the **Issuer** to <kbd>https://github.com/enterprises/foo</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
+    - Under **NameID Property Mapping**, set **NameID Property Mapping** to be based on the `Email` field.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+**Create the users and administrator groups**
+
+In the authentik Admin Interface, navigate to **Directory** > **Groups** and click **Create**. Set the group's name, any other desired settings, and click **Create**. Repeat this step twice: Once for the users group and once for the administrator group.
+
+After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
 
 ## GitHub SAML Configuration
 
