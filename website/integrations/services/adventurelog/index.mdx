@@ -48,26 +48,27 @@ To support the integration of AdventureLog with authentik, you need to create an
 `localhost` is unlikely to be a valid `server_url` because it refers to the server hosting AdventureLog, not authentik. Instead, use the IP address of the server running authentik or a domain name if available.
 :::
 
-1. Log in to your AdventureLog installation as an administrator and launch the Admin Panel. To do so, click your **user avatar** in the navigation bar, select **Settings**, then click **Launch Admin Panel**. Alternatively, visit <kbd>https://<em>adventurelog.company</em>/admin</kbd>.
-2. Scroll down to **Social Accounts** and click **Add**. Fill in the following fields:
+1.  Log in to your AdventureLog installation as an administrator and launch the Admin Panel. To do so, click your **user avatar** in the navigation bar, select **Settings**, then click **Launch Admin Panel**. Alternatively, visit <kbd>https://<em>adventurelog.company</em>/admin</kbd>.
+2.  Scroll down to **Social Accounts** and click **Add**. Fill in the following fields:
 
-    - **Provider**: OpenID Connect
-    - **Provider ID**: Enter the Client ID from authentik
-    - **Name**: `authentik`
-    - **Client ID**: Enter the Client ID from authentik
-    - **Secret Key**: Enter the Client Secret from authentik
-    - **Key**: Leave this line blank
-    - **Settings**:
+        - **Provider**: OpenID Connect
+        - **Provider ID**: Enter the Client ID from authentik
+        - **Name**: `authentik`
+        - **Client ID**: Enter the Client ID from authentik
+        - **Secret Key**: Enter the Client Secret from authentik
+        - **Key**: Leave this line blank
+        - **Settings**:
 
-    <IntegrationsMultilineCodeblock>
-        {`
-{
+        <IntegrationsMultilineCodeblock>
+            {`
+
+    {
     "server_url": "https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/"
-}
-`}
+    }
+    `}
     </IntegrationsMultilineCodeblock>
 
-    - **Sites**: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
+        - **Sites**: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
 
 ### Linking to Existing Account
 
