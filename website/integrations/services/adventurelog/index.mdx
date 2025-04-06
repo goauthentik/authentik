@@ -4,6 +4,8 @@ sidebar_label: AdventureLog
 support_level: community
 ---
 
+import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
+
 ## What is AdventureLog
 
 > AdventureLog is a self-hosted travel tracker and trip planner. AdventureLog is the ultimate travel companion for the modern-day explorer.
@@ -23,7 +25,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Adventure Log with authentik, you need to create an application/provider pair in authentik.
+To support the integration of AdventureLog with authentik, you need to create an application/provider pair in authentik.
 
 ### Create an application and provider in authentik
 
@@ -42,41 +44,30 @@ To support the integration of Adventure Log with authentik, you need to create a
 
 ## AdventureLog configuration
 
-AdventureLog documentation can be found here: https://adventurelog.app/docs/configuration/social_auth/authentik.html
-
-This configuration is done in the Admin Panel. Launch the panel by clicking your user avatar in the navbar, selecting **Settings**, and then clicking **Launch Admin Panel**. Make sure you are logged in as an administrator for this to work.
-
-Alternatively, navigate to `/admin` on your AdventureLog server.
-
-1. In the admin panel, scroll down to the **Social Accounts** section and click **Add** next to **Social applications**. Fill in the following fields:
-
-    - Provider: OpenID Connect
-    - Provider ID: authentik Client ID
-    - Name: authentik
-    - Client ID: authentik Client ID
-    - Secret Key: authentik Client Secret
-    - Key: _should be left blank_
-    - Settings: (make sure http/https is set correctly)
-
-    ```json
-    {
-        "server_url": "https://authentik.company/application/o/[YOUR_SLUG]/"
-    }
-    ```
-
-    - Sites: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
-
-:::warning
-`localhost` is most likely not a valid `server_url` for authentik in this instance because `localhost` is the server running AdventureLog, not authentik. You should use the IP address of the server running authentik or the domain name if you have one.
+:::info
+`localhost` is unlikely to be a valid `server_url` because it refers to the server hosting AdventureLog, not authentik. Instead, use the IP address of the server running authentik or a domain name if available.
 :::
 
-2. Save the configuration.
+1. Log in to your AdventureLog installation as an administrator and launch the Admin Panel. To do so, click your **user avatar** in the navigation bar, select **Settings**, then click **Launch Admin Panel**. Alternatively, visit <kbd>https://<em>adventurelog.company</em>/admin</kbd>.
+2. Scroll down to **Social Accounts** and click **Add**. Fill in the following fields:
 
-Ensure that the authentik server is running and accessible by AdventureLog. Users should now be able to log in to AdventureLog using their authentik account.
+    - **Provider**: OpenID Connect
+    - **Provider ID**: Enter the Client ID from authentik
+    - **Name**: `authentik`
+    - **Client ID**: Enter the Client ID from authentik
+    - **Secret Key**: Enter the Client Secret from authentik
+    - **Key**: Leave this line blank
+    - **Settings**:
 
-## Configuration validation
+    <IntegrationsMultilineCodeblock>
+        {`
+{
+    "server_url": "https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/"
+}
+`}
+    </IntegrationsMultilineCodeblock>
 
-To validate the configuration, either link to an existing account as described below or naviage to the AdventureLog login page and click the **authentik** button to log in. You should be redirected to the authentik login page. After logging in, you should be redirected back to AdventureLog.
+    - **Sites**: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
 
 ### Linking to Existing Account
 
@@ -91,3 +82,11 @@ Ensure the `https://adventurelog.company/accounts` path is routed to the backend
 ### authentik - No Permission
 
 Launch your authentik dashboard as an admin and find the AdventureLog app. Click **More details** then **Edit**. In the admin interface, click **Test** under **Check Access**. If you get a 403 error, you need to grant the user the correct permissions. This can be done by going to the user's profile and adding the correct permissions.
+
+## Ressources
+
+- [AdventureLog's official documentation](https://adventurelog.app/docs/configuration/social_auth/authentik.html)
+
+## Configuration verification
+
+To confirm authentik is correctly integrated with AdventureLog, log out and attempt to log back in using OpenID Connect by clicking the **authentik** button on the AdventureLog login page.

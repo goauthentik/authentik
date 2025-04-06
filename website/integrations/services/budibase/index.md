@@ -54,6 +54,6 @@ From the main page of your Budibase installation, add the following values under
 
 - [Budibase official documentation on OpenID Connect](https://docs.budibase.com/docs/openid-connect)
 
-## Configuration validation
+## Configuration verification
 
 To confirm that authentik is properly configured with Budibase, visit your Budibase installation, and click **Sign in with authentik**.
