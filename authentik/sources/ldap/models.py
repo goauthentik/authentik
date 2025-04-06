@@ -11,7 +11,7 @@ import pglock
 from django.db import connection, models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
+from ldap3 import ALL, NONE, RANDOM, ANONYMOUS, SASL, EXTERNAL, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
@@ -47,6 +47,11 @@ class MultiURLValidator(DomainlessURLValidator):
             super().__call__(value)
 
 
+class AuthenticationChoices(models.TextChoices):
+    DEFAULT = ANONYMOUS
+    SASL = SASL
+
+
 class LDAPSource(Source):
     """Federate LDAP Directory with authentik, or create new accounts in LDAP."""
 
@@ -77,6 +82,11 @@ class LDAPSource(Source):
     bind_password = models.TextField(blank=True)
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
     sni = models.BooleanField(default=False, verbose_name=_("Use Server URI for SNI verification"))
+    auth_method = models.TextField(
+        choices=AuthenticationChoices,
+        default=AuthenticationChoices.SASL,
+        verbose_name=_("The authentication method to use with the LDAP bind.")
+    )
 
     base_dn = models.TextField(verbose_name=_("Base DN"))
     additional_user_dn = models.TextField(
@@ -207,10 +217,15 @@ class LDAPSource(Source):
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}
         connection_kwargs = connection_kwargs or {}
-        if self.bind_cn is not None:
+
+        if self.auth_method != SASL:
             connection_kwargs.setdefault("user", self.bind_cn)
-        if self.bind_password is not None:
             connection_kwargs.setdefault("password", self.bind_password)
+        else:
+            connection_kwargs.setdefault("authentication", SASL)
+            connection_kwargs.setdefault("sasl_credentials", EXTERNAL)
+            connection_kwargs.setdefault("sasl_mechanism", EXTERNAL)
+
         conn = Connection(
             server or self.server(**server_kwargs),
             raise_exceptions=True,
