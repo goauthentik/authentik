@@ -15,7 +15,6 @@ from authentik.sources.kerberos.models import (
 class UserKerberosSourceConnectionSerializer(UserSourceConnectionSerializer):
     class Meta(UserSourceConnectionSerializer.Meta):
         model = UserKerberosSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
 class UserKerberosSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
