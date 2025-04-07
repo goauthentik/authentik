@@ -127,7 +127,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
+        return Table.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {

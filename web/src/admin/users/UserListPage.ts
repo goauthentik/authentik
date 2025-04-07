@@ -118,7 +118,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
+        return [...TablePage.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
     }
 
     constructor() {
