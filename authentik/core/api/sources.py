@@ -179,10 +179,13 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "user",
             "source",
             "source_obj",
+            "identifier",
             "created",
+            "last_updated",
         ]
         extra_kwargs = {
             "created": {"read_only": True},
+            "last_updated": {"read_only": True},
         }
 
 

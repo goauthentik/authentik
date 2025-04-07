@@ -12,7 +12,7 @@ from authentik.sources.oauth.models import GroupOAuthSourceConnection, UserOAuth
 class UserOAuthSourceConnectionSerializer(UserSourceConnectionSerializer):
     class Meta(UserSourceConnectionSerializer.Meta):
         model = UserOAuthSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier", "access_token"]
+        fields = UserSourceConnectionSerializer.Meta.fields + ["access_token"]
         extra_kwargs = {
             **UserSourceConnectionSerializer.Meta.extra_kwargs,
             "access_token": {"write_only": True},

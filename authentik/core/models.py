@@ -824,6 +824,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    identifier = models.TextField()
 
     objects = InheritanceManager()
 
@@ -837,6 +838,10 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
+        indexes = (
+            models.Index(fields=("identifier",)),
+            models.Index(fields=("source", "identifier")),
+        )
 
 
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):

@@ -12,7 +12,6 @@ from authentik.sources.saml.models import GroupSAMLSourceConnection, UserSAMLSou
 class UserSAMLSourceConnectionSerializer(UserSourceConnectionSerializer):
     class Meta(UserSourceConnectionSerializer.Meta):
         model = UserSAMLSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
 class UserSAMLSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):

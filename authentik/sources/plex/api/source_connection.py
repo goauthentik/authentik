@@ -12,10 +12,7 @@ from authentik.sources.plex.models import GroupPlexSourceConnection, UserPlexSou
 class UserPlexSourceConnectionSerializer(UserSourceConnectionSerializer):
     class Meta(UserSourceConnectionSerializer.Meta):
         model = UserPlexSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + [
-            "identifier",
-            "plex_token",
-        ]
+        fields = UserSourceConnectionSerializer.Meta.fields + ["plex_token"]
         extra_kwargs = {
             **UserSourceConnectionSerializer.Meta.extra_kwargs,
             "plex_token": {"write_only": True},
