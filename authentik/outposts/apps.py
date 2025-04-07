@@ -65,9 +65,12 @@ class AuthentikOutpostConfig(ManagedAppConfig):
 
     @ManagedAppConfig.reconcile_global
     def outpost_connection_discovery(self):
-        from authentik.outposts.tasks import outpost_connection_discovery
+        from authentik.tasks.schedules.models import Schedule
 
-        outpost_connection_discovery.send()
+        for schedule in Schedule.objects.filter(
+            actor_name__in=("authentik.outposts.tasks.outpost_connection_discovery",),
+        ):
+            schedule.send()
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:

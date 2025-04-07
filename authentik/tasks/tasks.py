@@ -5,5 +5,5 @@ from dramatiq import actor
 def test_actor():
     import time
 
-    time.sleep(5)
+    time.sleep(2)
     print("done sleeping")

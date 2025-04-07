@@ -43,9 +43,9 @@ export class ScheduleList extends Table<Schedule> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(msg("Schedule")),
-            new TableColumn(msg("Crontab")),
-            new TableColumn(msg("Next run")),
+            new TableColumn(msg("Schedule"), "actor_name"),
+            new TableColumn(msg("Crontab"), "crontab"),
+            new TableColumn(msg("Next run"), "next_run"),
             new TableColumn(msg("Actions")),
         ];
     }
