@@ -97,7 +97,7 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
 
 2. Copy the metadata file (e.g., `wazuh_authentik_meta.xml`) downloaded in the previous step to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
-3. Set ownership of the file to `wazuh-indexer` using this command:
+3. Change the ownership of the `wazuh_authentik_meta.xml` file to the `wazuh-indexer` user using the following command:
 
     ```bash
     chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
