@@ -92,7 +92,7 @@ This will set session duration at 540 minutes. Change the value to match your de
 1. Log in to Knocknoc and navigate to **Admin** > **Settings** > **SAML**
 2. Set the following configuration:
 
-    - **Metadata URL**: _download URL that was copied in the previous section._
+    - **Metadata URL**: **SAML Metadata URL** copied from the authentik provider
     - **Public URL**: <kbd>https://<em>knocknoc.company</em></kbd>
     - **Key file**: select a key file.
     - **Cert file**: select a certificate file.
