@@ -6,6 +6,7 @@ import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
 import { getRelativeTime } from "@goauthentik/common/utils";
@@ -37,14 +38,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import {
-    CoreApi,
-    CoreUsersListTypeEnum,
-    Group,
-    ResponseError,
-    SessionUser,
-    User,
-} from "@goauthentik/api";
+import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
 
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
@@ -319,14 +313,16 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                                                   description: rec.link,
                                                               });
                                                           })
-                                                          .catch((ex: ResponseError) => {
-                                                              ex.response.json().then(() => {
-                                                                  showMessage({
-                                                                      level: MessageLevel.error,
-                                                                      message: msg(
-                                                                          "No recovery flow is configured.",
-                                                                      ),
-                                                                  });
+                                                          .catch(async (error: unknown) => {
+                                                              const parsedError =
+                                                                  await parseAPIResponseError(
+                                                                      error,
+                                                                  );
+
+                                                              showMessage({
+                                                                  level: MessageLevel.error,
+                                                                  message:
+                                                                      pluckErrorDetail(parsedError),
                                                               });
                                                           });
                                                   }}
