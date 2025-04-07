@@ -2,10 +2,12 @@
 
 from typing import Any
 
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from drf_spectacular.extensions import OpenApiSerializerFieldExtension
 from drf_spectacular.plumbing import build_basic_type
 from drf_spectacular.types import OpenApiTypes
+from guardian.shortcuts import assign_perm
 from rest_framework.fields import (
     CharField,
     IntegerField,
@@ -20,6 +22,8 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+from authentik.rbac.models import InitialPermissions, InitialPermissionsMode
+
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
@@ -29,6 +33,26 @@ def is_dict(value: Any):
 
 
 class ModelSerializer(BaseModelSerializer):
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        user = self.context["request"].user
+        initial_permissions_list = InitialPermissions.objects.filter(
+            role__group__in=user.groups.all()
+        )
+
+        # Performance here should not be an issue, but if needed, there are many optimization routes
+        for initial_permissions in initial_permissions_list:
+            for permission in initial_permissions.permissions.all():
+                if permission.content_type != ContentType.objects.get_for_model(instance):
+                    continue
+                assign_to = (
+                    user
+                    if initial_permissions.mode == InitialPermissionsMode.USER
+                    else initial_permissions.role.group
+                )
+                assign_perm(permission, assign_to, instance)
+
+        return instance
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)
