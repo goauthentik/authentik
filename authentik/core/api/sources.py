@@ -202,7 +202,7 @@ class UserSourceConnectionViewSet(
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
     filterset_fields = ["user", "source__slug"]
-    search_fields = ["source__slug"]
+    search_fields = ["user__username", "source__slug", "identifier"]
     ordering = ["source__slug", "pk"]
     owner_field = "user"
 
@@ -221,9 +221,11 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "source_obj",
             "identifier",
             "created",
+            "last_updated",
         ]
         extra_kwargs = {
             "created": {"read_only": True},
+            "last_updated": {"read_only": True},
         }
 
 
@@ -240,6 +242,6 @@ class GroupSourceConnectionViewSet(
     queryset = GroupSourceConnection.objects.all()
     serializer_class = GroupSourceConnectionSerializer
     filterset_fields = ["group", "source__slug"]
-    search_fields = ["source__slug"]
+    search_fields = ["group__name", "source__slug", "identifier"]
     ordering = ["source__slug", "pk"]
     owner_field = "user"

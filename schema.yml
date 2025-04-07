@@ -44780,10 +44780,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -44911,10 +44916,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -44959,10 +44969,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -45035,10 +45050,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -45083,10 +45103,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
