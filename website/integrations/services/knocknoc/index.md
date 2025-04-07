@@ -71,7 +71,10 @@ This will set session duration at 540 minutes. Change the value to match your de
     - **Issuer URL**: <kbd>https://<em>authentik.company</em></kbd>
     - **Service Provider Binding**: `Post`
     - **Audience**: <kbd>https://<em>kocknoc.company</em>/api/saml/metadata</kbd>
-    - **Property Mappings**: select the property mappings that you created in the previous section and `Authentik default SAML Mapping: Username` e.g.
+
+     **Advanced protocol settings**
+
+    - **Property Mappings**: select each of the property mappings that you created in the previous section, as well as `Authentik default SAML Mapping: Username`:
         - `SAML to Knocknoc realName`
         - `SAML to Knocknoc groups`
         - `SAML to Knocknoc session duration`
