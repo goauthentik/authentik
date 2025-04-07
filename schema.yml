@@ -30293,7 +30293,7 @@ paths:
   /sources/user_connections/kerberos/:
     get:
       operationId: sources_user_connections_kerberos_list
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - name: ordering
         required: false
@@ -30352,7 +30352,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_kerberos_create
-      description: Source Viewset
+      description: User-source connection Viewset
       tags:
       - sources
       requestBody:
@@ -30385,7 +30385,7 @@ paths:
   /sources/user_connections/kerberos/{id}/:
     get:
       operationId: sources_user_connections_kerberos_retrieve
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30419,7 +30419,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_kerberos_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30459,7 +30459,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_kerberos_partial_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30498,7 +30498,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_kerberos_destroy
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30566,7 +30566,7 @@ paths:
   /sources/user_connections/oauth/:
     get:
       operationId: sources_user_connections_oauth_list
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - name: ordering
         required: false
@@ -30625,7 +30625,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_oauth_create
-      description: Source Viewset
+      description: User-source connection Viewset
       tags:
       - sources
       requestBody:
@@ -30658,7 +30658,7 @@ paths:
   /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30691,7 +30691,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_oauth_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30730,7 +30730,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_oauth_partial_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30768,7 +30768,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_oauth_destroy
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30834,7 +30834,7 @@ paths:
   /sources/user_connections/plex/:
     get:
       operationId: sources_user_connections_plex_list
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       parameters:
       - name: ordering
         required: false
@@ -30893,7 +30893,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_plex_create
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       tags:
       - sources
       requestBody:
@@ -30926,7 +30926,7 @@ paths:
   /sources/user_connections/plex/{id}/:
     get:
       operationId: sources_user_connections_plex_retrieve
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30959,7 +30959,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_plex_update
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -30998,7 +30998,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_plex_partial_update
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -31036,7 +31036,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_plex_destroy
-      description: Plex Source connection Serializer
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -31102,7 +31102,7 @@ paths:
   /sources/user_connections/saml/:
     get:
       operationId: sources_user_connections_saml_list
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - name: ordering
         required: false
@@ -31161,7 +31161,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_saml_create
-      description: Source Viewset
+      description: User-source connection Viewset
       tags:
       - sources
       requestBody:
@@ -31194,7 +31194,7 @@ paths:
   /sources/user_connections/saml/{id}/:
     get:
       operationId: sources_user_connections_saml_retrieve
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -31227,7 +31227,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_saml_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -31266,7 +31266,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_saml_partial_update
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -31304,7 +31304,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_saml_destroy
-      description: Source Viewset
+      description: User-source connection Viewset
       parameters:
       - in: path
         name: id
@@ -44758,7 +44758,7 @@ components:
       - users_obj
     GroupKerberosSourceConnection:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         pk:
           type: integer
@@ -44789,7 +44789,7 @@ components:
       - source_obj
     GroupKerberosSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -44889,7 +44889,7 @@ components:
       - username
     GroupOAuthSourceConnection:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         pk:
           type: integer
@@ -44920,7 +44920,7 @@ components:
       - source_obj
     GroupOAuthSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -44937,7 +44937,7 @@ components:
       - source
     GroupPlexSourceConnection:
       type: object
-      description: Plex Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         pk:
           type: integer
@@ -44968,7 +44968,7 @@ components:
       - source_obj
     GroupPlexSourceConnectionRequest:
       type: object
-      description: Plex Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -45013,7 +45013,7 @@ components:
       - name
     GroupSAMLSourceConnection:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         pk:
           type: integer
@@ -45044,7 +45044,7 @@ components:
       - source_obj
     GroupSAMLSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -51110,7 +51110,7 @@ components:
             the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -51123,7 +51123,7 @@ components:
           minLength: 1
     PatchedGroupOAuthSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -51136,7 +51136,7 @@ components:
           minLength: 1
     PatchedGroupPlexSourceConnectionRequest:
       type: object
-      description: Plex Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -51175,7 +51175,7 @@ components:
             format: uuid
     PatchedGroupSAMLSourceConnectionRequest:
       type: object
-      description: OAuth Group-Source connection Serializer
+      description: Group Source Connection
       properties:
         group:
           type: string
@@ -53161,7 +53161,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
-      description: Kerberos Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -53218,7 +53218,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserOAuthSourceConnectionRequest:
       type: object
-      description: OAuth Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -53235,7 +53235,7 @@ components:
           nullable: true
     PatchedUserPlexSourceConnectionRequest:
       type: object
-      description: Plex Source connection Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -53289,7 +53289,7 @@ components:
           $ref: '#/components/schemas/UserTypeEnum'
     PatchedUserSAMLSourceConnectionRequest:
       type: object
-      description: SAML Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -58395,7 +58395,7 @@ components:
       - name
     UserKerberosSourceConnection:
       type: object
-      description: Kerberos Source Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -58425,7 +58425,7 @@ components:
       - user
     UserKerberosSourceConnectionRequest:
       type: object
-      description: Kerberos Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -58652,7 +58652,7 @@ components:
       - logins_failed
     UserOAuthSourceConnection:
       type: object
-      description: OAuth Source Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -58683,7 +58683,7 @@ components:
       - user
     UserOAuthSourceConnectionRequest:
       type: object
-      description: OAuth Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -58751,7 +58751,7 @@ components:
       - paths
     UserPlexSourceConnection:
       type: object
-      description: Plex Source connection Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -58781,7 +58781,7 @@ components:
       - user
     UserPlexSourceConnectionRequest:
       type: object
-      description: Plex Source connection Serializer
+      description: User source connection
       properties:
         user:
           type: integer
@@ -58843,7 +58843,7 @@ components:
       - username
     UserSAMLSourceConnection:
       type: object
-      description: SAML Source Serializer
+      description: User source connection
       properties:
         pk:
           type: integer
@@ -58873,7 +58873,7 @@ components:
       - user
     UserSAMLSourceConnectionRequest:
       type: object
-      description: SAML Source Serializer
+      description: User source connection
       properties:
         user:
           type: integer
