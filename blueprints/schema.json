@@ -8231,7 +8231,6 @@
                 },
                 "identifier": {
                     "type": "string",
-                    "maxLength": 255,
                     "minLength": 1,
                     "title": "Identifier"
                 },

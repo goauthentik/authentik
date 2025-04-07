@@ -53228,7 +53228,6 @@ components:
         identifier:
           type: string
           minLength: 1
-          maxLength: 255
         access_token:
           type: string
           writeOnly: true
@@ -53308,6 +53307,9 @@ components:
         source:
           type: string
           format: uuid
+        identifier:
+          type: string
+          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -58410,15 +58412,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        identifier:
+        last_updated:
           type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -58667,16 +58674,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        identifier:
+        last_updated:
           type: string
-          maxLength: 255
+          format: date-time
+          readOnly: true
       required:
       - created
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -58693,7 +58704,6 @@ components:
         identifier:
           type: string
           minLength: 1
-          maxLength: 255
         access_token:
           type: string
           writeOnly: true
@@ -58766,15 +58776,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        identifier:
+        last_updated:
           type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -58858,15 +58873,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        identifier:
+        last_updated:
           type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -59037,12 +59057,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
           type: string
           format: date-time
           readOnly: true
       required:
       - created
+      - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -59056,7 +59084,11 @@ components:
         source:
           type: string
           format: uuid
+        identifier:
+          type: string
+          minLength: 1
       required:
+      - identifier
       - source
       - user
     UserTypeEnum:
