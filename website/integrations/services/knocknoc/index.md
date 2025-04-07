@@ -89,7 +89,7 @@ This will set session duration at 540 minutes. Change the value to match your de
 
 ## Knocknoc configuration
 
-1. Login to Knocknoc and navigate to **Admin** -> **Settings** -> **SAML**
+1. Log in to Knocknoc and navigate to **Admin** > **Settings** > **SAML**
 2. Set the following configuration:
 
     - **Metadata URL**: _download URL that was copied in the previous section._
