@@ -87,7 +87,7 @@ This will set session duration at 540 minutes. Change the value to match your de
 
 ### Get the metadata URL of the Knocknoc provider
 
-1. Navigate to **Applications** -> **Providers** and click on the name of thew Knocknoc provider (e.g. `Provider for Knocknoc`)
+1. Navigate to **Applications** -> **Providers** and click on the name of the Knocknoc provider (e.g. `Provider for Knocknoc`).
 2. Navigate to the **Related objects** section and click on **Copy download URL**. This URL will be needed in the next section.
 
 ## Knocknoc configuration
