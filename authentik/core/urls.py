@@ -13,7 +13,11 @@ from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
-from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
+from authentik.core.api.sources import (
+    GroupSourceConnectionViewSet,
+    SourceViewSet,
+    UserSourceConnectionViewSet,
+)
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
@@ -81,6 +85,7 @@ api_urlpatterns = [
     ("core/tokens", TokenViewSet),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
+    ("sources/group_connections/all", GroupSourceConnectionViewSet),
     ("providers/all", ProviderViewSet),
     ("propertymappings/all", PropertyMappingViewSet),
     ("authenticators/all", DeviceViewSet, "device"),
