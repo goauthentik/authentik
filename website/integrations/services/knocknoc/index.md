@@ -106,4 +106,4 @@ Key file and Cert file are currently required fields in Knocknoc. You can genera
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Knocknoc, log out and log back in using authentik credentials.
+To confirm that authentik is properly configured with Knocknoc, log out and log back in using authentik.
