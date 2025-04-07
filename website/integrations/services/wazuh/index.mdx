@@ -95,7 +95,7 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     openssl rand -hex 32
     ```
 
-2. Copy the metadata file (e.g. `wazuh_authentik_meta.xml`) that was downloaded in the previous section to the `/etc/wazuh-indexer/opensearch-security/` directory of your Wazuh Indexer server.
+2. Copy the metadata file (e.g., `wazuh_authentik_meta.xml`) downloaded in the previous step to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
 3. Set ownership of the file to `wazuh-indexer` using this command:
 
