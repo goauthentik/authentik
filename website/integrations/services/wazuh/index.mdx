@@ -41,24 +41,22 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 ### Create a property mapping in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Customization** -> **Property Mappings** and click **Create** to create a property mapping.
-3. **Configure the property mapping**:
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
 
-    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
-    - **Name**: select a name for the property mapping (e.g. `Wazuh Property Mapping`).
-    - **SAML Attribute Name**: `Roles`
+    - **Name**: Choose a descriptive name
+    - **SAML Attribute Name**: <kbd>Roles</kbd>
+    - **Friendly Name**: Leave blank
     - **Expression**:
 
-        ```python
-        if ak_is_group_member(request.user, name="wazuh-administrators"):
-        yield "wazuh-admin"
-        ```
+<IntegrationsMultilineCodeblock>
+    {`
+if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
+    yield "wazuh-admin"
+`}
+</IntegrationsMultilineCodeblock>
+;
 
-    :::note
-    Ensure that `name="wazuh-administrators"` matches the group name that you created in the previous section.
-    :::
-
-3) Click **Finish**.
+3. Click **Finish**.
 
 ### Create an application and provider in authentik
 
@@ -66,18 +64,14 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name (e.g., `Wazuh`), an optional group for the type of application, the policy engine mode, and optional UI settings.
-
 - **Choose a Provider type**: Select **SAML Provider** as the provider type.
-
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-
     - **ACS URL**: <kbd>https://<em>wazuh-dashboard.company</em>/\_opendistro/\_security/saml/acs</kbd>
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
     - **Property mappings**: add the property mapping created in previous section (e.g. `Wazuh Property Mapping`).
     - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
-
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -85,13 +79,15 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** -> **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
-3. Under **Related objects** -> **Metadata**, click on **Download**.
-
-You will need this metadata file in the next section.
+3. Under **Related objects** -> **Metadata**, click on **Download**. This downloaded is your `SAML Metadata` file and it will be required in the next section.
 
 ## Wazuh configuration
 
 ### Wazuh Indexer SAML configuration
+
+:::note
+`wazuh_authentik_meta.xml` is used as a placeholder name for the `SAML Metadata` file. Ensure that the filename used in this section matches your `SAML Metadata` filename.
+:::
 
 1. For the next step, you will need an exchange key. To generate this key, use the following command:
 
@@ -107,44 +103,45 @@ You will need this metadata file in the next section.
     chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
     ```
 
-:::note
-Ensure that the filename matches the your metadata file.
-:::
+4. Copy the metadata file (e.g., `wazuh_authentik_meta.xml`) downloaded in the previous step to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
-4. Connect to your Wazuh Indexer server and edit the `/etc/wazuh-indexer/opensearch-security/config.yml` file to include the configuration in this example, specifically the `saml_auth_domain` section:
+import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
 
-    ```yaml
-    ---
-    authc:
-        basic_internal_auth_domain:
-            description: "Authenticate SAML against internal users database"
-            http_enabled: true
-            transport_enabled: true
-            order: 0
-            http_authenticator:
-                type: basic
-                challenge: false
-            authentication_backend:
-                type: intern
-        saml_auth_domain:
-            http_enabled: true
-            transport_enabled: false
-            order: 1
-            http_authenticator:
-                type: saml
-                challenge: true
-                config:
-                    idp:
-                        metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
-                        entity_id: "wazuh-saml"
-                    sp:
-                        entity_id: "wazuh-saml"
-                    kibana_url: "https://wazuh-dashboard.company/"
-                    roles_key: Roles
-                    exchange_key: "<exchange key generated in step 1>"
-            authentication_backend:
-                type: noop
-    ```
+<IntegrationsMultilineCodeblock>
+    {`
+---
+authc:
+    basic_internal_auth_domain:
+        description: "Authenticate SAML against internal users database"
+        http_enabled: true
+        transport_enabled: true
+        order: <em>0</em>
+        http_authenticator:
+            type: basic
+            challenge: <em>false</em>
+        authentication_backend:
+            type: intern
+    saml_auth_domain:
+        http_enabled: true
+        transport_enabled: false
+        order: 1
+        http_authenticator:
+            type: saml
+            challenge: true
+            config:
+                idp:
+                    metadata_file: "<em>/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml</em>"
+                    entity_id: "<em>wazuh-saml</em>"
+                sp:
+                    entity_id: "<em>wazuh-saml</em>"
+                kibana_url: "<em>https://wazuh-dashboard.company/</em>"
+                roles_key: Roles
+                exchange_key: "<em><exchange key generated in step 1></em>"
+        authentication_backend:
+            type: noop
+  `}
+</IntegrationsMultilineCodeblock>
+;
 
 :::note
 Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
@@ -166,18 +163,21 @@ The -h flag specifies the hostname or IP address of the Wazuh Indexer server.
 
 for example in the `all_access` section:
 
-    ```yaml
-    all_access:
-    reserved: true
-    hidden: false
-    backend_roles:
-        - "wazuh-admin"
-        - "admin"
-    hosts: []
-    users: []
-    and_backend_roles: []
-    description: "Maps admin to all_access"
-    ```
+<IntegrationsMultilineCodeblock>
+    {`
+all_access:
+reserved: true
+hidden: false
+backend_roles:
+    - "wazuh-admin"
+    - "admin"
+hosts: []
+users: []
+and_backend_roles: []
+description: "Maps admin to all_access"
+  `}
+</IntegrationsMultilineCodeblock>
+;
 
 7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`:
 
@@ -193,15 +193,18 @@ The -h flag specifies the hostname or IP address of the Wazuh Indexer server.
 
 1. On the Wazuh Dashboard server, check the value of `run_as` in the `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` configuration file:
 
-    ```yaml
-    hosts:
-        - default:
-              url: https://127.0.0.1
-              port: 55000
-              username: wazuh-wui
-              password: "<WAZUH_WUI_PASSWORD>"
-              run_as: false
-    ```
+<IntegrationsMultilineCodeblock>
+    {`
+hosts:
+    - default:
+            url: https://127.0.0.1
+            port: 55000
+            username: wazuh-wui
+            password: "<WAZUH_WUI_PASSWORD>"
+            run_as: false
+  `}
+</IntegrationsMultilineCodeblock>
+;
 
 If `run_as` is set to `false`, proceed to step 4.
 
@@ -222,16 +225,19 @@ Click **Save role mapping**
 
 4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file:
 
-    ```yaml
-    opensearch_security.auth.type: "saml"
-    server.xsrf.allowlist:
-        [
-            "/_opendistro/_security/saml/acs",
-            "/_opendistro/_security/saml/logout",
-            "/_opendistro/_security/saml/acs/idpinitiated",
-        ]
-    opensearch_security.session.keepalive: false
-    ```
+<IntegrationsMultilineCodeblock>
+    {`
+opensearch_security.auth.type: "saml"
+server.xsrf.allowlist:
+    [
+        "/_opendistro/_security/saml/acs",
+        "/_opendistro/_security/saml/logout",
+        "/_opendistro/_security/saml/acs/idpinitiated",
+    ]
+opensearch_security.session.keepalive: false
+  `}
+</IntegrationsMultilineCodeblock>
+;
 
 5. Restart the Wazuh dashboard service using this command:
 
