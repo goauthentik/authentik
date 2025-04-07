@@ -45374,10 +45374,15 @@ components:
           type: string
           format: date-time
           readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - group
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj
@@ -59128,15 +59133,20 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
+        identifier:
+          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        identifier:
+        last_updated:
           type: string
+          format: date-time
+          readOnly: true
       required:
       - created
       - identifier
+      - last_updated
       - pk
       - source
       - source_obj

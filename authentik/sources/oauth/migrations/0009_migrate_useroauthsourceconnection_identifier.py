@@ -3,7 +3,9 @@ from django.db import migrations
 
 def migrate_identifier(apps, schema_editor):
     db_alias = schema_editor.connection.alias
-    UserOAuthSourceConnection = apps.get_model("authentik_sources_oauth", "UserOAuthSourceConnection")
+    UserOAuthSourceConnection = apps.get_model(
+        "authentik_sources_oauth", "UserOAuthSourceConnection"
+    )
 
     for connection in UserOAuthSourceConnection.objects.using(db_alias).all():
         connection.new_identifier = connection.identifier
