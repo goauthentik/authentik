@@ -3,7 +3,9 @@ from django.db import migrations
 
 def migrate_identifier(apps, schema_editor):
     db_alias = schema_editor.connection.alias
-    UserKerberosSourceConnection = apps.get_model("authentik_sources_kerberos", "UserKerberosSourceConnection")
+    UserKerberosSourceConnection = apps.get_model(
+        "authentik_sources_kerberos", "UserKerberosSourceConnection"
+    )
 
     for connection in UserKerberosSourceConnection.objects.using(db_alias).all():
         connection.new_identifier = connection.identifier
