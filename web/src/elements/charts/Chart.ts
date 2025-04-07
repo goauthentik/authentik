@@ -4,7 +4,7 @@ import {
     parseAPIResponseError,
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -176,7 +176,7 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
-        return getRelativeTime(new Date(valueStamp.value));
+        return formatElapsedTime(new Date(valueStamp.value));
     }
 
     getOptions(): ChartOptions {

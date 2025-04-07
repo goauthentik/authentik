@@ -10,9 +10,9 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
@@ -244,7 +244,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
                       <small>${item.lastLogin.toLocaleString()}</small>`
                 : msg("-")}`,
             html`${userTypeToLabel(item.type)}`,
