@@ -68,7 +68,7 @@ This will set session duration at 540 minutes. Change the value to match your de
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
     - **ACS URL**: <kbd>https://<em>knocknoc.company</em>/api/saml/acs</kbd>
-    - **Issuer URL**: <kbd>https://<em>authentik.company</em></kbd>
+    - **Issuer**: <kbd>https://<em>authentik.company</em></kbd>
     - **Service Provider Binding**: `Post`
     - **Audience**: <kbd>https://<em>kocknoc.company</em>/api/saml/metadata</kbd>
 
