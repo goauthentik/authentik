@@ -6,8 +6,8 @@ from authentik.core.api.sources import (
     GroupSourceConnectionSerializer,
     GroupSourceConnectionViewSet,
     UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
 )
-from authentik.core.api.used_by import UsedByMixin
 from authentik.sources.kerberos.models import (
     GroupKerberosSourceConnection,
     UserKerberosSourceConnection,
@@ -22,15 +22,11 @@ class UserKerberosSourceConnectionSerializer(UserSourceConnectionSerializer):
         fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
-class UserKerberosSourceConnectionViewSet(UsedByMixin, ModelViewSet):
+class UserKerberosSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
     """Source Viewset"""
 
     queryset = UserKerberosSourceConnection.objects.all()
     serializer_class = UserKerberosSourceConnectionSerializer
-    filterset_fields = ["source__slug"]
-    search_fields = ["source__slug"]
-    ordering = ["source__slug"]
-    owner_field = "user"
 
 
 class GroupKerberosSourceConnectionSerializer(GroupSourceConnectionSerializer):
@@ -40,7 +36,7 @@ class GroupKerberosSourceConnectionSerializer(GroupSourceConnectionSerializer):
         model = GroupKerberosSourceConnection
 
 
-class GroupKerberosSourceConnectionViewSet(GroupSourceConnectionViewSet):
+class GroupKerberosSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
     """Group-source connection Viewset"""
 
     queryset = GroupKerberosSourceConnection.objects.all()

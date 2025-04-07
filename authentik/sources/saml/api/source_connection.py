@@ -33,7 +33,7 @@ class GroupSAMLSourceConnectionSerializer(GroupSourceConnectionSerializer):
         model = GroupSAMLSourceConnection
 
 
-class GroupSAMLSourceConnectionViewSet(GroupSourceConnectionViewSet):
+class GroupSAMLSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
     """Group-source connection Viewset"""
 
     queryset = GroupSAMLSourceConnection.objects.all()

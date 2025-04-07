@@ -25938,6 +25938,243 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/group_connections/all/:
+    get:
+      operationId: sources_group_connections_all_list
+      description: Group-source connection Viewset
+      parameters:
+      - in: query
+        name: group
+        schema:
+          type: string
+          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: source__slug
+        schema:
+          type: string
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGroupSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/all/{id}/:
+    get:
+      operationId: sources_group_connections_all_retrieve
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: sources_group_connections_all_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: sources_group_connections_all_partial_update
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedGroupSourceConnectionRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSourceConnection'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: sources_group_connections_all_destroy
+      description: Group-source connection Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /sources/group_connections/all/{id}/used_by/:
+    get:
+      operationId: sources_group_connections_all_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this group source connection.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/group_connections/kerberos/:
     get:
       operationId: sources_group_connections_kerberos_list
@@ -25986,6 +26223,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupKerberosSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_group_connections_kerberos_create
+      description: Group-source connection Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupKerberosSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupKerberosSourceConnection'
           description: ''
         '400':
           content:
@@ -26766,6 +27035,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupSAMLSourceConnectionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: sources_group_connections_saml_create
+      description: Group-source connection Viewset
+      tags:
+      - sources
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupSAMLSourceConnectionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GroupSAMLSourceConnection'
           description: ''
         '400':
           content:
@@ -30022,6 +30323,10 @@ paths:
         name: source__slug
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - sources
       security:
@@ -44754,6 +45059,54 @@ components:
       - group
       - identifier
       - source
+    GroupSourceConnection:
+      type: object
+      description: Group Source Connection
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        source_obj:
+          allOf:
+          - $ref: '#/components/schemas/Source'
+          readOnly: true
+        identifier:
+          type: string
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created
+      - group
+      - identifier
+      - pk
+      - source
+      - source_obj
+    GroupSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+      required:
+      - group
+      - identifier
+      - source
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -48365,6 +48718,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedGroupSourceConnectionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupSourceConnection'
+      required:
+      - pagination
+      - results
     PaginatedIdentificationStageList:
       type: object
       properties:
@@ -50811,6 +51176,19 @@ components:
     PatchedGroupSAMLSourceConnectionRequest:
       type: object
       description: OAuth Group-Source connection Serializer
+      properties:
+        group:
+          type: string
+          format: uuid
+        source:
+          type: string
+          format: uuid
+        identifier:
+          type: string
+          minLength: 1
+    PatchedGroupSourceConnectionRequest:
+      type: object
+      description: Group Source Connection
       properties:
         group:
           type: string
