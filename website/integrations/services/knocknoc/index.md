@@ -38,7 +38,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
     ```
 
 3. Click **Finish** to save the new property mapping.
-4. Repeat steps 1-3 two more times, with the following configuration:
+4. Repeat steps 1-3 two more times, with the following configurations:
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
 
