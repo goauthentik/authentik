@@ -235,7 +235,6 @@ class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
 class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
     class Meta(UserSourceConnectionSerializer.Meta):
         model = UserLDAPSourceConnection
-        fields = UserSourceConnectionSerializer.Meta.fields + ["identifier"]
 
 
 class UserLDAPSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):

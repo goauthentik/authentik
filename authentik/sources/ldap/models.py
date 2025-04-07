@@ -313,8 +313,6 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
 
 class UserLDAPSourceConnection(UserSourceConnection):
-    identifier = models.TextField()
-
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.sources.ldap.api import (
