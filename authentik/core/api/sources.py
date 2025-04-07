@@ -239,4 +239,3 @@ class GroupSourceConnectionViewSet(
     filterset_fields = ["group", "source__slug"]
     search_fields = ["source__slug"]
     ordering = ["source__slug", "pk"]
-    owner_field = "user"
