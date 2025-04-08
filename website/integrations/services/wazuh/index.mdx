@@ -4,6 +4,8 @@ sidebar_label: Wazuh
 support_level: community
 ---
 
+import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
+
 ## What is Wazuh
 
 > Wazuh is a security platform that aims to safeguard data assets across multiple environments including on-site, virtualized, containerized, and cloud-based.
@@ -65,8 +67,9 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     - **ACS URL**: <kbd>https://<em>wazuh-dashboard.company</em>/\_opendistro/\_security/saml/acs</kbd>
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
-    - - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section.
-    - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
+    - Under **Advanced protocol settings**:
+        - **Property Mappings**: add the **Property Mapping** you created in the previous section.
+        - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -74,15 +77,17 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
 ### Download metadata file
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** -> **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
-3. Under **Related objects** -> **Metadata**, click on **Download**. This downloaded is your `SAML Metadata` file and it will be required in the next section.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
+3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded is your `SAML Metadata` file and it will be required in the next section.
 
 ## Wazuh configuration
+
+To support the integration of authentik with Wazuh, you will need to configure SAML authentication on the Wazuh Indexer server and create role mappings on the Wazuh Dashboard server.
 
 ### Wazuh Indexer SAML configuration
 
 :::note
-`wazuh_authentik_meta.xml` is used as a placeholder name for the `SAML Metadata` file. Ensure that the filename used in this section matches your `SAML Metadata` filename.
+The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metadata file. Ensure that the filename used in this context matches the name of your SAML Metadata file.
 :::
 
 1. For the next step, you will need an exchange key. To generate this key, use the following command:
@@ -91,7 +96,7 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     openssl rand -hex 32
     ```
 
-2. Copy the metadata file (e.g., `wazuh_authentik_meta.xml`) downloaded in the previous step to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
+2. Copy the downloaded metadata file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
 3. Change the ownership of the `wazuh_authentik_meta.xml` file to the `wazuh-indexer` user using the following command:
 
@@ -99,9 +104,9 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
     ```
 
-4. Copy the metadata file (e.g., `wazuh_authentik_meta.xml`) downloaded in the previous step to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
+4. Edit the `/etc/wazuh-indexer/opensearch-security/config.yml` on your Wazuh Indexer server.
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
+Add a `saml_auth_domain` section after the `basic_internal_auth_domain` section. For example:
 
 <IntegrationsMultilineCodeblock>
     {`
@@ -111,10 +116,10 @@ authc:
         description: "Authenticate SAML against internal users database"
         http_enabled: true
         transport_enabled: true
-        order: <em>0</em>
+        order: 0
         http_authenticator:
             type: basic
-            challenge: <em>false</em>
+            challenge: false
         authentication_backend:
             type: intern
     saml_auth_domain:
@@ -126,11 +131,11 @@ authc:
             challenge: true
             config:
                 idp:
-                    metadata_file: "<em>/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml</em>"
-                    entity_id: "<em>wazuh-saml</em>"
+                    metadata_file: "/etc/wazuh-indexer/opensearch-security/<em>wazuh_authentik_meta.xml</em>"
+                    entity_id: "wazuh-saml"
                 sp:
-                    entity_id: "<em>wazuh-saml</em>"
-                kibana_url: "<em>https://wazuh-dashboard.company/</em>"
+                    entity_id: "wazuh-saml"
+                kibana_url: "https://<em>wazuh-dashboard.company/</em>"
                 roles_key: Roles
                 exchange_key: "<em><exchange key generated in step 1></em>"
         authentication_backend:
@@ -148,12 +153,8 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file:
 
     ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <kbd><em>wazuh-indexer.company</em></kbd> -nhnv
     ```
-
-:::note
-The -h flag specifies the hostname or IP address of the Wazuh Indexer server.
-:::
 
 6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section.
 
@@ -165,7 +166,7 @@ all_access:
 reserved: true
 hidden: false
 backend_roles:
-    - "wazuh-admin"
+    - <em>"wazuh-admin"</em>
     - "admin"
 hosts: []
 users: []
@@ -178,12 +179,8 @@ description: "Maps admin to all_access"
 7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`:
 
     ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <kbd><em>wazuh-indexer.company</em></kbd> -nhnv
     ```
-
-:::note
-The -h flag specifies the hostname or IP address of the Wazuh Indexer server.
-:::
 
 ### Wazuh dashboard configuration
 
@@ -235,10 +232,10 @@ opensearch_security.session.keepalive: false
 </IntegrationsMultilineCodeblock>
 ;
 
-5. Restart the Wazuh dashboard service using this command:
+5. Restart the Wazuh dashboard service using the following command:
 
     ```bash
-    systemctl restart wazuh-dashboard
+    sudo systemctl restart wazuh-dashboard
     ```
 
 ## Configuration verification
