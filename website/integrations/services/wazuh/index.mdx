@@ -51,8 +51,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     yield "wazuh-admin"
 `}
-</IntegrationsMultilineCodeblock>
-;
+</IntegrationsMultilineCodeblock>;
 
 3. Click **Finish**.
 
@@ -141,8 +140,7 @@ authc:
         authentication_backend:
             type: noop
   `}
-</IntegrationsMultilineCodeblock>
-;
+</IntegrationsMultilineCodeblock>;
 
 :::note
 Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
@@ -152,9 +150,7 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
 5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file:
 
-    ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <kbd><em>wazuh-indexer.company</em></kbd> -nhnv
-    ```
+<kbd>export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <em>wazuh-indexer.company</em> -nhnv</kbd>
 
 6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section.
 
@@ -173,14 +169,11 @@ users: []
 and_backend_roles: []
 description: "Maps admin to all_access"
   `}
-</IntegrationsMultilineCodeblock>
-;
+</IntegrationsMultilineCodeblock>;
 
 7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`:
 
-    ```bash
-    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <kbd><em>wazuh-indexer.company</em></kbd> -nhnv
-    ```
+<kbd>export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <em>wazuh-indexer.company</em> -nhnv </kbd>
 
 ### Wazuh dashboard configuration
 
@@ -196,8 +189,7 @@ hosts:
             password: "<WAZUH_WUI_PASSWORD>"
             run_as: false
   `}
-</IntegrationsMultilineCodeblock>
-;
+</IntegrationsMultilineCodeblock>;
 
 If `run_as` is set to `false`, proceed to step 4.
 
@@ -229,8 +221,7 @@ server.xsrf.allowlist:
     ]
 opensearch_security.session.keepalive: false
   `}
-</IntegrationsMultilineCodeblock>
-;
+</IntegrationsMultilineCodeblock>;
 
 5. Restart the Wazuh dashboard service using the following command:
 
