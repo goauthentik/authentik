@@ -65,7 +65,7 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
     - **ACS URL**: <kbd>https://<em>wazuh-dashboard.company</em>/\_opendistro/\_security/saml/acs</kbd>
     - **Issuer**: `wazuh-saml`
     - **Service Provider Binding**: `Post`
-    - **Property mappings**: add the property mapping created in previous section (e.g. `Wazuh Property Mapping`).
+    - - Under **Advanced protocol settings**, add the **Property Mapping** you created in the previous section.
     - **NameID Property Mapping**: select a property mapping that will be used for Wazuh usernames (e.g. `authentik default SAML Mapping: Name` or `authentik default SAML Mapping: Email`)
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
