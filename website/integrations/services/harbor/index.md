@@ -50,7 +50,7 @@ To support the integration of Harbor with authentik, you need to create an appli
 To support the integration of authentik with Harbor, you need to configure OIDC authentication.
 
 1. Login to the Harbor dashboard as an admin.
-2. Navigate to **Configuration** and select the **Authentcation** tab.
+2. Navigate to **Configuration** and select the **Authentication** tab.
 3. In the **Auth Mode** dropdown, select **OIDC** and provide the following required configurations.
 
     - **OIDC Provider Name**: `authentik`
