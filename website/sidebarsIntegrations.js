@@ -140,7 +140,7 @@ module.exports = {
                         "services/frappe/index",
                         "services/freshrss/index",
                         "services/gravitee/index",
-                        "services/hoarder/index",
+                        "services/karakeep/index",
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
