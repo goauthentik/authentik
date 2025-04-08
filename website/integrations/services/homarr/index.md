@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `homarr.company` is the FQDN of the Hoarder installation.
+- `homarr.company` is the FQDN of the Homarr installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
