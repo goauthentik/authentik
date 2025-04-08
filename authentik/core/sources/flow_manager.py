@@ -36,7 +36,7 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
@@ -208,8 +208,6 @@ class SourceFlowManager:
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
             NEXT_ARG_NAME, "authentik_core:if-user"
         )
-        if not is_url_absolute(final_redirect):
-            final_redirect = "authentik_core:if-user"
         flow_context.update(
             {
                 # Since we authenticate the user by their token, they have no backend set
