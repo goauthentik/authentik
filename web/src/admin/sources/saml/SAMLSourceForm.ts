@@ -358,37 +358,37 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
+                                NameIdPolicyEnum._20nameidFormatpersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
+                                NameIdPolicyEnum._11nameidFormatemailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
+                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                value=${NameIdPolicyEnum._11nameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
+                                NameIdPolicyEnum._11nameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                value=${NameIdPolicyEnum._20nameidFormattransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
+                                NameIdPolicyEnum._20nameidFormattransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -432,20 +432,20 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "SHA1",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
+                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
                                 },
                                 {
                                     label: "SHA256",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
+                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
                                     default: true,
                                 },
                                 {
                                     label: "SHA384",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
+                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
                                 },
                                 {
                                     label: "SHA512",
-                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
+                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
                                 },
                             ]}
                             .value=${this.instance?.digestAlgorithm}
@@ -461,24 +461,24 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
+                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
                                 },
                                 {
                                     label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
                                     default: true,
                                 },
                                 {
                                     label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
                                 },
                                 {
                                     label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
+                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
                                 },
                                 {
                                     label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
+                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
                                 },
                             ]}
                             .value=${this.instance?.signatureAlgorithm}

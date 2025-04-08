@@ -72,9 +72,7 @@ export class BaseStage<
         }
         return this.host?.submit(object as unknown as Tout).then((successful) => {
             if (successful) {
-                this.onSubmitSuccess();
-            } else {
-                this.onSubmitFailure();
+                this.cleanup();
             }
             return successful;
         });
@@ -126,11 +124,7 @@ export class BaseStage<
         `;
     }
 
-    onSubmitSuccess(): void {
-        // Method that can be overridden by stages
-        return;
-    }
-    onSubmitFailure(): void {
+    cleanup(): void {
         // Method that can be overridden by stages
         return;
     }

@@ -16,6 +16,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -59,6 +60,7 @@ export class SCIMSourceViewPage extends AKElement {
             PFContent,
             PFCard,
             PFDescriptionList,
+            PFBanner,
         ];
     }
 
@@ -76,6 +78,12 @@ export class SCIMSourceViewPage extends AKElement {
         }
         return html`<ak-tabs>
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
+                <div slot="header" class="pf-c-banner pf-m-info">
+                    ${msg("SCIM Source is in preview.")}
+                    <a href="mailto:hello+feature/scim-source@goauthentik.io"
+                        >${msg("Send us feedback!")}</a
+                    >
+                </div>
                 <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
@@ -199,7 +207,7 @@ export class SCIMSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesScimScimsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesScimScimsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

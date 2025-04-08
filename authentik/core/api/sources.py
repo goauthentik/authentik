@@ -2,23 +2,26 @@
 
 from collections.abc import Iterable
 
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
 from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
 from authentik.core.types import UserSettingSerializer
+from authentik.lib.api import MultipleFieldLookupMixin
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -73,6 +76,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class SourceViewSet(
+    MultipleFieldLookupMixin,
     TypesMixin,
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
@@ -85,8 +89,9 @@ class SourceViewSet(
     queryset = Source.objects.none()
     serializer_class = SourceSerializer
     lookup_field = "slug"
+    lookup_fields = ["slug", "pbm_uuid"]
     search_fields = ["slug", "name"]
-    filterset_fields = ["slug", "name", "managed", "pbm_uuid"]
+    filterset_fields = ["slug", "name", "managed"]
 
     def get_queryset(self):  # pragma: no cover
         return Source.objects.select_subclasses()
@@ -155,17 +160,6 @@ class SourceViewSet(
             matching_sources.append(source_settings.validated_data)
         return Response(matching_sources)
 
-    def destroy(self, request: Request, *args, **kwargs):
-        """Prevent deletion of built-in sources"""
-        instance: Source = self.get_object()
-
-        if instance.managed == Source.MANAGED_INBUILT:
-            raise ValidationError(
-                {"detail": "Built-in sources cannot be deleted"}, code="protected"
-            )
-
-        return super().destroy(request, *args, **kwargs)
-
 
 class UserSourceConnectionSerializer(SourceSerializer):
     """User source connection"""
@@ -179,13 +173,10 @@ class UserSourceConnectionSerializer(SourceSerializer):
             "user",
             "source",
             "source_obj",
-            "identifier",
             "created",
-            "last_updated",
         ]
         extra_kwargs = {
             "created": {"read_only": True},
-            "last_updated": {"read_only": True},
         }
 
 
@@ -201,10 +192,11 @@ class UserSourceConnectionViewSet(
 
     queryset = UserSourceConnection.objects.all()
     serializer_class = UserSourceConnectionSerializer
+    permission_classes = [OwnerSuperuserPermissions]
     filterset_fields = ["user", "source__slug"]
-    search_fields = ["user__username", "source__slug", "identifier"]
+    search_fields = ["source__slug"]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug", "pk"]
-    owner_field = "user"
 
 
 class GroupSourceConnectionSerializer(SourceSerializer):
@@ -221,11 +213,9 @@ class GroupSourceConnectionSerializer(SourceSerializer):
             "source_obj",
             "identifier",
             "created",
-            "last_updated",
         ]
         extra_kwargs = {
             "created": {"read_only": True},
-            "last_updated": {"read_only": True},
         }
 
 
@@ -241,6 +231,8 @@ class GroupSourceConnectionViewSet(
 
     queryset = GroupSourceConnection.objects.all()
     serializer_class = GroupSourceConnectionSerializer
+    permission_classes = [OwnerSuperuserPermissions]
     filterset_fields = ["group", "source__slug"]
-    search_fields = ["group__name", "source__slug", "identifier"]
+    search_fields = ["source__slug"]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     ordering = ["source__slug", "pk"]

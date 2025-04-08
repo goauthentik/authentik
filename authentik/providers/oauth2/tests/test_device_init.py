@@ -49,9 +49,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                 kwargs={
                     "flow_slug": self.device_flow.slug,
                 },
-            )
-            + "?"
-            + urlencode({"inspector": "available"}),
+            ),
         )
 
     def test_device_init_post(self):
@@ -65,9 +63,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                 kwargs={
                     "flow_slug": self.device_flow.slug,
                 },
-            )
-            + "?"
-            + urlencode({"inspector": "available"}),
+            ),
         )
         res = self.api_client.get(
             reverse(
@@ -122,9 +118,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                     kwargs={
                         "flow_slug": provider.authorization_flow.slug,
                     },
-                )
-                + "?"
-                + urlencode({"inspector": "available"}),
+                ),
             },
         )
 
@@ -156,7 +150,7 @@ class TesOAuth2DeviceInit(OAuthTestCase):
                 },
             )
             + "?"
-            + urlencode({QS_KEY_CODE: token.user_code, "inspector": "available"}),
+            + urlencode({QS_KEY_CODE: token.user_code}),
         )
 
     def test_device_init_denied(self):

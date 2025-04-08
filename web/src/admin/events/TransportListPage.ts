@@ -94,7 +94,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikEventsNotificationtransport}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationtransport}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

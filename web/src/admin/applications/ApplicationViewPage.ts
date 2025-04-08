@@ -80,8 +80,8 @@ export class ApplicationViewPage extends AKElement {
             if (
                 app.providerObj &&
                 [
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
-                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider.toString(),
                 ].includes(app.providerObj.metaModelName)
             ) {
                 this.fetchIsMissingOutpost([app.provider || 0]);
@@ -340,7 +340,7 @@ export class ApplicationViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplication}
                 objectPk=${this.application.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

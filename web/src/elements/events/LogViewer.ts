@@ -1,4 +1,4 @@
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -102,7 +102,7 @@ export class LogViewer extends Table<LogEvent> {
 
     row(item: LogEvent): TemplateResult[] {
         return [
-            html`${formatElapsedTime(item.timestamp)}`,
+            html`${getRelativeTime(item.timestamp)}`,
             html`<ak-status-label
                 type=${this.statusForItem(item)}
                 bad-label=${item.logLevel}

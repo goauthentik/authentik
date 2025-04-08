@@ -44,6 +44,7 @@ export class AkApplicationWizardHint extends AKElement implements ShowHintContro
             PFLabel,
             css`
                 .pf-c-page__main-section {
+                    padding-top: 0;
                     padding-bottom: 0;
                 }
                 .ak-hint-text {

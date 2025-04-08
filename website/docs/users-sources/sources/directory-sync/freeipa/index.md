@@ -1,11 +1,12 @@
 ---
 title: FreeIPA
-support_level: community
 ---
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
 - `svc_authentik` is the name of the bind account.
 - `freeipa.company` is the Name of the domain.
@@ -42,7 +43,7 @@ Additional info: [22.1.2. Enabling Password Reset Without Prompting for a Passwo
 
 ## authentik Setup
 
-In authentik, create a new LDAP Source in Directory -> Federation & Social login.
+In authentik, create a new LDAP Source in Resources -> Sources.
 
 Use these settings:
 

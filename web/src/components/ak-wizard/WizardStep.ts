@@ -14,7 +14,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { wizardStepContext } from "./WizardContexts.js";
-import { NavigationEventInit, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
+import { NavigationUpdate, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
 import { WizardStepLabel, WizardStepState } from "./types";
 import { type ButtonKind, type NavigableButton, type WizardButton } from "./types";
 
@@ -139,7 +139,7 @@ export class WizardStep extends AKElement {
 
     // Override this to intercept 'next' and 'back' events, perform validation, and include enabling
     // before allowing navigation to continue.
-    public handleButton(button: WizardButton, details?: NavigationEventInit) {
+    public handleButton(button: WizardButton, details?: NavigationUpdate) {
         if (["close", "cancel"].includes(button.kind)) {
             this.dispatchEvent(new WizardCloseEvent());
             return;
@@ -153,7 +153,7 @@ export class WizardStep extends AKElement {
         throw new Error(`Incoherent button passed: ${JSON.stringify(button, null, 2)}`);
     }
 
-    public handleEnabling(details: NavigationEventInit) {
+    public handleEnabling(details: NavigationUpdate) {
         this.dispatchEvent(new WizardNavigationEvent(undefined, details));
     }
 
@@ -183,6 +183,13 @@ export class WizardStep extends AKElement {
     onWizardCloseEvent(ev: Event) {
         ev.stopPropagation();
         this.dispatchEvent(new WizardCloseEvent());
+    }
+
+    @bound
+    onSidebarNav(ev: PointerEvent) {
+        ev.stopPropagation();
+        const target = (ev.target as HTMLButtonElement).value;
+        this.dispatchEvent(new WizardNavigationEvent(target));
     }
 
     getButtonLabel(button: WizardButton) {
@@ -262,7 +269,7 @@ export class WizardStep extends AKElement {
                     <button
                         class=${classMap(buttonClasses)}
                         ?disabled=${!step.enabled}
-                        @click=${WizardNavigationEvent.toListener(this, step.id)}
+                        @click=${this.onSidebarNav}
                         value=${step.id}
                     >
                         ${step.label}

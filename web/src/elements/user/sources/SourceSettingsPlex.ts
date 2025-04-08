@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Spinner";
@@ -59,13 +58,10 @@ export class SourceSettingsPlex extends BaseUserSettings {
                                 message: msg("Successfully disconnected source"),
                             });
                         })
-                        .catch(async (error: unknown) => {
-                            const parsedError = await parseAPIResponseError(error);
+                        .catch((exc) => {
                             showMessage({
                                 level: MessageLevel.error,
-                                message: msg(
-                                    str`Failed to disconnected source: ${pluckErrorDetail(parsedError)}`,
-                                ),
+                                message: msg(str`Failed to disconnected source: ${exc}`),
                             });
                         })
                         .finally(() => {

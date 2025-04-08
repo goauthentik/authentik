@@ -1,8 +1,11 @@
 ---
 title: Integrate with Google Workspace
 sidebar_label: Google Workspace
-support_level: authentik
 ---
+
+# Google Workspace
+
+<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Google Workspace
 
@@ -12,14 +15,10 @@ support_level: authentik
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik installation.
+- `authentik.company` is the FQDN of the authentik install.
 - `example.com` is the default E-mail address configured in Google workspace.
-
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
 
 ## authentik Configuration
 

@@ -1,15 +1,16 @@
 ---
 title: Twitter
-support_level: authentik
 ---
+
+<span class="badge badge--primary">Support level: authentik</span>
 
 Allows users to authenticate using their twitter credentials
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik installation.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Twitter
 

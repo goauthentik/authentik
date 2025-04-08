@@ -2,14 +2,10 @@ import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
 import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
-import remarkGithub, { BuildUrlValues } from "remark-github";
-import { defaultBuildUrl } from "remark-github";
-import remarkDirective from "remark-directive";
-import remarkVersionDirective from "./remark/version-directive";
-import remarkPreviewDirective from "./remark/preview-directive";
-import remarkSupportDirective from "./remark/support-directive";
 
-const createConfig = (): Config => {
+module.exports = async function (): Promise<Config> {
+    const remarkGithub = (await import("remark-github")).default;
+    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     return {
         title: "authentik",
         tagline: "Bring all of your authentication into a unified platform.",
@@ -31,15 +27,10 @@ const createConfig = (): Config => {
                 },
                 items: [
                     {
-                        to: "https://goauthentik.io/features",
-                        label: "Features",
+                        to: "https://goauthentik.io/blog",
+                        label: "Blog",
                         position: "left",
                         target: "_self",
-                    },
-                    {
-                        to: "integrations/",
-                        label: "Integrations",
-                        position: "left",
                     },
                     {
                         to: "docs/",
@@ -47,14 +38,13 @@ const createConfig = (): Config => {
                         position: "left",
                     },
                     {
-                        to: "https://goauthentik.io/pricing/",
-                        label: "Pricing",
+                        to: "integrations/",
+                        label: "Integrations",
                         position: "left",
-                        target: "_self",
                     },
                     {
-                        to: "https://goauthentik.io/blog",
-                        label: "Blog",
+                        to: "https://goauthentik.io/pricing/",
+                        label: "Pricing",
                         position: "left",
                         target: "_self",
                     },
@@ -77,8 +67,7 @@ const createConfig = (): Config => {
                 copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
             },
             tableOfContents: {
-                minHeadingLevel: 2,
-                maxHeadingLevel: 3,
+                maxHeadingLevel: 5,
             },
             colorMode: {
                 respectPrefersColorScheme: true,
@@ -91,16 +80,7 @@ const createConfig = (): Config => {
             prism: {
                 theme: prismThemes.oneLight,
                 darkTheme: prismThemes.oneDark,
-                additionalLanguages: [
-                    // ---
-                    "apacheconf",
-                    "diff",
-                    "http",
-                    "json",
-                    "nginx",
-                    "python",
-                    "bash",
-                ],
+                additionalLanguages: ["python", "diff", "json", "http"],
             },
         },
         presets: [
@@ -110,24 +90,16 @@ const createConfig = (): Config => {
                     docs: {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
-                        showLastUpdateTime: false,
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
-
-                        beforeDefaultRemarkPlugins: [
-                            remarkDirective,
-                            remarkVersionDirective,
-                            remarkPreviewDirective,
-                            remarkSupportDirective,
-                        ],
                         remarkPlugins: [
                             [
                                 remarkGithub,
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: (values: BuildUrlValues) => {
+                                    buildUrl: function (values) {
                                         return values.type === "issue" ||
                                             values.type === "mention"
                                             ? defaultBuildUrl(values)
@@ -162,7 +134,7 @@ const createConfig = (): Config => {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yml",
+                            specPath: "static/schema.yaml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
@@ -176,11 +148,6 @@ const createConfig = (): Config => {
         markdown: {
             mermaid: true,
         },
-        future: {
-            experimental_faster: true,
-        },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };
 };
-
-module.exports = createConfig;

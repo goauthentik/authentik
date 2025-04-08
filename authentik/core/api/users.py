@@ -228,7 +228,6 @@ class UserSerializer(ModelSerializer):
             "name",
             "is_active",
             "last_login",
-            "date_joined",
             "is_superuser",
             "groups",
             "groups_obj",
@@ -239,12 +238,9 @@ class UserSerializer(ModelSerializer):
             "path",
             "type",
             "uuid",
-            "password_change_date",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
-            "date_joined": {"read_only": True},
-            "password_change_date": {"read_only": True},
         }
 
 
@@ -377,7 +373,7 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
-    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
+    is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -394,11 +390,6 @@ class UsersFilter(FilterSet):
         field_name="ak_groups",
         queryset=Group.objects.all().order_by("name"),
     )
-
-    def filter_is_superuser(self, queryset, name, value):
-        if value:
-            return queryset.filter(ak_groups__is_superuser=True).distinct()
-        return queryset.exclude(ak_groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -438,7 +429,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     queryset = User.objects.none()
     ordering = ["username"]
     serializer_class = UserSerializer
-    search_fields = ["username", "name", "is_active", "email", "uuid", "attributes"]
+    search_fields = ["username", "name", "is_active", "email", "uuid"]
     filterset_class = UsersFilter
 
     def get_queryset(self):
@@ -596,7 +587,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Set password for user"""
         user: User = self.get_object()
         try:
-            user.set_password(request.data.get("password"), request=request)
+            user.set_password(request.data.get("password"))
             user.save()
         except (ValidationError, IntegrityError) as exc:
             LOGGER.debug("Failed to set password", exc=exc)

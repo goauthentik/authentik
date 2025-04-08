@@ -70,7 +70,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 name="avatars"
                 label=${msg("Avatars")}
                 value="${ifDefined(this._settings?.avatars)}"
-                inputHint="code"
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -157,7 +156,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="eventRetention"
                 label=${msg("Event retention")}
-                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -165,8 +163,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     </p>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            html`When using an external logging solution for archiving, this can be
-                                set to <code>minutes=5</code>.`,
+                            'When using an external logging solution for archiving, this can be set to "minutes=5".',
                         )}
                     </p>
                     <p class="pf-c-form__helper-text">
@@ -221,7 +218,6 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}
-                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.defaultTokenDuration)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">

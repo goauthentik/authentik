@@ -1,20 +1,5 @@
-# authentik configuration
-#
-# https://docs.goauthentik.io/docs/install-config/configuration/
-#
-# To override the settings in this file, run the following command from the repository root:
-#
-# ```shell
-# make gen-dev-config
-# ```
-#
-# You may edit the generated file to override the configuration below.  
-#
-# When making modifying the default configuration file, 
-# ensure that the corresponding documentation is updated to match.
-#
-# @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
-
+# update website/docs/install-config/configuration/configuration.mdx
+# This is the default configuration file
 postgresql:
   host: localhost
   name: authentik
@@ -23,7 +8,6 @@ postgresql:
   password: "env://POSTGRES_PASSWORD"
   test:
     name: test_authentik
-  default_schema: public
   read_replicas: {}
   # For example
   # 0:
@@ -37,7 +21,6 @@ listen:
   listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
   listen_debug: 0.0.0.0:9900
-  listen_debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -60,8 +43,6 @@ redis:
 #   url: ""
 #   transport_options: ""
 
-http_timeout: 30
-
 cache:
   # url: ""
   timeout: 300
@@ -76,13 +57,11 @@ cache:
 #   transport_options: ""
 
 debug: false
-debugger: false
+remote_debug: false
 
 log_level: info
 
 session_storage: cache
-sessions:
-  unauthenticated_age: days=1
 
 error_reporting:
   enabled: false

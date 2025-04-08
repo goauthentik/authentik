@@ -59,9 +59,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.publicKey || "")}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -76,14 +74,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey"
                     >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
+                        <input type="text" value="" class="pf-c-form-control" required />
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
@@ -144,14 +135,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="jsUrl"
                     >
                         <input
-                            type="url"
+                            type="text"
                             value="${ifDefined(
                                 this.instance?.jsUrl ||
                                     "https://www.recaptcha.net/recaptcha/api.js",
                             )}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -166,14 +155,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="apiUrl"
                     >
                         <input
-                            type="url"
+                            type="text"
                             value="${ifDefined(
                                 this.instance?.apiUrl ||
                                     "https://www.recaptcha.net/recaptcha/api/siteverify",
                             )}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">

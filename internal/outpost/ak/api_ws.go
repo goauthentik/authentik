@@ -148,8 +148,7 @@ func (ac *APIController) startWSHandler() {
 			"outpost_type": ac.Server.Type(),
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
-		switch wsMsg.Instruction {
-		case WebsocketInstructionTriggerUpdate:
+		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
@@ -164,7 +163,7 @@ func (ac *APIController) startWSHandler() {
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
-		case WebsocketInstructionProviderSpecific:
+		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
 			for _, h := range ac.wsHandlers {
 				h(context.Background(), wsMsg.Args)
 			}

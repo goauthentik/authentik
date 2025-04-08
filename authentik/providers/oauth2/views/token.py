@@ -627,7 +627,6 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
-            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -711,7 +710,6 @@ class TokenView(View):
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
             "token_type": TOKEN_TYPE,
-            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -738,7 +736,6 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
-            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -770,7 +767,6 @@ class TokenView(View):
         response = {
             "access_token": access_token.token,
             "token_type": TOKEN_TYPE,
-            "scope": " ".join(access_token.scope),
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),

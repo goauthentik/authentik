@@ -1,6 +1,9 @@
 ---
 title: Configure Entra ID
-authentik_enterprise: true
+---
+
+<span class="badge badge--primary">Enterprise</span>
+
 ---
 
 The configuration of your Microsoft Entra ID environment must be completed before you [add the new provider](./add-entra-provider.md) in authentik.

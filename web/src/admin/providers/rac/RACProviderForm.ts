@@ -83,9 +83,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 <input
                     type="text"
                     value="${first(this.instance?.connectionExpiry, "hours=8")}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
+                    class="pf-c-form-control"
                     required
                 />
                 <p class="pf-c-form__helper-text">

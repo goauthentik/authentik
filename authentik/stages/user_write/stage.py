@@ -104,9 +104,7 @@ class UserWriteStageView(StageView):
         for key, value in data.items():
             setter_name = f"set_{key}"
             # Check if user has a setter for this key, like set_password
-            if key == "password":
-                user.set_password(value, request=self.request)
-            elif hasattr(user, setter_name):
+            if hasattr(user, setter_name):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)

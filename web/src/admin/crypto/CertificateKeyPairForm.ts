@@ -52,13 +52,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 ?writeOnly=${this.instance !== undefined}
                 ?required=${true}
             >
-                <textarea
-                    autocomplete="off"
-                    spellcheck="false"
-                    class="pf-c-form-control pf-m-monospace"
-                    placeholder="-----BEGIN CERTIFICATE-----"
-                    required
-                ></textarea>
+                <textarea class="pf-c-form-control" required></textarea>
                 <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -66,11 +60,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 ?writeOnly=${this.instance !== undefined}
                 label=${msg("Private Key")}
             >
-                <textarea
-                    autocomplete="off"
-                    class="pf-c-form-control pf-m-monospace"
-                    spellcheck="false"
-                ></textarea>
+                <textarea class="pf-c-form-control"></textarea>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Optional Private Key. If this is set, you can use this keypair for encryption.",

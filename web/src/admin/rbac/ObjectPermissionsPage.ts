@@ -35,10 +35,10 @@ export class ObjectPermissionPage extends AKElement {
 
     render() {
         return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
                 ? this.renderCoreUser()
                 : nothing}
-            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.RbacRole
                 ? this.renderRbacRole()
                 : nothing}
             <section

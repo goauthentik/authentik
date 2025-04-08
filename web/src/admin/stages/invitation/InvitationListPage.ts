@@ -141,7 +141,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesInvitationInvitation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

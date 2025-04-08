@@ -1,8 +1,11 @@
 ---
 title: Integrate with The Lounge
 sidebar_label: The Lounge
-support_level: community
 ---
+
+# The Lounge
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is The Lounge
 
@@ -17,19 +20,17 @@ If you made any changes, e.g. using a different name for the user, make sure to 
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik LDAP outpost installation.
+- `authentik.company` is the FQDN of the authentik install.
 - `dc=company,dc=com` the Base DN of the LDAP outpost. If you followed the LDAP provider guide this is: `dc=goauthentik,dc=io`
 - `ldap_bind_user` the username of the desired LDAP Bind User. If you followed the LDAP provider guide this is: `ldapservice`
 
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
+## LDAP Configuration
 
-## authentik configuration
+### authentik Configuration
 
-Follow [official documentation](../../../docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an **LDAP outpost**. If you already have an LDAP outpost configured, you can use it without additional setup. No further configuration in authentik is needed.
+Follow the [instructions](https://docs.goauthentik.io/docs/add-secure-apps/outposts/#create-and-configure-an-outpost) to create an LDAP outpost and configure access via the outpost. No additional authentik configuration needs to be configured.
 
 ### The Lounge configuration
 

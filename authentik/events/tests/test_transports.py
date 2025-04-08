@@ -60,25 +60,20 @@ class TestEventTransports(TestCase):
 
     def test_transport_webhook_mapping(self):
         """Test webhook transport with custom mapping"""
-        mapping_body = NotificationWebhookMapping.objects.create(
+        mapping = NotificationWebhookMapping.objects.create(
             name=generate_id(), expression="return request.user"
-        )
-        mapping_headers = NotificationWebhookMapping.objects.create(
-            name=generate_id(), expression="""return {"foo": "bar"}"""
         )
         transport: NotificationTransport = NotificationTransport.objects.create(
             name=generate_id(),
             mode=TransportMode.WEBHOOK,
             webhook_url="http://localhost:1234/test",
-            webhook_mapping_body=mapping_body,
-            webhook_mapping_headers=mapping_headers,
+            webhook_mapping=mapping,
         )
         with Mocker() as mocker:
             mocker.post("http://localhost:1234/test")
             transport.send(self.notification)
             self.assertEqual(mocker.call_count, 1)
             self.assertEqual(mocker.request_history[0].method, "POST")
-            self.assertEqual(mocker.request_history[0].headers["foo"], "bar")
             self.assertJSONEqual(
                 mocker.request_history[0].body.decode(),
                 {"email": self.user.email, "pk": self.user.pk, "username": self.user.username},

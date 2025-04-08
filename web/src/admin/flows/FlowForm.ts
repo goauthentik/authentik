@@ -99,9 +99,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
+                    class="pf-c-form-control"
                     required
                 />
                 <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>

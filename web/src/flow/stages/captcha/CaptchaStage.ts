@@ -9,7 +9,7 @@ import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { P, match } from "ts-pattern";
-import type * as _ from "turnstile-types";
+import type { TurnstileObject } from "turnstile-types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -23,6 +23,10 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
+
+interface TurnstileWindow extends Window {
+    turnstile: TurnstileObject;
+}
 
 type TokenHandler = (token: string) => void;
 
@@ -48,8 +52,6 @@ type CaptchaHandler = {
     name: string;
     interactive: () => Promise<unknown>;
     execute: () => Promise<unknown>;
-    refreshInteractive: () => Promise<unknown>;
-    refresh: () => Promise<unknown>;
 };
 
 // A container iframe for a hosted Captcha, with an event emitter to monitor when the Captcha forces
@@ -117,12 +119,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         this.host.submit({ component: "ak-stage-captcha", token });
     };
 
-    @property({ attribute: false })
-    refreshedAt = new Date();
-
-    @state()
-    activeHandler?: CaptchaHandler = undefined;
-
     @state()
     error?: string;
 
@@ -131,22 +127,16 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             name: "grecaptcha",
             interactive: this.renderGReCaptchaFrame,
             execute: this.executeGReCaptcha,
-            refreshInteractive: this.refreshGReCaptchaFrame,
-            refresh: this.refreshGReCaptcha,
         },
         {
             name: "hcaptcha",
             interactive: this.renderHCaptchaFrame,
             execute: this.executeHCaptcha,
-            refreshInteractive: this.refreshHCaptchaFrame,
-            refresh: this.refreshHCaptcha,
         },
         {
             name: "turnstile",
             interactive: this.renderTurnstileFrame,
             execute: this.executeTurnstile,
-            refreshInteractive: this.refreshTurnstileFrame,
-            refresh: this.refreshTurnstile,
         },
     ];
 
@@ -171,7 +161,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         super.disconnectedCallback();
     }
 
-    get captchaDocumentContainer(): HTMLDivElement {
+    get captchaDocumentContainer() {
         if (this._captchaDocumentContainer) {
             return this._captchaDocumentContainer;
         }
@@ -180,7 +170,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         return this._captchaDocumentContainer;
     }
 
-    get captchaFrame(): HTMLIFrameElement {
+    get captchaFrame() {
         if (this._captchaFrame) {
             return this._captchaFrame;
         }
@@ -240,15 +230,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         });
     }
 
-    async refreshGReCaptchaFrame() {
-        (this.captchaFrame.contentWindow as typeof window)?.grecaptcha.reset();
-    }
-
-    async refreshGReCaptcha() {
-        window.grecaptcha.reset();
-        window.grecaptcha.execute();
-    }
-
     async renderHCaptchaFrame() {
         this.renderFrame(
             html`<div
@@ -270,15 +251,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         );
     }
 
-    async refreshHCaptchaFrame() {
-        (this.captchaFrame.contentWindow as typeof window)?.hcaptcha.reset();
-    }
-
-    async refreshHCaptcha() {
-        window.hcaptcha.reset();
-        window.hcaptcha.execute();
-    }
-
     async renderTurnstileFrame() {
         this.renderFrame(
             html`<div
@@ -290,18 +262,13 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     async executeTurnstile() {
-        return window.turnstile.render(this.captchaDocumentContainer, {
-            sitekey: this.challenge.siteKey,
-            callback: this.onTokenChange,
-        });
-    }
-
-    async refreshTurnstileFrame() {
-        (this.captchaFrame.contentWindow as typeof window)?.turnstile.reset();
-    }
-
-    async refreshTurnstile() {
-        window.turnstile.reset();
+        return (window as unknown as TurnstileWindow).turnstile.render(
+            this.captchaDocumentContainer,
+            {
+                sitekey: this.challenge.siteKey,
+                callback: this.onTokenChange,
+            },
+        );
     }
 
     async renderFrame(captchaElement: TemplateResult) {
@@ -359,7 +326,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             .exhaustive();
     }
 
-    firstUpdated(changedProperties: PropertyValues<this>) {
+    updated(changedProperties: PropertyValues<this>) {
         if (!(changedProperties.has("challenge") && this.challenge !== undefined)) {
             return;
         }
@@ -369,19 +336,16 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             const handlers = this.handlers.filter(({ name }) => Object.hasOwn(window, name));
             let lastError = undefined;
             let found = false;
-            for (const handler of handlers) {
-                console.debug(`authentik/stages/captcha: trying handler ${handler.name}`);
+            for (const { name, interactive, execute } of handlers) {
+                console.debug(`authentik/stages/captcha: trying handler ${name}`);
                 try {
-                    const runner = this.challenge.interactive
-                        ? handler.interactive
-                        : handler.execute;
+                    const runner = this.challenge.interactive ? interactive : execute;
                     await runner.apply(this);
-                    console.debug(`authentik/stages/captcha[${handler.name}]: handler succeeded`);
+                    console.debug(`authentik/stages/captcha[${name}]: handler succeeded`);
                     found = true;
-                    this.activeHandler = handler;
                     break;
                 } catch (exc) {
-                    console.debug(`authentik/stages/captcha[${handler.name}]: handler failed`);
+                    console.debug(`authentik/stages/captcha[${name}]: handler failed`);
                     console.debug(exc);
                     lastError = exc;
                 }
@@ -404,19 +368,6 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
         if (!this.challenge.interactive) {
             document.body.appendChild(this.captchaDocumentContainer);
-        }
-    }
-
-    updated(changedProperties: PropertyValues<this>) {
-        if (!changedProperties.has("refreshedAt") || !this.challenge) {
-            return;
-        }
-
-        console.debug("authentik/stages/captcha: refresh triggered");
-        if (this.challenge.interactive) {
-            this.activeHandler?.refreshInteractive.apply(this);
-        } else {
-            this.activeHandler?.refresh.apply(this);
         }
     }
 }

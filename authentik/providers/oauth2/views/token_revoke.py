@@ -9,12 +9,8 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
-from authentik.providers.oauth2.models import AccessToken, ClientTypes, OAuth2Provider, RefreshToken
-from authentik.providers.oauth2.utils import (
-    TokenResponse,
-    authenticate_provider,
-    provider_from_request,
-)
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
 
@@ -31,9 +27,7 @@ class TokenRevocationParams:
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token")
 
-        provider, _, _ = provider_from_request(request)
-        if provider and provider.client_type == ClientTypes.CONFIDENTIAL:
-            provider = authenticate_provider(request)
+        provider = authenticate_provider(request)
         if not provider:
             raise TokenRevocationError("invalid_client")
 

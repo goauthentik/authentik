@@ -55,19 +55,19 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     renderForm(): TemplateResult {
         const backends = [
             {
-                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
+                name: BackendsEnum.CoreAuthInbuiltBackend,
                 label: msg("User database + standard password"),
             },
             {
-                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
+                name: BackendsEnum.CoreAuthTokenBackend,
                 label: msg("User database + app passwords"),
             },
             {
-                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
+                name: BackendsEnum.SourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
             },
             {
-                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
+                name: BackendsEnum.SourcesKerberosAuthKerberosBackend,
                 label: msg("User database + Kerberos password"),
             },
         ];

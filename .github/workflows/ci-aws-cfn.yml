@@ -25,15 +25,15 @@ jobs:
         uses: ./.github/actions/setup
       - uses: actions/setup-node@v4
         with:
-          node-version-file: lifecycle/aws/package.json
+          node-version-file: website/package.json
           cache: "npm"
-          cache-dependency-path: lifecycle/aws/package-lock.json
-      - working-directory: lifecycle/aws/
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
         run: |
           npm ci
       - name: Check changes have been applied
         run: |
-          uv run make aws-cfn
+          poetry run make aws-cfn
           git diff --exit-code
   ci-aws-cfn-mark:
     if: always()

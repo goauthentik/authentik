@@ -9,7 +9,6 @@ from django.db import close_old_connections
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
-from authentik.lib.debug import start_debug_server
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
@@ -29,7 +28,10 @@ class Command(BaseCommand):
     def handle(self, **options):
         LOGGER.debug("Celery options", **options)
         close_old_connections()
-        start_debug_server()
+        if CONFIG.get_bool("remote_debug"):
+            import debugpy
+
+            debugpy.listen(("0.0.0.0", 6900))  # nosec
         worker: Worker = CELERY_APP.Worker(
             no_color=False,
             quiet=True,

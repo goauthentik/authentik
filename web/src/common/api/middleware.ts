@@ -12,7 +12,6 @@ import {
 export const CSRFHeaderName = "X-authentik-CSRF";
 
 export interface RequestInfo {
-    time: number;
     method: string;
     path: string;
     status: number;
@@ -48,7 +47,6 @@ export class CSRFMiddleware implements Middleware {
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {
-            time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
             status: context.response.status,

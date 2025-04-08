@@ -51,26 +51,13 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Install ID")}>
-                <input
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    readonly
-                    type="text"
-                    value="${ifDefined(this.installID)}"
-                />
+        // prettier-ignore
+        return html`
+            <ak-form-element-horizontal label=${msg("Install ID")}>
+                <input class="pf-c-form-control" readonly type="text" value="${ifDefined(this.installID)}" />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="key"
-                ?writeOnly=${this.instance !== undefined}
-                label=${msg("License key")}
-            >
-                <textarea
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                ></textarea>
+            <ak-form-element-horizontal name="key" ?writeOnly=${this.instance !== undefined} label=${msg("License key")}>
+                <textarea class="pf-c-form-control"></textarea>
             </ak-form-element-horizontal>`;
     }
 }

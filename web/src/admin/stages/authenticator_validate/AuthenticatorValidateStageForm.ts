@@ -79,7 +79,6 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [DeviceClassesEnum.Webauthn, msg("WebAuthn Authenticators")],
             [DeviceClassesEnum.Duo, msg("Duo Authenticators")],
             [DeviceClassesEnum.Sms, msg("SMS-based Authenticators")],
-            [DeviceClassesEnum.Email, msg("Email-based Authenticators")],
         ];
 
         return html`
@@ -126,9 +125,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         <input
                             type="text"
                             value="${this.instance?.lastAuthThreshold || "seconds=0"}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">

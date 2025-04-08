@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.3
+  version: 2024.12.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -349,7 +349,7 @@ paths:
           description: ''
   /admin/workers/:
     get:
-      operationId: admin_workers_list
+      operationId: admin_workers_retrieve
       description: Get currently connected worker count.
       tags:
       - admin
@@ -360,9 +360,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Worker'
+                $ref: '#/components/schemas/Workers'
           description: ''
         '400':
           content:
@@ -618,234 +616,6 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Duo Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /authenticators/admin/email/:
-    get:
-      operationId: authenticators_admin_email_list
-      description: Viewset for email authenticator devices (for admins)
-      parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEmailDeviceList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: authenticators_admin_email_create
-      description: Viewset for email authenticator devices (for admins)
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /authenticators/admin/email/{id}/:
-    get:
-      operationId: authenticators_admin_email_retrieve
-      description: Viewset for email authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: authenticators_admin_email_update
-      description: Viewset for email authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: authenticators_admin_email_partial_update
-      description: Viewset for email authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailDeviceRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: authenticators_admin_email_destroy
-      description: Viewset for email authenticator devices (for admins)
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
         required: true
       tags:
       - authenticators
@@ -2245,238 +2015,6 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Duo Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /authenticators/email/:
-    get:
-      operationId: authenticators_email_list
-      description: Viewset for email authenticator devices
-      parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedEmailDeviceList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /authenticators/email/{id}/:
-    get:
-      operationId: authenticators_email_retrieve
-      description: Viewset for email authenticator devices
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: authenticators_email_update
-      description: Viewset for email authenticator devices
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/EmailDeviceRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: authenticators_email_partial_update
-      description: Viewset for email authenticator devices
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedEmailDeviceRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/EmailDevice'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: authenticators_email_destroy
-      description: Viewset for email authenticator devices
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
-        required: true
-      tags:
-      - authenticators
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /authenticators/email/{id}/used_by/:
-    get:
-      operationId: authenticators_email_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Email Device.
         required: true
       tags:
       - authenticators
@@ -4447,10 +3985,6 @@ paths:
         schema:
           type: string
           format: uuid
-      - in: query
-        name: branding_default_flow_background
-        schema:
-          type: string
       - in: query
         name: branding_favicon
         schema:
@@ -22196,11 +21730,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: authn_context_class_ref_mapping
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -22557,9 +22086,6 @@ paths:
         '200':
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/SAMLMetadata'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/SAMLMetadata'
           description: ''
@@ -23422,279 +22948,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /providers/ssf/:
-    get:
-      operationId: providers_ssf_list
-      description: SSFProvider Viewset
-      parameters:
-      - in: query
-        name: application__isnull
-        schema:
-          type: boolean
-      - in: query
-        name: name__iexact
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedSSFProviderList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: providers_ssf_create
-      description: SSFProvider Viewset
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SSFProviderRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SSFProvider'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /providers/ssf/{id}/:
-    get:
-      operationId: providers_ssf_retrieve
-      description: SSFProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SSFProvider'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: providers_ssf_update
-      description: SSFProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SSFProviderRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SSFProvider'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: providers_ssf_partial_update
-      description: SSFProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedSSFProviderRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SSFProvider'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: providers_ssf_destroy
-      description: SSFProvider Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /providers/ssf/{id}/used_by/:
-    get:
-      operationId: providers_ssf_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Shared Signals Framework
-          Provider.
-        required: true
-      tags:
-      - providers
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /rac/connection_tokens/:
     get:
       operationId: rac_connection_tokens_list
@@ -24372,7 +23625,6 @@ paths:
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
-          - authentik_providers_ssf.ssfprovider
           - authentik_rbac.role
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
@@ -24396,8 +23648,6 @@ paths:
           - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
-          - authentik_stages_authenticator_email.authenticatoremailstage
-          - authentik_stages_authenticator_email.emaildevice
           - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
@@ -24616,7 +23866,6 @@ paths:
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
-          - authentik_providers_ssf.ssfprovider
           - authentik_rbac.role
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
@@ -24640,8 +23889,6 @@ paths:
           - authentik_sources_scim.scimsourcepropertymapping
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
-          - authentik_stages_authenticator_email.authenticatoremailstage
-          - authentik_stages_authenticator_email.emaildevice
           - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
@@ -25680,11 +24927,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
@@ -25754,7 +24996,7 @@ paths:
           description: ''
     delete:
       operationId: sources_all_destroy
-      description: Prevent deletion of built-in sources
+      description: Source Viewset
       parameters:
       - in: path
         name: slug
@@ -25938,243 +25180,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/group_connections/all/:
-    get:
-      operationId: sources_group_connections_all_list
-      description: Group-source connection Viewset
-      parameters:
-      - in: query
-        name: group
-        schema:
-          type: string
-          format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: source__slug
-        schema:
-          type: string
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedGroupSourceConnectionList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /sources/group_connections/all/{id}/:
-    get:
-      operationId: sources_group_connections_all_retrieve
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: sources_group_connections_all_update
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: sources_group_connections_all_partial_update
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGroupSourceConnectionRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: sources_group_connections_all_destroy
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /sources/group_connections/all/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /sources/group_connections/kerberos/:
     get:
       operationId: sources_group_connections_kerberos_list
@@ -26223,38 +25228,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupKerberosSourceConnectionList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: sources_group_connections_kerberos_create
-      description: Group-source connection Viewset
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupKerberosSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupKerberosSourceConnection'
           description: ''
         '400':
           content:
@@ -27048,38 +26021,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    post:
-      operationId: sources_group_connections_saml_create
-      description: Group-source connection Viewset
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupSAMLSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSAMLSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /sources/group_connections/saml/{id}/:
     get:
       operationId: sources_group_connections_saml_retrieve
@@ -27302,11 +26243,6 @@ paths:
         name: password_login_update_internal_password
         schema:
           type: boolean
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: realm
         schema:
@@ -27679,11 +26615,6 @@ paths:
         name: password_login_update_internal_password
         schema:
           type: boolean
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: peer_certificate
         schema:
@@ -28114,11 +27045,6 @@ paths:
         schema:
           type: integer
       - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: policy_engine_mode
         schema:
           type: string
@@ -28487,11 +27413,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
       - in: query
         name: policy_engine_mode
         schema:
@@ -28896,11 +27817,6 @@ paths:
         schema:
           type: integer
       - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: policy_engine_mode
         schema:
           type: string
@@ -29263,11 +28179,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: pbm_uuid
-        schema:
-          type: string
-          format: uuid
       - name: search
         required: false
         in: query
@@ -30293,7 +29204,7 @@ paths:
   /sources/user_connections/kerberos/:
     get:
       operationId: sources_user_connections_kerberos_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -30323,10 +29234,6 @@ paths:
         name: source__slug
         schema:
           type: string
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - sources
       security:
@@ -30352,7 +29259,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_kerberos_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -30385,7 +29292,7 @@ paths:
   /sources/user_connections/kerberos/{id}/:
     get:
       operationId: sources_user_connections_kerberos_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30419,7 +29326,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_kerberos_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30459,7 +29366,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_kerberos_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30498,7 +29405,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_kerberos_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30566,7 +29473,7 @@ paths:
   /sources/user_connections/oauth/:
     get:
       operationId: sources_user_connections_oauth_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -30625,7 +29532,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_oauth_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -30658,7 +29565,7 @@ paths:
   /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30691,7 +29598,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_oauth_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30730,7 +29637,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_oauth_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30768,7 +29675,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_oauth_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30834,7 +29741,7 @@ paths:
   /sources/user_connections/plex/:
     get:
       operationId: sources_user_connections_plex_list
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - name: ordering
         required: false
@@ -30893,7 +29800,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_plex_create
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       tags:
       - sources
       requestBody:
@@ -30926,7 +29833,7 @@ paths:
   /sources/user_connections/plex/{id}/:
     get:
       operationId: sources_user_connections_plex_retrieve
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -30959,7 +29866,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_plex_update
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -30998,7 +29905,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_plex_partial_update
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -31036,7 +29943,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_plex_destroy
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -31102,7 +30009,7 @@ paths:
   /sources/user_connections/saml/:
     get:
       operationId: sources_user_connections_saml_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -31161,7 +30068,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_saml_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -31194,7 +30101,7 @@ paths:
   /sources/user_connections/saml/{id}/:
     get:
       operationId: sources_user_connections_saml_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31227,7 +30134,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_saml_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31266,7 +30173,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_saml_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31304,7 +30211,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_saml_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31354,108 +30261,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /ssf/streams/:
-    get:
-      operationId: ssf_streams_list
-      description: SSFStream Viewset
-      parameters:
-      - in: query
-        name: delivery_method
-        schema:
-          type: string
-          enum:
-          - https://schemas.openid.net/secevent/risc/delivery-method/poll
-          - https://schemas.openid.net/secevent/risc/delivery-method/push
-      - in: query
-        name: endpoint_url
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: provider
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - ssf
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedSSFStreamList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /ssf/streams/{uuid}/:
-    get:
-      operationId: ssf_streams_retrieve
-      description: SSFStream Viewset
-      parameters:
-      - in: path
-        name: uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this SSF Stream.
-        required: true
-      tags:
-      - ssf
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SSFStream'
           description: ''
         '400':
           content:
@@ -32040,337 +30845,6 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this Duo Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /stages/authenticator/email/:
-    get:
-      operationId: stages_authenticator_email_list
-      description: AuthenticatorEmailStage Viewset
-      parameters:
-      - in: query
-        name: configure_flow
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: friendly_name
-        schema:
-          type: string
-      - in: query
-        name: from_address
-        schema:
-          type: string
-      - in: query
-        name: host
-        schema:
-          type: string
-      - in: query
-        name: name
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - in: query
-        name: password
-        schema:
-          type: string
-      - in: query
-        name: port
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-      - in: query
-        name: subject
-        schema:
-          type: string
-      - in: query
-        name: template
-        schema:
-          type: string
-      - in: query
-        name: timeout
-        schema:
-          type: integer
-      - in: query
-        name: token_expiry
-        schema:
-          type: string
-      - in: query
-        name: use_global_settings
-        schema:
-          type: boolean
-      - in: query
-        name: use_ssl
-        schema:
-          type: boolean
-      - in: query
-        name: use_tls
-        schema:
-          type: boolean
-      - in: query
-        name: username
-        schema:
-          type: string
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedAuthenticatorEmailStageList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: stages_authenticator_email_create
-      description: AuthenticatorEmailStage Viewset
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorEmailStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEmailStage'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /stages/authenticator/email/{stage_uuid}/:
-    get:
-      operationId: stages_authenticator_email_retrieve
-      description: AuthenticatorEmailStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEmailStage'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: stages_authenticator_email_update
-      description: AuthenticatorEmailStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AuthenticatorEmailStageRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEmailStage'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: stages_authenticator_email_partial_update
-      description: AuthenticatorEmailStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedAuthenticatorEmailStageRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthenticatorEmailStage'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: stages_authenticator_email_destroy
-      description: AuthenticatorEmailStage Viewset
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /stages/authenticator/email/{stage_uuid}/used_by/:
-    get:
-      operationId: stages_authenticator_email_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Email Authenticator Setup Stage.
         required: true
       tags:
       - stages
@@ -35460,7 +33934,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: string
+          type: integer
       - in: query
         name: use_global_settings
         schema:
@@ -39796,7 +38270,6 @@ components:
       - authentik.providers.ldap
       - authentik.providers.oauth2
       - authentik.providers.proxy
-      - authentik.providers.rac
       - authentik.providers.radius
       - authentik.providers.saml
       - authentik.providers.scim
@@ -39810,7 +38283,6 @@ components:
       - authentik.sources.scim
       - authentik.stages.authenticator
       - authentik.stages.authenticator_duo
-      - authentik.stages.authenticator_email
       - authentik.stages.authenticator_sms
       - authentik.stages.authenticator_static
       - authentik.stages.authenticator_totp
@@ -39837,7 +38309,7 @@ components:
       - authentik.enterprise.audit
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
-      - authentik.enterprise.providers.ssf
+      - authentik.enterprise.providers.rac
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
       - authentik.enterprise.stages.source
       - authentik.events
@@ -40336,188 +38808,6 @@ components:
       - api_hostname
       - client_id
       - client_secret
-      - name
-    AuthenticatorEmailChallenge:
-      type: object
-      description: Authenticator Email Setup challenge
-      properties:
-        flow_info:
-          $ref: '#/components/schemas/ContextualFlowInfo'
-        component:
-          type: string
-          default: ak-stage-authenticator-email
-        response_errors:
-          type: object
-          additionalProperties:
-            type: array
-            items:
-              $ref: '#/components/schemas/ErrorDetail'
-        pending_user:
-          type: string
-        pending_user_avatar:
-          type: string
-        email:
-          type: string
-          nullable: true
-        email_required:
-          type: boolean
-          default: true
-      required:
-      - pending_user
-      - pending_user_avatar
-    AuthenticatorEmailChallengeResponseRequest:
-      type: object
-      description: Authenticator Email Challenge response, device is set by get_response_instance
-      properties:
-        component:
-          type: string
-          minLength: 1
-          default: ak-stage-authenticator-email
-        code:
-          type: integer
-        email:
-          type: string
-          minLength: 1
-    AuthenticatorEmailStage:
-      type: object
-      description: AuthenticatorEmailStage Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Stage uuid
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object type so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSet'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-        use_global_settings:
-          type: boolean
-          description: When enabled, global Email connection settings will be used
-            and connection settings below will be ignored.
-        host:
-          type: string
-        port:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        username:
-          type: string
-        password:
-          type: string
-        use_tls:
-          type: boolean
-        use_ssl:
-          type: boolean
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        from_address:
-          type: string
-          format: email
-          maxLength: 254
-        subject:
-          type: string
-        token_expiry:
-          type: string
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
-        template:
-          type: string
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - verbose_name
-      - verbose_name_plural
-    AuthenticatorEmailStageRequest:
-      type: object
-      description: AuthenticatorEmailStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        use_global_settings:
-          type: boolean
-          description: When enabled, global Email connection settings will be used
-            and connection settings below will be ignored.
-        host:
-          type: string
-          minLength: 1
-        port:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        username:
-          type: string
-        password:
-          type: string
-        use_tls:
-          type: boolean
-        use_ssl:
-          type: boolean
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        from_address:
-          type: string
-          format: email
-          minLength: 1
-          maxLength: 254
-        subject:
-          type: string
-          minLength: 1
-        token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
-        template:
-          type: string
-          minLength: 1
-      required:
       - name
     AuthenticatorEndpointGDTCStage:
       type: object
@@ -41454,10 +39744,6 @@ components:
           type: string
         branding_favicon:
           type: string
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
-          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41515,11 +39801,6 @@ components:
           type: string
           minLength: 1
         branding_favicon:
-          type: string
-          minLength: 1
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
@@ -41848,7 +40129,6 @@ components:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
       - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
-      - $ref: '#/components/schemas/AuthenticatorEmailChallenge'
       - $ref: '#/components/schemas/AuthenticatorSMSChallenge'
       - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
       - $ref: '#/components/schemas/AuthenticatorTOTPChallenge'
@@ -41877,7 +40157,6 @@ components:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
-          ak-stage-authenticator-email: '#/components/schemas/AuthenticatorEmailChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
           ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallenge'
@@ -41904,12 +40183,6 @@ components:
       enum:
       - confidential
       - public
-      type: string
-    CompatibilityModeEnum:
-      enum:
-      - default
-      - aws
-      - slack
       type: string
     Config:
       type: object
@@ -42414,8 +40687,6 @@ components:
           type: string
         branding_favicon:
           type: string
-        branding_custom_css:
-          type: string
         ui_footer_links:
           type: array
           items:
@@ -42442,7 +40713,6 @@ components:
           type: string
           readOnly: true
       required:
-      - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
@@ -42450,11 +40720,6 @@ components:
       - matched_domain
       - ui_footer_links
       - ui_theme
-    DeliveryMethodEnum:
-      enum:
-      - https://schemas.openid.net/secevent/risc/delivery-method/push
-      - https://schemas.openid.net/secevent/risc/delivery-method/poll
-      type: string
     DeniedActionEnum:
       enum:
       - message_continue
@@ -42651,7 +40916,6 @@ components:
       - webauthn
       - duo
       - sms
-      - email
       type: string
     DigestAlgorithmEnum:
       enum:
@@ -42957,14 +41221,9 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
       required:
       - name
       - pk
-      - user
     DuoDeviceEnrollmentStatus:
       type: object
       properties:
@@ -43014,42 +41273,6 @@ components:
           type: string
           minLength: 1
           default: ak-stage-email
-    EmailDevice:
-      type: object
-      description: Serializer for email authenticator devices
-      properties:
-        name:
-          type: string
-          description: The human-readable name of this device.
-          maxLength: 64
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        email:
-          type: string
-          format: email
-          readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
-      required:
-      - email
-      - name
-      - pk
-      - user
-    EmailDeviceRequest:
-      type: object
-      description: Serializer for email authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
-      required:
-      - name
     EmailStage:
       type: object
       description: EmailStage Serializer
@@ -43106,8 +41329,10 @@ components:
           format: email
           maxLength: 254
         token_expiry:
-          type: string
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
         template:
@@ -43163,9 +41388,10 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
           minLength: 1
@@ -43527,12 +41753,6 @@ components:
       - application
       - counted_events
       - unique_users
-    EventsRequestedEnum:
-      enum:
-      - https://schemas.openid.net/secevent/caep/event-type/session-revoked
-      - https://schemas.openid.net/secevent/caep/event-type/credential-change
-      - https://schemas.openid.net/secevent/ssf/event-type/verification
-      type: string
     ExpiringBaseGrantModel:
       type: object
       description: Serializer for BaseGrantModel and ExpiringBaseGrant
@@ -43847,7 +42067,6 @@ components:
       oneOf:
       - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
-      - $ref: '#/components/schemas/AuthenticatorEmailChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
@@ -43872,7 +42091,6 @@ components:
         mapping:
           ak-source-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
-          ak-stage-authenticator-email: '#/components/schemas/AuthenticatorEmailChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
           ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
@@ -44173,7 +42391,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is presented to the user.
+          description: Evaluate policies when the Stage is present to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -44209,7 +42427,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is presented to the user.
+          description: Evaluate policies when the Stage is present to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -44335,27 +42553,6 @@ components:
           items:
             $ref: '#/components/schemas/DetailedCountryField'
           readOnly: true
-        check_history_distance:
-          type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
-          type: boolean
-        impossible_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
       required:
       - bound_to
       - component
@@ -44388,27 +42585,6 @@ components:
           items:
             $ref: '#/components/schemas/CountryCodeEnum'
           maxItems: 249
-        check_history_distance:
-          type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
-          type: boolean
-        impossible_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
       required:
       - countries
       - name
@@ -44483,10 +42659,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -44650,10 +42822,6 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -44758,7 +42926,7 @@ components:
       - users_obj
     GroupKerberosSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44780,21 +42948,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupKerberosSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -44894,7 +43057,7 @@ components:
       - username
     GroupOAuthSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44916,21 +43079,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupOAuthSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -44947,7 +43105,7 @@ components:
       - source
     GroupPlexSourceConnection:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44969,21 +43127,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupPlexSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -45028,7 +43181,7 @@ components:
       - name
     GroupSAMLSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -45050,74 +43203,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupSAMLSourceConnectionRequest:
       type: object
-      description: Group Source Connection
-      properties:
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - group
-      - identifier
-      - source
-    GroupSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    GroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -46807,10 +44902,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -46971,10 +45062,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - client_id
       - client_secret
@@ -47043,9 +45130,6 @@ components:
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
-      - authentik_providers_rac.racprovider
-      - authentik_providers_rac.endpoint
-      - authentik_providers_rac.racpropertymapping
       - authentik_providers_radius.radiusprovider
       - authentik_providers_radius.radiusproviderpropertymapping
       - authentik_providers_saml.samlprovider
@@ -47075,8 +45159,6 @@ components:
       - authentik_sources_scim.scimsourcepropertymapping
       - authentik_stages_authenticator_duo.authenticatorduostage
       - authentik_stages_authenticator_duo.duodevice
-      - authentik_stages_authenticator_email.authenticatoremailstage
-      - authentik_stages_authenticator_email.emaildevice
       - authentik_stages_authenticator_sms.authenticatorsmsstage
       - authentik_stages_authenticator_sms.smsdevice
       - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -47115,7 +45197,9 @@ components:
       - authentik_providers_google_workspace.googleworkspaceprovidermapping
       - authentik_providers_microsoft_entra.microsoftentraprovider
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
-      - authentik_providers_ssf.ssfprovider
+      - authentik_providers_rac.racprovider
+      - authentik_providers_rac.endpoint
+      - authentik_providers_rac.racpropertymapping
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
       - authentik_stages_source.sourcestage
       - authentik_events.event
@@ -47268,18 +45352,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -47307,18 +45383,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -48251,18 +46319,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedAuthenticatorEmailStageList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuthenticatorEmailStage'
-      required:
-      - pagination
-      - results
     PaginatedAuthenticatorEndpointGDTCStageList:
       type: object
       properties:
@@ -48476,18 +46532,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DuoDevice'
-      required:
-      - pagination
-      - results
-    PaginatedEmailDeviceList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/EmailDevice'
       required:
       - pagination
       - results
@@ -48740,18 +46784,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupSAMLSourceConnection'
-      required:
-      - pagination
-      - results
-    PaginatedGroupSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupSourceConnection'
       required:
       - pagination
       - results
@@ -49472,30 +47504,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SMSDevice'
-      required:
-      - pagination
-      - results
-    PaginatedSSFProviderList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SSFProvider'
-      required:
-      - pagination
-      - results
-    PaginatedSSFStreamList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SSFStream'
       required:
       - pagination
       - results
@@ -50259,65 +48267,6 @@ components:
         admin_secret_key:
           type: string
           writeOnly: true
-    PatchedAuthenticatorEmailStageRequest:
-      type: object
-      description: AuthenticatorEmailStage Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        flow_set:
-          type: array
-          items:
-            $ref: '#/components/schemas/FlowSetRequest'
-        configure_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used by an authenticated user to configure this Stage.
-            If empty, user will not be able to configure this stage.
-        friendly_name:
-          type: string
-          nullable: true
-          minLength: 1
-        use_global_settings:
-          type: boolean
-          description: When enabled, global Email connection settings will be used
-            and connection settings below will be ignored.
-        host:
-          type: string
-          minLength: 1
-        port:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        username:
-          type: string
-        password:
-          type: string
-        use_tls:
-          type: boolean
-        use_ssl:
-          type: boolean
-        timeout:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-        from_address:
-          type: string
-          format: email
-          minLength: 1
-          maxLength: 254
-        subject:
-          type: string
-          minLength: 1
-        token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
-        template:
-          type: string
-          minLength: 1
     PatchedAuthenticatorEndpointGDTCStageRequest:
       type: object
       description: AuthenticatorEndpointGDTCStage Serializer
@@ -50547,11 +48496,6 @@ components:
         branding_favicon:
           type: string
           minLength: 1
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
-          type: string
-          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -50774,15 +48718,6 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
-    PatchedEmailDeviceRequest:
-      type: object
-      description: Serializer for email authenticator devices
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: The human-readable name of this device.
-          maxLength: 64
     PatchedEmailStageRequest:
       type: object
       description: EmailStage Serializer
@@ -50824,9 +48759,10 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
           minLength: 1
@@ -51013,7 +48949,7 @@ components:
           description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
-          description: Evaluate policies when the Stage is presented to the user.
+          description: Evaluate policies when the Stage is present to the user.
         order:
           type: integer
           maximum: 2147483647
@@ -51049,27 +48985,6 @@ components:
           items:
             $ref: '#/components/schemas/CountryCodeEnum'
           maxItems: 249
-        check_history_distance:
-          type: boolean
-        history_max_distance_km:
-          type: integer
-          maximum: 9223372036854775807
-          minimum: 0
-          format: int64
-        distance_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        history_login_count:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
-        check_impossible_travel:
-          type: boolean
-        impossible_tolerance_km:
-          type: integer
-          maximum: 2147483647
-          minimum: 0
     PatchedGoogleWorkspaceProviderMappingRequest:
       type: object
       description: GoogleWorkspaceProviderMapping Serializer
@@ -51129,13 +49044,9 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51148,7 +49059,7 @@ components:
           minLength: 1
     PatchedGroupOAuthSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51161,7 +49072,7 @@ components:
           minLength: 1
     PatchedGroupPlexSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51200,20 +49111,7 @@ components:
             format: uuid
     PatchedGroupSAMLSourceConnectionRequest:
       type: object
-      description: Group Source Connection
-      properties:
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    PatchedGroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51727,10 +49625,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -51777,18 +49671,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -52648,8 +50534,9 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -52680,14 +50567,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -52806,14 +50685,16 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
+          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          format: uri
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -52905,21 +50786,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -53004,24 +50876,6 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
-    PatchedSSFProviderRequest:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        event_retention:
-          type: string
-          minLength: 1
     PatchedScopeMappingRequest:
       type: object
       description: ScopeMapping Serializer
@@ -53186,7 +51040,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         user:
           type: integer
@@ -53243,7 +51097,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserOAuthSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         user:
           type: integer
@@ -53253,13 +51107,14 @@ components:
         identifier:
           type: string
           minLength: 1
+          maxLength: 255
         access_token:
           type: string
           writeOnly: true
           nullable: true
     PatchedUserPlexSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         user:
           type: integer
@@ -53313,7 +51168,7 @@ components:
           $ref: '#/components/schemas/UserTypeEnum'
     PatchedUserSAMLSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         user:
           type: integer
@@ -53332,9 +51187,6 @@ components:
         source:
           type: string
           format: uuid
-        identifier:
-          type: string
-          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -54305,7 +52157,6 @@ components:
       - authentik_providers_radius.radiusprovider
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
-      - authentik_providers_ssf.ssfprovider
       type: string
     ProviderRequest:
       type: object
@@ -55616,6 +53467,7 @@ components:
         acs_url:
           type: string
           format: uri
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55642,14 +53494,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55782,8 +53626,9 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55814,14 +53659,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55956,13 +53793,15 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
-          description: URL that the initial Login request is sent to.
           format: uri
+          description: URL that the initial Login request is sent to.
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -56145,14 +53984,16 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
+          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          format: uri
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -56322,21 +54163,12 @@ components:
         token:
           type: string
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -56367,10 +54199,7 @@ components:
           readOnly: true
         provider:
           type: integer
-        attributes:
-          readOnly: true
       required:
-      - attributes
       - group
       - group_obj
       - id
@@ -56420,21 +54249,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - name
       - token
@@ -56457,10 +54277,7 @@ components:
           readOnly: true
         provider:
           type: integer
-        attributes:
-          readOnly: true
       required:
-      - attributes
       - id
       - provider
       - scim_id
@@ -56748,15 +54565,10 @@ components:
         phone_number:
           type: string
           readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
       required:
       - name
       - phone_number
       - pk
-      - user
     SMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -56768,120 +54580,6 @@ components:
           maxLength: 64
       required:
       - name
-    SSFProvider:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        name:
-          type: string
-        component:
-          type: string
-          description: Get object component so that we know how to edit the object
-          readOnly: true
-        verbose_name:
-          type: string
-          description: Return object's verbose_name
-          readOnly: true
-        verbose_name_plural:
-          type: string
-          description: Return object's plural verbose_name
-          readOnly: true
-        meta_model_name:
-          type: string
-          description: Return internal model name
-          readOnly: true
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        token_obj:
-          allOf:
-          - $ref: '#/components/schemas/Token'
-          readOnly: true
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        ssf_url:
-          type: string
-          nullable: true
-          readOnly: true
-        event_retention:
-          type: string
-      required:
-      - component
-      - meta_model_name
-      - name
-      - pk
-      - signing_key
-      - ssf_url
-      - token_obj
-      - verbose_name
-      - verbose_name_plural
-    SSFProviderRequest:
-      type: object
-      description: SSFProvider Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-        signing_key:
-          type: string
-          format: uuid
-          description: Key used to sign the SSF Events.
-        oidc_auth_providers:
-          type: array
-          items:
-            type: integer
-        event_retention:
-          type: string
-          minLength: 1
-      required:
-      - name
-      - signing_key
-    SSFStream:
-      type: object
-      description: SSFStream Serializer
-      properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Uuid
-        provider:
-          type: integer
-        provider_obj:
-          allOf:
-          - $ref: '#/components/schemas/SSFProvider'
-          readOnly: true
-        delivery_method:
-          $ref: '#/components/schemas/DeliveryMethodEnum'
-        endpoint_url:
-          type: string
-          nullable: true
-        events_requested:
-          type: array
-          items:
-            $ref: '#/components/schemas/EventsRequestedEnum'
-        format:
-          type: string
-        aud:
-          type: array
-          items:
-            type: string
-        iss:
-          type: string
-      required:
-      - delivery_method
-      - format
-      - iss
-      - pk
-      - provider
-      - provider_obj
     ScopeMapping:
       type: object
       description: ScopeMapping Serializer
@@ -57572,15 +55270,10 @@ components:
           type: integer
           readOnly: true
           title: ID
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
       required:
       - name
       - pk
       - token_set
-      - user
     StaticDeviceRequest:
       type: object
       description: Serializer for static authenticator devices
@@ -57634,9 +55327,6 @@ components:
         sync_object_id:
           type: string
           minLength: 1
-        override_dry_run:
-          type: boolean
-          default: false
       required:
       - sync_object_id
       - sync_object_model
@@ -57812,14 +55502,9 @@ components:
           type: integer
           readOnly: true
           title: ID
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
       required:
       - name
       - pk
-      - user
     TOTPDeviceRequest:
       type: object
       description: Serializer for totp authenticator devices
@@ -58170,10 +55855,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        date_joined:
-          type: string
-          format: date-time
-          readOnly: true
         is_superuser:
           type: boolean
           readOnly: true
@@ -58211,17 +55892,11 @@ components:
           type: string
           format: uuid
           readOnly: true
-        password_change_date:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - avatar
-      - date_joined
       - groups_obj
       - is_superuser
       - name
-      - password_change_date
       - pk
       - uid
       - username
@@ -58427,7 +56102,7 @@ components:
       - name
     UserKerberosSourceConnection:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         pk:
           type: integer
@@ -58442,27 +56117,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserKerberosSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         user:
           type: integer
@@ -58689,7 +56359,7 @@ components:
       - logins_failed
     UserOAuthSourceConnection:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         pk:
           type: integer
@@ -58704,27 +56374,23 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
+          maxLength: 255
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserOAuthSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         user:
           type: integer
@@ -58734,6 +56400,7 @@ components:
         identifier:
           type: string
           minLength: 1
+          maxLength: 255
         access_token:
           type: string
           writeOnly: true
@@ -58791,7 +56458,7 @@ components:
       - paths
     UserPlexSourceConnection:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         pk:
           type: integer
@@ -58806,27 +56473,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserPlexSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         user:
           type: integer
@@ -58888,7 +56550,7 @@ components:
       - username
     UserSAMLSourceConnection:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         pk:
           type: integer
@@ -58903,27 +56565,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserSAMLSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         user:
           type: integer
@@ -59087,20 +56744,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
           type: string
           format: date-time
           readOnly: true
       required:
       - created
-      - identifier
-      - last_updated
       - pk
       - source
       - source_obj
@@ -59114,11 +56763,7 @@ components:
         source:
           type: string
           format: uuid
-        identifier:
-          type: string
-          minLength: 1
       required:
-      - identifier
       - source
       - user
     UserTypeEnum:
@@ -59301,17 +56946,12 @@ components:
         aaguid:
           type: string
           readOnly: true
-        user:
-          allOf:
-          - $ref: '#/components/schemas/GroupMember'
-          readOnly: true
       required:
       - aaguid
       - created_on
       - device_type
       - name
       - pk
-      - user
     WebAuthnDeviceRequest:
       type: object
       description: Serializer for WebAuthn authenticator devices
@@ -59347,19 +56987,13 @@ components:
       required:
       - aaguid
       - description
-    Worker:
+    Workers:
       type: object
       properties:
-        worker_id:
-          type: string
-        version:
-          type: string
-        version_matching:
-          type: boolean
+        count:
+          type: integer
       required:
-      - version
-      - version_matching
-      - worker_id
+      - count
     modelRequest:
       oneOf:
       - $ref: '#/components/schemas/GoogleWorkspaceProviderRequest'
@@ -59371,7 +57005,6 @@ components:
       - $ref: '#/components/schemas/RadiusProviderRequest'
       - $ref: '#/components/schemas/SAMLProviderRequest'
       - $ref: '#/components/schemas/SCIMProviderRequest'
-      - $ref: '#/components/schemas/SSFProviderRequest'
       discriminator:
         propertyName: provider_model
         mapping:
@@ -59384,7 +57017,6 @@ components:
           authentik_providers_radius.radiusprovider: '#/components/schemas/RadiusProviderRequest'
           authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
-          authentik_providers_ssf.ssfprovider: '#/components/schemas/SSFProviderRequest'
   securitySchemes:
     authentik:
       type: http

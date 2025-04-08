@@ -23,7 +23,6 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
-from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,
@@ -85,9 +84,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
 
     def validate_code(self, code: str) -> str:
         """Validate code-based response, raise error if code isn't allowed"""
-        self._challenge_allowed(
-            [DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS, DeviceClasses.EMAIL]
-        )
+        self._challenge_allowed([DeviceClasses.TOTP, DeviceClasses.STATIC, DeviceClasses.SMS])
         self.device = validate_challenge_code(code, self.stage, self.stage.get_pending_user())
         return code
 
@@ -120,17 +117,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         if not allowed:
             raise ValidationError("invalid challenge selected")
 
-        device_class = challenge.get("device_class", "")
-        if device_class == "sms":
-            devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-            if not devices.exists():
-                raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
-        elif device_class == "email":
-            devices = EmailDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
-            if not devices.exists():
-                raise ValidationError("invalid challenge selected")
-            select_challenge(self.stage.request, devices.first())
+        if challenge.get("device_class", "") != "sms":
+            return challenge
+        devices = SMSDevice.objects.filter(pk=int(challenge.get("device_uid", "0")))
+        if not devices.exists():
+            raise ValidationError("invalid challenge selected")
+        select_challenge(self.stage.request, devices.first())
         return challenge
 
     def validate_selected_stage(self, stage_pk: str) -> str:

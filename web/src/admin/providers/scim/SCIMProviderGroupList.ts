@@ -24,7 +24,6 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
         return true;
     }
 
-    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -34,7 +33,7 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    model=${SyncObjectModelEnum.Group}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
                         return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
                     }}
@@ -81,13 +80,6 @@ export class SCIMProviderGroupList extends Table<SCIMProviderGroup> {
             </a>`,
             html`${item.id}`,
         ];
-    }
-    renderExpanded(item: SCIMProviderGroup): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
     }
 }
 

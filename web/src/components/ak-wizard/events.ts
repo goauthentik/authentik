@@ -1,49 +1,26 @@
-/**
- * Initialization options for a wizard navigation event.
- */
-export interface NavigationEventInit {
+export type NavigationUpdate = {
     disabled?: string[];
     enable?: string | string[];
     hidden?: string[];
-}
+};
 
-/**
- * Event dispatched when the wizard navigation is updated.
- */
-export class WizardNavigationEvent<D extends string = string> extends Event {
+export class WizardNavigationEvent extends Event {
     static readonly eventName = "ak-wizard-navigation";
 
-    public readonly destination?: D;
-    public readonly details?: NavigationEventInit;
+    destination?: string;
+    details?: NavigationUpdate;
 
-    constructor(destination?: D, init?: NavigationEventInit) {
+    constructor(destination?: string, details?: NavigationUpdate) {
         super(WizardNavigationEvent.eventName, { bubbles: true, composed: true });
         this.destination = destination;
-        this.details = init;
-    }
-
-    /**
-     * Given an event target, bind the destination and details for dispatching.
-     */
-    static toListener<D extends string = string>(
-        target: EventTarget,
-        destination: D,
-        init?: NavigationEventInit,
-    ) {
-        const wizardNavigationListener = (event?: Event) => {
-            event?.preventDefault?.();
-
-            return target.dispatchEvent(new this(destination, init));
-        };
-
-        return wizardNavigationListener;
+        this.details = details;
     }
 }
 
 export class WizardUpdateEvent<T> extends Event {
     static readonly eventName = "ak-wizard-update";
 
-    public readonly content: T;
+    content: T;
 
     constructor(content: T) {
         super(WizardUpdateEvent.eventName, { bubbles: true, composed: true });
@@ -62,7 +39,8 @@ export class WizardCloseEvent extends Event {
 declare global {
     interface GlobalEventHandlersEventMap {
         [WizardNavigationEvent.eventName]: WizardNavigationEvent;
-        [WizardUpdateEvent.eventName]: WizardUpdateEvent<never>;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        [WizardUpdateEvent.eventName]: WizardUpdateEvent<any>;
         [WizardCloseEvent.eventName]: WizardCloseEvent;
     }
 }

@@ -134,7 +134,7 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCryptoCertificatekeypair}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CryptoCertificatekeypair}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

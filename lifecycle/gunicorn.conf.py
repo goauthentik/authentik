@@ -13,7 +13,6 @@ from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
-from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
@@ -147,5 +146,9 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
         except Exception:  # nosec
             pass
 
-start_debug_server()
+if CONFIG.get_bool("remote_debug"):
+    import debugpy
+
+    debugpy.listen(("0.0.0.0", 6800))  # nosec
+
 run_migrations()

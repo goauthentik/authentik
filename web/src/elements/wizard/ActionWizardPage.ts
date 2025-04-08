@@ -41,7 +41,6 @@ export class ActionWizardPage extends WizardPage {
 
     activeCallback = async (): Promise<void> => {
         this.states = [];
-
         this.host.actions.map((act, idx) => {
             this.states.push({
                 action: act,
@@ -49,12 +48,9 @@ export class ActionWizardPage extends WizardPage {
                 idx: idx,
             });
         });
-
         this.host.canBack = false;
         this.host.canCancel = false;
-
         await this.run();
-
         // Ensure wizard is closable, even when run() failed
         this.host.isValid = true;
     };
@@ -63,20 +59,15 @@ export class ActionWizardPage extends WizardPage {
 
     async run(): Promise<void> {
         this.currentStep = this.states[0];
-
         await new Promise((r) => setTimeout(r, 500));
-
         for await (const bundle of this.states) {
             this.currentStep = bundle;
             this.currentStep.state = ActionState.running;
             this.requestUpdate();
             try {
                 await bundle.action.run();
-
                 await new Promise((r) => setTimeout(r, 500));
-
                 this.currentStep.state = ActionState.done;
-
                 this.requestUpdate();
             } catch (exc) {
                 if (exc instanceof ResponseError) {
@@ -84,16 +75,12 @@ export class ActionWizardPage extends WizardPage {
                 } else {
                     this.currentStep.action.subText = (exc as Error).toString();
                 }
-
                 this.currentStep.state = ActionState.failed;
                 this.requestUpdate();
-
                 return;
             }
         }
-
         this.host.isValid = true;
-
         this.dispatchEvent(
             new CustomEvent(EVENT_REFRESH, {
                 bubbles: true,

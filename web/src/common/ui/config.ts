@@ -7,7 +7,6 @@ export enum UserDisplay {
     username = "username",
     name = "name",
     email = "email",
-    none = "none",
 }
 
 export enum LayoutType {

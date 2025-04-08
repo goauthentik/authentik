@@ -78,9 +78,9 @@ class FlowInspectorView(APIView):
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         if settings.DEBUG:
             return
-        if request.user.has_perm(
+        if request.user.has_perm("authentik_flows.inspect_flow") or request.user.has_perm(
             "authentik_flows.inspect_flow", self.flow
-        ) or request.user.has_perm("authentik_flows.inspect_flow"):
+        ):
             return
         raise Http404
 
@@ -96,9 +96,6 @@ class FlowInspectorView(APIView):
         """Get current flow state and record it"""
         plans = []
         for plan in request.session.get(SESSION_KEY_HISTORY, []):
-            plan: FlowPlan
-            if plan.flow_pk != self.flow.pk.hex:
-                continue
             plan_serializer = FlowInspectorPlanSerializer(
                 instance=plan, context={"request": request}
             )

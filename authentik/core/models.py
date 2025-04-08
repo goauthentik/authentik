@@ -204,8 +204,6 @@ class Group(SerializerModel, AttributesMixin):
         permissions = [
             ("add_user_to_group", _("Add user to group")),
             ("remove_user_from_group", _("Remove user from group")),
-            ("enable_group_superuser", _("Enable superuser status")),
-            ("disable_group_superuser", _("Disable superuser status")),
         ]
 
     def __str__(self):
@@ -358,13 +356,13 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         """superuser == staff user"""
         return self.is_superuser  # type: ignore
 
-    def set_password(self, raw_password, signal=True, sender=None, request=None):
+    def set_password(self, raw_password, signal=True, sender=None):
         if self.pk and signal:
             from authentik.core.signals import password_changed
 
             if not sender:
                 sender = self
-            password_changed.send(sender=sender, user=self, password=raw_password, request=request)
+            password_changed.send(sender=sender, user=self, password=raw_password)
         self.password_change_date = now()
         return super().set_password(raw_password)
 
@@ -601,14 +599,6 @@ class Application(SerializerModel, PolicyBindingModel):
             return None
         return candidates[-1]
 
-    def backchannel_provider_for[T: Provider](self, provider_type: type[T], **kwargs) -> T | None:
-        """Get Backchannel provider for a specific type"""
-        providers = self.backchannel_providers.filter(
-            **{f"{provider_type._meta.model_name}__isnull": False},
-            **kwargs,
-        )
-        return getattr(providers.first(), provider_type._meta.model_name)
-
     def __str__(self):
         return str(self.name)
 
@@ -677,8 +667,6 @@ class SourceGroupMatchingModes(models.TextChoices):
 
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
-
-    MANAGED_INBUILT = "goauthentik.io/sources/inbuilt"
 
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
@@ -761,17 +749,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
-        if self.managed == self.MANAGED_INBUILT:
-            return ""
         raise NotImplementedError
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
         """Return property mapping type used by this object"""
-        if self.managed == self.MANAGED_INBUILT:
-            from authentik.core.models import PropertyMapping
-
-            return PropertyMapping
         raise NotImplementedError
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
@@ -786,14 +768,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
-        if self.managed == self.MANAGED_INBUILT:
-            return {}
         raise NotImplementedError
 
     def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a group to build final properties upon."""
-        if self.managed == self.MANAGED_INBUILT:
-            return {}
         raise NotImplementedError
 
     def __str__(self):
@@ -824,7 +802,6 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    identifier = models.TextField()
 
     objects = InheritanceManager()
 
@@ -838,10 +815,6 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
-        indexes = (
-            models.Index(fields=("identifier",)),
-            models.Index(fields=("source", "identifier")),
-        )
 
 
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
@@ -873,11 +846,6 @@ class ExpiringModel(models.Model):
 
     class Meta:
         abstract = True
-        indexes = [
-            models.Index(fields=["expires"]),
-            models.Index(fields=["expiring"]),
-            models.Index(fields=["expiring", "expires"]),
-        ]
 
     def expire_action(self, *args, **kwargs):
         """Handler which is called when this object is expired. By
@@ -933,7 +901,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
     class Meta:
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
-        indexes = ExpiringModel.Meta.indexes + [
+        indexes = [
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
@@ -1033,9 +1001,6 @@ class AuthenticatedSession(ExpiringModel):
     class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
-        indexes = ExpiringModel.Meta.indexes + [
-            models.Index(fields=["session_key"]),
-        ]
 
     def __str__(self) -> str:
         return f"Authenticated Session {self.session_key[:10]}"

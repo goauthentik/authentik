@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -62,7 +62,7 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             html`${item.expires && item.expiring
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
+                ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
             html`${item.permissions

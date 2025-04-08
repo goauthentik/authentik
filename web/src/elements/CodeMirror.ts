@@ -1,5 +1,4 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
@@ -12,7 +11,7 @@ import {
 } from "@codemirror/language";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
-import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
+import { oneDark } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
@@ -28,7 +27,6 @@ export enum CodeMirrorMode {
     XML = "xml",
     JavaScript = "javascript",
     HTML = "html",
-    CSS = "css",
     Python = "python",
     YAML = "yaml",
 }
@@ -51,20 +49,10 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     _value?: string;
 
-    theme: Compartment = new Compartment();
-    syntaxHighlighting: Compartment = new Compartment();
+    theme: Compartment;
 
-    themeLight = EditorView.theme(
-        {
-            "&": {
-                backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
-            },
-        },
-        { dark: false },
-    );
-    themeDark = oneDark;
-    syntaxHighlightingLight = syntaxHighlighting(defaultHighlightStyle);
-    syntaxHighlightingDark = syntaxHighlighting(oneDarkHighlightStyle);
+    themeLight: Extension;
+    themeDark: Extension;
 
     static get styles(): CSSResult[] {
         return [
@@ -132,6 +120,20 @@ export class CodeMirrorTextarea<T> extends AKElement {
         }
     }
 
+    constructor() {
+        super();
+        this.theme = new Compartment();
+        this.themeLight = EditorView.theme(
+            {
+                "&": {
+                    backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+                },
+            },
+            { dark: false },
+        );
+        this.themeDark = oneDark;
+    }
+
     private getInnerValue(): string {
         if (!this.editor) {
             return "";
@@ -149,8 +151,6 @@ export class CodeMirrorTextarea<T> extends AKElement {
                 return htmlLang();
             case CodeMirrorMode.Python:
                 return python();
-            case CodeMirrorMode.CSS:
-                return cssLang();
             case CodeMirrorMode.YAML:
                 return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
         }
@@ -161,26 +161,18 @@ export class CodeMirrorTextarea<T> extends AKElement {
         this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
             if (ev.detail === UiThemeEnum.Dark) {
                 this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeDark),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
-                    ],
+                    effects: this.theme.reconfigure(this.themeDark),
                 });
             } else {
                 this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeLight),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
-                    ],
+                    effects: this.theme.reconfigure(this.themeLight),
                 });
             }
         }) as EventListener);
-
-        const dark = this.activeTheme === UiThemeEnum.Dark;
-
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
+            syntaxHighlighting(defaultHighlightStyle),
             this.getLanguageExtension(),
             lineNumbers(),
             drawSelection(),
@@ -197,10 +189,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            this.syntaxHighlighting.of(
-                dark ? this.syntaxHighlightingDark : this.syntaxHighlightingLight,
-            ),
-            this.theme.of(dark ? this.themeDark : this.themeLight),
+            this.theme.of(this.activeTheme === UiThemeEnum.Dark ? this.themeDark : this.themeLight),
         ];
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],

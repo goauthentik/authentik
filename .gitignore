@@ -33,7 +33,6 @@ eggs/
 lib64/
 parts/
 dist/
-out/
 sdist/
 var/
 wheels/
@@ -210,6 +209,3 @@ source_docs/
 
 ### Golang ###
 /vendor/
-
-### Docker ###
-docker-compose.override.yml

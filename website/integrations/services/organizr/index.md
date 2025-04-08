@@ -1,8 +1,11 @@
 ---
 title: Integrate with organizr
 sidebar_label: organizr
-support_level: community
 ---
+
+# organizr
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is organizr
 
@@ -14,14 +17,10 @@ This integration leverages authentik's LDAP for the identity provider to achieve
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `organizr.company` is the FQDN of the Service installation.
-- `authentik.company` is the FQDN of the authentik installation.
-
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
+- `organizr.company` is the FQDN of the Service install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create a new user account _(or reuse an existing)_ for organizr to use for LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
 

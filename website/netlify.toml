@@ -1003,20 +1003,8 @@
   force = true
 
 [[redirects]]
-  from = "/schema.yaml"
-  to = "/schema.yml"
-  status = 302
-  force = true
-
-[[redirects]]
   from = "/developer-docs/api/api"
   to = "/docs/developer-docs/api/api"
-  status = 302
-  force = true
-
-[[redirects]]
-  from = "/developer-docs/api/reference/*"
-  to = "/docs/developer-docs/api/reference/:splat"
   status = 302
   force = true
 

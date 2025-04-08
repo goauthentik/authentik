@@ -1,8 +1,11 @@
 ---
 title: Integrate with Hoarder
 sidebar_label: Hoarder
-support_level: community
 ---
+
+# Hoarder
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Hoarder
 
@@ -12,33 +15,26 @@ support_level: community
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `hoarder.company` is the FQDN of the Hoarder installation.
-- `authentik.company` is the FQDN of the authentik installation.
-
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
+- `hoarder.company` is the FQDN of the Hoarder install.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## authentik configuration
 
-To support the integration of Hoarder with authentik, you need to create an application/provider pair in authentik.
+### Provider settings
 
-### Create an application and provider in authentik
+In authentik, under **Applications** -> **Providers** of the **Admin interface**, create a new **OAuth2/OpenID Provider** with the desired settings.
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+- Name: `hoarder`
+- Redirect URI: `https://hoarder.company/api/auth/callback/custom`
 
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>hoarder.company</em>/api/auth/callback/custom</kbd>.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+Everything else is up to you, just make sure to grab the client ID and the client secret!
 
-3. Click **Submit** to save the new application and provider.
+### Application settings
+
+In authentik, under **Applications** -> **Applications** of the **Admin interface**, create a new Application with the **Create** button that uses `hoarder` provider.
+Optionally apply access restrictions to the application.
 
 ## Hoarder configuration
 

@@ -169,7 +169,7 @@ export class RadiusProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRadiusRadiusprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

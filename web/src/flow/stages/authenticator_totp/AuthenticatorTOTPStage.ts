@@ -125,8 +125,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             placeholder="${msg("Please enter your TOTP Code")}"
                             autofocus=""
                             autocomplete="one-time-code"
-                            class="pf-c-form-control pf-m-monospace"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                             required
                         />
                     </ak-form-element>

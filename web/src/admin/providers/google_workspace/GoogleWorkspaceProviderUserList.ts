@@ -35,7 +35,7 @@ export class GoogleWorkspaceProviderUserList extends Table<GoogleWorkspaceProvid
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
+                    model=${SyncObjectModelEnum.User}
                     .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
                         return new ProvidersApi(
                             DEFAULT_CONFIG,

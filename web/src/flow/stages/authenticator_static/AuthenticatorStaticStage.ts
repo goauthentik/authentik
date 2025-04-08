@@ -45,6 +45,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                 }
                 ul li {
                     font-size: var(--pf-global--FontSize--2xl);
+                    font-family: monospace;
                     margin: 0 2rem;
                 }
             `,
@@ -79,7 +80,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                     <ak-form-element label="" class="pf-c-form__group">
                         <ul>
                             ${this.challenge.codes.map((token) => {
-                                return html`<li class="pf-m-monospace">${token}</li>`;
+                                return html`<li>${token}</li>`;
                             })}
                         </ul>
                     </ak-form-element>

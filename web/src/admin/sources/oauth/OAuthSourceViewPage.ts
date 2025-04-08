@@ -253,7 +253,7 @@ export class OAuthSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikSourcesOauthOauthsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesOauthOauthsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

@@ -80,9 +80,7 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
                 type="text"
                 @change=${onChange}
                 value="${ifDefined(this.redirectURI.url ?? undefined)}"
-                class="pf-c-form-control ak-form-control pf-m-monospace"
-                spellcheck="false"
-                autocomplete="off"
+                class="pf-c-form-control ak-form-control"
                 required
                 id="url"
                 placeholder=${msg("URL")}

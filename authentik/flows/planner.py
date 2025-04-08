@@ -76,10 +76,10 @@ class FlowPlan:
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
-    def insert_stage(self, stage: Stage, marker: StageMarker | None = None, index=1):
+    def insert_stage(self, stage: Stage, marker: StageMarker | None = None):
         """Insert stage into plan, as immediate next stage"""
-        self.bindings.insert(index, FlowStageBinding(stage=stage, order=0))
-        self.markers.insert(index, marker or StageMarker())
+        self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
+        self.markers.insert(1, marker or StageMarker())
 
     def redirect(self, destination: str):
         """Insert a redirect stage as next stage"""
@@ -166,17 +166,9 @@ class FlowPlan:
             temp_exec.stage_ok()
             return response
 
-        get_qs = request.GET.copy()
-        if request.user.is_authenticated and (
-            # Object-scoped permission or global permission
-            request.user.has_perm("authentik_flows.inspect_flow", flow)
-            or request.user.has_perm("authentik_flows.inspect_flow")
-        ):
-            get_qs["inspector"] = "available"
-
         return redirect_with_qs(
             "authentik_core:if-flow",
-            get_qs,
+            request.GET,
             flow_slug=flow.slug,
         )
 

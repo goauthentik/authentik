@@ -1,5 +1,5 @@
 ---
-title: Static Authenticator Setup stage
+title: Static authenticator setup stage
 ---
 
 This stage configures static Tokens, which can be used as a backup method to time-based OTP tokens.

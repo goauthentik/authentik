@@ -150,7 +150,6 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
-                "scope": "",
             },
         )
         self.validate_jwt(access, provider)
@@ -243,7 +242,6 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
-                "scope": "offline_access",
             },
         )
         self.validate_jwt(access, provider)
@@ -303,7 +301,6 @@ class TestToken(OAuthTestCase):
                 "id_token": provider.encode(
                     access.id_token.to_dict(),
                 ),
-                "scope": "offline_access",
             },
         )
 

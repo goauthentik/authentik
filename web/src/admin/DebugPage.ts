@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
@@ -55,12 +54,10 @@ export class DebugPage extends AKElement {
                                                 message: "Success",
                                             });
                                         })
-                                        .catch(async (error) => {
-                                            const parsedError = await parseAPIResponseError(error);
-
+                                        .catch((exc) => {
                                             showMessage({
                                                 level: MessageLevel.error,
-                                                message: pluckErrorDetail(parsedError),
+                                                message: exc,
                                             });
                                         });
                                 }}

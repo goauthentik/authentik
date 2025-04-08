@@ -42,7 +42,7 @@ jobs:
         with:
           go-version-file: "go.mod"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3.6.0
+        uses: docker/setup-qemu-action@v3.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: prepare variables
@@ -147,8 +147,8 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
       - name: Upload template
         run: |
-          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
-          aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
+          aws s3 cp --acl=public-read website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
+          aws s3 cp --acl=public-read website/docs/install-config/install/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
     needs:
       - build-server
@@ -186,7 +186,7 @@ jobs:
           container=$(docker container create ${{ steps.ev.outputs.imageMainName }})
           docker cp ${container}:web/ .
       - name: Create a Sentry.io release
-        uses: getsentry/action-release@v3
+        uses: getsentry/action-release@v1
         continue-on-error: true
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

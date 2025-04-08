@@ -111,7 +111,7 @@ export class LDAPProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

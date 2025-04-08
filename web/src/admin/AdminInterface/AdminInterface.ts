@@ -1,6 +1,5 @@
-import "@goauthentik/admin/AdminInterface/AboutModal";
-import type { AboutModal } from "@goauthentik/admin/AdminInterface/AboutModal";
 import { ROUTES } from "@goauthentik/admin/Routes";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -8,10 +7,9 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
+import { EnterpriseAwareInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
-import "@goauthentik/elements/banner/EnterpriseStatusBanner";
-import "@goauthentik/elements/banner/VersionBanner";
+import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -22,7 +20,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -30,12 +28,12 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends AuthenticatedInterface {
+export class AdminInterface extends EnterpriseAwareInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -45,10 +43,10 @@ export class AdminInterface extends AuthenticatedInterface {
     ws: WebsocketClient;
 
     @state()
-    user?: SessionUser;
+    version?: Version;
 
-    @query("ak-about-modal")
-    aboutModal?: AboutModal;
+    @state()
+    user?: SessionUser;
 
     static get styles(): CSSResult[] {
         return [
@@ -73,15 +71,11 @@ export class AdminInterface extends AuthenticatedInterface {
                 :host([theme="dark"]) .pf-c-page {
                     --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
-                ak-enterprise-status,
-                ak-version-banner {
+                ak-enterprise-status {
                     grid-area: header;
                 }
                 ak-admin-sidebar {
                     grid-area: nav;
-                }
-                .pf-c-drawer__panel {
-                    z-index: var(--pf-global--ZIndex--xl);
                 }
             `,
         ];
@@ -90,14 +84,12 @@ export class AdminInterface extends AuthenticatedInterface {
     constructor() {
         super();
         this.ws = new WebsocketClient();
-
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
                 notificationDrawerOpen: this.notificationDrawerOpen,
             });
         });
-
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
             updateURLParams({
@@ -108,24 +100,14 @@ export class AdminInterface extends AuthenticatedInterface {
 
     async firstUpdated(): Promise<void> {
         configureSentry(true);
+        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
-
         const canAccessAdmin =
             this.user.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
             this.user.user.systemPermissions.includes("access_admin_interface");
         if (!canAccessAdmin && this.user.user.pk > 0) {
             window.location.assign("/if/user/");
-        }
-    }
-
-    async connectedCallback(): Promise<void> {
-        super.connectedCallback();
-
-        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
-
-            new ESBuildObserver(process.env.WATCHER_URL);
         }
     }
 
@@ -143,7 +125,6 @@ export class AdminInterface extends AuthenticatedInterface {
         return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-enterprise-status interface="admin"></ak-enterprise-status>
-                <ak-version-banner></ak-version-banner>
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>
@@ -178,7 +159,6 @@ export class AdminInterface extends AuthenticatedInterface {
                                     : "display-none"}"
                                 ?hidden=${!this.apiDrawerOpen}
                             ></ak-api-drawer>
-                            <ak-about-modal></ak-about-modal>
                         </div>
                     </div>
                 </div></div

@@ -1,6 +1,6 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -89,11 +89,11 @@ export class ReputationListPage extends TablePage<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${formatElapsedTime(item.updated)}</div>
+            html`<div>${getRelativeTime(item.updated)}</div>
                 <small>${item.updated.toLocaleString()}</small>`,
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputationpolicy}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

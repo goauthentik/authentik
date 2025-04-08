@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
 import { PropertymappingsApi, ScopeMapping } from "@goauthentik/api";
 
@@ -21,7 +22,11 @@ export async function propertyMappingsProvider(page = 1, search = "") {
 
 export function propertyMappingsSelector(instanceMappings?: string[]) {
     if (!instanceMappings) {
-        return async () => [];
+        return async (mappings: DualSelectPair<ScopeMapping>[]) =>
+            mappings.filter(
+                ([_0, _1, _2, scope]: DualSelectPair<ScopeMapping>) =>
+                    !(scope?.managed ?? "").startsWith("goauthentik.io/providers"),
+            );
     }
 
     return async () => {

@@ -34,5 +34,5 @@ class EndSessionView(PolicyAccessView):
                 PLAN_CONTEXT_APPLICATION: self.application,
             },
         )
-        plan.append_stage(in_memory_stage(SessionEndStage))
+        plan.insert_stage(in_memory_stage(SessionEndStage))
         return plan.to_redirect(self.request, self.flow)

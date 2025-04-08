@@ -2,14 +2,13 @@ import { EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -43,11 +42,11 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    row(item: EventWithContext): SlottedTemplateResult[] {
+    row(item: EventWithContext): TemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             EventUser(item),
-            html`<div>${formatElapsedTime(item.created)}</div>
+            html`<div>${getRelativeTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<span>${item.clientIp || msg("-")}</span>`,
         ];

@@ -1,4 +1,4 @@
-import { AuthenticatedInterface, Interface } from "./Interface";
+import { EnterpriseAwareInterface, Interface } from "./Interface";
 
-export { Interface, AuthenticatedInterface };
+export { Interface, EnterpriseAwareInterface };
 export default Interface;

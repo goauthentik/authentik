@@ -1,5 +1,4 @@
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
@@ -7,7 +6,7 @@ import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
+import type { Config, CurrentBrand, LicenseSummary } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
 
 import { AKElement, rootInterface } from "../Base";
@@ -25,17 +24,16 @@ export type AkInterface = HTMLElement & {
 const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
-const versionContext = Symbol("versionContext");
 
 export class Interface extends AKElement implements AkInterface {
+    @state()
+    uiConfig?: UIConfig;
+
     [brandContext]!: BrandContextController;
 
     [configContext]!: ConfigContextController;
 
     [modalController]!: ModalOrchestrationController;
-
-    @state()
-    uiConfig?: UIConfig;
 
     @state()
     config?: Config;
@@ -46,14 +44,10 @@ export class Interface extends AKElement implements AkInterface {
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        this._initContexts();
-        this.dataset.akInterfaceRoot = "true";
-    }
-
-    _initContexts() {
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
+        this.dataset.akInterfaceRoot = "true";
     }
 
     _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
@@ -79,30 +73,20 @@ export class Interface extends AKElement implements AkInterface {
     }
 }
 
-export type AkAuthenticatedInterface = AkInterface & {
+export type AkEnterpriseInterface = AkInterface & {
     licenseSummary?: LicenseSummary;
-    version?: Version;
 };
 
 const enterpriseContext = Symbol("enterpriseContext");
 
-export class AuthenticatedInterface extends Interface {
+export class EnterpriseAwareInterface extends Interface {
     [enterpriseContext]!: EnterpriseContextController;
-    [versionContext]!: VersionContextController;
 
     @state()
     licenseSummary?: LicenseSummary;
 
-    @state()
-    version?: Version;
-
     constructor() {
         super();
-    }
-
-    _initContexts(): void {
-        super._initContexts();
         this[enterpriseContext] = new EnterpriseContextController(this);
-        this[versionContext] = new VersionContextController(this);
     }
 }

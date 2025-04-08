@@ -9,7 +9,7 @@ import { customElement, state } from "lit/decorators.js";
 import { OAuth2ProviderRequest, SourcesApi } from "@goauthentik/api";
 import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
-import { ApplicationTransactionValidationError } from "../../types.js";
+import { ExtendedValidationError } from "../../types.js";
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 @customElement("ak-application-wizard-provider-for-oauth")
@@ -34,7 +34,7 @@ export class ApplicationWizardOauth2ProviderForm extends ApplicationWizardProvid
             });
     }
 
-    renderForm(provider: OAuth2Provider, errors: ApplicationTransactionValidationError) {
+    renderForm(provider: OAuth2Provider, errors: ExtendedValidationError) {
         const showClientSecretCallback = (show: boolean) => {
             this.showClientSecret = show;
         };

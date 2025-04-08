@@ -32,7 +32,7 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    model=${SyncObjectModelEnum.Group}
                     .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
                         return new ProvidersApi(
                             DEFAULT_CONFIG,

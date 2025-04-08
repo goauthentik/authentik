@@ -99,7 +99,6 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
-                    spellcheck="false"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"

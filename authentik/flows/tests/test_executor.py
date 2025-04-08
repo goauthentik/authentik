@@ -7,8 +7,8 @@ from django.http import HttpRequest, HttpResponse
 from django.test.client import RequestFactory
 from django.urls import reverse
 
-from authentik.core.models import Group, User
-from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.core.models import User
+from authentik.core.tests.utils import create_test_flow
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
     FlowDeniedAction,
@@ -255,11 +255,7 @@ class TestFlowExecutor(FlowTestCase):
         )
 
         binding = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=0,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
@@ -282,8 +278,8 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[0], binding)
             self.assertEqual(plan.bindings[1], binding2)
 
-            self.assertEqual(plan.markers[0].__class__, StageMarker)
-            self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], ReevaluateMarker)
 
             # Second request, this passes the first dummy stage
             response = self.client.post(exec_url)
@@ -305,11 +301,7 @@ class TestFlowExecutor(FlowTestCase):
         )
 
         binding = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=0,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
@@ -318,11 +310,7 @@ class TestFlowExecutor(FlowTestCase):
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=2,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -340,9 +328,9 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[1], binding2)
             self.assertEqual(plan.bindings[2], binding3)
 
-            self.assertEqual(plan.markers[0].__class__, StageMarker)
-            self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[2].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+            self.assertIsInstance(plan.markers[2], StageMarker)
 
             # Second request, this passes the first dummy stage
             response = self.client.post(exec_url)
@@ -353,8 +341,8 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[0], binding2)
             self.assertEqual(plan.bindings[1], binding3)
 
-            self.assertEqual(plan.markers[0].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[1].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], StageMarker)
 
         # third request, this should trigger the re-evaluate
         # We do this request without the patch, so the policy results in false
@@ -372,11 +360,7 @@ class TestFlowExecutor(FlowTestCase):
         )
 
         binding = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=0,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
@@ -385,11 +369,7 @@ class TestFlowExecutor(FlowTestCase):
             re_evaluate_policies=True,
         )
         binding3 = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=2,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=true_policy, target=binding2, order=0)
@@ -407,9 +387,9 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[1], binding2)
             self.assertEqual(plan.bindings[2], binding3)
 
-            self.assertEqual(plan.markers[0].__class__, StageMarker)
-            self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[2].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+            self.assertIsInstance(plan.markers[2], StageMarker)
 
             # Second request, this passes the first dummy stage
             response = self.client.post(exec_url)
@@ -420,8 +400,8 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[0], binding2)
             self.assertEqual(plan.bindings[1], binding3)
 
-            self.assertEqual(plan.markers[0].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[1].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], StageMarker)
 
             # Third request, this passes the first dummy stage
             response = self.client.post(exec_url)
@@ -431,7 +411,7 @@ class TestFlowExecutor(FlowTestCase):
 
             self.assertEqual(plan.bindings[0], binding3)
 
-            self.assertEqual(plan.markers[0].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
 
         # third request, this should trigger the re-evaluate
         # We do this request without the patch, so the policy results in false
@@ -449,11 +429,7 @@ class TestFlowExecutor(FlowTestCase):
         )
 
         binding = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=0,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=0
         )
         binding2 = FlowStageBinding.objects.create(
             target=flow,
@@ -468,11 +444,7 @@ class TestFlowExecutor(FlowTestCase):
             re_evaluate_policies=True,
         )
         binding4 = FlowStageBinding.objects.create(
-            target=flow,
-            stage=DummyStage.objects.create(name=generate_id()),
-            order=2,
-            evaluate_on_plan=True,
-            re_evaluate_policies=False,
+            target=flow, stage=DummyStage.objects.create(name=generate_id()), order=2
         )
 
         PolicyBinding.objects.create(policy=false_policy, target=binding2, order=0)
@@ -493,10 +465,10 @@ class TestFlowExecutor(FlowTestCase):
             self.assertEqual(plan.bindings[2], binding3)
             self.assertEqual(plan.bindings[3], binding4)
 
-            self.assertEqual(plan.markers[0].__class__, StageMarker)
-            self.assertEqual(plan.markers[1].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[2].__class__, ReevaluateMarker)
-            self.assertEqual(plan.markers[3].__class__, StageMarker)
+            self.assertIsInstance(plan.markers[0], StageMarker)
+            self.assertIsInstance(plan.markers[1], ReevaluateMarker)
+            self.assertIsInstance(plan.markers[2], ReevaluateMarker)
+            self.assertIsInstance(plan.markers[3], StageMarker)
 
         # Second request, this passes the first dummy stage
         response = self.client.post(exec_url)
@@ -547,9 +519,9 @@ class TestFlowExecutor(FlowTestCase):
         )
         # Stage 0 is a deny stage that is added dynamically
         # when the reputation policy says so
-        deny_stage = DenyStage.objects.create(name=generate_id())
+        deny_stage = DenyStage.objects.create(name="deny")
         reputation_policy = ReputationPolicy.objects.create(
-            name=generate_id(), threshold=-1, check_ip=False
+            name="reputation", threshold=-1, check_ip=False
         )
         deny_binding = FlowStageBinding.objects.create(
             target=flow,
@@ -562,7 +534,7 @@ class TestFlowExecutor(FlowTestCase):
 
         # Stage 1 is an identification stage
         ident_stage = IdentificationStage.objects.create(
-            name=generate_id(),
+            name="ident",
             user_fields=[UserFields.E_MAIL],
             pretend_user_exists=False,
         )
@@ -587,64 +559,3 @@ class TestFlowExecutor(FlowTestCase):
         )
         response = self.client.post(exec_url, {"uid_field": "invalid-string"}, follow=True)
         self.assertStageResponse(response, flow, component="ak-stage-access-denied")
-
-    def test_re_evaluate_group_binding(self):
-        """Test re-evaluate stage binding that has a policy binding to a group"""
-        flow = create_test_flow()
-
-        user_group_membership = create_test_user()
-        user_direct_binding = create_test_user()
-        user_other = create_test_user()
-
-        group_a = Group.objects.create(name=generate_id())
-        user_group_membership.ak_groups.add(group_a)
-
-        # Stage 0 is an identification stage
-        ident_stage = IdentificationStage.objects.create(
-            name=generate_id(),
-            user_fields=[UserFields.USERNAME],
-            pretend_user_exists=False,
-        )
-        FlowStageBinding.objects.create(
-            target=flow,
-            stage=ident_stage,
-            order=0,
-        )
-
-        # Stage 1 is a dummy stage that is only shown for users in group_a
-        dummy_stage = DummyStage.objects.create(name=generate_id())
-        dummy_binding = FlowStageBinding.objects.create(target=flow, stage=dummy_stage, order=1)
-        PolicyBinding.objects.create(group=group_a, target=dummy_binding, order=0)
-        PolicyBinding.objects.create(user=user_direct_binding, target=dummy_binding, order=0)
-
-        # Stage 2 is a deny stage that (in this case) only user_b will see
-        deny_stage = DenyStage.objects.create(name=generate_id())
-        FlowStageBinding.objects.create(target=flow, stage=deny_stage, order=2)
-
-        exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
-
-        with self.subTest(f"Test user access through group: {user_group_membership}"):
-            self.client.logout()
-            # First request, run the planner
-            response = self.client.get(exec_url)
-            self.assertStageResponse(response, flow, component="ak-stage-identification")
-            response = self.client.post(
-                exec_url, {"uid_field": user_group_membership.username}, follow=True
-            )
-            self.assertStageResponse(response, flow, component="ak-stage-dummy")
-        with self.subTest(f"Test user access through user: {user_direct_binding}"):
-            self.client.logout()
-            # First request, run the planner
-            response = self.client.get(exec_url)
-            self.assertStageResponse(response, flow, component="ak-stage-identification")
-            response = self.client.post(
-                exec_url, {"uid_field": user_direct_binding.username}, follow=True
-            )
-            self.assertStageResponse(response, flow, component="ak-stage-dummy")
-        with self.subTest(f"Test user has no access: {user_other}"):
-            self.client.logout()
-            # First request, run the planner
-            response = self.client.get(exec_url)
-            self.assertStageResponse(response, flow, component="ak-stage-identification")
-            response = self.client.post(exec_url, {"uid_field": user_other.username}, follow=True)
-            self.assertStageResponse(response, flow, component="ak-stage-access-denied")

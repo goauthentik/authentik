@@ -35,7 +35,7 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersList({
             ...(await this.defaultEndpointConfig()),
             // TODO: better default
-            model: this.model || RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser,
+            model: this.model || RbacPermissionsAssignedByUsersListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");

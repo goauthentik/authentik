@@ -1,10 +1,12 @@
 """AuthenticatorTOTPStage API Views"""
 
+from django_filters.rest_framework.backends import DjangoFilterBackend
 from rest_framework import mixins
 from rest_framework.fields import ChoiceField
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from authentik.core.api.groups import GroupMemberSerializer
+from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
@@ -38,14 +40,11 @@ class AuthenticatorTOTPStageViewSet(UsedByMixin, ModelViewSet):
 class TOTPDeviceSerializer(ModelSerializer):
     """Serializer for totp authenticator devices"""
 
-    user = GroupMemberSerializer(read_only=True)
-
     class Meta:
         model = TOTPDevice
         fields = [
             "name",
             "pk",
-            "user",
         ]
         depth = 2
 
@@ -62,10 +61,11 @@ class TOTPDeviceViewSet(
 
     queryset = TOTPDevice.objects.filter(confirmed=True)
     serializer_class = TOTPDeviceSerializer
+    permission_classes = [OwnerPermissions]
+    filter_backends = [OwnerFilter, DjangoFilterBackend, OrderingFilter, SearchFilter]
     search_fields = ["name"]
     filterset_fields = ["name"]
     ordering = ["name"]
-    owner_field = "user"
 
 
 class TOTPAdminDeviceViewSet(ModelViewSet):

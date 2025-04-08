@@ -1,16 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
-import {
-    EventContext,
-    EventContextProperty,
-    EventModel,
-    EventWithContext,
-} from "@goauthentik/common/events";
+import { EventContext, EventModel, EventWithContext } from "@goauthentik/common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/elements/Spinner";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -29,15 +23,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventActions, FlowsApi } from "@goauthentik/api";
 
-// TODO: Settle these types. It's too hard to make sense of what we're expecting here.
-type EventSlotValueType =
-    | number
-    | SlottedTemplateResult
-    | undefined
-    | EventContext
-    | EventContextProperty;
-
-type FieldLabelTuple<V extends EventSlotValueType = EventSlotValueType> = [label: string, value: V];
+type Pair = [string, string | number | EventContext | EventModel | string[] | TemplateResult];
 
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
@@ -118,7 +104,7 @@ export class EventInfo extends AKElement {
         ];
     }
 
-    renderDescriptionGroup([term, description]: FieldLabelTuple) {
+    renderDescriptionGroup([term, description]: Pair) {
         return html` <div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">
                 <span class="pf-c-description-list__text">${term}</span>
@@ -134,7 +120,7 @@ export class EventInfo extends AKElement {
             return html`<span>-</span>`;
         }
 
-        const modelFields: FieldLabelTuple[] = [
+        const modelFields: Pair[] = [
             [msg("UID"), context.pk],
             [msg("Name"), context.name],
             [msg("App"), context.app],
@@ -148,23 +134,20 @@ export class EventInfo extends AKElement {
         </div>`;
     }
 
-    getEmailInfo(context: EventContext): SlottedTemplateResult {
+    getEmailInfo(context: EventContext): TemplateResult {
         if (context === null) {
             return html`<span>-</span>`;
         }
 
-        const emailFields = [
-            // ---
+        // prettier-ignore
+        const emailFields: Pair[] = [
             [msg("Message"), context.message],
             [msg("Subject"), context.subject],
             [msg("From"), context.from_email],
-            [
-                msg("To"),
-                html`${(context.to_email as string[]).map((to) => {
+            [msg("To"), html`${(context.to_email as string[]).map((to) => {
                     return html`<li>${to}</li>`;
-                })}`,
-            ],
-        ] satisfies FieldLabelTuple<EventSlotValueType>[];
+                })}`],
+        ];
 
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             ${map(emailFields, this.renderDescriptionGroup)}
@@ -288,10 +271,9 @@ export class EventInfo extends AKElement {
                         <tbody role="rowgroup">
                             ${Object.keys(diff).map((key) => {
                                 const value = diff[key];
-                                const previousCol =
-                                    value.previous_value !== null
-                                        ? JSON.stringify(value.previous_value, null, 4)
-                                        : msg("-");
+                                const previousCol = value.previous_value
+                                    ? JSON.stringify(value.previous_value, null, 4)
+                                    : msg("-");
                                 let newCol = html``;
                                 if (value.add || value.remove) {
                                     newCol = html`<ul class="pf-c-list">

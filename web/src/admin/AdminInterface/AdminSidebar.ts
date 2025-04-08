@@ -1,33 +1,40 @@
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_SIDEBAR_TOGGLE, VERSION } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { AdminApi, CoreApi, UiThemeEnum, Version } from "@goauthentik/api";
 import type { SessionUser, UserSelf } from "@goauthentik/api";
 
 @customElement("ak-admin-sidebar")
-export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement)) {
+export class AkAdminSidebar extends WithCapabilitiesConfig(AKElement) {
     @property({ type: Boolean, reflect: true })
     open = true;
+
+    @state()
+    version: Version["versionCurrent"] | null = null;
 
     @state()
     impersonation: UserSelf["username"] | null = null;
 
     constructor() {
         super();
+        new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
+            this.version = version.versionCurrent;
+        });
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
         });
@@ -106,6 +113,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
 
         // prettier-ignore
         const sidebarContent: SidebarEntry[] = [
+            [`${globalAK().api.base}if/user/`, msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
             [null, msg("Dashboards"), { "?expanded": true }, [
                 ["/administration/overview", msg("Overview")],
                 ["/administration/dashboard/users", msg("User Statistics")],
@@ -159,9 +167,40 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
 
         // prettier-ignore
         return html`
+            ${this.renderNewVersionMessage()}
+            ${this.renderImpersonationMessage()}
             ${map(sidebarContent, renderOneSidebarItem)}
             ${this.renderEnterpriseMenu()}
         `;
+    }
+
+    renderNewVersionMessage() {
+        return this.version && this.version !== VERSION
+            ? html`
+                  <ak-sidebar-item ?highlight=${true}>
+                      <span slot="label"
+                          >${msg("A newer version of the frontend is available.")}</span
+                      >
+                  </ak-sidebar-item>
+              `
+            : nothing;
+    }
+
+    renderImpersonationMessage() {
+        const reload = () =>
+            new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                window.location.reload();
+            });
+
+        return this.impersonation
+            ? html`<ak-sidebar-item ?highlight=${true} @click=${reload}>
+                  <span slot="label"
+                      >${msg(
+                          str`You're currently impersonating ${this.impersonation}. Click to stop.`,
+                      )}</span
+                  >
+              </ak-sidebar-item>`
+            : nothing;
     }
 
     renderEnterpriseMenu() {

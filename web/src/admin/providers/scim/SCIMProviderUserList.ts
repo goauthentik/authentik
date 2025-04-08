@@ -24,7 +24,6 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
         return true;
     }
 
-    expandable = true;
     checkbox = true;
     clearOnRefresh = true;
 
@@ -34,7 +33,7 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
                 <span slot="header">${msg("Sync User")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.AuthentikCoreModelsUser}
+                    model=${SyncObjectModelEnum.User}
                     .sync=${(data: ProvidersScimSyncObjectCreateRequest) => {
                         return new ProvidersApi(DEFAULT_CONFIG).providersScimSyncObjectCreate(data);
                     }}
@@ -82,13 +81,6 @@ export class SCIMProviderUserList extends Table<SCIMProviderUser> {
             </a>`,
             html`${item.id}`,
         ];
-    }
-    renderExpanded(item: SCIMProviderUser): TemplateResult {
-        return html`<td role="cell" colspan="4">
-            <div class="pf-c-table__expandable-row-content">
-                <pre>${JSON.stringify(item.attributes, null, 4)}</pre>
-            </div>
-        </td>`;
     }
 }
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 """System Migration handler"""
-
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
 from os import environ, system
@@ -113,8 +112,7 @@ def run_migrations():
                 "forget to activate a virtual environment?"
             ) from exc
         execute_from_command_line(["", "migrate_schemas"])
-        if CONFIG.get_bool("tenants.enabled", False):
-            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
         execute_from_command_line(
             ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
         )

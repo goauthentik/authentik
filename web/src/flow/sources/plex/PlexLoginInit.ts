@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { MessageLevel } from "@goauthentik/common/messages";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -20,6 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
+    ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
@@ -48,17 +49,19 @@ export class PlexLoginInit extends BaseStage<
                     },
                     slug: this.challenge?.slug || "",
                 })
-                .then((redirectChallenge) => {
-                    window.location.assign(redirectChallenge.to);
+                .then((r) => {
+                    window.location.assign(r.to);
                 })
-                .catch(async (error: unknown) => {
-                    return parseAPIResponseError(error)
-                        .then(showAPIErrorMessage)
-                        .then(() => {
-                            setTimeout(() => {
-                                window.location.assign("/");
-                            }, 5000);
+                .catch((r: ResponseError) => {
+                    r.response.json().then((body: { detail: string }) => {
+                        showMessage({
+                            level: MessageLevel.error,
+                            message: body.detail,
                         });
+                        setTimeout(() => {
+                            window.location.assign("/");
+                        }, 5000);
+                    });
                 });
         });
     }

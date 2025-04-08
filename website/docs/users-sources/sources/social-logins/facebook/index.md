@@ -1,7 +1,8 @@
 ---
 title: Facebook
-support_level: community
 ---
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 Adding Facebook as a source allows users to authenticate through authentik using their Facebook credentials.
 
@@ -9,7 +10,7 @@ Adding Facebook as a source allows users to authenticate through authentik using
 
 The following placeholders are used:
 
-- `authentik.company` is the FQDN of the authentik installation.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Facebook configuration
 
@@ -50,7 +51,7 @@ Finally, you need to publish the Facebook app.
 
 1. Log into authentik as admin, and then navigate to **Directory -> Federation & Social login**
 2. Click **Create**.
-3. In the **New Source** box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
+3. In the **New Source** modal box, for **Select type** select **Facebook OAuth Source** and then click **Next**.
 4. Define the following fields:
     - **Name**: provide a descriptive name
     - **Slug**: leave default value (If you choose a different slug then the default, the URL will need to be updated to reflect the change)
@@ -64,7 +65,7 @@ Finally, you need to publish the Facebook app.
     - **Flow settings**
         - **Authentication flow**: leave the default `default-source-authentication` option.
         - **Enrollment flow**: leave the default `default-source-enrollment` option.
-5. Click **Finish** to save your settings and close the box.
+5. Click **Finish** to save your settings and close the modal box.
 
 You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
 

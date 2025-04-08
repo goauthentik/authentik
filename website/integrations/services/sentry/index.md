@@ -1,8 +1,11 @@
 ---
 title: Integrate with Sentry
 sidebar_label: Sentry
-support_level: authentik
 ---
+
+# Sentry
+
+<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Sentry
 
@@ -13,14 +16,10 @@ support_level: authentik
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `sentry.company` is the FQDN of the Sentry installation.
-- `authentik.company` is the FQDN of the authentik installation.
-
-:::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
-:::
+- `sentry.company` is the FQDN of the Sentry install.
+- `authentik.company` is the FQDN of the authentik install.
 
 Create an application in authentik. Create a SAML Provider with the following values
 

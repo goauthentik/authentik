@@ -22,8 +22,8 @@ export class TimeDeltaHelp extends AKElement {
         return html`<div class="pf-c-form__helper-text">
             <span>
                 ${this.negative
-                    ? msg(html`(Format: <code>hours=-1;minutes=-2;seconds=-3)</code>.`)
-                    : msg(html`(Format: <code>hours=1;minutes=2;seconds=3).</code>`)}
+                    ? msg("(Format: hours=-1;minutes=-2;seconds=-3).")
+                    : msg("(Format: hours=1;minutes=2;seconds=3).")}
             </span>
             <pf-tooltip position="top">
                 <i class="pf-icon fa fa-question-circle" aria-hidden="true"></i>

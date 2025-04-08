@@ -202,9 +202,6 @@ class Blueprint:
 class YAMLTag:
     """Base class for all YAML Tags"""
 
-    def __repr__(self) -> str:
-        return str(self.resolve(BlueprintEntry(""), Blueprint()))
-
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         """Implement yaml tag logic"""
         raise NotImplementedError

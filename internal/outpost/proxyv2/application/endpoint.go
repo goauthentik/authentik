@@ -56,7 +56,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	if !embedded && hostBrowser == "" {
 		return ep
 	}
-	var newHost = aku
+	var newHost *url.URL = aku
 	var newBrowserHost *url.URL
 	if embedded {
 		if authentikHost == "" {

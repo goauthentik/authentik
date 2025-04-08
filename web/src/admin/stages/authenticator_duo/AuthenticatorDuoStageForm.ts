@@ -79,9 +79,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                 <input
                     type="text"
                     value="${first(this.instance?.apiHostname, "")}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
+                    class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -106,14 +104,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         ?writeOnly=${this.instance !== undefined}
                         name="clientSecret"
                     >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
+                        <input type="text" value="" class="pf-c-form-control" required />
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
@@ -133,9 +124,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         <input
                             type="text"
                             value="${first(this.instance?.adminIntegrationKey, "")}"
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
+                            class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
@@ -143,13 +132,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                         ?writeOnly=${this.instance !== undefined}
                         name="adminSecretKey"
                     >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                        />
+                        <input type="text" value="" class="pf-c-form-control" />
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

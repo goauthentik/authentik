@@ -116,13 +116,8 @@ export class LibraryPage extends AKElement {
     @bound
     launchRequest(event: LibraryPageSearchSelected) {
         event.stopPropagation();
-        if (!this.selectedApp?.launchUrl) {
-            return;
-        }
-        if (!this.selectedApp.openInNewTab) {
+        if (this.selectedApp?.launchUrl) {
             window.location.assign(this.selectedApp?.launchUrl);
-        } else {
-            window.open(this.selectedApp.launchUrl);
         }
     }
 

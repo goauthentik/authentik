@@ -1,15 +1,16 @@
 ---
 title: Twitch
-support_level: community
 ---
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Twitch credentials
 
 ## Preparation
 
-The following placeholders are used in this guide:
+The following placeholders will be used:
 
-- `authentik.company` is the FQDN of the authentik installation.
+- `authentik.company` is the FQDN of the authentik install.
 
 ## Twitch
 

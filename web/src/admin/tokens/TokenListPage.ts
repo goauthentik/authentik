@@ -2,7 +2,7 @@ import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -107,7 +107,7 @@ export class TokenListPage extends TablePage<Token> {
             html`<a href="#/identity/users/${item.userObj?.pk}">${item.userObj?.username}</a>`,
             html`<ak-status-label type="warning" ?good=${item.expiring}></ak-status-label>`,
             html`${item.expires && item.expiring
-                ? html`<div>${formatElapsedTime(item.expires)}</div>
+                ? html`<div>${getRelativeTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
             html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
@@ -132,7 +132,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreToken}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>
