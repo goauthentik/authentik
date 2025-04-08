@@ -148,7 +148,7 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
 ```
 
-6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section. For example in the `all_access` section:
+6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section. The following example adds the role to the `all_access` section:
 
 ```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
 all_access:
@@ -185,9 +185,9 @@ hosts:
             run_as: false
 ```
 
-    If `run_as` is set to `false`, proceed to step 4.
+    The `run_as` parameter when set to true, enables the assignment of roles to users based on authorization context information. See the (Wazuh Authorization Context documentation)[https://documentation.wazuh.com/current/user-manual/api/rbac/auth-context.html] for more information.
 
-    If `run_as` is set to `true`, you need to add a role mapping on the Wazuh dashboard:
+    If `run_as` is set to `false`, proceed to step 4. If `run_as` is set to `true`, proceed with the following steps to add a role mapping on the Wazuh dashboard.
 
 2. On the Wazuh dashboard click the upper-left menu icon ☰ to open the menu, go to **Server management** -> **Security** -> **Roles mapping**
 
