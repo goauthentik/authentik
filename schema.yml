@@ -58170,6 +58170,10 @@ components:
           type: string
           format: date-time
           nullable: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
         is_superuser:
           type: boolean
           readOnly: true
@@ -58213,6 +58217,7 @@ components:
           readOnly: true
       required:
       - avatar
+      - date_joined
       - groups_obj
       - is_superuser
       - name
