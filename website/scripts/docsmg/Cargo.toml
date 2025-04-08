@@ -11,4 +11,4 @@ clap = { version = "4.5.9", features = ["derive", "env"] }
 colored = "2.1.0"
 dotenv = "0.15.0"
 regex = "1.10.6"
-tokio = "1.38.0"
+tokio = "1.38.2"
