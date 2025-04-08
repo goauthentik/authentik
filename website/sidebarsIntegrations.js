@@ -87,6 +87,7 @@ module.exports = {
                         "services/meshcentral/index",
                         "services/minio/index",
                         "services/netbox/index",
+                        "services/omni/index",
                         "services/pgadmin/index",
                         "services/phpipam/index",
                         "services/powerdns-admin/index",
