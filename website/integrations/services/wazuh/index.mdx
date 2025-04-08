@@ -4,8 +4,6 @@ sidebar_label: Wazuh
 support_level: community
 ---
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
 ## What is Wazuh
 
 > Wazuh is a security platform that aims to safeguard data assets across multiple environments including on-site, virtualized, containerized, and cloud-based.
@@ -44,14 +42,12 @@ To support the integration of Wazuh with authentik, you need to create a group, 
     - **Name**: Choose a descriptive name
     - **SAML Attribute Name**: <kbd>Roles</kbd>
     - **Friendly Name**: Leave blank
-    - **Expression**:
+    - **Expression**: `wazuh-administrators` is used a placeholder for the group name.
 
-<IntegrationsMultilineCodeblock>
-    {`
-if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
+```python
+if ak_is_group_member(request.user, name="wazuh-administrators"):
     yield "wazuh-admin"
-`}
-</IntegrationsMultilineCodeblock>;
+```
 
 3. Click **Finish**.
 
@@ -77,7 +73,7 @@ if ak_is_group_member(request.user, name="<em>wazuh-administrators</em>"):
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for wazuh`).
-3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded is your `SAML Metadata` file and it will be required in the next section.
+3. Under **Related objects** > **Metadata**, click on **Download**. This downloaded file is your `SAML Metadata` file and it will be required in the next section.
 
 ## Wazuh configuration
 
@@ -91,24 +87,23 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
 
 1. For the next step, you will need an exchange key. To generate this key, use the following command:
 
-    ```bash
-    openssl rand -hex 32
-    ```
+```bash
+openssl rand -hex 32
+```
 
 2. Copy the downloaded metadata file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
 3. Change the ownership of the `wazuh_authentik_meta.xml` file to the `wazuh-indexer` user using the following command:
 
-    ```bash
-    chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
-    ```
+```bash
+chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
+```
 
 4. Edit the `/etc/wazuh-indexer/opensearch-security/config.yml` on your Wazuh Indexer server.
 
-Add a `saml_auth_domain` section after the `basic_internal_auth_domain` section. For example:
+    Add a `saml_auth_domain` section after the `basic_internal_auth_domain` section. For example:
 
-<IntegrationsMultilineCodeblock>
-    {`
+```yaml {7,10,13-30} showLineNumbers title="/etc/wazuh-indexer/opensearch-security/config.yml"
 ---
 authc:
     basic_internal_auth_domain:
@@ -130,17 +125,16 @@ authc:
             challenge: true
             config:
                 idp:
-                    metadata_file: "/etc/wazuh-indexer/opensearch-security/<em>wazuh_authentik_meta.xml</em>"
+                    metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
                     entity_id: "wazuh-saml"
                 sp:
                     entity_id: "wazuh-saml"
-                kibana_url: "https://<em>wazuh-dashboard.company/</em>"
+                kibana_url: "https://wazuh-dashboard.company/"
                 roles_key: Roles
-                exchange_key: "<em><exchange key generated in step 1></em>"
+                exchange_key: "<exchange key generated in step 1>"
         authentication_backend:
             type: noop
-  `}
-</IntegrationsMultilineCodeblock>;
+```
 
 :::note
 Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
@@ -148,56 +142,56 @@ Ensure that you set the following parameters in the `basic_internal_auth_domain`
 And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `saml_auth_domain` section.
 :::
 
-5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file:
+5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
 
-<kbd>export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <em>wazuh-indexer.company</em> -nhnv</kbd>
+```bash
+export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+```
 
-6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section.
+6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section. For example in the `all_access` section:
 
-for example in the `all_access` section:
-
-<IntegrationsMultilineCodeblock>
-    {`
+```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
 all_access:
 reserved: true
 hidden: false
 backend_roles:
-    - <em>"wazuh-admin"</em>
+// highlight-next-line
+    - "wazuh-admin"
     - "admin"
 hosts: []
 users: []
 and_backend_roles: []
 description: "Maps admin to all_access"
-  `}
-</IntegrationsMultilineCodeblock>;
+```
 
-7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`:
+7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
 
-<kbd>export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h <em>wazuh-indexer.company</em> -nhnv </kbd>
+```bash
+export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company{" "} -nhnv
+```
 
 ### Wazuh dashboard configuration
 
 1. On the Wazuh Dashboard server, check the value of `run_as` in the `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` configuration file:
 
-<IntegrationsMultilineCodeblock>
-    {`
+```yaml showLineNumbers title="/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
 hosts:
     - default:
             url: https://127.0.0.1
             port: 55000
             username: wazuh-wui
             password: "<WAZUH_WUI_PASSWORD>"
+            // highlight-next-line
             run_as: false
-  `}
-</IntegrationsMultilineCodeblock>;
+```
 
-If `run_as` is set to `false`, proceed to step 4.
+    If `run_as` is set to `false`, proceed to step 4.
 
-If `run_as` is set to `true`, you need to add a role mapping on the Wazuh dashboard:
+    If `run_as` is set to `true`, you need to add a role mapping on the Wazuh dashboard:
 
-2.  On the Wazuh dashboard click the upper-left menu icon ☰ to open the menu, go to **Server management** -> **Security** -> **Roles mapping**
+2. On the Wazuh dashboard click the upper-left menu icon ☰ to open the menu, go to **Server management** -> **Security** -> **Roles mapping**
 
-3.  Click **Create Role mapping** and configure the following parameters:
+3. Click **Create Role mapping** and configure the following parameters:
 
     - **Role Name**: set a name for the role mapping (e.g. authentik_admins)
     - **Roles**: select a role (e.g.`administrator`)
@@ -206,12 +200,11 @@ If `run_as` is set to `true`, you need to add a role mapping on the Wazuh dashbo
         - **Search operation**: `FIND`
         - **Value**: `wazuh-admin`
 
-Click **Save role mapping**
+    Click **Save role mapping**
 
 4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file:
 
-<IntegrationsMultilineCodeblock>
-    {`
+```yaml showLineNumbers
 opensearch_security.auth.type: "saml"
 server.xsrf.allowlist:
     [
@@ -220,14 +213,13 @@ server.xsrf.allowlist:
         "/_opendistro/_security/saml/acs/idpinitiated",
     ]
 opensearch_security.session.keepalive: false
-  `}
-</IntegrationsMultilineCodeblock>;
+```
 
 5. Restart the Wazuh dashboard service using the following command:
 
-    ```bash
-    sudo systemctl restart wazuh-dashboard
-    ```
+```bash
+sudo systemctl restart wazuh-dashboard
+```
 
 ## Configuration verification
 
