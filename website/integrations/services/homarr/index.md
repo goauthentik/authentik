@@ -56,4 +56,4 @@ OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true
 # AUTH_OIDC_AUTO_LOGIN=true
 ```
 
-Finally, restart the Homarr server and test your configuration.
+Restart the Homarr service for the changes to take effect.
