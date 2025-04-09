@@ -55,7 +55,7 @@ To support the integration of Cloudflare Access with authentik, you need to crea
 4. Click **Save**.
 5. Click **Test** to verify the login provider.
 
-## Ressources
+## Resources
 
 - [Cloudflare Access Generic OIDC documentation](https://developers.cloudflare.com/cloudflare-one/identity/idp-integration/generic-oidc/)
 
