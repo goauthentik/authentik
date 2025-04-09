@@ -59,7 +59,7 @@ return {
 - **Choose a Provider type**: select **OAuth2/OpenID Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - **Protocol settings**:
-        - Note the Client ID, Client Secret and application slug because they will be required later.
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
             - Strict: <kbd>https://<em>openproject.company</em>/auth/oidc-<em>authentik</em>/callback</kbd>
         - **Signing key**: select any available signing key.
