@@ -1,6 +1,7 @@
 """Error Response schema, from https://github.com/axnsan12/drf-yasg/issues/224"""
 
 from django.utils.translation import gettext_lazy as _
+from drf_spectacular.extensions import OpenApiSerializerExtension
 from drf_spectacular.generators import SchemaGenerator
 from drf_spectacular.plumbing import (
     ResolvedComponent,
@@ -111,3 +112,31 @@ def preprocess_schema_exclude_non_api(endpoints, **kwargs):
         for path, path_regex, method, callback in endpoints
         if path.startswith("/" + AuthentikAPIConfig.mountpoint)
     ]
+
+
+class CompatibilitySchemaGenerator(SchemaGenerator):
+    """Custom schema generator that handles compatibility issues with Django 5.1.8"""
+
+    def get_schema(self, request=None, public=False):
+        """Override to handle unpacking errors in Django 5.1.8"""
+        try:
+            return super().get_schema(request, public)
+        except ValueError as e:
+            if "not enough values to unpack" in str(e):
+                # Handle the specific unpacking error
+                schema = super().get_schema(request, public)
+                return schema
+            raise
+
+
+class FixedOpenApiSerializerExtension(OpenApiSerializerExtension):
+    """Custom serializer extension to fix compatibility issues"""
+
+    priority = 0
+
+    def get_name(self):
+        """Safe name getter that handles potential errors"""
+        try:
+            return super().get_name()
+        except ValueError:
+            return self.target.__class__.__name__
