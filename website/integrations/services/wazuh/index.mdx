@@ -44,7 +44,7 @@ To support the integration of Wazuh with authentik, you need to create a group, 
     - **Friendly Name**: Leave blank
     - **Expression**: `wazuh-administrators` is used a placeholder for the group name.
 
-```python
+     ```python
      if ak_is_group_member(request.user, name="wazuh-administrators"):
         yield "wazuh-admin"
     ```
