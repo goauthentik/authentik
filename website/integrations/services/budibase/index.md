@@ -50,7 +50,7 @@ From the main page of your Budibase installation, add the following values under
 - **Callback URL**: <kbd>https://<em>budibase.company</em>/api/global/auth/oidc/callback/</kbd>
 - **Name**: <kbd>authentik</kbd>
 
-## Ressources
+## Resources
 
 - [Budibase official documentation on OpenID Connect](https://docs.budibase.com/docs/openid-connect)
 
