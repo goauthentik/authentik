@@ -388,16 +388,16 @@ wheels = [
 
 [[package]]
 name = "aws-cdk-asset-awscli-v1"
-version = "2.2.227"
+version = "2.2.231"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsii" },
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/89/df/78801b4df77d7320b337b53a307a1611276c6f2af4a1d042646f4852103f/aws_cdk_asset_awscli_v1-2.2.227.tar.gz", hash = "sha256:0fa4cf382e712121b8bbe11532854018abdba19964ded9c0aa9aace4383816b6", size = 17896340 }
+sdist = { url = "https://files.pythonhosted.org/packages/01/b2/4a142d1d8093691c1b54b7b35f463f6defa1d0a8a08b7be2277eae73c726/aws_cdk_asset_awscli_v1-2.2.231.tar.gz", hash = "sha256:859d99e0fcdc2f6ada44090ad9f921743da3ca3a6d9f39ab06836d4c8e0fbc23", size = 17960944 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3f/5c/77d85e5f554f726e8ce97af52757608e444cafc6119d010bf4306c2314c4/aws_cdk.asset_awscli_v1-2.2.227-py3-none-any.whl", hash = "sha256:5160cd515d94d0da252806cd853a3e861e1b76aa553e1c90aec2bd712fa3df1b", size = 17894705 },
+    { url = "https://files.pythonhosted.org/packages/68/2d/dae06874ab3a66ad898d9c2d792c863b8b8249b203a1d8e3b36dfca44a93/aws_cdk_asset_awscli_v1-2.2.231-py3-none-any.whl", hash = "sha256:06d6b1d9e52272c315b944320f7039b47c6a6058f063fa33ab0ec06fea17bfbe", size = 17959325 },
 ]
 
 [[package]]
@@ -416,21 +416,21 @@ wheels = [
 
 [[package]]
 name = "aws-cdk-cloud-assembly-schema"
-version = "40.7.0"
+version = "41.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "jsii" },
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/43/47/a30207feaf5f24e782530b031dcfc9ed3e3fef5c63d0911a1eded4eb130d/aws_cdk_cloud_assembly_schema-40.7.0.tar.gz", hash = "sha256:8269a74cce261e56750290a2492f04d0e6825913d321a8ab17ba3b5f872fc193", size = 190607 }
+sdist = { url = "https://files.pythonhosted.org/packages/81/b4/4f3073b1c29dfe97eacd44c69d3144c5b95d8cc76439dbe40b7d8d7973c9/aws_cdk_cloud_assembly_schema-41.2.0.tar.gz", hash = "sha256:7064ac13f6944fd53f8d8eace611d3c5d8db7014049d629f5c47ede8dc5f2e3b", size = 192007 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/77/79/aeb2271dce3a079dacf28627942d5e505dae992ee711fc1be5e3bc7b887d/aws_cdk.cloud_assembly_schema-40.7.0-py3-none-any.whl", hash = "sha256:a86de4f46a72f9445f0a0ae646c348702041047c72d10b76e3b4c8dc5e460ee1", size = 189588 },
+    { url = "https://files.pythonhosted.org/packages/44/13/cd49f3c83768782d3a90ed0748953d5305755e236de624b9b691577372cc/aws_cdk.cloud_assembly_schema-41.2.0-py3-none-any.whl", hash = "sha256:779ca7e3edb02695e0a94a1f38e322b04fbe192cd7944553f80b681a21edd670", size = 190879 },
 ]
 
 [[package]]
 name = "aws-cdk-lib"
-version = "2.184.1"
+version = "2.188.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aws-cdk-asset-awscli-v1" },
@@ -441,9 +441,9 @@ dependencies = [
     { name = "publication" },
     { name = "typeguard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ff/0b/6e0d17d301503ff5899c486d82307b6f95ab381a9660ead5dee5cb7ad4c9/aws_cdk_lib-2.184.1.tar.gz", hash = "sha256:dc57edaf8ceb21f68c6ebee214194f7b9d4ef013d27b9bfe93e35d71b965b013", size = 39707632 }
+sdist = { url = "https://files.pythonhosted.org/packages/18/3a/dee74c2f4ed08deda193370743581b9212c98adb040b379cd28bb48c8e52/aws_cdk_lib-2.188.0.tar.gz", hash = "sha256:373f40217dbb9f924f530cd51cb56b3d952bfe571bfa8702f764f1643cef7e88", size = 40175677 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/a4/f0f472ceff1af7fda61f4ac43793b1c6b92df387acdb91de0d7b5c3b9520/aws_cdk_lib-2.184.1-py3-none-any.whl", hash = "sha256:2ab33a9bc8a42a425ae9e9214dd92e5e5d1885e210b4bfe16679498b1ea27b2e", size = 39985553 },
+    { url = "https://files.pythonhosted.org/packages/c8/bc/11e9276c41b6f529b92bc9833c3de40886d88caf2e29bdcd3c5cce57c77e/aws_cdk_lib-2.188.0-py3-none-any.whl", hash = "sha256:0f7c26444eb56dcdcf9b9357a06863859fee51965999717753eaa2af64c9b99f", size = 40454926 },
 ]
 
 [[package]]
@@ -2623,12 +2623,12 @@ wheels = [
 
 [[package]]
 name = "pywin32"
-version = "306"
+version = "310"
 source = { registry = "https://pypi.org/simple" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/14/91/17e016d5923e178346aabda3dfec6629d1a26efe587d19667542105cf0a6/pywin32-306-cp312-cp312-win32.whl", hash = "sha256:383229d515657f4e3ed1343da8be101000562bf514591ff383ae940cad65458b", size = 8507705 },
-    { url = "https://files.pythonhosted.org/packages/83/1c/25b79fc3ec99b19b0a0730cc47356f7e2959863bf9f3cd314332bddb4f68/pywin32-306-cp312-cp312-win_amd64.whl", hash = "sha256:37257794c1ad39ee9be652da0462dc2e394c8159dfd913a8a4e8eb6fd346da0e", size = 9227429 },
-    { url = "https://files.pythonhosted.org/packages/1c/43/e3444dc9a12f8365d9603c2145d16bf0a2f8180f343cf87be47f5579e547/pywin32-306-cp312-cp312-win_arm64.whl", hash = "sha256:5821ec52f6d321aa59e2db7e0a35b997de60c201943557d108af9d4ae1ec7040", size = 10388145 },
+    { url = "https://files.pythonhosted.org/packages/6b/ec/4fdbe47932f671d6e348474ea35ed94227fb5df56a7c30cbbb42cd396ed0/pywin32-310-cp312-cp312-win32.whl", hash = "sha256:8a75a5cc3893e83a108c05d82198880704c44bbaee4d06e442e471d3c9ea4f3d", size = 8796239 },
+    { url = "https://files.pythonhosted.org/packages/e3/e5/b0627f8bb84e06991bea89ad8153a9e50ace40b2e1195d68e9dff6b03d0f/pywin32-310-cp312-cp312-win_amd64.whl", hash = "sha256:bf5c397c9a9a19a6f62f3fb821fbf36cac08f03770056711f765ec1503972060", size = 9503839 },
+    { url = "https://files.pythonhosted.org/packages/1f/32/9ccf53748df72301a89713936645a664ec001abd35ecc8578beda593d37d/pywin32-310-cp312-cp312-win_arm64.whl", hash = "sha256:2349cc906eae872d0663d4d6290d13b90621eaf78964bb1578632ff20e152966", size = 8459470 },
 ]
 
 [[package]]
