@@ -42,7 +42,7 @@ To support the integration of Homarr with authentik, you need to create an appli
 
 ## Homarr configuration
 
-In Homarr, you'll need to add these environment variables:
+Add the following environment variables to your Homarr configuration. Make sure to fill in the Client ID, Client Secret, OIDC Issuer, and OIDC URI from your authentik instance.
 
 ```sh
 AUTH_PROVIDERS="oidc,credentials"
