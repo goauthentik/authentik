@@ -113,6 +113,7 @@ class AccessDeniedChallenge(WithUserInfoChallenge):
     component = CharField(default="ak-stage-access-denied")
 
     error_message = CharField(required=False)
+    error = CharField(required=False)  # For backward compatibility
 
 
 class SessionEndChallenge(WithUserInfoChallenge):

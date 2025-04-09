@@ -105,17 +105,63 @@ class RACFinalStage(RedirectStage):
                 # they are already connected
                 if all_tokens.filter(session__user=self.request.user).exists():
                     msg.append(_("(You are already connected in another tab/window)"))
-                return self.executor.stage_invalid(" ".join(msg))
+                error_message = " ".join(msg)
+                return self.executor.stage_invalid(error_message)
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        # Find the current session
+        current_session = AuthenticatedSession.objects.filter(
+            session_key=self.request.session.session_key
+        ).first()
+
+        # Invalidate any existing tokens for this session for THIS provider but other endpoints
+        # This ensures we don't have conflicting tokens between different RAC applications
+        existing_provider_tokens = ConnectionToken.filter_not_expired(
+            session=current_session,
+            provider=self.provider,
+        ).exclude(endpoint=self.endpoint)
+        
+        for old_token in existing_provider_tokens:
+            # Log that we're deleting an existing token from the same provider
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    f"Removing previous RAC connection token for different endpoint in the same provider: "
+                    f"'{old_token.endpoint.name}'"
+                ),
+                provider=self.provider,
+                endpoint=old_token.endpoint.name,
+            ).from_http(self.request)
+            old_token.delete()
+            
+        # Also check for and invalidate any tokens for the exact same endpoint 
+        # (this preserves the original behavior)
+        existing_endpoint_tokens = ConnectionToken.filter_not_expired(
+            session=current_session,
+            endpoint=self.endpoint,
+        )
+        
+        for old_token in existing_endpoint_tokens:
+            # Log that we're deleting an existing token for the exact endpoint
+            Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=(
+                    f"Removing previous RAC connection token for endpoint: "
+                    f"'{old_token.endpoint.name}'"
+                ),
+                provider=self.provider,
+                endpoint=old_token.endpoint.name,
+            ).from_http(self.request)
+            old_token.delete()
+
+        # Create a new token for the current request
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
             settings=self.executor.plan.context.get("connection_settings", {}),
-            session=AuthenticatedSession.objects.filter(
-                session_key=self.request.session.session_key
-            ).first(),
+            session=current_session,
+            session_id=current_session.pk,
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )
