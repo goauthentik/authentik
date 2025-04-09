@@ -19,32 +19,49 @@ The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP s
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
+- `roudcube.company` is the FQDN of the Roundcube installation.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create a new oauth2 Scope Mapping which does not return the 'group' values and associate this mapping
-in the provider settings instead of the default oauth mapping.
+## authentik configuration
 
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "oauth2-Scope-dovecot". Set the scope name to `dovecotprofile` and the expression to the following
+To support the integration of Roundcube with authentik, you need to create an application/provider pair in authentik.
 
-```
-return {
-    "name": request.user.name,
-    "given_name": request.user.name,
-    "family_name": "",
-    "preferred_username": request.user.username,
-    "nickname": request.user.username,
-  	 #DO NOT INCLUDE groups
-}
-```
+### Create property mappings
 
-Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
+    - **Name**: Set an appropriate name.
+    - **Scope Name**: `dovecotprofile`
+    - **Description**: Set an appropriate description, if desired.
+    - **Expression**:
+        ```python
+        return {
+            "name": request.user.name,
+            "given_name": request.user.name,
+            "family_name": "",
+            "preferred_username": request.user.username,
+            "nickname": request.user.username,
+        }
+        ```
 
-- Client Type: `Confidential`
-- Scopes: OpenID, Email, and the scope you created above
-- Signing Key: Select any available key
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>roundcube.company</em>/index.php?\_task=settings&\_action=plugin.oauth_redirect</kbd>.
+    - Select any available signing key.
+    - Under **Advanced protocol settings**, add the scope you just created to the list of selected scopes.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## Roundcube Configuration
 

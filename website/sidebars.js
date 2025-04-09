@@ -608,6 +608,7 @@ export default {
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
+                "sys-mgmt/service-accounts",
             ],
         },
         {
@@ -706,6 +707,11 @@ export default {
                     items: [
                         {
                             type: "category",
+                            label: "2025",
+                            items: ["security/cves/CVE-2025-29928"],
+                        },
+                        {
+                            type: "category",
                             label: "2024",
                             items: [
                                 "security/cves/CVE-2024-52307",
@@ -776,6 +782,7 @@ export default {
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
+                "troubleshooting/logs",
                 "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",

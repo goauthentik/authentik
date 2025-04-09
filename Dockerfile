@@ -43,7 +43,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS go-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -76,7 +76,7 @@ COPY ./go.sum /go/src/goauthentik.io/go.sum
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
@@ -94,9 +94,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Download uv
-FROM ghcr.io/astral-sh/uv:0.6.9 AS uv
+FROM ghcr.io/astral-sh/uv:0.6.13 AS uv
 # Stage 6: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.12.8-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.12.9-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

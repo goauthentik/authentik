@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -69,7 +69,7 @@ export class OutpostHealthSimpleElement extends AKElement {
         const lastSeen = this.outpostHealths[0].lastSeen;
         return html`<ak-label color=${PFColor.Green}>
             ${msg(
-                str`Last seen: ${getRelativeTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
+                str`Last seen: ${formatElapsedTime(lastSeen)} (${lastSeen.toLocaleTimeString()})`,
             )}</ak-label
         >`;
     }

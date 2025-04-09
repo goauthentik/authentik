@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3776,7 +3776,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>成功更新 <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>更新
         <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3868,11 +3868,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>已成功生成恢复链接</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>未配置恢复流程。</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -6759,7 +6754,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>解绑源失败：
         <x id="0" equiv-text="${exc}"/></target>
         
@@ -7773,10 +7768,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
   <target>要让用户直接重置密码，请在当前活动的品牌上配置恢复流程。</target>
 </trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
-  <target>当前品牌必须配置恢复流程才能使用恢复链接</target>
-</trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
   <target>已成功更新设置。</target>
@@ -8676,8 +8667,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>俄语</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>上次出现：<x id="0" equiv-text="${getRelativeTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>上次出现：<x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9625,10 +9616,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Show inactive users</source>
   <target>显示不活跃的用户</target>
 </trans-unit>
-<trans-unit id="s5787e20cab57b383">
-  <source>Unknown error</source>
-  <target>未知错误</target>
-</trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
   <target>发出令牌的有效时间。</target>
@@ -9708,6 +9695,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
   <target>Webhook 标头映射</target>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
+  <target>预览输入失败</target>
 </trans-unit>
     </body>
   </file>
