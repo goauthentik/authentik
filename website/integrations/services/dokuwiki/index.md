@@ -75,7 +75,7 @@ For **oauthgeneric**:
 
 Once that is done, navigate to the **Authentication** sub-section of the **Administration** interface's **Configuration Settings** section and enable **oauth** under **Authentication backend**.
 
-## Ressources
+## Resources
 
 - [DocuWiki OAuth plugin](https://www.dokuwiki.org/plugin:oauth)
 - [DocuWiki plugin for generic OAuth](https://www.dokuwiki.org/plugin:oauthgeneric)
