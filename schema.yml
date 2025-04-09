@@ -18494,10 +18494,33 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
+        name: name
         schema:
           type: string
-          format: uuid
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
       - $ref: '#/components/parameters/QueryName'
       - $ref: '#/components/parameters/QueryPaginationOrdering'
       - $ref: '#/components/parameters/QueryPaginationPage'
@@ -48637,10 +48660,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -48650,6 +48669,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -52420,10 +52445,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -52432,6 +52453,12 @@ components:
         sync_page_timeout:
           type: string
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -52542,10 +52569,6 @@ components:
             to disable.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
         sync_page_size:
           type: integer
           maximum: 2147483647
@@ -52555,6 +52578,12 @@ components:
           type: string
           minLength: 1
           description: Timeout for synchronization of a single page
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
