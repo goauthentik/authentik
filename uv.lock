@@ -2937,11 +2937,11 @@ wheels = [
 
 [[package]]
 name = "std-uritemplate"
-version = "2.0.2"
+version = "2.0.3"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d4/28/9d70e54d7454e88a475adf333990091423f080ba5df4d30e887ea80d68da/std_uritemplate-2.0.2.tar.gz", hash = "sha256:16e6b75d13803ddb81ba7b5fd1414698103b5c5c2fca1fb03dbc98f9fca80a92", size = 6015 }
+sdist = { url = "https://files.pythonhosted.org/packages/d8/dd/7b24308aa0a35d14d3f87a54d7c74307e0efbe08c9af092960bd25d83419/std_uritemplate-2.0.3.tar.gz", hash = "sha256:ad4cb1d671bcf4a3608b3598c687be4b0929867c53a2d69c105989da6a5a2d4c", size = 6016 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/73/bf7576119d911aea6d68ff09cba1cad00425426b8405115fcbff6d55f670/std_uritemplate-2.0.2-py3-none-any.whl", hash = "sha256:44063f97dffb6a4fa94d60c5a9301862a8729596b39a0376235c4eac11be68d0", size = 6509 },
+    { url = "https://files.pythonhosted.org/packages/d3/18/43e8185dd1545b9cd019a2e3f4bfb6df29ebcbe4b7c5273d647226bc0616/std_uritemplate-2.0.3-py3-none-any.whl", hash = "sha256:434df26453bf68c6077879fed6609b2c39e2fc73080e74cd157269d5f8abdb3e", size = 6506 },
 ]
 
 [[package]]
