@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of OpenProject with authentik, you need to create a property mapping, and an application/provider pair in authentik.
+To support the integration of OpenProject with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
 ### Create a scope mapping
 
