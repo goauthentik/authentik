@@ -1204,14 +1204,14 @@ wheels = [
 
 [[package]]
 name = "duo-client"
-version = "5.4.0"
+version = "5.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "setuptools" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5e/95/6f8a6a0606074df64a49d6d535092d45c91d3e45afb0af9e28e53efcd30f/duo_client-5.4.0.tar.gz", hash = "sha256:8e0fec41006951ce7d0ac5281ddfef59f154e194c71d5a00d717e1769e9077bb", size = 87654 }
+sdist = { url = "https://files.pythonhosted.org/packages/8b/c8/4e8416eec72bc77ad947b736f760ceedf818df0c48153816b1bfb0fab854/duo_client-5.5.0.tar.gz", hash = "sha256:303109e047fe7525ba4fc4a294c1f3deb4125066e89c10d33f7430378867b1d6", size = 93475 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/11/05/934cbf05989e6cd1ac2c31a5eed58d06caad11b44b60898644f2fe51fdb1/duo_client-5.4.0-py3-none-any.whl", hash = "sha256:092d2f79ca2dd7107f944807a109c98c08b99c2dd7fc422b979a248787852068", size = 45659 },
+    { url = "https://files.pythonhosted.org/packages/7a/4b/dd927d3111e1f4c78c1f5944d3b64b4fb6ab655487c23100a3feff5cdaa4/duo_client-5.5.0-py3-none-any.whl", hash = "sha256:4fbf1e97a2b25ef64e9f88171ab817162cf45bafc1c63026af4883baf8892a12", size = 51313 },
 ]
 
 [[package]]
