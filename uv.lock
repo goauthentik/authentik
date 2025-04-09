@@ -1029,14 +1029,14 @@ wheels = [
 
 [[package]]
 name = "django-pgactivity"
-version = "1.4.1"
+version = "1.7.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/97/73/a1e0f2c185b86febd93c5e4f0e83ca1757314e01af77035157a361462abb/django_pgactivity-1.4.1.tar.gz", hash = "sha256:00da0f0156daa37f5f113c7a6d9378a6f6d111e44f20d3b30b367d5428e18b07", size = 12912 }
+sdist = { url = "https://files.pythonhosted.org/packages/42/24/87ef93b1f4df5daa025739aba69b83a53814405dcb1a45e853177447b965/django_pgactivity-1.7.1.tar.gz", hash = "sha256:4d8aad75c2d48e1e79f39d9163b5f134f5867f65c75f08c37fa745d5e8f3d6fa", size = 13080 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ab/2a/0f58319bd961e699d0bf1a4c9a1aa5b73e9df776955f0f633016f98af10b/django_pgactivity-1.4.1-py3-none-any.whl", hash = "sha256:e7affa4dc08e7650092a582375729081362a3103f1148e34e8406ddf114eeb95", size = 14407 },
+    { url = "https://files.pythonhosted.org/packages/c3/c2/9de50e5ed5e09cd7eb64e99f743087d4f6839917d7e69198860fc7442a58/django_pgactivity-1.7.1-py3-none-any.whl", hash = "sha256:0cd9e8dbaab7997410bd0fe490417d63f568fa27fd02e548bb3ea8dc73e0e319", size = 14422 },
 ]
 
 [[package]]
