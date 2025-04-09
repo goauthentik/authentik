@@ -1,9 +1,9 @@
 ---
-title: Lark(FeiShu)
+title: Lark (FeiShu)
 support_level: community
 ---
 
-Allows users to authenticate using their Lark(Feishu) credentials.
+Adding [Lark](https://www.larksuite.com/en_sg) (FeiShu) as a source in authentik allows users to authenticate through authentik with their Lark (Feishu) credentials. Feishu is an office suite that integrates messaging, schedule management, collaborative documents, video conferencing, and other applications in one platform. Feishu is used in mainland China; outside of China, Lark is the equivalent application.
 
 ## Preparation
 
@@ -11,11 +11,11 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-:::caution
-Administrator role for Lark(Feishu) is required to create clients on Lark(Feishu) developer platform.
+:::info
+A user with an administrator role is required to create clients on the Lark (FeiShu) Developer Platform.
 :::
 
-## Lark(Feishu)
+## Lark (Feishu) Configuration
 
 1. Login into ![Lark Open Platform](https://open.feishu.cn/).
 
@@ -26,37 +26,39 @@ Administrator role for Lark(Feishu) is required to create clients on Lark(Feishu
 3. After creation, in the **Credentials & Basic Info**, find the **APP ID** and **APP Secret** and _save it for later_
    ![Get APP Id and APP Secret](./lark2.png)
 
-4. Go to security settings.Insert the redirect URL: `https://authentik.company/source/oauth/callback/lark/`
+4. Go to security settings. In **Redirect URLs** add a redirect URI: <kbd>https://<em>authentik.company</em>/source/oauth/callback/lark/</kbd>
    ![Add Redirect URL](./lark3.png)
 
-5. Publish your application, changes only take effect after you have published.
+5. Publish your application. Changes only take effect after you have published.
 
-![Publish Appclication](./lark4.png)
+![Publish Application](./lark4.png)
 
-## authentik
+## authentik configuration
 
-6. Under _Directory -> Federation & Social login_ Click **Create > Lark OAuth Source**
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 
-![Lark OAuth Source](./lark5.png)
+2. Go to security settings. In **Redirect URLs** add a redirect URI: <kbd>https://<em>authentik.company</em>/source/oauth/callback/lark/</kbd>
 
-6. **Name:** Choose a name (For the example I used Lark)
-7. **Slug:** lark (You can choose a different slug, if you do you will need to update the Mailcow redirect URL and point it to the correct slug.)
-8. **Consumer Key:** App ID from step 4
-9. **Consumer Secret:** App Secret from step 4
-10. **Authorization URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v1/authorize
-11. **Access token URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v2/oauth/token
-12. **Profile URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v1/user_info
+**Select type**: Choose **Lark OAuth Source*.
+**Create Lark OAuth Source**:
+     - **Name**: Choose a name (the example below uses Lark).
+     - **Slug:** lark (You can choose a different slug, if you do you will need to update the Lark redirect URL and point it to the correct slug.)
+     - **Consumer Key:** App ID from step 4
+     - **Consumer Secret:** App Secret from step 4
+     - **Authorization URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v1/authorize
+     - **Access token URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v2/oauth/token
+     - **Profile URL:** Leave it as default, the default value is: https://open.feishu.cn/open-apis/authen/v1/user_info
     Here is an example of a complete authentik Lark OAuth Source
 
 ![Lark OAuth Source](./lark5.png)
 
-Save, and you now have Lark as a source.
+3. Click **Finish** and you now have Lark as a source.
 
 ## Property Mapping
 
 In this function, **open_id** in Lark was used as default username, since **email** is empty when there is no email setup.
-It's highly suggested using a flow to re-map the properties when user was write to Authentik.
+It's highly suggested using a flow to re-map the properties when user was write to authentik.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For more details on how to display the new source on the Login page see [our documentation](../../index.md#add-sources-to-default-login-page).
 :::
