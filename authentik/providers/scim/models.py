@@ -13,6 +13,7 @@ from authentik.core.models import BackchannelProvider, Group, PropertyMapping, U
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.policies.engine import PolicyEngine
 
 
 class SCIMProviderUser(SerializerModel):
@@ -72,8 +73,11 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
 
     exclude_users_service_account = models.BooleanField(default=False)
 
-    filter_group = models.ForeignKey(
-        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
+    group_filters = models.ManyToManyField(
+        "authentik_core.group",
+        default=None,
+        blank=True,
+        help_text=_("Group filters used to define sync-scope for groups."),
     )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
@@ -121,12 +125,26 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
                 base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
                     type=UserTypes.INTERNAL_SERVICE_ACCOUNT
                 )
-            if self.filter_group:
-                base = base.filter(ak_groups__in=[self.filter_group])
+
+            # Filter users by their access to the backchannel application if an application is set
+            # This handles both policy bindings and group_filters
+            if self.backchannel_application:
+                base = base.filter(
+                    pk__in=[
+                        user.pk
+                        for user in base
+                        if PolicyEngine(self.backchannel_application, user, None).build().passing
+                    ]
+                )
             return base.order_by("pk")
+
         if type == Group:
-            # Get queryset of all groups with consistent ordering
-            return Group.objects.all().order_by("pk")
+            # Get a queryset of all groups with consistent ordering
+            # according to the provider's settings
+            base = Group.objects.all()
+            if self.group_filters.exists():
+                base = base.filter(pk__in=self.group_filters.all())
+            return base.order_by("pk")
         raise ValueError(f"Invalid type {type}")
 
     @property
