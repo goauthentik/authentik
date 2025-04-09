@@ -3118,13 +3118,10 @@ wheels = [
 
 [[package]]
 name = "ua-parser-builtins"
-version = "0.18.0"
+version = "0.18.0.post1"
 source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "ua-parser" },
-]
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/29/26/b485e3ac5097b185e8673b9ec0366bd2a6572dc97913c1804f7e541ae466/ua_parser_builtins-0.18.0-py3-none-any.whl", hash = "sha256:51cbc3d6ab9c533fc12fc7cededbef503c8d04e465d0aff20d869e15320b5ca9", size = 86038 },
+    { url = "https://files.pythonhosted.org/packages/6f/d3/13adff37f15489c784cc7669c35a6c3bf94b87540229eedf52ef2a1d0175/ua_parser_builtins-0.18.0.post1-py3-none-any.whl", hash = "sha256:eb4f93504040c3a990a6b0742a2afd540d87d7f9f05fd66e94c101db1564674d", size = 86077 },
 ]
 
 [[package]]
