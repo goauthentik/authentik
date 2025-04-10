@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="ko" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -583,7 +583,7 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1684,8 +1684,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>전체 URL, 상대 경로를 입력하거나, 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 "fa-test"를 사용합니다.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>전체 URL, 상대 경로를 입력하거나, 또는 'fa://fa-test'를 사용하여 Font Awesome 아이콘 &quot;fa-test&quot;를 사용합니다.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2826,7 +2826,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
         <target>그룹 구성원이 포함된 필드입니다. 'memberUid' 필드를 사용하는 경우 값에 상대적인 고유 이름이 포함된 것으로 가정합니다 (예:'memberUid=some-user' 대신 'memberUid=cn=some-user,ou=groups,...').</target>
         
       </trans-unit>
@@ -3737,7 +3737,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4797,8 +4797,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>YubiKey 같은 "로밍" 인증기</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>YubiKey 같은 &quot;로밍&quot; 인증기</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5156,7 +5156,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>기간을 0 이상으로 설정하면, 사용자에게 '로그인 상태 유지'를 선택할 수 있는 옵션이 제공되며, 이 경우 세션이 여기에 지정된 시간만큼 연장됩니다.</target>
         
       </trans-unit>
@@ -7420,8 +7420,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>사용자 생성과 <x id="0" equiv-text="${this.group.name}"/> 그룹 추가에 성공했습니다.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
-  <target>이 사용자는 "<x id="0" equiv-text="${this.targetGroup.name}"/>" 그룹에 추가됩니다.</target>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <target>이 사용자는 &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot; 그룹에 추가됩니다.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -8396,7 +8396,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Sync Group</source>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8582,7 +8582,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
