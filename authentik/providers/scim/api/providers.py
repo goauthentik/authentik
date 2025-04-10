@@ -51,7 +51,7 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
 
     queryset = SCIMProvider.objects.all()
     serializer_class = SCIMProviderSerializer
-    filterset_fields = ["name", "exclude_users_service_account", "url"]
+    filterset_fields = ["name", "exclude_users_service_account", "url", "group_filters"]
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
     sync_task = scim_sync
