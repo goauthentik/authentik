@@ -45,7 +45,8 @@ class ModelSerializer(BaseModelSerializer):
                 role__group__in=user.groups.all()
             )
 
-            # Performance here should not be an issue, but if needed, there are many optimization routes
+            # Performance here should not be an issue, but if needed, there are many optimization
+            # routes
             for initial_permissions in initial_permissions_list:
                 for permission in initial_permissions.permissions.all():
                     if permission.content_type != ContentType.objects.get_for_model(instance):
