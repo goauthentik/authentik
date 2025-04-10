@@ -40,7 +40,7 @@ class AppleChallengeResponse(ChallengeResponse):
 class AppleOAuthClient(OAuth2Client):
     """Apple OAuth2 client"""
 
-    self._source_auth_scheme = AuthScheme.POST_BODY
+    _source_auth_scheme: AuthScheme = AuthScheme.POST_BODY
 
     def get_client_id(self) -> str:
         parts: list[str] = self.source.consumer_key.split(";")
