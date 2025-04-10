@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "type": "module",

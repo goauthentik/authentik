@@ -6,9 +6,6 @@ on:
       - packages/eslint-config
       - packages/prettier-config
       - packages/tsconfig
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 jobs:
   publish:
@@ -58,7 +55,7 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: web/packages/sfe
         run: |
-          export VERSION=`node -e 'console.log(require("../packages/${{ matrix.package }}/package.json").version)'`
+          export VERSION=`node -e 'console.log(require("../../../packages/${{ matrix.package }}/package.json").version)'`
           npm i @goauthentik/${{ matrix.package }}@$VERSION
       - name: Upgrade /website
         if: steps.changed-files.outputs.any_changed == 'true'
