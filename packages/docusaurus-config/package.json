@@ -43,11 +43,9 @@
     },
     "types": "./out/index.d.ts",
     "files": [
-        "out/index.d.ts",
-        "out/index.d.ts.map",
-        "out/index.js.map",
-        "out/index.js",
-        "out/lib/**/*"
+        "./index.js",
+        "css/**/*",
+        "out/**/*"
     ],
     "prettier": "@goauthentik/prettier-config",
     "publishConfig": {

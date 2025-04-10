@@ -32,6 +32,10 @@
         "node": ">=20.11"
     },
     "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "out/**/*"
+    ],
     "prettier": "./index.js",
     "publishConfig": {
         "access": "public"
