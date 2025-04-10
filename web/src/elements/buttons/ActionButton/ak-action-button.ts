@@ -47,7 +47,7 @@ export class ActionButton extends BaseTaskButton {
         const message = error instanceof Error ? error.toString() : await error.text();
         showMessage({
             level: MessageLevel.error,
-            message,
+            message: message,
         });
     }
 }

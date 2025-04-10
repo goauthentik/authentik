@@ -34,7 +34,7 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Add two `Strict` redirect URI and set them to <kbd>https://<em>argocd.company</em>/api/dex/callback/</kbd> and <kbd>https://<em>localhost:8085</em>/auth/callback/</kbd>.
+    - Add two `Strict` redirect URI and set them to <kbd>https://<em>argocd.company</em>/api/dex/callback</kbd> and <kbd>https://<em>localhost:8085</em>/auth/callback</kbd>.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 

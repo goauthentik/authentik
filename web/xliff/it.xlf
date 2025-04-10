@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3776,7 +3776,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Aggiornato con successo <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>Impossibile aggiornare
         <x id="0" equiv-text="${this.objectLabel}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3868,11 +3868,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>Link di recupero generato con successo</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>Nessun flusso di recupero è configurato.</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -6749,7 +6744,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         
       </trans-unit>
       <trans-unit id="sd2208cd1a767644b">
@@ -7755,10 +7750,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
   <target>Per consentire a un utente di ripristinare direttamente una propria password, configurare un flusso di recupero sul marchio attualmente attivo.</target>
 </trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
-  <target>L'attuale marchio deve avere un flusso di ripristino configurato per utilizzare un collegamento di recupero</target>
-</trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
   <target>Impostazioni aggiornate.</target>
@@ -8651,7 +8642,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Russo</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9471,9 +9462,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s85a91d843c3eb4ad">
   <source>Show inactive users</source>
 </trans-unit>
-<trans-unit id="s5787e20cab57b383">
-  <source>Unknown error</source>
-</trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
 </trans-unit>
@@ -9533,6 +9521,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
 </trans-unit>
     </body>
   </file>

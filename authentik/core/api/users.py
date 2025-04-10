@@ -228,6 +228,7 @@ class UserSerializer(ModelSerializer):
             "name",
             "is_active",
             "last_login",
+            "date_joined",
             "is_superuser",
             "groups",
             "groups_obj",
@@ -242,6 +243,7 @@ class UserSerializer(ModelSerializer):
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
+            "date_joined": {"read_only": True},
             "password_change_date": {"read_only": True},
         }
 
