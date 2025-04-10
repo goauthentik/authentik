@@ -7,6 +7,9 @@
         "typescript"
     ],
     "license": "MIT",
+    "scripts": {
+        "build": ""
+    },
     "type": "module",
     "main": "tsconfig.json",
     "engines": {
