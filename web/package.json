@@ -384,9 +384,5 @@
     "engines": {
         "node": ">=20"
     },
-    "workspaces": [
-        ".",
-        "./packages/*"
-    ],
     "prettier": "@goauthentik/prettier-config"
 }

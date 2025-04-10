@@ -31,8 +31,8 @@
     "workspaces": [
         "gen-ts-api",
         "web",
+        "web/packages/*",
         "website",
-        "website/sfe",
         "packages/*"
     ],
     "prettier": "@goauthentik/prettier-config",
