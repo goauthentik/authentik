@@ -6,6 +6,8 @@ on:
       - packages/eslint-config
       - packages/prettier-config
       - packages/tsconfig
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 jobs:
   publish:
