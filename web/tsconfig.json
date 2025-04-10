@@ -1,9 +1,12 @@
+// @file TSConfig used by the web package during development.
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
+        // See https://lit.dev/docs/components/properties/
+        "useDefineForClassFields": false,
         "target": "esnext",
         "module": "esnext",
         "moduleResolution": "node",

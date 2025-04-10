@@ -49,7 +49,7 @@ const BASE_ESBUILD_OPTIONS = {
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
-    tsconfig: "./tsconfig.json",
+    tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
     },
