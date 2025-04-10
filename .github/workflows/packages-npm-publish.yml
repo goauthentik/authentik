@@ -3,9 +3,12 @@ on:
   push:
     branches: [main]
     paths:
+      - packages/docusaurus-config
       - packages/eslint-config
       - packages/prettier-config
       - packages/tsconfig
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 jobs:
   publish:
@@ -15,6 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         package:
+          - docusaurus-config
           - eslint-config
           - prettier-config
           - tsconfig
@@ -45,24 +49,6 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-      - name: Upgrade /web
-        if: steps.changed-files.outputs.any_changed == 'true'
-        working-directory: web
-        run: |
-          export VERSION=`node -e 'console.log(require("../packages/${{ matrix.package }}/package.json").version)'`
-          npm i @goauthentik/${{ matrix.package }}@$VERSION
-      - name: Upgrade /web/packages/sfe
-        if: steps.changed-files.outputs.any_changed == 'true'
-        working-directory: web/packages/sfe
-        run: |
-          export VERSION=`node -e 'console.log(require("../../../packages/${{ matrix.package }}/package.json").version)'`
-          npm i @goauthentik/${{ matrix.package }}@$VERSION
-      - name: Upgrade /website
-        if: steps.changed-files.outputs.any_changed == 'true'
-        working-directory: website
-        run: |
-          export VERSION=`node -e 'console.log(require("../packages/${{ matrix.package }}/package.json").version)'`
-          npm i @goauthentik/${{ matrix.package }}@$VERSION
       - uses: peter-evans/create-pull-request@v7
         if: steps.changed-files.outputs.any_changed == 'true'
         id: cpr
