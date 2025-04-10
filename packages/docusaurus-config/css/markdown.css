@@ -1,0 +1,36 @@
+.docusaurus-mermaid-container {
+    /* Improve contrast. */
+    & .messageText {
+        stroke: var(--ifm-background-color) !important;
+        stroke-width: 4;
+        fill: var(--ifm-color-content) !important;
+        paint-order: stroke;
+    }
+}
+/* #endregion */
+
+.markdown {
+    /* Remove empty table headers. */
+    & table > thead:has(> tr > th:empty):not(:has(> tr > th:not(:empty))) {
+        display: none;
+    }
+}
+
+.contains-task-list {
+    input[type="checkbox"] {
+        appearance: none;
+    }
+    input[type="checkbox"]::after {
+        content: "✓";
+        color: var(--ifm-color-success-dark);
+        display: inline-block;
+    }
+}
+
+/* #region Code Blocks */
+
+.theme-code-block pre code {
+    font-weight: 500;
+}
+
+/* #endregion */

@@ -1,0 +1,37 @@
+{
+    "name": "@goauthentik/docusaurus-config",
+    "version": "1.0.0",
+    "description": "authentik's Docusaurus config",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./css/**/*": "./css/**/*"
+    },
+    "types": "./out/index.d.ts",
+    "dependencies": {
+        "prism-react-renderer": "^2.4.1",
+        "deepmerge-ts": "^7.1.5"
+    },
+    "devDependencies": {
+        "@goauthentik/tsconfig": "^1.0.1",
+        "@docusaurus/core": "^3.7.0",
+        "@docusaurus/preset-classic": "^3.7.0",
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-mermaid": "^3.7.0"
+    },
+    "peerDependencies": {
+        "@docusaurus/core": "^3.7.0",
+        "@docusaurus/preset-classic": "^3.7.0",
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-mermaid": "^3.7.0"
+    },
+    "engines": {
+        "node": ">=20.11"
+    },
+    "prettier": "@goauthentik/prettier-config"
+}
