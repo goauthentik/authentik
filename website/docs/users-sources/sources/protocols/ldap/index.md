@@ -110,9 +110,7 @@ The following variables are available to LDAP source property mappings:
 
 ### Additional expression semantics
 
-If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception. To do so, create or modify a LDAP property mapping to use an expression to define the object to skip.
-
-**Example:**
+If you need to skip synchronization for a specific object, you can raise the `SkipObject` exception:
 
 ```python
 if ldap.get("cn") == "doNotSync":

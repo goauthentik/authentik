@@ -1,10 +1,9 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError } from "@goauthentik/common/errors/network";
+import { parseAPIError } from "@goauthentik/common/errors";
 import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
 import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { P, match } from "ts-pattern";
 
@@ -31,11 +30,10 @@ import {
     type TransactionApplicationRequest,
     type TransactionApplicationResponse,
     type TransactionPolicyBindingRequest,
-    instanceOfValidationError,
 } from "@goauthentik/api";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
-import { OneOfProvider, isApplicationTransactionValidationError } from "../types.js";
+import { ExtendedValidationError, OneOfProvider } from "../types.js";
 import { providerRenderers } from "./SubmitStepOverviewRenderers.js";
 
 const _submitStates = ["reviewing", "running", "submitted"] as const;
@@ -133,46 +131,39 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
 
         this.state = "running";
 
-        return new CoreApi(DEFAULT_CONFIG)
-            .coreTransactionalApplicationsUpdate({
-                transactionApplicationRequest: request,
-            })
-            .then((_response: TransactionApplicationResponse) => {
-                this.dispatchCustomEvent(EVENT_REFRESH);
-                this.state = "submitted";
-            })
+        return (
+            new CoreApi(DEFAULT_CONFIG)
+                .coreTransactionalApplicationsUpdate({
+                    transactionApplicationRequest: request,
+                })
+                .then((_response: TransactionApplicationResponse) => {
+                    this.dispatchCustomEvent(EVENT_REFRESH);
+                    this.state = "submitted";
+                })
 
-            .catch(async (error) => {
-                const parsedError = await parseAPIResponseError(error);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                .catch(async (resolution: any) => {
+                    const errors = (await parseAPIError(
+                        await resolution,
+                    )) as ExtendedValidationError;
 
-                if (!instanceOfValidationError(parsedError)) {
-                    showAPIErrorMessage(parsedError);
-
-                    return;
-                }
-
-                if (isApplicationTransactionValidationError(parsedError)) {
-                    // THIS is a really gross special case; if the user is duplicating the name of an existing provider, the error appears on the `app` (!) error object.
-                    // We have to move that to the `provider.name` error field so it shows up in the right place.
-                    if (Array.isArray(parsedError.app?.provider)) {
-                        const providerError = parsedError.app.provider;
-
-                        parsedError.provider = {
-                            ...parsedError.provider,
-                            name: providerError,
-                        };
-
-                        delete parsedError.app.provider;
-
-                        if (Object.keys(parsedError.app).length === 0) {
-                            delete parsedError.app;
+                    // THIS is a really gross special case; if the user is duplicating the name of
+                    // an existing provider, the error appears on the `app` (!) error object. We
+                    // have to move that to the `provider.name` error field so it shows up in the
+                    // right place.
+                    if (Array.isArray(errors?.app?.provider)) {
+                        const providerError = errors.app.provider;
+                        errors.provider = errors.provider ?? {};
+                        errors.provider.name = providerError;
+                        delete errors.app.provider;
+                        if (Object.keys(errors.app).length === 0) {
+                            delete errors.app;
                         }
                     }
-                }
-
-                this.handleUpdate({ errors: parsedError });
-                this.state = "reviewing";
-            });
+                    this.handleUpdate({ errors });
+                    this.state = "reviewing";
+                })
+        );
     }
 
     override handleButton(button: WizardButton) {
@@ -234,20 +225,22 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
     }
 
     renderError() {
-        const { errors } = this.wizard;
+        if (Object.keys(this.wizard.errors).length === 0) {
+            return nothing;
+        }
 
-        if (Object.keys(errors).length === 0) return nothing;
-
+        const navTo = (step: string) => () => this.dispatchEvent(new WizardNavigationEvent(step));
+        const errors = this.wizard.errors;
         return html` <hr class="pf-c-divider" />
-            ${match(errors)
+            ${match(errors as ExtendedValidationError)
                 .with(
                     { app: P.nonNullable },
                     () =>
                         html`<p>${msg("There was an error in the application.")}</p>
                             <p>
-                                <a @click=${WizardNavigationEvent.toListener(this, "application")}>
-                                    ${msg("Review the application.")}
-                                </a>
+                                <a @click=${navTo("application")}
+                                    >${msg("Review the application.")}</a
+                                >
                             </p>`,
                 )
                 .with(
@@ -255,20 +248,13 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                     () =>
                         html`<p>${msg("There was an error in the provider.")}</p>
                             <p>
-                                <a @click=${WizardNavigationEvent.toListener(this, "provider")}
-                                    >${msg("Review the provider.")}</a
-                                >
+                                <a @click=${navTo("provider")}>${msg("Review the provider.")}</a>
                             </p>`,
                 )
                 .with(
                     { detail: P.nonNullable },
                     () =>
-                        html`<p>
-                            ${msg(
-                                "There was an error. Please go back and review the application.",
-                            )}:
-                            ${errors.detail}
-                        </p>`,
+                        `<p>${msg("There was an error. Please go back and review the application.")}: ${errors.detail}</p>`,
                 )
                 .with(
                     {
@@ -278,7 +264,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
                         html`<p>${msg("There was an error:")}:</p>
                             <ul>
                                 ${(errors.nonFieldErrors ?? []).map(
-                                    (reason) => html`<li>${reason}</li>`,
+                                    (e: string) => html`<li>${e}</li>`,
                                 )}
                             </ul>
                             <p>${msg("Please go back and review the application.")}</p>`,
@@ -342,7 +328,7 @@ export class ApplicationWizardSubmitStep extends CustomEmitterElement(Applicatio
         if (!(this.wizard && app && provider)) {
             throw new Error("Submit step received uninitialized wizard context");
         }
-        // An empty object is truthy, an empty array is falsey. *WAT JavaScript*.
+        // An empty object is truthy, an empty array is falsey. *WAT Javascript*.
         const keys = Object.keys(this.wizard.errors);
         return match([this.state, keys])
             .with(["submitted", P._], () =>

@@ -4448,10 +4448,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: branding_default_flow_background
-        schema:
-          type: string
-      - in: query
         name: branding_favicon
         schema:
           type: string
@@ -22196,11 +22192,6 @@ paths:
           type: string
           format: uuid
       - in: query
-        name: authn_context_class_ref_mapping
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: authorization_flow
         schema:
           type: string
@@ -25754,7 +25745,7 @@ paths:
           description: ''
     delete:
       operationId: sources_all_destroy
-      description: Prevent deletion of built-in sources
+      description: Source Viewset
       parameters:
       - in: path
         name: slug
@@ -25938,243 +25929,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /sources/group_connections/all/:
-    get:
-      operationId: sources_group_connections_all_list
-      description: Group-source connection Viewset
-      parameters:
-      - in: query
-        name: group
-        schema:
-          type: string
-          format: uuid
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: source__slug
-        schema:
-          type: string
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedGroupSourceConnectionList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /sources/group_connections/all/{id}/:
-    get:
-      operationId: sources_group_connections_all_retrieve
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: sources_group_connections_all_update
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: sources_group_connections_all_partial_update
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedGroupSourceConnectionRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSourceConnection'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: sources_group_connections_all_destroy
-      description: Group-source connection Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /sources/group_connections/all/{id}/used_by/:
-    get:
-      operationId: sources_group_connections_all_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this group source connection.
-        required: true
-      tags:
-      - sources
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /sources/group_connections/kerberos/:
     get:
       operationId: sources_group_connections_kerberos_list
@@ -26223,38 +25977,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupKerberosSourceConnectionList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: sources_group_connections_kerberos_create
-      description: Group-source connection Viewset
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupKerberosSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupKerberosSourceConnection'
           description: ''
         '400':
           content:
@@ -27035,38 +26757,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedGroupSAMLSourceConnectionList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: sources_group_connections_saml_create
-      description: Group-source connection Viewset
-      tags:
-      - sources
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GroupSAMLSourceConnectionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GroupSAMLSourceConnection'
           description: ''
         '400':
           content:
@@ -30293,7 +29983,7 @@ paths:
   /sources/user_connections/kerberos/:
     get:
       operationId: sources_user_connections_kerberos_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -30323,10 +30013,6 @@ paths:
         name: source__slug
         schema:
           type: string
-      - in: query
-        name: user
-        schema:
-          type: integer
       tags:
       - sources
       security:
@@ -30352,7 +30038,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_kerberos_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -30385,7 +30071,7 @@ paths:
   /sources/user_connections/kerberos/{id}/:
     get:
       operationId: sources_user_connections_kerberos_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30419,7 +30105,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_kerberos_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30459,7 +30145,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_kerberos_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30498,7 +30184,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_kerberos_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30566,7 +30252,7 @@ paths:
   /sources/user_connections/oauth/:
     get:
       operationId: sources_user_connections_oauth_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -30625,7 +30311,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_oauth_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -30658,7 +30344,7 @@ paths:
   /sources/user_connections/oauth/{id}/:
     get:
       operationId: sources_user_connections_oauth_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30691,7 +30377,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_oauth_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30730,7 +30416,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_oauth_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30768,7 +30454,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_oauth_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -30834,7 +30520,7 @@ paths:
   /sources/user_connections/plex/:
     get:
       operationId: sources_user_connections_plex_list
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - name: ordering
         required: false
@@ -30893,7 +30579,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_plex_create
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       tags:
       - sources
       requestBody:
@@ -30926,7 +30612,7 @@ paths:
   /sources/user_connections/plex/{id}/:
     get:
       operationId: sources_user_connections_plex_retrieve
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -30959,7 +30645,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_plex_update
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -30998,7 +30684,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_plex_partial_update
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -31036,7 +30722,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_plex_destroy
-      description: User-source connection Viewset
+      description: Plex Source connection Serializer
       parameters:
       - in: path
         name: id
@@ -31102,7 +30788,7 @@ paths:
   /sources/user_connections/saml/:
     get:
       operationId: sources_user_connections_saml_list
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - name: ordering
         required: false
@@ -31161,7 +30847,7 @@ paths:
           description: ''
     post:
       operationId: sources_user_connections_saml_create
-      description: User-source connection Viewset
+      description: Source Viewset
       tags:
       - sources
       requestBody:
@@ -31194,7 +30880,7 @@ paths:
   /sources/user_connections/saml/{id}/:
     get:
       operationId: sources_user_connections_saml_retrieve
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31227,7 +30913,7 @@ paths:
           description: ''
     put:
       operationId: sources_user_connections_saml_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31266,7 +30952,7 @@ paths:
           description: ''
     patch:
       operationId: sources_user_connections_saml_partial_update
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -31304,7 +30990,7 @@ paths:
           description: ''
     delete:
       operationId: sources_user_connections_saml_destroy
-      description: User-source connection Viewset
+      description: Source Viewset
       parameters:
       - in: path
         name: id
@@ -35460,7 +35146,7 @@ paths:
       - in: query
         name: token_expiry
         schema:
-          type: string
+          type: integer
       - in: query
         name: use_global_settings
         schema:
@@ -41454,10 +41140,6 @@ components:
           type: string
         branding_favicon:
           type: string
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
-          type: string
         flow_authentication:
           type: string
           format: uuid
@@ -41515,11 +41197,6 @@ components:
           type: string
           minLength: 1
         branding_favicon:
-          type: string
-          minLength: 1
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
           type: string
           minLength: 1
         flow_authentication:
@@ -41904,12 +41581,6 @@ components:
       enum:
       - confidential
       - public
-      type: string
-    CompatibilityModeEnum:
-      enum:
-      - default
-      - aws
-      - slack
       type: string
     Config:
       type: object
@@ -42414,8 +42085,6 @@ components:
           type: string
         branding_favicon:
           type: string
-        branding_custom_css:
-          type: string
         ui_footer_links:
           type: array
           items:
@@ -42442,7 +42111,6 @@ components:
           type: string
           readOnly: true
       required:
-      - branding_custom_css
       - branding_favicon
       - branding_logo
       - branding_title
@@ -43106,8 +42774,10 @@ components:
           format: email
           maxLength: 254
         token_expiry:
-          type: string
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
         template:
@@ -43163,9 +42833,10 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
           minLength: 1
@@ -44483,10 +44154,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         default_group_email_domain:
           type: string
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -44650,10 +44317,6 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - credentials
       - default_group_email_domain
@@ -44758,7 +44421,7 @@ components:
       - users_obj
     GroupKerberosSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44780,21 +44443,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupKerberosSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -44894,7 +44552,7 @@ components:
       - username
     GroupOAuthSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44916,21 +44574,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupOAuthSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -44947,7 +44600,7 @@ components:
       - source
     GroupPlexSourceConnection:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -44969,21 +44622,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupPlexSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -45028,7 +44676,7 @@ components:
       - name
     GroupSAMLSourceConnection:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         pk:
           type: integer
@@ -45050,74 +44698,16 @@ components:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - group
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
     GroupSAMLSourceConnectionRequest:
       type: object
-      description: Group Source Connection
-      properties:
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-      required:
-      - group
-      - identifier
-      - source
-    GroupSourceConnection:
-      type: object
-      description: Group Source Connection
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        source_obj:
-          allOf:
-          - $ref: '#/components/schemas/Source'
-          readOnly: true
-        identifier:
-          type: string
-        created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - created
-      - group
-      - identifier
-      - last_updated
-      - pk
-      - source
-      - source_obj
-    GroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -46807,10 +46397,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -46971,10 +46557,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - client_id
       - client_secret
@@ -47268,18 +46850,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -47307,18 +46881,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -48740,18 +48306,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupSAMLSourceConnection'
-      required:
-      - pagination
-      - results
-    PaginatedGroupSourceConnectionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/GroupSourceConnection'
       required:
       - pagination
       - results
@@ -50547,11 +50101,6 @@ components:
         branding_favicon:
           type: string
           minLength: 1
-        branding_custom_css:
-          type: string
-        branding_default_flow_background:
-          type: string
-          minLength: 1
         flow_authentication:
           type: string
           format: uuid
@@ -50824,9 +50373,10 @@ components:
           minLength: 1
           maxLength: 254
         token_expiry:
-          type: string
-          minLength: 1
-          description: 'Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).'
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          description: Time in minutes the token sent is valid.
         subject:
           type: string
           minLength: 1
@@ -51129,13 +50679,9 @@ components:
         default_group_email_domain:
           type: string
           minLength: 1
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedGroupKerberosSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51148,7 +50694,7 @@ components:
           minLength: 1
     PatchedGroupOAuthSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51161,7 +50707,7 @@ components:
           minLength: 1
     PatchedGroupPlexSourceConnectionRequest:
       type: object
-      description: Group Source Connection
+      description: Plex Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51200,20 +50746,7 @@ components:
             format: uuid
     PatchedGroupSAMLSourceConnectionRequest:
       type: object
-      description: Group Source Connection
-      properties:
-        group:
-          type: string
-          format: uuid
-        source:
-          type: string
-          format: uuid
-        identifier:
-          type: string
-          minLength: 1
-    PatchedGroupSourceConnectionRequest:
-      type: object
-      description: Group Source Connection
+      description: OAuth Group-Source connection Serializer
       properties:
         group:
           type: string
@@ -51727,10 +51260,6 @@ components:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
         group_delete_action:
           $ref: '#/components/schemas/OutgoingSyncDeleteAction'
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -51777,18 +51306,10 @@ components:
         webhook_url:
           type: string
           format: uri
-        webhook_mapping_body:
+        webhook_mapping:
           type: string
           format: uuid
           nullable: true
-          description: Customize the body of the request. Mapping should return data
-            that is JSON-serializable.
-        webhook_mapping_headers:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure additional headers to be sent. Mapping should return
-            a dictionary of key-value pairs
         send_once:
           type: boolean
           description: Only send notification once, for example when sending a webhook
@@ -52648,8 +52169,9 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -52680,14 +52202,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -52806,14 +52320,16 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
+          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          format: uri
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -52905,21 +52421,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
     PatchedSCIMSourceGroupRequest:
       type: object
       description: SCIMSourceGroup Serializer
@@ -53186,7 +52693,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserKerberosSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         user:
           type: integer
@@ -53243,7 +52750,7 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
     PatchedUserOAuthSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         user:
           type: integer
@@ -53253,13 +52760,14 @@ components:
         identifier:
           type: string
           minLength: 1
+          maxLength: 255
         access_token:
           type: string
           writeOnly: true
           nullable: true
     PatchedUserPlexSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         user:
           type: integer
@@ -53313,7 +52821,7 @@ components:
           $ref: '#/components/schemas/UserTypeEnum'
     PatchedUserSAMLSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         user:
           type: integer
@@ -53332,9 +52840,6 @@ components:
         source:
           type: string
           format: uuid
-        identifier:
-          type: string
-          minLength: 1
     PatchedUserWriteStageRequest:
       type: object
       description: UserWriteStage Serializer
@@ -55616,6 +55121,7 @@ components:
         acs_url:
           type: string
           format: uri
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55642,14 +55148,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55782,8 +55280,9 @@ components:
             format: uuid
         acs_url:
           type: string
-          minLength: 1
           format: uri
+          minLength: 1
+          maxLength: 200
         audience:
           type: string
           description: Value of the audience restriction field of the assertion. When
@@ -55814,14 +55313,6 @@ components:
           title: NameID Property Mapping
           description: Configure how the NameID value will be created. When left empty,
             the NameIDPolicy of the incoming request will be considered
-        authn_context_class_ref_mapping:
-          type: string
-          format: uuid
-          nullable: true
-          title: AuthnContextClassRef Property Mapping
-          description: Configure how the AuthnContextClassRef value will be created.
-            When left empty, the AuthnContextClassRef will be set based on which authentication
-            methods the user used to authenticate.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -55956,13 +55447,15 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
-          description: URL that the initial Login request is sent to.
           format: uri
+          description: URL that the initial Login request is sent to.
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -56145,14 +55638,16 @@ components:
           description: Also known as Entity ID. Defaults the Metadata URL.
         sso_url:
           type: string
+          format: uri
           minLength: 1
           description: URL that the initial Login request is sent to.
-          format: uri
+          maxLength: 200
         slo_url:
           type: string
+          format: uri
           nullable: true
           description: Optional URL if your IDP supports Single-Logout.
-          format: uri
+          maxLength: 200
         allow_idp_initiated:
           type: boolean
           description: Allows authentication flows initiated by the IdP. This can
@@ -56322,21 +55817,12 @@ components:
         token:
           type: string
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
@@ -56367,10 +55853,7 @@ components:
           readOnly: true
         provider:
           type: integer
-        attributes:
-          readOnly: true
       required:
-      - attributes
       - group
       - group_obj
       - id
@@ -56420,21 +55903,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
-        compatibility_mode:
-          allOf:
-          - $ref: '#/components/schemas/CompatibilityModeEnum'
-          title: SCIM Compatibility Mode
-          description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
         filter_group:
           type: string
           format: uuid
           nullable: true
-        dry_run:
-          type: boolean
-          description: When enabled, provider will not modify or create objects in
-            the remote system.
       required:
       - name
       - token
@@ -56457,10 +55931,7 @@ components:
           readOnly: true
         provider:
           type: integer
-        attributes:
-          readOnly: true
       required:
-      - attributes
       - id
       - provider
       - scim_id
@@ -57634,9 +57105,6 @@ components:
         sync_object_id:
           type: string
           minLength: 1
-        override_dry_run:
-          type: boolean
-          default: false
       required:
       - sync_object_id
       - sync_object_model
@@ -58170,10 +57638,6 @@ components:
           type: string
           format: date-time
           nullable: true
-        date_joined:
-          type: string
-          format: date-time
-          readOnly: true
         is_superuser:
           type: boolean
           readOnly: true
@@ -58217,7 +57681,6 @@ components:
           readOnly: true
       required:
       - avatar
-      - date_joined
       - groups_obj
       - is_superuser
       - name
@@ -58427,7 +57890,7 @@ components:
       - name
     UserKerberosSourceConnection:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         pk:
           type: integer
@@ -58442,27 +57905,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserKerberosSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Kerberos Source Serializer
       properties:
         user:
           type: integer
@@ -58689,7 +58147,7 @@ components:
       - logins_failed
     UserOAuthSourceConnection:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         pk:
           type: integer
@@ -58704,27 +58162,23 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
+          maxLength: 255
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserOAuthSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: OAuth Source Serializer
       properties:
         user:
           type: integer
@@ -58734,6 +58188,7 @@ components:
         identifier:
           type: string
           minLength: 1
+          maxLength: 255
         access_token:
           type: string
           writeOnly: true
@@ -58791,7 +58246,7 @@ components:
       - paths
     UserPlexSourceConnection:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         pk:
           type: integer
@@ -58806,27 +58261,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserPlexSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: Plex Source connection Serializer
       properties:
         user:
           type: integer
@@ -58888,7 +58338,7 @@ components:
       - username
     UserSAMLSourceConnection:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         pk:
           type: integer
@@ -58903,27 +58353,22 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
           type: string
           format: date-time
           readOnly: true
-        last_updated:
+        identifier:
           type: string
-          format: date-time
-          readOnly: true
       required:
       - created
       - identifier
-      - last_updated
       - pk
       - source
       - source_obj
       - user
     UserSAMLSourceConnectionRequest:
       type: object
-      description: User source connection
+      description: SAML Source Serializer
       properties:
         user:
           type: integer
@@ -59087,20 +58532,12 @@ components:
           allOf:
           - $ref: '#/components/schemas/Source'
           readOnly: true
-        identifier:
-          type: string
         created:
-          type: string
-          format: date-time
-          readOnly: true
-        last_updated:
           type: string
           format: date-time
           readOnly: true
       required:
       - created
-      - identifier
-      - last_updated
       - pk
       - source
       - source_obj
@@ -59114,11 +58551,7 @@ components:
         source:
           type: string
           format: uuid
-        identifier:
-          type: string
-          minLength: 1
       required:
-      - identifier
       - source
       - user
     UserTypeEnum:

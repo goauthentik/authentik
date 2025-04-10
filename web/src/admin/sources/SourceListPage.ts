@@ -57,13 +57,10 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled =
-            this.selectedElements.length < 1 ||
-            this.selectedElements.some((item) => item.component === "");
-        const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
+        const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Source(s)")}
-            .objects=${nonBuiltInSources}
+            .objects=${this.selectedElements}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
                     slug: item.slug,

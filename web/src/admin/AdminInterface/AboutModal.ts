@@ -19,7 +19,7 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
     static get styles() {
-        return ModalButton.styles.concat(
+        return super.styles.concat(
             PFAbout,
             css`
                 .pf-c-about-modal-box__hero {

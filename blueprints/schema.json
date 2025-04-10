@@ -6423,6 +6423,8 @@
                 },
                 "acs_url": {
                     "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
                     "minLength": 1,
                     "title": "ACS URL"
                 },
@@ -6459,11 +6461,6 @@
                     "type": "integer",
                     "title": "NameID Property Mapping",
                     "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
-                },
-                "authn_context_class_ref_mapping": {
-                    "type": "integer",
-                    "title": "AuthnContextClassRef Property Mapping",
-                    "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
                 "digest_algorithm": {
                     "type": "string",
@@ -6664,16 +6661,6 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
-                "compatibility_mode": {
-                    "type": "string",
-                    "enum": [
-                        "default",
-                        "aws",
-                        "slack"
-                    ],
-                    "title": "SCIM Compatibility Mode",
-                    "description": "Alter authentik behavior for vendor-specific SCIM implementations."
-                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -6682,11 +6669,6 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
-                },
-                "dry_run": {
-                    "type": "boolean",
-                    "title": "Dry run",
-                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -8231,6 +8213,7 @@
                 },
                 "identifier": {
                     "type": "string",
+                    "maxLength": 255,
                     "minLength": 1,
                     "title": "Identifier"
                 },
@@ -8730,6 +8713,8 @@
                 },
                 "sso_url": {
                     "type": "string",
+                    "format": "uri",
+                    "maxLength": 200,
                     "minLength": 1,
                     "title": "SSO URL",
                     "description": "URL that the initial Login request is sent to."
@@ -8739,6 +8724,8 @@
                         "string",
                         "null"
                     ],
+                    "format": "uri",
+                    "maxLength": 200,
                     "title": "SLO URL",
                     "description": "Optional URL if your IDP supports Single-Logout."
                 },
@@ -11377,10 +11364,11 @@
                     "title": "From address"
                 },
                 "token_expiry": {
-                    "type": "string",
-                    "minLength": 1,
+                    "type": "integer",
+                    "minimum": -2147483648,
+                    "maximum": 2147483647,
                     "title": "Token expiry",
-                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+                    "description": "Time in minutes the token sent is valid."
                 },
                 "subject": {
                     "type": "string",
@@ -13009,15 +12997,6 @@
                     "minLength": 1,
                     "title": "Branding favicon"
                 },
-                "branding_custom_css": {
-                    "type": "string",
-                    "title": "Branding custom css"
-                },
-                "branding_default_flow_background": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Branding default flow background"
-                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
@@ -14217,11 +14196,6 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Default group email domain"
-                },
-                "dry_run": {
-                    "type": "boolean",
-                    "title": "Dry run",
-                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14370,11 +14344,6 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
-                },
-                "dry_run": {
-                    "type": "boolean",
-                    "title": "Dry run",
-                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14899,15 +14868,9 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
-                "webhook_mapping_body": {
+                "webhook_mapping": {
                     "type": "integer",
-                    "title": "Webhook mapping body",
-                    "description": "Customize the body of the request. Mapping should return data that is JSON-serializable."
-                },
-                "webhook_mapping_headers": {
-                    "type": "integer",
-                    "title": "Webhook mapping headers",
-                    "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
+                    "title": "Webhook mapping"
                 },
                 "send_once": {
                     "type": "boolean",

@@ -1,7 +1,7 @@
 import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
 import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
-    NavigationEventInit,
+    NavigationUpdate,
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
@@ -14,9 +14,9 @@ import { property, query } from "lit/decorators.js";
 import { ValidationError } from "@goauthentik/api";
 
 import {
-    ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
+    ExtendedValidationError,
 } from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
@@ -48,7 +48,7 @@ export class ApplicationWizardStep extends WizardStep {
     }
 
     protected removeErrors(
-        keyToDelete: keyof ApplicationTransactionValidationError,
+        keyToDelete: keyof ExtendedValidationError,
     ): ValidationError | undefined {
         if (!this.wizard.errors) {
             return undefined;
@@ -71,7 +71,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationEventInit,
+        enable?: NavigationUpdate,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

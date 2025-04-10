@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -100,7 +100,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
                                                       item.expires || new Date()
                                                   ).toLocaleString()}
                                               >
-                                                  ${formatElapsedTime(item.expires || new Date())}
+                                                  ${getRelativeTime(item.expires || new Date())}
                                               </pf-tooltip>
                                           `
                                         : msg("-")}
@@ -128,7 +128,7 @@ export class SystemTaskListPage extends TablePage<SystemTask> {
         return [
             html`<pre>${item.name}${item.uid ? `:${item.uid}` : ""}</pre>`,
             html`${item.description}`,
-            html`<div>${formatElapsedTime(item.finishTimestamp)}</div>
+            html`<div>${getRelativeTime(item.finishTimestamp)}</div>
                 <small>${item.finishTimestamp.toLocaleString()}</small>`,
             this.taskStatus(item),
             html`<ak-action-button

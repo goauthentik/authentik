@@ -130,12 +130,7 @@ func (ps *ProxyServer) ServeHTTP() {
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener, ConnPolicy: utils.GetProxyConnectionPolicy()}
-	defer func() {
-		err := proxyListener.Close()
-		if err != nil {
-			ps.log.WithError(err).Warning("failed to close proxy listener")
-		}
-	}()
+	defer proxyListener.Close()
 
 	ps.log.WithField("listen", listenAddress).Info("Starting HTTP server")
 	ps.serve(proxyListener)
@@ -154,12 +149,7 @@ func (ps *ProxyServer) ServeHTTPS() {
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}, ConnPolicy: utils.GetProxyConnectionPolicy()}
-	defer func() {
-		err := proxyListener.Close()
-		if err != nil {
-			ps.log.WithError(err).Warning("failed to close proxy listener")
-		}
-	}()
+	defer proxyListener.Close()
 
 	tlsListener := tls.NewListener(proxyListener, tlsConfig)
 	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")

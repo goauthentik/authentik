@@ -1,13 +1,16 @@
 ---
 title: Caddy
+hide_title: true
 ---
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import Placeholders from "./__placeholders.md";
-import CaddyStandalone from "./_caddy_standalone.md";
+
+# Caddy <span class="badge badge--version">authentik 2022.8+</span>
 
 The configuration template shown below apply to both single-application and domain-level forward auth.
+
+import Placeholders from "./__placeholders.md";
 
 <Placeholders />
 
@@ -17,6 +20,8 @@ The configuration template shown below apply to both single-application and doma
     {label: 'Caddy (standalone)', value: 'caddy-standalone'},
   ]}>
   <TabItem value="caddy-standalone">
+
+import CaddyStandalone from "./_caddy_standalone.md";
 
 <CaddyStandalone />
 

@@ -1,8 +1,11 @@
 ---
 title: Integrate with HashiCorp Cloud Platform
 sidebar_label: HashiCorp Cloud Platform
-support_level: community
 ---
+
+# Integrate with HashiCorp Cloud Platform
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is HashiCorp Cloud
 
@@ -20,30 +23,37 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## HashiCorp Cloud preparation
+### Step 1 - HashiCorp Cloud
 
 Login in under https://portal.cloud.hashicorp.com. Navigate to the _Settings_ entry in the sidebar, then _SSO_. Enable SSO and configure domain verification for the domain your users email have.
 
 Under _Initiate SAML integration_, copy _SSO Sign-On URL_ and _Entity ID_.
 
-## authentik Configuration
+### Step 2 - authentik
 
-To support the integration of HashiCorp Cloud with authentik, you need to create an application/provider pair in authentik.
+In authentik, under _Providers_, create a _SAML Provider_ with these settings:
 
-### Create an Application and Provider in authentik
+:::note
+Only settings that have been modified from default have been listed.
+:::
 
-1. Log in to authentik as an admin and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider**.
-    - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
-    - **Choose a Provider type**: Select **SAML Provider**.
-    - **Configure the Provider**:
-        - Set the **ACS URL** to the value of <kbd>SSO Sign-On URL</kbd> in the **HashiCorp Cloud preparation** section.
-        - Set the **Issuer** and **Audience** to the value of <kbd>Entity ID</kbd> in the **HashiCorp Cloud preparation** section.
-        - Set the **Service Provider Binding** to `Post`.
-        - Under **Advanced protocol settings**, select an available signing certificate.
-3. Click **Submit** to save the new application and provider.
+**Protocol Settings**
 
-## HashiCorp Cloud configuration
+- Name: HashiCorp Cloud
+- ACS URL: _Value of **SSO Sign-On URL** from above_
+- Issuer: _Value of **Entity ID** from above_
+- Service Provider Binding: Post
+- Audience: _Value of **Entity ID** from above_
+
+Open _Advanced protocol settings_, and ensure a signing certificate is selected, and all default property mappings are selected.
+
+Create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
+
+- Name: HashiCorp Cloud
+- Slug: hashicorp-cloud
+- Provider: HashiCorp Cloud
+
+### Step 3 - HashiCorp Cloud
 
 Open the Application's page in authentik and click on the provider name. Copy the value of _SSO URL (Redirect)_ and paste it into the _SAML IDP Single Sign-On URL_ field in the HashiCorp Cloud settings.
 

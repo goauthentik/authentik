@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
+import { parseAPIError } from "@goauthentik/common/errors";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -21,8 +21,9 @@ import {
     Prompt,
     PromptChallenge,
     PromptTypeEnum,
+    ResponseError,
     StagesApi,
-    instanceOfValidationError,
+    ValidationError,
 } from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
@@ -77,22 +78,15 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 return;
             }
         }
-
-        return new StagesApi(DEFAULT_CONFIG)
-            .stagesPromptPromptsPreviewCreate({
+        try {
+            this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
                 promptRequest: prompt,
-            })
-            .then((nextPreview) => {
-                this.preview = nextPreview;
-                this.previewError = undefined;
-            })
-            .catch(async (error: unknown) => {
-                const parsedError = await parseAPIResponseError(error);
-
-                this.previewError = instanceOfValidationError(parsedError)
-                    ? parsedError.nonFieldErrors
-                    : [pluckErrorDetail(parsedError, msg("Failed to preview prompt"))];
             });
+            this.previewError = undefined;
+        } catch (exc) {
+            const errorMessage = parseAPIError(exc as ResponseError);
+            this.previewError = (errorMessage as ValidationError).nonFieldErrors;
+        }
     }
 
     getSuccessMessage(): string {

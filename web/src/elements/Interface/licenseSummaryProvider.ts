@@ -1,40 +1,23 @@
 import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
-import { createMixin } from "@goauthentik/elements/types";
+import { Constructor } from "@goauthentik/elements/types.js";
 
 import { consume } from "@lit/context";
+import type { LitElement } from "lit";
 
 import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
-/**
- * A consumer that provides license information to the element.
- */
-export interface LicenseMixin {
-    /**
-     * Summary of the current license.
-     */
-    readonly licenseSummary: LicenseSummary;
-
-    /**
-     * Whether or not the current license is an enterprise license.
-     */
-    readonly hasEnterpriseLicense: boolean;
-}
-
-/**
- * A mixin that provides the license information to the element.
- */
-export const WithLicenseSummary = createMixin<LicenseMixin>(({ SuperClass, subscribe = true }) => {
-    abstract class LicenseProvider extends SuperClass implements LicenseMixin {
-        @consume({
-            context: authentikEnterpriseContext,
-            subscribe,
-        })
-        public readonly licenseSummary!: LicenseSummary;
+export function WithLicenseSummary<T extends Constructor<LitElement>>(
+    superclass: T,
+    subscribe = true,
+) {
+    abstract class WithEnterpriseProvider extends superclass {
+        @consume({ context: authentikEnterpriseContext, subscribe })
+        public licenseSummary!: LicenseSummary;
 
         get hasEnterpriseLicense() {
             return this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         }
     }
 
-    return LicenseProvider;
-});
+    return WithEnterpriseProvider;
+}

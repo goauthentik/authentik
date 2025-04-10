@@ -36,7 +36,6 @@ class MicrosoftEntraProviderSerializer(EnterpriseRequiredMixin, ProviderSerializ
             "filter_group",
             "user_delete_action",
             "group_delete_action",
-            "dry_run",
         ]
         extra_kwargs = {}
 

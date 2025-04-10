@@ -1,8 +1,11 @@
 ---
 title: Integrate with Tautulli
 sidebar_label: Tautulli
-support_level: community
 ---
+
+# Integrate with Tautulli
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Tautulli
 

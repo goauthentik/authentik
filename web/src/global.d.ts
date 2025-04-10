@@ -1,19 +1,9 @@
 declare module "*.css";
 
 declare module "*.md" {
-    /**
-     * The serialized JSON content of an MD file.
-     */
-    const serializedJSON: string;
-    export default serializedJSON;
-}
-
-declare module "*.mdx" {
-    /**
-     * The serialized JSON content of an MDX file.
-     */
-    const serializedJSON: string;
-    export default serializedJSON;
+    const html: string;
+    const metadata: { [key: string]: string };
+    const filename: string;
 }
 
 declare namespace Intl {

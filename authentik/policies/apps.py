@@ -35,4 +35,3 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     label = "authentik_policies"
     verbose_name = "authentik Policies"
     default = True
-    mountpoint = "policy/"

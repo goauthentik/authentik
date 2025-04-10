@@ -286,6 +286,7 @@ class OAuthSourcePropertyMapping(PropertyMapping):
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 
+    identifier = models.CharField(max_length=255)
     access_token = models.TextField(blank=True, null=True, default=None)
 
     @property

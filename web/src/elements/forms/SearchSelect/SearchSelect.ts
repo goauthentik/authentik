@@ -1,9 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
+import { APIErrorTypes, parseAPIError } from "@goauthentik/common/errors";
 import { groupBy } from "@goauthentik/common/utils";
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
@@ -16,6 +12,8 @@ import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { ResponseError } from "@goauthentik/api";
 
 import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
@@ -101,7 +99,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
     isFetchingData = false;
 
     @state()
-    error?: APIError;
+    error?: APIErrorTypes;
 
     public toForm(): string {
         if (!this.objects) {
@@ -130,26 +128,23 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         }
         this.isFetchingData = true;
         this.dispatchEvent(new Event("loading"));
-
         return this.fetchObjects(this.query)
-            .then((nextObjects) => {
-                nextObjects.forEach((obj) => {
-                    if (this.selected && this.selected(obj, nextObjects || [])) {
+            .then((objects) => {
+                objects.forEach((obj) => {
+                    if (this.selected && this.selected(obj, objects || [])) {
                         this.selectedObject = obj;
                         this.dispatchChangeEvent(this.selectedObject);
                     }
                 });
-
-                this.objects = nextObjects;
+                this.objects = objects;
                 this.isFetchingData = false;
             })
-            .catch(async (error: unknown) => {
+            .catch((exc: ResponseError) => {
                 this.isFetchingData = false;
                 this.objects = undefined;
-
-                const parsedError = await parseAPIResponseError(error);
-
-                this.error = parsedError;
+                parseAPIError(exc).then((err) => {
+                    this.error = err;
+                });
             });
     }
 
@@ -238,9 +233,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
 
     public override render() {
         if (this.error) {
-            return html`<em
-                >${msg("Failed to fetch objects: ")} ${pluckErrorDetail(this.error)}</em
-            >`;
+            return html`<em>${msg("Failed to fetch objects: ")} ${this.error.detail}</em>`;
         }
 
         // `this.objects` is both a container and a sigil; if it is in the `undefined` state, it's a

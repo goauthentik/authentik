@@ -82,12 +82,6 @@ updates:
       docusaurus:
         patterns:
           - "@docusaurus/*"
-      build:
-        patterns:
-          - "@swc/*"
-          - "swc-*"
-          - "lightningcss*"
-          - "@rspack/binding*"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:
@@ -98,7 +92,7 @@ updates:
       prefix: "lifecycle/aws:"
     labels:
       - dependencies
-  - package-ecosystem: uv
+  - package-ecosystem: pip
     directory: "/"
     schedule:
       interval: daily

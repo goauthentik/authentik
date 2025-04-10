@@ -678,8 +678,6 @@ class SourceGroupMatchingModes(models.TextChoices):
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
-    MANAGED_INBUILT = "goauthentik.io/sources/inbuilt"
-
     name = models.TextField(help_text=_("Source's display Name."))
     slug = models.SlugField(help_text=_("Internal source name, used in URLs."), unique=True)
 
@@ -761,17 +759,11 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
-        if self.managed == self.MANAGED_INBUILT:
-            return ""
         raise NotImplementedError
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
         """Return property mapping type used by this object"""
-        if self.managed == self.MANAGED_INBUILT:
-            from authentik.core.models import PropertyMapping
-
-            return PropertyMapping
         raise NotImplementedError
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
@@ -786,14 +778,10 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
-        if self.managed == self.MANAGED_INBUILT:
-            return {}
         raise NotImplementedError
 
     def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a group to build final properties upon."""
-        if self.managed == self.MANAGED_INBUILT:
-            return {}
         raise NotImplementedError
 
     def __str__(self):
@@ -824,7 +812,6 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
-    identifier = models.TextField()
 
     objects = InheritanceManager()
 
@@ -838,10 +825,6 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
-        indexes = (
-            models.Index(fields=("identifier",)),
-            models.Index(fields=("source", "identifier")),
-        )
 
 
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):

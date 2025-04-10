@@ -32,5 +32,5 @@ class AuthentikCoreConfig(ManagedAppConfig):
                 "name": "authentik Built-in",
                 "slug": "authentik-built-in",
             },
-            managed=Source.MANAGED_INBUILT,
+            managed="goauthentik.io/sources/inbuilt",
         )

@@ -1,5 +1,4 @@
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
@@ -28,7 +27,6 @@ export enum CodeMirrorMode {
     XML = "xml",
     JavaScript = "javascript",
     HTML = "html",
-    CSS = "css",
     Python = "python",
     YAML = "yaml",
 }
@@ -149,8 +147,6 @@ export class CodeMirrorTextarea<T> extends AKElement {
                 return htmlLang();
             case CodeMirrorMode.Python:
                 return python();
-            case CodeMirrorMode.CSS:
-                return cssLang();
             case CodeMirrorMode.YAML:
                 return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
         }

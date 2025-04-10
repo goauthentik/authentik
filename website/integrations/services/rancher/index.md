@@ -1,8 +1,11 @@
 ---
 title: Integrate with Rancher
 sidebar_label: Rancher
-support_level: authentik
 ---
+
+# Integrate with Rancher
+
+<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Rancher
 

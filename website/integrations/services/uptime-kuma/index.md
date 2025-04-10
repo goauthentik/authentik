@@ -1,8 +1,11 @@
 ---
 title: Integrate with Uptime Kuma
 sidebar_label: Uptime Kuma
-support_level: community
 ---
+
+# Integrate with Uptime Kuma
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Uptime Kuma
 
@@ -23,49 +26,48 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
+Create an application in authentik. Create a Proxy provider with the following parameters:
 
-To support the integration of Uptime Kuma with authentik, you need to create an application/provider pair in authentik.
+- Internal host
 
-### Create an application and provider in authentik
+    If Uptime Kuma is running in docker, and you're deploying the authentik proxy on the same host, set the value to `http://uptime-kuma:3001`, where uptime-kuma is the name of your container.
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+    If Uptime Kuma is running on a different server to where you are deploying the authentik proxy, set the value to `http://<Other Host>:3001`.
 
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **Proxy Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+- External host
 
-    - Set the **External host** to <kbd>https://<em>uptime-kuma</em>.company</kbd>.
-    - Set the **Internal host** to <kbd>http://<em>uptime-kuma:3001</em></kbd> where <kbd><em>uptime-kuma:3001</em></kbd> is the hostname and port of your Uptime Kuma container.
-    - Under **Advanced protocol settings**, set **Unauthenticated Paths** to the following to allow unauthenticated access to the public status page:
+    `https://uptime-kuma.company`
+    Set this to the external URL you will be accessing Uptime Kuma from.
 
-        ```
-        ^/status/.*
-        ^/assets/.*
-        ^/api/push/.*
-        ^/api/badge/.*
-        ^/api/status-page/heartbeat/.*
-        ^/icon.svg
-        ^/upload/.*
-        ```
+- Skip path regex
 
-        For more granular access, you can analyze requests from your status page(s) and update the following regex rules accordingly:
+    Add the following regex rules to keep the public status page accessible without authentication.
 
-        ```
-        ^/status/<slug>$
-        ^/assets/.*
-        ^/api/push/.*
-        ^/api/badge/.*
-        ^/api/status-page/heartbeat/<slug>$
-        ^/upload/<file>$
-        ```
+    ```
+    ^/status/.*
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/.*
+    ^/icon.svg
+    ^/upload/.*
+    ```
 
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    Alternatively, you can get even more specific by analyzing the requests for your status pages and modifying the regex rules above accordingly.  
+     For example:
 
-3. Click **Submit** to save the new application and provider.
+    ```
+    ^/status/<slug>$
+    ^/assets/.*
+    ^/api/push/.*
+    ^/api/badge/.*
+    ^/api/status-page/heartbeat/<slug>$
+    ^/upload/<file>$
+    ```
 
-## Uptime Kuma configuration
+To avoid that all users get admin access to Uptime Kuma create a group in authentik for the admin user. Next set in authentik for the application under `Policy / Group / User Bindings` a group binding with the group created above.
+
+## Uptime Kuma
 
 Disable auth from Uptime Kuma, go to `Settings` > `Advanced` > `Disable Auth`
 

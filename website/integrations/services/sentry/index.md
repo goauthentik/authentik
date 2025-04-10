@@ -1,8 +1,11 @@
 ---
 title: Integrate with Sentry
 sidebar_label: Sentry
-support_level: authentik
 ---
+
+# Integrate with Sentry
+
+<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Sentry
 

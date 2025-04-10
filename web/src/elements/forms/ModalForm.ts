@@ -47,11 +47,10 @@ export class ModalForm extends ModalButton {
                 this.loading = false;
                 this.locked = false;
             })
-            .catch((error: unknown) => {
+            .catch((exc) => {
                 this.loading = false;
                 this.locked = false;
-
-                throw error;
+                throw exc;
             });
     }
 

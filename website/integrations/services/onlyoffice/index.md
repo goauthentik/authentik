@@ -1,8 +1,11 @@
 ---
 title: Integrate with OnlyOffice
 sidebar_label: OnlyOffice
-support_level: community
 ---
+
+# Integrate with OnlyOffice
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is OnlyOffice
 

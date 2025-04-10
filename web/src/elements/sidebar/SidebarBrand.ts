@@ -22,7 +22,6 @@ export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
-    brandingCustomCss: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",

@@ -184,7 +184,7 @@ class ChallengeStageView(StageView):
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url(self.request),
+                        "background": self.executor.flow.background_url,
                         "cancel_url": reverse("authentik_flows:cancel"),
                         "layout": self.executor.flow.layout,
                     }

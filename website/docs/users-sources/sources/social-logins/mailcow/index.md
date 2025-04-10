@@ -1,7 +1,8 @@
 ---
 title: Mailcow
-support_level: community
 ---
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Mailcow credentials
 

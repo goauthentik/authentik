@@ -7,6 +7,7 @@ import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
+import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -136,13 +137,10 @@ export class SSFProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         <input
-                                            class="pf-c-form-control pf-m-monospace"
+                                            class="pf-c-form-control"
                                             readonly
                                             type="text"
                                             value=${this.provider.ssfUrl || ""}
-                                            placeholder=${this.provider.ssfUrl
-                                                ? msg("SSF URL")
-                                                : msg("No assigned application")}
                                         />
                                     </div>
                                 </dd>

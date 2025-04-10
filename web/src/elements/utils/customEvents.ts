@@ -5,15 +5,9 @@ export const customEvent = (name: string, details = {}) =>
         detail: details,
     });
 
-export type SerializablePrimitive = number | string;
-export type SerializableArray = SerializablePrimitive[];
-export type CustomEventDetail = SerializablePrimitive | SerializableArray | object;
-
-/**
- * Type guard to determine if an event has a `detail` property.
- */
-export function isCustomEvent<D = CustomEventDetail>(
-    eventLike: Event,
-): eventLike is CustomEvent<D> {
-    return eventLike instanceof CustomEvent && "detail" in eventLike;
-}
+// "Unknown" seems to violate some obscure Typescript rule and doesn't work here, although it
+// should.
+//
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isCustomEvent = (v: any): v is CustomEvent =>
+    v instanceof CustomEvent && "detail" in v;

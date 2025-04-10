@@ -1,8 +1,7 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
+import { parseAPIError } from "@goauthentik/common/errors";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { camelToSnake, convertToSlug, dateToUTC } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
@@ -21,7 +20,13 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { instanceOfValidationError } from "@goauthentik/api";
+import { ResponseError, ValidationError, instanceOfValidationError } from "@goauthentik/api";
+
+export class APIError extends Error {
+    constructor(public response: ValidationError) {
+        super();
+    }
+}
 
 export interface KeyUnknown {
     [key: string]: unknown;
@@ -280,82 +285,73 @@ export abstract class Form<T> extends AKElement {
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
      */
-    async submit(event: Event): Promise<unknown | undefined> {
-        event.preventDefault();
-
-        const data = this.serializeForm();
-        if (!data) return;
-
-        return this.send(data)
-            .then((response) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: this.getSuccessMessage(),
-                });
-
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-
-                return response;
-            })
-            .catch(async (error: unknown) => {
-                if (error instanceof PreventFormSubmit && error.element) {
-                    error.element.errorMessages = [error.message];
-                    error.element.invalid = true;
-                }
-
-                const parsedError = await parseAPIResponseError(error);
-                let errorMessage = pluckErrorDetail(error);
-
-                if (instanceOfValidationError(parsedError)) {
+    async submit(ev: Event): Promise<unknown | undefined> {
+        ev.preventDefault();
+        try {
+            const data = this.serializeForm();
+            if (!data) {
+                return;
+            }
+            const response = await this.send(data);
+            showMessage({
+                level: MessageLevel.success,
+                message: this.getSuccessMessage(),
+            });
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+            return response;
+        } catch (ex) {
+            if (ex instanceof ResponseError) {
+                let errorMessage = ex.response.statusText;
+                const error = await parseAPIError(ex);
+                if (instanceOfValidationError(error)) {
                     // assign all input-related errors to their elements
                     const elements =
                         this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
                             "ak-form-element-horizontal",
                         ) || [];
-
                     elements.forEach((element) => {
                         element.requestUpdate();
-
                         const elementName = element.name;
-                        if (!elementName) return;
-
-                        const snakeProperty = camelToSnake(elementName);
-
-                        if (snakeProperty in parsedError) {
-                            element.errorMessages = parsedError[snakeProperty];
+                        if (!elementName) {
+                            return;
+                        }
+                        if (camelToSnake(elementName) in error) {
+                            element.errorMessages = (error as ValidationError)[
+                                camelToSnake(elementName)
+                            ];
                             element.invalid = true;
                         } else {
                             element.errorMessages = [];
                             element.invalid = false;
                         }
                     });
-
-                    if (parsedError.nonFieldErrors) {
-                        this.nonFieldErrors = parsedError.nonFieldErrors;
+                    if ((error as ValidationError).nonFieldErrors) {
+                        this.nonFieldErrors = (error as ValidationError).nonFieldErrors;
                     }
-
                     errorMessage = msg("Invalid update request.");
-
                     // Only change the message when we have `detail`.
                     // Everything else is handled in the form.
-                    if ("detail" in parsedError) {
-                        errorMessage = parsedError.detail;
+                    if ("detail" in (error as ValidationError)) {
+                        errorMessage = (error as ValidationError).detail;
                     }
                 }
-
                 showMessage({
                     message: errorMessage,
                     level: MessageLevel.error,
                 });
-
-                // Rethrow the error so the form doesn't close.
-                throw error;
-            });
+            }
+            if (ex instanceof PreventFormSubmit && ex.element) {
+                ex.element.errorMessages = [ex.message];
+                ex.element.invalid = true;
+            }
+            // rethrow the error so the form doesn't close
+            throw ex;
+        }
     }
 
     renderFormWrapper(): TemplateResult {
