@@ -23,19 +23,24 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-Create an application and Provider in authentik, note the slug, as this will be used later. Create a SAML provider with the following parameters:
+## authentik configuration
 
-Provider:
+To support the integration of FortiManager with authentik, you need to create an application/provider pair in authentik.
 
-- ACS URL: `https://fgm.company/saml/?acs`
-- Issuer: `https://authentik.company/application/saml/fgm/sso/binding/redirect/`
-- Service Provider Binding: Post
+### Create an application and provider in authentik
 
-You can of course use a custom signing certificate, and adjust durations.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-Application:
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Set the **ACS URL** to <kbd>https://<em>fortimanager.company</em>/saml/?acs</kbd>.
+    - Set the **Issuer** to <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-- Launch URL: 'https://fgm.company/p/sso_sp/'
+3. Click **Submit** to save the new application and provider.
 
 ## FortiManager Configuration
 

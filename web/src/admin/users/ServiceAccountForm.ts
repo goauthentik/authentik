@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/utils";
+import { dateTimeLocal } from "@goauthentik/common/temporal";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";

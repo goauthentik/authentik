@@ -46,6 +46,10 @@ Use relative paths when linking to other documentation files. This will ensure l
 
 The standard file type for documentation is `.md`. Use `.mdx` only if React components, such as interactive elements, are required.
 
+### OS-agnostic, clarify where needed
+
+Try to write procedural (How To) docs generically enough that it does not endorse or force a specific operating system. If it is necessary to specify a specific OS be sure to label it clearly. Consider using tabs (with MDX) to show the different OSes.
+
 ## Terminology
 
 ### authentik product naming conventions
@@ -69,13 +73,23 @@ The tone of the authentik documentation should be friendly but professional. It 
 
 The documentation uses **American English** spelling conventions (e.g., "customize" instead of "customise").
 
+### Punctuation
+
+For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
+
 ### Voice
 
-Use **active voice** and present tense for clear, direct communication. - **DON'T:** "The Applications page will be loaded." - **DO:** "The Applications page displays."
+Use **active voice** and **present tense** for clear, direct communication.
+
+- **DON'T:** "The Applications page will be loaded."
+- **DO:** "The Applications page displays."
 
 ### User-friendly phrasing
 
-Avoid phrasing that blames the user. Be subjective and polite when providing instructions. - **DON'T:** "Never modify the default file." - **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
+Avoid phrasing that blames the user. Be subjective and polite when providing instructions.
+
+- **DON'T:** "Never modify the default file."
+- **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
 
 ## Word choices
 
@@ -93,6 +107,29 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 - As a noun or descriptive term, use **login** (e.g., "The login panel").
 - As a verb, use **"log in"** (e.g., "This stage prompts the user to log in").
 - As a verb followed by the proposition **"to"**, use **"log in to"** (e.g., "Log in to the application").
+
+### Use "that" as a conjunction
+
+It's important to use "that" as a conjunction to introduce a dependent clause, or as a "connection" between a noun and a verb ("The provider that you created in Step 3."). Including "that" as a conjunction helps non-native English speakers more easily parse phrases, and improves output for translation tools.
+
+- **DO:** "Ensure that the new user's password is valid."
+- **DON'T:** "Ensure the new user's password is valid."
+
+### "which" vs "that"
+
+Th easiest way to remember when to use "which" versus "that" is:
+
+- if the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, then you should use "which".
+
+For more information, see https://www.grammarly.com/blog/which-vs-that/.
+
+### “since” (time-based) vs “because” (causal)
+
+When writing about a status or anything that is causal ("this happened because of that"), use the word "because". Use the word "since" for time-based topics (this will be rare in technical writing).
+
+### Avoid using “once” (numeric) to mean “after” (time-based).
+
+When writing out steps in a procedural topic, avoid starting with "Once...". Instead, you can say "After you have created the scope mapping...".
 
 ## Formatting guidelines
 

@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.2.2"
+version = "2025.2.4"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.12.*"
@@ -52,7 +52,7 @@ dependencies = [
     "pydantic-scim",
     "pyjwt",
     "pyrad",
-    "python-kadmin-rs ==0.5.3",
+    "python-kadmin-rs ==0.6.0",
     "pyyaml",
     "requests-oauthlib",
     "scim2-filter-parser",
@@ -103,7 +103,7 @@ dev = [
 
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" }
+opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"

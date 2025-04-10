@@ -7,6 +7,7 @@ tags:
     - apple
     - ssf
     - backchannel
+    - device-management
 authentik_version: "2025.2.0"
 authentik_enterprise: true
 authentik_preview: true
