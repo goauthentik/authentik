@@ -7,7 +7,6 @@
         paint-order: stroke;
     }
 }
-/* #endregion */
 
 .markdown {
     /* Remove empty table headers. */
@@ -26,11 +25,3 @@
         display: inline-block;
     }
 }
-
-/* #region Code Blocks */
-
-.theme-code-block pre code {
-    font-weight: 500;
-}
-
-/* #endregion */
