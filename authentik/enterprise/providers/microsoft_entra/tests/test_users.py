@@ -397,7 +397,7 @@ class MicrosoftEntraUserTests(APITestCase):
                 AsyncMock(return_value=GroupCollectionResponse(value=[])),
             ),
         ):
-            microsoft_entra_sync.delay(self.provider.pk).get()
+            microsoft_entra_sync.send(self.provider.pk).get_result()
             self.assertTrue(
                 MicrosoftEntraProviderUser.objects.filter(
                     user=different_user, provider=self.provider

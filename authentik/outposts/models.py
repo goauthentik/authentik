@@ -36,7 +36,10 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.time import fqdn_rand
 from authentik.outposts.controllers.k8s.utils import get_namespace
+from authentik.tasks.schedules.lib import ScheduleSpec
+from authentik.tasks.schedules.models import ScheduledModel
 
 OUR_VERSION = parse(__version__)
 OUTPOST_HELLO_INTERVAL = 10
@@ -113,7 +116,7 @@ class OutpostServiceConnectionState:
     healthy: bool
 
 
-class OutpostServiceConnection(models.Model):
+class OutpostServiceConnection(ScheduledModel, models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -143,11 +146,11 @@ class OutpostServiceConnection(models.Model):
     @property
     def state(self) -> OutpostServiceConnectionState:
         """Get state of service connection"""
-        from authentik.outposts.tasks import outpost_service_connection_state
+        from authentik.outposts.tasks import outpost_service_connection_monitor
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_state.delay(self.pk)
+            outpost_service_connection_monitor.send(self.pk)
             return OutpostServiceConnectionState("", False)
         return state
 
@@ -157,6 +160,18 @@ class OutpostServiceConnection(models.Model):
         # This is called when creating an outpost with a service connection
         # since the response doesn't use the correct inheritance
         return ""
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.outposts.tasks.outpost_service_connection_monitor",
+                uid=self.pk,
+                args=(self.pk,),
+                crontab="3-59/15 * * * *",
+                description=_(f"Update cached state of service connection {self.name}"),
+            ),
+        ]
 
 
 class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
@@ -242,7 +257,7 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         return "ak-service-connection-kubernetes-form"
 
 
-class Outpost(SerializerModel, ManagedModel):
+class Outpost(ScheduledModel, SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
@@ -295,6 +310,21 @@ class Outpost(SerializerModel, ManagedModel):
     def user_identifier(self):
         """Username for service user"""
         return f"ak-outpost-{self.uuid.hex}"
+
+    @property
+    def schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.outposts.tasks.outpost_controller",
+                uid=self.pk,
+                args=(self.pk,),
+                kwargs={"action": "up", "from_cache": False},
+                crontab=f"{fqdn_rand('outpost_controller')} */4 * * *",
+                description=_(
+                    f"Create/update/monitor/delete the deployment for the {self.name} outpost"
+                ),
+            ),
+        ]
 
     def build_user_permissions(self, user: User):
         """Create per-object and global permissions for outpost service-account"""

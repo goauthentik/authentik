@@ -20,6 +20,7 @@ from authentik.core.models import (
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.tasks.schedules.models import ScheduledModel
 
 
 def default_scopes() -> list[str]:
@@ -83,7 +84,7 @@ class GoogleWorkspaceProviderGroup(SerializerModel):
         return f"Google Workspace Provider Group {self.group_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
+class GoogleWorkspaceProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
@@ -109,6 +110,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
     )
+
+    @property
+    def sync_task(self) -> str:
+        return "authentik.enterprise.providers.google_workspace.tasks.google_workspace_sync"
 
     def client_for_model(
         self,
