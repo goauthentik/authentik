@@ -173,6 +173,10 @@ Depending on your Nextcloud configuration, you might need to use `https://nextcl
       To avoid a hashed Federated Cloud ID, deselect **Use unique user ID** and use `user_id` for the User ID mapping.
       :::
 
+        :::danger
+        If you are using a custom profile scope and want administrators to be able to log in, ensure that **Use unique user ID** is deselected. Otherwise, this setting will remove Administrator users from the internal admin group and replace them with a hashed group ID named "admin", which lacks actual admin access rights.
+        :::
+
 3. **Log in:**  
    Once configured, single sign-on (SSO) login via authentik becomes available.
 

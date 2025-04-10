@@ -5,7 +5,6 @@ support_level: authentik
 tags:
     - integration
     - device-management
-authentik_enterprise: true
 authentik_preview: true
 ---
 
