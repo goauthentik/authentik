@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
     "type": "module",
@@ -32,6 +32,9 @@
     },
     "engines": {
         "node": ">=20.11"
+    },
+    "publishConfig": {
+        "access": "public"
     },
     "prettier": "@goauthentik/prettier-config"
 }
