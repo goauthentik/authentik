@@ -24,7 +24,7 @@ dependencies = [
     "django-redis",
     "django-storages[s3]",
     "django-tenants",
-    "djangorestframework ==3.14.0",
+    "djangorestframework",
     "djangorestframework-guardian",
     "docker",
     "drf-orjson-renderer",
@@ -104,6 +104,7 @@ dev = [
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
+djangorestframework = { git = "https://github.com/gergosimonyi/django-rest-framework", rev = "d53d7734b658b3d94b56fa375f90c18db446f842" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"
