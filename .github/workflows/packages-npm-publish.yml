@@ -7,8 +7,6 @@ on:
       - packages/eslint-config
       - packages/prettier-config
       - packages/tsconfig
-  pull_request:
-    branches: [main]
   workflow_dispatch:
 jobs:
   publish:
@@ -23,14 +21,8 @@ jobs:
           - prettier-config
           - tsconfig
     steps:
-      - id: generate_token
-        uses: tibdex/github-app-token@v2
-        with:
-          app_id: ${{ secrets.GH_APP_ID }}
-          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v4
         with:
-          token: ${{ steps.generate_token.outputs.token }}
           fetch-depth: 2
       - uses: actions/setup-node@v4
         with:
@@ -49,22 +41,3 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-      - uses: peter-evans/create-pull-request@v7
-        if: steps.changed-files.outputs.any_changed == 'true'
-        id: cpr
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          branch: update-package-${{ matrix.package }}
-          commit-message: "web: bump ${{ matrix.package }} version"
-          title: "web: bump ${{ matrix.package }} version"
-          body: "web: bump ${{ matrix.package }} version"
-          delete-branch: true
-          signoff: true
-          # ID from https://api.github.com/users/authentik-automation[bot]
-          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
-      - uses: peter-evans/enable-pull-request-automerge@v3
-        if: steps.changed-files.outputs.any_changed == 'true'
-        with:
-          token: ${{ steps.generate_token.outputs.token }}
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
