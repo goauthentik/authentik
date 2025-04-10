@@ -62,6 +62,7 @@ jobs:
         psql:
           - 15-alpine
           - 16-alpine
+          - 17-alpine
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
