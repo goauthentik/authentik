@@ -72,7 +72,7 @@ To support the integration of authentik with Active Directory, you will need to 
     - **User object filter**: which objects should be considered users. For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
     - **Group object filter**: which objects should be considered groups.
     - **Lookup using a user attribute**: acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories and nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
-    - **Group membership field**: which user field contains the group membership. When selecting "Lookup using a user attribute", this should be a user attribute, otherwise a group attribute.
+    - **Group membership field**: the user object attribute or the group object attribute that determines the group membership for a user. If you defined a "Lookup using a user attribute", this should be a user object attribute, otherwise a group object attribute.
     - **Object uniqueness field**: a user field that contains a unique identifier.
 
 5. Click **Finish** to save the LDAP Source. An LDAP synchronization will begin in the background. Once completed, you can view the summary by navigating to **Dashboards** > **System Tasks**:
