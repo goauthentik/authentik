@@ -40,13 +40,13 @@ To support the integration of Wazuh with authentik, you need to create a group, 
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
 
     - **Name**: Choose a descriptive name
-    - **SAML Attribute Name**: <kbd>Roles</kbd>
+    - **SAML Attribute Name**: `Roles`
     - **Friendly Name**: Leave blank
     - **Expression**: `wazuh-administrators` is used a placeholder for the group name.
 
-     ```python
-     if ak_is_group_member(request.user, name="wazuh-administrators"):
-        yield "wazuh-admin"
+    ```python
+    if ak_is_group_member(request.user, name="wazuh-administrators"):
+       yield "wazuh-admin"
     ```
 
 3. Click **Finish**.
@@ -87,54 +87,54 @@ The file `wazuh_authentik_meta.xml` serves as a placeholder for your SAML Metada
 
 1. For the next step, you will need an exchange key. To generate this key, use the following command:
 
-```bash
-openssl rand -hex 32
-```
+    ```bash
+    openssl rand -hex 32
+    ```
 
 2. Copy the downloaded metadata file to the `/etc/wazuh-indexer/opensearch-security/` directory on your Wazuh Indexer server.
 
 3. Change the ownership of the `wazuh_authentik_meta.xml` file to the `wazuh-indexer` user using the following command:
 
-```bash
-chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
-```
+    ```bash
+    chown wazuh-indexer:wazuh-indexer /etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml
+    ```
 
 4. Edit the `/etc/wazuh-indexer/opensearch-security/config.yml` on your Wazuh Indexer server.
 
     Add a `saml_auth_domain` section after the `basic_internal_auth_domain` section. For example:
 
-```yaml {7,10,13-30} showLineNumbers title="/etc/wazuh-indexer/opensearch-security/config.yml"
----
-authc:
-    basic_internal_auth_domain:
-        description: "Authenticate SAML against internal users database"
-        http_enabled: true
-        transport_enabled: true
-        order: 0
-        http_authenticator:
-            type: basic
-            challenge: false
-        authentication_backend:
-            type: intern
-    saml_auth_domain:
-        http_enabled: true
-        transport_enabled: false
-        order: 1
-        http_authenticator:
-            type: saml
-            challenge: true
-            config:
-                idp:
-                    metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
-                    entity_id: "wazuh-saml"
-                sp:
-                    entity_id: "wazuh-saml"
-                kibana_url: "https://wazuh-dashboard.company/"
-                roles_key: Roles
-                exchange_key: "<exchange key generated in step 1>"
-        authentication_backend:
-            type: noop
-```
+    ```yaml {7,10,13-30} showLineNumbers title="/etc/wazuh-indexer/opensearch-security/config.yml"
+    ---
+    authc:
+        basic_internal_auth_domain:
+            description: "Authenticate SAML against internal users database"
+            http_enabled: true
+            transport_enabled: true
+            order: 0
+            http_authenticator:
+                type: basic
+                challenge: false
+            authentication_backend:
+                type: intern
+        saml_auth_domain:
+            http_enabled: true
+            transport_enabled: false
+            order: 1
+            http_authenticator:
+                type: saml
+                challenge: true
+                config:
+                    idp:
+                        metadata_file: "/etc/wazuh-indexer/opensearch-security/wazuh_authentik_meta.xml"
+                        entity_id: "wazuh-saml"
+                    sp:
+                        entity_id: "wazuh-saml"
+                    kibana_url: "https://wazuh-dashboard.company/"
+                    roles_key: Roles
+                    exchange_key: "<exchange key generated in step 1>"
+            authentication_backend:
+                type: noop
+    ```
 
 :::note
 Ensure that you set the following parameters in the `basic_internal_auth_domain` section: `order: 0` and `challenge: false`
@@ -144,46 +144,46 @@ And the `metadata_file`, `kibana_url`, and `exchange_key` parameters in the `sam
 
 5. Run the `securityadmin.sh` script to load the configuration changes made in the `/etc/wazuh-indexer/opensearch-security/config.yml` file, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
 
-```bash
-export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
-```
+    ```bash
+    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/config.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company -nhnv
+    ```
 
 6. Edit the `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml` file and include `wazuh_admin` as a `backend_role` in the appropriate section. The following example adds the role to the `all_access` section:
 
-```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
-all_access:
-reserved: true
-hidden: false
-backend_roles:
-// highlight-next-line
-    - "wazuh-admin"
-    - "admin"
-hosts: []
-users: []
-and_backend_roles: []
-description: "Maps admin to all_access"
-```
+    ```yaml showLineNumbers title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+    all_access:
+    reserved: true
+    hidden: false
+    backend_roles:
+    // highlight-next-line
+        - "wazuh-admin"
+        - "admin"
+    hosts: []
+    users: []
+    and_backend_roles: []
+    description: "Maps admin to all_access"
+    ```
 
 7. Run the `securityadmin.sh` script again but with the `-f` flag set to `/etc/wazuh-indexer/opensearch-security/roles_mapping.yml`, ensure that you update the `-h` flag to your Wazuh Indexer FQDN:
 
-```bash
-export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company{" "} -nhnv
-```
+    ```bash
+    export JAVA_HOME=/usr/share/wazuh-indexer/jdk/ && bash /usr/share/wazuh-indexer/plugins/opensearch-security/tools/securityadmin.sh -f /etc/wazuh-indexer/opensearch-security/roles_mapping.yml -icl -key /etc/wazuh-indexer/certs/admin-key.pem -cert /etc/wazuh-indexer/certs/admin.pem -cacert /etc/wazuh-indexer/certs/root-ca.pem -h wazuh-indexer.company{" "} -nhnv
+    ```
 
 ### Wazuh dashboard configuration
 
 1. On the Wazuh Dashboard server, check the value of `run_as` in the `/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml` configuration file:
 
-```yaml showLineNumbers title="/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
-hosts:
-    - default:
-            url: https://127.0.0.1
-            port: 55000
-            username: wazuh-wui
-            password: "<WAZUH_WUI_PASSWORD>"
-            // highlight-next-line
-            run_as: false
-```
+    ```yaml showLineNumbers title="/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml"
+    hosts:
+        - default:
+                url: https://127.0.0.1
+                port: 55000
+                username: wazuh-wui
+                password: "<WAZUH_WUI_PASSWORD>"
+                // highlight-next-line
+                run_as: false
+    ```
 
     The `run_as` parameter when set to true, enables the assignment of roles to users based on authorization context information. See the (Wazuh Authorization Context documentation)[https://documentation.wazuh.com/current/user-manual/api/rbac/auth-context.html] for more information.
 
@@ -204,22 +204,22 @@ hosts:
 
 4. On the Wazuh Dashboard server, add these lines to the `/etc/wazuh-dashboard/opensearch_dashboards.yml` file:
 
-```yaml showLineNumbers
-opensearch_security.auth.type: "saml"
-server.xsrf.allowlist:
-    [
-        "/_opendistro/_security/saml/acs",
-        "/_opendistro/_security/saml/logout",
-        "/_opendistro/_security/saml/acs/idpinitiated",
-    ]
-opensearch_security.session.keepalive: false
-```
+    ```yaml showLineNumbers
+    opensearch_security.auth.type: "saml"
+    server.xsrf.allowlist:
+        [
+            "/_opendistro/_security/saml/acs",
+            "/_opendistro/_security/saml/logout",
+            "/_opendistro/_security/saml/acs/idpinitiated",
+        ]
+    opensearch_security.session.keepalive: false
+    ```
 
 5. Restart the Wazuh dashboard service using the following command:
 
-```bash
-sudo systemctl restart wazuh-dashboard
-```
+    ```bash
+    sudo systemctl restart wazuh-dashboard
+    ```
 
 ## Configuration verification
 
