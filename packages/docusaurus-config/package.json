@@ -10,7 +10,7 @@
             "import": "./index.js",
             "types": "./out/index.d.ts"
         },
-        "./css/**/*": "./css/**/*"
+        "./css/*.css": "./css/*.css"
     },
     "types": "./out/index.d.ts",
     "dependencies": {
