@@ -38,7 +38,7 @@ To support the integration of WordPress with authentik, you need to create an ap
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>wp.company</em>/admin-ajax.php\?action=openid-connect-authorize</kbd>.
+    - Set a `Strict` redirect URI to <kbd>https://<em>wp.company</em>/wp-admin/admin-ajax.php\?action=openid-connect-authorize</kbd>.
     - Select any available signing key.
     - Under **Advanced Protocol Settings**, add `offline_access` to the list of available scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

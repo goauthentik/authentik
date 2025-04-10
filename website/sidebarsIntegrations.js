@@ -66,6 +66,7 @@ module.exports = {
                     items: [
                         "services/organizr/index",
                         "services/linkwarden/index",
+                        "services/homarr/index",
                     ],
                 },
                 {
