@@ -3,6 +3,7 @@
 from json import loads
 from typing import Any
 from urllib.parse import parse_qsl
+from enum import Enum
 
 from django.utils.crypto import constant_time_compare, get_random_string
 from django.utils.translation import gettext as _
@@ -16,12 +17,19 @@ LOGGER = get_logger()
 SESSION_KEY_OAUTH_PKCE = "authentik/sources/oauth/pkce"
 
 
+class AuthScheme(Enum):
+    BASIC_AUTH = "basic_auth"
+    POST_BODY = "post_body"
+
+
 class OAuth2Client(BaseOAuthClient):
     """OAuth2 Client"""
 
     _default_headers = {
         "Accept": "application/json",
     }
+
+    _source_auth_scheme: AuthScheme = AuthScheme.BASIC_AUTH
 
     def get_request_arg(self, key: str, default: Any | None = None) -> Any:
         """Depending on request type, get data from post or get"""
@@ -72,6 +80,12 @@ class OAuth2Client(BaseOAuthClient):
             "code": code,
             "grant_type": "authorization_code",
         }
+        basic_auth = None
+        if self._source_auth_scheme == AuthScheme.BASIC_AUTH:
+            basic_auth = (self.get_client_id(), self.get_client_secret())
+        if self._source_auth_scheme == AuthScheme.POST_BODY:
+            args["client_id"] = self.get_client_id()
+            args["client_secret"] = self.get_client_secret()
         if SESSION_KEY_OAUTH_PKCE in self.request.session:
             args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
@@ -81,7 +95,7 @@ class OAuth2Client(BaseOAuthClient):
             response = self.do_request(
                 "post",
                 access_token_url,
-                auth=(self.get_client_id(), self.get_client_secret()),
+                auth=basic_auth,
                 data=args,
                 headers=self._default_headers,
                 **request_kwargs,

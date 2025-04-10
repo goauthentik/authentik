@@ -10,7 +10,7 @@ from rest_framework.fields import CharField
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.clients.oauth2 import OAuth2Client, AuthScheme
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
@@ -39,6 +39,8 @@ class AppleChallengeResponse(ChallengeResponse):
 
 class AppleOAuthClient(OAuth2Client):
     """Apple OAuth2 client"""
+
+    self._source_auth_scheme = AuthScheme.POST_BODY
 
     def get_client_id(self) -> str:
         parts: list[str] = self.source.consumer_key.split(";")
