@@ -90,4 +90,4 @@ To support the integration of authentik with OpenProject, you need to configure 
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with OpenProject, log out, click on the **authentik** button and enter your authentik credentials.
+To confirm that authentik is properly configured with OpenProject, log out of OpenProject, and then click on **authentik** and enter your authentik credentials to log back in.
