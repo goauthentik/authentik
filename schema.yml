@@ -27650,6 +27650,10 @@ paths:
         explode: true
         style: form
       - in: query
+        name: lookup_groups_from_user
+        schema:
+          type: boolean
+      - in: query
         name: name
         schema:
           type: string
@@ -46345,6 +46349,11 @@ components:
           nullable: true
           description: Get cached source connectivity
           readOnly: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
       required:
       - base_dn
       - component
@@ -46541,6 +46550,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
       required:
       - base_dn
       - name
@@ -51664,6 +51678,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
     PatchedLicenseRequest:
       type: object
       description: License Serializer
