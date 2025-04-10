@@ -3,6 +3,9 @@
     "version": "1.0.1",
     "description": "authentik's Prettier config",
     "license": "MIT",
+    "scripts": {
+        "build": "tsc -p ."
+    },
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
@@ -11,7 +14,14 @@
             "types": "./out/index.d.ts"
         }
     },
-    "types": "./out/index.d.ts",
+    "devDependencies": {
+        "@goauthentik/tsconfig": "^1.0.1",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "prettier": "^3.5.3",
+        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-packagejson": "^2.5.10",
+        "typescript": "^5.8.2"
+    },
     "peerDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
@@ -21,6 +31,8 @@
     "engines": {
         "node": ">=20.11"
     },
+    "types": "./out/index.d.ts",
+    "prettier": "./index.js",
     "publishConfig": {
         "access": "public"
     }

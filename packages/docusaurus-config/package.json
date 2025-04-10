@@ -1,8 +1,11 @@
 {
     "name": "@goauthentik/docusaurus-config",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "authentik's Docusaurus config",
     "license": "MIT",
+    "scripts": {
+        "build": "tsc -p ."
+    },
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
@@ -12,29 +15,42 @@
         },
         "./css/*.css": "./css/*.css"
     },
-    "types": "./out/index.d.ts",
     "dependencies": {
-        "prism-react-renderer": "^2.4.1",
-        "deepmerge-ts": "^7.1.5"
+        "deepmerge-ts": "^7.1.5",
+        "prism-react-renderer": "^2.4.1"
     },
     "devDependencies": {
-        "@goauthentik/tsconfig": "^1.0.1",
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/preset-classic": "^3.7.0",
         "@docusaurus/theme-common": "^3.7.0",
-        "@docusaurus/theme-mermaid": "^3.7.0"
+        "@docusaurus/theme-mermaid": "^3.7.0",
+        "@goauthentik/prettier-config": "^1.0.1",
+        "@goauthentik/tsconfig": "^1.0.1",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "typescript": "^5.8.2"
     },
     "peerDependencies": {
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/preset-classic": "^3.7.0",
         "@docusaurus/theme-common": "^3.7.0",
-        "@docusaurus/theme-mermaid": "^3.7.0"
+        "@docusaurus/theme-mermaid": "^3.7.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0"
     },
     "engines": {
         "node": ">=20.11"
     },
+    "types": "./out/index.d.ts",
+    "files": [
+        "out/index.d.ts",
+        "out/index.d.ts.map",
+        "out/index.js.map",
+        "out/index.js",
+        "out/lib/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
     "publishConfig": {
         "access": "public"
-    },
-    "prettier": "@goauthentik/prettier-config"
+    }
 }
