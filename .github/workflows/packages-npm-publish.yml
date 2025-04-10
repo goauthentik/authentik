@@ -38,6 +38,8 @@ jobs:
         if: steps.changed-files.outputs.any_changed == 'true'
         working-directory: packages/${{ matrix.package}}
         run: |
+          npm ci
+          npm run build
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
