@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/tsconfig",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "authentik's s base TypeScript configuration.",
     "keywords": [
         "tsconfig",
