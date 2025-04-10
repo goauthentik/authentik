@@ -43,7 +43,7 @@ jobs:
             packages/${{ matrix.package }}/package.json
       - name: Publish package
         if: steps.changed-files.outputs.any_changed == 'true'
-        working-directory: packages/${{ matrix.package}}/package.json
+        working-directory: packages/${{ matrix.package}}
         run: |
           npm ci
           npm publish
