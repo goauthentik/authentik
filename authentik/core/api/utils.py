@@ -35,22 +35,27 @@ def is_dict(value: Any):
 class ModelSerializer(BaseModelSerializer):
     def create(self, validated_data):
         instance = super().create(validated_data)
-        user = self.context["request"].user
-        initial_permissions_list = InitialPermissions.objects.filter(
-            role__group__in=user.groups.all()
-        )
 
-        # Performance here should not be an issue, but if needed, there are many optimization routes
-        for initial_permissions in initial_permissions_list:
-            for permission in initial_permissions.permissions.all():
-                if permission.content_type != ContentType.objects.get_for_model(instance):
-                    continue
-                assign_to = (
-                    user
-                    if initial_permissions.mode == InitialPermissionsMode.USER
-                    else initial_permissions.role.group
-                )
-                assign_perm(permission, assign_to, instance)
+        request = self.context.get("request")
+        if request and hasattr(request, "user"):
+            user = request.user
+
+        if user:
+            initial_permissions_list = InitialPermissions.objects.filter(
+                role__group__in=user.groups.all()
+            )
+
+            # Performance here should not be an issue, but if needed, there are many optimization routes
+            for initial_permissions in initial_permissions_list:
+                for permission in initial_permissions.permissions.all():
+                    if permission.content_type != ContentType.objects.get_for_model(instance):
+                        continue
+                    assign_to = (
+                        user
+                        if initial_permissions.mode == InitialPermissionsMode.USER
+                        else initial_permissions.role.group
+                    )
+                    assign_perm(permission, assign_to, instance)
 
         return instance
 
