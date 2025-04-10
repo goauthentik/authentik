@@ -27,7 +27,7 @@ To support the integration of OpenProject with authentik, you need to create a p
 
 ### Create a scope mapping
 
-OpenProject requires a first and last name for each user. By default authentik only provides a full name. Therefore you need to create a property mapping to provide first and last names to OpenProject.
+OpenProject requires a first and last name for each user. By default authentik only provides a full name, as a single string value. Therefore you need to create a property mapping to provide first and last names to OpenProject.
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
