@@ -6,7 +6,7 @@
  */
 
 import { deepmerge } from "deepmerge-ts";
-import { createThemeConfig } from "./theme.mjs";
+import { createThemeConfig } from "./theme.js";
 
 //#region Types
 
