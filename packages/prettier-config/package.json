@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "1.0.1",
+    "version": "1.0.4",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
@@ -34,6 +34,7 @@
     "types": "./out/index.d.ts",
     "files": [
         "./index.js",
+        "lib/**/*",
         "out/**/*"
     ],
     "prettier": "./index.js",
