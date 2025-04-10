@@ -79,7 +79,7 @@ To support the integration of authentik with OpenProject, you need to configure 
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:
-    - <kbd>https://<em>authentik.company</em>/application/o/<em>openproject</em>/.well-known/openid-configuration</kbd>
+    <kbd>https://<em>authentik.company</em>/application/o/<em>openproject</em>/.well-known/openid-configuration</kbd>
 5. Under **Advanced configuration** > **Metadata** the values should be automatically populated based on your discovery endpoint URL. If not, these values can be copied from the **Overview** page of the OpenProject provider in authentik.
 6. Under **Advanced configuration** > **Client details** enter your authentik client ID and client secret.
 7. Under **Optional configuration** > **Attribute mapping** enter the following required configurations:
