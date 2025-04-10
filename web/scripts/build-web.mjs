@@ -1,14 +1,14 @@
-import { execFileSync } from "child_process";
+import { resolvePackage } from "@goauthentik/monorepo";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import findFreePorts from "find-free-ports";
-import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
-import * as path from "path";
-import { cwd } from "process";
-import process from "process";
-import { fileURLToPath } from "url";
+import { execFileSync } from "node:child_process";
+import { copyFileSync, mkdirSync, readFileSync, statSync } from "node:fs";
+import * as path from "node:path";
+import process from "node:process";
+import { fileURLToPath } from "node:url";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
@@ -33,7 +33,7 @@ const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
 
 const environmentVars = new Map([
     ["NODE_ENV", NODE_ENV],
-    ["CWD", cwd()],
+    ["CWD", process.cwd()],
     ["AK_API_BASE_PATH", AK_API_BASE_PATH],
 ]);
 
@@ -42,6 +42,8 @@ const definitions = Object.fromEntries(
         return [`process.env.${key}`, JSON.stringify(value)];
     }),
 );
+
+const patternflyPath = resolvePackage("@patternfly/patternfly");
 
 /**
  * All is magic is just to make sure the assets are copied into the right places. This is a very
@@ -52,8 +54,8 @@ const definitions = Object.fromEntries(
  * @type {Array<[string, string, string?]>}
  */
 const assetsFileMappings = [
-    ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
-    ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
+    [path.join(patternflyPath, "patternfly.min.css"), "."],
+    [path.join(patternflyPath, "assets/**"), ".", patternflyPath],
     ["src/common/styles/**", "."],
     ["src/assets/images/**", "./assets/images"],
     ["./icons/*", "./assets/icons"],
@@ -117,6 +119,7 @@ const BASE_ESBUILD_OPTIONS = {
     write: true,
     sourcemap: true,
     minify: NODE_ENV === "production",
+    // legalComments: "external",
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],

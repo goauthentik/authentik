@@ -35,8 +35,8 @@
         "eslint-plugin-wc": "^2.1.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.1",
-        "@goauthentik/tsconfig": "^1.0.1",
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@types/eslint": "^9.6.1",
         "typescript": "^5.8.2",
         "typescript-eslint": "^8.29.0"

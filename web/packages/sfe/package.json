@@ -1,6 +1,14 @@
 {
     "name": "@goauthentik/web-sfe",
     "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "lint:lockfile": "wireit",
+        "prettier": "prettier --write ./src ./tsconfig.json ./rollup.config.js ./package.json",
+        "watch": "rollup -w -c rollup.config.js --bundleConfigAsCjs"
+    },
     "dependencies": {
         "@goauthentik/api": "^2024.6.0-1719577139",
         "base64-js": "^1.5.1",
@@ -10,6 +18,7 @@
         "weakmap-polyfill": "^2.0.4"
     },
     "devDependencies": {
+        "@goauthentik/prettier-config": "^1.0.4",
         "@rollup/plugin-commonjs": "^28.0.0",
         "@rollup/plugin-node-resolve": "^15.3.0",
         "@rollup/plugin-swc": "^0.4.0",
@@ -18,12 +27,11 @@
         "@trivago/prettier-plugin-sort-imports": "^4.3.0",
         "@types/jquery": "^3.5.31",
         "lockfile-lint": "^4.14.0",
-        "prettier": "^3.3.2",
+        "prettier": "^3.5.3",
         "rollup": "^4.23.0",
         "rollup-plugin-copy": "^3.5.0",
         "wireit": "^0.14.9"
     },
-    "license": "MIT",
     "optionalDependencies": {
         "@swc/core": "^1.7.28",
         "@swc/core-darwin-arm64": "^1.6.13",
@@ -36,13 +44,6 @@
         "@swc/core-win32-arm64-msvc": "^1.6.13",
         "@swc/core-win32-ia32-msvc": "^1.6.13",
         "@swc/core-win32-x64-msvc": "^1.6.13"
-    },
-    "private": true,
-    "scripts": {
-        "build": "wireit",
-        "lint:lockfile": "wireit",
-        "prettier": "prettier --write ./src ./tsconfig.json ./rollup.config.js ./package.json",
-        "watch": "rollup -w -c rollup.config.js --bundleConfigAsCjs"
     },
     "wireit": {
         "build:sfe": {

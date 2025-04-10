@@ -1,7 +1,16 @@
 {
-    "extends": "./tsconfig.base.json",
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "types": ["@wdio/types", "grecaptcha", "node", "@wdio/mocha-framework", "expect-webdriverio"],
+        "allowSyntheticDefaultImports": true,
+        "emitDeclarationOnly": true,
+        "experimentalDecorators": true,
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        // TODO: We should enable this when when we're ready to enforce it.
+        "noUncheckedIndexedAccess": false,
         "paths": {
             "@goauthentik/admin/*": ["./src/admin/*"],
             "@goauthentik/common/*": ["./src/common/*"],
@@ -13,6 +22,31 @@
             "@goauthentik/polyfill/*": ["./src/polyfill/*"],
             "@goauthentik/standalone/*": ["./src/standalone/*"],
             "@goauthentik/user/*": ["./src/user/*"]
-        }
+        },
+        "plugins": [
+            {
+                "name": "ts-lit-plugin",
+                "strict": true,
+                "rules": {
+                    "no-unknown-tag-name": "off",
+                    "no-missing-import": "off",
+                    "no-incompatible-type-binding": "off",
+                    "no-unknown-property": "off",
+                    "no-unknown-attribute": "off"
+                }
+            },
+            {
+                "name": "@genesiscommunitysuccess/custom-elements-lsp",
+                "designSystemPrefix": "ak-",
+                "parser": {
+                    "timeout": 2000
+                }
+            }
+        ]
     },
+    "exclude": [
+        // ---
+        "./out/**/*",
+        "./dist/**/*"
+    ]
 }
