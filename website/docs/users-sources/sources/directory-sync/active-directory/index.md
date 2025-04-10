@@ -61,7 +61,6 @@ Additional settings that might need to be adjusted based on the setup of your do
 - User object filter: Which objects should be considered users. For Active Directory set it to `(&(objectClass=user)(!(objectClass=computer)))` to exclude Computer accounts.
 - Group object filter: Which objects should be considered groups.
 - Group membership field: Which user field saves the group membership
-- Look up using a user attribute: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
 - Object uniqueness field: A user field which contains a unique Identifier
 
 After you save the source, a synchronization will start in the background. When its done, you can see the summary under Dashboards -> System Tasks.
