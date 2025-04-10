@@ -34,19 +34,20 @@ OpenProject requires a first and last name for each user. By default authentik o
 
 - **Select type**: select **Scope Mapping** as the property mapping type.
 - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Open Project Profile Scope`), and an optional description
+
     - **Scope name**: `profile`
     - **Expression**:
 
-```python showLineNumbers
-return {
-    "name": request.user.name,
-    "preferred_username": request.user.username,
-    "nickname": request.user.username,
-    "groups": [group.name for group in request.user.ak_groups.all()],
-    "last_name": request.user.name.rsplit(" ", 1)[-1],
-    "first_name": request.user.name.rsplit(" ", 1)[0],
-}
-```
+    ```python showLineNumbers
+    return {
+        "name": request.user.name,
+        "preferred_username": request.user.username,
+        "nickname": request.user.username,
+        "groups": [group.name for group in request.user.ak_groups.all()],
+        "last_name": request.user.name.rsplit(" ", 1)[-1],
+        "first_name": request.user.name.rsplit(" ", 1)[0],
+    }
+    ```
 
 3. Click **Finish** to save the property mapping.
 
@@ -79,7 +80,7 @@ To support the integration of authentik with OpenProject, you need to configure 
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:
-    <kbd>https://<em>authentik.company</em>/application/o/<em>openproject</em>/.well-known/openid-configuration</kbd>
+   <kbd>https://<em>authentik.company</em>/application/o/<em>openproject</em>/.well-known/openid-configuration</kbd>
 5. Under **Advanced configuration** > **Metadata** the values should be automatically populated based on your discovery endpoint URL. If not, these values can be copied from the **Overview** page of the OpenProject provider in authentik.
 6. Under **Advanced configuration** > **Client details** enter your authentik client ID and client secret.
 7. Under **Optional configuration** > **Attribute mapping** enter the following required configurations:
