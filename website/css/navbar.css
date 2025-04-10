@@ -66,7 +66,7 @@
     font-weight: 600;
 }
 
-.navbar--fixed-top .navbar__item {
+.navbar--fixed-top .navbar__inner .navbar__item {
     filter: drop-shadow(0px -1px var(--ifm-color-primary-darker));
 }
 

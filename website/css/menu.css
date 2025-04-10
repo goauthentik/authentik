@@ -13,6 +13,7 @@
 
     .menu__list-item {
         font-size: var(--ifm-h3-font-size);
+        filter: drop-shadow(0px -1px var(--ifm-color-primary-darker));
     }
 }
 
