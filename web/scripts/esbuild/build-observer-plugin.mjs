@@ -22,7 +22,7 @@ export function serializeCustomEventToStream(event) {
  * @typedef {Object} BuildObserverOptions
  *
  * @property {URL} serverURL
- * @property {string} logPrefix
+ * @property {string} [logPrefix]
  * @property {string} relativeRoot
  */
 
@@ -32,8 +32,10 @@ export function serializeCustomEventToStream(event) {
  * @param {BuildObserverOptions} options
  * @returns {import('esbuild').Plugin}
  */
-export function buildObserverPlugin({ serverURL, logPrefix, relativeRoot }) {
-    const timerLabel = `[${logPrefix}] Build`;
+export function buildObserverPlugin({ serverURL, logPrefix = "Build Observer", relativeRoot }) {
+    const timerLabel = `[${logPrefix}] 🏁`;
+    const log = console.log.bind(console, `[${logPrefix}]`);
+
     const endpoint = serverURL.pathname;
     const dispatcher = new EventTarget();
 
@@ -43,13 +45,13 @@ export function buildObserverPlugin({ serverURL, logPrefix, relativeRoot }) {
         res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
         if (req.url !== endpoint) {
-            console.log(`🚫 Invalid request to ${req.url}`);
+            log(`🚫 Invalid request to ${req.url}`);
             res.writeHead(404);
             res.end();
             return;
         }
 
-        console.log("🔌 Client connected");
+        log("🔌 Client connected");
 
         res.writeHead(200, {
             "Content-Type": "text/event-stream",
@@ -71,7 +73,7 @@ export function buildObserverPlugin({ serverURL, logPrefix, relativeRoot }) {
         dispatcher.addEventListener("esbuild:end", listener);
 
         req.on("close", () => {
-            console.log("🔌 Client disconnected");
+            log("🔌 Client disconnected");
 
             clearInterval(keepAliveInterval);
 
