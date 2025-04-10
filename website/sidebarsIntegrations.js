@@ -171,6 +171,7 @@ module.exports = {
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
+                        "services/wazuh/index",
                         "services/zabbix/index",
                         "services/whats-up-docker/index",
                     ],
