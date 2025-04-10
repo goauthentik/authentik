@@ -10,7 +10,7 @@ import {
     resolvePackage,
     serializeEnvironmentVars,
 } from "@goauthentik/monorepo";
-import { DistDirectory, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
+import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
@@ -39,7 +39,9 @@ const patternflyPath = resolvePackage("@patternfly/patternfly");
  */
 const BASE_ESBUILD_OPTIONS = {
     entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
-    publicPath: path.join("/static", "dist"),
+    chunkNames: "[dir]/chunks/[name]-[hash]",
+    assetNames: "assets/[dir]/[name]-[hash]",
+    publicPath: path.join("/static", DistDirectoryName),
     outdir: DistDirectory,
     bundle: true,
     write: true,
