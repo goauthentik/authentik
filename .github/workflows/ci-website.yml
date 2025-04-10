@@ -1,4 +1,4 @@
-name: authentik-ci-website
+name: CI Docs Website
 
 on:
   push:
@@ -13,55 +13,59 @@ on:
 
 jobs:
   lint:
+    name: "Lint"
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        command:
-          - lint:lockfile
-          - prettier-check
     steps:
       - uses: actions/checkout@v4
-      - working-directory: website/
-        run: npm ci
-      - name: Lint
-        working-directory: website/
-        run: npm run ${{ matrix.command }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+      - name: Install Node.js dependencies
+        run: |
+          npm ci
+      - name: Generate TypeScript API
+        run: make gen-client-ts
+      - name: Lint Docs
+        run: |
+          npm run lint:prettier:check
+          npm run lint:lockfile -w @goauthentik/docs
   test:
+    name: "Test Docs"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: website/package.json
+          node-version-file: package.json
           cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
-        run: npm ci
-      - name: test
-        working-directory: website/
-        run: npm test
+          cache-dependency-path: package-lock.json
+      - name: Install Node.js dependencies
+        run: |
+          npm ci
+      - name: Generate TypeScript API
+        run: make gen-client-ts
+      - name: Test Docs
+        run: |
+          npm run test -w @goauthentik/docs
   build:
+    name: "Build Docs"
     runs-on: ubuntu-latest
-    name: ${{ matrix.job }}
-    strategy:
-      fail-fast: false
-      matrix:
-        job:
-          - build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: website/package.json
+          node-version-file: package.json
           cache: "npm"
-          cache-dependency-path: website/package-lock.json
-      - working-directory: website/
+          cache-dependency-path: package-lock.json
+      - name: Install Node.js dependencies
         run: npm ci
-      - name: build
-        working-directory: website/
-        run: npm run ${{ matrix.job }}
+      - name: Build
+        run: |
+          npm run build -w @goauthentik/docs
   ci-website-mark:
+    name: "CI Website Mark"
     if: always()
     needs:
       - lint

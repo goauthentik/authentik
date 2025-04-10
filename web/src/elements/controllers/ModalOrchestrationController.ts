@@ -1,10 +1,10 @@
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-
 import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
 
 type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement;
 
-type ModalElement = LitElement & { closeModal(): void | boolean };
+export interface ModalElement extends LitElement {
+    closeModal(): void | boolean;
+}
 
 export class ModalShowEvent extends Event {
     modal: ModalElement;
@@ -29,11 +29,14 @@ declare global {
     }
 }
 
-const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVisibility();
+/**
+ * Predicate to determine if a modal is connected and visible.
+ */
+function isModalLive(modal: ModalElement) {
+    return modal.isConnected && modal.checkVisibility();
+}
 
 /**
- * class ModalOrchetrationController
- *
  * A top-level controller that listens for requests from modals to be added to
  * the management list, such that the *topmost* modal will be closed (and all
  * references to it eliminated) whenever the user presses the Escape key.
@@ -48,77 +51,71 @@ const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVis
  * the modal is still open. This allows `.closeModal()` to return `undefined`
  * and still behave correctly.
  */
-
 export class ModalOrchestrationController implements ReactiveController {
-    host!: ReactiveElementHost;
-
-    knownModals: ModalElement[] = [];
+    #host!: ReactiveElementHost;
+    #modals: readonly ModalElement[] = [];
 
     constructor(host: ReactiveElementHost) {
-        this.host = host;
-        host.addController(this);
+        this.#host = host;
+
+        this.#host.addController(this);
     }
 
-    hostConnected() {
-        window.addEventListener("keyup", this.handleKeyup);
-        window.addEventListener("ak-modal-show", this.addModal);
-        window.addEventListener("ak-modal-hide", this.closeModal);
+    public hostConnected() {
+        window.addEventListener("keyup", this.#keyupListener);
+        window.addEventListener("ak-modal-show", this.#addModal);
+        window.addEventListener("ak-modal-hide", this.#closeModal);
     }
 
-    hostDisconnected() {
-        window.removeEventListener("keyup", this.handleKeyup);
-        window.removeEventListener("ak-modal-show", this.addModal);
-        window.removeEventListener("ak-modal-hide", this.closeModal);
+    public hostDisconnected() {
+        window.removeEventListener("keyup", this.#keyupListener);
+        window.removeEventListener("ak-modal-show", this.#addModal);
+        window.removeEventListener("ak-modal-hide", this.#closeModal);
     }
 
-    @bound
-    addModal(e: ModalShowEvent) {
-        this.knownModals = [...this.knownModals, e.modal];
-    }
+    #addModal = (e: ModalShowEvent) => {
+        this.#modals = [...this.#modals, e.modal];
+    };
 
     scheduleCleanup(modal: ModalElement) {
-        setTimeout(() => {
-            this.knownModals = this.knownModals.filter((m) => modalIsLive(m) && modal !== m);
-        }, 0);
+        requestAnimationFrame(() => {
+            this.#modals = this.#modals.filter((m) => isModalLive(m) && modal !== m);
+        });
     }
 
-    @bound
-    closeModal(e: ModalHideEvent) {
-        const modal = e.modal;
-        if (!modalIsLive(modal)) {
-            return;
-        }
+    #closeModal = ({ modal }: ModalHideEvent) => {
+        if (!isModalLive(modal)) return;
+
         if (modal.closeModal() !== false) {
             this.scheduleCleanup(modal);
         }
-    }
+    };
 
-    removeTopmostModal() {
-        const knownModals = [...this.knownModals];
+    #removeTopmostModal = () => {
+        const knownModals = [...this.#modals];
         // Pop off modals until you find the first live one, schedule it to be closed, and make that
         // cleaned list the current state. Since this is our *only* state object, this has the
-        // effect of creating a new "knownModals" collection with some semantics.
-        while (true) {
-            const modal = knownModals.pop();
-            if (!modal) {
-                break;
-            }
-            if (!modalIsLive(modal)) {
-                continue;
-            }
+        // effect of crea
+        // ting a new "knownModals" collection with some semantics.
+        let modal: ModalElement | undefined;
+
+        while ((modal = knownModals.pop())) {
+            if (!isModalLive(modal)) continue;
+
             if (modal.closeModal() !== false) {
                 this.scheduleCleanup(modal);
             }
+
             break;
         }
-        this.knownModals = knownModals;
-    }
 
-    @bound
-    handleKeyup(e: KeyboardEvent) {
+        this.#modals = knownModals;
+    };
+
+    #keyupListener = (e: KeyboardEvent) => {
         // The latter handles Firefox 37 and earlier.
         if (e.key === "Escape" || e.key === "Esc") {
-            this.removeTopmostModal();
+            this.#removeTopmostModal();
         }
-    }
+    };
 }

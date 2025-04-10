@@ -1,6 +1,6 @@
 import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import { WithLicenseSummary, isEnterpriseLicense } from "@goauthentik/elements/mixins/license";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -12,7 +12,7 @@ export class AkLicenceNotice extends WithLicenseSummary(AKElement) {
     notice = msg("Enterprise only");
 
     render() {
-        return this.hasEnterpriseLicense
+        return isEnterpriseLicense(this.licenseSummary)
             ? nothing
             : html`
                   <ak-alert class="pf-c-radio__description" inline plain>

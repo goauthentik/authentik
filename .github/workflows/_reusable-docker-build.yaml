@@ -1,5 +1,5 @@
 # Re-usable workflow for a multi-architecture build
-name: Multi-arch container build
+name: "Multi-arch container build"
 
 on:
   workflow_call:
@@ -49,7 +49,7 @@ jobs:
       shouldPush: ${{ steps.ev.outputs.shouldPush }}
     steps:
       - uses: actions/checkout@v4
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
@@ -69,7 +69,7 @@ jobs:
         tag: ${{ fromJson(needs.get-tags.outputs.tags) }}
     steps:
       - uses: actions/checkout@v4
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:

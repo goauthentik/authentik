@@ -1,15 +1,16 @@
-///<reference types="@hcaptcha/types"/>
-import { renderStatic } from "@goauthentik/common/purify";
+/// <reference types="@hcaptcha/types"/>
+/// <reference types="turnstile-types"/>
+import { renderStaticHTMLUnsafe } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import { akEmptyState } from "@goauthentik/elements/EmptyState";
 import { bound } from "@goauthentik/elements/decorators/bound";
 import "@goauthentik/elements/forms/FormElement";
+import { createIFrameHTMLWrapper } from "@goauthentik/elements/utils/iframes";
 import { ListenerController } from "@goauthentik/elements/utils/listenerController.js";
 import { randomId } from "@goauthentik/elements/utils/randomId";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { P, match } from "ts-pattern";
-import type * as _ from "turnstile-types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -56,40 +57,36 @@ type CaptchaHandler = {
 // a resize. Because the Captcha is itself in an iframe, the reported height is often off by some
 // margin, so adding 2rem of height to our container adds padding and prevents scroll bars or hidden
 // rendering.
+function iframeTemplate(children: TemplateResult, challengeURL: string): TemplateResult {
+    return html` ${children}
+        <script>
+            new ResizeObserver((entries) => {
+                const height =
+                    document.body.offsetHeight +
+                    parseFloat(getComputedStyle(document.body).fontSize) * 2;
 
-const iframeTemplate = (captchaElement: TemplateResult, challengeUrl: string) =>
-    html`<!doctype html>
-        <head>
-            <html>
-                <body style="display:flex;flex-direction:row;justify-content:center;">
-                    ${captchaElement}
-                    <script>
-                        new ResizeObserver((entries) => {
-                            const height =
-                                document.body.offsetHeight +
-                                parseFloat(getComputedStyle(document.body).fontSize) * 2;
-                            window.parent.postMessage({
-                                message: "resize",
-                                source: "goauthentik.io",
-                                context: "flow-executor",
-                                size: { height },
-                            });
-                        }).observe(document.querySelector(".ak-captcha-container"));
-                    </script>
-                    <script src=${challengeUrl}></script>
-                    <script>
-                        function callback(token) {
-                            window.parent.postMessage({
-                                message: "captcha",
-                                source: "goauthentik.io",
-                                context: "flow-executor",
-                                token: token,
-                            });
-                        }
-                    </script>
-                </body>
-            </html>
-        </head>`;
+                window.parent.postMessage({
+                    message: "resize",
+                    source: "goauthentik.io",
+                    context: "flow-executor",
+                    size: { height },
+                });
+            }).observe(document.querySelector(".ak-captcha-container"));
+        </script>
+
+        <script src=${challengeURL}></script>
+
+        <script>
+            function callback(token) {
+                window.parent.postMessage({
+                    message: "captcha",
+                    source: "goauthentik.io",
+                    context: "flow-executor",
+                    token,
+                });
+            }
+        </script>`;
+}
 
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
@@ -150,7 +147,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
         },
     ];
 
-    _captchaFrame?: HTMLIFrameElement;
+    #captchaFrame?: HTMLIFrameElement;
     _captchaDocumentContainer?: HTMLDivElement;
     _listenController = new ListenerController();
 
@@ -181,13 +178,13 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     get captchaFrame(): HTMLIFrameElement {
-        if (this._captchaFrame) {
-            return this._captchaFrame;
-        }
-        this._captchaFrame = document.createElement("iframe");
-        this._captchaFrame.src = "about:blank";
-        this._captchaFrame.id = `ak-captcha-${randomId()}`;
-        return this._captchaFrame;
+        if (this.#captchaFrame) return this.#captchaFrame;
+
+        this.#captchaFrame = document.createElement("iframe");
+        this.#captchaFrame.src = "about:blank";
+        this.#captchaFrame.id = `ak-captcha-${randomId()}`;
+
+        return this.#captchaFrame;
     }
 
     onFrameResize({ height }: Dims) {
@@ -254,7 +251,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             html`<div
                 class="h-captcha ak-captcha-container"
                 data-sitekey="${this.challenge.siteKey}"
-                data-theme="${this.activeTheme ? this.activeTheme : "light"}"
+                data-theme="${this.colorScheme ? this.colorScheme : "light"}"
                 data-callback="callback"
             ></div> `,
         );
@@ -297,7 +294,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     async refreshTurnstileFrame() {
-        (this.captchaFrame.contentWindow as typeof window)?.turnstile.reset();
+        this.captchaFrame.contentWindow?.turnstile.reset();
     }
 
     async refreshTurnstile() {
@@ -305,11 +302,25 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
     }
 
     async renderFrame(captchaElement: TemplateResult) {
-        this.captchaFrame.contentWindow?.document.open();
-        this.captchaFrame.contentWindow?.document.write(
-            await renderStatic(iframeTemplate(captchaElement, this.challenge.jsUrl)),
+        const { contentDocument } = this.captchaFrame || {};
+
+        if (!contentDocument) {
+            console.debug(
+                "authentik/stages/captcha: unable to render captcha frame, no contentDocument",
+            );
+
+            return;
+        }
+
+        contentDocument.open();
+
+        contentDocument.write(
+            createIFrameHTMLWrapper(
+                renderStaticHTMLUnsafe(iframeTemplate(captchaElement, this.challenge.jsUrl)),
+            ),
         );
-        this.captchaFrame.contentWindow?.document.close();
+
+        contentDocument.close();
     }
 
     renderBody() {

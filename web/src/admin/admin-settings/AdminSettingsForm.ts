@@ -207,8 +207,8 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     .row=${(f?: FooterLink) =>
                         akFooterLinkInput({
                             ".footerLink": f,
-                            "style": "width: 100%",
-                            "name": "footer-link",
+                            style: "width: 100%",
+                            name: "footer-link",
                         } as unknown as IFooterLinkInput)}
                 >
                 </ak-array-input>

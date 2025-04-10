@@ -5,11 +5,11 @@ import {
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { currentInterface } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -121,7 +121,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
 
     async firstUpdated() {
         this.me = await me();
-        this.uiConfig = await uiConfig();
+        this.uiConfig = getConfigForUser(this.me.user);
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 

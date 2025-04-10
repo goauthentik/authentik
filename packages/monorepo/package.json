@@ -1,19 +1,14 @@
 {
     "name": "@goauthentik/monorepo",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "description": "Utilities for the authentik monorepo.",
-    "private": true,
     "license": "MIT",
+    "private": true,
+    "main": "index.js",
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
-        }
-    },
-    "types": "./out/index.d.ts",
+    "exports": "./index.js",
     "engines": {
         "node": ">=20.11"
-    }
+    },
+    "types": "./out/index.d.ts"
 }

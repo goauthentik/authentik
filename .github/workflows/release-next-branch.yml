@@ -1,4 +1,4 @@
-name: authentik-on-release-next-branch
+name: "authentik on Release Next Branch"
 
 on:
   schedule:
@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   update-next:
+    name: "Update Next Branch"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     environment: internal-production

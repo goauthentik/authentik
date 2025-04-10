@@ -57,10 +57,12 @@ export function setURLParams(params: { [key: string]: unknown }, replace = true)
     }
 }
 
-export function updateURLParams(params: { [key: string]: unknown }, replace = true): void {
+export function updateURLParams(nextParams: { [key: string]: unknown }, replace = true): void {
     const currentParams = getURLParams();
-    for (const key in params) {
-        currentParams[key] = params[key] as string;
+
+    for (const [key, value] of Object.entries(nextParams)) {
+        currentParams[key] = value as string;
     }
+
     setURLParams(currentParams, replace);
 }

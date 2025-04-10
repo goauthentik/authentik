@@ -1,7 +1,7 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
 import { renderForm } from "@goauthentik/admin/providers/radius/RadiusProviderFormForm.js";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators.js";

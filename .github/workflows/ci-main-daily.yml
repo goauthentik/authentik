@@ -1,5 +1,5 @@
 ---
-name: authentik-ci-main-daily
+name: "authentik CI Main Daily"
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
 
 jobs:
   test-container:
+    name: "Test Container ${{ matrix.version }}"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

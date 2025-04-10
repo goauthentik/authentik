@@ -1,5 +1,5 @@
-import { createMixin } from "@goauthentik/elements/types";
 import { CustomEventDetail, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
+import { createMixin } from "@goauthentik/elements/utils/mixins";
 
 export interface EmmiterElementHandler {
     dispatchCustomEvent<T>(

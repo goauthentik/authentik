@@ -1,14 +1,15 @@
-import replace from "@rollup/plugin-replace";
+import { NodeEnvironment, resolvePackage, serializeEnvironmentVars } from "@goauthentik/monorepo";
+import { PackageRoot } from "@goauthentik/web/paths";
 import type { StorybookConfig } from "@storybook/web-components-vite";
-import { cwd } from "process";
+import { deepmerge } from "deepmerge-ts";
+import * as path from "node:path";
 import modify from "rollup-plugin-modify";
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export const isProdBuild = process.env.NODE_ENV === "production";
-export const apiBasePath = process.env.AK_API_BASE_PATH || "";
+const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
 
-const importInlinePatterns = [
+const inlineImportPatterns = [
     'import AKGlobal from "(\\.\\./)*common/styles/authentik\\.css',
     'import AKGlobal from "@goauthentik/common/styles/authentik\\.css',
     'import PF.+ from "@patternfly/patternfly/\\S+\\.css',
@@ -17,7 +18,9 @@ const importInlinePatterns = [
     'import styles from "\\./LibraryPageImpl\\.css',
 ];
 
-const importInlineRegexp = new RegExp(importInlinePatterns.map((a) => `(${a})`).join("|"));
+const inlineImportPattern = new RegExp(inlineImportPatterns.map((a) => `(${a})`).join("|"));
+
+const patternflyPath = resolvePackage("@patternfly/patternfly");
 
 const config: StorybookConfig = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -29,19 +32,19 @@ const config: StorybookConfig = {
     ],
     staticDirs: [
         {
-            from: "../node_modules/@patternfly/patternfly/patternfly-base.css",
+            from: path.resolve(patternflyPath, "patternfly-base.css"),
             to: "@patternfly/patternfly/patternfly-base.css",
         },
         {
-            from: "../src/common/styles/authentik.css",
+            from: path.resolve(PackageRoot, "src", "common", "styles", "authentik.css"),
             to: "@goauthentik/common/styles/authentik.css",
         },
         {
-            from: "../src/common/styles/theme-dark.css",
+            from: path.resolve(PackageRoot, "src", "common", "styles", "theme-dark.css"),
             to: "@goauthentik/common/styles/theme-dark.css",
         },
         {
-            from: "../src/common/styles/one-dark.css",
+            from: path.resolve(PackageRoot, "src", "common", "styles", "one-dark.css"),
             to: "@goauthentik/common/styles/one-dark.css",
         },
     ],
@@ -53,28 +56,25 @@ const config: StorybookConfig = {
         autodocs: "tag",
     },
     async viteFinal(config) {
-        return {
-            ...config,
+        return deepmerge(config, {
+            define: serializeEnvironmentVars({
+                NODE_ENV: NodeEnvironment,
+                CWD: process.cwd(),
+                AK_API_BASE_PATH: AK_API_BASE_PATH,
+                WATCHER_URL: "",
+            }),
+
             plugins: [
                 modify({
-                    find: importInlineRegexp,
+                    find: inlineImportPattern,
                     replace: (match: RegExpMatchArray) => {
                         return `${match}?inline`;
                     },
                 }),
-                replace({
-                    "process.env.NODE_ENV": JSON.stringify(
-                        isProdBuild ? "production" : "development",
-                    ),
-                    "process.env.CWD": JSON.stringify(cwd()),
-                    "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                    "preventAssignment": true,
-                }),
-                ...config.plugins,
                 postcssLit(),
                 tsconfigPaths(),
             ],
-        };
+        });
     },
 };
 

@@ -2,53 +2,52 @@
 {% load i18n %}
 {% load authentik_core %}
 
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
-        <link rel="icon" href="{{ brand.branding_favicon_url }}">
-        <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
-        {% block head_before %}
-        {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/sfe/bootstrap.min.css' %}">
-        <meta name="sentry-trace" content="{{ sentry_trace }}" />
-        {% include "base/header_js.html" %}
-        <style>
-          html,
-          body {
-            height: 100%;
-          }
-          body {
-            background-image: url("{{ flow.background_url }}");
-            background-repeat: no-repeat;
-            background-size: cover;
-          }
-          .card {
-            padding: 3rem;
-          }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
+    <link rel="icon" href="{{ brand.branding_favicon_url }}" />
+    <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}" />
+    {% block head_before %}
+    {% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'dist/sfe/bootstrap.min.css' %}" />
+    <meta name="sentry-trace" content="{{ sentry_trace }}" />
+    {% include "base/header_js.html" %}
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        background-image: url("{{ flow.background_url }}");
+        background-repeat: no-repeat;
+        background-size: cover;
+      }
+      .card {
+        padding: 3rem;
+      }
 
-          .form-signin {
-            max-width: 330px;
-            padding: 1rem;
-          }
+      .form-signin {
+        max-width: 330px;
+        padding: 1rem;
+      }
 
-          .form-signin .form-floating:focus-within {
-            z-index: 2;
-          }
-          .brand-icon {
-            max-width: 100%;
-          }
-        </style>
-    </head>
-    <body class="d-flex align-items-center py-4 bg-body-tertiary">
-      <div class="card m-auto">
-        <main class="form-signin w-100 m-auto" id="flow-sfe-container">
-        </main>
-        <span class="mt-3 mb-0 text-muted text-center">{% trans 'Powered by authentik' %}</span>
-      </div>
-      <script src="{% static 'dist/sfe/index.js' %}"></script>
-    </body>
+      .form-signin .form-floating:focus-within {
+        z-index: 2;
+      }
+      .brand-icon {
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body class="d-flex align-items-center py-4 bg-body-tertiary">
+    <div class="card m-auto">
+      <main class="form-signin w-100 m-auto" id="flow-sfe-container"></main>
+      <span class="mt-3 mb-0 text-muted text-center">{% trans 'Powered by authentik' %}</span>
+    </div>
+    <script src="{% static 'dist/sfe/index.js' %}"></script>
+  </body>
 </html>

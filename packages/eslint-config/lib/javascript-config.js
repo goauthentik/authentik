@@ -1,6 +1,8 @@
 // @ts-check
 import tseslint from "typescript-eslint";
 
+import NodeLintPlugin from "../plugins/node-lint.js";
+
 const MAX_DEPTH = 4;
 const MAX_NESTED_CALLBACKS = 4;
 const MAX_PARAMS = 5;
@@ -9,22 +11,29 @@ const MAX_PARAMS = 5;
  * ESLint configuration for JavaScript authentik projects.
  */
 export const javaScriptConfig = tseslint.config({
+    plugins: {
+        "node-lint": NodeLintPlugin,
+    },
+    files: ["**/*.{js,jsx,mjs,cjs}"],
     rules: {
+        "node-lint/no-unprefixed-imports": "warn",
         // TODO: Clean up before enabling.
         "accessor-pairs": "off",
         "array-callback-return": "error",
         "block-scoped-var": "error",
-        "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
+        "consistent-return": "off",
+        // "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
         "consistent-this": ["error", "that"],
-        "curly": "off",
-        "dot-notation": [
-            "error",
-            {
-                allowKeywords: true,
-            },
-        ],
-        "eqeqeq": "error",
-        "func-names": ["error", "as-needed"],
+        curly: "off",
+        // "dot-notation": [
+        //     "error",
+        //     {
+        //         allowKeywords: true,
+        //     },
+        // ],
+        // "eqeqeq": "error",
+        eqeqeq: "off",
+        // "func-names": ["error", "as-needed"],
         "guard-for-in": "error",
         "max-depth": ["error", MAX_DEPTH],
         "max-nested-callbacks": ["error", MAX_NESTED_CALLBACKS],
@@ -33,13 +42,13 @@ export const javaScriptConfig = tseslint.config({
         // "new-cap": "error",
         "no-alert": "error",
         "no-array-constructor": "error",
-        "no-bitwise": [
-            "error",
-            {
-                allow: ["~"],
-                int32Hint: true,
-            },
-        ],
+        // "no-bitwise": [
+        //     "error",
+        //     {
+        //         allow: ["~"],
+        //         int32Hint: true,
+        //     },
+        // ],
         "no-caller": "error",
         "no-case-declarations": "error",
         "no-class-assign": "error",
@@ -53,10 +62,10 @@ export const javaScriptConfig = tseslint.config({
         "no-dupe-args": "error",
         "no-dupe-keys": "error",
         "no-duplicate-case": "error",
-        "no-else-return": "error",
+        // "no-else-return": "error",
         "no-empty": "error",
         "no-empty-character-class": "error",
-        "no-empty-function": ["error", { allow: ["constructors"] }],
+        // "no-empty-function": ["error", { allow: ["constructors"] }],
         "no-labels": "error",
         "no-eq-null": "error",
         "no-eval": "error",
@@ -68,7 +77,7 @@ export const javaScriptConfig = tseslint.config({
         "no-fallthrough": "error",
         "no-func-assign": "error",
         "no-implied-eval": "error",
-        "no-implicit-coercion": "error",
+        "no-implicit-coercion": ["error", { boolean: true, allow: ["!!"] }],
         "no-implicit-globals": "error",
         "no-inner-declarations": ["error", "functions"],
         "no-invalid-regexp": "error",
@@ -76,18 +85,18 @@ export const javaScriptConfig = tseslint.config({
         "no-iterator": "error",
         "no-label-var": "error",
         "no-lone-blocks": "error",
-        "no-lonely-if": "error",
+        // "no-lonely-if": "error",
         "no-loop-func": "error",
         "no-multi-str": "error",
         // TODO: Clean up before enabling.
         "no-negated-condition": "off",
-        "no-new": "error",
+        "no-new": "off",
         "no-new-func": "error",
         "no-new-wrappers": "error",
         "no-obj-calls": "error",
         "no-octal": "error",
         "no-octal-escape": "error",
-        "no-param-reassign": ["error", { props: false }],
+        // "no-param-reassign": ["error", { props: false }],
         "no-proto": "error",
         "no-redeclare": "error",
         "no-regex-spaces": "error",
@@ -99,39 +108,58 @@ export const javaScriptConfig = tseslint.config({
         // TODO: Clean up before enabling.
         // "no-shadow": "error",
         "no-shadow-restricted-names": "error",
-        "no-sparse-arrays": "error",
+        // TODO: Clean up before enabling.
+        // "no-sparse-arrays": "error",
         "no-this-before-super": "error",
-        "no-throw-literal": "error",
+        // "no-throw-literal": "error",
         "no-trailing-spaces": "off", // Handled by Prettier.
         "no-undef": "off",
         "no-undef-init": "off",
         "no-unexpected-multiline": "error",
-        "no-useless-constructor": "error",
+        // "no-useless-constructor": "error",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",
         "no-unreachable": "error",
         "no-unused-expressions": "error",
         "no-unused-labels": "error",
-        "no-use-before-define": "error",
+        // "no-use-before-define": "error",
         "no-useless-call": "error",
         "no-dupe-class-members": "error",
         "no-var": "error",
         "no-void": "error",
         "no-with": "error",
-        "prefer-arrow-callback": "error",
-        "prefer-const": "error",
+        // "prefer-arrow-callback": "error",
+        "prefer-const": "warn",
         "prefer-rest-params": "error",
         "prefer-spread": "error",
-        "prefer-template": "error",
-        "radix": "error",
+        "prefer-template": "off",
+        radix: "error",
         "require-yield": "error",
-        "strict": ["error", "global"],
+        strict: ["error", "global"],
         "use-isnan": "error",
         "valid-typeof": "error",
         "vars-on-top": "error",
-        "yoda": ["error", "never"],
+        yoda: ["error", "never"],
 
-        "no-console": ["error", { allow: ["debug", "warn", "error"] }],
+        "no-console": [
+            "warn",
+            {
+                allow: [
+                    //---
+                    "debug",
+                    "warn",
+                    "error",
+                    "group",
+                    "groupCollapsed",
+                    "groupEnd",
+                    "table",
+                    "trace",
+                    "time",
+                    "timeEnd",
+                    "timeStamp",
+                ],
+            },
+        ],
         // SonarJS is not yet compatible with ESLint 9.  Commenting these out
         // until it is.
         //    "sonarjs/cognitive-complexity": ["off", MAX_COGNITIVE_COMPLEXITY],

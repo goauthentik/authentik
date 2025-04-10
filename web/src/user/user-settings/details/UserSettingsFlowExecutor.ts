@@ -9,8 +9,8 @@ import { globalAK } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 

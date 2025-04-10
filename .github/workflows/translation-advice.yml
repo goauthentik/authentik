@@ -1,4 +1,4 @@
-name: authentik-translation-advice
+name: "authentik Translations Advice"
 
 on:
   pull_request:
@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   post-comment:
+    name: "Post Comment"
     runs-on: ubuntu-latest
     steps:
       - name: Find Comment

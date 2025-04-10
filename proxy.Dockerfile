@@ -6,15 +6,14 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
 ENV NODE_ENV=production
 WORKDIR /static
 
-COPY package.json /
-RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
-    --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
-    --mount=type=bind,target=/static/scripts,src=./web/scripts \
-    --mount=type=cache,target=/root/.npm \
-    npm ci --include=dev
+COPY ./package.json ./package.json
+COPY ./package-lock.json ./package-lock.json
+COPY ./packages ./packages
+COPY ./web ./web
 
-COPY web .
-RUN npm run build-proxy
+RUN --mount=type=cache,target=/root/.npm npm ci --include=dev
+RUN npm run build-proxy -w @goauthentik/web
+
 
 # Stage 2: Build
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
@@ -65,10 +64,10 @@ RUN apt-get update && \
     rm -rf /tmp/* /var/lib/apt/lists/*
 
 COPY --from=builder /go/proxy /
-COPY --from=web-builder /static/robots.txt /web/robots.txt
-COPY --from=web-builder /static/security.txt /web/security.txt
-COPY --from=web-builder /static/dist/ /web/dist/
-COPY --from=web-builder /static/authentik/ /web/authentik/
+COPY --from=web-builder /static/web/robots.txt /web/robots.txt
+COPY --from=web-builder /static/web/security.txt /web/security.txt
+COPY --from=web-builder /static/web/dist/ /web/dist/
+COPY --from=web-builder /static/web/authentik/ /web/authentik/
 
 HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/proxy", "healthcheck" ]
 

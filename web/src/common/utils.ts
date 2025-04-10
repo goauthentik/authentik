@@ -1,7 +1,5 @@
 import { SentryIgnoredError } from "@goauthentik/common/sentry";
 
-import { CSSResult, css } from "lit";
-
 export function getCookie(name: string): string {
     let cookieValue = "";
     if (document.cookie && document.cookie !== "") {
@@ -101,29 +99,4 @@ export function randomString(len: number, charset: string): string {
         chars.push(charset[Math.floor(charset.length * (array[index] / Math.pow(2, 8)))]);
     }
     return chars.join("");
-}
-
-// Lit is extremely well-typed with regard to CSS, and Storybook's `build` does not currently have a
-// coherent way of importing CSS-as-text into CSSStyleSheet. It works well when Storybook is running
-// in `dev,` but in `build` it fails. Storied components will have to map their textual CSS imports
-// using the function below.
-type AdaptableStylesheet = Readonly<string | CSSResult | CSSStyleSheet>;
-type AdaptedStylesheets = CSSStyleSheet | CSSStyleSheet[];
-
-const isCSSResult = (v: unknown): v is CSSResult =>
-    v instanceof CSSResult && v.styleSheet !== undefined;
-
-// prettier-ignore
-export const _adaptCSS = (sheet: AdaptableStylesheet): CSSStyleSheet =>
-    (typeof sheet === "string" ? css([sheet] as unknown as TemplateStringsArray, []).styleSheet
-        : isCSSResult(sheet) ? sheet.styleSheet
-        : sheet) as CSSStyleSheet;
-
-// Overloaded function definitions inform consumers that if you pass it an array, expect an array in
-// return; if you pass it a scaler, expect a scalar in return.
-
-export function adaptCSS(sheet: AdaptableStylesheet): CSSStyleSheet;
-export function adaptCSS(sheet: AdaptableStylesheet[]): CSSStyleSheet[];
-export function adaptCSS(sheet: AdaptableStylesheet | AdaptableStylesheet[]): AdaptedStylesheets {
-    return Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
 }

@@ -1,6 +1,6 @@
 import { VERSION } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+import { WithVersion } from "@goauthentik/elements/mixins/version";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -15,15 +15,16 @@ export class VersionBanner extends WithVersion(AKElement) {
     }
 
     render() {
-        return this.version && this.version.versionCurrent !== VERSION
-            ? html`
-                  <div class="pf-c-banner pf-m-sticky pf-m-gold">
-                      ${msg(
-                          str`A newer version (${this.version.versionCurrent}) of the UI is available.`,
-                      )}
-                  </div>
-              `
-            : nothing;
+        if (!this.version || this.version.versionCurrent === VERSION) {
+            return nothing;
+        }
+        return html`
+            <div class="pf-c-banner pf-m-sticky pf-m-gold">
+                ${msg(
+                    str`A newer version (${this.version.versionCurrent}) of the UI is available.`,
+                )}
+            </div>
+        `;
     }
 }
 

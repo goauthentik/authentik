@@ -11,11 +11,6 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-status-label";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -23,6 +18,11 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";

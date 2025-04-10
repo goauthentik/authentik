@@ -6,6 +6,7 @@
     "scripts": {
         "build": "tsc -p ."
     },
+    "main": "./index.js",
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
@@ -15,17 +16,17 @@
         }
     },
     "devDependencies": {
-        "@goauthentik/tsconfig": "^1.0.1",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-django-alpine": "^1.3.0",
         "prettier-plugin-packagejson": "^2.5.10",
         "typescript": "^5.8.2"
     },
     "peerDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
+        "prettier-plugin-django-alpine": "^1.3.0",
         "prettier-plugin-packagejson": "^2.5.10"
     },
     "engines": {

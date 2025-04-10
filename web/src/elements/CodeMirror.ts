@@ -15,7 +15,7 @@ import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { createColorSchemeEffect } from "@goauthentik/common/color-scheme";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
@@ -157,26 +157,43 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    firstUpdated(): void {
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
-            if (ev.detail === UiThemeEnum.Dark) {
-                this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeDark),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
-                    ],
-                });
-            } else {
-                this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeLight),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
-                    ],
-                });
-            }
-        }) as EventListener);
+    readonly #colorSchemeAbortController = new AbortController();
 
-        const dark = this.activeTheme === UiThemeEnum.Dark;
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#colorSchemeAbortController.abort();
+        this.editor?.destroy();
+        this.editor = undefined;
+    }
+
+    firstUpdated(): void {
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches) => {
+                if (!this.editor) return;
+
+                if (matches) {
+                    this.editor?.dispatch({
+                        effects: [
+                            this.theme.reconfigure(this.themeDark),
+                            this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
+                        ],
+                    });
+                } else {
+                    this.editor?.dispatch({
+                        effects: [
+                            this.theme.reconfigure(this.themeLight),
+                            this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
+                        ],
+                    });
+                }
+            },
+        );
+
+        const dark = this.colorScheme === UiThemeEnum.Dark;
 
         const extensions = [
             history(),

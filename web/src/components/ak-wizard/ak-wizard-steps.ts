@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -28,7 +28,7 @@ export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
     currentStep?: string;
 
-    wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
+    wizardStepContext!: ContextProvider<Context<unknown, WizardStepState | undefined>>;
 
     slots: WizardStep[] = [];
 

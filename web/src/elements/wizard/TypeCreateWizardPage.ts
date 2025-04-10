@@ -1,5 +1,5 @@
 import "@goauthentik/admin/common/ak-license-notice";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import { WithLicenseSummary, isEnterpriseLicense } from "@goauthentik/elements/mixins/license";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
@@ -89,12 +89,14 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderGrid(): TemplateResult {
+        const enterprise = isEnterpriseLicense(this.licenseSummary);
+
         return html`<div
             class="pf-l-grid pf-m-gutter"
             data-ouid-component-type="ak-type-create-grid"
         >
             ${this.types.map((type, idx) => {
-                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+                const requiresEnterprise = type.requiresEnterprise && !enterprise;
 
                 // It's valid to pass in a local modelName or the full name with application
                 // part.  If the latter, we only want the part after the dot to appear as our
@@ -138,13 +140,15 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
     }
 
     renderList(): TemplateResult {
+        const enterprise = isEnterpriseLicense(this.licenseSummary);
+
         return html`<form
             ${ref(this.formRef)}
             class="pf-c-form pf-m-horizontal"
             data-ouid-component-type="ak-type-create-list"
         >
             ${this.types.map((type) => {
-                const requiresEnterprise = type.requiresEnterprise && !this.hasEnterpriseLicense;
+                const requiresEnterprise = type.requiresEnterprise && !enterprise;
 
                 return html`<div
                     class="pf-c-radio"

@@ -1,13 +1,15 @@
-name: "authentik-repo-mirror"
+name: "authentik Repository Mirror"
 
 on: [push, delete]
 
 jobs:
   to_internal:
+    name: "Mirror to internal repository"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        name: "Checkout repository"
         with:
           fetch-depth: 0
       - if: ${{ env.MIRROR_KEY != '' }}

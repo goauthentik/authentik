@@ -4,12 +4,16 @@
 **/LICENSE
 
 authentik/stages/**/*
+authentik/sources/**/*
+schemas/**/*
+blueprints/**/*
 
 ## Build asset directories
 coverage
 dist
 out
 .docusaurus
+.wireit
 website/docs/developer-docs/api/**/*
 
 ## Environment
@@ -32,14 +36,15 @@ coverage
 
 # Templates
 # TODO: Rename affected files to *.template.* or similar.
+authentik/**/*.html
 *.html
 *.mdx
 *.md
 
 ## Import order matters
-poly.ts
-src/locale-codes.ts
-src/locales/
+web/src/poly.ts
+web/src/locale-codes.ts
+web/src/locales/
 
 # Storybook
 storybook-static/

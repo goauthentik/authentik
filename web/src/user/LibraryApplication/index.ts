@@ -2,11 +2,12 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { globalAK } from "@goauthentik/common/global";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/elements/AppIcon";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
-import { UserInterface } from "@goauthentik/user/UserInterface";
+import { UserInterface } from "@goauthentik/user/index.entrypoint";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -71,14 +72,15 @@ export class LibraryApplication extends AKElement {
     }
 
     renderExpansion(application: Application) {
-        const me = rootInterface<UserInterface>()?.me;
+        const me = findThemedRootElement<UserInterface>()?.me;
 
         return html`<ak-expand textOpen=${msg("Fewer details")} textClosed=${msg("More details")}>
             <div class="pf-c-content">
                 <small>${application.metaPublisher}</small>
             </div>
             ${truncateWords(application.metaDescription || "", 10)}
-            ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+            ${findThemedRootElement()?.uiConfig?.enabledFeatures.applicationEdit &&
+            me?.user.isSuperuser
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
@@ -148,9 +150,10 @@ export class LibraryApplication extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
 
-        const me = rootInterface<UserInterface>()?.me;
+        const me = findThemedRootElement<UserInterface>()?.me;
         const expandable =
-            (rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser) ||
+            (findThemedRootElement()?.uiConfig?.enabledFeatures.applicationEdit &&
+                me?.user.isSuperuser) ||
             this.application.metaPublisher !== "" ||
             this.application.metaDescription !== "";
 

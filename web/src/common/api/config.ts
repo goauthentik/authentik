@@ -1,5 +1,4 @@
 import {
-    CSRFHeaderName,
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
@@ -8,10 +7,6 @@ import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
-
-// HACK: Workaround for ESBuild not being able to hoist import statement across entrypoints.
-// This can be removed after ESBuild uses a single build context for all entrypoints.
-export { CSRFHeaderName };
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {

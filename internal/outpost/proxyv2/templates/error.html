@@ -1,15 +1,34 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
         <title>{{.Title}}</title>
-        <link rel="shortcut icon" type="image/png" href="/outpost.goauthentik.io/static/dist/assets/icons/icon.png">
-        <link rel="stylesheet" type="text/css" href="/outpost.goauthentik.io/static/dist/patternfly.min.css">
-        <link rel="stylesheet" type="text/css" href="/outpost.goauthentik.io/static/dist/authentik.css">
-        <link rel="prefetch" href="/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg" />
-        <style>
+
+        <link
+            rel="shortcut icon"
+            type="image/png"
+            href="/outpost.goauthentik.io/static/dist/assets/icons/icon.png"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="/outpost.goauthentik.io/static/dist/patternfly.min.css"
+        />
+        <link
+            rel="stylesheet"
+            type="text/css"
+            href="/outpost.goauthentik.io/static/dist/authentik.css"
+        />
+
+        <link
+            rel="prefetch"
+            href="/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg"
+        />
+
+        <style data-test-id="outpost-error-root-styles">
             .pf-c-background-image::before {
                 --ak-flow-background: url("/outpost.goauthentik.io/static/dist/assets/images/flow_background.jpg");
             }
@@ -24,13 +43,15 @@
         </style>
     </head>
     <body>
-        <div class="pf-c-background-image">
-        </div>
+        <div class="pf-c-background-image"></div>
         <div class="pf-c-login stacked">
             <div class="ak-login-container">
                 <main class="pf-c-login__main">
                     <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                        <img src="/outpost.goauthentik.io/static/dist/assets/icons/icon_left_brand.svg" alt="authentik Logo" />
+                        <img
+                            src="/outpost.goauthentik.io/static/dist/assets/icons/icon_left_brand.svg"
+                            alt="authentik Logo"
+                        />
                     </div>
                     <header class="pf-c-login__main-header">
                         <h1 class="pf-c-title pf-m-3xl">
@@ -47,9 +68,7 @@
                 <footer class="pf-c-login__footer">
                     <ul class="pf-c-list pf-m-inline">
                         <li>
-                            <span>
-                                Powered by authentik
-                            </span>
+                            <span> Powered by authentik </span>
                         </li>
                     </ul>
                 </footer>

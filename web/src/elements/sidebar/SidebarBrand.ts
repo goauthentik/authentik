@@ -1,6 +1,6 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
 import { msg } from "@lit/localize";

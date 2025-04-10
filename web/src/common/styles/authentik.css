@@ -1,6 +1,17 @@
 /* #region Global */
 
 :root {
+    --ak-font-family-base:
+        RedHatVF, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans,
+        sans-serif, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+    --ak-font-family-monospace:
+        RedHatMonoVF, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+        monospace;
+
+    --ak-heading-font-family: RedHatDisplayVF, var(--ak-font-family-base);
+
     --ak-accent: #fd4b2d;
 
     --ak-dark-foreground: #fafafa;

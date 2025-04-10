@@ -1,7 +1,7 @@
-import { spawnSync } from "child_process";
-import fs from "fs";
-import path from "path";
-import process from "process";
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
 
 /**
  * Determines if all the Xliff translation source files are present and if the Typescript source
@@ -12,6 +12,9 @@ import process from "process";
 
 const localizeRules = JSON.parse(fs.readFileSync("./lit-localize.json", "utf-8"));
 
+/**
+ * @param {string} loc
+ */
 function generatedFileIsUpToDateWithXliffSource(loc) {
     const xliff = path.join("./xliff", `${loc}.xlf`);
     const gened = path.join("./src/locales", `${loc}.ts`);
@@ -21,16 +24,26 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
     // than the generated file.  The missing XLF file is important enough it
     // generates a unique error message and halts the build.
 
+    /**
+     * @type {fs.Stats}
+     */
+    let xlfStat;
+
     try {
-        var xlfStat = fs.statSync(xliff);
+        xlfStat = fs.statSync(xliff);
     } catch (_error) {
         console.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
         process.exit(1);
     }
 
+    /**
+     * @type {fs.Stats}
+     */
+    let genedStat;
+
     // If the generated file doesn't exist, of course it's not up to date.
     try {
-        var genedStat = fs.statSync(gened);
+        genedStat = fs.statSync(gened);
     } catch (_error) {
         return false;
     }

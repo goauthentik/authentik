@@ -16,7 +16,7 @@
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",
-    "typescript.tsdk": "./web/node_modules/typescript/lib",
+    "typescript.tsdk": "./node_modules/typescript/lib",
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "yaml.schemas": {
         "./blueprints/schema.json": "blueprints/**/*.yaml"
@@ -30,7 +30,71 @@
         }
     ],
     "go.testFlags": ["-count=1"],
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/ci-main.yml"
-    ]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"],
+
+    "eslint.useFlatConfig": true,
+
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.patterns": {
+        "*.mjs": "*.d.mts",
+        "*.cjs": "*.d.cts",
+        "package.json": "package-lock.json, yarn.lock, .yarnrc, .yarnrc.yml, .yarn, .nvmrc, .node-version",
+        "tsconfig.json": "tsconfig.*.json, jsconfig.json",
+        "Dockerfile": "*.Dockerfile"
+    },
+
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/*.code-search": true,
+        "**/dist": true,
+        "**/out": true,
+        "**/package-lock.json": true
+    },
+
+    "[css]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[shellscript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[django-html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+
+    "editor.codeActionsOnSave": {
+        "source.removeUnusedImports": "explicit"
+    },
+    // We use Prettier for formatting, but specifying these settings
+    // will ensure that VS Code's IntelliSense doesn't autocomplete unformatted code.
+    "javascript.format.semicolons": "insert",
+    "typescript.format.semicolons": "insert",
+    "javascript.preferences.quoteStyle": "double",
+    "typescript.preferences.quoteStyle": "double",
+    "github.copilot.enable": {
+        "*": true,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": false,
+        "csv": false,
+        "json": true,
+        "yaml": true
+    }
 }

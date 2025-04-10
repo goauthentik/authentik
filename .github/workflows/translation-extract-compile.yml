@@ -1,5 +1,5 @@
 ---
-name: authentik-translate-extract-compile
+name: "authentik Extract & Compile Translations"
 on:
   schedule:
     - cron: "0 0 * * *" # every day at midnight
@@ -16,6 +16,7 @@ env:
 
 jobs:
   compile:
+    name: "Compile Translations"
     runs-on: ubuntu-latest
     steps:
       - id: generate_token
@@ -32,15 +33,20 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
+      - name: Generate TypeScript API
         run: make gen-client-ts
-      - name: run extract
+      - name: Extract Translations
         run: |
           uv run make i18n-extract
-      - name: run compile
+      - name: Build Docs Site
+        run: npm run build-bundled -w @goauthentik/docs
+      - name: Build Web UI
+        run: npm run build -w @goauthentik/web
+      - name: Type check
+        run: npm run typecheck
+      - name: Compile Messages
         run: |
           uv run ak compilemessages
-          make web-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7

@@ -13,9 +13,14 @@
 
 {% block card %}
 <form method="POST" class="pf-c-form">
-    <p>{% trans message %}</p>
-    <a id="ak-back-home" href="{% url 'authentik_core:root-redirect' %}" class="pf-c-button pf-m-primary">
-        {% trans 'Go home' %}
-    </a>
+  <p>{% trans message %}</p>
+
+  <a
+    id="ak-back-home"
+    href="{% url 'authentik_core:root-redirect' %}"
+    class="pf-c-button pf-m-primary"
+  >
+    {% trans 'Go home' %}
+  </a>
 </form>
 {% endblock %}

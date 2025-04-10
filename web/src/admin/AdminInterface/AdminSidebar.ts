@@ -4,8 +4,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+} from "@goauthentik/elements/mixins/capabilities";
+import { WithVersion } from "@goauthentik/elements/mixins/version";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
@@ -13,6 +13,7 @@ import { spread } from "@open-wc/lit-helpers";
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
@@ -71,10 +72,12 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     render() {
         return html`
             <ak-sidebar
-                class="pf-c-page__sidebar ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this
-                    .activeTheme === UiThemeEnum.Light
-                    ? "pf-m-light"
-                    : ""}"
+                class=${classMap({
+                    "pf-c-page__sidebar": true,
+                    "pf-m-expanded": this.open,
+                    "pf-m-collapsed": !this.open,
+                    "pf-m-light": this.colorScheme === UiThemeEnum.Light,
+                })}
             >
                 ${this.renderSidebarItems()}
             </ak-sidebar>

@@ -1,13 +1,11 @@
-import { QUERY_MEDIA_COLOR_LIGHT, rootInterface } from "@goauthentik/elements/Base";
+import { resolveColorScheme } from "@goauthentik/common/color-scheme";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 
-import { UiThemeEnum } from "@goauthentik/api";
-
+/**
+ * Given an image path, replace the %theme% placeholder with the current color scheme.
+ */
 export function themeImage(rawPath: string) {
-    let enabledTheme = rootInterface()?.activeTheme;
-    if (!enabledTheme || enabledTheme === UiThemeEnum.Automatic) {
-        enabledTheme = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
-            ? UiThemeEnum.Light
-            : UiThemeEnum.Dark;
-    }
-    return rawPath.replaceAll("%(theme)s", enabledTheme);
+    const colorScheme = resolveColorScheme(findThemedRootElement()?.colorScheme);
+
+    return rawPath.replaceAll("%(theme)s", colorScheme);
 }

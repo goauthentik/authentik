@@ -1,13 +1,12 @@
-import React, { type ReactNode } from "react";
-import clsx from "clsx";
-import EditThisPage from "@theme/EditThisPage";
-import type { Props } from "@theme/EditMetaRow";
-
-import LastUpdated from "@theme/LastUpdated";
-import Admonition from "@theme/Admonition";
-import styles from "./styles.module.css";
 import Translate from "@docusaurus/Translate";
-import IconNote from "@theme/Admonition/Icon/Note";
+import Admonition from "@theme/Admonition";
+import type { Props } from "@theme/EditMetaRow";
+import EditThisPage from "@theme/EditThisPage";
+import LastUpdated from "@theme/LastUpdated";
+import clsx from "clsx";
+import React from "react";
+
+import styles from "./styles.module.css";
 
 const EditMetaRow: React.FC<Props> = ({
     className,
@@ -40,22 +39,20 @@ const EditMetaRow: React.FC<Props> = ({
                         id="theme.common.contributor.footerDescription1"
                         description="The description for the contribution footer"
                     >
-                        We welcome your knowledge and expertise. If you see
-                        areas of the documentation that you can improve (fix a
-                        typo, correct a technical detail, add additional
-                        context, etc.) we would really appreciate your
-                        contribution.
+                        We welcome your knowledge and expertise. If you see areas of the
+                        documentation that you can improve (fix a typo, correct a technical detail,
+                        add additional context, etc.) we would really appreciate your contribution.
                     </Translate>
                 </p>
 
                 <div className="row">
                     <div className="col col--12">
                         <ul>
-                            {editUrl && (
+                            {editUrl ? (
                                 <li>
                                     <EditThisPage editUrl={editUrl} />
                                 </li>
-                            )}
+                            ) : null}
 
                             <li>
                                 <a
@@ -108,12 +105,9 @@ const EditMetaRow: React.FC<Props> = ({
 
             <div className="row">
                 <div className={clsx("col", styles.lastUpdated)}>
-                    {(lastUpdatedAt || lastUpdatedBy) && (
-                        <LastUpdated
-                            lastUpdatedAt={lastUpdatedAt}
-                            lastUpdatedBy={lastUpdatedBy}
-                        />
-                    )}
+                    {lastUpdatedAt || lastUpdatedBy ? (
+                        <LastUpdated lastUpdatedAt={lastUpdatedAt} lastUpdatedBy={lastUpdatedBy} />
+                    ) : null}
                 </div>
             </div>
         </>

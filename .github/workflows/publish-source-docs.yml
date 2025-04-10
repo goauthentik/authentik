@@ -1,4 +1,4 @@
-name: authentik-publish-source-docs
+name: "authentik Publish Source Docs"
 
 on:
   push:
@@ -12,6 +12,7 @@ env:
 
 jobs:
   publish-source-docs:
+    name: "Publish"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
@@ -19,11 +20,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: generate docs
+      - name: Generate docs
         run: |
           uv run make migrate
           uv run ak build_source_docs
-      - name: Publish
+      - name: Deploy to Netlify
         uses: netlify/actions/cli@master
         with:
           args: deploy --dir=source_docs --prod
