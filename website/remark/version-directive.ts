@@ -3,8 +3,8 @@ import "mdast-util-directive";
 
 import { h } from "hastscript";
 import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
 import { coerce } from "semver";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * MDAST plugin to transform `ak-version` directives into version badges.
@@ -40,9 +40,7 @@ function remarkVersionDirective() {
             const yearCutoff = new Date().getFullYear() - 2;
 
             if (parsed.major <= yearCutoff) {
-                throw new Error(
-                    `Semver version <= ${yearCutoff} is not supported: ${semver}`,
-                );
+                throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
             }
 
             const data = node.data || (node.data = {});

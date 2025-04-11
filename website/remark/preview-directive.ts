@@ -3,7 +3,7 @@ import "mdast-util-directive";
 
 import { h } from "hastscript";
 import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * MDAST plugin to transform `ak-preview` directives into preview badges.

@@ -1,7 +1,9 @@
 import { h } from "hastscript";
 import { Root } from "mdast";
+
 import "mdast-util-directive";
 import "mdast-util-to-hast";
+
 import { SKIP, visit } from "unist-util-visit";
 
 /**
@@ -50,10 +52,10 @@ function remarkSupportDirective() {
 
             const hast = h("span", {
                 ...node.attributes,
-                "className": `badge badge--support-${level}`,
-                "title": `This feature is supported at the ${label} level.`,
+                className: `badge badge--support-${level}`,
+                title: `This feature is supported at the ${label} level.`,
                 "aria-description": "Support level badge",
-                "role": "img",
+                role: "img",
             });
 
             data.hName = hast.tagName;
