@@ -19,27 +19,28 @@
 # Benjamin Böhmke, 2023
 # Sven S <transifex@versvendet.de>, 2023
 # Dirk R, 2023
-# 97cce0ae0cad2a2cc552d3165d04643e_de3d740, 2024
 # Paul Frey, 2024
 # Sascha Brockel, 2024
 # Michael Milz, 2024
 # Thomas Liske, 2024
-# Michael Gottinger, 2024
+# bob4os, 2024
 # itxworks, 2024
 # Christian Wichmann <cw1981@gmx.de>, 2024
 # Stefan Werner, 2024
 # Alexander Möbius, 2025
 # Jonas, 2025
 # Niklas Kroese, 2025
+# 97cce0ae0cad2a2cc552d3165d04643e_de3d740, 2025
+# datenschmutz, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-14 14:49+0000\n"
+"POT-Creation-Date: 2025-03-31 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Niklas Kroese, 2025\n"
+"Last-Translator: datenschmutz, 2025\n"
 "Language-Team: German (https://app.transifex.com/authentik/teams/119923/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -147,6 +148,12 @@ msgstr "Nutzer hat keinen Zugriff auf diese Applikation."
 msgid "Extra description not available"
 msgstr "Eine weitergehende Beschreibung ist nicht verfügbar"
 
+#: authentik/core/api/groups.py
+msgid "Cannot set group as parent of itself."
+msgstr ""
+"Es ist nicht möglich, die Gruppe als Übergruppe von sich selbst zu "
+"definieren."
+
 #: authentik/core/api/providers.py
 msgid ""
 "When not set all providers are returned. When set to true, only backchannel "
@@ -193,6 +200,14 @@ msgstr "Nutzer zu Gruppe hinzufügen"
 #: authentik/core/models.py
 msgid "Remove user from group"
 msgstr "Nutzer aus Gruppe entfernen"
+
+#: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr "Superuser-Status aktivieren"
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr "Superuser-Status deaktivieren"
 
 #: authentik/core/models.py
 msgid "User's display name."
@@ -572,60 +587,6 @@ msgstr "Microsoft Entra Provider Zuordnung"
 msgid "Microsoft Entra Provider Mappings"
 msgstr "Microsoft Entra Provider Zuordnungen"
 
-#: authentik/enterprise/providers/rac/models.py
-#: authentik/stages/user_login/models.py
-msgid ""
-"Determines how long a session lasts. Default of 0 means that the sessions "
-"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
-msgstr ""
-"Legt fest, wie lange eine Sitzung dauert. Der Standardwert 0 bedeutet, dass "
-"die Sitzung so lange dauert, bis der Browser geschlossen wird. (Format: "
-"hours=-1;minutes=-2;seconds=-3)"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "When set to true, connection tokens will be deleted upon disconnect."
-msgstr "Wenn aktiviert, werden Verbindungstoken beim Trennen gelöscht."
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider"
-msgstr "RAC Anbieter"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Providers"
-msgstr "RAC Anbieter"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Endpoint"
-msgstr "RAC Endpunkt"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Endpoints"
-msgstr "RAC Endpunkte"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider Property Mapping"
-msgstr "RAC Provider Eigenschafts-Zuordnung"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Provider Property Mappings"
-msgstr "RAC Provider Eigenschafts-Zuordnungen"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Connection token"
-msgstr "RAC Verbindungstoken"
-
-#: authentik/enterprise/providers/rac/models.py
-msgid "RAC Connection tokens"
-msgstr "RAC Verbindungstoken"
-
-#: authentik/enterprise/providers/rac/views.py
-msgid "Maximum connection limit reached."
-msgstr "Maximale Verbindungsgrenze erreicht."
-
-#: authentik/enterprise/providers/rac/views.py
-msgid "(You are already connected in another tab/window)"
-msgstr "(Sie sind bereits in einem anderen Tab/Fenster verbunden)"
-
 #: authentik/enterprise/providers/ssf/models.py
 #: authentik/providers/oauth2/models.py
 msgid "Signing Key"
@@ -633,39 +594,39 @@ msgstr "Signaturschlüssel"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Key used to sign the SSF Events."
-msgstr ""
+msgstr "Schlüssel, der zum Signieren der SSF-Ereignisse verwendet wird."
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Provider"
-msgstr ""
+msgstr "Anbieter des Shared Signals Frameworks"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Shared Signals Framework Providers"
-msgstr ""
+msgstr "Shared Signals Frameworks Anbieter"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
-msgstr ""
+msgstr "Stream zum SSF-Anbieter hinzufügen."
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
-msgstr ""
+msgstr "SSF Stream"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr ""
+msgstr "SSF Streams"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
-msgstr ""
+msgstr "SSF Stream Ereignis"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Events"
-msgstr ""
+msgstr "SSF Stream Ereignisse"
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Failed to send request"
-msgstr ""
+msgstr "Anfrage konnte nicht gesendet werden."
 
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
 msgid "Endpoint Authenticator Google Device Trust Connector Stage"
@@ -729,8 +690,25 @@ msgid "Slack Webhook (Slack/Discord)"
 msgstr "Slack Webhook (Slack/Discord)"
 
 #: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
 msgid "Email"
 msgstr "E-Mail"
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+"Passen Sie den Inhalt der Anfrage an. Die Zuordnung sollte Daten "
+"zurückgeben, die JSON-serialisierbar sind."
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Konfigurieren Sie zusätzliche Header, die gesendet werden sollen. Die "
+"Zuordnung sollte ein dictionary von Schlüssel-Wert-Paaren zurückgeben."
 
 #: authentik/events/models.py
 msgid ""
@@ -1009,6 +987,12 @@ msgstr "Flow-Tokens"
 msgid "Invalid next URL"
 msgstr "Ungültige nächste URL"
 
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Starting full provider sync"
 msgstr "Starte komplette Provider Synchronisation."
@@ -1022,6 +1006,10 @@ msgstr "Synchonisiere Benutzer Seite {page}"
 #, python-brace-format
 msgid "Syncing page {page} of groups"
 msgstr "Synchonisiere Gruppen Seite {page}"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Dropping mutating request due to dry run"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1238,6 +1226,14 @@ msgid "Client IP is not in an allowed country."
 msgstr "GeoIP: Die Client IP befindet sich nicht in einem erlaubten Land."
 
 #: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
 msgid "GeoIP Policy"
 msgstr "GeoIP Richtlinie"
 
@@ -1368,6 +1364,20 @@ msgstr "Reputationswert"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Reputationswert"
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -1559,6 +1569,14 @@ msgstr "RS256 (Asymmetrische Verschlüsselung)"
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256 (Asymmetrische Verschlüsselung)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
@@ -1844,6 +1862,59 @@ msgstr "Proxy Anbieter"
 msgid "Proxy Providers"
 msgstr "Proxy Anbietern"
 
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Legt fest, wie lange eine Sitzung dauert. Der Standardwert 0 bedeutet, dass "
+"die Sitzung so lange dauert, bis der Browser geschlossen wird. (Format: "
+"hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr "Wenn aktiviert, werden Verbindungstoken beim Trennen gelöscht."
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "RAC Anbieter"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "RAC Anbieter"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "RAC Endpunkt"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "RAC Endpunkte"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "RAC Provider Eigenschafts-Zuordnung"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "RAC Provider Eigenschafts-Zuordnungen"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "RAC Verbindungstoken"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "RAC Verbindungstoken"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "Maximale Verbindungsgrenze erreicht."
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(Sie sind bereits in einem anderen Tab/Fenster verbunden)"
+
 #: authentik/providers/radius/models.py
 msgid "Shared secret between clients and server to hash packets."
 msgstr ""
@@ -1932,6 +2003,17 @@ msgid ""
 msgstr ""
 "Legen Sie fest, wie der NameID-Wert erstellt werden soll. Bleibt der Wert "
 "leer, wird die NameIDPolicy der eingehenden Anfrage berücksichtigt"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
 
 #: authentik/providers/saml/models.py
 msgid ""
@@ -2075,12 +2157,32 @@ msgid "SAML Providers from Metadata"
 msgstr "SAML Provider aus Metadaten"
 
 #: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "Standard"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "Basis-URL für SCIM-Anfragen, endet normalerweise auf /v2"
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
 msgstr "Authentifizierungstoken"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "SCIM Provider"
@@ -2764,6 +2866,103 @@ msgstr "Duo Gerät"
 msgid "Duo Devices"
 msgstr "Duo Geräte"
 
+#: authentik/stages/authenticator_email/models.py
+msgid "Email OTP"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"Wenn diese Option aktiviert ist, werden die globalen E-Mail "
+"Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen "
+"ignoriert"
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "Beim Rendern der E-Mail-Vorlage ist ein Fehler aufgetreten"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
+msgid "Code does not match"
+msgstr "Code stimmt nicht überein"
+
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"      Hallo %(username)s,\n"
+"      "
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Hallo %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
+
 #: authentik/stages/authenticator_sms/models.py
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
@@ -2801,11 +3000,6 @@ msgstr "SMS Gerät"
 #: authentik/stages/authenticator_sms/models.py
 msgid "SMS Devices"
 msgstr "SMS Geräte"
-
-#: authentik/stages/authenticator_sms/stage.py
-#: authentik/stages/authenticator_totp/stage.py
-msgid "Code does not match"
-msgstr "Code stimmt nicht überein"
 
 #: authentik/stages/authenticator_sms/stage.py
 msgid "Invalid phone number"
@@ -3042,21 +3236,8 @@ msgid "Account Confirmation"
 msgstr "Konto-Bestätigung"
 
 #: authentik/stages/email/models.py
-msgid ""
-"When enabled, global Email connection settings will be used and connection "
-"settings below will be ignored."
-msgstr ""
-"Wenn diese Option aktiviert ist, werden die globalen E-Mail "
-"Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen "
-"ignoriert"
-
-#: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "Aktivieren Sie die Benutzer nach Abschluss der Stufe."
-
-#: authentik/stages/email/models.py
-msgid "Time in minutes the token sent is valid."
-msgstr "Zeit in Minuten wie lange der verschickte Token gültig ist"
 
 #: authentik/stages/email/models.py
 msgid "Email Stage"
@@ -3065,10 +3246,6 @@ msgstr "E-Mail Stufe"
 #: authentik/stages/email/models.py
 msgid "Email Stages"
 msgstr "E-Mail Stufen"
-
-#: authentik/stages/email/stage.py
-msgid "Exception occurred while rendering E-mail template"
-msgstr "Beim Rendern der E-Mail-Vorlage ist ein Fehler aufgetreten"
 
 #: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
@@ -3154,17 +3331,6 @@ msgstr ""
 "Diese E-Mail wurde vom  Benachrichtigungsdienst %(name)s gesendet.\n"
 
 #: authentik/stages/email/templates/email/password_reset.html
-#, python-format
-msgid ""
-"\n"
-"      Hi %(username)s,\n"
-"      "
-msgstr ""
-"\n"
-"      Hallo %(username)s,\n"
-"      "
-
-#: authentik/stages/email/templates/email/password_reset.html
 msgid ""
 "\n"
 "          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
@@ -3183,11 +3349,6 @@ msgid ""
 msgstr ""
 "\n"
 "  Wenn Sie keine Passwortänderung beantragt haben, ignorieren Sie bitte diese E-Mail. Der obige Link ist gültig für %(expires)s."
-
-#: authentik/stages/email/templates/email/password_reset.txt
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Hallo %(username)s,"
 
 #: authentik/stages/email/templates/email/password_reset.txt
 msgid ""
