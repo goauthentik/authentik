@@ -15,7 +15,13 @@ from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, PropertyMapping, Source
+from authentik.core.models import (
+    Group,
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
@@ -312,3 +318,31 @@ class LDAPSourcePropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("LDAP Source Property Mapping")
         verbose_name_plural = _("LDAP Source Property Mappings")
+
+
+class UserLDAPSourceConnection(UserSourceConnection):
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api import (
+            UserLDAPSourceConnectionSerializer,
+        )
+
+        return UserLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("User LDAP Source Connection")
+        verbose_name_plural = _("User LDAP Source Connections")
+
+
+class GroupLDAPSourceConnection(GroupSourceConnection):
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.sources.ldap.api import (
+            GroupLDAPSourceConnectionSerializer,
+        )
+
+        return GroupLDAPSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("Group LDAP Source Connection")
+        verbose_name_plural = _("Group LDAP Source Connections")
