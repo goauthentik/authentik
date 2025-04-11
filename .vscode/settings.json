@@ -30,7 +30,5 @@
         }
     ],
     "go.testFlags": ["-count=1"],
-    "github-actions.workflows.pinned.workflows": [
-        ".github/workflows/ci-main.yml"
-    ]
+    "github-actions.workflows.pinned.workflows": [".github/workflows/ci-main.yml"]
 }

@@ -1,5 +1,4 @@
 /// <reference types="@wdio/globals/types" />
-
 /**
  * @file WebdriverIO configuration file
  * @see https://webdriver.io/docs/configurationfile.html
@@ -28,7 +27,7 @@ const DEFAULT_MAX_INSTANCES = 10;
 
 if (!skipChrome) {
     const chromeBrowserConfig = {
-        "browserName": "chrome",
+        browserName: "chrome",
         "wdio:chromedriverOptions": {
             binary: "./node_modules/.bin/chromedriver",
         },

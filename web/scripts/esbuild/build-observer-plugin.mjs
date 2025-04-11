@@ -56,7 +56,7 @@ export function buildObserverPlugin({ serverURL, logPrefix = "Build Observer", r
         res.writeHead(200, {
             "Content-Type": "text/event-stream",
             "Cache-Control": "no-cache",
-            "Connection": "keep-alive",
+            Connection: "keep-alive",
         });
 
         /**

@@ -17,7 +17,7 @@ export const javaScriptConfig = tseslint.config({
         "consistent-return": "off",
         // "consistent-return": ["error", { treatUndefinedAsUnspecified: false }],
         "consistent-this": ["error", "that"],
-        "curly": "off",
+        curly: "off",
         // "dot-notation": [
         //     "error",
         //     {
@@ -25,7 +25,7 @@ export const javaScriptConfig = tseslint.config({
         //     },
         // ],
         // "eqeqeq": "error",
-        "eqeqeq": "off",
+        eqeqeq: "off",
         // "func-names": ["error", "as-needed"],
         "guard-for-in": "error",
         "max-depth": ["error", MAX_DEPTH],
@@ -126,13 +126,13 @@ export const javaScriptConfig = tseslint.config({
         "prefer-rest-params": "error",
         "prefer-spread": "error",
         "prefer-template": "off",
-        "radix": "error",
+        radix: "error",
         "require-yield": "error",
-        "strict": ["error", "global"],
+        strict: ["error", "global"],
         "use-isnan": "error",
         "valid-typeof": "error",
         "vars-on-top": "error",
-        "yoda": ["error", "never"],
+        yoda: ["error", "never"],
 
         "no-console": ["error", { allow: ["debug", "warn", "error"] }],
         // SonarJS is not yet compatible with ESLint 9.  Commenting these out

@@ -11,7 +11,7 @@ const capabilities = [];
 
 if (!skipChrome) {
     capabilities.push({
-        "browserName": "chrome",
+        browserName: "chrome",
         "wdio:chromedriverOptions": {
             binary: "./node_modules/.bin/chromedriver",
         },

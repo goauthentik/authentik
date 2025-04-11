@@ -68,7 +68,7 @@ const config: StorybookConfig = {
                     ),
                     "process.env.CWD": JSON.stringify(cwd()),
                     "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                    "preventAssignment": true,
+                    preventAssignment: true,
                 }),
                 ...config.plugins,
                 postcssLit(),

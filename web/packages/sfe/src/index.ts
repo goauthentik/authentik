@@ -1,6 +1,9 @@
 import { fromByteArray } from "base64-js";
+
 import "formdata-polyfill";
+
 import $ from "jquery";
+
 import "weakmap-polyfill";
 
 import {
