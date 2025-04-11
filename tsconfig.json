@@ -21,7 +21,6 @@
         // Note that references are in the order we want them to be built.
         { "path": "./packages/prettier-config" },
         { "path": "./packages/eslint-config" },
-        { "path": "./website" },
         { "path": "./web" }
     ]
 }

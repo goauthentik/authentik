@@ -205,12 +205,13 @@ jobs:
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('./package-lock.json', 'web/src/**') }}
-      - name: prepare web ui
+      - name: Prepare Web UI
         if: steps.cache-web.outputs.cache-hit != 'true'
         run: |
           npm ci
           make gen-client-ts
           npm run build -w @goauthentik/web
+
           npm run compile
       - name: run e2e
         run: |
