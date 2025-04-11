@@ -10,7 +10,6 @@
         "lint:eslint:check": "eslint .",
         "lint:eslint:fix": "eslint --fix .",
         "lint:fix": "run-s lint:prettier:fix lint:eslint:fix",
-        "lint:prettier": "eslint .",
         "lint:prettier:check": "prettier --cache --check -u .",
         "lint:prettier:fix": "prettier --cache --write -u ."
     },
