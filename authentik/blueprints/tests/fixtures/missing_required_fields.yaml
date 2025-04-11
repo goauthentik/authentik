@@ -1,0 +1,7 @@
+version: 1
+entries:
+  - identifiers:
+      slug: test-flow
+    attrs:
+      name: Test Flow
+    model: authentik_flows.Flow 

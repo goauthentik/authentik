@@ -176,6 +176,7 @@ class Importer:
 
     def __init__(self, blueprint: Blueprint, context: dict | None = None):
         self.__pk_map: dict[Any, Model] = {}
+        self.__instance_map: dict[str, Model] = {}  # Track instances by their IDs
         self._import = blueprint
         self.logger = get_logger()
         ctx = self.default_context()
@@ -199,8 +200,8 @@ class Importer:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
             )
-        except DaciteError as exc:
-            raise EntryInvalidError from exc
+        except Exception as exc:
+            raise ValueError(f"Invalid YAML format: {str(exc)}") from exc
         return Importer(_import, context)
 
     @property
@@ -263,6 +264,42 @@ class Importer:
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
             raise EntryInvalidError.from_entry(f"Model {model} not allowed", entry)
+
+        # Check if the referenced object exists
+        if entry.identifiers:
+            query = self.__query_from_identifier(entry.get_identifiers(self._import))
+            # Only check for existing objects if state is not MUST_CREATED
+            # and the object is not part of the blueprint
+            if entry.state != BlueprintEntryDesiredState.MUST_CREATED:
+                # Check if this object is referenced by any other entry in the blueprint
+                is_referenced = False
+                for other_entry in self._import.entries:
+                    if other_entry.id == entry.id:
+                        continue
+                    other_attrs = other_entry.get_attrs(self._import)
+                    if isinstance(other_attrs, dict):
+                        for value in other_attrs.values():
+                            if isinstance(value, str) and f"{{{{ {entry.id}.pk }}}}" in value:
+                                is_referenced = True
+                                break
+                
+                if not is_referenced and not model.objects.filter(query).exists():
+                    self.logger.warning("Referenced object does not exist", model=model, identifiers=entry.identifiers)
+                    return None
+
+        # Check for invalid references in attributes
+        attrs = entry.get_attrs(self._import)
+        if isinstance(attrs, dict):
+            for value in attrs.values():
+                if isinstance(value, str) and "{{" in value and "}}" in value:
+                    # Extract the reference ID from the template
+                    ref_id = value.split("{{")[1].split("}}")[0].strip().split(".")[0]
+                    # Check if the referenced ID exists in the blueprint
+                    ref_exists = any(e.id == ref_id for e in self._import.entries)
+                    if not ref_exists:
+                        self.logger.warning("Invalid reference in attributes", ref_id=ref_id, value=value)
+                        return None
+
         if issubclass(model, BaseMetaModel):
             serializer_class: type[Serializer] = model.serializer()
             serializer = serializer_class(
@@ -369,21 +406,28 @@ class Importer:
                 role = Role.objects.get(pk=perm.role)
                 role.assign_permission(perm.permission, obj=instance)
 
-    def apply(self) -> bool:
-        """Apply (create/update) models yaml, in database transaction"""
-        try:
-            with atomic():
-                if not self._apply_models():
-                    self.logger.debug("Reverting changes due to error")
-                    raise IntegrityError
-        except IntegrityError:
-            return False
-        self.logger.debug("Committing changes")
-        return True
-
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
+        self.__instance_map = {}  # Reset instance map for each apply
+
+        # Check for conflicting states first
+        state_map = {}
+        for entry in self._import.entries:
+            model_app_label, model_name = entry.get_model(self._import).split(".")
+            key = (model_app_label, model_name, str(entry.get_identifiers(self._import)))
+            if key in state_map:
+                # Check if states conflict
+                existing_state = state_map[key]
+                current_state = entry.get_state(self._import)
+                if (existing_state == BlueprintEntryDesiredState.ABSENT and current_state != BlueprintEntryDesiredState.ABSENT) or \
+                   (current_state == BlueprintEntryDesiredState.ABSENT and existing_state != BlueprintEntryDesiredState.ABSENT):
+                    self.logger.warning("Conflicting states detected", key=key, existing=existing_state, current=current_state)
+                    return False
+            state_map[key] = entry.get_state(self._import)
+
+        # Phase 1: Create all objects and store their references
+        created_instances = []
         for entry in self._import.entries:
             model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
@@ -393,12 +437,11 @@ class Importer:
                     "App or Model does not exist", app=model_app_label, model=model_name
                 )
                 return False
-            # Validate each single entry
+
             serializer = None
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
-                # For deleting objects we don't need the serializer to be valid
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     serializer = exc.serializer
                 else:
@@ -407,7 +450,7 @@ class Importer:
                         raise exc
                     return False
             if not serializer:
-                continue
+                return False
 
             state = entry.get_state(self._import)
             if state in [
@@ -428,19 +471,66 @@ class Importer:
                         pk=instance.pk,
                     )
                 else:
-                    instance = serializer.save()
-                    self.logger.debug("Updated model", model=instance)
+                    try:
+                        instance = serializer.save()
+                        self.logger.debug("Updated model", model=instance)
+                        created_instances.append((entry, instance))
+                    except IntegrityError:
+                        if raise_errors:
+                            raise
+                        return False
+
+                # Store instance in both maps
                 if "pk" in entry.identifiers:
                     self.__pk_map[entry.identifiers["pk"]] = instance.pk
+                if entry.id:
+                    self.__instance_map[entry.id] = instance
+
                 entry._state = BlueprintEntryState(instance)
                 self._apply_permissions(instance, entry)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Model | None = serializer.instance
-                if instance.pk:
+                if instance and instance.pk:
                     instance.delete()
                     self.logger.debug("Deleted model", mode=instance)
                     continue
                 self.logger.debug("Entry to delete with no instance, skipping")
+
+        # Phase 2: Update all references and commit
+        try:
+            with atomic():
+                # Update all references
+                for entry, instance in created_instances:
+                    if entry.id and entry.id in self.__instance_map:
+                        entry._state = BlueprintEntryState(self.__instance_map[entry.id])
+                        # Update attributes with resolved references
+                        attrs = entry.get_attrs(self._import)
+                        resolved_attrs = self.__update_pks_for_attrs(attrs)
+                        for key, value in resolved_attrs.items():
+                            setattr(instance, key, value)
+                        instance.save()  # Save again to ensure references are updated
+
+                # Commit the transaction
+                return True
+        except Exception as e:
+            self.logger.error("Failed to update references", error=str(e))
+            return False
+
+    def apply(self) -> bool:
+        """Apply (create/update) models yaml, in database transaction"""
+        # Check version first
+        if self._import.version != 1:
+            self.logger.warning("Invalid blueprint version")
+            return False
+
+        try:
+            with atomic():
+                if not self._apply_models():
+                    self.logger.debug("Reverting changes due to error")
+                    raise IntegrityError
+        except IntegrityError:
+            return False
+        self.logger.debug("Committing changes")
         return True
 
     def validate(self, raise_validation_errors=False) -> tuple[bool, list[LogEvent]]:
@@ -448,9 +538,23 @@ class Importer:
         and serializers have no errors"""
         self.logger.debug("Starting blueprint import validation")
         orig_import = deepcopy(self._import)
+        
+        # Check version first
         if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
             return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
+
+        # Validate each entry
+        for entry in self._import.entries:
+            try:
+                serializer = self._validate_single(entry)
+                if serializer is None:
+                    return False, [LogEvent("Entry validation failed", log_level="warning", logger=None)]
+                if not serializer.is_valid():
+                    return False, [LogEvent(f"Serializer errors: {serializer.errors}", log_level="warning", logger=None)]
+            except EntryInvalidError as exc:
+                return False, [LogEvent(f"Entry invalid: {exc}", log_level="warning", logger=None)]
+
         with (
             transaction_rollback(),
             capture_logs() as logs,
@@ -458,6 +562,8 @@ class Importer:
             successful = self._apply_models(raise_errors=raise_validation_errors)
             if not successful:
                 self.logger.warning("Blueprint validation failed")
+                return False, logs
+
         self.logger.debug("Finished blueprint import validation")
         self._import = orig_import
         return successful, logs

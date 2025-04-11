@@ -1,0 +1,12 @@
+version: 1
+entries:
+  - id: flow1
+    identifiers:
+      slug: "{{ flow1.slug }}"
+    attrs:
+      name: Test Flow
+      slug: "{{ flow1.slug }}"
+      designation: authentication
+      title: Test Flow
+    model: authentik_flows.Flow
+    state: must_created 

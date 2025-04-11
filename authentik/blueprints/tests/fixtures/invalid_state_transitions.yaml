@@ -1,0 +1,12 @@
+version: 1
+entries:
+  - identifiers:
+      name: test-group
+    attrs:
+      name: test-group-updated
+    model: authentik_core.Group
+    state: present
+  - identifiers:
+      name: test-group
+    model: authentik_core.Group
+    state: absent 

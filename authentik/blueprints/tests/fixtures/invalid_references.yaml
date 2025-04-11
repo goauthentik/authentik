@@ -1,0 +1,7 @@
+version: 1
+entries:
+  - identifiers:
+      pk: 999999
+    attrs:
+      name: test-group
+    model: authentik_core.Group 
