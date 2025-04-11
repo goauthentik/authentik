@@ -273,7 +273,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
     deviceChallenge?: DeviceChallenge;
 
     b64enc(buf: Uint8Array): string {
-        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/[=]/g, "");
     }
 
     b64RawEnc(buf: Uint8Array): string {
