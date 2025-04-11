@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("authentik_core", "0044_session_and_more"),
+        ("authentik_core", "0046_session_and_more"),
         ("authentik_providers_rac", "0007_migrate_session"),
         ("authentik_providers_oauth2", "0028_migrate_session"),
     ]

@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_rac", "0006_connectiontoken_authentik_p_expires_91f148_idx_and_more"),
-        ("authentik_core", "0044_session_and_more"),
+        ("authentik_core", "0046_session_and_more"),
     ]
 
     operations = [

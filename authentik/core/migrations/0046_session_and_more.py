@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("sessions", "0001_initial"),
-        ("authentik_core", "0043_alter_group_options"),
+        ("authentik_core", "0045_rename_new_identifier_usersourceconnection_identifier_and_more"),
         ("authentik_providers_oauth2", "0027_accesstoken_authentik_p_expires_9f24a5_idx_and_more"),
         ("authentik_providers_rac", "0006_connectiontoken_authentik_p_expires_91f148_idx_and_more"),
     ]

@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("authentik_providers_oauth2", "0027_accesstoken_authentik_p_expires_9f24a5_idx_and_more"),
-        ("authentik_core", "0044_session_and_more"),
+        ("authentik_core", "0046_session_and_more"),
     ]
 
     operations = [
