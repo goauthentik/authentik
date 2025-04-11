@@ -1,6 +1,6 @@
 import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { APIConfig } from "@goauthentik/common/global";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 
@@ -92,7 +92,7 @@ export class APIDrawer extends AKElement {
                         <h1 class="pf-c-notification-drawer__header-title">
                             ${msg("API Requests")}
                         </h1>
-                        <a href="${globalAK().api.base}api/v3/" target="_blank"
+                        <a href="${APIConfig.base}api/v3/" target="_blank"
                             >${msg("Open API Browser")}</a
                         >
                     </div>

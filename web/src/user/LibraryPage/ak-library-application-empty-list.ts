@@ -1,4 +1,4 @@
-import { docLink, globalAK } from "@goauthentik/common/global";
+import { APIConfig, docLink } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
@@ -49,7 +49,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                 <a
                     aria-disabled="false"
                     class="cta pf-c-button pf-m-secondary"
-                    href="${globalAK().api.base}if/admin/${href}"
+                    href="${APIConfig.base}if/admin/${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
