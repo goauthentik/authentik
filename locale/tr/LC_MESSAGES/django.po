@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-11 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/authentik/teams/119923/tr/)\n"
@@ -2397,6 +2397,13 @@ msgid ""
 msgstr ""
 "Bir kullanıcı parolasını değiştirdiğinde, parolayı LDAP ile geri eşitleyin. "
 "Bu yalnızca tek bir LDAP kaynağında etkinleştirilebilir."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
