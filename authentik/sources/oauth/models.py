@@ -21,6 +21,11 @@ if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
 
+class AuthorizationCodeAuthMethod(models.TextChoices):
+    BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
+    POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
+
+
 class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
