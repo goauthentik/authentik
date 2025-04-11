@@ -75,6 +75,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         The extra_tests argument has been deprecated since Django 5.x
         It is kept for compatibility with PyCharm's Django test runner.
         """
+        if not test_labels:
+            print("Error: No test files specified")
+            return 1
 
         for label in test_labels:
             valid_label_found = False
@@ -91,19 +94,28 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                 path_pieces = label.split(".")
                 # Check whether only class or class and method are specified
                 for i in range(-1, -3, -1):
-                    path = os.path.join(*path_pieces[:i]) + ".py"
-                    label_as_path = os.path.abspath(path)
-                    if os.path.exists(label_as_path):
-                        path_method = label_as_path + "::" + "::".join(path_pieces[i:])
-                        self.args.append(path_method)
-                        valid_label_found = True
-                        break
+                    try:
+                        if i == -1 and len(path_pieces) == 1:
+                            # Handle case where only a single module name is given
+                            path = os.path.join(*path_pieces) + ".py"
+                        else:
+                            path = os.path.join(*path_pieces[:i]) + ".py"
+                        label_as_path = os.path.abspath(path)
+                        if os.path.exists(label_as_path):
+                            path_method = label_as_path + "::" + "::".join(path_pieces[i:])
+                            self.args.append(path_method)
+                            valid_label_found = True
+                            break
+                    except TypeError:
+                        # Skip invalid path combinations
+                        continue
 
             if not valid_label_found:
-                raise RuntimeError(
-                    f"One of the test labels: {label!r}, "
-                    f"is not supported. Use a dotted module name or "
-                    f"path instead."
-                )
+                print(f"Error: Test file '{label}' not found")
+                return 1
 
-        return pytest.main(self.args)
+        try:
+            return pytest.main(self.args)
+        except Exception as e:
+            print(f"Error running tests: {str(e)}")
+            return 1
