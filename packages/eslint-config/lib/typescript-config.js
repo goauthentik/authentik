@@ -1,10 +1,16 @@
 // @ts-check
 import tseslint from "typescript-eslint";
 
+import NodeLintPlugin from "../plugins/node-lint.js";
+
 /**
  * ESLint configuration for TypeScript authentik projects.
  */
 export const typescriptConfig = tseslint.config({
+    plugins: {
+        "node-lint": NodeLintPlugin,
+    },
+
     rules: {
         "@typescript-eslint/ban-ts-comment": "off",
         // "@typescript-eslint/ban-ts-comment": [
@@ -26,7 +32,7 @@ export const typescriptConfig = tseslint.config({
             {
                 path: "never",
                 types: "always",
-                lib: "alaways",
+                lib: "always",
             },
         ],
         "@typescript-eslint/no-namespace": "off",

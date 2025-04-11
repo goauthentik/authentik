@@ -23,6 +23,7 @@ export const DefaultIgnorePatterns = [
     "**/out",
     "**/dist",
     "**/.wireit",
+    "**/.venv",
     "website/build/**",
     "website/.docusaurus/**",
     "**/node_modules",

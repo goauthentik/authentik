@@ -1,6 +1,8 @@
 // @ts-check
 import tseslint from "typescript-eslint";
 
+import NodeLintPlugin from "../plugins/node-lint.js";
+
 const MAX_DEPTH = 4;
 const MAX_NESTED_CALLBACKS = 4;
 const MAX_PARAMS = 5;
@@ -9,7 +11,12 @@ const MAX_PARAMS = 5;
  * ESLint configuration for JavaScript authentik projects.
  */
 export const javaScriptConfig = tseslint.config({
+    plugins: {
+        "node-lint": NodeLintPlugin,
+    },
+    files: ["**/*.{js,jsx,mjs,cjs}"],
     rules: {
+        "node-lint/no-unprefixed-imports": "warn",
         // TODO: Clean up before enabling.
         "accessor-pairs": "off",
         "array-callback-return": "error",
