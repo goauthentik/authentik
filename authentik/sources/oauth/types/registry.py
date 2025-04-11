@@ -10,7 +10,7 @@ from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
 from authentik.flows.challenge import Challenge, RedirectChallenge
-from authentik.sources.oauth.models import OAuthSource
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -22,11 +22,6 @@ class RequestKind(Enum):
 
     CALLBACK = "callback"
     REDIRECT = "redirect"
-
-
-class AuthorizationCodeAuthMethod(Enum):
-    BASIC_AUTH = "basic_auth"
-    POST_BODY = "post_body"
 
 
 class SourceType:

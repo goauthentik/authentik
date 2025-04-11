@@ -12,7 +12,7 @@ from requests.models import Response
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.base import BaseOAuthClient
-from authentik.sources.oauth.types.registry import (
+from authentik.sources.oauth.models import (
     AuthorizationCodeAuthMethod,
 )
 
