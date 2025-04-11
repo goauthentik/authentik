@@ -36,6 +36,14 @@ test: ## Run the server tests and produce a coverage report (locally)
 	uv run coverage html
 	uv run coverage report
 
+node-check-compile: # # Check and compile the javascript source code
+	npm run compile
+
+node-lint-fix: ## Lint and automatically fix errors in the javascript source code
+	lint-codespell
+	npm run lint:fix
+	npm run prettier:fix
+
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	uv run black $(PY_SOURCES)
 	uv run ruff check --fix $(PY_SOURCES)
@@ -46,9 +54,6 @@ lint-codespell:  ## Reports spelling errors.
 lint: ## Lint the python and golang sources
 	uv run bandit -c pyproject.toml -r $(PY_SOURCES)
 	golangci-lint run -v
-
-core-install:
-	uv sync --frozen
 
 migrate: ## Run the Authentik Django server's migrations
 	uv run python -m lifecycle.migrate
@@ -72,7 +77,9 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install:  ## Install all requires dependencies for `web`, `website` and `core`
+	npm ci
+	uv sync --frozen
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -182,56 +189,39 @@ gen: gen-build gen-client-ts
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
-
-web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
-
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
+web: web-lint-fix web-lint node-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run test -w @goauthentik/web
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
+	npm run watch -w @goauthentik/web
 
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run storybook -w @goauthentik/web
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run prettier -w @goauthentik/web
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
-
-web-check-compile:
-	cd web && npm run tsc
+	npm run lint -w @goauthentik/web
+	npm run lit-analyse -w @goauthentik/web
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run extract-locales -w @goauthentik/web
 
 #########################
 ## Website
 #########################
 
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
-
-website-install:
-	cd website && npm ci
-
-website-lint-fix: lint-codespell
-	cd website && npm run prettier
+website: node-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
 website-build:
-	cd website && npm run build
+	npm run build -w @goauthentik/website-docs
+
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+	npm run watch -w @goauthentik/website-docs
 
 #########################
 ## Docker
