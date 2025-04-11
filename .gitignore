@@ -33,6 +33,7 @@ eggs/
 lib64/
 parts/
 dist/
+out/
 sdist/
 var/
 wheels/

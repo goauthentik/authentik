@@ -318,8 +318,6 @@ class SAMLSourcePropertyMapping(PropertyMapping):
 class UserSAMLSourceConnection(UserSourceConnection):
     """Connection to configured SAML Sources."""
 
-    identifier = models.TextField()
-
     @property
     def serializer(self) -> Serializer:
         from authentik.sources.saml.api.source_connection import UserSAMLSourceConnectionSerializer

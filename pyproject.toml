@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.2.3"
+version = "2025.2.4"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.12.*"
@@ -129,6 +129,7 @@ skip = [
     "**/web/src/locales",
     "**/web/xliff",
     "./web/storybook-static",
+    "./web/custom-elements.json",
     "./website/build",
     "./gen-ts-api",
     "./gen-py-api",

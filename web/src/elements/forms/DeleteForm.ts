@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -36,6 +37,7 @@ export class DeleteForm extends ModalButton {
             .then(() => {
                 this.onSuccess();
                 this.open = false;
+
                 this.dispatchEvent(
                     new CustomEvent(EVENT_REFRESH, {
                         bubbles: true,
@@ -43,9 +45,10 @@ export class DeleteForm extends ModalButton {
                     }),
                 );
             })
-            .catch((e) => {
-                this.onError(e);
-                throw e;
+            .catch(async (error: unknown) => {
+                await this.onError(error);
+
+                throw error;
             });
     }
 
@@ -56,10 +59,14 @@ export class DeleteForm extends ModalButton {
         });
     }
 
-    onError(e: Error): void {
-        showMessage({
-            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
-            level: MessageLevel.error,
+    onError(error: unknown): Promise<void> {
+        return parseAPIResponseError(error).then((parsedError) => {
+            showMessage({
+                message: msg(
+                    str`Failed to delete ${this.objectLabel}: ${pluckErrorDetail(parsedError)}`,
+                ),
+                level: MessageLevel.error,
+            });
         });
     }
 
