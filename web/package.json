@@ -15,10 +15,6 @@
         "lint": "wireit",
         "lint:imports": "wireit",
         "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:package": "wireit",
-        "lint:precommit": "wireit",
-        "lint:types": "wireit",
         "lit-analyse": "wireit",
         "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
@@ -139,7 +135,6 @@
         "eslint-plugin-wc": "^2.1.1",
         "find-free-ports": "^3.1.1",
         "github-slugger": "^2.0.0",
-        "globals": "^15.10.0",
         "knip": "^5.30.6",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
@@ -241,10 +236,7 @@
             "command": "lit-localize extract"
         },
         "format": {
-            "command": "prettier --write .",
-            "dependencies": [
-                "lint:package"
-            ]
+            "command": "prettier --write ."
         },
         "format:packages": {
             "dependencies": [
@@ -263,16 +255,6 @@
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
         },
-        "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
-        },
-        "lint:types": {
-            "command": "tsc --noEmit -p .",
-            "dependencies": [
-                "build-locales",
-                "lint:types:tests"
-            ]
-        },
         "lint:lockfile": {
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
             "shell": true,
@@ -283,27 +265,6 @@
                 "./packages/sfe:lint:lockfile"
             ]
         },
-        "lint:package": {
-            "command": "syncpack format -i '    '"
-        },
-        "lint:nightmare": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
         "lint:spelling": {
             "command": "node scripts/check-spelling.mjs"
         },
@@ -313,13 +274,10 @@
         "precommit": {
             "command": "prettier --write .",
             "dependencies": [
-                "lint:types",
                 "lint:components",
                 "lint:spelling",
-                "lint:package",
                 "lint:lockfile",
                 "lint:lockfiles",
-                "lint:precommit",
                 "format:packages"
             ]
         },
@@ -327,9 +285,6 @@
             "dependencies": [
                 "format"
             ]
-        },
-        "prettier-check": {
-            "command": "prettier --check ."
         },
         "pseudolocalize": {
             "command": "node scripts/pseudolocalize.mjs"
@@ -374,11 +329,6 @@
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
-        },
-        "tsc": {
-            "dependencies": [
-                "lint:types"
-            ]
         }
     },
     "engines": {

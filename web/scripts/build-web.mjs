@@ -16,14 +16,14 @@ import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import findFreePorts from "find-free-ports";
+import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import process from "node:process";
-import { fileURLToPath } from "node:url";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const logPrefix = "[Build]";
 
 const definitions = serializeEnvironmentVars({
     NODE_ENV: NodeEnvironment,
@@ -102,6 +102,22 @@ const BASE_ESBUILD_OPTIONS = {
     },
 };
 
+async function cleanDistDirectory() {
+    const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
+
+    console.time(timerLabel);
+
+    await fs.rm(DistDirectory, {
+        recursive: true,
+        force: true,
+    });
+
+    await fs.mkdir(DistDirectory, {
+        recursive: true,
+    });
+
+    console.timeEnd(timerLabel);
+}
 /**
  * Creates an ESBuild options, extending the base options with the given overrides.
  *
@@ -130,20 +146,26 @@ function doHelp() {
 }
 
 async function doWatch() {
-    console.log("Watching all entry points...");
+    console.group(`${logPrefix} 🤖 Watching entry points`);
+
+    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
+        console.log(entrypointID);
+
+        return target;
+    });
+
+    console.groupEnd();
 
     const wathcherPorts = await findFreePorts(1);
     const port = wathcherPorts[0];
     const serverURL = new URL(`http://localhost:${port}/events`);
-
-    const entryPoints = Object.values(EntryPoint);
 
     const buildOptions = createESBuildOptions({
         entryPoints,
         plugins: [
             buildObserverPlugin({
                 serverURL,
-                relativeRoot: path.join(__dirname, ".."),
+                relativeRoot: PackageRoot,
             }),
         ],
         define: serializeEnvironmentVars({
@@ -166,9 +188,15 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    console.log("Building all entry points");
+    console.group(`${logPrefix} 🚀 Building entry points:`);
 
-    const entryPoints = Object.values(EntryPoint);
+    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
+        console.log(entrypointID);
+
+        return target;
+    });
+
+    console.groupEnd();
 
     const buildOptions = createESBuildOptions({
         entryPoints,
@@ -209,12 +237,16 @@ async function delegateCommand() {
     }
 }
 
-await delegateCommand()
-    .then(() => {
-        console.log("Build complete");
-        process.exit(0);
-    })
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+await cleanDistDirectory()
+    // ---
+    .then(() =>
+        delegateCommand()
+            .then(() => {
+                console.log("Build complete");
+                process.exit(0);
+            })
+            .catch((error) => {
+                console.error(error);
+                process.exit(1);
+            }),
+    );
