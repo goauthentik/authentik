@@ -4276,14 +4276,6 @@ paths:
       operationId: core_authenticated_sessions_list
       description: AuthenticatedSession Viewset
       parameters:
-      - in: query
-        name: last_ip
-        schema:
-          type: string
-      - in: query
-        name: last_user_agent
-        schema:
-          type: string
       - name: ordering
         required: false
         in: query
@@ -4306,6 +4298,14 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: session__last_ip
+        schema:
+          type: string
+      - in: query
+        name: session__last_user_agent
         schema:
           type: string
       - in: query
@@ -4345,7 +4345,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -4379,7 +4378,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -4410,7 +4408,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -40150,8 +40147,10 @@ components:
           type: integer
         last_ip:
           type: string
+          readOnly: true
         last_user_agent:
           type: string
+          readOnly: true
         last_used:
           type: string
           format: date-time
@@ -40159,13 +40158,15 @@ components:
         expires:
           type: string
           format: date-time
-          nullable: true
+          readOnly: true
       required:
       - asn
       - current
+      - expires
       - geo_ip
       - last_ip
       - last_used
+      - last_user_agent
       - user
       - user_agent
     AuthenticationEnum:
