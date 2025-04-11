@@ -549,7 +549,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -2838,11 +2838,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Veld dat leden van een groep bevat. Let op dat als het veld "memberUid" wordt gebruikt, de waarde wordt verondersteld een relatieve Distinguished Name te bevatten. Bijv. 'memberUid=some-user' in plaats van 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
-      <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Veld dat leden van een groep bevat. Let op dat als het veld "memberUid" wordt gebruikt, de waarde wordt verondersteld een relatieve Distinguished Name te bevatten. Bijv. 'memberUid=some-user' in plaats van 'memberUid=cn=some-user,ou=groups,...'</target>
-        
-      </trans-unit>
       <trans-unit id="s026555347e589f0e">
         <source>Object uniqueness field</source>
         <target>Veld dat een unieke identificatie bevat.</target>
@@ -3745,7 +3740,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Succesvol bijgewerkt <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
@@ -3829,11 +3824,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>Herstelkoppeling succesvol gegenereerd</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>Er is geen herstelflow geconfigureerd.</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -6695,7 +6685,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         
       </trans-unit>
       <trans-unit id="sd2208cd1a767644b">
@@ -7544,9 +7534,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
 </trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
-</trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
 </trans-unit>
@@ -8219,7 +8206,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Russian</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8930,9 +8917,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s85a91d843c3eb4ad">
   <source>Show inactive users</source>
 </trans-unit>
-<trans-unit id="s5787e20cab57b383">
-  <source>Unknown error</source>
-</trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
 </trans-unit>
@@ -8992,6 +8976,18 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="s149fd588c9f4b891">
   <source>Webhook Header Mapping</source>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
+</trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+</trans-unit>
+<trans-unit id="s1d47b4f61ca53e8e">
+  <source>Lookup using user attribute</source>
+</trans-unit>
+<trans-unit id="s17359123e1f24504">
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
 </trans-unit>
     </body>
   </file>

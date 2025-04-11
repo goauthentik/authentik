@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.2.3
+  version: 2025.2.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4276,14 +4276,6 @@ paths:
       operationId: core_authenticated_sessions_list
       description: AuthenticatedSession Viewset
       parameters:
-      - in: query
-        name: last_ip
-        schema:
-          type: string
-      - in: query
-        name: last_user_agent
-        schema:
-          type: string
       - name: ordering
         required: false
         in: query
@@ -4306,6 +4298,14 @@ paths:
         required: false
         in: query
         description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: session__last_ip
+        schema:
+          type: string
+      - in: query
+        name: session__last_user_agent
         schema:
           type: string
       - in: query
@@ -4345,7 +4345,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -4379,7 +4378,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -4410,7 +4408,6 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this Authenticated Session.
         required: true
       tags:
       - core
@@ -27923,6 +27920,10 @@ paths:
         explode: true
         style: form
       - in: query
+        name: lookup_groups_from_user
+        schema:
+          type: boolean
+      - in: query
         name: name
         schema:
           type: string
@@ -40687,8 +40688,10 @@ components:
           type: integer
         last_ip:
           type: string
+          readOnly: true
         last_user_agent:
           type: string
+          readOnly: true
         last_used:
           type: string
           format: date-time
@@ -40696,13 +40699,15 @@ components:
         expires:
           type: string
           format: date-time
-          nullable: true
+          readOnly: true
       required:
       - asn
       - current
+      - expires
       - geo_ip
       - last_ip
       - last_used
+      - last_user_agent
       - user
       - user_agent
     AuthenticationEnum:
@@ -46939,6 +46944,11 @@ components:
           nullable: true
           description: Get cached source connectivity
           readOnly: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
       required:
       - base_dn
       - component
@@ -47135,6 +47145,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
       required:
       - base_dn
       - name
@@ -52297,6 +52312,11 @@ components:
           type: string
           format: uuid
           nullable: true
+        lookup_groups_from_user:
+          type: boolean
+          description: Lookup group membership based on a user attribute instead of
+            a group attribute. This allows nested group resolution on systems like
+            FreeIPA and Active Directory
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -58815,6 +58835,10 @@ components:
           type: string
           format: date-time
           nullable: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
         is_superuser:
           type: boolean
           readOnly: true
@@ -58858,6 +58882,7 @@ components:
           readOnly: true
       required:
       - avatar
+      - date_joined
       - groups_obj
       - is_superuser
       - name

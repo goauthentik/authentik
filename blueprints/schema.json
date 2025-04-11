@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.3 Blueprint schema",
+    "title": "authentik 2025.2.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -7975,6 +7975,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync parent group"
+                },
+                "lookup_groups_from_user": {
+                    "type": "boolean",
+                    "title": "Lookup groups from user",
+                    "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 }
             },
             "required": []

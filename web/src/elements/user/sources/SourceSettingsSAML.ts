@@ -1,5 +1,6 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/elements/Spinner";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
@@ -37,10 +38,14 @@ export class SourceSettingsSAML extends BaseUserSettings {
                                 message: msg("Successfully disconnected source"),
                             });
                         })
-                        .catch((exc) => {
+                        .catch(async (error: unknown) => {
+                            const parsedError = await parseAPIResponseError(error);
+
                             showMessage({
                                 level: MessageLevel.error,
-                                message: msg(str`Failed to disconnected source: ${exc}`),
+                                message: msg(
+                                    str`Failed to disconnected source: ${pluckErrorDetail(parsedError)}`,
+                                ),
                             });
                         })
                         .finally(() => {
