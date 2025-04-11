@@ -8,7 +8,7 @@ dependencies = [
     "argon2-cffi",
     "celery",
     "channels",
-    "channels-redis",
+    "channels-postgres",
     "cryptography",
     "dacite",
     "deepmerge",
@@ -102,6 +102,7 @@ dev = [
 ]
 
 [tool.uv.sources]
+channels-postgres = { git = "https://github.com/danidee10/channels_postgres.git", branch = "pyscopg3-port" }
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
 
