@@ -22679,11 +22679,6 @@ paths:
         schema:
           type: boolean
       - in: query
-        name: filter_group
-        schema:
-          type: string
-          format: uuid
-      - in: query
         name: name
         schema:
           type: string
@@ -53565,10 +53560,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -56994,10 +56991,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
@@ -57092,10 +57091,12 @@ components:
           description: Alter authentik behavior for vendor-specific SCIM implementations.
         exclude_users_service_account:
           type: boolean
-        filter_group:
-          type: string
-          format: uuid
-          nullable: true
+        group_filters:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Group filters used to define sync-scope for groups.
         dry_run:
           type: boolean
           description: When enabled, provider will not modify or create objects in
