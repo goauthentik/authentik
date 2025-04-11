@@ -25,6 +25,8 @@ VALID_SCHEMA_NAME = re.compile(r"^t_[a-z0-9]{1,61}$")
 
 DEFAULT_TOKEN_DURATION = "days=1"  # nosec
 DEFAULT_TOKEN_LENGTH = 60
+DEFAULT_REPUTATION_LOWER_LIMIT = -5
+DEFAULT_REPUTATION_UPPER_LIMIT = 5
 
 
 def _validate_schema_name(name):
@@ -69,6 +71,14 @@ class Tenant(TenantMixin, SerializerModel):
         help_text=_(
             "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
         ),
+    )
+    reputation_lower_limit = models.IntegerField(
+        help_text=_("Reputation cannot decrease lower than this value."),
+        default=DEFAULT_REPUTATION_LOWER_LIMIT,
+    )
+    reputation_upper_limit = models.IntegerField(
+        help_text=_("Reputation cannot increase higher than this value."),
+        default=DEFAULT_REPUTATION_UPPER_LIMIT,
     )
     footer_links = models.JSONField(
         help_text=_("The option configures the footer links on the flow executor pages."),
