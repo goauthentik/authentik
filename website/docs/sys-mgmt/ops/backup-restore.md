@@ -27,9 +27,9 @@ This guide outlines the critical components to back up and restore in authentik.
 ### Backup
 
 - **Role:** Manages temporary data:
-    - User sessions (lost data = users must reauthenticate).
     - Pending tasks (e.g., queued emails, outpost syncs).
-- **Impact of Loss:** Service interruptions (e.g., users logged out), and potential permanent data loss (e.g., queued emails).
+    - Cache
+- **Impact of Loss:** Temporary performance loss (while cache gets rebuilt), and potential permanent data loss (e.g., queued emails).
 - **Backup Guidance:**
     - Use Redis' [`SAVE`](https://redis.io/commands/save) or [`BGSAVE`](https://redis.io/commands/bgsave).
 - **Official Documentation:** [Redis Persistence](https://redis.io/docs/management/persistence/)
