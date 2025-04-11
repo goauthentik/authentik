@@ -27,7 +27,6 @@
         "test:e2e": "wireit",
         "test:e2e:watch": "wireit",
         "test:watch": "wireit",
-        "tsc": "wireit",
         "watch": "run-s build-locales esbuild:watch"
     },
     "type": "module",
