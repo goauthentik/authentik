@@ -2,7 +2,6 @@
 
 import json
 import os
-import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
 from os import environ
@@ -36,8 +35,8 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 
-RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
+RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
 
 
 def get_docker_tag() -> str:
@@ -49,13 +48,6 @@ def get_docker_tag() -> str:
         branch_name = os.environ[env_pr_branch]
     branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
     return f"gh-{branch_name}"
-
-
-def get_local_ip() -> str:
-    """Get the local machine's IP"""
-    hostname = socket.gethostname()
-    ip_addr = socket.gethostbyname(hostname)
-    return ip_addr
 
 
 class DockerTestCase(TestCase):
@@ -113,6 +105,9 @@ class DockerTestCase(TestCase):
             specs["network"] = self.__network.name
         specs["labels"] = self.docker_labels
         specs["detach"] = True
+        specs["extra_hosts"] = {
+            "host.docker.internal": "host-gateway",
+        }
         if hasattr(self, "live_server_url"):
             specs.setdefault("environment", {})
             specs["environment"]["AUTHENTIK_HOST"] = self.live_server_url
@@ -155,7 +150,7 @@ class DockerTestCase(TestCase):
 class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
-    host = get_local_ip()
+    host = "0.0.0.0"  # nosec Required for containers to reach us directly on the host
     wait_timeout: int
     user: User
 
@@ -209,6 +204,15 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             lambda driver: driver.current_url == desired_url,
             f"URL {self.driver.current_url} doesn't match expected URL {desired_url}",
         )
+
+    def host_url(self, view, query: dict | None = None, **kwargs) -> str:
+        """reverse `view` with `**kwargs` into full URL using live_server_url"""
+        url = f"http://host.docker.internal:{self.server_thread.port}" + reverse(
+            view, kwargs=kwargs
+        )
+        if query:
+            return url + "?" + urlencode(query)
+        return url
 
     def url(self, view, query: dict | None = None, **kwargs) -> str:
         """reverse `view` with `**kwargs` into full URL using live_server_url"""
