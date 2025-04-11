@@ -28,7 +28,7 @@ To support the integration of Open WebUI with authentik, you need to create an a
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can create only an application, without a provider, by clicking **Create**.)
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
@@ -50,6 +50,7 @@ Enter the following details from the authentik provider:
 - Set **OAUTH_CLIENT_SECRET** to the Client Secret copied from authentik.
 - Set **OAUTH_PROVIDER_NAME** to `authentik`.
 - Set **OPENID_PROVIDER_URL** to <kbd>https://<em>authentik.company</em>/application/o/<em>your-slug-here</em>/.well-known/openid-configuration</kbd>.
+- Set **OPENID_REDIRECT_URI** to <kbd>https://<em>openwebui.company</em>/oauth/oidc/callback</kbd>.
 - If you wish for new users to be created on Open Web UI, set **ENABLE_OAUTH_SIGNUP** to 'true'.
 
 ## Configuration verification

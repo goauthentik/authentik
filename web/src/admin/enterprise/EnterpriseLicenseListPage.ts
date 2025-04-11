@@ -2,7 +2,7 @@ import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import "@goauthentik/admin/enterprise/EnterpriseStatusCard";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -186,7 +186,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     >
                         ${this.summary &&
                         this.summary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                            ? html`<div>${getRelativeTime(this.summary.latestValid)}</div>
+                            ? html`<div>${formatElapsedTime(this.summary.latestValid)}</div>
                                   <small>${this.summary.latestValid.toLocaleString()}</small>`
                             : "-"}
                     </ak-aggregate-card>

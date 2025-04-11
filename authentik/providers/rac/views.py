@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application
 from authentik.core.views.interface import InterfaceView
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import RedirectChallenge
@@ -18,11 +18,11 @@ from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import RedirectStage
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import BufferedPolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
 
 
-class RACStartView(PolicyAccessView):
+class RACStartView(BufferedPolicyAccessView):
     """Start a RAC connection by checking access and creating a connection token"""
 
     endpoint: Endpoint
@@ -113,9 +113,7 @@ class RACFinalStage(RedirectStage):
             provider=self.provider,
             endpoint=self.endpoint,
             settings=self.executor.plan.context.get("connection_settings", {}),
-            session=AuthenticatedSession.objects.filter(
-                session_key=self.request.session.session_key
-            ).first(),
+            session=self.request.session["authenticatedsession"],
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
         )

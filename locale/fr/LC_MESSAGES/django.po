@@ -10,8 +10,8 @@
 # Manuel Viens, 2023
 # Mordecai, 2023
 # nerdinator <florian.dupret@gmail.com>, 2024
-# Tina, 2024
 # Charles Leclerc, 2025
+# Tina, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-22 00:10+0000\n"
+"POT-Creation-Date: 2025-03-31 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1346,6 +1346,22 @@ msgstr "Score de Réputation"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Scores de Réputation"
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr "En attente de l'authentification..."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+"Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
+"se rafraîchira lorsque l'authentification sera terminée."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr "S'authentifier dans cet onglet"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"

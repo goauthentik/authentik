@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.3 Blueprint schema",
+    "title": "authentik 2025.2.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -1438,6 +1438,86 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
                             }
                         }
                     },
@@ -4754,6 +4834,8 @@
                         "authentik_sources_kerberos.groupkerberossourceconnection",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldapsourcepropertymapping",
+                        "authentik_sources_ldap.userldapsourceconnection",
+                        "authentik_sources_ldap.groupldapsourceconnection",
                         "authentik_sources_oauth.oauthsource",
                         "authentik_sources_oauth.oauthsourcepropertymapping",
                         "authentik_sources_oauth.useroauthsourceconnection",
@@ -6423,8 +6505,6 @@
                 },
                 "acs_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "ACS URL"
                 },
@@ -7114,14 +7194,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
@@ -7887,6 +7975,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync parent group"
+                },
+                "lookup_groups_from_user": {
+                    "type": "boolean",
+                    "title": "Lookup groups from user",
+                    "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 }
             },
             "required": []
@@ -7957,6 +8050,107 @@
                             "change_ldapsourcepropertymapping",
                             "delete_ldapsourcepropertymapping",
                             "view_ldapsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userldapsourceconnection",
+                            "change_userldapsourceconnection",
+                            "delete_userldapsourceconnection",
+                            "view_userldapsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupldapsourceconnection",
+                            "change_groupldapsourceconnection",
+                            "delete_groupldapsourceconnection",
+                            "view_groupldapsourceconnection"
                         ]
                     },
                     "user": {
@@ -8233,7 +8427,6 @@
                 },
                 "identifier": {
                     "type": "string",
-                    "maxLength": 255,
                     "minLength": 1,
                     "title": "Identifier"
                 },
@@ -8733,8 +8926,6 @@
                 },
                 "sso_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "SSO URL",
                     "description": "URL that the initial Login request is sent to."
@@ -8744,8 +8935,6 @@
                         "string",
                         "null"
                     ],
-                    "format": "uri",
-                    "maxLength": 200,
                     "title": "SLO URL",
                     "description": "Optional URL if your IDP supports Single-Logout."
                 },
@@ -13629,14 +13818,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
