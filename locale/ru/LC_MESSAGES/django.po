@@ -11,15 +11,16 @@
 # Stepan Karavaev, 2024
 # Anton Babenko, 2024
 # fenix vd, 2025
+# Marc Schmitt, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-11 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: fenix vd, 2025\n"
+"Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: Russian (https://app.transifex.com/authentik/teams/119923/ru/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,7 +35,7 @@ msgstr "История версий"
 #: authentik/admin/tasks.py
 #, python-brace-format
 msgid "New version {version} available!"
-msgstr "Новая версия доступна {версия}"
+msgstr "Новая версия доступна {version}"
 
 #: authentik/api/schema.py
 msgid "Generic API Error"
@@ -2396,6 +2397,13 @@ msgid ""
 msgstr ""
 "При изменении пользовательского пароля синхронизировать его обратно в LDAP. "
 "Это можно включить только для одного источника LDAP."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
