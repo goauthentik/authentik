@@ -6,6 +6,7 @@ from requests import RequestException
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.oidc import OpenIDConnectOAuth2Callback
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -76,6 +77,8 @@ class AzureADType(SourceType):
         "https://login.microsoftonline.com/common/.well-known/openid-configuration"
     )
     oidc_jwks_url = "https://login.microsoftonline.com/common/discovery/keys"
+
+    authorization_code_auth_method = AuthorizationCodeAuthMethod.POST_BODY
 
     def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
         mail = info.get("mail", None) or info.get("otherMails", [None])[0]
