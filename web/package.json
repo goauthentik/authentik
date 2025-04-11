@@ -143,7 +143,6 @@
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.3.4",
         "storybook-addon-mock": "^5.0.0",
-        "syncpack": "^13.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.8.0",

@@ -44,7 +44,7 @@ export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectory
  *
  * @satisfies {Record<string, EntryPointTarget>}
  */
-export const EntryPoint = /** @const */ {
+export const EntryPoint = /** @type {const} */ ({
     Admin: {
         in: resolve(PackageRoot, "src", "admin", "AdminInterface", "AdminInterface.ts"),
         out: resolve(DistDirectory, "admin", "AdminInterface"),
@@ -73,6 +73,6 @@ export const EntryPoint = /** @const */ {
         in: resolve(PackageRoot, "src", "polyfill", "poly.ts"),
         out: resolve(DistDirectory, "poly"),
     },
-};
+});
 
 //#endregion

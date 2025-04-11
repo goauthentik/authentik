@@ -1,8 +1,19 @@
+/**
+ * @file Sidebar utilities.
+ *
+ * @todo This needs a revision to better align with Docusaurus's components.
+ */
+
 const html = String.raw;
 
+/**
+ *
+ * @param {unknown[]} allReleases
+ * @returns
+ */
 export function generateVersionDropdown(allReleases) {
     const releases = allReleases.filter((release) => typeof release === "string");
-    const latest = releases[0].replace(/releases\/\d+\/v/, "");
+    const latest = releases[0]?.replace(/releases\/\d+\/v/, "");
 
     return html`<div class="navbar__item dropdown dropdown--hoverable dropdown--right">
             <div

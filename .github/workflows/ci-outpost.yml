@@ -145,9 +145,9 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: ./package.json
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: ./package-lock.json
       - name: Generate API
         run: make gen-client-go
       - name: Build web

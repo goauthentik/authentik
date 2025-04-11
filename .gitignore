@@ -226,6 +226,7 @@ lerna-debug.log*
 
 node_modules/
 
+tsconfig.tsbuildinfo
 
 # Wireit's cache
 .wireit

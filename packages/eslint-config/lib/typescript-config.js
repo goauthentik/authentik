@@ -21,6 +21,14 @@ export const typescriptConfig = tseslint.config({
         // "@typescript-eslint/no-use-before-define": "error",
         "no-invalid-this": "off",
         "no-unused-vars": "off",
+        "@typescript-eslint/triple-slash-reference": [
+            "warn",
+            {
+                path: "never",
+                types: "always",
+                lib: "alaways",
+            },
+        ],
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/no-unused-vars": [
             "warn",

@@ -21,7 +21,7 @@ jobs:
       - name: Lint
         run: |
           npm run lint:prettier:check
-          npm run lint:lockfile -w @goauthentik/website-docs
+          npm run lint:lockfile -w @goauthentik/docs
   test:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +35,7 @@ jobs:
         run: npm ci
       - name: test
         run: |
-          npm run test -w @goauthentik/website-docs
+          npm run test -w @goauthentik/docs
   build:
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +49,7 @@ jobs:
         run: npm ci
       - name: Build
         run: |
-          npm run build -w @goauthentik/website-docs
+          npm run build -w @goauthentik/docs
   ci-website-mark:
     if: always()
     needs:

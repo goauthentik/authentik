@@ -1,5 +1,11 @@
-import apiReference from "./docs/developer-docs/api/reference/sidebar";
-import { generateVersionDropdown } from "./src/utils.js";
+/**
+ * @file Sidebar configuration for documentation entries.
+ *
+ * @todo Move releases into a JSON file.
+ * @todo Fix typescript import of `apiReference`.
+ */
+import apiReference from "./docs/developer-docs/api/reference/sidebar.js";
+import { generateVersionDropdown } from "./src/utils.mjs";
 
 const releases = [
     "releases/2025/v2025.2",

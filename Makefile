@@ -216,11 +216,11 @@ web-i18n-extract:
 website: node-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
 website-build:
-	npm run build -w @goauthentik/website-docs
+	npm run build -w @goauthentik/docs
 
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	npm run watch -w @goauthentik/website-docs
+	npm run watch -w @goauthentik/docs
 
 #########################
 ## Docker

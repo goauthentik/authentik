@@ -1,5 +1,5 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
     "license": "MIT",
     "private": true,
@@ -45,9 +45,12 @@
         "@docusaurus/module-type-aliases": "^3.3.2",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.3.2",
+        "@types/lodash": "^4.17.16",
+        "@types/postman-collection": "^3.5.10",
         "@types/react": "^18.3.13",
         "@types/semver": "^7.7.0",
         "cross-env": "^7.0.3",
+        "fast-glob": "^3.3.3",
         "prettier": "3.5.3",
         "typescript": "~5.8.2",
         "wireit": "^0.14.11"

@@ -1,0 +1,196 @@
+/**
+ * @file Docusaurus configuration for authentik docs site.
+ *
+ * @import { Config } from "@docusaurus/types";
+ * @import * as Preset from "@docusaurus/preset-classic"
+ * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+ * @import { BuildUrlValues } from "remark-github";
+ */
+import { themes as prismThemes } from "prism-react-renderer";
+import remarkDirective from "remark-directive";
+import remarkGithub from "remark-github";
+import { defaultBuildUrl } from "remark-github";
+
+import remarkPreviewDirective from "./remark/preview-directive.mjs";
+import remarkSupportDirective from "./remark/support-directive.mjs";
+import remarkVersionDirective from "./remark/version-directive.mjs";
+
+/**
+ * @type {Config}
+ */
+const config = {
+    title: "authentik",
+    tagline: "Bring all of your authentication into a unified platform.",
+    url: "https://docs.goauthentik.io",
+    baseUrl: "/",
+    onBrokenLinks: "throw",
+    onBrokenAnchors: "throw",
+    favicon: "img/icon.png",
+    organizationName: "Authentik Security Inc.",
+    projectName: "authentik",
+    themeConfig: {
+        image: "img/social.png",
+        navbar: {
+            logo: {
+                alt: "authentik logo",
+                src: "img/icon_left_brand.svg",
+                href: "https://goauthentik.io/",
+                target: "_self",
+            },
+            items: [
+                {
+                    to: "https://goauthentik.io/features",
+                    label: "Features",
+                    position: "left",
+                    target: "_self",
+                },
+                {
+                    to: "integrations/",
+                    label: "Integrations",
+                    position: "left",
+                },
+                {
+                    to: "docs/",
+                    label: "Documentation",
+                    position: "left",
+                },
+                {
+                    to: "https://goauthentik.io/pricing/",
+                    label: "Pricing",
+                    position: "left",
+                    target: "_self",
+                },
+                {
+                    to: "https://goauthentik.io/blog",
+                    label: "Blog",
+                    position: "left",
+                    target: "_self",
+                },
+                {
+                    href: "https://github.com/goauthentik/authentik",
+                    className: "header-github-link",
+                    "aria-label": "GitHub repository",
+                    position: "right",
+                },
+                {
+                    href: "https://goauthentik.io/discord",
+                    className: "header-discord-link",
+                    "aria-label": "GitHub repository",
+                    position: "right",
+                },
+            ],
+        },
+        footer: {
+            links: [],
+            copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
+        },
+        tableOfContents: {
+            minHeadingLevel: 2,
+            maxHeadingLevel: 3,
+        },
+        colorMode: {
+            respectPrefersColorScheme: true,
+        },
+        algolia: {
+            appId: "36ROD0O0FV",
+            apiKey: "727db511300ca9aec5425645bbbddfb5",
+            indexName: "goauthentik",
+        },
+        prism: {
+            theme: prismThemes.oneLight,
+            darkTheme: prismThemes.oneDark,
+            additionalLanguages: [
+                // ---
+                "apacheconf",
+                "diff",
+                "http",
+                "json",
+                "nginx",
+                "python",
+                "bash",
+            ],
+        },
+    },
+    presets: [
+        [
+            "@docusaurus/preset-classic",
+
+            /** @type {Preset.Options} */ ({
+                docs: {
+                    id: "docs",
+                    sidebarPath: "./sidebars.mts",
+                    showLastUpdateTime: false,
+                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
+                    docItemComponent: "@theme/ApiItem",
+
+                    beforeDefaultRemarkPlugins: [
+                        remarkDirective,
+                        remarkVersionDirective,
+                        remarkPreviewDirective,
+                        remarkSupportDirective,
+                    ],
+                    remarkPlugins: [
+                        [
+                            remarkGithub,
+                            {
+                                repository: "goauthentik/authentik",
+                                /**
+                                 * @param {BuildUrlValues} values
+                                 * @returns {string | false}
+                                 */
+                                buildUrl: (values) => {
+                                    // Only replace issues and PR links
+                                    if (values.type !== "issue" && values.type !== "mention")
+                                        return false;
+
+                                    return defaultBuildUrl(values);
+                                },
+                            },
+                        ],
+                    ],
+                },
+                theme: {
+                    customCss: require.resolve("./src/css/custom.css"),
+                },
+            }),
+        ],
+    ],
+    plugins: [
+        [
+            "@docusaurus/plugin-content-docs",
+            {
+                id: "docsIntegrations",
+                path: "integrations",
+                routeBasePath: "integrations",
+                sidebarPath: "./sidebarsIntegrations.mjs",
+                editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
+            },
+        ],
+        [
+            "docusaurus-plugin-openapi-docs",
+            {
+                id: "api",
+                docsPluginId: "docs",
+                config: {
+                    authentik: /** @type {OpenApiPlugin.Options} */ ({
+                        specPath: "static/schema.yml",
+                        outputDir: "docs/developer-docs/api/reference/",
+                        hideSendButton: true,
+                        sidebarOptions: {
+                            groupPathsBy: "tag",
+                        },
+                    }),
+                },
+            },
+        ],
+    ],
+    markdown: {
+        mermaid: true,
+    },
+    future: {
+        experimental_faster: true,
+    },
+    themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
+};
+
+export default config;
