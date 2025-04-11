@@ -24,7 +24,7 @@ dependencies = [
     "django-redis",
     "django-storages[s3]",
     "django-tenants",
-    "djangorestframework ==3.14.0",
+    "djangorestframework ==3.16.0",
     "djangorestframework-guardian",
     "docker",
     "drf-orjson-renderer",
