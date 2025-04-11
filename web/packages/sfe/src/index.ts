@@ -1,10 +1,10 @@
-import { fromByteArray } from "base64-js";
+// sort-imports-ignore
 
 import "formdata-polyfill";
-
-import $ from "jquery";
-
 import "weakmap-polyfill";
+
+import { fromByteArray } from "base64-js";
+import $ from "jquery";
 
 import {
     type AuthenticatorValidationChallenge,

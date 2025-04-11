@@ -1,6 +1,5 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
+/// <reference types="mdast-util-directive" />
+/// <reference types="mdast-util-to-hast" />
 import { h } from "hastscript";
 import { Root } from "mdast";
 import { SKIP, visit } from "unist-util-visit";

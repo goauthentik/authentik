@@ -103,12 +103,12 @@ export class Portal extends LitElement implements IPortal {
             });
 
             Object.assign(this.dropdownContainer.style, {
-                "position": "fixed",
-                "display": "block",
+                position: "fixed",
+                display: "block",
                 "z-index": "9999",
-                "top": 0,
-                "left": 0,
-                "transform": `translate(${x}px, ${y}px)`,
+                top: 0,
+                left: 0,
+                transform: `translate(${x}px, ${y}px)`,
             });
         });
     }

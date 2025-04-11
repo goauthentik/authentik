@@ -32,8 +32,17 @@ export const AuthentikPrettierConfig = {
     useTabs: false,
     vueIndentScriptAndStyle: false,
     plugins: ["prettier-plugin-packagejson", "@trivago/prettier-plugin-sort-imports"],
-    importOrder: ["^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
-    importOrderSideEffects: false,
+    importOrder: [
+        // ---
+        // Lit Imports
+        "^(@?)lit(.*)$",
+        // CSS Imports
+        "\\.css$",
+        // API Imports
+        "^@goauthentik/api$",
+        // Relative Imports
+        "^[./]",
+    ],
     importOrderSeparation: true,
     importOrderSortSpecifiers: true,
     importOrderParserPlugins: ["typescript", "jsx", "classProperties", "decorators-legacy"],

@@ -188,8 +188,8 @@ export function renderForm(
                         .row=${(f?: RedirectURI) =>
                             akOAuthRedirectURIInput({
                                 ".redirectURI": f,
-                                "style": "width: 100%",
-                                "name": "oauth2-redirect-uri",
+                                style: "width: 100%",
+                                name: "oauth2-redirect-uri",
                             } as unknown as IRedirectURIInput)}
                     >
                     </ak-array-input>
