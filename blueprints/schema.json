@@ -8333,6 +8333,15 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Oidc jwks"
+                },
+                "authorization_code_auth_method": {
+                    "type": "string",
+                    "enum": [
+                        "basic_auth",
+                        "post_body"
+                    ],
+                    "title": "Authorization code auth method",
+                    "description": "How to perform authentication during an authorization_code token request flow"
                 }
             },
             "required": []

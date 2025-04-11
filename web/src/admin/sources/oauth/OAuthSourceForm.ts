@@ -16,6 +16,7 @@ import {
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -24,6 +25,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    AuthorizationCodeAuthMethodEnum,
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
     OAuthSource,
@@ -35,6 +37,18 @@ import {
 } from "@goauthentik/api";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuthSourceFormHelpers.js";
+
+const authorizationCodeAuthMethodOptions = [
+    {
+        label: msg("HTTP Basic Auth"),
+        value: AuthorizationCodeAuthMethodEnum.BasicAuth,
+        default: true,
+    },
+    {
+        label: msg("Include the client ID and secret as request parameters"),
+        value: AuthorizationCodeAuthMethodEnum.PostBody,
+    },
+];
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuthSource>) {
@@ -239,6 +253,19 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
                           </ak-form-element-horizontal>`
+                    : html``}
+                ${this.providerType.name === ProviderTypeEnum.Openidconnect
+                    ? html` <ak-radio-input
+                          label=${msg("Authorization code authentication method")}
+                          name="authorizationCodeAuthMethod"
+                          required
+                          .options=${authorizationCodeAuthMethodOptions}
+                          .value=${this.instance?.authorizationCodeAuthMethod}
+                          help=${msg(
+                              "How to perform authentication during an authorization_code token request flow",
+                          )}
+                      >
+                      </ak-radio-input>`
                     : html``}
             </div>
         </ak-form-group>`;

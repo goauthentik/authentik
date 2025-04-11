@@ -66,6 +66,14 @@ class OAuthSource(NonCreatableType, Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    authorization_code_auth_method = models.TextField(
+        choices=AuthorizationCodeAuthMethod.choices,
+        default=AuthorizationCodeAuthMethod.BASIC_AUTH,
+        help_text=_(
+            "How to perform authentication during an authorization_code token request flow"
+        ),
+    )
+
     @property
     def source_type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
