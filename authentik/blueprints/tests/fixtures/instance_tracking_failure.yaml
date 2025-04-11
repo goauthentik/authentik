@@ -1,0 +1,10 @@
+version: 1
+entries:
+  - id: group1
+    identifiers:
+      name: test-group
+    attrs:
+      name: test-group
+      attributes:
+        flow_id: "{{ non_existent.pk }}"
+    model: authentik_core.Group 

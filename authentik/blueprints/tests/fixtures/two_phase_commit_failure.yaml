@@ -1,0 +1,32 @@
+version: 1
+entries:
+  - id: flow1
+    identifiers:
+      slug: "{{ flow1.slug }}"
+    attrs:
+      name: Test Flow
+      slug: "{{ flow1.slug }}"
+      designation: authentication
+      title: Test Flow
+    model: authentik_flows.Flow
+    state: must_created
+  - id: group1
+    identifiers:
+      name: "{{ group1.name }}"
+    attrs:
+      name: "{{ group1.name }}"
+      attributes:
+        flow_id:
+          pk: "{{ flow1.pk }}"
+    model: authentik_core.Group
+    state: must_created
+  - id: invalid_group
+    identifiers:
+      name: invalid-group
+    attrs:
+      name: invalid-group
+      attributes:
+        flow_id:
+          pk: "{{ non_existent_flow.pk }}"
+    model: authentik_core.Group
+    state: must_created 
