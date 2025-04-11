@@ -1,0 +1,51 @@
+# Prettier Ignorefile
+
+## Static Files
+**/LICENSE
+
+authentik/stages/**/*
+authentik/sources/**/*
+schemas/**/*
+blueprints/**/*
+
+## Build asset directories
+coverage
+dist
+out
+.docusaurus
+.wireit
+website/docs/developer-docs/api/**/*
+
+## Environment
+*.env
+
+## Secrets
+*.secrets
+
+## Yarn
+.yarn/**/*
+
+## Node
+node_modules
+coverage
+
+## Configs
+*.log
+*.yaml
+*.yml
+
+# Templates
+# TODO: Rename affected files to *.template.* or similar.
+*.html
+*.mdx
+*.md
+
+## Import order matters
+web/src/poly.ts
+web/src/locale-codes.ts
+web/src/locales/
+
+# Storybook
+storybook-static/
+.storybook/css-import-maps*
+

@@ -73,7 +73,7 @@ describe("ak-expand", () => {
     it("should honor the header properties via a function call", async () => {
         render(
             akExpand(
-                { "expanded": true, "text-open": "Close it now", "text-closed": "Open it now" },
+                { expanded: true, "text-open": "Close it now", "text-closed": "Open it now" },
                 html`<p>This is the new text.</p>`,
             ),
         );

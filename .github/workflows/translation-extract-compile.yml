@@ -40,7 +40,7 @@ jobs:
       - name: run compile
         run: |
           uv run ak compilemessages
-          make web-check-compile
+          make node-check-compile
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7

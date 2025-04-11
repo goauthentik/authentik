@@ -43,10 +43,13 @@ export abstract class ProxyForm extends Form<unknown> {
             this.innerElement = document.createElement(elementName) as Form<unknown>;
         }
         this.innerElement.viewportCheck = this.viewportCheck;
-        for (const k in this.args) {
-            this.innerElement.setAttribute(k, this.args[k] as string);
-            (this.innerElement as unknown as Record<string, unknown>)[k] = this.args[k];
+
+        for (const [key, value] of Object.entries(this.args)) {
+            this.innerElement.setAttribute(key, value as string);
+
+            (this.innerElement as unknown as Record<string, unknown>)[key] = value;
         }
+
         return html`${this.innerElement}`;
     }
 }

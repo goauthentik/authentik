@@ -1,7 +1,7 @@
-import { readFileSync } from "fs";
-import path from "path";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import pseudolocale from "pseudolocale";
-import { fileURLToPath } from "url";
 
 import { makeFormatter } from "@lit/localize-tools/lib/formatters/index.js";
 import { sortProgramMessages } from "@lit/localize-tools/lib/messages.js";
@@ -41,4 +41,8 @@ const translations = messages.map(pseudoMessagify);
 const sorted = sortProgramMessages([...messages]);
 const formatter = makeFormatter(config);
 
-formatter.writeOutput(sorted, new Map([[pseudoLocale, translations]]));
+formatter.writeOutput(
+    sorted,
+    // @ts-expect-error Needs typing.
+    new Map([[pseudoLocale, translations]]),
+);

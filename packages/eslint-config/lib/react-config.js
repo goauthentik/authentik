@@ -13,7 +13,7 @@ export const reactConfig = tseslint.config({
     },
 
     plugins: {
-        "react": reactPlugin,
+        react: reactPlugin,
         "react-hooks": hooksPlugin,
     },
 

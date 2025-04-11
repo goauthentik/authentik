@@ -23,7 +23,7 @@ export const AuthentikPrettierConfig = {
     jsxSingleQuote: false,
     printWidth: 100,
     proseWrap: "preserve",
-    quoteProps: "consistent",
+    quoteProps: "as-needed",
     requirePragma: false,
     semi: true,
     singleQuote: false,
@@ -32,7 +32,17 @@ export const AuthentikPrettierConfig = {
     useTabs: false,
     vueIndentScriptAndStyle: false,
     plugins: ["prettier-plugin-packagejson", "@trivago/prettier-plugin-sort-imports"],
-    importOrder: ["^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
+    importOrder: [
+        // ---
+        // Lit Imports
+        "^(@?)lit(.*)$",
+        // CSS Imports
+        "\\.css$",
+        // API Imports
+        "^@goauthentik/api$",
+        // Relative Imports
+        "^[./]",
+    ],
     importOrderSeparation: true,
     importOrderSortSpecifiers: true,
     importOrderParserPlugins: ["typescript", "jsx", "classProperties", "decorators-legacy"],
