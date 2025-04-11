@@ -1,5 +1,5 @@
-import * as http from "http";
-import path from "path";
+import * as http from "node:http";
+import path from "node:path";
 
 /**
  * Serializes a custom event to a text stream.

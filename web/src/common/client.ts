@@ -1,6 +1,5 @@
 /**
- * @file
- * Client-side observer for ESBuild events.
+ * @file Client-side observer for ESBuild events.
  */
 import type { Message as ESBuildMessage } from "esbuild";
 
@@ -85,7 +84,6 @@ export class ESBuildObserver extends EventSource {
     #errorListener: BuildEventListener<string> = (event) => {
         this.#trackActivity();
 
-        // eslint-disable-next-line no-console
         console.group(logPrefix, "⛔️⛔️⛔️  Build error...");
 
         const esbuildErrorMessages: ESBuildMessage[] = JSON.parse(event.data);
@@ -101,7 +99,6 @@ export class ESBuildObserver extends EventSource {
             }
         }
 
-        // eslint-disable-next-line no-console
         console.groupEnd();
     };
 

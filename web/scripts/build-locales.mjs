@@ -1,7 +1,7 @@
-import { spawnSync } from "child_process";
-import fs from "fs";
-import path from "path";
-import process from "process";
+import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
 
 /**
  * Determines if all the Xliff translation source files are present and if the Typescript source
