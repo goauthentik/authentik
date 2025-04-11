@@ -27,6 +27,14 @@
         "typescript-eslint": "^8.29.0",
         "zx": "^8.4.1"
     },
+    "optionalDependencies": {
+        "@esbuild/darwin-arm64": "^0.24.0",
+        "@esbuild/linux-amd64": "^0.18.11",
+        "@esbuild/linux-arm64": "^0.24.0",
+        "@rollup/rollup-darwin-arm64": "4.23.0",
+        "@rollup/rollup-linux-arm64-gnu": "4.23.0",
+        "@rollup/rollup-linux-x64-gnu": "4.23.0"
+    },
     "workspaces": [
         "gen-ts-api",
         "web",
@@ -34,6 +42,5 @@
         "website",
         "packages/*"
     ],
-    "prettier": "@goauthentik/prettier-config",
-    "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
+    "prettier": "@goauthentik/prettier-config"
 }
