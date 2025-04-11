@@ -36,11 +36,6 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - name: Upgrade /web/packages/sfe
-        working-directory: web/packages/sfe
-        run: |
-          export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
-          npm i @goauthentik/api@$VERSION
       - uses: peter-evans/create-pull-request@v7
         id: cpr
         with:

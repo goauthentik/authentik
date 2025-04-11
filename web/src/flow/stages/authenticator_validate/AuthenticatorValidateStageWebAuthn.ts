@@ -1,10 +1,10 @@
-import {
-    checkWebAuthnSupport,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
+import { assertWebAuthnSupport } from "@goauthentik/web/authentication";
+import {
+    transformAssertionForServer,
+    transformCredentialRequestOptions,
+} from "@goauthentik/web/authentication";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, TemplateResult, html, nothing } from "lit";
@@ -39,7 +39,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
-        checkWebAuthnSupport();
+        assertWebAuthnSupport();
         try {
             assertion = await navigator.credentials.get({
                 publicKey: this.transformedCredentialRequestOptions,

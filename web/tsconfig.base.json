@@ -2,6 +2,8 @@
     "compilerOptions": {
         "strict": true,
         "baseUrl": ".",
+        "emitDeclarationOnly": true,
+        "declaration": true,
         "esModuleInterop": true,
         "paths": {
             "@goauthentik/docs/*": ["../website/docs/*"]
@@ -14,6 +16,7 @@
             "grecaptcha"
         ],
         "jsx": "react-jsx",
+        "allowJs": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
         "experimentalDecorators": true,
@@ -67,5 +70,12 @@
             }
         ]
     },
-    "exclude": ["src/**/*.test.ts", "./tests"]
+    "exclude": [
+        // ---
+        "./out/**/*",
+        "./dist/**/*",
+
+        "src/**/*.test.ts",
+        "./tests"
+    ]
 }
