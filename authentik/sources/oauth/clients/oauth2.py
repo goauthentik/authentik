@@ -68,6 +68,7 @@ class OAuth2Client(BaseOAuthClient):
             error_desc = self.get_request_arg("error_description", None)
             return {"error": error_desc or error or _("No token received.")}
         args = {
+            "client_id": self.get_client_id(),
             "redirect_uri": callback,
             "code": code,
             "grant_type": "authorization_code",
