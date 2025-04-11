@@ -1,0 +1,9 @@
+version: 1
+entries:
+  - identifiers:
+      username: test-user
+    attrs:
+      username: test-user
+      email: invalid-email
+      name: Test User
+    model: authentik_core.User 
