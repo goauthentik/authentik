@@ -1,0 +1,40 @@
+/* TODO: Determine just how global these styles are. */
+
+/* The parent div centers, but the inner paragraph needs its own centering while its size changes. */
+.homepage_hero__subtitle {
+    display: flex;
+    justify-content: center;
+}
+
+.homepage_hero__subtitle p {
+    font-size: clamp(
+        1.125rem,
+        0.9946rem + 0.6522vi,
+        1.5rem
+    ); /* Adjust font as page scales */
+    max-width: 28ch; /* Apply a maximum to keep everything in the box */
+    text-wrap: balance; /* Prevent widows, orphans, and runts. Doesn't work in Safari */
+}
+
+.hero--primary {
+    background: radial-gradient(
+        at right bottom,
+        rgba(47, 6, 75, 1) 0%,
+        var(--ifm-color-primary) 50%
+    );
+    padding-bottom: 5.3rem !important;
+    /* fix aliasing at the edge */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+}
+
+.hero-banner {
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    overflow-wrap: normal;
+    color: var(--white);
+}

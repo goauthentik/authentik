@@ -1,6 +1,6 @@
-import { AuthentikPrettierConfig } from "./config.js";
+import { AuthentikPrettierConfig } from "./lib/constants.js";
 
-export * from "./config.js";
-export * from "./format.js";
+export * from "./lib/constants.js";
+export * from "./lib/format.js";
 
 export default AuthentikPrettierConfig;
