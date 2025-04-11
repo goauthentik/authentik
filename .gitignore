@@ -11,11 +11,6 @@ local_settings.py
 db.sqlite3
 media
 
-# Node
-
-node_modules
-
-
 # If your build process includes running collectstatic, then you probably don't need or want to include staticfiles/
 # in your Git repository. Update and uncomment the following line accordingly.
 # <django-project-name>/staticfiles/
@@ -218,3 +213,25 @@ source_docs/
 
 ### Docker ###
 docker-compose.override.yml
+
+
+### Node ###
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+node_modules/
+
+
+# Wireit's cache
+.wireit
+
+custom-elements.json
+
+
+### Development ###
+.drafts
