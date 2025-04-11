@@ -14,52 +14,40 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        command:
-          - lint
-          - lint:lockfile
-          - tsc
-          - prettier-check
-        project:
-          - web
-        include:
-          - command: tsc
-            project: web
-          - command: lit-analyse
-            project: web
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: ${{ matrix.project }}/package.json
+          node-version-file: ./package.json
           cache: "npm"
-          cache-dependency-path: ${{ matrix.project }}/package-lock.json
-      - working-directory: ${{ matrix.project }}/
-        run: |
-          npm ci
+          cache-dependency-path: ./package-lock.json
+      - name: Install dependencies
+        run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: Lint
-        working-directory: ${{ matrix.project }}/
-        run: npm run ${{ matrix.command }}
+        run: |
+          npm run compile
+          npm run lint
+          npm run lint:lockfile -w @goauthentik/web
+          npm run lit-analyse -w @goauthentik/web
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: ./package.json
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
+          cache-dependency-path: ./package-lock.json
+      - name: Install dependencies
         run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: build
-        working-directory: web/
-        run: npm run build
+        run: |
+          npm run compile
+          npm run build -w @goauthentik/web
   ci-web-mark:
     if: always()
     needs:
@@ -78,13 +66,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: ./package.json
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
+          cache-dependency-path: ./package-lock.json
+      - name: Install dependencies
         run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: test
-        working-directory: web/
-        run: npm run test || exit 0
+        run: npm run test -w @goauthentik/web || exit 0

@@ -42,7 +42,6 @@ node-check-compile: # # Check and compile the javascript source code
 node-lint-fix: ## Lint and automatically fix errors in the javascript source code
 	lint-codespell
 	npm run lint:fix
-	npm run prettier:fix
 
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	uv run black $(PY_SOURCES)
