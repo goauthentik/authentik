@@ -102,8 +102,12 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                             path = os.path.join(*path_pieces[:i]) + ".py"
                         label_as_path = os.path.abspath(path)
                         if os.path.exists(label_as_path):
-                            path_method = label_as_path + "::" + "::".join(path_pieces[i:])
-                            self.args.append(path_method)
+                            # Only append the class/method part if it exists
+                            if i < -1:
+                                path_method = label_as_path + "::" + "::".join(path_pieces[i:])
+                                self.args.append(path_method)
+                            else:
+                                self.args.append(label_as_path)
                             valid_label_found = True
                             break
                     except TypeError:
