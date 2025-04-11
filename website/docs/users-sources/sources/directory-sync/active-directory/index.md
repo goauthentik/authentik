@@ -37,8 +37,6 @@ To support the integration of Active Directory with authentik, you need to creat
 
     ![](./02_delegate.png)
 
-    Additional information can be found here: https://support.microfocus.com/kb/doc.php?id=7023371
-
 ## authentik Setup
 
 To support the integration of authentik with Active Directory, you will need to create a new LDAP Source in authentik.
