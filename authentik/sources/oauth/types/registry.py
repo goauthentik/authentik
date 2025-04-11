@@ -24,6 +24,11 @@ class RequestKind(Enum):
     REDIRECT = "redirect"
 
 
+class AuthorizationCodeAuthMethod(Enum):
+    BASIC_AUTH = "basic_auth"
+    POST_BODY = "post_body"
+
+
 class SourceType:
     """Source type, allows overriding of urls and views per type"""
 
@@ -40,6 +45,10 @@ class SourceType:
     profile_url: str | None = None
     oidc_well_known_url: str | None = None
     oidc_jwks_url: str | None = None
+
+    authorization_code_auth_method: AuthorizationCodeAuthMethod = (
+        AuthorizationCodeAuthMethod.BASIC_AUTH
+    )
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""
