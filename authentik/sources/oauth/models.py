@@ -21,6 +21,11 @@ if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
 
+class AuthorizationCodeAuthMethod(models.TextChoices):
+    BASIC_AUTH = "basic_auth", _("HTTP Basic Authentication")
+    POST_BODY = "post_body", _("Include the client ID and secret as request parameters")
+
+
 class OAuthSource(NonCreatableType, Source):
     """Login using a Generic OAuth provider."""
 
@@ -60,6 +65,14 @@ class OAuthSource(NonCreatableType, Source):
     oidc_well_known_url = models.TextField(default="", blank=True)
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
+
+    authorization_code_auth_method = models.TextField(
+        choices=AuthorizationCodeAuthMethod.choices,
+        default=AuthorizationCodeAuthMethod.BASIC_AUTH,
+        help_text=_(
+            "How to perform authentication during an authorization_code token request flow"
+        ),
+    )
 
     @property
     def source_type(self) -> type["SourceType"]:
