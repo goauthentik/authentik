@@ -27,6 +27,7 @@ jobs:
         run: make gen-client-ts
       - name: Lint
         run: |
+          npm run build -w @goauthentik/web
           npm run compile
           npm run lint
           npm run lint:lockfile -w @goauthentik/web
@@ -46,6 +47,7 @@ jobs:
         run: make gen-client-ts
       - name: build
         run: |
+          npm run build -w @goauthentik/web
           npm run compile
           npm run build -w @goauthentik/web
   ci-web-mark:
