@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="ru" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>URL "
-        <x id="0" equiv-text="${this.url}"/>" не найден.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot; не найден.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Введите полный URL-адрес, относительный путь или используйте 'fa://fa-test', чтобы использовать иконку Font Awesome "fa-test".</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Введите полный URL-адрес, относительный путь или используйте 'fa://fa-test', чтобы использовать иконку Font Awesome &quot;fa-test&quot;.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3742,7 +3742,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s6b6e6eb037aef7da">
         <source>Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.</source>
-        <target>Для аутентификации используйте указанные ниже имя пользователя и пароль. Пароль можно получить позже на странице "Токены".</target>
+        <target>Для аутентификации используйте указанные ниже имя пользователя и пароль. Пароль можно получить позже на странице &quot;Токены&quot;.</target>
         
       </trans-unit>
       <trans-unit id="sf6e1665c7022a1f8">
@@ -3778,10 +3778,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>Вы уверены, что хотите обновить
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4847,7 +4847,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>Переносной аутентификатор, например YubiKey</target>
         
       </trans-unit>
@@ -5202,12 +5202,12 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2512334108f06a5a">
         <source>Stay signed in offset</source>
-        <target>Смещение "Оставаться в системе"</target>
+        <target>Смещение &quot;Оставаться в системе&quot;</target>
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>Если значение продолжительности больше 0, у пользователя будет возможность выбрать опцию "оставаться в системе", что продлит его сеанс на указанное здесь время.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>Если значение продолжительности больше 0, у пользователя будет возможность выбрать опцию &quot;оставаться в системе&quot;, что продлит его сеанс на указанное здесь время.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -7377,7 +7377,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Одна подсказка, "Мастер создания нового приложения", в настоящее время скрыта</target>
+  <target>Одна подсказка, &quot;Мастер создания нового приложения&quot;, в настоящее время скрыта</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7492,7 +7492,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Пользователь успешно создан и добавлен в группу <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>Этот пользователь будет добавлен в группу &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8615,7 +8615,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
-  <target>Внимание: Этот экземпляр authentik перешел в режим "только чтение" из-за истекших/превышенных лицензий.</target>
+  <target>Внимание: Этот экземпляр authentik перешел в режим &quot;только чтение&quot; из-за истекших/превышенных лицензий.</target>
 </trans-unit>
 <trans-unit id="se8c58e65674b6847">
   <source>This authentik instance uses a Trial license.</source>
@@ -8643,7 +8643,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Предоставить пользователям кнопку "показать пароль".</target>
+  <target>Предоставить пользователям кнопку &quot;показать пароль&quot;.</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8663,7 +8663,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Последний раз был замечен: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8690,9 +8689,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s05073d2537b45d1a">
   <source>Sync</source>
+  <target>Синхронизация </target>
 </trans-unit>
 <trans-unit id="se9da93aa2e6cce21">
   <source>Sync User</source>
+  <target>Синхронизация пользователей </target>
 </trans-unit>
 <trans-unit id="s7bd456df0becbbff">
   <source>Available Stages</source>
@@ -8723,15 +8724,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4f9880ce82953741">
   <source>Read Only</source>
+  <target>Только для чтения</target>
 </trans-unit>
 <trans-unit id="s4220dda46d622211">
   <source>Valid</source>
 </trans-unit>
 <trans-unit id="sdc94711a2eb66a45">
   <source>Current license status</source>
+  <target>Текущий статус лицензии</target>
 </trans-unit>
 <trans-unit id="se10fb73c1f1039c5">
   <source>Overall license status</source>
+  <target>Общий статус лицензии</target>
 </trans-unit>
 <trans-unit id="sc4804358f202968c">
   <source>Internal user usage</source>
@@ -8750,12 +8754,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3819162efec77de1">
   <source>Sync Group</source>
+  <target>Группа синхронизации </target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
+  <target>Родительская группа</target>
 </trans-unit>
 <trans-unit id="s0159c800f16ee1a5">
   <source>Flow used when logging out of this provider.</source>
@@ -8783,9 +8789,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc991a35f5e88d1d3">
   <source>Encryption Key</source>
+  <target>Ключ шифрования</target>
 </trans-unit>
 <trans-unit id="s8a598f7aef81c3bc">
   <source>Key used to encrypt the tokens.</source>
+  <target>Ключ, используемый для шифрования токенов.</target>
 </trans-unit>
 <trans-unit id="sbfee780fa0a2c83e">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be deleted</source>
@@ -8795,6 +8803,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s85fe794c71b4ace8">
   <source>Google Verified Access API</source>
+  <target>API для верифицированного доступа Google</target>
 </trans-unit>
 <trans-unit id="s013620384af7c8b4">
   <source>Device type <x id="0" equiv-text="${device.verboseName}"/> cannot be edited</source>
@@ -8807,12 +8816,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s14a16542f956e11d">
   <source>Realm settings</source>
+  <target>Настройки Realm</target>
 </trans-unit>
 <trans-unit id="s9c2eae548d3c1c30">
   <source>Realm</source>
+  <target>Realm</target>
 </trans-unit>
 <trans-unit id="s6b032212997e2491">
   <source>Kerberos 5 configuration</source>
+  <target>Конфигурация Kerberos 5</target>
 </trans-unit>
 <trans-unit id="sbf50181022f47de3">
   <source>Kerberos 5 configuration. See man krb5.conf(5) for configuration format. If left empty, a default krb5.conf will be used.</source>
@@ -8828,6 +8840,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s977b9c629eed3d33">
   <source>Sync password</source>
+  <target>Синхронизация пароля</target>
 </trans-unit>
 <trans-unit id="s77772860385de948">
   <source>Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.</source>
@@ -8870,6 +8883,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2c378e86e025fdb2">
   <source>Update Kerberos Source</source>
+  <target>Обновить источник Kerberos</target>
 </trans-unit>
 <trans-unit id="s03e4044abe0b556c">
   <source>User database + Kerberos password</source>
@@ -8915,9 +8929,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd48cc52117f4d68b">
   <source>Italian</source>
+  <target>Итальянский </target>
 </trans-unit>
 <trans-unit id="s6cee92a3b310e650">
   <source>Add entry</source>
+  <target>Добавить запись</target>
 </trans-unit>
 <trans-unit id="s8f36fb59c31d33eb">
   <source>Link Title</source>
@@ -8938,7 +8954,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -8948,9 +8964,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s066bfb12c9032dc2">
   <source>Available Providers</source>
+  <target>Доступные провайдеры </target>
 </trans-unit>
 <trans-unit id="sa12111ca3f3e398e">
   <source>Selected Providers</source>
+  <target>Выбранные провайдеры </target>
 </trans-unit>
 <trans-unit id="s4f8a3f7792e6b940">
   <source>JWTs signed by the selected providers can be used to authenticate to this provider.</source>
@@ -8981,9 +8999,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1cc032bcc50b2942">
   <source>Available Policies</source>
+  <target>Доступные политики</target>
 </trans-unit>
 <trans-unit id="s3ad64193ad5f4a5e">
   <source>Selected Policies</source>
+  <target>Выбранные политики</target>
 </trans-unit>
 <trans-unit id="sc487e11d5987dbb4">
   <source>Redirect the user to another flow, potentially with all gathered context</source>
@@ -8993,6 +9013,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se87a96950464bc89">
   <source>Target URL</source>
+  <target>Целевой URL-адрес</target>
 </trans-unit>
 <trans-unit id="s7f3097955b19736a">
   <source>Redirect the user to a static URL.</source>
@@ -9011,6 +9032,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f533986ba6182c">
   <source>Require superuser</source>
+  <target>Требуется суперпользователь.</target>
 </trans-unit>
 <trans-unit id="s26c0a8789930b5fd">
   <source>Require being redirected from another flow</source>
@@ -9023,6 +9045,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s39c052006b2b141a">
   <source>Not a valid URL</source>
+  <target>Неверный URL-адрес</target>
 </trans-unit>
 <trans-unit id="s317f3ab0da3d068a">
   <source>Not a valid slug</source>
@@ -9041,9 +9064,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sab1786ef3c0383ba">
   <source>Bind policy/group/user</source>
+  <target>Привязать политику/группу/пользователя</target>
 </trans-unit>
 <trans-unit id="s082ea0f3c0a854ff">
   <source>Configure Policy Bindings</source>
+  <target>Настройка политики привязок </target>
 </trans-unit>
 <trans-unit id="sac315d5bd28d4efa">
   <source>Don't Pass</source>
@@ -9056,12 +9081,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s10ba15343fe64890">
   <source>Choose A Provider</source>
+  <target>Выбрать провайдера </target>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
+  <target>Пожалуйста, выберите тип провайдера, прежде чем продолжить.</target>
 </trans-unit>
 <trans-unit id="s2289ff3b411251d8">
   <source>Choose a Provider Type</source>
+  <target>Выбрать тип провайдера </target>
 </trans-unit>
 <trans-unit id="sde0ad51b14f77cf6">
   <source>Redirect URIs/Origins (RegEx)</source>
@@ -9069,6 +9097,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s89ae85c3a9df8a6f">
   <source>Configure OAuth2 Provider</source>
+  <target>Настройка провайдера OAuth2 </target>
 </trans-unit>
 <trans-unit id="s881271a499c9db98">
   <source>Configure Remote Access Provider</source>
@@ -9078,6 +9107,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s19907c16eb319618">
   <source>Configure Provider</source>
+  <target>Настройка провайдера </target>
 </trans-unit>
 <trans-unit id="s7055edd8fab866f4">
   <source>strict</source>
@@ -9093,6 +9123,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9fdda682893624a1">
   <source>There was an error:</source>
+  <target>Произошла ошибка:</target>
 </trans-unit>
 <trans-unit id="s201ee6bc6d9f97da">
   <source>Please go back and review the application.</source>
@@ -9108,6 +9139,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8aac845c63f45ca2">
   <source>Create with wizard</source>
+  <target>Создать с помощью мастера</target>
 </trans-unit>
 <trans-unit id="s080af72866b69b3d">
   <source>Bind existing <x id="0" equiv-text="${this.allowedTypesLabel}"/></source>
@@ -9180,45 +9212,57 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s91ae4b6bf981682b">
   <source>authentik Logo</source>
+  <target>Логотип authentik</target>
 </trans-unit>
 <trans-unit id="s1cdeecda0baf365e">
   <source>Release</source>
+  <target>Релиз</target>
 </trans-unit>
 <trans-unit id="s35429c9dc2319aea">
   <source>Development</source>
 </trans-unit>
 <trans-unit id="s5937938934a777ab">
   <source>UI Version</source>
+  <target>Версия UI</target>
 </trans-unit>
 <trans-unit id="s3fe3ff490adaaa63">
   <source>Build</source>
+  <target>Сборка</target>
 </trans-unit>
 <trans-unit id="s42aea5c6d3d1fce7">
   <source>Python version</source>
+  <target>Версия Python</target>
 </trans-unit>
 <trans-unit id="s5c67b6c66029e5b2">
   <source>Platform</source>
+  <target>Платформа</target>
 </trans-unit>
 <trans-unit id="se8574bce64d9c1f8">
   <source>Kernel</source>
+  <target>Ядро</target>
 </trans-unit>
 <trans-unit id="s3fbe63b7fcfe3e91">
   <source>OpenSSL</source>
+  <target>OpenSSL</target>
 </trans-unit>
 <trans-unit id="s1381314790b50b1f">
   <source>A newer version (<x id="0" equiv-text="${this.version.versionCurrent}"/>) of the UI is available.</source>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Уведомлений не найдено.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>В данный момент у вас нет никаких уведомлений.</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
   <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
+  <target>Версия <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="sfb95ad8c25db95ba">
   <source>Last password change</source>
+  <target>Последняя смена пароля</target>
 </trans-unit>
 <trans-unit id="s37e1bad4bf0e9241">
   <source>Evaluate policies before the Stage is presented to the user.</source>
@@ -9234,21 +9278,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc92905d14a9421f3">
   <source>Idle</source>
+  <target>Ожидание </target>
 </trans-unit>
 <trans-unit id="s4b052cb287d81da7">
   <source>Connecting</source>
+  <target>Подключение</target>
 </trans-unit>
 <trans-unit id="s123b7254b44dd148">
   <source>Waiting</source>
 </trans-unit>
 <trans-unit id="s82a4e28ab5b56670">
   <source>Connected</source>
+  <target>Подключено </target>
 </trans-unit>
 <trans-unit id="sd669c8ff49c068ad">
   <source>Disconnecting</source>
+  <target>Отключение</target>
 </trans-unit>
 <trans-unit id="sfc2c3bd345c0128a">
   <source>Disconnected</source>
+  <target>Отключено</target>
 </trans-unit>
 <trans-unit id="s47b7ce63a543564c">
   <source>Fewer details</source>
@@ -9327,21 +9376,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6bb30c61df4cf486">
   <source>Caps Lock is enabled.</source>
+  <target>Включена функция Caps Lock.</target>
 </trans-unit>
 <trans-unit id="s3f8a07912545e72e">
   <source>Configure your email</source>
+  <target>Настройте свою электронную почту</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
+  <target>Пожалуйста, введите свой адрес электронной почты.</target>
 </trans-unit>
 <trans-unit id="s7cdd62c100b6b17b">
   <source>Please enter the code you received via email</source>
+  <target>Пожалуйста, введите код, который вы получили по электронной почте</target>
 </trans-unit>
 <trans-unit id="s1d64dba9bb8b284d">
   <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+  <target>Код был отправлен вам по электронной почте <x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+  <target>Токены, отправлены по электронной почте.</target>
 </trans-unit>
 <trans-unit id="s4d3933feb8dc7cee">
   <source>Enable dry-run mode</source>
@@ -9378,6 +9433,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa3fc920064fc8380">
   <source>Time the token sent is valid.</source>
+  <target>Время, в течение которого отправленный токен является действительным.</target>
 </trans-unit>
 <trans-unit id="s3483d693c72e412e">
   <source>Compatibility Mode</source>
@@ -9387,12 +9443,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sfa5ba219a0991116">
   <source>AWS</source>
+  <target>AWS</target>
 </trans-unit>
 <trans-unit id="s44e80dc905ab2ecc">
   <source>Altered behavior for usage with Amazon Web Services.</source>
 </trans-unit>
 <trans-unit id="s2f5e2bcd583fbc27">
   <source>Slack</source>
+  <target>Slack</target>
 </trans-unit>
 <trans-unit id="s7f40ef46b7f213ea">
   <source>Altered behavior for usage with Slack.</source>
@@ -9414,6 +9472,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sf16aa54bf77362e1">
   <source>Custom CSS</source>
+  <target>Пользовательские CSS</target>
 </trans-unit>
 <trans-unit id="s6171ded034da4e96">
   <source>Custom CSS to apply to pages when this brand is active.</source>
@@ -9440,7 +9499,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
