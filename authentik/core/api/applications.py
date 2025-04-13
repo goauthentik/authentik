@@ -3,6 +3,8 @@
 from collections.abc import Iterator
 from copy import copy
 from datetime import timedelta
+import os
+import uuid
 
 from django.core.cache import cache
 from django.db.models import QuerySet
@@ -128,6 +130,12 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     ]
     lookup_field = "slug"
     ordering = ["name"]
+
+    def get_serializer_class(self):
+        """Return serializer based on action"""
+        if self.action == "icon":
+            return FileUploadSerializer
+        return super().get_serializer_class()
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
@@ -281,16 +289,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
     @action(
         detail=True,
         pagination_class=None,
@@ -298,29 +296,136 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
-    def set_icon(self, request: Request, slug: str):
-        """Set application icon"""
-        app: Application = self.get_object()
-        return set_file(request, app, "meta_icon")
-
     @permission_required("authentik_core.change_application")
     @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
+        request={
+            "multipart/form-data": FileUploadSerializer,
         },
+        responses={
+            200: OpenApiResponse(description="Success", response={"meta_icon": str, "message": str}),
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
+        operation_id="core_applications_icon_create",
+        parameters=[
+            {
+                "name": "slug", 
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"}
+            },
+            {
+                "name": "operation", 
+                "in": "query",
+                "required": True,
+                "schema": {"type": "string", "enum": ["set", "modify", "remove"]}
+            }
+        ],
+        tags=['core'],
+        methods=['POST']
     )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def set_icon_url(self, request: Request, slug: str):
-        """Set application icon (as URL)"""
+    def icon(self, request: Request, slug: str):
+        """
+        Manage application icon
+        
+        Use operation query parameter to specify the action:
+        - operation=set: Set a new icon (overwriting any existing)
+        - operation=modify: Modify an existing icon
+        - operation=remove: Remove the current icon
+        
+        For file uploads:
+        - Send a multipart/form-data request with a file field
+        - The file field should contain the image file to upload
+        
+        For URL-based icons:
+        - Send a request with a url field
+        
+        Returns information about the icon operation result.
+        """
         app: Application = self.get_object()
-        return set_file_url(request, app, "meta_icon")
+        operation = request.query_params.get("operation")
+        
+        if not operation:
+            return Response({"error": "Missing required 'operation' query parameter"}, status=400)
+            
+        if operation not in ["set", "modify", "remove"]:
+            return Response({"error": f"Invalid operation: {operation}. Must be 'set', 'modify', or 'remove'."}, status=400)
+        
+        # Handle icon removal
+        if operation == "remove":
+            field = getattr(app, "meta_icon")
+            if field:
+                try:
+                    field.delete(save=False)
+                    app.save()
+                    return Response({"meta_icon": None, "message": "Icon successfully removed"})
+                except Exception as exc:
+                    LOGGER.warning("Failed to remove icon", exc=exc)
+                    return Response({"error": f"Failed to remove icon: {str(exc)}"}, status=500)
+            return Response({"meta_icon": None, "message": "No icon to remove"})
+            
+        # Handle URL-based icon
+        if request.data.get("url"):
+            url = request.data.get("url")
+            field_obj = getattr(app, "meta_icon")
+            
+            # Delete old file if exists and operation is 'set'
+            if operation == "set" and field_obj and field_obj.name:
+                try:
+                    field_obj.delete(save=False)
+                except Exception as exc:
+                    LOGGER.warning("Failed to delete old icon", exc=exc)
+            
+            field_obj.name = url
+            app.save()
+            return Response({
+                "meta_icon": url, 
+                "message": f"Icon successfully {operation}",
+                "operation": operation
+            })
+        
+        # Handle file upload
+        file = request.FILES.get("file", None)
+        if not file:
+            return Response({"error": "No file or URL provided"}, status=400)
+            
+        field = getattr(app, "meta_icon")
+        
+        # Delete old file if exists and operation is 'set'
+        if operation == "set" and field:
+            try:
+                field.delete(save=False)
+            except Exception as exc:
+                LOGGER.warning("Failed to delete old icon", exc=exc)
+                
+        # Get the upload_to path from the model field
+        upload_to = field.field.upload_to
+        
+        # If upload_to is set, ensure the file name includes the directory
+        if upload_to:
+            # Generate a unique filename to prevent conflicts
+            filename, extension = os.path.splitext(os.path.basename(file.name))
+            unique_filename = f"{filename}_{uuid.uuid4().hex[:8]}{extension}"
+            # Construct a clean path within the upload directory
+            file.name = f"{upload_to}/{unique_filename}"
+            
+        setattr(app, "meta_icon", file)
+        try:
+            app.save()
+        except Exception as exc:
+            LOGGER.error("Unexpected error saving file", exc=exc)
+            return Response(
+                {"error": f"An unexpected error occurred while saving the file: {str(exc)}"}, 
+                status=500
+            )
+            
+        return Response({
+            "meta_icon": getattr(app, "meta_icon").url if hasattr(getattr(app, "meta_icon"), 'url') else None, 
+            "message": f"Icon successfully {operation}ed",
+            "operation": operation
+        })
 
     @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
