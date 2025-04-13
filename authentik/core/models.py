@@ -555,9 +555,21 @@ class Application(SerializerModel, PolicyBindingModel):
         """Get the URL to the App Icon image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.meta_icon:
+            LOGGER.debug("No meta_icon set")
             return None
+
+        LOGGER.debug(
+            "Getting meta_icon URL",
+            name=self.meta_icon.name,
+            url=self.meta_icon.url if hasattr(self.meta_icon, "url") else None,
+            storage_backend=self.meta_icon.storage.__class__.__name__,
+        )
+
         if "://" in self.meta_icon.name or self.meta_icon.name.startswith("/static"):
+            LOGGER.debug("Using direct meta_icon name", name=self.meta_icon.name)
             return self.meta_icon.name
+
+        LOGGER.debug("Using storage URL", url=self.meta_icon.url)
         return self.meta_icon.url
 
     def get_launch_url(self, user: Optional["User"] = None) -> str | None:

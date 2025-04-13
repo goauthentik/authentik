@@ -275,6 +275,7 @@ export abstract class Form<T> extends AKElement {
         }
         return serializeForm(elements) as T;
     }
+
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
      * this to work. If processing the data results in an error, we catch the error, distribute
@@ -289,18 +290,18 @@ export abstract class Form<T> extends AKElement {
 
         return this.send(data)
             .then((response) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: this.getSuccessMessage(),
-                });
-
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-
+                if (response !== undefined && response !== null) {
+                    showMessage({
+                        level: MessageLevel.success,
+                        message: this.getSuccessMessage(),
+                    });
+                    this.dispatchEvent(
+                        new CustomEvent(EVENT_REFRESH, {
+                            bubbles: true,
+                            composed: true,
+                        }),
+                    );
+                }
                 return response;
             })
             .catch(async (error: unknown) => {

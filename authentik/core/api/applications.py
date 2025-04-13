@@ -1,5 +1,7 @@
 """Application API Views"""
 
+import os
+import uuid
 from collections.abc import Iterator
 from copy import copy
 from datetime import timedelta
@@ -13,7 +15,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField, FileField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -25,15 +27,12 @@ from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.events.models import EventAction
 from authentik.lib.utils.file import (
-    FilePathSerializer,
     FileUploadSerializer,
-    set_file,
-    set_file_url,
 )
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
@@ -100,6 +99,23 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
+class IconResponseSerializer(PassiveSerializer):
+    """Serializer for icon operations"""
+    meta_icon = CharField(required=False)
+    message = CharField(required=False)
+    error = CharField(required=False)
+
+class IconRequestSerializer(PassiveSerializer):
+    """Serializer for icon operations"""
+    file = FileField(required=False)
+    url = CharField(required=False)
+
+    def validate(self, attrs):
+        if not attrs.get("file") and not attrs.get("url"):
+            raise ValidationError("Either file or url must be provided")
+        return attrs
+
+
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
@@ -128,6 +144,12 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     ]
     lookup_field = "slug"
     ordering = ["name"]
+
+    def get_serializer_class(self):
+        """Return serializer based on action"""
+        if self.action == "icon":
+            return IconRequestSerializer
+        return super().get_serializer_class()
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
@@ -281,47 +303,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request={
-            "multipart/form-data": FileUploadSerializer,
-        },
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-        parser_classes=(MultiPartParser,),
-    )
-    def set_icon(self, request: Request, slug: str):
-        """Set application icon"""
-        app: Application = self.get_object()
-        return set_file(request, app, "meta_icon")
-
-    @permission_required("authentik_core.change_application")
-    @extend_schema(
-        request=FilePathSerializer,
-        responses={
-            200: OpenApiResponse(description="Success"),
-            400: OpenApiResponse(description="Bad request"),
-        },
-    )
-    @action(
-        detail=True,
-        pagination_class=None,
-        filter_backends=[],
-        methods=["POST"],
-    )
-    def set_icon_url(self, request: Request, slug: str):
-        """Set application icon (as URL)"""
-        app: Application = self.get_object()
-        return set_file_url(request, app, "meta_icon")
-
     @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -336,3 +317,177 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
             # 3 data points per day, so 8 hour spans
             .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
+
+    def _handle_icon_delete(self, app: Application):
+        """Helper to handle icon deletion"""
+        field = app.meta_icon
+
+        if not field or not field.name:
+            return Response({"error": "No icon exists to delete"}, status=404)
+
+        try:
+            field.delete(save=False)
+            app.save()
+            return Response({"meta_icon": None, "message": "Icon successfully removed"})
+        except Exception as exc:
+            LOGGER.warning("Failed to remove icon", exc=exc)
+            return Response({"error": f"Failed to remove icon: {str(exc)}"}, status=500)
+
+    def _handle_icon_url(self, app: Application, url: str, is_post: bool):
+        """Helper to handle URL-based icon update"""
+        # Validate URL format
+        try:
+            from urllib.parse import urlparse
+
+            result = urlparse(url)
+            if not all([result.scheme, result.netloc]):
+                return Response({"error": "Invalid URL format"}, status=400)
+        except Exception:
+            return Response({"error": "Invalid URL format"}, status=400)
+
+        field_obj = app.meta_icon
+
+        # For POST, delete old file if exists
+        if is_post and field_obj and field_obj.name:
+            try:
+                field_obj.delete(save=False)
+            except Exception as exc:
+                LOGGER.warning("Failed to delete old icon", exc=exc)
+
+        field_obj.name = url
+        app.save()
+        message = "Icon successfully created" if is_post else "Icon successfully updated"
+        return Response({"meta_icon": app.get_meta_icon, "message": message})
+
+    def _handle_icon_file(self, app: Application, file, is_post: bool):
+        """Helper to handle file-based icon update"""
+        field = app.meta_icon
+
+        # For POST, delete old file if exists
+        if is_post and field and field.name:
+            try:
+                field.delete(save=False)
+            except Exception as exc:
+                LOGGER.warning("Failed to delete old icon", exc=exc)
+
+        # Get the upload_to path from the model field
+        upload_to = field.field.upload_to
+
+        # If upload_to is set, ensure the file name includes the directory
+        if upload_to:
+            # Generate a unique filename to prevent conflicts
+            filename, extension = os.path.splitext(os.path.basename(file.name))
+            unique_filename = f"{filename}_{uuid.uuid4().hex[:8]}{extension}"
+            # Construct a clean path within the upload directory
+            file.name = f"{upload_to}/{unique_filename}"
+
+        app.meta_icon = file
+        try:
+            app.save()
+        except Exception as exc:
+            LOGGER.error("Unexpected error saving file", exc=exc)
+            return Response(
+                {"error": f"An unexpected error occurred while saving the file: {str(exc)}"},
+                status=500,
+            )
+
+        message = "Icon successfully created" if is_post else "Icon successfully updated"
+        return Response({"meta_icon": app.get_meta_icon, "message": message})
+
+    @action(
+        detail=True,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["POST", "PATCH", "DELETE"],
+        parser_classes=(MultiPartParser,),
+        url_path="icon",
+        url_name="icon",
+    )
+    @permission_required("authentik_core.change_application")
+    @extend_schema(
+        methods=["POST"],
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                    "url": {"type": "string"},
+                },
+            },
+            "application/json": IconRequestSerializer,
+        },
+        responses={
+            200: IconResponseSerializer,
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
+        operation_id="coreApplicationsIconCreate",
+        parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
+        tags=["core"],
+    )
+    @extend_schema(
+        methods=["PATCH"],
+        request={
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                    "url": {"type": "string"},
+                },
+            },
+            "application/json": IconRequestSerializer,
+        },
+        responses={
+            200: IconResponseSerializer,
+            400: OpenApiResponse(description="Bad request", response={"error": str}),
+            403: OpenApiResponse(description="Permission denied", response={"error": str}),
+            404: OpenApiResponse(description="No icon exists", response={"error": str}),
+            415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
+        operation_id="coreApplicationsIconUpdate",
+        parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
+        tags=["core"],
+    )
+    @extend_schema(
+        methods=["DELETE"],
+        responses={
+            200: IconResponseSerializer,
+            404: OpenApiResponse(description="No icon exists", response={"error": str}),
+            500: OpenApiResponse(description="Internal server error", response={"error": str}),
+        },
+        operation_id="coreApplicationsIconDelete",
+        parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
+        tags=["core"],
+    )
+    def icon(self, request: Request, slug: str):
+        """RESTful endpoint for application icon management"""
+        app: Application = self.get_object()
+
+        is_post = request.method == "POST"
+
+        # Handle DELETE request
+        if request.method == "DELETE":
+            return self._handle_icon_delete(app)
+
+        # For PATCH, verify that icon exists
+        if request.method == "PATCH":
+            field = app.meta_icon
+            if not field or not field.name:
+                return Response(
+                    {"error": "Cannot update icon: No icon exists. Use POST to create a new icon."},
+                    status=404,
+                )
+
+        # Handle URL-based icon
+        if request.data.get("url"):
+            return self._handle_icon_url(app, request.data.get("url"), is_post)
+
+        # Handle file upload
+        file = request.FILES.get("file", None)
+        if not file:
+            return Response({"error": "No file or URL provided"}, status=400)
+
+        return self._handle_icon_file(app, file, is_post)
