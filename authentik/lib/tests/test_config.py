@@ -2,6 +2,7 @@
 
 import base64
 from json import dumps
+import json
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 from unittest import mock
@@ -217,6 +218,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -267,6 +269,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -285,6 +288,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -333,6 +337,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -351,6 +356,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -394,6 +400,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -412,6 +419,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -451,6 +459,7 @@ class TestConfig(TestCase):
                     "HOST": "foo",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "foo",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -469,6 +478,7 @@ class TestConfig(TestCase):
                     "HOST": "bar",
                     "NAME": "foo",
                     "OPTIONS": {
+                        "pool": False,
                         "sslcert": "bar",
                         "sslkey": "foo",
                         "sslmode": "foo",
@@ -482,5 +492,87 @@ class TestConfig(TestCase):
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
                 },
+            },
+        )
+
+    def test_db_pool(self):
+        """Test DB Config with pool"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.use_pool", True)
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": True,
+                        "sslcert": None,
+                        "sslkey": None,
+                        "sslmode": None,
+                        "sslrootcert": None,
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "test_authentik"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                }
+            },
+        )
+
+    def test_db_pool_options(self):
+        """Test DB Config with pool"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.use_pool", True)
+        config.set(
+            "postgresql.pool_options",
+            base64.b64encode(
+                json.dumps(
+                    {
+                        "max_size": 15,
+                    }
+                ).encode()
+            ).decode(),
+        )
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": {
+                            "max_size": 15,
+                        },
+                        "sslcert": None,
+                        "sslkey": None,
+                        "sslmode": None,
+                        "sslrootcert": None,
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "test_authentik"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                }
             },
         )
