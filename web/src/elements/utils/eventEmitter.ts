@@ -1,38 +1,41 @@
-import type { LitElement } from "lit";
+import { createMixin } from "@goauthentik/elements/types";
+import { CustomEventDetail, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Constructor<T = object> = new (...args: any[]) => T;
+export interface EmmiterElementHandler {
+    dispatchCustomEvent<T>(
+        eventName: string,
+        detail?: T extends CustomEvent<infer U> ? U : T,
+        eventInit?: EventInit,
+    ): void;
+}
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isCustomEvent = (v: any): v is CustomEvent =>
-    v instanceof CustomEvent && "detail" in v;
-
-export function CustomEmitterElement<T extends Constructor<LitElement>>(superclass: T) {
-    return class EmmiterElementHandler extends superclass {
-        dispatchCustomEvent<F extends CustomEvent>(
+export const CustomEmitterElement = createMixin<EmmiterElementHandler>(({ SuperClass }) => {
+    return class EmmiterElementHandler extends SuperClass {
+        public dispatchCustomEvent<D extends CustomEventDetail>(
             eventName: string,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            detail: any = {},
-            options = {},
+            detail: D = {} as D,
+            eventInit: EventInit = {},
         ) {
-            const fullDetail =
-                typeof detail === "object" && !Array.isArray(detail)
-                    ? {
-                          ...detail,
-                      }
-                    : detail;
+            let normalizedDetail: CustomEventDetail;
+
+            if (detail && typeof detail === "object" && !Array.isArray(detail)) {
+                // TODO: Is this destructuring still necessary to shallow copy the object?
+                normalizedDetail = { ...detail };
+            } else {
+                normalizedDetail = detail;
+            }
 
             this.dispatchEvent(
                 new CustomEvent(eventName, {
                     composed: true,
                     bubbles: true,
-                    ...options,
-                    detail: fullDetail,
-                }) as F,
+                    ...eventInit,
+                    detail: normalizedDetail,
+                }),
             );
         }
     };
-}
+});
 
 /**
  * Mixin that enables Lit Elements to handle custom events in a more straightforward manner.
@@ -56,8 +59,19 @@ class HK {
 type EventHandler = (ev: CustomEvent) => void;
 type EventMap = WeakMap<EventHandler, EventHandler>;
 
-export function CustomListenerElement<T extends Constructor<LitElement>>(superclass: T) {
-    return class ListenerElementHandler extends superclass {
+export interface CustomEventTarget {
+    addCustomListener(eventName: string, handler: EventHandler): void;
+    removeCustomListener(eventName: string, handler: EventHandler): void;
+}
+
+/**
+ * A mixin that enables Lit Elements to handle custom events in a more straightforward manner.
+ *
+ * @todo Can we lean on the native `EventTarget` class for this?
+ * @category Mixin
+ */
+export const CustomListenerElement = createMixin<CustomEventTarget>(({ SuperClass }) => {
+    return class ListenerElementHandler extends SuperClass implements CustomEventTarget {
         private [HK.listenHandlers] = new Map<string, EventMap>();
 
         private [HK.getHandler](eventName: string, handler: EventHandler) {
@@ -93,14 +107,14 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
         }
 
         addCustomListener(eventName: string, handler: EventHandler) {
-            const internalHandler = (ev: Event) => {
-                if (!isCustomEvent(ev)) {
+            const internalHandler = (event: Event) => {
+                if (!isCustomEvent(event)) {
                     console.error(
                         `Received a standard event for custom event ${eventName}; event will not be handled.`,
                     );
                     return;
                 }
-                handler(ev);
+                handler(event);
             };
             this[HK.addHandler](eventName, handler, internalHandler);
             this.addEventListener(eventName, internalHandler);
@@ -117,4 +131,4 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
             this[HK.removeHandler](eventName, handler);
         }
     };
-}
+});

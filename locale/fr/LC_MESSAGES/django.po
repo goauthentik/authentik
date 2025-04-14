@@ -10,8 +10,8 @@
 # Manuel Viens, 2023
 # Mordecai, 2023
 # nerdinator <florian.dupret@gmail.com>, 2024
-# Tina, 2024
 # Charles Leclerc, 2025
+# Tina, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-13 00:10+0000\n"
+"POT-Creation-Date: 2025-04-11 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -678,6 +678,22 @@ msgstr "Courriel"
 
 #: authentik/events/models.py
 msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+"Personnalise le corps de la requête. Le mappage doit renvoyer des données "
+"sérialisables en JSON."
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+"Configure les en-têtes supplémentaires à envoyer. Le mappage doit renvoyer "
+"un dictionnaire de paires clé-valeur."
+
+#: authentik/events/models.py
+msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
@@ -1331,6 +1347,22 @@ msgstr "Score de Réputation"
 msgid "Reputation Scores"
 msgstr "Scores de Réputation"
 
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr "En attente de l'authentification..."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+"Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
+"se rafraîchira lorsque l'authentification sera terminée."
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr "S'authentifier dans cet onglet"
+
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
 msgstr "Permission refusée"
@@ -1957,6 +1989,20 @@ msgstr ""
 "NameIDPolicy de la requête entrante sera prise en compte"
 
 #: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr "Mappage de propriété AuthnContextClassRef"
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+"Configure comment la valeur AuthnContextClassRef sera créée. Lorsque non "
+"sélectionné, AuthnContextClassRef sera défini en fonction de quelle méthode "
+"d'authentification l'utilisateur a utilisé pour s'authentifier."
+
+#: authentik/providers/saml/models.py
 msgid ""
 "Assertion valid not before current time + this value (Format: "
 "hours=-1;minutes=-2;seconds=-3)."
@@ -2394,6 +2440,13 @@ msgid ""
 msgstr ""
 "Lorsqu'un utilisateur change son mot de passe, le synchroniser à nouveau "
 "vers LDAP. Ne peut être activé que sur une seule source LDAP."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"

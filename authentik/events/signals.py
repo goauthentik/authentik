@@ -59,7 +59,7 @@ def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | Non
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
         SessionStore = _session_engine.SessionStore
-        session = SessionStore(request_or_session.session_key)
+        session = SessionStore(request_or_session.session.session_key)
     return session.get(SESSION_LOGIN_EVENT, None)
 
 
