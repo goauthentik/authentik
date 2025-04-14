@@ -18494,6 +18494,15 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: group_filters
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: name
         schema:
           type: string
