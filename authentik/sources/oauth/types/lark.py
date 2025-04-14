@@ -18,7 +18,6 @@ class LarkOAuthRedirect(OAuthRedirect):
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
             "scope": [
-                "contact:user.phone:readonly",
                 "contact:user.employee_id:readonly",
                 "contact:user.email:readonly",
             ],
