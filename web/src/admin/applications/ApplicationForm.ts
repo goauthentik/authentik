@@ -1,6 +1,12 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
+import {
+    clearApplicationIcon,
+    setApplicationIcon,
+    setApplicationIconUrl,
+} from "@goauthentik/common/api/applications";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
@@ -19,6 +25,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -59,6 +66,9 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     @property({ type: Boolean })
     clearIcon = false;
 
+    @state()
+    iconError = "";
+
     getSuccessMessage(): string {
         return this.instance
             ? msg("Successfully updated application.")
@@ -66,36 +76,93 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     async send(data: Application): Promise<Application | void> {
+        // Reset icon error
+        this.iconError = "";
+
         let app: Application;
         data.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
-        if (this.instance) {
-            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
-                slug: this.instance.slug,
-                applicationRequest: data,
-            });
-        } else {
-            app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
-                applicationRequest: data,
-            });
-        }
-        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["metaIcon"];
-            if (icon || this.clearIcon) {
-                await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
-                    slug: app.slug,
-                    file: icon,
-                    clear: this.clearIcon,
+        try {
+            if (this.instance) {
+                app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
+                    slug: this.instance.slug,
+                    applicationRequest: data,
+                });
+            } else {
+                app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsCreate({
+                    applicationRequest: data,
                 });
             }
-        } else {
-            await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconUrlCreate({
-                slug: app.slug,
-                filePathRequest: {
-                    url: data.metaIcon || "",
-                },
+        } catch (error: any) {
+            showMessage({
+                level: MessageLevel.error,
+                message:
+                    error.response?.data?.error || error.message || "Failed to save application",
             });
+            return;
         }
-        return app;
+
+        // Create mutable copy of the app for modifications
+        const mutableApp = { ...app };
+
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
+            const icon = this.getFormFiles()["metaIcon"];
+
+            try {
+                let iconResponse;
+
+                if (this.clearIcon) {
+                    // Clear the icon
+                    iconResponse = await clearApplicationIcon(app.slug);
+                    if (!iconResponse.error) {
+                        showMessage({
+                            level: MessageLevel.success,
+                            message: msg("Application icon cleared successfully"),
+                        });
+                    }
+                } else if (icon) {
+                    // Upload new icon file
+                    iconResponse = await setApplicationIcon(app.slug, icon);
+                    if (!iconResponse.error && iconResponse.meta_icon) {
+                        mutableApp.metaIcon = iconResponse.meta_icon;
+                        showMessage({
+                            level: MessageLevel.success,
+                            message: msg("Application icon updated successfully"),
+                        });
+                    }
+                } else if (
+                    data.metaIcon &&
+                    (!this.instance || data.metaIcon !== this.instance.metaIcon)
+                ) {
+                    // Set icon URL
+                    iconResponse = await setApplicationIconUrl(app.slug, data.metaIcon);
+                    if (!iconResponse.error && iconResponse.meta_icon) {
+                        mutableApp.metaIcon = iconResponse.meta_icon;
+                        showMessage({
+                            level: MessageLevel.success,
+                            message: msg("Application icon URL updated successfully"),
+                        });
+                    }
+                }
+
+                // Handle any error response
+                if (iconResponse?.error) {
+                    this.iconError = iconResponse.error;
+                    showMessage({
+                        level: MessageLevel.error,
+                        message: iconResponse.error,
+                    });
+                }
+            } catch (e: unknown) {
+                const error = e as Error;
+                this.iconError = error.message || msg("Failed to update application icon");
+                showMessage({
+                    level: MessageLevel.error,
+                    message: error.message || msg("Failed to update application icon"),
+                });
+            }
+        }
+
+        return mutableApp;
     }
 
     handleConfirmBackchannelProviders(items: Provider[]) {
@@ -113,11 +180,24 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     handleClearIcon(ev: Event) {
-        ev.stopPropagation();
-        if (!(ev instanceof InputEvent) || !ev.target) {
-            return;
+        const target = ev.target as HTMLInputElement;
+        this.clearIcon = target.checked;
+    }
+
+    // Validate URL format for icon URL
+    validateIconUrl(url: string): boolean {
+        if (!url) return true; // Empty is valid
+
+        // Check if it's a Font Awesome icon reference
+        if (url.startsWith("fa://")) return true;
+
+        // Check if it's a valid URL
+        try {
+            new URL(url);
+            return true;
+        } catch {
+            return false;
         }
-        this.clearIcon = !!(ev.target as HTMLInputElement).checked;
     }
 
     renderForm(): TemplateResult {
@@ -207,6 +287,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                                   name="metaIcon"
                                   value=${ifDefined(this.instance?.metaIcon ?? undefined)}
                                   current=${msg("Currently set to:")}
+                                  .errorMessage=${this.iconError}
                               ></ak-file-input>
                               ${this.instance?.metaIcon
                                   ? html`
@@ -223,6 +304,15 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                               name="metaIcon"
                               value=${first(this.instance?.metaIcon, "")}
                               help=${iconHelperText}
+                              .errorMessage=${this.iconError}
+                              @input=${(e: Event) => {
+                                  const target = e.target as HTMLInputElement;
+                                  if (!this.validateIconUrl(target.value)) {
+                                      this.iconError = msg("Invalid URL format");
+                                  } else {
+                                      this.iconError = "";
+                                  }
+                              }}
                           >
                           </ak-text-input>`}
                     <ak-text-input
