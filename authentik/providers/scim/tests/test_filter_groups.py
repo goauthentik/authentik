@@ -50,7 +50,7 @@ class SCIMFilterGroupsTests(TestCase):
             set(group_qs.values_list("pk", flat=True)),
         )
 
-    def test_single_filter_group(self):
+    def test_single_group_filter(self):
         """Test with one group filter set"""
         self.provider.group_filters.add(self.group1)
 
