@@ -1,8 +1,8 @@
 """Test config loader"""
 
 import base64
-from json import dumps
 import json
+from json import dumps
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 from unittest import mock
