@@ -210,7 +210,7 @@ dependencies = [
     { name = "opencontainers" },
     { name = "packaging" },
     { name = "paramiko" },
-    { name = "psycopg", extra = ["c"] },
+    { name = "psycopg", extra = ["c", "pool"] },
     { name = "pydantic" },
     { name = "pydantic-scim" },
     { name = "pyjwt" },
@@ -308,7 +308,7 @@ requires-dist = [
     { name = "opencontainers", git = "https://github.com/BeryJu/oci-python?rev=c791b19056769cd67957322806809ab70f5bead8" },
     { name = "packaging" },
     { name = "paramiko" },
-    { name = "psycopg", extras = ["c"] },
+    { name = "psycopg", extras = ["c", "pool"] },
     { name = "pydantic" },
     { name = "pydantic-scim" },
     { name = "pyjwt" },
@@ -2321,12 +2321,27 @@ wheels = [
 c = [
     { name = "psycopg-c", marker = "implementation_name != 'pypy'" },
 ]
+pool = [
+    { name = "psycopg-pool" },
+]
 
 [[package]]
 name = "psycopg-c"
 version = "3.2.6"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/2f/f1/367a2429af2b97f6a46dc116206cd3b1cf668fca7ff3c22b979ea0686427/psycopg_c-3.2.6.tar.gz", hash = "sha256:b5fd4ce70f82766a122ca5076a36c4d5818eaa9df9bf76870bc83a064ffaed3a", size = 609304 }
+
+[[package]]
+name = "psycopg-pool"
+version = "3.2.6"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/cf/13/1e7850bb2c69a63267c3dbf37387d3f71a00fd0e2fa55c5db14d64ba1af4/psycopg_pool-3.2.6.tar.gz", hash = "sha256:0f92a7817719517212fbfe2fd58b8c35c1850cdd2a80d36b581ba2085d9148e5", size = 29770 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/47/fd/4feb52a55c1a4bd748f2acaed1903ab54a723c47f6d0242780f4d97104d4/psycopg_pool-3.2.6-py3-none-any.whl", hash = "sha256:5887318a9f6af906d041a0b1dc1c60f8f0dda8340c2572b74e10907b51ed5da7", size = 38252 },
+]
 
 [[package]]
 name = "publication"
