@@ -1,6 +1,5 @@
 """test reputation signals and policy"""
 
-from django.contrib.auth.hashers import make_password
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
@@ -22,28 +21,29 @@ class TestReputationPolicy(TestCase):
         self.request = self.request_factory.get("/")
         self.ip = "127.0.0.1"
         self.username = "username"
-        self.password = make_password("password")
+        self.password = "password"
         # We need a user for the one-to-one in userreputation
-        self.user = User.objects.create(username=self.username, password=self.password)
+        self.user = User.objects.create(username=self.username)
+        self.user.set_password(self.password)
         self.backends = [BACKEND_INBUILT]
 
     def test_ip_reputation(self):
         """test IP reputation"""
         # Trigger negative reputation
-        authenticate(self.request, self.backends, username=self.username, password=self.username)
+        authenticate(self.request, self.backends, username=self.username, password="")
         self.assertEqual(Reputation.objects.get(ip=self.ip).score, -1)
 
     def test_user_reputation(self):
         """test User reputation"""
         # Trigger negative reputation
-        authenticate(self.request, self.backends, username=self.username, password=self.username)
+        authenticate(self.request, self.backends, username=self.username, password="")
         self.assertEqual(Reputation.objects.get(identifier=self.username).score, -1)
 
     def test_update_reputation(self):
         """test reputation update"""
         Reputation.objects.create(identifier=self.username, ip=self.ip, score=4)
         # Trigger negative reputation
-        authenticate(self.request, self.backends, username=self.username, password=self.username)
+        authenticate(self.request, self.backends, username=self.username, password="")
         self.assertEqual(Reputation.objects.get(identifier=self.username).score, 3)
 
     def test_reputation_lower_limit(self):
