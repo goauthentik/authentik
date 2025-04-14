@@ -51,7 +51,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **User object filter**: Consider objects matching this filter to be users.
 - **Group object filter**: Consider objects matching this filter to be groups.
 - **Lookup using a user attribute**: Acquire group membership from a User object attribute (`memberOf`) instead of a Group attribute (`member`). This works with directories with nested groups memberships (Active Directory, RedHat IDM/FreeIPA), using `memberOf:1.2.840.113556.1.4.1941:` as the group membership field.
-- **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If "Lookup using a user attribute" is set, this should be a user object attribute, otherwise a group object attribute.
+- **Group membership field**: The user object attribute or the group object attribute that determines the group membership for a user. If **Lookup using a user attribute** is set, this should be a user object attribute, otherwise a group object attribute.
 - **Object uniqueness field**: This field contains a unique identifier.
 
 ## LDAP source property mappings
