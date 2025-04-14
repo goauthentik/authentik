@@ -109,6 +109,8 @@ class LarkType(SourceType):
             "username": info.get("open_id"),
             "email": info.get("email"),
             "name": info.get("name"),
-            "avatar": info.get("avatar_url"),
-            "mobile": info.get("mobile"),
+            "attributes": {
+                "avatar": info.get("avatar_url"),
+                "mobile": info.get("mobile"),
+            },
         }
