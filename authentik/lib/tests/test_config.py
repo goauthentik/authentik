@@ -502,6 +502,7 @@ class TestConfig(TestCase):
         config.set("postgresql.user", "foo")
         config.set("postgresql.password", "foo")
         config.set("postgresql.port", "foo")
+        config.set("postgresql.test.name", "foo")
         config.set("postgresql.use_pool", True)
         conf = django_db_config(config)
         self.assertEqual(
@@ -520,7 +521,7 @@ class TestConfig(TestCase):
                     },
                     "PASSWORD": "foo",
                     "PORT": "foo",
-                    "TEST": {"NAME": "test_authentik"},
+                    "TEST": {"NAME": "foo"},
                     "USER": "foo",
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
@@ -537,6 +538,7 @@ class TestConfig(TestCase):
         config.set("postgresql.user", "foo")
         config.set("postgresql.password", "foo")
         config.set("postgresql.port", "foo")
+        config.set("postgresql.test.name", "foo")
         config.set("postgresql.use_pool", True)
         config.set(
             "postgresql.pool_options",
@@ -567,7 +569,7 @@ class TestConfig(TestCase):
                     },
                     "PASSWORD": "foo",
                     "PORT": "foo",
-                    "TEST": {"NAME": "test_authentik"},
+                    "TEST": {"NAME": "foo"},
                     "USER": "foo",
                     "CONN_MAX_AGE": 0,
                     "CONN_HEALTH_CHECKS": False,
