@@ -154,6 +154,13 @@ class GitLabOAuthSource(CreatableType, OAuthSource):
         verbose_name = _("GitLab OAuth Source")
         verbose_name_plural = _("GitLab OAuth Sources")
 
+class LarkOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Lark OAuth Source"""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Lark OAuth Source")
+        verbose_name_plural = _("Lark OAuth Sources")
 
 class TwitchOAuthSource(CreatableType, OAuthSource):
     """Social Login using Twitch."""
@@ -281,15 +288,6 @@ class OAuthSourcePropertyMapping(PropertyMapping):
     class Meta:
         verbose_name = _("OAuth Source Property Mapping")
         verbose_name_plural = _("OAuth Source Property Mappings")
-
-
-class LarkOAuthSource(CreatableType, OAuthSource):
-    """Social Login using Lark OAuth Source"""
-
-    class Meta:
-        abstract = True
-        verbose_name = _("Lark OAuth Source")
-        verbose_name_plural = _("Lark OAuth Sources")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):
