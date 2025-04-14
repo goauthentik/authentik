@@ -17,29 +17,40 @@ from authentik.tenants.utils import get_current_tenant
 LOGGER = get_logger()
 
 
+def clamp(value, min, max):
+    return sorted([min, value, max])[1]
+
+
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
     remote_ip = ClientIPMiddleware.get_client_ip(request)
     tenant = get_current_tenant()
+    new_score = clamp(amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit)
 
     with transaction.atomic():
-        reputation, _ = Reputation.objects.select_for_update().get_or_create(
+        reputation, created = Reputation.objects.select_for_update().get_or_create(
             ip=remote_ip,
             identifier=identifier,
             defaults={
+                "score": clamp(
+                    amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit
+                ),
                 "ip_geo_data": GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
                 "ip_asn_data": ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
                 "expires": reputation_expiry(),
             },
         )
 
-        if amount < 0:
-            reputation.score = max(reputation.score + amount, tenant.reputation_lower_limit)
-        if amount > 0:
-            reputation.score = min(reputation.score + amount, tenant.reputation_upper_limit)
-        reputation.save()
+        if not created:
+            new_score = clamp(
+                reputation.score + amount,
+                tenant.reputation_lower_limit,
+                tenant.reputation_upper_limit,
+            )
+            reputation.score = new_score
+            reputation.save()
 
-    LOGGER.info("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
+    LOGGER.info("Updated score", amount=new_score, for_user=identifier, for_ip=remote_ip)
 
 
 @receiver(login_failed)

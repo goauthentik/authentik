@@ -182,14 +182,14 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 required
                 name="reputationLowerLimit"
                 value="${first(this._settings?.reputationLowerLimit, -5)}"
-                help=${msg("Reputation cannot decrease lower than this value.")}
+                help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
             ></ak-number-input>
             <ak-number-input
                 label=${msg("Reputation: upper limit")}
                 required
                 name="reputationUpperLimit"
                 value="${first(this._settings?.reputationUpperLimit, 5)}"
-                help=${msg("Reputation cannot increase higher than this value.")}
+                help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
             ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
