@@ -15,11 +15,22 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    SourceSerializer,
+    UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
+)
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.sync.outgoing.api import SyncStatusSerializer
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
@@ -221,3 +232,23 @@ class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
     filterset_class = LDAPSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]
+
+
+class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
+    class Meta(UserSourceConnectionSerializer.Meta):
+        model = UserLDAPSourceConnection
+
+
+class UserLDAPSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
+    queryset = UserLDAPSourceConnection.objects.all()
+    serializer_class = UserLDAPSourceConnectionSerializer
+
+
+class GroupLDAPSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupLDAPSourceConnection
+
+
+class GroupLDAPSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    queryset = GroupLDAPSourceConnection.objects.all()
+    serializer_class = GroupLDAPSourceConnectionSerializer
