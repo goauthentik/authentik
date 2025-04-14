@@ -18,7 +18,9 @@ The following placeholders are used in this guide:
 - `example.com` is the default E-mail address configured in Google workspace.
 
 :::note
+
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+
 :::
 
 ## authentik Configuration
