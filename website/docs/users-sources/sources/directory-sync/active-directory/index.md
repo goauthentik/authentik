@@ -21,7 +21,7 @@ To support the integration of Active Directory with authentik, you need to creat
 
 3. Set the password for the service account. Ensure that the **Reset user password and force password change at next logon** option is not checked.
 
-    The following commands can be used to generate the password:
+    Either of the following commands can be used to generate the password:
 
     ```sh
     pwgen 64 1
