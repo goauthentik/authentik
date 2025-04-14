@@ -3,7 +3,7 @@ title: Lark (FeiShu)
 support_level: community
 ---
 
-Adding [Lark](https://www.larksuite.com/en_sg) (FeiShu) as a source in authentik allows users to authenticate through authentik with their Lark (Feishu) credentials. Feishu is an office suite that integrates messaging, schedule management, collaborative documents, video conferencing, and other applications in one platform. Feishu is used in mainland China; outside of China, Lark is the equivalent application.
+[Lark](https://www.larksuite.com/en_sg) (FeiShu) is an office suite that integrates messaging, schedule management, collaborative documents, video conferencing, and other applications in one platform. Feishu is used in mainland China; outside of China, Lark is the equivalent application.
 
 ## Preparation
 
