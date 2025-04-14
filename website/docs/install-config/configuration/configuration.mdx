@@ -70,6 +70,8 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__USER`: Database user
 - `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
+- `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/5.1/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4]
+- `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Extra configuration to pass to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. Must be a base64-encoded JSON dictionary. Ignored when `USE_POOL` is set to `false`. :ak-version[2025.4]
 - `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer. Deprecated, see below
 - `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool. Deprecated, see below
 - `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
