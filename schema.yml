@@ -53723,6 +53723,17 @@ components:
           type: string
           minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or
+            positive.
         footer_links:
           description: The option configures the footer links on the flow executor
             pages.
@@ -57775,6 +57786,17 @@ components:
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or
+            positive.
         footer_links:
           description: The option configures the footer links on the flow executor
             pages.
@@ -57818,6 +57840,17 @@ components:
           type: string
           minLength: 1
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
+        reputation_lower_limit:
+          type: integer
+          maximum: 0
+          minimum: -2147483648
+          description: Reputation cannot decrease lower than this value. Zero or negative.
+        reputation_upper_limit:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Reputation cannot increase higher than this value. Zero or
+            positive.
         footer_links:
           description: The option configures the footer links on the flow executor
             pages.
