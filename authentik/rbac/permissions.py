@@ -6,7 +6,6 @@ from guardian.shortcuts import assign_perm
 from rest_framework.permissions import BasePermission, DjangoObjectPermissions
 from rest_framework.request import Request
 
-#from authentik.core.models import User
 from authentik.rbac.models import InitialPermissions, InitialPermissionsMode
 
 
@@ -58,7 +57,9 @@ def HasPermission(*perm: str) -> type[BasePermission]:
     return checker
 
 
-def assign_initial_permissions(user: 'User', instance: Model):
+# TODO: add `user: User` type annotation without circular dependencies.
+# The author of this function isn't proficient/patient enough to do it.
+def assign_initial_permissions(user, instance: Model):
     # Performance here should not be an issue, but if needed, there are many optimization routes
     initial_permissions_list = InitialPermissions.objects.filter(role__group__in=user.groups.all())
     for initial_permissions in initial_permissions_list:
