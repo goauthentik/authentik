@@ -285,7 +285,7 @@ requires-dist = [
     { name = "django-redis" },
     { name = "django-storages", extras = ["s3"] },
     { name = "django-tenants", git = "https://github.com/rissson/django-tenants.git?branch=authentik-fixes" },
-    { name = "djangorestframework", specifier = "==3.14.0" },
+    { name = "djangorestframework", git = "https://github.com/authentik-community/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian" },
     { name = "docker" },
     { name = "drf-orjson-renderer" },
@@ -1103,15 +1103,10 @@ dependencies = [
 
 [[package]]
 name = "djangorestframework"
-version = "3.14.0"
-source = { registry = "https://pypi.org/simple" }
+version = "3.16.0"
+source = { git = "https://github.com/authentik-community/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e#896722bab969fabc74a08b827da59409cf9f1a4e" }
 dependencies = [
     { name = "django" },
-    { name = "pytz" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/8e/53/5b2a002c5ebafd60dff1e1945a7d63dee40155830997439a9ba324f0fd50/djangorestframework-3.14.0.tar.gz", hash = "sha256:579a333e6256b09489cbe0a067e66abe55c6595d8926be6b99423786334350c8", size = 1055343 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ff/4b/3b46c0914ba4b7546a758c35fdfa8e7f017fcbe7f23c878239e93623337a/djangorestframework-3.14.0-py3-none-any.whl", hash = "sha256:eb63f58c9f218e1a7d064d17a70751f528ed4e1d35547fdade9aaf4cd103fd08", size = 1062761 },
 ]
 
 [[package]]
