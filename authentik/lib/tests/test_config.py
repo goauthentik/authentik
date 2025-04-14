@@ -1,7 +1,6 @@
 """Test config loader"""
 
 import base64
-import json
 from json import dumps
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
@@ -542,7 +541,7 @@ class TestConfig(TestCase):
         config.set(
             "postgresql.pool_options",
             base64.b64encode(
-                json.dumps(
+                dumps(
                     {
                         "max_size": 15,
                     }
