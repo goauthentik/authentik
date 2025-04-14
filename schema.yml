@@ -24209,6 +24209,270 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /rbac/initial_permissions/:
+    get:
+      operationId: rbac_initial_permissions_list
+      description: InitialPermissions viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInitialPermissionsList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: rbac_initial_permissions_create
+      description: InitialPermissions viewset
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitialPermissionsRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialPermissions'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/initial_permissions/{id}/:
+    get:
+      operationId: rbac_initial_permissions_retrieve
+      description: InitialPermissions viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialPermissions'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: rbac_initial_permissions_update
+      description: InitialPermissions viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitialPermissionsRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialPermissions'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: rbac_initial_permissions_partial_update
+      description: InitialPermissions viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInitialPermissionsRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialPermissions'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: rbac_initial_permissions_destroy
+      description: InitialPermissions viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/initial_permissions/{id}/used_by/:
+    get:
+      operationId: rbac_initial_permissions_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Initial Permissions.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /rbac/permissions/:
     get:
       operationId: rbac_permissions_list
@@ -24370,6 +24634,7 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_providers_ssf.ssfprovider
+          - authentik_rbac.initialpermissions
           - authentik_rbac.role
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
@@ -24616,6 +24881,7 @@ paths:
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
           - authentik_providers_ssf.ssfprovider
+          - authentik_rbac.initialpermissions
           - authentik_rbac.role
           - authentik_sources_kerberos.groupkerberossourceconnection
           - authentik_sources_kerberos.kerberossource
@@ -45974,6 +46240,63 @@ components:
           minLength: 1
       required:
       - reason
+    InitialPermissions:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          maxLength: 150
+        mode:
+          $ref: '#/components/schemas/InitialPermissionsModeEnum'
+        role:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: integer
+        permissions_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+          readOnly: true
+      required:
+      - mode
+      - name
+      - permissions_obj
+      - pk
+      - role
+    InitialPermissionsModeEnum:
+      enum:
+      - user
+      - role
+      type: string
+    InitialPermissionsRequest:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        mode:
+          $ref: '#/components/schemas/InitialPermissionsModeEnum'
+        role:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: integer
+      required:
+      - mode
+      - name
+      - role
     InstallID:
       type: object
       properties:
@@ -47662,6 +47985,7 @@ components:
       - authentik_providers_scim.scimprovider
       - authentik_providers_scim.scimmapping
       - authentik_rbac.role
+      - authentik_rbac.initialpermissions
       - authentik_sources_kerberos.kerberossource
       - authentik_sources_kerberos.kerberossourcepropertymapping
       - authentik_sources_kerberos.userkerberossourceconnection
@@ -49387,6 +49711,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentificationStage'
+      required:
+      - pagination
+      - results
+    PaginatedInitialPermissionsList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/InitialPermissions'
       required:
       - pagination
       - results
@@ -51939,6 +52275,23 @@ components:
           type: boolean
           description: When enabled, the stage will succeed and continue even when
             incorrect user info is entered.
+    PatchedInitialPermissionsRequest:
+      type: object
+      description: InitialPermissions serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        mode:
+          $ref: '#/components/schemas/InitialPermissionsModeEnum'
+        role:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: integer
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer
@@ -54104,6 +54457,21 @@ components:
           type: string
       required:
       - id
+    PermissionRequest:
+      type: object
+      description: Global permission
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+      - codename
+      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
