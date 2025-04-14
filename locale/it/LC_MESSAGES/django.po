@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-11 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
@@ -2428,6 +2428,13 @@ msgid ""
 msgstr ""
 "Quando un utente cambia la propria password, sincronizzala con LDAP. Questo "
 "può essere abilitato solo su una singola origine LDAP."
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"

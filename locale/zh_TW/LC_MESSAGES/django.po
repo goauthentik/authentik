@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-11 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: 刘松, 2025\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/authentik/teams/119923/zh_TW/)\n"
@@ -2216,6 +2216,13 @@ msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
 msgstr "當使用者更改密碼時，將其同步回 LDAP。這只能在只有單一 LDAP 來源上啟用。"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
