@@ -289,7 +289,7 @@ class LarkOAuthSource(CreatableType, OAuthSource):
     class Meta:
         abstract = True
         verbose_name = _("Lark OAuth Source")
-        verbose_name_plural = _("Lark OAuth Source")
+        verbose_name_plural = _("Lark OAuth Sources")
 
 
 class UserOAuthSourceConnection(UserSourceConnection):
