@@ -133,7 +133,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 ## Formatting guidelines
 
-### Fonts and Font Styling
+### Fonts and font styling
 
 - When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
 
@@ -190,27 +190,52 @@ When you want to show an example (say, a code snippet), start on a new line, use
             return False
         ```
 
-## Component-Based Formatting
+## Code blocks
+
+When you want to show sections of code use **Code blocks** to provide syntax highlighting, a copy button, line numbering and line highlighting:
+
+```text
+` ` ` yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+all_access:
+reserved: true
+hidden: false
+backend_roles:
+    - "wazuh-admin"
+    - "admin"
+hosts: []
+users: []
+and_backend_roles: []
+description: "Maps admin to all_access"
+` ` `
+```
+Which is rendered as:
+
+```yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+all_access:
+reserved: true
+hidden: false
+backend_roles:
+    - "wazuh-admin"
+    - "admin"
+hosts: []
+users: []
+and_backend_roles: []
+description: "Maps admin to all_access"
+```
+
+- ``` ` ` ` yaml ``` defines the language used for syntax highlighting. Other languages can be used such as; `jsx`, `python`, `bash` and `text`.
+Optional configurations:
+- `showLineNumbers` enables the line numbering on the left-hand side of the code block.
+- `{5}` selects the line number that will be highlighted. Ranges and lists can alse be used (e.g. `{5, 7, 9-11}`).
+- `title=" "` defines the title that is displayed at the top of the code block. This is useful for defining filenames and paths.
+
+More information on codeblocks can be found in the [docusaurus code block documentation.](https://docusaurus.io/docs/markdown-features/code-blocks)
+
+## Component-based formatting
 
 This section covers the usage of React components within our documentation. Files that use component-based formatting must use the `.mdx` extension.
 
-### Multiline Code Blocks
-
-For displaying multiline code blocks, especially when variables need to be defined, use the **`IntegrationsMultilineCodeblock`** React component. Insert the following lines wherever you want the code block to appear:
-
-```jsx
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
-<IntegrationsMultilineCodeblock>
-    {`
-OIDC_DISCOVERY_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/
-`}
-</IntegrationsMultilineCodeblock>;
-```
-
-This is especially useful for configuration files like JSON, YAML, or `.env` files, where placeholders must be replaced.
-
-### Tabs for Multiple Configurations
+### Tabs for multiple configurations
 
 Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. Insert the following lines wherever you want the code block to appear:
 
@@ -232,7 +257,7 @@ import TabItem from "@theme/TabItem";
 
 Tabs improve readability when presenting different configurations or setup options.
 
-## Error Message Formatting and Troubleshooting
+## Error message formatting and troubleshooting
 
 When documenting error messages:
 
@@ -259,14 +284,14 @@ Example:
     - Reset your password if necessary
     - Contact an administrator if your account is locked
 
-## Accessibility Best Practices
+## Accessibility best practices
 
 - Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
 - Provide **descriptive link text**. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
     - **DON'T:** "Click here."
     - **DO:** "See the [Authentication Settings](/) for more details."
 
-## Notes and Warnings
+## Notes and warnings
 
 For notes and important information:
 
