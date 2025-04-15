@@ -140,7 +140,7 @@ class PolicyProcess(PROCESS_CLASS):
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
         try:
-            self.result_queue.put(self.profiling_wrapper())
+            self.result_queue.put_nowait(self.profiling_wrapper())
         except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
             self.result_queue.put(PolicyResult(False, str(exc)))
