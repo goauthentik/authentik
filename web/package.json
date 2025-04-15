@@ -57,9 +57,14 @@
         "ts-pattern": "^5.4.0",
         "unist-util-visit": "^5.0.0",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.5.1"
+        "yaml": "^2.5.1",
+        "bootstrap": "^4.6.1",
+        "formdata-polyfill": "^4.0.10",
+        "jquery": "^3.7.1",
+        "weakmap-polyfill": "^2.0.4"
     },
     "devDependencies": {
+        "@types/jquery": "^3.5.31",
         "@eslint/js": "^9.11.1",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
@@ -90,6 +95,8 @@
         "@wdio/spec-reporter": "^9.1.2",
         "chromedriver": "^131.0.1",
         "esbuild": "^0.25.0",
+        "esbuild-plugin-copy": "^2.1.1",
+        "esbuild-plugin-es5": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
         "eslint": "^9.11.1",
@@ -161,6 +168,12 @@
         "watch": "run-s build-locales esbuild:watch"
     },
     "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./paths": "./paths.js",
+        "./authentication": "./authentication/index.js",
+        "./scripts/*": "./scripts/*.mjs"
+    },
     "wireit": {
         "build": {
             "#comment": [
@@ -193,8 +206,7 @@
                 "./dist/patternfly.min.css"
             ],
             "dependencies": [
-                "build-locales",
-                "./packages/sfe:build"
+                "build-locales"
             ],
             "env": {
                 "NODE_RUNNER": {
@@ -204,12 +216,7 @@
             }
         },
         "build:sfe": {
-            "dependencies": [
-                "./packages/sfe:build"
-            ],
-            "files": [
-                "./packages/sfe/**/*.ts"
-            ]
+            "command": "node scripts/build-sfe.mjs"
         },
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
@@ -242,11 +249,6 @@
                 "lint:package"
             ]
         },
-        "format:packages": {
-            "dependencies": [
-                "./packages/sfe:prettier"
-            ]
-        },
         "lint": {
             "command": "eslint --max-warnings 0 --fix",
             "env": {
@@ -273,11 +275,6 @@
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
             "shell": true,
             "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
-        },
-        "lint:lockfiles": {
-            "dependencies": [
-                "./packages/sfe:lint:lockfile"
-            ]
         },
         "lint:package": {
             "command": "syncpack format -i '    '"
@@ -314,9 +311,7 @@
                 "lint:spelling",
                 "lint:package",
                 "lint:lockfile",
-                "lint:lockfiles",
-                "lint:precommit",
-                "format:packages"
+                "lint:precommit"
             ]
         },
         "prettier": {

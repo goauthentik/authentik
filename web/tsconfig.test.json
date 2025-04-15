@@ -31,5 +31,10 @@
             "@goauthentik/standalone/*": ["./src/standalone/*"],
             "@goauthentik/user/*": ["./src/user/*"]
         }
-    }
+    },
+    "exclude": [
+        // ---
+        "./out/**/*",
+        "./dist/**/*"
+    ]
 }
