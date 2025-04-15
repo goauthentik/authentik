@@ -1,59 +1,142 @@
 import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
 
-export interface GlobalAuthentik {
-    _converted?: boolean;
+export interface APIConfig {
+    /**
+     * Absolute base path to the API.
+     */
+    base: string;
+    /**
+     * Relative base path to the API.
+     */
+    relBase: string;
+}
+
+export interface FlowConfig {
+    /**
+     * The current flow ID.
+     */
+    layout: string;
+}
+
+export interface SerializedClientState {
+    /**
+     * The BCP47 language tag.
+     */
     locale?: string;
-    flow?: {
-        layout: string;
-    };
-    config: Config;
-    brand: CurrentBrand;
+    /**
+     * Current flow state.
+     */
+    flow?: FlowConfig;
+    /**
+     * Server configuration.
+     */
+    config: unknown;
+    /**
+     * Branding information.
+     */
+    brand: unknown;
+    /**
+     * The major and minor components of the current version.
+     */
     versionFamily: string;
+    /**
+     * A subdomain compatible SemVer.
+     */
     versionSubdomain: string;
+    /**
+     * The current build hash.
+     */
     build: string;
-    api: {
-        base: string;
-        relBase: string;
+
+    /**
+     * The API configuration.
+     */
+    api: APIConfig;
+}
+
+type ClientConfigRealm<T> = T & {
+    readonly authentik: Readonly<SerializedClientState>;
+};
+
+function isClientConfigRealm<T>(namespace: object): namespace is ClientConfigRealm<T> {
+    return typeof namespace === "object" && "authentik" in namespace;
+}
+
+/**
+ * The current locale as defined by the server.
+ *
+ * @format BCP47
+ */
+export let ServerLocale = "";
+
+export let FlowConfig: FlowConfig | undefined;
+
+/**
+ * The current build hash.
+ */
+export let BuildHash = "";
+
+/**
+ * The major and minor components of the SemVer.
+ */
+export let VersionFamily = "";
+
+/**
+ * A subdomain compatible SemVer.
+ */
+export let VersionSubdomain = "";
+
+/**
+ * The parsed API configuration extracted from the global scope.
+ */
+export let APIConfig: Readonly<APIConfig>;
+
+/**
+ * The parsed server configuration extracted from the global scope.
+ */
+export let ServerConfig: Readonly<Config>;
+
+/**
+ * The parsed brand configuration extracted from the global scope.
+ */
+export let BrandConfig: Readonly<CurrentBrand>;
+
+if (!isClientConfigRealm(self)) {
+    const apiOrigin = new URL(process.env.AK_API_BASE_PATH || window.location.origin);
+
+    APIConfig = {
+        base: apiOrigin.toString(),
+        relBase: apiOrigin.pathname,
     };
+
+    BrandConfig = CurrentBrandFromJSON({
+        ui_footer_links: [],
+    });
+} else {
+    ServerLocale = self.authentik.locale || "";
+    FlowConfig = self.authentik.flow;
+
+    BuildHash = self.authentik.build;
+
+    VersionFamily = self.authentik.versionFamily;
+    VersionSubdomain = self.authentik.versionSubdomain;
+
+    ServerConfig = ConfigFromJSON(self.authentik.config);
+    BrandConfig = CurrentBrandFromJSON(self.authentik.brand);
+    APIConfig = self.authentik.api;
 }
 
-export interface AuthentikWindow {
-    authentik: GlobalAuthentik;
-}
+/**
+ * Generate a link to the documentation.
+ */
+export function docLink(documentationPath: string): string {
+    const origin =
+        // Default case or beta build which should always point to latest
+        BuildHash || !VersionSubdomain
+            ? "https://goauthentik.io"
+            : `https://${VersionSubdomain}.goauthentik.io`;
 
-export function globalAK(): GlobalAuthentik {
-    const ak = (window as unknown as AuthentikWindow).authentik;
-    if (ak && !ak._converted) {
-        ak._converted = true;
-        ak.brand = CurrentBrandFromJSON(ak.brand);
-        ak.config = ConfigFromJSON(ak.config);
-    }
-    const apiBase = new URL(process.env.AK_API_BASE_PATH || window.location.origin);
-    if (!ak) {
-        return {
-            config: ConfigFromJSON({
-                capabilities: [],
-            }),
-            brand: CurrentBrandFromJSON({
-                ui_footer_links: [],
-            }),
-            versionFamily: "",
-            versionSubdomain: "",
-            build: "",
-            api: {
-                base: apiBase.toString(),
-                relBase: apiBase.pathname,
-            },
-        };
-    }
-    return ak;
-}
+    const docsURL = new URL(documentationPath, origin);
 
-export function docLink(path: string): string {
-    const ak = globalAK();
-    // Default case or beta build which should always point to latest
-    if (!ak || ak.build !== "") {
-        return `https://goauthentik.io${path}`;
-    }
-    return `https://${ak.versionSubdomain}.goauthentik.io${path}`;
+    return docsURL.toString();
 }
