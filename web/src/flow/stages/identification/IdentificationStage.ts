@@ -42,7 +42,10 @@ export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
 });
 
 @customElement("ak-stage-identification")
-export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
+export class IdentificationStage extends BaseStage<
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest
+> {
     form?: HTMLFormElement;
 
     rememberMe: AkRememberMeController;
@@ -176,11 +179,13 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
             PasswordManagerPrefill.totp = el.value;
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach((input) => {
-                // Because we assume only one input field exists that matches this
-                // call focus so the user can press enter
-                input.focus();
-            });
+            (this.shadowRoot || this)
+                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
+                .forEach((input) => {
+                    // Because we assume only one input field exists that matches this
+                    // call focus so the user can press enter
+                    input.focus();
+                });
         };
         this.form.appendChild(totp);
     }
@@ -225,7 +230,9 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 : nothing}
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
-                      <a id="recovery" href="${this.challenge.recoveryUrl}">${msg("Forgot username or password?")}</a>
+                      <a id="recovery" href="${this.challenge.recoveryUrl}"
+                          >${msg("Forgot username or password?")}</a
+                      >
                   </p>`
                 : nothing}
         </div>`;
@@ -251,7 +258,7 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                 ? html`
                       <p>
                           ${msg(
-                              "Enter the email associated with your account, and we'll send you a link to reset your password."
+                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
                           )}
                       </p>
                   `
@@ -307,7 +314,9 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                     ${this.challenge.primaryAction}
                 </button>
             </div>
-            ${this.challenge.passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
+            ${this.challenge.passwordlessUrl
+                ? html`<ak-divider>${msg("Or")}</ak-divider>`
+                : nothing}`;
     }
 
     render(): TemplateResult {
@@ -325,7 +334,9 @@ export class IdentificationStage extends BaseStage<IdentificationChallenge, Iden
                     }}
                 >
                     ${this.challenge.applicationPre
-                        ? html`<p>${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}</p>`
+                        ? html`<p>
+                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
+                          </p>`
                         : nothing}
                     ${this.renderInput()}
                     ${this.challenge.passwordlessUrl
