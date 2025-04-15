@@ -34,6 +34,7 @@ module.exports = {
                         "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
+                        "services/openproject/index",
                         "services/outline/index",
                         "services/owncloud/index",
                         "services/paperless-ng/index",
@@ -66,6 +67,7 @@ module.exports = {
                     items: [
                         "services/organizr/index",
                         "services/linkwarden/index",
+                        "services/homarr/index",
                     ],
                 },
                 {
@@ -170,6 +172,7 @@ module.exports = {
                         "services/sentry/index",
                         "services/ubuntu-landscape/index",
                         "services/uptime-kuma/index",
+                        "services/wazuh/index",
                         "services/zabbix/index",
                         "services/whats-up-docker/index",
                     ],

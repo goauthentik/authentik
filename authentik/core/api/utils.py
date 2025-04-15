@@ -20,6 +20,8 @@ from rest_framework.serializers import (
     raise_errors_on_nested_writes,
 )
 
+from authentik.rbac.permissions import assign_initial_permissions
+
 
 def is_dict(value: Any):
     """Ensure a value is a dictionary, useful for JSONFields"""
@@ -29,6 +31,14 @@ def is_dict(value: Any):
 
 
 class ModelSerializer(BaseModelSerializer):
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+
+        request = self.context.get("request")
+        if request and hasattr(request, "user") and not request.user.is_anonymous:
+            assign_initial_permissions(request.user, instance)
+
+        return instance
 
     def update(self, instance: Model, validated_data):
         raise_errors_on_nested_writes("update", self, validated_data)

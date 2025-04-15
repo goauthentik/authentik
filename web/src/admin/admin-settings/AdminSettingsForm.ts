@@ -23,6 +23,9 @@ import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/ap
 import "./AdminSettingsFooterLinks.js";
 import { IFooterLinkInput, akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
+const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
+const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
+
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
     //
@@ -177,6 +180,26 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>
+            <ak-number-input
+                label=${msg("Reputation: lower limit")}
+                required
+                name="reputationLowerLimit"
+                value="${first(
+                    this._settings?.reputationLowerLimit,
+                    DEFAULT_REPUTATION_LOWER_LIMIT,
+                )}"
+                help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
+            ></ak-number-input>
+            <ak-number-input
+                label=${msg("Reputation: upper limit")}
+                required
+                name="reputationUpperLimit"
+                value="${first(
+                    this._settings?.reputationUpperLimit,
+                    DEFAULT_REPUTATION_UPPER_LIMIT,
+                )}"
+                help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
+            ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
                 <ak-array-input
                     .items=${this._settings?.footerLinks ?? []}
