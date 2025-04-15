@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-14 00:11+0000\n"
+"POT-Creation-Date: 2025-04-15 00:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,6 +169,7 @@ msgid "User's display name."
 msgstr ""
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr ""
 
@@ -1985,6 +1986,10 @@ msgid "Roles"
 msgstr ""
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr ""
 
@@ -3466,6 +3471,14 @@ msgstr ""
 msgid ""
 "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
 "seconds=2)."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
 msgstr ""
 
 #: authentik/tenants/models.py
