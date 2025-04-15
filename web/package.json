@@ -1,6 +1,14 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
+    },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",
@@ -42,7 +50,7 @@
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.4.1",
-        "rapidoc": "^9.3.7",
+        "rapidoc": "^9.3.8",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "rehype-highlight": "^7.0.2",
