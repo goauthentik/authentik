@@ -1,6 +1,14 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
+    },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",
