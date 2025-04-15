@@ -49137,6 +49137,7 @@ components:
       - ldap
       - radius
       - rac
+      - scim
       type: string
     PaginatedApplicationEntitlementList:
       type: object
