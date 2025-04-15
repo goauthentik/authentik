@@ -1,7 +1,6 @@
 """authentik policy task"""
 
-from multiprocessing import get_context
-from multiprocessing.connection import Connection
+from multiprocessing import Queue, get_context
 
 from django.core.cache import cache
 from sentry_sdk import start_span
@@ -37,7 +36,7 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
 class PolicyProcess(PROCESS_CLASS):
     """Evaluate a single policy within a separate process"""
 
-    connection: Connection
+    result_queue: Queue
     binding: PolicyBinding
     request: PolicyRequest
 
@@ -45,15 +44,15 @@ class PolicyProcess(PROCESS_CLASS):
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Connection | None,
+        result_queue: Queue | None,
     ):
         super().__init__()
         self.binding = binding
         self.request = request
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
-        if connection:
-            self.connection = connection
+        if result_queue:
+            self.result_queue = result_queue
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
@@ -141,7 +140,7 @@ class PolicyProcess(PROCESS_CLASS):
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
         try:
-            self.connection.send(self.profiling_wrapper())
+            self.result_queue.put(self.profiling_wrapper())
         except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
-            self.connection.send(PolicyResult(False, str(exc)))
+            self.result_queue.put(PolicyResult(False, str(exc)))
