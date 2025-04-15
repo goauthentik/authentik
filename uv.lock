@@ -2009,7 +2009,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.27.0"
+version = "1.28.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2019,9 +2019,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a5/5d/678e6e95151ebc012a8e00164ea85c3c638c3e9d42baf76bb0efbde4fce2/msgraph_sdk-1.27.0.tar.gz", hash = "sha256:92c3d168a2842eec631c772c2825864aa53ca54ea417935a6a9d2d1e50ede6f5", size = 6121021 }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/41/40bb3c630ca026182aefd79a9862ef4a1917b1161c83690c858d714788f5/msgraph_sdk-1.28.0.tar.gz", hash = "sha256:b2d64b7bd711ad285fc2c090dd524853a026848732e1c83874fe34561805350d", size = 6121069 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/ec/a2a7bda2e5828b16cc561aee996b2ee28724e5921bf571ae1846bafde805/msgraph_sdk-1.27.0-py3-none-any.whl", hash = "sha256:d5e91ef46fc7b95ae8e003cc3a27793075f4efeabd65611ccb9dad6976f76e99", size = 25091359 },
+    { url = "https://files.pythonhosted.org/packages/a8/58/d8e9593ea81779d503831b5b06c8d9881d5affefe3df99ca20112c969e6f/msgraph_sdk-1.28.0-py3-none-any.whl", hash = "sha256:bd33b186371dfa8ed6375dfda92eef0931485633e69b06c001ce3c2fd3658f18", size = 25091309 },
 ]
 
 [[package]]
