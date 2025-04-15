@@ -1,12 +1,15 @@
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PFSize } from "@goauthentik/common/enums.js";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
@@ -35,14 +38,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import {
-    CoreApi,
-    CoreUsersListTypeEnum,
-    Group,
-    ResponseError,
-    SessionUser,
-    User,
-} from "@goauthentik/api";
+import { CoreApi, CoreUsersListTypeEnum, Group, SessionUser, User } from "@goauthentik/api";
 
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
@@ -131,7 +127,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
+        return Table.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<User>> {
@@ -198,7 +194,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
                       <small>${item.lastLogin.toLocaleString()}</small>`
                 : msg("-")}`,
             html`<ak-forms-modal>
@@ -213,20 +209,22 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                 </ak-forms-modal>
                 ${canImpersonate
                     ? html`
-                          <ak-action-button
-                              class="pf-m-tertiary"
-                              .apiRequest=${() => {
-                                  return new CoreApi(DEFAULT_CONFIG)
-                                      .coreUsersImpersonateCreate({
-                                          id: item.pk,
-                                      })
-                                      .then(() => {
-                                          window.location.href = "/";
-                                      });
-                              }}
-                          >
-                              ${msg("Impersonate")}
-                          </ak-action-button>
+                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
+                              <span slot="submit">${msg("Impersonate")}</span>
+                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
+                              <ak-user-impersonate-form
+                                  slot="form"
+                                  .instancePk=${item.pk}
+                              ></ak-user-impersonate-form>
+                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                                  <pf-tooltip
+                                      position="top"
+                                      content=${msg("Temporarily assume the identity of this user")}
+                                  >
+                                      <span>${msg("Impersonate")}</span>
+                                  </pf-tooltip>
+                              </button>
+                          </ak-forms-modal>
                       `
                     : html``}`,
         ];
@@ -315,14 +313,16 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                                                   description: rec.link,
                                                               });
                                                           })
-                                                          .catch((ex: ResponseError) => {
-                                                              ex.response.json().then(() => {
-                                                                  showMessage({
-                                                                      level: MessageLevel.error,
-                                                                      message: msg(
-                                                                          "No recovery flow is configured.",
-                                                                      ),
-                                                                  });
+                                                          .catch(async (error: unknown) => {
+                                                              const parsedError =
+                                                                  await parseAPIResponseError(
+                                                                      error,
+                                                                  );
+
+                                                              showMessage({
+                                                                  level: MessageLevel.error,
+                                                                  message:
+                                                                      pluckErrorDetail(parsedError),
                                                               });
                                                           });
                                                   }}

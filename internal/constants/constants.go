@@ -16,7 +16,7 @@ func BUILD(def string) string {
 func FullVersion() string {
 	ver := VERSION
 	if b := BUILD(""); b != "" {
-		ver = fmt.Sprintf("%s.%s", ver, b)
+		return fmt.Sprintf("%s+%s", ver, b)
 	}
 	return ver
 }
@@ -29,4 +29,4 @@ func UserAgent() string {
 	return fmt.Sprintf("authentik@%s", FullVersion())
 }
 
-const VERSION = "2024.8.3"
+const VERSION = "2025.2.4"

@@ -15,7 +15,7 @@ To try out the release candidate, replace your Docker image tag with the latest 
 
 ## Upgrading
 
-This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../installation/upgrade.mdx).
+This release does not introduce any new requirements. You can follow the upgrade instructions below; for more detailed information about upgrading authentik, refer to our [Upgrade documentation](../install-config/upgrade.mdx).
 
 :::warning
 When you upgrade, be aware that the version of the authentik instance and of any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.

@@ -62,10 +62,13 @@ jobs:
         working-directory: website/
         run: npm run ${{ matrix.job }}
   ci-website-mark:
+    if: always()
     needs:
       - lint
       - test
       - build
     runs-on: ubuntu-latest
     steps:
-      - run: echo mark
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

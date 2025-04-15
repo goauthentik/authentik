@@ -19,5 +19,5 @@
     "importOrder": ["^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
-    "importOrderParserPlugins": ["typescript", "classProperties", "decorators-legacy"]
+    "importOrderParserPlugins": ["typescript", "jsx", "classProperties", "decorators-legacy"]
 }

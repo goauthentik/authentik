@@ -20,6 +20,9 @@ export class UserForm extends ModelForm<User, number> {
     @property({ attribute: false })
     group?: Group;
 
+    @property()
+    defaultPath: string = "users";
+
     static get defaultUserAttributes(): { [key: string]: unknown } {
         return {};
     }
@@ -88,7 +91,9 @@ export class UserForm extends ModelForm<User, number> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -172,7 +177,7 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, "users")}"
+                    value="${first(this.instance?.path, this.defaultPath)}"
                     class="pf-c-form-control"
                     required
                 />

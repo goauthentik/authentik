@@ -4,7 +4,6 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
-import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -20,47 +19,15 @@ import {
     DeviceClassesEnum,
     NotConfiguredActionEnum,
     PaginatedStageList,
-    Stage,
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
 
-async function stagesProvider(page = 1, search = "") {
-    const stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
-        ordering: "name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: stages.pagination,
-        options: stages.results.map((stage) => [stage.pk, `${stage.name} (${stage.verboseName})`]),
-    };
-}
-
-export function makeStageSelector(instanceStages: string[] | undefined) {
-    const localStages = instanceStages ? new Set(instanceStages) : undefined;
-
-    return localStages
-        ? ([pk, _]: DualSelectPair) => localStages.has(pk)
-        : ([_0, _1, _2, stage]: DualSelectPair<Stage>) => stage !== undefined;
-}
-
-async function authenticatorWebauthnDeviceTypesListProvider(page = 1, search = "") {
-    const devicetypes = await new StagesApi(
-        DEFAULT_CONFIG,
-    ).stagesAuthenticatorWebauthnDeviceTypesList({
-        pageSize: 20,
-        search: search.trim(),
-        page,
-    });
-
-    return {
-        pagination: devicetypes.pagination,
-        options: devicetypes.results.map(deviceTypeRestrictionPair),
-    };
-}
+import {
+    authenticatorWebauthnDeviceTypesListProvider,
+    stagesProvider,
+    stagesSelector,
+} from "./AuthenticatorValidateStageFormHelpers.js";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorValidateStage> {
@@ -112,6 +79,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [DeviceClassesEnum.Webauthn, msg("WebAuthn Authenticators")],
             [DeviceClassesEnum.Duo, msg("Duo Authenticators")],
             [DeviceClassesEnum.Sms, msg("SMS-based Authenticators")],
+            [DeviceClassesEnum.Email, msg("Email-based Authenticators")],
         ];
 
         return html`
@@ -158,7 +126,9 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         <input
                             type="text"
                             value="${this.instance?.lastAuthThreshold || "seconds=0"}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -218,7 +188,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                               >
                                   <ak-dual-select-dynamic-selected
                                       .provider=${stagesProvider}
-                                      .selector=${makeStageSelector(
+                                      .selector=${stagesSelector(
                                           this.instance?.configurationStages,
                                       )}
                                       available-label="${msg("Available Stages")}"

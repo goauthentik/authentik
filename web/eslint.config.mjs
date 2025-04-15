@@ -41,6 +41,7 @@ export default [
         },
         files: ["src/**"],
         rules: {
+            "lit/attribute-names": "off",
             // "lit/attribute-names": "error",
             "lit/no-private-properties": "error",
             // "lit/prefer-nothing": "warn",
@@ -70,7 +71,7 @@ export default [
                 ...globals.node,
             },
         },
-        files: ["scripts/*.mjs", "*.ts", "*.mjs"],
+        files: ["scripts/**/*.mjs", "*.ts", "*.mjs"],
         rules: {
             "no-unused-vars": "off",
             // We WANT our scripts to output to the console!

@@ -5,227 +5,445 @@
 # 
 # Translators:
 # Oktay, 2022
+# Yusuf KOŞAN <yusufkosan@gmail.com>, 2024
+# Jens L. <jens@goauthentik.io>, 2025
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-01-03 12:29+0000\n"
-"PO-Revision-Date: 2021-10-09 18:10+0000\n"
-"Last-Translator: Oktay, 2022\n"
-"Language-Team: Turkish (https://www.transifex.com/authentik/teams/119923/tr/)\n"
+"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"PO-Revision-Date: 2022-09-26 16:47+0000\n"
+"Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
+"Language-Team: Turkish (https://app.transifex.com/authentik/teams/119923/tr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: authentik/admin/api/tasks.py:95
-#, python-format
-msgid "Successfully re-scheduled Task %(name)s!"
-msgstr "Görev %(name)s başarıyla yeniden zamanlandı!"
+#: authentik/admin/models.py
+msgid "Version history"
+msgstr "Sürüm geçmişi"
 
-#: authentik/api/schema.py:21
+#: authentik/admin/tasks.py
+#, python-brace-format
+msgid "New version {version} available!"
+msgstr "Yeni sürüm {version} mevcut!"
+
+#: authentik/api/schema.py
 msgid "Generic API Error"
 msgstr "Genel API Hatası"
 
-#: authentik/api/schema.py:29
+#: authentik/api/schema.py
 msgid "Validation Error"
 msgstr "Doğrulama Hatası"
 
-#: authentik/core/api/providers.py:89
-msgid "SAML Provider from Metadata"
-msgstr "Meta Verilerden SAML Sağlayıcı"
+#: authentik/blueprints/api.py
+msgid "Blueprint file does not exist"
+msgstr "Plan dosyası mevcut değil"
 
-#: authentik/core/api/providers.py:90
-msgid "Create a SAML Provider by importing its Metadata."
-msgstr "Meta Verilerini içe aktararak bir SAML Sağlayıcısı oluşturun."
+#: authentik/blueprints/api.py
+msgid "Failed to validate blueprint"
+msgstr "Plan doğrulanamadı"
 
-#: authentik/core/models.py:69
+#: authentik/blueprints/api.py
+msgid "Either path or content must be set."
+msgstr "Ya yol ya da içerik ayarlanmalıdır."
+
+#: authentik/blueprints/models.py
+msgid "Managed by authentik"
+msgstr "Authentik tarafından yönetilmektedir"
+
+#: authentik/blueprints/models.py
+msgid ""
+"Objects that are managed by authentik. These objects are created and updated"
+" automatically. This flag only indicates that an object can be overwritten "
+"by migrations. You can still modify the objects via the API, but expect "
+"changes to be overwritten in a later update."
+msgstr ""
+"Authentik tarafından yönetilen nesneler. Bu nesneler otomatik olarak "
+"oluşturulur ve güncellenir. Bu bayrak yalnızca bir nesnenin taşıma işlemleri"
+" tarafından üzerine yazılabileceğini gösterir. Nesneleri API aracılığıyla "
+"değiştirmeye devam edebilirsiniz yada değişikliklerin daha sonraki bir "
+"güncellemede üzerine yazılmasını bekleyebilirsiniz."
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instance"
+msgstr "Plan Örneği"
+
+#: authentik/blueprints/models.py
+msgid "Blueprint Instances"
+msgstr "Plan Örnekleri"
+
+#: authentik/blueprints/v1/exporter.py
+#, python-brace-format
+msgid "authentik Export - {date}"
+msgstr "Authentik Dışa Aktarma - {date}"
+
+#: authentik/blueprints/v1/tasks.py authentik/crypto/tasks.py
+#, python-brace-format
+msgid "Successfully imported {count} files."
+msgstr ""
+
+#: authentik/brands/models.py
+msgid ""
+"Domain that activates this brand. Can be a superset, i.e. `a.b` for `aa.b` "
+"and `ba.b`"
+msgstr ""
+"Bu markayı etkinleştiren alan adı. Bir üst küme olabilir, yani `aa.b` ve "
+"`ba.b` için `a.b`"
+
+#: authentik/brands/models.py
+msgid ""
+"When set, external users will be redirected to this application after "
+"authenticating."
+msgstr ""
+"Ayarlandığında, harici kullanıcılar kimlik doğrulaması yaptıktan sonra bu "
+"uygulamaya yönlendirilecektir."
+
+#: authentik/brands/models.py
+msgid "Web Certificate used by the authentik Core webserver."
+msgstr "Authentik Core web sunucusu tarafından kullanılan Web Sertifikası."
+
+#: authentik/brands/models.py
+msgid "Brand"
+msgstr "Marka"
+
+#: authentik/brands/models.py
+msgid "Brands"
+msgstr "Markalar"
+
+#: authentik/core/api/application_entitlements.py
+msgid "User does not have access to application."
+msgstr ""
+
+#: authentik/core/api/devices.py
+msgid "Extra description not available"
+msgstr ""
+
+#: authentik/core/api/groups.py
+msgid "Cannot set group as parent of itself."
+msgstr ""
+
+#: authentik/core/api/providers.py
+msgid ""
+"When not set all providers are returned. When set to true, only backchannel "
+"providers are returned. When set to false, backchannel providers are "
+"excluded"
+msgstr ""
+"Ayarlanmadığında tüm sağlayıcılar döndürülür. true olarak ayarlandığında, "
+"yalnızca arka kanal sağlayıcıları döndürülür. false olarak ayarlandığında, "
+"arka kanal sağlayıcıları hariç tutulur"
+
+#: authentik/core/api/transactional_applications.py
+#, python-brace-format
+msgid "User lacks permission to create {model}"
+msgstr ""
+
+#: authentik/core/api/users.py
+msgid "No leading or trailing slashes allowed."
+msgstr "Başta veya sonda eğik çizgiye (\"/\") izin verilmez."
+
+#: authentik/core/api/users.py
+msgid "No empty segments in user path allowed."
+msgstr "Kullanıcı yolunda boş bölüme izin verilmez."
+
+#: authentik/core/models.py
 msgid "name"
-msgstr "ad"
+msgstr "isim"
 
-#: authentik/core/models.py:71
+#: authentik/core/models.py
 msgid "Users added to this group will be superusers."
-msgstr "Bu gruba eklenen kullanıcılar süper kullanıcılar olacaktır."
+msgstr "Bu gruba eklenen kullanıcılar süper kullanıcı olacaktır."
 
-#: authentik/core/models.py:129
+#: authentik/core/models.py
+msgid "Group"
+msgstr "Grup"
+
+#: authentik/core/models.py
+msgid "Groups"
+msgstr "Gruplar"
+
+#: authentik/core/models.py
+msgid "Add user to group"
+msgstr "Gruba kullanıcı ekleme"
+
+#: authentik/core/models.py
+msgid "Remove user from group"
+msgstr "Kullanıcıyı gruptan çıkarma"
+
+#: authentik/core/models.py
+msgid "Enable superuser status"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Disable superuser status"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "User's display name."
 msgstr "Kullanıcının görünen adı."
 
-#: authentik/core/models.py:212 authentik/providers/oauth2/models.py:299
+#: authentik/core/models.py authentik/providers/oauth2/models.py
 msgid "User"
 msgstr "Kullanıcı"
 
-#: authentik/core/models.py:213
+#: authentik/core/models.py
 msgid "Users"
 msgstr "Kullanıcılar"
 
-#: authentik/core/models.py:224
+#: authentik/core/models.py
+#: authentik/stages/email/templates/email/password_reset.html
+msgid "Reset Password"
+msgstr "Parolayı Sıfırla"
+
+#: authentik/core/models.py
+msgid "Can impersonate other users"
+msgstr "Diğer kullanıcıların kimliğine bürünebilir"
+
+#: authentik/core/models.py authentik/rbac/models.py
+msgid "Can assign permissions to users"
+msgstr "Kullanıcılara izinler atayabilir"
+
+#: authentik/core/models.py authentik/rbac/models.py
+msgid "Can unassign permissions from users"
+msgstr "Kullanıcılardan izin atamalarını kaldırabilir"
+
+#: authentik/core/models.py
+msgid "Can preview user data sent to providers"
+msgstr "Sağlayıcılara gönderilen kullanıcı verilerini önizleyebilir"
+
+#: authentik/core/models.py
+msgid "View applications the user has access to"
+msgstr "Kullanıcının erişebildiği uygulamaları görüntüleme"
+
+#: authentik/core/models.py
+msgid ""
+"Flow used for authentication when the associated application is accessed by "
+"an un-authenticated user."
+msgstr ""
+"İlişkili uygulamaya kimliği doğrulanmamış bir kullanıcı tarafından "
+"erişildiğinde kimlik doğrulama için kullanılan akış."
+
+#: authentik/core/models.py
 msgid "Flow used when authorizing this provider."
 msgstr "Bu sağlayıcıyı yetkilendirirken kullanılan akış."
 
-#: authentik/core/models.py:257
-msgid "Application's display Name."
-msgstr "Uygulamanın görünen Adı."
+#: authentik/core/models.py
+msgid "Flow used ending the session from a provider."
+msgstr "Bir sağlayıcıdan oturumu sonlandırmak için kullanılan akış."
 
-#: authentik/core/models.py:258
+#: authentik/core/models.py
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr ""
+"Uygulamalardan erişilir; LDAP ve SCIM gibi protokoller için isteğe bağlı "
+"arka kanal sağlayıcıları."
+
+#: authentik/core/models.py
+msgid "Application's display Name."
+msgstr "Uygulamanın görünen adı."
+
+#: authentik/core/models.py
 msgid "Internal application name, used in URLs."
 msgstr "URL'lerde kullanılan dahili uygulama adı."
 
-#: authentik/core/models.py:311
+#: authentik/core/models.py
+msgid "Open launch URL in a new browser tab or window."
+msgstr ""
+"Başlatma URL'sini yeni bir tarayıcı sekmesinde veya penceresinde açın."
+
+#: authentik/core/models.py
 msgid "Application"
 msgstr "Uygulama"
 
-#: authentik/core/models.py:312
+#: authentik/core/models.py
 msgid "Applications"
 msgstr "Uygulamalar"
 
-#: authentik/core/models.py:318
-msgid "Use the source-specific identifier"
-msgstr "Kaynağa özgü tanımlayıcıyı kullanma"
+#: authentik/core/models.py
+msgid "Application Entitlement"
+msgstr ""
 
-#: authentik/core/models.py:326
+#: authentik/core/models.py
+msgid "Application Entitlements"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Use the source-specific identifier"
+msgstr "Kaynağa özgü tanımlayıcıyı kullan"
+
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical email address. Can have security implications "
+"when a source doesn't validate email addresses."
+msgstr ""
+"Aynı e-posta adresine sahip bir kullanıcıya bağlantı verin. Bir kaynak "
+"e-posta adreslerini doğrulamadığında güvenlik etkileri olabilir."
+
+#: authentik/core/models.py
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
-"Kullanıcının e-posta adresini kullanın, ancak e-posta adresi zaten varken "
+"Kullanıcının e-posta adresini kullanın, ancak e-posta adresi zaten mevcutsa "
 "kaydı reddedin."
 
-#: authentik/core/models.py:335
+#: authentik/core/models.py
+msgid ""
+"Link to a user with identical username. Can have security implications when "
+"a username is used with another source."
+msgstr ""
+"Aynı kullanıcı adına sahip bir kullanıcıya bağlantı verin. Bir kullanıcı adı"
+" başka bir kaynakla kullanıldığında güvenlik etkileri olabilir."
+
+#: authentik/core/models.py
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
-"Kullanıcının kullanıcı adını kullanın, ancak kullanıcı adı zaten varken "
+"Kullanıcının kullanıcı adını kullanın, ancak kullanıcı adı zaten mevcutsa "
 "kaydı reddedin."
 
-#: authentik/core/models.py:342
+#: authentik/core/models.py
+msgid ""
+"Link to a group with identical name. Can have security implications when a "
+"group name is used with another source."
+msgstr ""
+"Aynı ada sahip bir gruba bağlantı verin. Bir grup adı başka bir kaynakla "
+"kullanıldığında güvenlik etkileri olabilir."
+
+#: authentik/core/models.py
+msgid "Use the group name, but deny enrollment when the name already exists."
+msgstr "Grup adını kullanın, ancak ad zaten mevcutsa kaydı reddedin."
+
+#: authentik/core/models.py
 msgid "Source's display Name."
 msgstr "Kaynağın görünen Adı."
 
-#: authentik/core/models.py:343
+#: authentik/core/models.py
 msgid "Internal source name, used in URLs."
 msgstr "URL'lerde kullanılan iç kaynak adı."
 
-#: authentik/core/models.py:354
+#: authentik/core/models.py
 msgid "Flow to use when authenticating existing users."
-msgstr "Mevcut kullanıcıların kimliğini doğrularken kullanmak için akış."
+msgstr "Mevcut kullanıcıların kimliğini doğrularken kullanılacak akış."
 
-#: authentik/core/models.py:363
+#: authentik/core/models.py
 msgid "Flow to use when enrolling new users."
-msgstr "Yeni kullanıcıları kaydettirirken kullanmak için akış."
+msgstr "Yeni kullanıcıları kaydederken kullanılacak akış."
 
-#: authentik/core/models.py:501
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing user should be authenticated or a "
+"new user enrolled."
+msgstr ""
+"Kaynağın mevcut bir kullanıcının kimliğinin doğrulanması veya yeni bir "
+"kullanıcının kaydedilmesi gerekip gerekmediğini nasıl belirlediği."
+
+#: authentik/core/models.py
+msgid ""
+"How the source determines if an existing group should be used or a new group"
+" created."
+msgstr ""
+"Kaynağın mevcut bir grubun mu kullanılacağını yoksa yeni bir grup mu "
+"oluşturulacağını nasıl belirlediği."
+
+#: authentik/core/models.py
 msgid "Token"
-msgstr "Belirteç"
+msgstr "Jeton"
 
-#: authentik/core/models.py:502
+#: authentik/core/models.py
 msgid "Tokens"
-msgstr "Belirteçler"
+msgstr "Jetonlar"
 
-#: authentik/core/models.py:545
+#: authentik/core/models.py
+msgid "View token's key"
+msgstr "Jetonun anahtarını görüntüle"
+
+#: authentik/core/models.py
 msgid "Property Mapping"
 msgstr "Özellik Eşleme"
 
-#: authentik/core/models.py:546
+#: authentik/core/models.py
 msgid "Property Mappings"
-msgstr "Özellik Eşleştirmeleri"
+msgstr "Özellik Eşlemeleri"
 
-#: authentik/core/models.py:582
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "Kimliği Doğrulanmış Oturum"
 
-#: authentik/core/models.py:583
+#: authentik/core/models.py
 msgid "Authenticated Sessions"
 msgstr "Kimliği Doğrulanmış Oturumlar"
 
-#: authentik/core/sources/flow_manager.py:166
-msgid "source"
-msgstr "kaynak"
-
-#: authentik/core/sources/flow_manager.py:220
-#: authentik/core/sources/flow_manager.py:258
-#, python-format
-msgid "Successfully authenticated with %(source)s!"
-msgstr "%(source)s ile başarıyla doğrulandı!"
-
-#: authentik/core/sources/flow_manager.py:239
-#, python-format
-msgid "Successfully linked %(source)s!"
-msgstr "Başarıyla bağlandı %(source)s!"
-
-#: authentik/core/templates/error/generic.html:27
-msgid "Go to home"
-msgstr "Evine git"
-
-#: authentik/core/templates/if/admin.html:18
-#: authentik/core/templates/if/admin.html:24
-#: authentik/core/templates/if/flow.html:28
-#: authentik/core/templates/if/flow.html:34
-#: authentik/core/templates/if/user.html:18
-#: authentik/core/templates/if/user.html:24
-msgid "Loading..."
-msgstr "Yükleniyor..."
-
-#: authentik/core/templates/if/end_session.html:7
-msgid "End session"
-msgstr "Oturumu bitir"
-
-#: authentik/core/templates/if/end_session.html:11
-#, python-format
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
 msgid ""
-"\n"
-"You've logged out of %(application)s.\n"
+"Request to authenticate with {source} has been denied. Please authenticate "
+"with the source you've previously signed up with."
 msgstr ""
-"\n"
-"%(application)s oturumunu kapattınız.\n"
+"{source} ile kimlik doğrulama isteği reddedildi. Lütfen daha önce "
+"kaydolduğunuz kaynak ile kimlik doğrulaması yapın."
 
-#: authentik/core/templates/if/end_session.html:19
-#, python-format
-msgid ""
-"\n"
-"            You've logged out of %(application)s. You can go back to the overview to launch another application, or log out of your authentik account.\n"
-"        "
-msgstr ""
-"\n"
-"            %(application)s oturumunu kapattınız. Başka bir uygulamayı başlatmak için genel bakışa geri dönebilir veya authentik hesabınızdan çıkış yapabilirsiniz.\n"
-"        "
+#: authentik/core/sources/flow_manager.py
+msgid "Configured flow does not exist."
+msgstr "Yapılandırılmış akış mevcut değil."
 
-#: authentik/core/templates/if/end_session.html:24
-msgid "Go back to overview"
-msgstr "Genel bakışa geri dönün"
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully authenticated with {source}!"
+msgstr "{source} ile başarıyla kimlik doğrulaması başarılı!"
 
-#: authentik/core/templates/if/end_session.html:26
-msgid "Log out of authentik"
-msgstr "Oturumu otantik Kapat"
+#: authentik/core/sources/flow_manager.py
+#, python-brace-format
+msgid "Successfully linked {source}!"
+msgstr "Başarıyla {source} bağlantısı kuruldu!"
 
-#: authentik/core/templates/if/end_session.html:30
-#, python-format
-msgid ""
-"\n"
-"            Log back into %(application)s\n"
-"        "
-msgstr ""
-"\n"
-"            %(application)s yeniden oturum açın\n"
-"        "
+#: authentik/core/sources/flow_manager.py
+msgid "Source is not configured for enrollment."
+msgstr "Kaynak kayıt için yapılandırılmamış."
 
-#: authentik/core/templates/login/base_full.html:65
+#: authentik/core/templates/if/error.html
+msgid "Go home"
+msgstr "Başa dön"
+
+#: authentik/core/templates/login/base_full.html
+#: authentik/flows/templates/if/flow-sfe.html
 msgid "Powered by authentik"
-msgstr "Auentik tarafından desteklenmektedir"
+msgstr "Authentik ile güçlendirilmiştir"
 
-#: authentik/crypto/api.py:132
+#: authentik/core/views/apps.py authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/oauth2/views/device_init.py
+#: authentik/providers/saml/views/sso.py
+#, python-format
+msgid "You're about to sign into %(application)s."
+msgstr "%(application)s'da oturum açmak üzeresiniz."
+
+#: authentik/core/views/interface.py
+msgid "Interface can only be accessed by internal users."
+msgstr "Arayüze yalnızca dahili kullanıcılar tarafından erişilebilir."
+
+#: authentik/crypto/api.py
 msgid "Subject-alt name"
-msgstr "Konu-alt adı"
+msgstr "Konu-alt başlığı"
 
-#: authentik/crypto/models.py:34
+#: authentik/crypto/builder.py
+msgid "rsa"
+msgstr "rsa"
+
+#: authentik/crypto/builder.py
+msgid "ecdsa"
+msgstr "ecdsa"
+
+#: authentik/crypto/models.py
 msgid "PEM-encoded Certificate data"
 msgstr "PEM kodlu Sertifika verileri"
 
-#: authentik/crypto/models.py:37
+#: authentik/crypto/models.py
 msgid ""
 "Optional Private Key. If this is set, you can use this keypair for "
 "encryption."
@@ -233,208 +451,581 @@ msgstr ""
 "İsteğe Bağlı Özel Anahtar. Bu ayarlanırsa, şifreleme için bu anahtar çiftini"
 " kullanabilirsiniz."
 
-#: authentik/crypto/models.py:100
+#: authentik/crypto/models.py
 msgid "Certificate-Key Pair"
-msgstr "Sertifika Anahtarı Çifti"
+msgstr "Sertifika-Anahtar Çifti"
 
-#: authentik/crypto/models.py:101
+#: authentik/crypto/models.py
 msgid "Certificate-Key Pairs"
-msgstr "Sertifika Anahtarı Çiftleri"
+msgstr "Sertifika-Anahtar Çiftleri"
 
-#: authentik/crypto/tasks.py:93
-#, python-format
-msgid "Successfully imported %(count)d files."
-msgstr "%(count)d dosya başarıyla içe aktarıldı."
+#: authentik/enterprise/api.py
+msgid "Enterprise is required to create/update this object."
+msgstr "Bu nesneyi oluşturmak/güncellemek için Kurumsal Paket gereklidir."
 
-#: authentik/events/models.py:285
+#: authentik/enterprise/models.py
+msgid "License"
+msgstr "Lisans"
+
+#: authentik/enterprise/models.py
+msgid "Licenses"
+msgstr "Lisanslar"
+
+#: authentik/enterprise/models.py
+msgid "License Usage"
+msgstr "Lisans Kullanımı"
+
+#: authentik/enterprise/models.py
+msgid "License Usage Records"
+msgstr "Lisans Kullanım Kayıtları"
+
+#: authentik/enterprise/policy.py
+msgid "Enterprise required to access this feature."
+msgstr "Bu özelliğe erişmek için Kurumsal Paket gereklidir."
+
+#: authentik/enterprise/policy.py
+msgid "Feature only accessible for internal users."
+msgstr "Sadece dahili kullanıcılar için erişilebilir özellik."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider User"
+msgstr "Google Workspace Sağlayıcı Kullanıcısı"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Users"
+msgstr "Google Workspace Sağlayıcı Kullanıcıları"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Group"
+msgstr "Google Workspace Sağlayıcı Grubu"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Groups"
+msgstr "Google Workspace Sağlayıcı Grupları"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+#: authentik/enterprise/providers/microsoft_entra/models.py
+#: authentik/providers/scim/models.py
+msgid "Property mappings used for group creation/updating."
+msgstr "Grup oluşturma/güncelleme için kullanılan özellik eşlemeleri."
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider"
+msgstr "Google Çalışma Alanı Sağlayıcısı"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Providers"
+msgstr "Google Workspace Sağlayıcısı"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mapping"
+msgstr "Google Workspace Sağlayıcı Eşlemesi"
+
+#: authentik/enterprise/providers/google_workspace/models.py
+msgid "Google Workspace Provider Mappings"
+msgstr "Google Workspace Sağlayıcı Eşlemeleri"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider User"
+msgstr "Microsoft Entra Sağlayıcı Kullanıcısı"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Group"
+msgstr "Microsoft Entra Sağlayıcı Grubu"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Groups"
+msgstr "Microsoft Entra Sağlayıcı Grupları"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider"
+msgstr "Microsoft Entra Sağlayıcısı"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Providers"
+msgstr "Microsoft Entra Sağlayıcıları"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mapping"
+msgstr "Microsoft Entra Sağlayıcı Eşlemesi"
+
+#: authentik/enterprise/providers/microsoft_entra/models.py
+msgid "Microsoft Entra Provider Mappings"
+msgstr "Microsoft Entra Sağlayıcı Eşlemeleri"
+
+#: authentik/enterprise/providers/ssf/models.py
+#: authentik/providers/oauth2/models.py
+msgid "Signing Key"
+msgstr "İmzalama Anahtarı"
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Key used to sign the SSF Events."
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Shared Signals Framework Providers"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "Add stream to SSF provider"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Streams"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Event"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/models.py
+msgid "SSF Stream Events"
+msgstr ""
+
+#: authentik/enterprise/providers/ssf/tasks.py
+msgid "Failed to send request"
+msgstr ""
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stage"
+msgstr "Uç Nokta Kimlik Doğrulayıcı Google Cihaz Güven Bağlayıcısı Aşaması"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Authenticator Google Device Trust Connector Stages"
+msgstr "Uç Nokta Kimlik Doğrulayıcı Google Cihaz Güven Bağlayıcısı Aşamaları"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Device"
+msgstr "Uç Nokta Cihazı"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/models.py
+msgid "Endpoint Devices"
+msgstr "Uç Nokta Cihazları"
+
+#: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
+msgid "Verifying your browser..."
+msgstr "Tarayıcınız doğrulanıyor..."
+
+#: authentik/enterprise/stages/source/models.py
+msgid ""
+"Amount of time a user can take to return from the source to continue the "
+"flow (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Bir kullanıcının akışa devam etmek için kaynaktan geri dönmek için "
+"alabileceği süre (Format: saat=-1;dakika=-2;saniye=-3)"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stage"
+msgstr "Kaynak Aşaması"
+
+#: authentik/enterprise/stages/source/models.py
+msgid "Source Stages"
+msgstr "Kaynak Aşamaları"
+
+#: authentik/events/api/tasks.py
+#, python-brace-format
+msgid "Successfully started task {name}."
+msgstr "Görev {name} başarıyla başlatıldı."
+
+#: authentik/events/models.py
 msgid "Event"
 msgstr "Olay"
 
-#: authentik/events/models.py:286
+#: authentik/events/models.py
 msgid "Events"
 msgstr "Olaylar"
 
-#: authentik/events/models.py:292
+#: authentik/events/models.py
+msgid "authentik inbuilt notifications"
+msgstr "authentik dahili bildirimleri"
+
+#: authentik/events/models.py
 msgid "Generic Webhook"
-msgstr "Jenerik Webhook"
+msgstr "Genel Web Kancası"
 
-#: authentik/events/models.py:293
+#: authentik/events/models.py
 msgid "Slack Webhook (Slack/Discord)"
-msgstr "Slack Webhook (Kayaklık/Uyuşmazlık)"
+msgstr "Slack Web kancası (Slack/Discord)"
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py
+#: authentik/stages/authenticator_validate/models.py
 msgid "Email"
 msgstr "E-posta"
 
-#: authentik/events/models.py:312
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
+msgstr ""
+
+#: authentik/events/models.py
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
-"Yalnızca bir kez bildirim gönderin, örneğin bir sohbet kanalına web kancası "
-"gönderirken."
+"Örneğin bir sohbet kanalına web kancası gönderirken yalnızca bir kez "
+"bildirim gönderin."
 
-#: authentik/events/models.py:357
+#: authentik/events/models.py
 msgid "Severity"
 msgstr "Önem derecesi"
 
-#: authentik/events/models.py:362
+#: authentik/events/models.py
 msgid "Dispatched for user"
-msgstr "Kullanıcı için gönderilir"
+msgstr "Kullanıcı için gönderildi"
 
-#: authentik/events/models.py:439
+#: authentik/events/models.py
+msgid "Event user"
+msgstr "Olay kullanıcısı"
+
+#: authentik/events/models.py
 msgid "Notification Transport"
-msgstr "Bildirim Aktarıcı"
+msgstr "Bildirim Aktarıcısı"
 
-#: authentik/events/models.py:440
+#: authentik/events/models.py
 msgid "Notification Transports"
 msgstr "Bildirim Aktarıcıları"
 
-#: authentik/events/models.py:446
+#: authentik/events/models.py
 msgid "Notice"
-msgstr "Uyarı"
+msgstr "Bilgilendirme"
 
-#: authentik/events/models.py:447
+#: authentik/events/models.py
 msgid "Warning"
 msgstr "Uyarı"
 
-#: authentik/events/models.py:448
+#: authentik/events/models.py
 msgid "Alert"
 msgstr "Alarm"
 
-#: authentik/events/models.py:468
+#: authentik/events/models.py
 msgid "Notification"
 msgstr "Bildirim"
 
-#: authentik/events/models.py:469
+#: authentik/events/models.py
 msgid "Notifications"
 msgstr "Bildirimler"
 
-#: authentik/events/models.py:488
-msgid "Controls which severity level the created notifications will have."
-msgstr "Oluşturulan bildirimlerin hangi önem düzeyi olacağını denetler."
+#: authentik/events/models.py
+msgid ""
+"Select which transports should be used to notify the user. If none are "
+"selected, the notification will only be shown in the authentik UI."
+msgstr ""
+"Kullanıcıyı bilgilendirmek için hangi aktarımların kullanılması gerektiğini "
+"seçin. Hiçbiri seçilmezse, bildirim yalnızca authentik kullanıcı arayüzünde "
+"gösterilecektir."
 
-#: authentik/events/models.py:508
+#: authentik/events/models.py
+msgid "Controls which severity level the created notifications will have."
+msgstr ""
+"Oluşturulan bildirimlerin hangi önem derecesine sahip olacağını kontrol "
+"eder."
+
+#: authentik/events/models.py
+msgid ""
+"Define which group of users this notification should be sent and shown to. "
+"If left empty, Notification won't ben sent."
+msgstr ""
+"Bu bildirimin hangi kullanıcı grubuna gönderileceğini ve gösterileceğini "
+"tanımlayın. Boş bırakılırsa, Bildirim gönderilmez."
+
+#: authentik/events/models.py
 msgid "Notification Rule"
 msgstr "Bildirim Kuralı"
 
-#: authentik/events/models.py:509
+#: authentik/events/models.py
 msgid "Notification Rules"
 msgstr "Bildirim Kuralları"
 
-#: authentik/events/models.py:530
-msgid "Notification Webhook Mapping"
-msgstr "Bildirim Web Kancası Eşlemesi"
+#: authentik/events/models.py
+msgid "Webhook Mapping"
+msgstr "Web Kancası Eşlemesi"
 
-#: authentik/events/models.py:531
-msgid "Notification Webhook Mappings"
-msgstr "Bildirim Webhook Eşlemeleri"
+#: authentik/events/models.py
+msgid "Webhook Mappings"
+msgstr "Web Kancası Eşlemeleri"
 
-#: authentik/events/monitored_tasks.py:197
+#: authentik/events/models.py
+msgid "Run task"
+msgstr "Görevi çalıştır"
+
+#: authentik/events/models.py
+msgid "System Task"
+msgstr "Sistem Görevi"
+
+#: authentik/events/models.py
+msgid "System Tasks"
+msgstr "Sistem Görevleri"
+
+#: authentik/events/system_tasks.py
 msgid "Task has not been run yet."
 msgstr "Görev henüz çalıştırılmadı."
 
-#: authentik/flows/api/flows.py:350
-#, python-format
-msgid "Flow not applicable to current user/request: %(messages)s"
-msgstr "Akış geçerli kullanıcı/istek için geçerli değildir: %(messages)s"
+#: authentik/flows/api/flows.py
+#, python-brace-format
+msgid "Flow not applicable to current user/request: {messages}"
+msgstr "Akış mevcut kullanıcı/talep için geçerli değil: {messages}"
 
-#: authentik/flows/models.py:107
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Policy ({type})"
+msgstr "İlke ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Binding {order}"
+msgstr "Bağlama {order}"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy passed"
+msgstr "İlke kabul edildi"
+
+#: authentik/flows/api/flows_diagram.py
+#, python-brace-format
+msgid "Stage ({type})"
+msgstr "Aşama ({type})"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Policy denied"
+msgstr "İlke reddedildi"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "End of the flow"
+msgstr "Akışın sonu"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement not fulfilled"
+msgstr "Gereksinim karşılanmadı"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Flow authentication requirement"
+msgstr "Akış kimlik doğrulama gereksinimi"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Requirement fulfilled"
+msgstr "Gereksinim karşılandı"
+
+#: authentik/flows/api/flows_diagram.py
+msgid "Pre-flow policies"
+msgstr "Akış öncesi ilkeleri"
+
+#: authentik/flows/api/flows_diagram.py authentik/flows/models.py
+msgid "Flow"
+msgstr "Akış"
+
+#: authentik/flows/exceptions.py
+msgid "Flow does not apply to current user."
+msgstr "Akış mevcut kullanıcı için geçerli değildir."
+
+#: authentik/flows/models.py
+#, python-brace-format
+msgid "Dynamic In-memory stage: {doc}"
+msgstr "Dinamik Bellek içi aşama: {doc}"
+
+#: authentik/flows/models.py
 msgid "Visible in the URL."
-msgstr "URL'de görünür."
+msgstr "URL'de görülebilir."
 
-#: authentik/flows/models.py:109
+#: authentik/flows/models.py
 msgid "Shown as the Title in Flow pages."
 msgstr "Akış sayfalarında Başlık olarak gösterilir."
 
-#: authentik/flows/models.py:126
+#: authentik/flows/models.py
+msgid ""
+"Decides what this Flow is used for. For example, the Authentication flow is "
+"redirect to when an un-authenticated user visits authentik."
+msgstr ""
+"Bu Akışın ne için kullanılacağına karar verir. Örneğin, Kimlik Doğrulama "
+"akışı, kimliği doğrulanmamış bir kullanıcı authentik'i ziyaret ettiğinde "
+"yönlendirilir."
+
+#: authentik/flows/models.py
 msgid "Background shown during execution"
 msgstr "Yürütme sırasında gösterilen arka plan"
 
-#: authentik/flows/models.py:133
+#: authentik/flows/models.py
 msgid ""
 "Enable compatibility mode, increases compatibility with password managers on"
 " mobile devices."
 msgstr ""
-"Uyumluluk modunu etkinleştirin, mobil cihazlarda şifre yöneticileri ile "
+"Uyumluluk modunu etkinleştirin, mobil cihazlardaki parola yöneticileriyle "
 "uyumluluğu artırır."
 
-#: authentik/flows/models.py:178
-msgid "Flow"
-msgstr "Akış"
+#: authentik/flows/models.py
+msgid "Configure what should happen when a flow denies access to a user."
+msgstr ""
+"Bir akış bir kullanıcıya erişimi reddettiğinde ne olması gerektiğini "
+"yapılandırın."
 
-#: authentik/flows/models.py:179
+#: authentik/flows/models.py
+msgid "Required level of authentication and authorization to access a flow."
+msgstr ""
+"Bir akışa erişmek için gerekli kimlik doğrulama ve yetkilendirme düzeyi."
+
+#: authentik/flows/models.py
 msgid "Flows"
 msgstr "Akışlar"
 
-#: authentik/flows/models.py:209
-msgid "Evaluate policies when the Stage is present to the user."
-msgstr "Aşama mevcutken kullanıcı ilkelerini değerlendirin."
+#: authentik/flows/models.py
+msgid "Can export a Flow"
+msgstr "Bir Akışı dışa aktarabilir"
 
-#: authentik/flows/models.py:216
+#: authentik/flows/models.py
+msgid "Can inspect a Flow's execution"
+msgstr "Bir Akış'ın yürütülmesini inceleyebilir"
+
+#: authentik/flows/models.py
+msgid "View Flow's cache metrics"
+msgstr "Flow'un önbellek ölçümlerini görüntüleme"
+
+#: authentik/flows/models.py
+msgid "Clear Flow's cache metrics"
+msgstr "Flow'un önbellek ölçümlerini temizleme"
+
+#: authentik/flows/models.py
+msgid "Evaluate policies during the Flow planning process."
+msgstr "Akış planlama sürecinde ilkeleri değerlendirin."
+
+#: authentik/flows/models.py
+msgid "Evaluate policies when the Stage is presented to the user."
+msgstr ""
+
+#: authentik/flows/models.py
 msgid ""
 "Configure how the flow executor should handle an invalid response to a "
 "challenge. RETRY returns the error message and a similar challenge to the "
 "executor. RESTART restarts the flow from the beginning, and "
 "RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
 msgstr ""
-"Akış yürütücüsünün bir meydan okuma için geçersiz bir yanıt nasıl işlemesi "
-"gerektiğini yapılandırın. RETRY hata iletisi ve yürütücünün benzer bir "
-"meydan okuma döndürür. RESTART akışını baştan başlatır ve "
-"RESTART_WITH_CONTEXT geçerli bağlamı korurken akışı yeniden başlatır."
+"Akış yürütücüsünün bir zorlamaya verilen geçersiz bir yanıtı nasıl ele "
+"alması gerektiğini yapılandırın. RETRY hata mesajını ve yürütücüye benzer "
+"bir meydan okuma döndürür. RESTART akışı baştan başlatır ve "
+"RESTART_WITH_CONTEXT geçerli bağlamı koruyarak akışı yeniden başlatır."
 
-#: authentik/flows/models.py:240
+#: authentik/flows/models.py
 msgid "Flow Stage Binding"
 msgstr "Akış Aşaması Bağlama"
 
-#: authentik/flows/models.py:241
+#: authentik/flows/models.py
 msgid "Flow Stage Bindings"
 msgstr "Akış Aşaması Bağlamaları"
 
-#: authentik/flows/models.py:291
+#: authentik/flows/models.py
+msgid ""
+"Flow used by an authenticated user to configure this Stage. If empty, user "
+"will not be able to configure this stage."
+msgstr ""
+"Kimliği doğrulanmış bir kullanıcı tarafından bu Aşamayı yapılandırmak için "
+"kullanılan akış. Boşsa, kullanıcı bu aşamayı yapılandıramaz."
+
+#: authentik/flows/models.py
 msgid "Flow Token"
-msgstr "Akış Belirteci"
+msgstr "Akış Jetonu"
 
-#: authentik/flows/models.py:292
+#: authentik/flows/models.py
 msgid "Flow Tokens"
-msgstr "Akış Belirteçleri"
+msgstr "Akış Jetonları"
 
-#: authentik/flows/templates/flows/error.html:12
-msgid "Whoops!"
-msgstr "Hay aksi!"
+#: authentik/flows/views/executor.py
+msgid "Invalid next URL"
+msgstr "Sonraki URL geçersiz"
 
-#: authentik/flows/templates/flows/error.html:17
-msgid "Something went wrong! Please try again later."
-msgstr "Bir şeyler ters gitti! Lütfen daha sonra tekrar deneyin."
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
 
-#: authentik/lib/utils/time.py:24
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Starting full provider sync"
+msgstr "Tam sağlayıcı senkronizasyonunu başlatma"
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Syncing page {page} of groups"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Dropping mutating request due to dry run"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+#, python-brace-format
+msgid "Stopping sync due to error: {error}"
+msgstr "Hata nedeniyle senkronizasyon durduruluyor: {error}"
+
+#: authentik/lib/utils/time.py
 #, python-format
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
-msgstr "%(value)s doğru biçiminde değil 'hours=3; dakika = 1'."
+msgstr "%(value)s 'ler doğru ('saat=3;dakika=1') biçimde değildir."
 
-#: authentik/managed/models.py:12
-msgid "Managed by authentik"
-msgstr "Auentik tarafından yönetilir"
+#: authentik/lib/validators.py
+#, python-brace-format
+msgid "The fields {field_names} must be used together."
+msgstr "{field_names} alanları birlikte kullanılmalıdır."
 
-#: authentik/outposts/api/service_connections.py:131
+#: authentik/outposts/api/service_connections.py
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
 "Yerel bir kümeye bağlanırken yalnızca boş bir kubeconfig kullanabilirsiniz."
 
-#: authentik/outposts/api/service_connections.py:139
+#: authentik/outposts/api/service_connections.py
 msgid "Invalid kubeconfig"
 msgstr "Geçersiz kubeconfig"
 
-#: authentik/outposts/models.py:151
+#: authentik/outposts/models.py
+msgid ""
+"If enabled, use the local connection. Required Docker socket/Kubernetes "
+"Integration"
+msgstr ""
+"Etkinleştirilmişse, yerel bağlantıyı kullanın. Docker soketi/Kubernetes "
+"Entegrasyonu Gereklidir"
+
+#: authentik/outposts/models.py
 msgid "Outpost Service-Connection"
-msgstr "Outpost Servis Bağlantısı"
+msgstr "Gözcü Servis Bağlantısı"
 
-#: authentik/outposts/models.py:152
+#: authentik/outposts/models.py
 msgid "Outpost Service-Connections"
-msgstr "Üs Servis Bağlantıları"
+msgstr "Gözcü Servis Bağlantıları"
 
-#: authentik/outposts/models.py:188
+#: authentik/outposts/models.py
+msgid ""
+"Can be in the format of 'unix://<path>' when connecting to a local docker "
+"daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+msgstr ""
+"Yerel bir docker arka plan programına bağlanırken 'unix://<path>' veya uzak "
+"bir sisteme bağlanırken 'https://<hostname>:2376' biçiminde olabilir."
+
+#: authentik/outposts/models.py
+msgid ""
+"CA which the endpoint's Certificate is verified against. Can be left empty "
+"for no validation."
+msgstr ""
+"Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş "
+"bırakılabilir."
+
+#: authentik/outposts/models.py
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
@@ -442,165 +1033,328 @@ msgstr ""
 "Kimlik doğrulama için kullanılan sertifika/anahtar. Kimlik doğrulama olmadan"
 " boş bırakılabilir."
 
-#: authentik/outposts/models.py:201
+#: authentik/outposts/models.py
 msgid "Docker Service-Connection"
-msgstr "Docker Hizmet Bağlantısı"
+msgstr "Docker Servis Bağlantısı"
 
-#: authentik/outposts/models.py:202
+#: authentik/outposts/models.py
 msgid "Docker Service-Connections"
-msgstr "Docker Hizmet Bağlantıları"
+msgstr "Docker Servis Bağlantıları"
 
-#: authentik/outposts/models.py:227
+#: authentik/outposts/models.py
+msgid ""
+"Paste your kubeconfig here. authentik will automatically use the currently "
+"selected context."
+msgstr ""
+"kubeconfig'inizi buraya yapıştırın. authentik otomatik olarak o anda seçili "
+"olan bağlamı kullanacaktır."
+
+#: authentik/outposts/models.py
+msgid "Verify SSL Certificates of the Kubernetes API endpoint"
+msgstr "Kubernetes API uç noktasının SSL Sertifikalarını Doğrula"
+
+#: authentik/outposts/models.py
 msgid "Kubernetes Service-Connection"
 msgstr "Kubernetes Servis Bağlantısı"
 
-#: authentik/outposts/models.py:228
+#: authentik/outposts/models.py
 msgid "Kubernetes Service-Connections"
 msgstr "Kubernetes Servis Bağlantıları"
 
-#: authentik/policies/denied.py:24
+#: authentik/outposts/models.py
+msgid ""
+"Select Service-Connection authentik should use to manage this outpost. Leave"
+" empty if authentik should not handle the deployment."
+msgstr ""
+"Authentik'in bu gözcüyü yönetmek için kullanması gereken Servis Bağlantısını"
+" seçin. Eğer authentik dağıtımı idare etmeyecekse boş bırakın."
+
+#: authentik/outposts/models.py
+msgid "Outpost"
+msgstr "Gözcü"
+
+#: authentik/outposts/models.py
+msgid "Outposts"
+msgstr "Gözcüler"
+
+#: authentik/policies/denied.py
 msgid "Access denied"
 msgstr "Erişim reddedildi"
 
-#: authentik/policies/dummy/models.py:45
+#: authentik/policies/dummy/models.py
 msgid "Dummy Policy"
 msgstr "Kukla İlkesi"
 
-#: authentik/policies/dummy/models.py:46
+#: authentik/policies/dummy/models.py
 msgid "Dummy Policies"
 msgstr "Kukla İlkeleri"
 
-#: authentik/policies/event_matcher/models.py:80
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected application. When left empty, all "
+"applications are matched."
+msgstr ""
+"Seçili uygulama tarafından oluşturulan olayları eşleştirir. Boş "
+"bırakıldığında, tüm uygulamalar eşleştirilir."
+
+#: authentik/policies/event_matcher/api.py
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match events created by selected model. When left empty, all models are "
+"matched. When an app is selected, all the application's models are matched."
+msgstr ""
+"Seçilen model tarafından oluşturulan olayları eşleştirir. Boş "
+"bırakıldığında, tüm modeller eşleştirilir. Bir uygulama seçildiğinde, "
+"uygulamanın tüm modelleri eşleştirilir."
+
+#: authentik/policies/event_matcher/api.py
+msgid "At least one criteria must be set."
+msgstr "En az bir kriter belirlenmelidir."
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Match created events with this action type. When left empty, all action "
+"types will be matched."
+msgstr ""
+"Oluşturulan olayları bu eylem türüyle eşleştirin. Boş bırakıldığında, tüm "
+"eylem türleri eşleştirilecektir."
+
+#: authentik/policies/event_matcher/models.py
+msgid ""
+"Matches Event's Client IP (strict matching, for network matching use an "
+"Expression Policy)"
+msgstr ""
+"Etkinliğin İstemci IP'sini eşleştirir (katı eşleştirme, ağ eşleştirmesi için"
+" bir İfade İlkesi kullanın)"
+
+#: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policy"
 msgstr "Olay Eşleştirici İlkesi"
 
-#: authentik/policies/event_matcher/models.py:81
+#: authentik/policies/event_matcher/models.py
 msgid "Event Matcher Policies"
 msgstr "Olay Eşleştiricisi İlkeleri"
 
-#: authentik/policies/expiry/models.py:46
-msgid "days"
-msgstr "günler"
+#: authentik/policies/expiry/models.py
+#, python-brace-format
+msgid "Password expired {days} days ago. Please update your password."
+msgstr ""
 
-#: authentik/policies/expiry/models.py:49
+#: authentik/policies/expiry/models.py
 msgid "Password has expired."
-msgstr "Parolanın süresi doldu."
+msgstr "Şifrenin süresi doldu."
 
-#: authentik/policies/expiry/models.py:54
+#: authentik/policies/expiry/models.py
 msgid "Password Expiry Policy"
-msgstr "Parola Sona Erme İlkesi"
+msgstr "Şifre Sona Erme ilkesi"
 
-#: authentik/policies/expiry/models.py:55
+#: authentik/policies/expiry/models.py
 msgid "Password Expiry Policies"
-msgstr "Parola Süresi Sona Erme İlkeleri"
+msgstr "Şifre Sona Erme ilkeleri"
 
-#: authentik/policies/expression/models.py:41
+#: authentik/policies/expression/models.py
 msgid "Expression Policy"
 msgstr "İfade İlkesi"
 
-#: authentik/policies/expression/models.py:42
+#: authentik/policies/expression/models.py
 msgid "Expression Policies"
 msgstr "İfade İlkeleri"
 
-#: authentik/policies/hibp/models.py:22
-#: authentik/policies/password/models.py:24
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP not found in ASN database."
+msgstr "GeoIP: istemci IP'si ASN veritabanında bulunamadı."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not part of an allowed autonomous system."
+msgstr "İstemci IP'si izin verilen bir otonom sistemin parçası değildir."
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP: client IP address not found in City database."
+msgstr "GeoIP: istemci IP adresi Şehir veritabanında bulunamadı."
+
+#: authentik/policies/geoip/models.py
+msgid "Client IP is not in an allowed country."
+msgstr "İstemci IP'si izin verilen bir ülkede değil."
+
+#: authentik/policies/geoip/models.py
+msgid "Distance from previous authentication is larger than threshold."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "Distance is further than possible."
+msgstr ""
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policy"
+msgstr "GeoIP İlkesi"
+
+#: authentik/policies/geoip/models.py
+msgid "GeoIP Policies"
+msgstr "GeoIP İlkeleri"
+
+#: authentik/policies/models.py
+msgid "all, all policies must pass"
+msgstr "hepsi, tüm ilkeler geçmelidir"
+
+#: authentik/policies/models.py
+msgid "any, any policy must pass"
+msgstr "herhangi bir, herhangi bir ilke geçmelidir"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Model"
+msgstr "İlke Bağlama Modeli"
+
+#: authentik/policies/models.py
+msgid "Policy Binding Models"
+msgstr "İlke Bağlama Modelleri"
+
+#: authentik/policies/models.py
+msgid "Negates the outcome of the policy. Messages are unaffected."
+msgstr "İlkenin sonucunu iptal eder. Mesajlar etkilenmez."
+
+#: authentik/policies/models.py
+msgid "Timeout after which Policy execution is terminated."
+msgstr "İlke yürütmesinin sonlandırılacağı zaman aşımı."
+
+#: authentik/policies/models.py
+msgid "Result if the Policy execution fails."
+msgstr "İlke yürütmesi başarısız olursa sonuç."
+
+#: authentik/policies/models.py
+msgid "Policy Binding"
+msgstr "İlke Bağlama"
+
+#: authentik/policies/models.py
+msgid "Policy Bindings"
+msgstr "İlke Bağlamaları"
+
+#: authentik/policies/models.py
+msgid ""
+"When this option is enabled, all executions of this policy will be logged. "
+"By default, only execution errors are logged."
+msgstr ""
+"Bu seçenek etkinleştirildiğinde, bu ilkenin tüm yürütmeleri günlüğe "
+"kaydedilir. Varsayılan olarak, yalnızca yürütme hataları günlüğe kaydedilir."
+
+#: authentik/policies/models.py
+msgid "Policy"
+msgstr "İlke"
+
+#: authentik/policies/models.py
+msgid "Policies"
+msgstr "İlkeler"
+
+#: authentik/policies/models.py
+msgid "View Policy's cache metrics"
+msgstr "İlke'nin önbellek ölçümlerini görüntüleme"
+
+#: authentik/policies/models.py
+msgid "Clear Policy's cache metrics"
+msgstr "İlke'nin önbellek ölçümlerini temizleyin"
+
+#: authentik/policies/password/models.py
 msgid "Field key to check, field keys defined in Prompt stages are available."
 msgstr ""
 "Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları "
 "mevcuttur."
 
-#: authentik/policies/hibp/models.py:47
-#: authentik/policies/password/models.py:57
+#: authentik/policies/password/models.py
+msgid "How many times the password hash is allowed to be on haveibeenpwned"
+msgstr ""
+"haveibeenpwned üzerinde parola karmasının kaç kez olmasına izin verilir"
+
+#: authentik/policies/password/models.py
+msgid ""
+"If the zxcvbn score is equal or less than this value, the policy will fail."
+msgstr ""
+"Eğer zxcvbn puanı bu değere eşit veya daha az ise, politika başarısız "
+"olacaktır."
+
+#: authentik/policies/password/models.py
 msgid "Password not set in context"
-msgstr "Parola bağlamda ayarlanmadı"
+msgstr "Parola bağlam içinde ayarlanmamış"
 
-#: authentik/policies/hibp/models.py:60
-#, python-format
-msgid "Password exists on %(count)d online lists."
-msgstr "Parola %(count)d çevrimiçi listelerinde bulunur."
+#: authentik/policies/password/models.py
+msgid "Invalid password."
+msgstr ""
 
-#: authentik/policies/hibp/models.py:66
-msgid "Have I Been Pwned Policy"
-msgstr "Ben Pwned İlkesi"
+#: authentik/policies/password/models.py
+#, python-brace-format
+msgid "Password exists on {count} online lists."
+msgstr ""
 
-#: authentik/policies/hibp/models.py:67
-msgid "Have I Been Pwned Policies"
-msgstr "Ben Pwned İlkeleri"
+#: authentik/policies/password/models.py
+msgid "Password is too weak."
+msgstr "Şifre çok zayıf."
 
-#: authentik/policies/models.py:23
-msgid "ALL, all policies must pass"
-msgstr "TÜM, tüm ilkeler geçmelidir"
-
-#: authentik/policies/models.py:25
-msgid "ANY, any policy must pass"
-msgstr "HERHANGI bir ilke geçmelidir"
-
-#: authentik/policies/models.py:45
-msgid "Policy Binding Model"
-msgstr "İlke Bağlama Modeli"
-
-#: authentik/policies/models.py:46
-msgid "Policy Binding Models"
-msgstr "İlke Bağlama Modelleri"
-
-#: authentik/policies/models.py:85
-msgid "Negates the outcome of the policy. Messages are unaffected."
-msgstr "İlkenin sonucunu susturur. Mesajlar etkilenmez."
-
-#: authentik/policies/models.py:88
-msgid "Timeout after which Policy execution is terminated."
-msgstr "İlke yürütme sonlandırıldıktan sonra zaman aşımı."
-
-#: authentik/policies/models.py:141
-msgid "Policy Binding"
-msgstr "İlke Bağlama"
-
-#: authentik/policies/models.py:142
-msgid "Policy Bindings"
-msgstr "İlke Bağlamaları"
-
-#: authentik/policies/models.py:181
-msgid "Policy"
-msgstr "İlke"
-
-#: authentik/policies/models.py:182
-msgid "Policies"
-msgstr "İlkeler"
-
-#: authentik/policies/password/models.py:89
+#: authentik/policies/password/models.py
 msgid "Password Policy"
-msgstr "Parola İlkesi"
+msgstr "Şifre ilkesi"
 
-#: authentik/policies/password/models.py:90
+#: authentik/policies/password/models.py
 msgid "Password Policies"
 msgstr "Şifre İlkeleri"
 
-#: authentik/policies/reputation/models.py:54
+#: authentik/policies/reputation/api.py
+msgid "Either IP or Username must be checked"
+msgstr "IP veya Kullanıcı Adı işaretlenmelidir"
+
+#: authentik/policies/reputation/models.py
 msgid "Reputation Policy"
 msgstr "İtibar İlkesi"
 
-#: authentik/policies/reputation/models.py:55
+#: authentik/policies/reputation/models.py
 msgid "Reputation Policies"
 msgstr "İtibar İlkeleri"
 
-#: authentik/policies/templates/policies/denied.html:7
-#: authentik/policies/templates/policies/denied.html:11
+#: authentik/policies/reputation/models.py
+msgid "Reputation Score"
+msgstr "İtibar Puanı"
+
+#: authentik/policies/reputation/models.py
+msgid "Reputation Scores"
+msgstr "İtibar Puanları"
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Waiting for authentication..."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid ""
+"You're already authenticating in another tab. This page will refresh once "
+"authentication is completed."
+msgstr ""
+
+#: authentik/policies/templates/policies/buffer.html
+msgid "Authenticate in this tab"
+msgstr ""
+
+#: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
 msgstr "İzin reddedildi"
 
-#: authentik/policies/templates/policies/denied.html:20
+#: authentik/policies/templates/policies/denied.html
+msgid "User's avatar"
+msgstr "Kullanıcının avatarı"
+
+#: authentik/policies/templates/policies/denied.html
+msgid "Not you?"
+msgstr "Sen değil miydin?"
+
+#: authentik/policies/templates/policies/denied.html
 msgid "Request has been denied."
 msgstr "İstek reddedildi."
 
-#: authentik/policies/templates/policies/denied.html:31
+#: authentik/policies/templates/policies/denied.html
 msgid "Messages:"
 msgstr "Mesajlar:"
 
-#: authentik/policies/templates/policies/denied.html:41
+#: authentik/policies/templates/policies/denied.html
 msgid "Explanation:"
 msgstr "Açıklama:"
 
-#: authentik/policies/templates/policies/denied.html:45
+#: authentik/policies/templates/policies/denied.html
 #, python-format
 msgid ""
 "\n"
@@ -611,240 +1365,382 @@ msgstr ""
 "                    İlke bağlama '%(name)s' sonucu döndürdü '%(result)s'\n"
 "                    "
 
-#: authentik/policies/views.py:68
+#: authentik/policies/views.py
 msgid "Failed to resolve application"
 msgstr "Uygulama çözümlenemedi"
 
-#: authentik/providers/ldap/models.py:25
+#: authentik/providers/ldap/models.py
 msgid "DN under which objects are accessible."
 msgstr "Nesnelerin erişilebilir olduğu DN."
 
-#: authentik/providers/ldap/models.py:34
+#: authentik/providers/ldap/models.py
 msgid ""
-"Users in this group can do search queries. If not set, every user can "
-"execute search queries."
-msgstr ""
-"Bu gruptaki kullanıcılar arama sorguları yapabilir. Ayarlanmazsa, her "
-"kullanıcı arama sorgularını yürütebilir."
-
-#: authentik/providers/ldap/models.py:53
-msgid ""
-"The start for uidNumbers, this number is added to the user.Pk to make sure "
+"The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"UidNumbers'ın başlangıcında, bu sayı, POSIX kullanıcıları için sayıların çok"
-" düşük olmadığından emin olmak için user.Pk öğesine eklenir. Varsayılan 2000"
-" yerel kullanıcılarla çarpışmadığımızdan emin olmak için uidNumber"
+"uidNumbers için başlangıç, bu sayı POSIX kullanıcıları için sayıların çok "
+"düşük olmadığından emin olmak için user.pk'ya eklenir. Yerel kullanıcılarla "
+"çakışmadığımızdan emin olmak için varsayılan değer 2000'dir uidNumber"
 
-#: authentik/providers/ldap/models.py:62
+#: authentik/providers/ldap/models.py
 msgid ""
 "The start for gidNumbers, this number is added to a number generated from "
-"the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
+"the group.pk to make sure that the numbers aren't too low for POSIX groups. "
 "Default is 4000 to ensure that we don't collide with local groups or users "
 "primary groups gidNumber"
 msgstr ""
-"gidNumbers'ın başlangıcında, bu sayı group.Pk öğesinden oluşturulan bir "
-"sayıya eklenir ve sayıların POSIX grupları için çok düşük olmadığından emin "
-"olun. Varsayılan olarak, yerel gruplarla veya kullanıcılarla birincil "
-"gruplarla çarpışmadığımızdan emin olmak için 4000'dir gidNumber"
+"gidNumbers için başlangıç, bu sayı, sayıların POSIX grupları için çok düşük "
+"olmadığından emin olmak için group.pk'dan oluşturulan bir sayıya eklenir. "
+"Yerel gruplarla veya kullanıcıların birincil gruplarıyla çakışmamasını "
+"sağlamak için varsayılan değer 4000'dir gidNumber"
 
-#: authentik/providers/ldap/models.py:97
+#: authentik/providers/ldap/models.py authentik/providers/radius/models.py
+msgid ""
+"When enabled, code-based multi-factor authentication can be used by "
+"appending a semicolon and the TOTP code to the password. This should only be"
+" enabled if all users that will bind to this provider have a TOTP device "
+"configured, as otherwise a password may incorrectly be rejected if it "
+"contains a semicolon."
+msgstr ""
+"Etkinleştirildiğinde, parolaya noktalı virgül ve TOTP kodu eklenerek kod "
+"tabanlı çok faktörlü kimlik doğrulama kullanılabilir. Bu, yalnızca bu "
+"sağlayıcıya bağlanacak tüm kullanıcıların yapılandırılmış bir TOTP cihazı "
+"varsa etkinleştirilmelidir, aksi takdirde bir parola noktalı virgül "
+"içeriyorsa yanlış bir şekilde reddedilebilir."
+
+#: authentik/providers/ldap/models.py
 msgid "LDAP Provider"
 msgstr "LDAP Sağlayıcı"
 
-#: authentik/providers/ldap/models.py:98
+#: authentik/providers/ldap/models.py
 msgid "LDAP Providers"
 msgstr "LDAP Sağlayıcıları"
 
-#: authentik/providers/oauth2/models.py:36
-msgid "Confidential"
-msgstr "Gizli"
+#: authentik/providers/ldap/models.py
+msgid "Search full LDAP directory"
+msgstr "Bütün LDAP dizinini arama"
 
-#: authentik/providers/oauth2/models.py:37
-msgid "Public"
-msgstr "Kamu"
+#: authentik/providers/oauth2/api/providers.py
+#, python-brace-format
+msgid "Invalid Regex Pattern: {url}"
+msgstr ""
 
-#: authentik/providers/oauth2/models.py:51
+#: authentik/providers/oauth2/id_token.py
 msgid "Based on the Hashed User ID"
-msgstr "Karma Kullanıcı Kimliğine Dayalı"
+msgstr "Karma Kullanıcı Kimliğine göre"
 
-#: authentik/providers/oauth2/models.py:52
+#: authentik/providers/oauth2/id_token.py
+msgid "Based on user ID"
+msgstr "Kullanıcı kimliğine göre"
+
+#: authentik/providers/oauth2/id_token.py
+msgid "Based on user UUID"
+msgstr "Kullanıcı UUID'sine göre"
+
+#: authentik/providers/oauth2/id_token.py
 msgid "Based on the username"
 msgstr "Kullanıcı adına göre"
 
-#: authentik/providers/oauth2/models.py:55
+#: authentik/providers/oauth2/id_token.py
 msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "Kullanıcının E-postasına dayanır. Bu UPN yöntemi üzerinde önerilir."
+msgstr "Kullanıcının E-postasına göre. Bu, UPN yöntemine göre tavsiye edilir."
 
-#: authentik/providers/oauth2/models.py:71
+#: authentik/providers/oauth2/id_token.py
+msgid ""
+"Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
+"this method only if you have different UPN and Mail domains."
+msgstr ""
+"Kullanıcının UPN'sini temel alır, yalnızca kullanıcının 'upn' özniteliği "
+"ayarlanmışsa çalışır. Bu yöntemi yalnızca farklı UPN ve Posta alan adlarınız"
+" varsa kullanın."
+
+#: authentik/providers/oauth2/models.py
+msgid "Confidential"
+msgstr "Gizli"
+
+#: authentik/providers/oauth2/models.py
+msgid "Public"
+msgstr "Kamu"
+
+#: authentik/providers/oauth2/models.py
 msgid "Same identifier is used for all providers"
-msgstr "Aynı tanımlayıcı tüm sağlayıcılar için kullanılır"
+msgstr "Tüm sağlayıcılar için aynı tanımlayıcı kullanılır"
 
-#: authentik/providers/oauth2/models.py:73
+#: authentik/providers/oauth2/models.py
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
-"Her sağlayıcı, uygulama kısa ismine bağlı farklı bir yayımcıya sahiptir."
+"Her sağlayıcı, uygulama etiketine bağlı olarak farklı bir düzenleyiciye "
+"sahiptir."
 
-#: authentik/providers/oauth2/models.py:80
+#: authentik/providers/oauth2/models.py
+msgid "Strict URL comparison"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "Regular Expression URL matching"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "code (Authorization Code Flow)"
 msgstr "kodu (Yetkilendirme Kodu Akışı)"
 
-#: authentik/providers/oauth2/models.py:81
+#: authentik/providers/oauth2/models.py
 msgid "id_token (Implicit Flow)"
 msgstr "id_token (Kapalı Akış)"
 
-#: authentik/providers/oauth2/models.py:82
+#: authentik/providers/oauth2/models.py
 msgid "id_token token (Implicit Flow)"
 msgstr "id_token belirteci (Kapalı Akış)"
 
-#: authentik/providers/oauth2/models.py:83
+#: authentik/providers/oauth2/models.py
 msgid "code token (Hybrid Flow)"
 msgstr "kod belirteci (Hibrit Akış)"
 
-#: authentik/providers/oauth2/models.py:84
+#: authentik/providers/oauth2/models.py
 msgid "code id_token (Hybrid Flow)"
 msgstr "kod id_token (Hibrit Akış)"
 
-#: authentik/providers/oauth2/models.py:85
+#: authentik/providers/oauth2/models.py
 msgid "code id_token token (Hybrid Flow)"
 msgstr "kodu id_token belirteci (Hibrit Akış)"
 
-#: authentik/providers/oauth2/models.py:91
+#: authentik/providers/oauth2/models.py
 msgid "HS256 (Symmetric Encryption)"
 msgstr "HS256 (Simetrik Şifreleme)"
 
-#: authentik/providers/oauth2/models.py:92
+#: authentik/providers/oauth2/models.py
 msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (Asimetrik Şifreleme)"
 
-#: authentik/providers/oauth2/models.py:93
+#: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
+msgstr "ES256 (Asimetrik Şifreleme)"
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:99
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope used by the client"
 msgstr "İstemci tarafından kullanılan kapsam"
 
-#: authentik/providers/oauth2/models.py:125
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Description shown to the user when consenting. If left empty, the user won't"
+" be informed."
+msgstr ""
+"Açıklama, izin verirken kullanıcıya gösterilir. Boş bırakılırsa kullanıcı "
+"bilgilendirilmez."
+
+#: authentik/providers/oauth2/models.py
 msgid "Scope Mapping"
 msgstr "Kapsam Eşleme"
 
-#: authentik/providers/oauth2/models.py:126
+#: authentik/providers/oauth2/models.py
 msgid "Scope Mappings"
 msgstr "Kapsam Eşlemeleri"
 
-#: authentik/providers/oauth2/models.py:136
+#: authentik/providers/oauth2/models.py
 msgid "Client Type"
 msgstr "İstemci türü"
 
-#: authentik/providers/oauth2/models.py:142
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Confidential clients are capable of maintaining the confidentiality of their"
+" credentials. Public clients are incapable"
+msgstr ""
+"Gizli müşteriler, kimlik bilgilerinin gizliliğini koruyabilir. Kamu "
+"müşterileri yetersizdir"
+
+#: authentik/providers/oauth2/models.py
 msgid "Client ID"
 msgstr "Müşteri Kimliği"
 
-#: authentik/providers/oauth2/models.py:148
+#: authentik/providers/oauth2/models.py
 msgid "Client Secret"
-msgstr "Müşteri Sırrı"
+msgstr "Müşteri Şifresi"
 
-#: authentik/providers/oauth2/models.py:154
+#: authentik/providers/oauth2/models.py
 msgid "Redirect URIs"
 msgstr "URI'leri yeniden yönlendirme"
 
-#: authentik/providers/oauth2/models.py:155
-msgid "Enter each URI on a new line."
-msgstr "Her URI'yi yeni bir satıra girin."
-
-#: authentik/providers/oauth2/models.py:160
+#: authentik/providers/oauth2/models.py
 msgid "Include claims in id_token"
 msgstr "İd_token'a hak taleplerini dahil et"
 
-#: authentik/providers/oauth2/models.py:208
-msgid "RSA Key"
-msgstr "RSA Anahtarı"
-
-#: authentik/providers/oauth2/models.py:212
+#: authentik/providers/oauth2/models.py
 msgid ""
-"Key used to sign the tokens. Only required when JWT Algorithm is set to "
-"RS256."
+"Include User claims from scopes in the id_token, for applications that don't"
+" access the userinfo endpoint."
 msgstr ""
-"Anahtar belirteçleri imzalamak için kullanılır. Sadece JWT Algoritması RS256"
-" olarak ayarlandığında gereklidir."
+"userinfo uç noktasına erişmeyen uygulamalar için kapsamlardan gelen "
+"Kullanıcı taleplerini id_token'a dahil edin."
 
-#: authentik/providers/oauth2/models.py:291
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Access codes not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Erişim kodları geçerli saat + bu değer üzerinde veya sonrasında geçerli "
+"değildir (Format: saat=1;dakika=2;saniye=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Tokens not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Geçerli saat + bu değer üzerinde veya sonrasında geçerli olmayan jetonlar ( "
+"Format: hours=1;minutes=2;seconds=3)."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Configure what data should be used as unique User Identifier. For most "
+"cases, the default should be fine."
+msgstr ""
+"Benzersiz Kullanıcı Tanımlayıcısı olarak hangi verilerin kullanılacağını "
+"yapılandırın. Çoğu durumda varsayılan değer yeterli olacaktır."
+
+#: authentik/providers/oauth2/models.py
+msgid "Configure how the issuer field of the ID Token should be filled."
+msgstr ""
+"ID Token'ın veren alanının nasıl doldurulması gerektiğini yapılandırın."
+
+#: authentik/providers/oauth2/models.py
+msgid "Key used to sign the tokens."
+msgstr "Jetonları imzalamak için kullanılan anahtar."
+
+#: authentik/providers/oauth2/models.py
+msgid "Encryption Key"
+msgstr "Şifreleme Anahtarı"
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Key used to encrypt the tokens. When set, tokens will be encrypted and "
+"returned as JWEs."
+msgstr ""
+"Jetonları şifrelemek için kullanılan anahtar. Ayarlandığında, belirteçler "
+"şifrelenecek ve JWE'ler olarak döndürülecektir."
+
+#: authentik/providers/oauth2/models.py
+msgid ""
+"Any JWT signed by the JWK of the selected source can be used to "
+"authenticate."
+msgstr ""
+"Seçilen kaynağın JWK'sı tarafından imzalanmış herhangi bir JWT kimlik "
+"doğrulamak için kullanılabilir."
+
+#: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Provider"
 msgstr "OAuth2/OpenID Sağlayıcısı"
 
-#: authentik/providers/oauth2/models.py:292
+#: authentik/providers/oauth2/models.py
 msgid "OAuth2/OpenID Providers"
 msgstr "OAuth2/OpenID Sağlayıcıları"
 
-#: authentik/providers/oauth2/models.py:300
+#: authentik/providers/oauth2/models.py
 msgid "Scopes"
 msgstr "Kapsamlar"
 
-#: authentik/providers/oauth2/models.py:319
+#: authentik/providers/oauth2/models.py
 msgid "Code"
-msgstr "Kodu"
+msgstr "Kod"
 
-#: authentik/providers/oauth2/models.py:320
+#: authentik/providers/oauth2/models.py
 msgid "Nonce"
-msgstr "Nonce"
+msgstr "Tek seferlik"
 
-#: authentik/providers/oauth2/models.py:321
-msgid "Is Authentication?"
-msgstr "Kimlik doğrulama mı?"
-
-#: authentik/providers/oauth2/models.py:322
+#: authentik/providers/oauth2/models.py
 msgid "Code Challenge"
-msgstr "Kod Mücadelesi"
+msgstr "Kod Sorgulaması"
 
-#: authentik/providers/oauth2/models.py:324
+#: authentik/providers/oauth2/models.py
 msgid "Code Challenge Method"
-msgstr "Kod Mücadelesi Yöntemi"
+msgstr "Kod Sorgulaması Yöntemi"
 
-#: authentik/providers/oauth2/models.py:338
+#: authentik/providers/oauth2/models.py
 msgid "Authorization Code"
 msgstr "Yetkilendirme Kodu"
 
-#: authentik/providers/oauth2/models.py:339
+#: authentik/providers/oauth2/models.py
 msgid "Authorization Codes"
 msgstr "Yetkilendirme Kodları"
 
-#: authentik/providers/oauth2/models.py:382
-msgid "Access Token"
-msgstr "Erişim Belirteci"
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Token"
+msgstr "OAuth2 Erişim Jetonu"
 
-#: authentik/providers/oauth2/models.py:383
-msgid "Refresh Token"
-msgstr "Belirteci Yenile"
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Access Tokens"
+msgstr "OAuth2 Erişim Jetonları"
 
-#: authentik/providers/oauth2/models.py:384
+#: authentik/providers/oauth2/models.py
 msgid "ID Token"
 msgstr "Kimlik Belirteci"
 
-#: authentik/providers/oauth2/models.py:387
-msgid "OAuth2 Token"
-msgstr "OAuth2 Belirteci"
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Token"
+msgstr "OAuth2 Yenileme Jetonu"
 
-#: authentik/providers/oauth2/models.py:388
-msgid "OAuth2 Tokens"
-msgstr "OAuth2 Belirteçleri"
+#: authentik/providers/oauth2/models.py
+msgid "OAuth2 Refresh Tokens"
+msgstr "OAuth2 Yenileme Jetonları"
 
-#: authentik/providers/oauth2/views/authorize.py:458
-#: authentik/providers/saml/views/sso.py:69
-#, python-format
-msgid "You're about to sign into %(application)s."
-msgstr "%(application)s'da oturum açmak üzeresiniz."
+#: authentik/providers/oauth2/models.py
+msgid "Device Token"
+msgstr "Cihaz Jetonu"
 
-#: authentik/providers/proxy/models.py:52
+#: authentik/providers/oauth2/models.py
+msgid "Device Tokens"
+msgstr "Cihaz Jetonları"
+
+#: authentik/providers/oauth2/views/authorize.py
+#: authentik/providers/saml/views/flows.py
+#, python-brace-format
+msgid "Redirecting to {app}..."
+msgstr "{app}'ya yönlendiriliyor..."
+
+#: authentik/providers/oauth2/views/device_init.py
+msgid "Invalid code"
+msgstr "Geçersiz kod"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your User Information"
+msgstr "GitHub Uyumluluğu: Kullanıcı Bilgilerinize Erişim"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access you Email addresses"
+msgstr "GitHub Uyumluluğu: E-posta adreslerinize erişim"
+
+#: authentik/providers/oauth2/views/userinfo.py
+msgid "GitHub Compatibility: Access your Groups"
+msgstr "GitHub Uyumluluğu: Gruplarınıza erişim"
+
+#: authentik/providers/proxy/api.py
+msgid "User and password attributes must be set when basic auth is enabled."
+msgstr ""
+"Temel kimlik doğrulama etkinleştirildiğinde kullanıcı ve parola "
+"öznitelikleri ayarlanmalıdır."
+
+#: authentik/providers/proxy/api.py
+msgid "Internal host cannot be empty when forward auth is disabled."
+msgstr ""
+"İleri kimlik doğrulama devre dışı bırakıldığında dahili ana bilgisayar boş "
+"olamaz."
+
+#: authentik/providers/proxy/models.py
 msgid "Validate SSL Certificates of upstream servers"
 msgstr "Akış yukarı akış sunucularının SSL Sertifikalarını Doğrula"
 
-#: authentik/providers/proxy/models.py:53
+#: authentik/providers/proxy/models.py
 msgid "Internal host SSL Validation"
 msgstr "Dahili ana bilgisayar SSL Doğrulaması"
 
-#: authentik/providers/proxy/models.py:59
+#: authentik/providers/proxy/models.py
 msgid ""
 "Enable support for forwardAuth in traefik and nginx auth_request. Exclusive "
 "with internal_host."
@@ -852,223 +1748,685 @@ msgstr ""
 "Traefik ve nginx auth_request içinde forwardAuth desteğini etkinleştirin. "
 "Internal_host ile özel."
 
-#: authentik/providers/proxy/models.py:77
+#: authentik/providers/proxy/models.py
+msgid ""
+"Regular expressions for which authentication is not required. Each new line "
+"is interpreted as a new Regular Expression."
+msgstr ""
+"Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni"
+" bir Düzenli İfade olarak yorumlanır."
+
+#: authentik/providers/proxy/models.py
+msgid ""
+"When enabled, this provider will intercept the authorization header and "
+"authenticate requests based on its value."
+msgstr ""
+"Etkinleştirildiğinde, bu sağlayıcı yetkilendirme başlığını keser ve değerine"
+" göre isteklerin kimliğini doğrular."
+
+#: authentik/providers/proxy/models.py
 msgid "Set HTTP-Basic Authentication"
 msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
 
-#: authentik/providers/proxy/models.py:79
+#: authentik/providers/proxy/models.py
 msgid ""
 "Set a custom HTTP-Basic Authentication header based on values from "
 "authentik."
 msgstr ""
-"authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı "
-"ayarlayın."
+"Authentik'teki değerleri temel alan özel bir HTTP-Temel Kimlik Doğrulama "
+"başlığı ayarlayın."
 
-#: authentik/providers/proxy/models.py:84
+#: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Username Key"
 msgstr "HTTP-Basic Kullanıcı Adı Anahtarı"
 
-#: authentik/providers/proxy/models.py:94
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the user part of the HTTP-Basic Header. If not"
+" set, the user's Email address is used."
+msgstr ""
+"HTTP-Basic Üstbilgisinin kullanıcı bölümü için kullanılan Kullanıcı/Grup "
+"Özniteliği. Ayarlanmazsa, kullanıcının E-posta adresi kullanılır."
+
+#: authentik/providers/proxy/models.py
 msgid "HTTP-Basic Password Key"
 msgstr "HTTP-Temel Parola Anahtarı"
 
-#: authentik/providers/proxy/models.py:149
+#: authentik/providers/proxy/models.py
+msgid ""
+"User/Group Attribute used for the password part of the HTTP-Basic Header."
+msgstr ""
+"HTTP-Basic Üstbilgisinin parola kısmı için kullanılan Kullanıcı/Grup "
+"Özniteliği."
+
+#: authentik/providers/proxy/models.py
 msgid "Proxy Provider"
 msgstr "Vekil Sağlayıcı"
 
-#: authentik/providers/proxy/models.py:150
+#: authentik/providers/proxy/models.py
 msgid "Proxy Providers"
 msgstr "Vekil Sağlayıcılar"
 
-#: authentik/providers/saml/api.py:176
+#: authentik/providers/rac/models.py authentik/stages/user_login/models.py
+msgid ""
+"Determines how long a session lasts. Default of 0 means that the sessions "
+"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Bir oturumun ne kadar süreceğini belirler. Varsayılan 0 değeri, oturumların "
+"tarayıcı kapatılana kadar süreceği anlamına gelir. (Biçim: "
+"saat=-1;dakika=-2;saniye=-3)"
+
+#: authentik/providers/rac/models.py
+msgid "When set to true, connection tokens will be deleted upon disconnect."
+msgstr ""
+"true olarak ayarlandığında, bağlantı kesildiğinde bağlantı jetonları "
+"silinecektir."
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider"
+msgstr "RAC Sağlayıcısı"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Providers"
+msgstr "RAC Sağlayıcıları"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoint"
+msgstr "RAC Uç Noktası"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Endpoints"
+msgstr "RAC Uç Noktaları"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mapping"
+msgstr "RAC Sağlayıcı Özellik Eşlemesi"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Provider Property Mappings"
+msgstr "RAC Sağlayıcı Özellik Eşlemeleri"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection token"
+msgstr "RAC Bağlantı jetonu"
+
+#: authentik/providers/rac/models.py
+msgid "RAC Connection tokens"
+msgstr "RAC Bağlantı jetonları"
+
+#: authentik/providers/rac/views.py
+msgid "Maximum connection limit reached."
+msgstr "Maksimum bağlantı sınırına ulaşıldı."
+
+#: authentik/providers/rac/views.py
+msgid "(You are already connected in another tab/window)"
+msgstr "(Zaten başka bir sekmede/pencerede bağlısınız)"
+
+#: authentik/providers/radius/models.py
+msgid "Shared secret between clients and server to hash packets."
+msgstr ""
+"Paketleri özetlemek için istemciler ve sunucu arasında paylaşılan şifre."
+
+#: authentik/providers/radius/models.py
+msgid ""
+"List of CIDRs (comma-separated) that clients can connect from. A more "
+"specific CIDR will match before a looser one. Clients connecting from a non-"
+"specified CIDR will be dropped."
+msgstr ""
+"İstemcilerin bağlanabileceği CIDR'lerin (virgülle ayrılmış) listesi. Daha "
+"spesifik bir CIDR, daha gevşek bir CIDR'den önce eşleşecektir. Belirtilmemiş"
+" bir CIDR'den bağlanan istemciler düşürülecektir."
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider"
+msgstr "Radius Sağlayıcısı"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Providers"
+msgstr "Radius Sağlayıcıları"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mapping"
+msgstr "Radius Sağlayıcısı Özellik Eşlemesi"
+
+#: authentik/providers/radius/models.py
+msgid "Radius Provider Property Mappings"
+msgstr "Radius Sağlayıcısı Özellik Eşlemeleri"
+
+#: authentik/providers/saml/api/providers.py
+msgid ""
+"With a signing keypair selected, at least one of 'Sign assertion' and 'Sign "
+"Response' must be selected."
+msgstr ""
+"Bir imzalama anahtar çifti seçildiğinde, 'Sign assertion' ve 'Sign Response'"
+" seçeneklerinden en az biri seçilmelidir."
+
+#: authentik/providers/saml/api/providers.py
 msgid "Invalid XML Syntax"
 msgstr "Geçersiz XML Sözdizimi"
 
-#: authentik/providers/saml/api.py:186
-#, python-format
-msgid "Failed to import Metadata: %(message)s"
-msgstr "Meta veriler alınamadı: %(message)s"
+#: authentik/providers/saml/api/providers.py
+#, python-brace-format
+msgid "Failed to import Metadata: {messages}"
+msgstr "Meta Veriler içe aktarılamadı: {messages}"
 
-#: authentik/providers/saml/models.py:38
+#: authentik/providers/saml/models.py
 msgid "ACS URL"
 msgstr "ACS URL"
 
-#: authentik/providers/saml/models.py:49
+#: authentik/providers/saml/models.py
+msgid ""
+"Value of the audience restriction field of the assertion. When left empty, "
+"no audience restriction will be added."
+msgstr ""
+"Onaylamadaki izleyici kısıtlaması alanının değeri. Boş bırakıldığında, "
+"herhangi bir hedef kitle kısıtlaması eklenmez."
+
+#: authentik/providers/saml/models.py
 msgid "Also known as EntityID"
 msgstr "EntityID olarak da bilinir"
 
-#: authentik/providers/saml/models.py:53
+#: authentik/providers/saml/models.py
 msgid "Service Provider Binding"
 msgstr "Servis Sağlayıcı Bağlama"
 
-#: authentik/providers/saml/models.py:65
+#: authentik/providers/saml/models.py
+msgid ""
+"This determines how authentik sends the response back to the Service "
+"Provider."
+msgstr ""
+"Bu, authentik'in yanıtı Servis Sağlayıcıya nasıl geri göndereceğini "
+"belirler."
+
+#: authentik/providers/saml/models.py
 msgid "NameID Property Mapping"
 msgstr "NameID Özellik Eşlemesi"
 
-#: authentik/providers/saml/models.py:109 authentik/sources/saml/models.py:128
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the NameID value will be created. When left empty, the "
+"NameIDPolicy of the incoming request will be considered"
+msgstr ""
+"NameID değerinin nasıl oluşturulacağını yapılandırın. Boş bırakıldığında, "
+"gelen isteğin NameIDPolicy'si dikkate alınacaktır"
+
+#: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion valid not before current time + this value (Format: "
+"hours=-1;minutes=-2;seconds=-3)."
+msgstr ""
+"Geçerli saat + bu değerden önce geçerli olmayan onay (Biçim: "
+"saat=-1;dakika=-2;saniye=-3)."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Assertion not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Onay işlemi geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; "
+"Dakika=2; ikinci=3)."
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Session not valid on or after current time + this value (Format: "
+"hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Oturum geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; "
+"Dakika=2; ikinci=3)."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA1"
 msgstr "SHA1"
 
-#: authentik/providers/saml/models.py:110 authentik/sources/saml/models.py:129
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA256"
 msgstr "SHA256"
 
-#: authentik/providers/saml/models.py:111 authentik/sources/saml/models.py:130
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA384"
 msgstr "SHA384"
 
-#: authentik/providers/saml/models.py:112 authentik/sources/saml/models.py:131
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "SHA512"
 msgstr "SHA512"
 
-#: authentik/providers/saml/models.py:119 authentik/sources/saml/models.py:138
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA1"
 msgstr "RSA-SHA1"
 
-#: authentik/providers/saml/models.py:120 authentik/sources/saml/models.py:139
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA256"
 msgstr "RSA-SHA256"
 
-#: authentik/providers/saml/models.py:121 authentik/sources/saml/models.py:140
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA384"
 msgstr "RSA-SHA384"
 
-#: authentik/providers/saml/models.py:122 authentik/sources/saml/models.py:141
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "RSA-SHA512"
 msgstr "RSA-SHA512"
 
-#: authentik/providers/saml/models.py:123 authentik/sources/saml/models.py:142
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA1"
+msgstr "ECDSA-SHA1"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA256"
+msgstr "ECDSA-SHA256"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA384"
+msgstr "ECDSA-SHA384"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "ECDSA-SHA512"
+msgstr "ECDSA-SHA512"
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "DSA-SHA1"
 msgstr "DSA-SHA1"
 
-#: authentik/providers/saml/models.py:140
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertion's Signatures will be validated against "
+"this certificate. To allow unsigned Requests, leave on default."
+msgstr ""
+"Seçildiğinde, gelen iddianın İmzaları bu sertifikaya göre doğrulanacaktır. "
+"İmzasız İsteklere izin vermek için varsayılanda bırakın."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Verification Certificate"
 msgstr "Doğrulama Sertifikası"
 
-#: authentik/providers/saml/models.py:148
+#: authentik/providers/saml/models.py
 msgid "Keypair used to sign outgoing Responses going to the Service Provider."
 msgstr ""
 "Anahtar çifti, Servis Sağlayıcıya giden giden Yanıtları imzalamak için "
 "kullanılır."
 
-#: authentik/providers/saml/models.py:150 authentik/sources/saml/models.py:118
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
 msgid "Signing Keypair"
-msgstr "Anahtar Çiftini İmzalama"
+msgstr "İmzalama Anahtar Çifti"
 
-#: authentik/providers/saml/models.py:180
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid ""
+"When selected, incoming assertions are encrypted by the IdP using the public"
+" key of the encryption keypair. The assertion is decrypted by the SP using "
+"the the private key."
+msgstr ""
+"Seçildiğinde, gelen onaylar IdP tarafından şifreleme anahtar çiftinin genel "
+"anahtarı kullanılarak şifrelenir. İddia, SP tarafından özel anahtar "
+"kullanılarak deşifre edilir."
+
+#: authentik/providers/saml/models.py authentik/sources/saml/models.py
+msgid "Encryption Keypair"
+msgstr "Şifreleme Anahtar Çifti"
+
+#: authentik/providers/saml/models.py
+msgid "Default relay_state value for IDP-initiated logins"
+msgstr ""
+"IDP tarafından başlatılan oturum açma işlemleri için varsayılan relay_state "
+"değeri"
+
+#: authentik/providers/saml/models.py
 msgid "SAML Provider"
 msgstr "SAML Sağlayıcı"
 
-#: authentik/providers/saml/models.py:181
+#: authentik/providers/saml/models.py
 msgid "SAML Providers"
 msgstr "SAML Sağlayıcıları"
 
-#: authentik/providers/saml/models.py:206
-msgid "SAML Property Mapping"
-msgstr "SAML Özellik Eşlemesi"
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mapping"
+msgstr "SAML Sağlayıcısı Özellik Eşlemesi"
 
-#: authentik/providers/saml/models.py:207
-msgid "SAML Property Mappings"
-msgstr "SAML Özellik Eşlemeleri"
+#: authentik/providers/saml/models.py
+msgid "SAML Provider Property Mappings"
+msgstr "SAML Sağlayıcısı Özellik Eşlemeleri"
 
-#: authentik/recovery/management/commands/create_admin_group.py:11
+#: authentik/providers/saml/models.py
+msgid "SAML Provider from Metadata"
+msgstr "Meta Verilerden SAML Sağlayıcısı"
+
+#: authentik/providers/saml/models.py
+msgid "SAML Providers from Metadata"
+msgstr "Meta Verilerden SAML Sağlayıcıları"
+
+#: authentik/providers/scim/models.py
+msgid "Default"
+msgstr "Varsayılan"
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Base URL to SCIM requests, usually ends in /v2"
+msgstr "SCIM istekleri için temel URL, genellikle /v2 ile biter"
+
+#: authentik/providers/scim/models.py
+msgid "Authentication token"
+msgstr "Kimlik doğrulama jetonu"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider"
+msgstr "SCIM Sağlayıcısı"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Providers"
+msgstr "SCIM Sağlayıcıları"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mapping"
+msgstr "SCIM Sağlayıcısı Eşlemesi"
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Provider Mappings"
+msgstr "SCIM Sağlayıcısı Eşlemeleri"
+
+#: authentik/rbac/models.py
+msgid "Role"
+msgstr "Rol"
+
+#: authentik/rbac/models.py
+msgid "Roles"
+msgstr "Roller"
+
+#: authentik/rbac/models.py
+msgid "System permission"
+msgstr "Sistem yetkisi"
+
+#: authentik/rbac/models.py
+msgid "System permissions"
+msgstr "Sistem yetkileri"
+
+#: authentik/rbac/models.py
+msgid "Can view system info"
+msgstr "Sistem bilgilerini görüntüleyebilir"
+
+#: authentik/rbac/models.py
+msgid "Can access admin interface"
+msgstr "Yönetici arayüzüne erişebilir"
+
+#: authentik/rbac/models.py
+msgid "Can view system settings"
+msgstr "Sistem ayarlarını görüntüleyebilir"
+
+#: authentik/rbac/models.py
+msgid "Can edit system settings"
+msgstr "Sistem ayarlarını düzenleyebilir"
+
+#: authentik/recovery/management/commands/create_admin_group.py
 msgid "Create admin group if the default group gets deleted."
-msgstr "Varsayılan grup silinirse admin grubu oluştur."
+msgstr "Varsayılan grup silinirse yönetici grubu oluşturun."
 
-#: authentik/recovery/management/commands/create_recovery_key.py:17
+#: authentik/recovery/management/commands/create_recovery_key.py
 msgid "Create a Key which can be used to restore access to authentik."
 msgstr ""
-"Auentik'e erişimi geri yüklemek için kullanılabilecek bir Anahtar oluşturun."
+"Authentik'e erişimi geri yüklemek için kullanılabilecek bir Anahtar "
+"oluşturun."
 
-#: authentik/recovery/views.py:24
+#: authentik/recovery/views.py
 msgid "Used recovery-link to authenticate."
-msgstr "Kimlik doğrulaması için kullanılan kurtarma bağlantısı."
+msgstr "Kimlik doğrulamak için kurtarma bağlantısı kullanıldı."
 
-#: authentik/sources/ldap/models.py:32
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos realm"
+msgstr "Kerberos bölgesi"
+
+#: authentik/sources/kerberos/models.py
+msgid "Custom krb5.conf to use. Uses the system one by default"
+msgstr "Kullanılacak özel krb5.conf. Varsayılan olarak sistemi kullanır"
+
+#: authentik/sources/kerberos/models.py
+msgid "KAdmin server type"
+msgstr ""
+
+#: authentik/sources/kerberos/models.py
+msgid "Sync users from Kerberos into authentik"
+msgstr "Kullanıcıları Kerberos'tan authentik'e senkronize etme"
+
+#: authentik/sources/kerberos/models.py
+msgid "When a user changes their password, sync it back to Kerberos"
+msgstr ""
+"Bir kullanıcı parolasını değiştirdiğinde, bunu Kerberos'a geri eşitleyin"
+
+#: authentik/sources/kerberos/models.py
+msgid "Principal to authenticate to kadmin for sync."
+msgstr "Senkronizasyon için kadmin'e kimlik doğrulaması yapacak müdür."
+
+#: authentik/sources/kerberos/models.py
+msgid "Password to authenticate to kadmin for sync"
+msgstr "Senkronizasyon için kadmin'e kimlik doğrulama parolası"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Keytab to authenticate to kadmin for sync. Must be base64-encoded or in the "
+"form TYPE:residual"
+msgstr ""
+"Senkronizasyon için kadmin'e kimlik doğrulaması yapmak üzere anahtar "
+"sekmesi. Base64 kodlu veya TYPE:residual biçiminde olmalıdır"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Credentials cache to authenticate to kadmin for sync. Must be in the form "
+"TYPE:residual"
+msgstr ""
+"Senkronizasyon için kadmin'e kimlik doğrulaması yapmak üzere kimlik "
+"bilgileri önbelleği. TYPE:residual şeklinde olmalıdır"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"Force the use of a specific server name for SPNEGO. Must be in the form "
+"HTTP@hostname"
+msgstr ""
+"SPNEGO için belirli bir sunucu adının kullanımını zorlar. HTTP@hostname "
+"şeklinde olmalıdır"
+
+#: authentik/sources/kerberos/models.py
+msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
+msgstr "SPNEGO keytab base64 kodlu veya FILE:path biçiminde keytab yolu"
+
+#: authentik/sources/kerberos/models.py
+msgid "Credential cache to use for SPNEGO in form type:residual"
+msgstr "SPNEGO için kullanılacak kimlik bilgisi önbelleği form türü:artık"
+
+#: authentik/sources/kerberos/models.py
+msgid ""
+"If enabled, the authentik-stored password will be updated upon login with "
+"the Kerberos password backend"
+msgstr ""
+"Etkinleştirilirse, Kerberos parola arka ucu ile oturum açıldığında kimlik "
+"doğrulaması için saklanan parola güncellenir"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source"
+msgstr "Kerberos Kaynağı"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Sources"
+msgstr "Kerberos Kaynakları"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mapping"
+msgstr "Kerberos Kaynağı Özellik Eşlemesi"
+
+#: authentik/sources/kerberos/models.py
+msgid "Kerberos Source Property Mappings"
+msgstr "Kerberos Kaynağı Özellik Eşlemeleri"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connection"
+msgstr "Kullanıcı Kerberos Kaynağı Bağlantısı"
+
+#: authentik/sources/kerberos/models.py
+msgid "User Kerberos Source Connections"
+msgstr "Kullanıcı Kerberos Kaynağı Bağlantıları"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connection"
+msgstr "Grup Kerberos Kaynağı Bağlantısı"
+
+#: authentik/sources/kerberos/models.py
+msgid "Group Kerberos Source Connections"
+msgstr "Grup Kerberos Kaynağı Bağlantıları"
+
+#: authentik/sources/kerberos/views.py
+msgid "SPNEGO authentication required"
+msgstr "SPNEGO kimlik doğrulaması gerekli"
+
+#: authentik/sources/kerberos/views.py
+msgid ""
+"\n"
+"                    Make sure you have valid tickets (obtainable via kinit)\n"
+"                    and configured the browser correctly.\n"
+"                    Please contact your administrator.\n"
+"                "
+msgstr ""
+"\n"
+"                    Geçerli biletleriniz olduğundan emin olun (kinit üzerinden temin edilebilir)\n"
+"                    ve tarayıcıyı doğru şekilde yapılandırdığınızdan.\n"
+"                    Lütfen yöneticinizle iletişime geçin.\n"
+"                "
+
+#: authentik/sources/ldap/api.py
+msgid "Only a single LDAP Source with password synchronization is allowed"
+msgstr ""
+"Parola senkronizasyonuna sahip yalnızca tek bir LDAP Kaynağına izin verilir"
+
+#: authentik/sources/ldap/models.py
 msgid "Server URI"
-msgstr "Sunucu URI"
+msgstr "Sunucu URI'si"
 
-#: authentik/sources/ldap/models.py:40
+#: authentik/sources/ldap/models.py
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this"
 " keypair."
 msgstr ""
-"İsteğe bağlı olarak LDAP Sunucusunun Sertifikasını bu anahtar çiftinde CA "
-"zincirine karşı doğrulayın."
+"İsteğe bağlı olarak LDAP Sunucusunun Sertifikasını bu anahtar çiftindeki CA "
+"Zincirine karşı doğrulayın."
 
-#: authentik/sources/ldap/models.py:45
+#: authentik/sources/ldap/models.py
+msgid ""
+"Client certificate to authenticate against the LDAP Server's Certificate."
+msgstr ""
+"LDAP Sunucusunun Sertifikasına karşı kimlik doğrulaması yapmak için İstemci "
+"sertifikası."
+
+#: authentik/sources/ldap/models.py
 msgid "Bind CN"
 msgstr "Bağlama CN"
 
-#: authentik/sources/ldap/models.py:47
+#: authentik/sources/ldap/models.py
 msgid "Enable Start TLS"
 msgstr "TLS Başlatmayı Etkinleştir"
 
-#: authentik/sources/ldap/models.py:49
+#: authentik/sources/ldap/models.py
+msgid "Use Server URI for SNI verification"
+msgstr "SNI doğrulaması için Sunucu URI'sini kullanın"
+
+#: authentik/sources/ldap/models.py
 msgid "Base DN"
-msgstr "Taban DN"
+msgstr "Baz DN"
 
-#: authentik/sources/ldap/models.py:51
+#: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for User-queries."
-msgstr "Kullanıcı sorguları için Base DN için hazır."
+msgstr "Kullanıcı sorguları için Baz DN'ye eklenir."
 
-#: authentik/sources/ldap/models.py:52
+#: authentik/sources/ldap/models.py
 msgid "Addition User DN"
-msgstr "Ekleme Kullanıcı DN"
+msgstr "Ekleme Kullanıcı DN'si"
 
-#: authentik/sources/ldap/models.py:56
+#: authentik/sources/ldap/models.py
 msgid "Prepended to Base DN for Group-queries."
-msgstr "Grup sorguları için Base DN için hazır."
+msgstr "Grup sorguları için Baz DN'nin önüne eklenir."
 
-#: authentik/sources/ldap/models.py:57
+#: authentik/sources/ldap/models.py
 msgid "Addition Group DN"
-msgstr "Toplama Grubu DN"
+msgstr "Ekleme Grup DN'si"
 
-#: authentik/sources/ldap/models.py:63
+#: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
-msgstr "Bu filtreyle eşleşen nesneleri Kullanıcı olarak düşünün."
+msgstr "Bu filtreyle eşleşen Nesneleri Kullanıcı olarak kabul edin."
 
-#: authentik/sources/ldap/models.py:66
+#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr "Bir grubun üyelerini içeren alan."
 
-#: authentik/sources/ldap/models.py:70
+#: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Groups."
 msgstr "Bu filtreyle eşleşen nesneleri Gruplar olarak düşünün."
 
-#: authentik/sources/ldap/models.py:73
+#: authentik/sources/ldap/models.py
 msgid "Field which contains a unique Identifier."
 msgstr "Benzersiz bir Tanımlayıcı içeren alan."
 
-#: authentik/sources/ldap/models.py:80
-msgid "Property mappings used for group creation/updating."
-msgstr "Grup oluşturma/güncellenmesi için kullanılan özellik eşlemeleri."
+#: authentik/sources/ldap/models.py
+msgid "Update internal authentik password when login succeeds with LDAP"
+msgstr ""
+"LDAP ile oturum açma başarılı olduğunda dahili authentik parolasını "
+"güncelleme"
 
-#: authentik/sources/ldap/models.py:145
+#: authentik/sources/ldap/models.py
+msgid ""
+"When a user changes their password, sync it back to LDAP. This can only be "
+"enabled on a single LDAP source."
+msgstr ""
+"Bir kullanıcı parolasını değiştirdiğinde, parolayı LDAP ile geri eşitleyin. "
+"Bu yalnızca tek bir LDAP kaynağında etkinleştirilebilir."
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP Kaynağı"
 
-#: authentik/sources/ldap/models.py:146
+#: authentik/sources/ldap/models.py
 msgid "LDAP Sources"
 msgstr "LDAP Kaynakları"
 
-#: authentik/sources/ldap/models.py:169
-msgid "LDAP Property Mapping"
-msgstr "LDAP Özellik Eşlemesi"
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mapping"
+msgstr "LDAP Kaynak Özellik Eşlemesi"
 
-#: authentik/sources/ldap/models.py:170
-msgid "LDAP Property Mappings"
-msgstr "LDAP Özellik Eşlemeleri"
+#: authentik/sources/ldap/models.py
+msgid "LDAP Source Property Mappings"
+msgstr "LDAP Kaynak Özellik Eşlemeleri"
 
-#: authentik/sources/ldap/signals.py:58
+#: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Parola Active Directory Karmaşıklığıyla eşleşmiyor."
 
-#: authentik/sources/oauth/models.py:24
-msgid "Request Token URL"
-msgstr "Belirteç URL'sini iste"
+#: authentik/sources/oauth/clients/oauth2.py
+msgid "No token received."
+msgstr "Jeton alınmadı."
 
-#: authentik/sources/oauth/models.py:26
+#: authentik/sources/oauth/models.py
+msgid "Request Token URL"
+msgstr "Jeton URL'si İste"
+
+#: authentik/sources/oauth/models.py
 msgid ""
 "URL used to request the initial token. This URL is only required for OAuth "
 "1."
@@ -1076,195 +2434,280 @@ msgstr ""
 "İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için "
 "gereklidir."
 
-#: authentik/sources/oauth/models.py:32
+#: authentik/sources/oauth/models.py
 msgid "Authorization URL"
 msgstr "Yetkilendirme URL'si"
 
-#: authentik/sources/oauth/models.py:33
+#: authentik/sources/oauth/models.py
 msgid "URL the user is redirect to to conest the flow."
 msgstr "URL kullanıcı akışını itişa yönlendirmek için yönlendirir."
 
-#: authentik/sources/oauth/models.py:38
+#: authentik/sources/oauth/models.py
 msgid "Access Token URL"
 msgstr "Erişim Belirteci URL'si"
 
-#: authentik/sources/oauth/models.py:39
+#: authentik/sources/oauth/models.py
 msgid "URL used by authentik to retrieve tokens."
 msgstr "Auentik tarafından belirteçleri almak için kullanılan URL."
 
-#: authentik/sources/oauth/models.py:44
+#: authentik/sources/oauth/models.py
 msgid "Profile URL"
 msgstr "Profil URL'si"
 
-#: authentik/sources/oauth/models.py:45
+#: authentik/sources/oauth/models.py
 msgid "URL used by authentik to get user information."
 msgstr "Kullanıcı bilgilerini almak için authentik tarafından kullanılan URL."
 
-#: authentik/sources/oauth/models.py:97
+#: authentik/sources/oauth/models.py
+msgid "Additional Scopes"
+msgstr "Ek Kapsamlar"
+
+#: authentik/sources/oauth/models.py
 msgid "OAuth Source"
 msgstr "OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:98
+#: authentik/sources/oauth/models.py
 msgid "OAuth Sources"
 msgstr "OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:107
+#: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Source"
 msgstr "GitHub OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:108
+#: authentik/sources/oauth/models.py
 msgid "GitHub OAuth Sources"
 msgstr "GitHub OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:117
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Source"
+msgstr "GitLab OAuth Kaynağı"
+
+#: authentik/sources/oauth/models.py
+msgid "GitLab OAuth Sources"
+msgstr "GitLab OAuth Kaynakları"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Source"
+msgstr "Twitch OAuth Kaynağı"
+
+#: authentik/sources/oauth/models.py
+msgid "Twitch OAuth Sources"
+msgstr "Twitch OAuth Kaynakları"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Source"
+msgstr "Mailcow OAuth Kaynağı"
+
+#: authentik/sources/oauth/models.py
+msgid "Mailcow OAuth Sources"
+msgstr "Mailcow OAuth Kaynakları"
+
+#: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Source"
 msgstr "Twitter OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:118
+#: authentik/sources/oauth/models.py
 msgid "Twitter OAuth Sources"
 msgstr "Twitter OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:127
+#: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Source"
 msgstr "Facebook OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:128
+#: authentik/sources/oauth/models.py
 msgid "Facebook OAuth Sources"
 msgstr "Facebook OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:137
+#: authentik/sources/oauth/models.py
 msgid "Discord OAuth Source"
 msgstr "Discord OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:138
+#: authentik/sources/oauth/models.py
 msgid "Discord OAuth Sources"
 msgstr "Discord OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:147
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Source"
+msgstr "Patreon OAuth Kaynağı"
+
+#: authentik/sources/oauth/models.py
+msgid "Patreon OAuth Sources"
+msgstr "Patreon OAuth Kaynakları"
+
+#: authentik/sources/oauth/models.py
 msgid "Google OAuth Source"
 msgstr "Google OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:148
+#: authentik/sources/oauth/models.py
 msgid "Google OAuth Sources"
 msgstr "Google OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:157
+#: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Source"
 msgstr "Azure AD OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:158
+#: authentik/sources/oauth/models.py
 msgid "Azure AD OAuth Sources"
 msgstr "Azure AD OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:167
+#: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Source"
 msgstr "OpenID OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:168
+#: authentik/sources/oauth/models.py
 msgid "OpenID OAuth Sources"
 msgstr "OpenID OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:177
+#: authentik/sources/oauth/models.py
 msgid "Apple OAuth Source"
 msgstr "Apple OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:178
+#: authentik/sources/oauth/models.py
 msgid "Apple OAuth Sources"
 msgstr "Apple OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:187
+#: authentik/sources/oauth/models.py
 msgid "Okta OAuth Source"
 msgstr "Okta OAuth Kaynağı"
 
-#: authentik/sources/oauth/models.py:188
+#: authentik/sources/oauth/models.py
 msgid "Okta OAuth Sources"
 msgstr "Okta OAuth Kaynakları"
 
-#: authentik/sources/oauth/models.py:203
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Source"
+msgstr "Reddit OAuth Kaynağı"
+
+#: authentik/sources/oauth/models.py
+msgid "Reddit OAuth Sources"
+msgstr "Reddit OAuth Kaynakları"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mapping"
+msgstr "OAuth Kaynak Özellik Eşlemesi"
+
+#: authentik/sources/oauth/models.py
+msgid "OAuth Source Property Mappings"
+msgstr "OAuth Kaynak Özellik Eşlemeleri"
+
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connection"
 msgstr "Kullanıcı OAuth Kaynak Bağlantısı"
 
-#: authentik/sources/oauth/models.py:204
+#: authentik/sources/oauth/models.py
 msgid "User OAuth Source Connections"
 msgstr "Kullanıcı OAuth Kaynak Bağlantıları"
 
-#: authentik/sources/oauth/views/callback.py:98
-msgid "Authentication Failed."
-msgstr "Kimlik Doğrulama Başarısız."
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connection"
+msgstr "Grup OAuth Kaynak Bağlantısı"
 
-#: authentik/sources/plex/models.py:37
+#: authentik/sources/oauth/models.py
+msgid "Group OAuth Source Connections"
+msgstr "Grup OAuth Kaynak Bağlantıları"
+
+#: authentik/sources/oauth/views/callback.py
+#, python-brace-format
+msgid "Authentication failed: {reason}"
+msgstr "Kimlik doğrulama başarısız oldu: {reason}"
+
+#: authentik/sources/plex/models.py
 msgid "Client identifier used to talk to Plex."
 msgstr "Plex ile konuşmak için kullanılan istemci tanımlayıcısı."
 
-#: authentik/sources/plex/models.py:52
+#: authentik/sources/plex/models.py
+msgid ""
+"Which servers a user has to be a member of to be granted access. Empty list "
+"allows every server."
+msgstr ""
+"Bir kullanıcının erişim izni alabilmesi için hangi sunuculara üye olması "
+"gerektiği. Boş liste her sunucuya izin verir."
+
+#: authentik/sources/plex/models.py
 msgid "Allow friends to authenticate, even if you don't share a server."
 msgstr ""
 "Bir sunucuyu paylaşmıyor olsanız bile arkadaşlarınızın kimlik doğrulamasına "
 "izin verin."
 
-#: authentik/sources/plex/models.py:54
+#: authentik/sources/plex/models.py
 msgid "Plex token used to check friends"
 msgstr "Arkadaşlarını kontrol etmek için kullanılan Plex belirteci"
 
-#: authentik/sources/plex/models.py:92
+#: authentik/sources/plex/models.py
 msgid "Plex Source"
 msgstr "Plex Kaynağı"
 
-#: authentik/sources/plex/models.py:93
+#: authentik/sources/plex/models.py
 msgid "Plex Sources"
 msgstr "Plex Kaynakları"
 
-#: authentik/sources/plex/models.py:104
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mapping"
+msgstr "Plex Kaynak Özellik Eşlemesi"
+
+#: authentik/sources/plex/models.py
+msgid "Plex Source Property Mappings"
+msgstr "Plex Kaynak Özellik Eşlemeleri"
+
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connection"
 msgstr "Kullanıcı Plex Kaynak Bağlantısı"
 
-#: authentik/sources/plex/models.py:105
+#: authentik/sources/plex/models.py
 msgid "User Plex Source Connections"
 msgstr "Kullanıcı Plex Kaynak Bağlantıları"
 
-#: authentik/sources/saml/models.py:36
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connection"
+msgstr "Grup Plex Kaynak Bağlantısı"
+
+#: authentik/sources/plex/models.py
+msgid "Group Plex Source Connections"
+msgstr "Grup Plex Kaynak Bağlantıları"
+
+#: authentik/sources/saml/models.py
 msgid "Redirect Binding"
 msgstr "Bağlama Yönlendirme"
 
-#: authentik/sources/saml/models.py:37
+#: authentik/sources/saml/models.py
 msgid "POST Binding"
-msgstr "POST Ciltleme"
+msgstr "POST Bağlama"
 
-#: authentik/sources/saml/models.py:38
+#: authentik/sources/saml/models.py
 msgid "POST Binding with auto-confirmation"
 msgstr "POST Otomatik onay ile bağlama"
 
-#: authentik/sources/saml/models.py:57
+#: authentik/sources/saml/models.py
 msgid "Flow used before authentication."
 msgstr "Kimlik doğrulamadan önce kullanılan akış."
 
-#: authentik/sources/saml/models.py:64
+#: authentik/sources/saml/models.py
 msgid "Issuer"
 msgstr "Yayımcı"
 
-#: authentik/sources/saml/models.py:65
+#: authentik/sources/saml/models.py
 msgid "Also known as Entity ID. Defaults the Metadata URL."
 msgstr ""
 "Varlık Kimliği olarak da bilinir. Meta Veri URL'sini varsayılan olarak "
 "ayarlanır."
 
-#: authentik/sources/saml/models.py:69
+#: authentik/sources/saml/models.py
 msgid "SSO URL"
 msgstr "SSO URL"
 
-#: authentik/sources/saml/models.py:70
+#: authentik/sources/saml/models.py
 msgid "URL that the initial Login request is sent to."
 msgstr "İlk oturum açma isteğinin gönderildiği URL."
 
-#: authentik/sources/saml/models.py:76
+#: authentik/sources/saml/models.py
 msgid "SLO URL"
 msgstr "SLO URL"
 
-#: authentik/sources/saml/models.py:77
+#: authentik/sources/saml/models.py
 msgid "Optional URL if your IDP supports Single-Logout."
 msgstr "IDP'niz Tek Oturumu Kapat'ı destekliyorsa isteğe bağlı URL."
 
-#: authentik/sources/saml/models.py:83
+#: authentik/sources/saml/models.py
 msgid ""
 "Allows authentication flows initiated by the IdP. This can be a security "
 "risk, as no validation of the request ID is done."
@@ -1272,7 +2715,7 @@ msgstr ""
 "IdP tarafından başlatılan kimlik doğrulama akışlarına izin verir. İstek "
 "kimliğinin doğrulanması yapılmadığından, bu bir güvenlik riski olabilir."
 
-#: authentik/sources/saml/models.py:91
+#: authentik/sources/saml/models.py
 msgid ""
 "NameID Policy sent to the IdP. Can be unset, in which case no Policy is "
 "sent."
@@ -1280,230 +2723,490 @@ msgstr ""
 "IdP'ye gönderilen NameID İlkesi. Ayarlanmamış olabilir, bu durumda hiçbir "
 "İlke gönderilmez."
 
-#: authentik/sources/saml/models.py:102
+#: authentik/sources/saml/models.py
 msgid "Delete temporary users after"
 msgstr "Geçici kullanıcıları sonra sil"
 
-#: authentik/sources/saml/models.py:120
+#: authentik/sources/saml/models.py
 msgid ""
-"Keypair which is used to sign outgoing requests. Leave empty to disable "
-"signing."
+"Time offset when temporary users should be deleted. This only applies if "
+"your IDP uses the NameID Format 'transient', and the user doesn't log out "
+"manually. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Giden istekleri imzalamak için kullanılan anahtar çifti. İmzalamayı devre "
-"dışı bırakmak için boş bırakın."
+"Geçici kullanıcıların silinmesi gerektiğinde zaman uzaklığı. Bu yalnızca "
+"IDP'niz NameID Biçimi 'geçici' kullanıyorsa ve kullanıcı el ile oturumu "
+"kapatmazsa geçerlidir. (Biçim: saat=1; dakika=2; saniye/= 3)."
 
-#: authentik/sources/saml/models.py:188
+#: authentik/sources/saml/models.py
+msgid ""
+"Keypair used to sign outgoing Responses going to the Identity Provider."
+msgstr ""
+"Kimlik Sağlayıcıya giden Yanıtları imzalamak için kullanılan anahtar çifti."
+
+#: authentik/sources/saml/models.py
 msgid "SAML Source"
 msgstr "SAML Kaynağı"
 
-#: authentik/sources/saml/models.py:189
+#: authentik/sources/saml/models.py
 msgid "SAML Sources"
 msgstr "SAML Kaynakları"
 
-#: authentik/stages/authenticator_duo/models.py:64
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mapping"
+msgstr "SAML Kaynak Özellik Eşlemesi"
+
+#: authentik/sources/saml/models.py
+msgid "SAML Source Property Mappings"
+msgstr "SAML Kaynak Özellik Eşlemeleri"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connection"
+msgstr "Kullanıcı SAML Kaynak Bağlantısı"
+
+#: authentik/sources/saml/models.py
+msgid "User SAML Source Connections"
+msgstr "Kullanıcı SAML Kaynak Bağlantıları"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connection"
+msgstr "Grup SAML Kaynak Bağlantısı"
+
+#: authentik/sources/saml/models.py
+msgid "Group SAML Source Connections"
+msgstr "Grup SAML Kaynak Bağlantıları"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source"
+msgstr "SCIM Kaynak"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Sources"
+msgstr "SCIM Kaynakları"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mapping"
+msgstr "SCIM Kaynak Özellik Eşlemesi"
+
+#: authentik/sources/scim/models.py
+msgid "SCIM Source Property Mappings"
+msgstr "SCIM Kaynak Özellik Eşlemeleri"
+
+#: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stage"
 msgstr "Duo Authenticator Kurulum Aşaması"
 
-#: authentik/stages/authenticator_duo/models.py:65
+#: authentik/stages/authenticator_duo/models.py
 msgid "Duo Authenticator Setup Stages"
 msgstr "Duo Authenticator Kurulum Aşamaları"
 
-#: authentik/stages/authenticator_duo/models.py:82
+#: authentik/stages/authenticator_duo/models.py
 msgid "Duo Device"
 msgstr "Duo Cihazı"
 
-#: authentik/stages/authenticator_duo/models.py:83
+#: authentik/stages/authenticator_duo/models.py
 msgid "Duo Devices"
-msgstr "İkili Cihazlar"
+msgstr "Duo Cihazları"
 
-#: authentik/stages/authenticator_sms/models.py:157
-msgid "SMS Authenticator Setup Stage"
-msgstr "SMS Authenticator Kurulum Aşaması"
+#: authentik/stages/authenticator_email/models.py
+msgid "Email OTP"
+msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:158
-msgid "SMS Authenticator Setup Stages"
-msgstr "SMS Authenticator Kurulum Aşamaları"
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid ""
+"When enabled, global Email connection settings will be used and connection "
+"settings below will be ignored."
+msgstr ""
+"Etkinleştirildiğinde, genel E-posta bağlantısı ayarları kullanılır ve "
+"aşağıdaki bağlantı ayarları yoksayılır."
 
-#: authentik/stages/authenticator_sms/models.py:175
-msgid "SMS Device"
-msgstr "SMS Cihazı"
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
+msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
+msgstr ""
 
-#: authentik/stages/authenticator_sms/models.py:176
-msgid "SMS Devices"
-msgstr "SMS Cihazları"
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stage"
+msgstr ""
 
-#: authentik/stages/authenticator_sms/stage.py:54
-#: authentik/stages/authenticator_totp/stage.py:45
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Authenticator Setup Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/email/stage.py
+msgid "Exception occurred while rendering E-mail template"
+msgstr "E-posta şablonu oluşturulurken istisna oluştu"
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Device"
+msgstr ""
+
+#: authentik/stages/authenticator_email/models.py
+msgid "Email Devices"
+msgstr ""
+
+#: authentik/stages/authenticator_email/stage.py
+#: authentik/stages/authenticator_sms/stage.py
+#: authentik/stages/authenticator_totp/stage.py
 msgid "Code does not match"
 msgstr "Kod eşleşmiyor"
 
-#: authentik/stages/authenticator_static/models.py:47
-msgid "Static Authenticator Stage"
-msgstr "Statik Kimlik Doğrulayıcı Aşama"
+#: authentik/stages/authenticator_email/stage.py
+msgid "Invalid email"
+msgstr ""
 
-#: authentik/stages/authenticator_static/models.py:48
-msgid "Static Authenticator Stages"
-msgstr "Statik Kimlik Doğrulayıcı Aşamaları"
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"      Hi %(username)s,\n"
+"      "
+msgstr ""
+"\n"
+"      Merhaba, %(username)s,\n"
+"      "
 
-#: authentik/stages/authenticator_totp/models.py:16
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+msgid ""
+"\n"
+"          Email MFA code.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Merhaba %(username)s,"
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+msgid ""
+"\n"
+"Email MFA code\n"
+msgstr ""
+
+#: authentik/stages/authenticator_email/templates/email/email_otp.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request this code, please ignore this email. The code above is valid for %(expires)s.\n"
+msgstr ""
+
+#: authentik/stages/authenticator_sms/models.py
+msgid ""
+"When enabled, the Phone number is only used during enrollment to verify the "
+"users authenticity. Only a hash of the phone number is saved to ensure it is"
+" not reused in the future."
+msgstr ""
+"Etkinleştirildiğinde, Telefon numarası yalnızca kayıt sırasında "
+"kullanıcıların gerçekliğini doğrulamak için kullanılır. Gelecekte tekrar "
+"kullanılmamasını sağlamak için telefon numarasının yalnızca bir karması "
+"kaydedilir."
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "Optionally modify the payload being sent to custom providers."
+msgstr "İsteğe bağlı olarak özel sağlayıcılara gönderilen yükü değiştirin."
+
+#: authentik/stages/authenticator_sms/models.py
+#, python-brace-format
+msgid "Use this code to authenticate in authentik: {token}"
+msgstr "Authentik'te kimlik doğrulaması yapmak için bu kodu kullanın: {token}"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stage"
+msgstr "SMS Authenticator Kurulum Aşaması"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Authenticator Setup Stages"
+msgstr "SMS Authenticator Kurulum Aşamaları"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Device"
+msgstr "SMS Cihazı"
+
+#: authentik/stages/authenticator_sms/models.py
+msgid "SMS Devices"
+msgstr "SMS Cihazları"
+
+#: authentik/stages/authenticator_sms/stage.py
+msgid "Invalid phone number"
+msgstr "Geçersiz telefon numarası"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stage"
+msgstr "Statik Kimlik Doğrulayıcı Kurulum Aşaması"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Authenticator Setup Stages"
+msgstr "Statik Kimlik Doğrulayıcı Kurulum Aşamaları"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Device"
+msgstr "Statik Cihaz"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Devices"
+msgstr "Statik Cihazlar"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Token"
+msgstr "Statik Jeton"
+
+#: authentik/stages/authenticator_static/models.py
+msgid "Static Tokens"
+msgstr "Statik Jetonlar"
+
+#: authentik/stages/authenticator_totp/models.py
 msgid "6 digits, widely compatible"
 msgstr "6 basamaklı, yaygın olarak uyumlu"
 
-#: authentik/stages/authenticator_totp/models.py:17
+#: authentik/stages/authenticator_totp/models.py
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "Google Authenticator gibi uygulamalarla uyumlu olmayan 8 haneli"
 
-#: authentik/stages/authenticator_totp/models.py:54
+#: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stage"
 msgstr "TOTP Kimlik Doğrulayıcı Kurulum Aşaması"
 
-#: authentik/stages/authenticator_totp/models.py:55
+#: authentik/stages/authenticator_totp/models.py
 msgid "TOTP Authenticator Setup Stages"
 msgstr "TOTP Kimlik Doğrulayıcısı Kurulum Aşamaları"
 
-#: authentik/stages/authenticator_validate/challenge.py:99
-msgid "Invalid Token"
-msgstr "Geçersiz Belirteç"
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Device"
+msgstr "TOTP Cihazı"
 
-#: authentik/stages/authenticator_validate/models.py:17
+#: authentik/stages/authenticator_totp/models.py
+msgid "TOTP Devices"
+msgstr "TOTP Cihazları"
+
+#: authentik/stages/authenticator_validate/challenge.py
+msgid ""
+"Invalid Token. Please ensure the time on your device is accurate and try "
+"again."
+msgstr ""
+"Geçersiz Jeton. Lütfen cihazınızdaki saatin doğru olduğundan emin olun ve "
+"tekrar deneyin."
+
+#: authentik/stages/authenticator_validate/challenge.py
+#: authentik/stages/authenticator_webauthn/stage.py
+#, python-brace-format
+msgid "Invalid device type. Contact your {brand} administrator for help."
+msgstr "Geçersiz cihaz türü. Yardım için {brand} yöneticinize başvurun."
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Static"
+msgstr "Statik"
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "TOTP"
 msgstr "TOTP"
 
-#: authentik/stages/authenticator_validate/models.py:18
+#: authentik/stages/authenticator_validate/models.py
 msgid "WebAuthn"
 msgstr "WebAuthn"
 
-#: authentik/stages/authenticator_validate/models.py:19
+#: authentik/stages/authenticator_validate/models.py
 msgid "Duo"
-msgstr "İkili"
+msgstr "Duo"
 
-#: authentik/stages/authenticator_validate/models.py:20
+#: authentik/stages/authenticator_validate/models.py
 msgid "SMS"
 msgstr "SMS"
 
-#: authentik/stages/authenticator_validate/models.py:58
-msgid "Device classes which can be used to authenticate"
-msgstr "Kimlik doğrulaması için kullanılabilecek aygıt sınıfları"
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"Stages used to configure Authenticator when user doesn't have any compatible"
+" devices. After this configuration Stage passes, the user is not prompted "
+"again."
+msgstr ""
+"Kullanıcı herhangi bir uyumlu cihaza sahip olmadığında Authenticator'ı "
+"yapılandırmak için kullanılan aşamalar. Bu yapılandırma Aşaması geçtikten "
+"sonra, kullanıcıya tekrar sorulmaz."
 
-#: authentik/stages/authenticator_validate/models.py:80
+#: authentik/stages/authenticator_validate/models.py
+msgid "Device classes which can be used to authenticate"
+msgstr "Kimlik doğrulamak için kullanılabilecek cihaz sınıfları"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid ""
+"If any of the user's device has been used within this threshold, this stage "
+"will be skipped"
+msgstr ""
+"Kullanıcının cihazlarından herhangi biri bu eşik dahilinde kullanılmışsa, bu"
+" aşama atlanacaktır"
+
+#: authentik/stages/authenticator_validate/models.py
+msgid "Enforce user verification for WebAuthn devices."
+msgstr "WebAuthn cihazları için kullanıcı doğrulamasını zorlayın."
+
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stage"
 msgstr "Kimlik Doğrulayıcı Doğrulama Aşaması"
 
-#: authentik/stages/authenticator_validate/models.py:81
+#: authentik/stages/authenticator_validate/models.py
 msgid "Authenticator Validation Stages"
 msgstr "Kimlik Doğrulayıcı Doğrulama Aşamaları"
 
-#: authentik/stages/authenticator_webauthn/models.py:71
+#: authentik/stages/authenticator_validate/stage.py
+msgid "No (allowed) MFA authenticator configured."
+msgstr "Yapılandırılmış (izin verilen) MFA kimlik doğrulayıcısı yok."
+
+#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stage"
 msgstr "WebAuthn Authenticator Kurulum Aşaması"
 
-#: authentik/stages/authenticator_webauthn/models.py:72
+#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Authenticator Setup Stages"
 msgstr "WebAuthn Authenticator Kurulum Aşamaları"
 
-#: authentik/stages/authenticator_webauthn/models.py:105
+#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Device"
 msgstr "WebAuthn Aygıtı"
 
-#: authentik/stages/authenticator_webauthn/models.py:106
+#: authentik/stages/authenticator_webauthn/models.py
 msgid "WebAuthn Devices"
 msgstr "WebAuthn Aygıtları"
 
-#: authentik/stages/captcha/models.py:15
-msgid ""
-"Public key, acquired from https://www.google.com/recaptcha/intro/v3.html"
-msgstr ""
-"https://www.google.com/recaptcha/intro/v3.html adresinden edinilen genel "
-"anahtar"
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device type"
+msgstr "WebAuthn Cihaz türü"
 
-#: authentik/stages/captcha/models.py:18
-msgid ""
-"Private key, acquired from https://www.google.com/recaptcha/intro/v3.html"
-msgstr ""
-"https://www.google.com/recaptcha/intro/v3.html adresinden edinilen özel "
-"anahtar"
+#: authentik/stages/authenticator_webauthn/models.py
+msgid "WebAuthn Device types"
+msgstr "WebAuthn Cihaz türleri"
 
-#: authentik/stages/captcha/models.py:39
+#: authentik/stages/captcha/models.py
+msgid "Public key, acquired your captcha Provider."
+msgstr "Açık anahtar, captcha Sağlayıcınızı elde etti."
+
+#: authentik/stages/captcha/models.py
+msgid "Private key, acquired your captcha Provider."
+msgstr "Özel anahtar, captcha Sağlayıcınızı elde etti."
+
+#: authentik/stages/captcha/models.py
+msgid ""
+"When enabled and the received captcha score is outside of the given "
+"threshold, the stage will show an error message. When not enabled, the flow "
+"will continue, but the data from the captcha will be available in the "
+"context for policy decisions"
+msgstr ""
+"Etkinleştirildiğinde ve alınan captcha puanı verilen eşiğin dışında "
+"olduğunda, aşama bir hata mesajı gösterecektir. Etkinleştirilmediğinde, akış"
+" devam eder, ancak captcha'dan gelen veriler politika kararları için "
+"bağlamda kullanılabilir olacaktır"
+
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stage"
-msgstr "Captcha Aşama"
+msgstr "Captcha Aşaması"
 
-#: authentik/stages/captcha/models.py:40
+#: authentik/stages/captcha/models.py
 msgid "Captcha Stages"
 msgstr "Captcha Aşamaları"
 
-#: authentik/stages/consent/models.py:52
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response. Retrying may solve this issue."
+msgstr "Geçersiz captcha yanıtı. Yeniden denemek bu sorunu çözebilir."
+
+#: authentik/stages/captcha/stage.py
+msgid "Invalid captcha response"
+msgstr "Geçersiz captcha yanıtı"
+
+#: authentik/stages/captcha/stage.py
+msgid "Failed to validate token"
+msgstr "Jeton doğrulanamadı"
+
+#: authentik/stages/consent/models.py
+msgid ""
+"Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+msgstr ""
+"Onay sona erdikten sonra ofset. (Biçim: saat=1; dakika=2; saniye/= 3)."
+
+#: authentik/stages/consent/models.py
 msgid "Consent Stage"
 msgstr "Onaylama Aşaması"
 
-#: authentik/stages/consent/models.py:53
+#: authentik/stages/consent/models.py
 msgid "Consent Stages"
 msgstr "Onaylı Aşamalar"
 
-#: authentik/stages/consent/models.py:68
+#: authentik/stages/consent/models.py
 msgid "User Consent"
 msgstr "Kullanıcı Onayı"
 
-#: authentik/stages/consent/models.py:69
+#: authentik/stages/consent/models.py
 msgid "User Consents"
 msgstr "Kullanıcı Onayları"
 
-#: authentik/stages/deny/models.py:31
+#: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Aşama Alanını Reddet"
 
-#: authentik/stages/deny/models.py:32
+#: authentik/stages/deny/models.py
 msgid "Deny Stages"
 msgstr "Aşamaları Reddet"
 
-#: authentik/stages/dummy/models.py:33
+#: authentik/stages/dummy/models.py
 msgid "Dummy Stage"
-msgstr "Kukla Aşama"
+msgstr "Kukla Aşaması"
 
-#: authentik/stages/dummy/models.py:34
+#: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "Kukla Aşamaları"
 
-#: authentik/stages/email/models.py:25
+#: authentik/stages/email/models.py
 msgid "Password Reset"
 msgstr "Parola Sıfırlama"
 
-#: authentik/stages/email/models.py:29
+#: authentik/stages/email/models.py
 msgid "Account Confirmation"
 msgstr "Hesap Onayı"
 
-#: authentik/stages/email/models.py:75
+#: authentik/stages/email/models.py
 msgid "Activate users upon completion of stage."
 msgstr "Aşama aşaması tamamlandığında kullanıcıları etkinleştirin."
 
-#: authentik/stages/email/models.py:79
-msgid "Time in minutes the token sent is valid."
-msgstr "Gönderilen belirteç dakikalar olarak geçerlidir."
-
-#: authentik/stages/email/models.py:125
+#: authentik/stages/email/models.py
 msgid "Email Stage"
 msgstr "E-posta Aşaması"
 
-#: authentik/stages/email/models.py:126
+#: authentik/stages/email/models.py
 msgid "Email Stages"
 msgstr "E-posta Aşamaları"
 
-#: authentik/stages/email/stage.py:106
+#: authentik/stages/email/stage.py
 msgid "Successfully verified Email."
 msgstr "Başarıyla doğrulanmış E-posta."
 
-#: authentik/stages/email/stage.py:113 authentik/stages/email/stage.py:135
+#: authentik/stages/email/stage.py
 msgid "No pending user."
 msgstr "Bekleyen kullanıcı yok."
 
-#: authentik/stages/email/stage.py:125
+#: authentik/stages/email/stage.py
 msgid "Email sent."
 msgstr "E-posta gönderildi."
 
-#: authentik/stages/email/templates/email/account_confirmation.html:9
+#: authentik/stages/email/stage.py
+msgid "Email Successfully sent."
+msgstr "E-posta başarıyla gönderildi."
+
+#: authentik/stages/email/templates/email/account_confirmation.html
+#: authentik/stages/email/templates/email/account_confirmation.txt
 msgid "Welcome!"
 msgstr "Hoş geldiniz!"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:12
+#: authentik/stages/email/templates/email/account_confirmation.html
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
@@ -1511,11 +3214,11 @@ msgstr ""
 "Başlaman için çok heyecanlıyız. İlk olarak, hesabınızı onaylamanız gerekir. "
 "Sadece aşağıdaki düğmeye basın."
 
-#: authentik/stages/email/templates/email/account_confirmation.html:21
+#: authentik/stages/email/templates/email/account_confirmation.html
 msgid "Confirm Account"
 msgstr "Hesabı Onayla"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:30
+#: authentik/stages/email/templates/email/account_confirmation.html
 #, python-format
 msgid ""
 "\n"
@@ -1526,59 +3229,84 @@ msgstr ""
 "    Bu işe yaramazsa, aşağıdaki bağlantıyı tarayıcınıza kopyalayıp yapıştırın: %(url)s\n"
 "    "
 
-#: authentik/stages/email/templates/email/account_confirmation.html:35
+#: authentik/stages/email/templates/email/account_confirmation.txt
 msgid ""
-"If you have any questions, just reply to this email—we're always happy to "
-"help out."
+"We're excited to have you get started. First, you need to confirm your "
+"account. Just open the link below."
 msgstr ""
-"Herhangi bir sorunuz varsa, bu e-postaya cevap vermeniz yeterlidir; size "
-"yardımcı olmaktan her zaman memnuniyet duyarız."
+"Başlayacağınız için heyecanlıyız. Öncelikle hesabınızı onaylamanız "
+"gerekiyor. Aşağıdaki bağlantıyı açmanız yeterli."
 
-#: authentik/stages/email/templates/email/generic.html:24
-msgid "Additional Information"
-msgstr "Ek Bilgiler"
-
-#: authentik/stages/email/templates/email/password_reset.html:9
+#: authentik/stages/email/templates/email/event_notification.html
 #, python-format
 msgid ""
 "\n"
-"        Hi %(username)s,\n"
-"        "
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
 msgstr ""
 "\n"
-"        Merhaba %(username)s,\n"
-"        "
+"    Bu e-posta bildirim aktarımından gönderilmiştir <code>%(name)s</code>.\n"
+"    "
 
-#: authentik/stages/email/templates/email/password_reset.html:19
-msgid ""
-"\n"
-"                    You recently requested to change your password for you authentik account. Use the button below to set a new password.\n"
-"                    "
-msgstr ""
-"\n"
-"                    Geçenlerde otantik hesabınız için şifrenizi değiştirmeyi talep ettiniz. Yeni bir şifre belirlemek için aşağıdaki düğmeyi kullanın.\n"
-"                    "
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Dear authentik user,"
+msgstr "Sayın authentik kullanıcısı,"
 
-#: authentik/stages/email/templates/email/password_reset.html:33
-msgid "Reset Password"
-msgstr "Parolayı Sıfırla"
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "The following notification was created:"
+msgstr "Aşağıdaki bildirim oluşturuldu:"
 
-#: authentik/stages/email/templates/email/password_reset.html:45
+#: authentik/stages/email/templates/email/event_notification.txt
+msgid "Additional attributes:"
+msgstr "Ek özellikler:"
+
+#: authentik/stages/email/templates/email/event_notification.txt
 #, python-format
 msgid ""
 "\n"
-"                    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
-"                    "
+"This email was sent from the notification transport %(name)s.\n"
 msgstr ""
 "\n"
-"                    Parola değişikliği talep etmediyseniz lütfen bu E-postayı yok sayın. Yukarıdaki bağlantı %(expires)s için geçerlidir.\n"
-"                    "
+"Bu e-posta bildirim aktarımından gönderilmiştir %(name)s.\n"
 
-#: authentik/stages/email/templates/email/setup.html:9
+#: authentik/stages/email/templates/email/password_reset.html
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"          Kısa süre önce authentik hesabınız için şifrenizi değiştirmeyi talep ettiniz. Yeni bir şifre belirlemek için aşağıdaki düğmeyi kullanın.\n"
+"          "
+
+#: authentik/stages/email/templates/email/password_reset.html
+#, python-format
+msgid ""
+"\n"
+"    If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+"    "
+msgstr ""
+
+#: authentik/stages/email/templates/email/password_reset.txt
+msgid ""
+"\n"
+"You recently requested to change your password for your authentik account. Use the link below to set a new password.\n"
+msgstr ""
+"\n"
+"Kısa süre önce authentik hesabınız için şifrenizi değiştirmeyi talep ettiniz. Yeni bir şifre belirlemek için aşağıdaki bağlantıyı kullanın.\n"
+
+#: authentik/stages/email/templates/email/password_reset.txt
+#, python-format
+msgid ""
+"\n"
+"If you did not request a password change, please ignore this email. The link above is valid for %(expires)s.\n"
+msgstr ""
+
+#: authentik/stages/email/templates/email/setup.html
 msgid "authentik Test-Email"
-msgstr "authentik Test-E-posta"
+msgstr "authentik Test-E-postasıdır."
 
-#: authentik/stages/email/templates/email/setup.html:17
+#: authentik/stages/email/templates/email/setup.html
 msgid ""
 "\n"
 "                    This is a test email to inform you, that you've successfully configured authentik emails.\n"
@@ -1588,227 +3316,466 @@ msgstr ""
 "                    Bu, authentik e-postalarını başarıyla yapılandırdığınızı size bildirmek için bir test e-postasıdır.\n"
 "                    "
 
-#: authentik/stages/identification/models.py:42
+#: authentik/stages/email/templates/email/setup.txt
 msgid ""
-"When set, shows a password field, instead of showing the password field as "
-"seaprate step."
+"\n"
+"This is a test email to inform you, that you've successfully configured authentik emails.\n"
 msgstr ""
-"Ayarlandığında, parola alanını ayrı adım olarak göstermek yerine bir parola "
-"alanı gösterir."
+"\n"
+"Bu, authentik e-postalarını başarıyla yapılandırdığınızı bildirmek için bir test e-postasıdır.\n"
 
-#: authentik/stages/identification/models.py:48
+#: authentik/stages/identification/api.py
+msgid "When no user fields are selected, at least one source must be selected"
+msgstr "Hiçbir kullanıcı alanı seçilmediğinde, en az bir kaynak seçilmelidir"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Fields of the user object to match against. (Hold shift to select multiple "
+"options)"
+msgstr ""
+"Eşleştirilecek kullanıcı nesnesinin alanları. (Birden fazla seçenek seçmek "
+"için shift tuşunu basılı tutun)"
+
+#: authentik/stages/identification/models.py
 msgid "When enabled, user fields are matched regardless of their casing."
 msgstr ""
 "Etkinleştirildiğinde, kullanıcı alanları muhafazası ne olursa olsun "
 "eşleştirilir."
 
-#: authentik/stages/identification/models.py:68
+#: authentik/stages/identification/models.py
+msgid ""
+"When a valid username/email has been entered, and this option is enabled, "
+"the user's username and avatar will be shown. Otherwise, the text that the "
+"user entered will be shown"
+msgstr ""
+"Geçerli bir kullanıcı adı/e-posta girildiğinde ve bu seçenek "
+"etkinleştirildiğinde, kullanıcının kullanıcı adı ve avatarı gösterilecektir."
+" Aksi takdirde, kullanıcının girdiği metin gösterilir"
+
+#: authentik/stages/identification/models.py
+msgid ""
+"When enabled, the stage will succeed and continue even when incorrect user "
+"info is entered."
+msgstr ""
+"Etkinleştirildiğinde, yanlış kullanıcı bilgisi girilse bile aşama başarılı "
+"olur ve devam eder."
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı kayıt akışı."
 
-#: authentik/stages/identification/models.py:77
+#: authentik/stages/identification/models.py
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr "Sayfanın alt kısmında bağlı olan isteğe bağlı kurtarma akışı."
 
-#: authentik/stages/identification/models.py:86
+#: authentik/stages/identification/models.py
 msgid "Optional passwordless flow, which is linked at the bottom of the page."
 msgstr "İsteğe bağlı şifresiz akış. Sayfanın altında akışa bağlanır."
 
-#: authentik/stages/identification/models.py:90
+#: authentik/stages/identification/models.py
 msgid "Specify which sources should be shown."
 msgstr "Hangi kaynakların gösterilmesi gerektiğini belirtin."
 
-#: authentik/stages/identification/models.py:112
+#: authentik/stages/identification/models.py
 msgid "Identification Stage"
 msgstr "Tanımlama Aşaması"
 
-#: authentik/stages/identification/models.py:113
+#: authentik/stages/identification/models.py
 msgid "Identification Stages"
 msgstr "Tanımlama Aşamaları"
 
-#: authentik/stages/identification/stage.py:175
+#: authentik/stages/identification/stage.py
 msgid "Log in"
 msgstr "Oturum aç"
 
-#: authentik/stages/invitation/models.py:46
+#: authentik/stages/identification/stage.py
+msgid "Continue"
+msgstr "Devam Et"
+
+#: authentik/stages/invitation/models.py
+msgid ""
+"If this flag is set, this Stage will jump to the next Stage when no "
+"Invitation is given. By default this Stage will cancel the Flow when no "
+"invitation is given."
+msgstr ""
+"Bu bayrak ayarlanırsa, Davet verilmediğinde bu Aşama bir sonraki Aşama'ya "
+"atlanır. Varsayılan olarak bu Aşama , davet verilmediğinde Akışı iptal eder."
+
+#: authentik/stages/invitation/models.py
 msgid "Invitation Stage"
 msgstr "Davet Aşaması"
 
-#: authentik/stages/invitation/models.py:47
+#: authentik/stages/invitation/models.py
 msgid "Invitation Stages"
 msgstr "Davet Aşamaları"
 
-#: authentik/stages/invitation/models.py:57
+#: authentik/stages/invitation/models.py
+msgid "When set, only the configured flow can use this invitation."
+msgstr "Ayarlandığında, yalnızca yapılandırılan akış bu daveti kullanabilir."
+
+#: authentik/stages/invitation/models.py
 msgid "When enabled, the invitation will be deleted after usage."
 msgstr "Etkinleştirildiğinde, davetiye kullanımdan sonra silinir."
 
-#: authentik/stages/invitation/models.py:64
+#: authentik/stages/invitation/models.py
 msgid "Optional fixed data to enforce on user enrollment."
 msgstr "Kullanıcı kaydında zorlamak için isteğe bağlı sabit veriler."
 
-#: authentik/stages/invitation/models.py:72
+#: authentik/stages/invitation/models.py
 msgid "Invitation"
 msgstr "Davetiye"
 
-#: authentik/stages/invitation/models.py:73
+#: authentik/stages/invitation/models.py
 msgid "Invitations"
 msgstr "Davetiyeler"
 
-#: authentik/stages/password/models.py:20
+#: authentik/stages/invitation/stage.py
+msgid "Invalid invite/invite not found"
+msgstr "Geçersiz davet/davet bulunamadı"
+
+#: authentik/stages/password/models.py
 msgid "User database + standard password"
 msgstr "Kullanıcı veritabanı+standart şifre"
 
-#: authentik/stages/password/models.py:24
+#: authentik/stages/password/models.py
 msgid "User database + app passwords"
 msgstr "Kullanıcı veritabanı+uygulama şifreleri"
 
-#: authentik/stages/password/models.py:28
+#: authentik/stages/password/models.py
 msgid "User database + LDAP password"
-msgstr "Kullanıcı veritabanı+LDAP parolası"
+msgstr "Kullanıcı veritabanı+LDAP şifresi"
 
-#: authentik/stages/password/models.py:38
+#: authentik/stages/password/models.py
+msgid "User database + Kerberos password"
+msgstr "Kullanıcı veritabanı + Kerberos şifresi"
+
+#: authentik/stages/password/models.py
 msgid "Selection of backends to test the password against."
 msgstr "Parolayı test etmek için arka uçların seçimi."
 
-#: authentik/stages/password/models.py:78
+#: authentik/stages/password/models.py
+msgid ""
+"How many attempts a user has before the flow is canceled. To lock the user "
+"out, use a reputation policy and a user_write stage."
+msgstr ""
+"Akış iptal edilmeden önce bir kullanıcının kaç denemesi vardır. Kullanıcıyı "
+"kilitlemek için itibar ilkesi ve user_write aşamasını kullanın."
+
+#: authentik/stages/password/models.py
+msgid ""
+"When enabled, provides a 'show password' button with the password input "
+"field."
+msgstr ""
+"Etkinleştirildiğinde, şifre giriş alanıyla birlikte bir 'şifreyi göster' "
+"düğmesi sağlar."
+
+#: authentik/stages/password/models.py
 msgid "Password Stage"
 msgstr "Şifre Aşaması"
 
-#: authentik/stages/password/models.py:79
+#: authentik/stages/password/models.py
 msgid "Password Stages"
 msgstr "Parola Aşamaları"
 
-#: authentik/stages/password/stage.py:152
+#: authentik/stages/password/stage.py
 msgid "Invalid password"
 msgstr "Geçersiz parola"
 
-#: authentik/stages/prompt/models.py:29
+#: authentik/stages/prompt/models.py
 msgid "Text: Simple Text input"
 msgstr "Metin: Basit Metin girişi"
 
-#: authentik/stages/prompt/models.py:32
+#: authentik/stages/prompt/models.py
+msgid "Text area: Multiline Text Input."
+msgstr "Metin alanı: Çok Satırlı Metin Girişi."
+
+#: authentik/stages/prompt/models.py
 msgid "Text (read-only): Simple Text input, but cannot be edited."
 msgstr "Metin (salt okunur): Basit Metin girişi, ancak düzenlenemez."
 
-#: authentik/stages/prompt/models.py:39
+#: authentik/stages/prompt/models.py
+msgid "Text area (read-only): Multiline Text input, but cannot be edited."
+msgstr ""
+"Metin alanı (salt okunur): Çok Satırlı Metin girişi, ancak düzenlenemez."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"Username: Same as Text input, but checks for and prevents duplicate "
+"usernames."
+msgstr ""
+"Kullanıcı adı: Metin girişi ile aynı, ancak yinelenen kullanıcı adlarını "
+"denetler ve engeller."
+
+#: authentik/stages/prompt/models.py
 msgid "Email: Text field with Email type."
 msgstr "E-posta: E-posta türü ile metin alanı."
 
-#: authentik/stages/prompt/models.py:55
+#: authentik/stages/prompt/models.py
+msgid ""
+"Password: Masked input, multiple inputs of this type on the same prompt need"
+" to be identical."
+msgstr ""
+"Şifre: Maskelenmiş girdi, aynı istemde bu türden birden fazla girdinin aynı "
+"olması gerekir."
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a group of radio buttons."
+msgstr "Seçim alanının bir grup radyo düğmesi olarak işlenmesi düzeltildi."
+
+#: authentik/stages/prompt/models.py
+msgid "Fixed choice field rendered as a dropdown."
+msgstr "Seçim alanının açılır menü olarak işlenmesi düzeltildi."
+
+#: authentik/stages/prompt/models.py
+msgid ""
+"File: File upload for arbitrary files. File content will be available in "
+"flow context as data-URI"
+msgstr ""
+"Dosya: Rastgele dosyalar için dosya yükleme. Dosya içeriği akış bağlamında "
+"veri-URI olarak mevcut olacaktır"
+
+#: authentik/stages/prompt/models.py
 msgid "Separator: Static Separator Line"
 msgstr "Ayırıcı: Statik Ayırıcı Hattı"
 
-#: authentik/stages/prompt/models.py:56
+#: authentik/stages/prompt/models.py
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Gizli: Gizli alan, form içine veri eklemek için kullanılabilir."
 
-#: authentik/stages/prompt/models.py:57
+#: authentik/stages/prompt/models.py
 msgid "Static: Static value, displayed as-is."
 msgstr "Statik: Statik değer, olduğu gibi görüntülenir."
 
-#: authentik/stages/prompt/models.py:66
+#: authentik/stages/prompt/models.py
+msgid "authentik: Selection of locales authentik supports"
+msgstr "authentik: authentik'in desteklediği yerel dillerin seçimi"
+
+#: authentik/stages/prompt/models.py
 msgid "Name of the form field, also used to store the value"
 msgstr "Değeri depolamak için de kullanılan form alanının adı"
 
-#: authentik/stages/prompt/models.py:131
-msgid "Prompt"
-msgstr "İstemi"
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally provide a short hint that describes the expected input value. "
+"When creating a fixed choice field, enable interpreting as expression and "
+"return a list to return multiple choices."
+msgstr ""
+"İsteğe bağlı olarak beklenen girdi değerini açıklayan kısa bir ipucu "
+"sağlayın. Sabit bir seçim alanı oluştururken, ifade olarak yorumlamayı "
+"etkinleştirin ve birden fazla seçenek döndürmek için bir liste döndürün."
 
-#: authentik/stages/prompt/models.py:132
+#: authentik/stages/prompt/models.py
+msgid ""
+"Optionally pre-fill the input with an initial value. When creating a fixed "
+"choice field, enable interpreting as expression and return a list to return "
+"multiple default choices."
+msgstr ""
+"İsteğe bağlı olarak girişi bir başlangıç değeriyle önceden doldurun. Sabit "
+"bir seçim alanı oluştururken, birden çok varsayılan seçenek döndürmek için "
+"ifade olarak yorumlamayı etkinleştirin ve bir liste döndürün."
+
+#: authentik/stages/prompt/models.py
+msgid "Prompt"
+msgstr "İstem"
+
+#: authentik/stages/prompt/models.py
 msgid "Prompts"
 msgstr "İstemler"
 
-#: authentik/stages/prompt/models.py:160
+#: authentik/stages/prompt/models.py
 msgid "Prompt Stage"
-msgstr "İstemi Aşaması"
+msgstr "İstem Aşaması"
 
-#: authentik/stages/prompt/models.py:161
+#: authentik/stages/prompt/models.py
 msgid "Prompt Stages"
-msgstr "İstemi Aşamaları"
+msgstr "İstem Aşamaları"
 
-#: authentik/stages/prompt/stage.py:94
+#: authentik/stages/prompt/stage.py
 msgid "Passwords don't match."
 msgstr "Şifreler uyuşmuyor."
 
-#: authentik/stages/user_delete/models.py:32
+#: authentik/stages/redirect/api.py
+msgid "Target URL should be present when mode is Static."
+msgstr ""
+
+#: authentik/stages/redirect/api.py
+msgid "Target Flow should be present when mode is Flow."
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stage"
+msgstr ""
+
+#: authentik/stages/redirect/models.py
+msgid "Redirect Stages"
+msgstr ""
+
+#: authentik/stages/user_delete/models.py
 msgid "User Delete Stage"
 msgstr "Kullanıcı Sil Aşaması"
 
-#: authentik/stages/user_delete/models.py:33
+#: authentik/stages/user_delete/models.py
 msgid "User Delete Stages"
 msgstr "Kullanıcı Aşamaları Sil"
 
-#: authentik/stages/user_delete/stage.py:24
+#: authentik/stages/user_delete/stage.py
 msgid "No Pending User."
 msgstr "Bekleyen Kullanıcı Yok."
 
-#: authentik/stages/user_login/models.py:19
-msgid ""
-"Determines how long a session lasts. Default of 0 means that the sessions "
-"lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured network"
 msgstr ""
-"Oturumun ne kadar süreceğini belirler. Varsayılan 0, oturumların tarayıcı "
-"kapanana kadar sürdüğü anlamına gelir. (Biçim: saat=-1; dakika=-2; "
-"ikincil=-3)"
+"Bu aşama tarafından oluşturulan oturumları yapılandırılmış ağa bağlama"
 
-#: authentik/stages/user_login/models.py:43
+#: authentik/stages/user_login/models.py
+msgid "Bind sessions created by this stage to the configured GeoIP location"
+msgstr ""
+"Bu aşama tarafından oluşturulan oturumları yapılandırılmış GeoIP konumuna "
+"bağlayın"
+
+#: authentik/stages/user_login/models.py
+msgid "Terminate all other sessions of the user logging in."
+msgstr "Oturum açan kullanıcının diğer tüm oturumlarını sonlandırın."
+
+#: authentik/stages/user_login/models.py
+msgid ""
+"Offset the session will be extended by when the user picks the remember me "
+"option. Default of 0 means that the remember me option will not be shown. "
+"(Format: hours=-1;minutes=-2;seconds=-3)"
+msgstr ""
+"Kullanıcı beni hatırla seçeneğini seçtiğinde oturumun uzatılacağı ofset. "
+"Varsayılan 0 değeri, beni hatırla seçeneğinin gösterilmeyeceği anlamına "
+"gelir. ( Format: saat=-1;dakika=-2;saniye=-3)"
+
+#: authentik/stages/user_login/models.py
 msgid "User Login Stage"
 msgstr "Kullanıcı Oturum Açma Aşaması"
 
-#: authentik/stages/user_login/models.py:44
+#: authentik/stages/user_login/models.py
 msgid "User Login Stages"
 msgstr "Kullanıcı Oturum Açma Aşamaları"
 
-#: authentik/stages/user_login/stage.py:29
+#: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Oturum açmak için bekleyen kullanıcı yok."
 
-#: authentik/stages/user_login/stage.py:57
+#: authentik/stages/user_login/stage.py
 msgid "Successfully logged in!"
 msgstr "Başarıyla giriş yaptınız!"
 
-#: authentik/stages/user_logout/models.py:31
+#: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"
 msgstr "Kullanıcı Oturumu Kapatma Aşaması"
 
-#: authentik/stages/user_logout/models.py:32
+#: authentik/stages/user_logout/models.py
 msgid "User Logout Stages"
 msgstr "Kullanıcı Oturumu Kapama Aşamaları"
 
-#: authentik/stages/user_write/models.py:18
+#: authentik/stages/user_write/models.py
 msgid "When set, newly created users are inactive and cannot login."
 msgstr ""
 "Ayarlandığında, yeni oluşturulan kullanıcılar etkin değildir ve oturum "
 "açamaz."
 
-#: authentik/stages/user_write/models.py:26
+#: authentik/stages/user_write/models.py
 msgid "Optionally add newly created users to this group."
 msgstr "İsteğe bağlı olarak yeni oluşturulan kullanıcıları bu gruba ekleyin."
 
-#: authentik/stages/user_write/models.py:47
+#: authentik/stages/user_write/models.py
 msgid "User Write Stage"
 msgstr "Kullanıcı Yazma Aşaması"
 
-#: authentik/stages/user_write/models.py:48
+#: authentik/stages/user_write/models.py
 msgid "User Write Stages"
 msgstr "Kullanıcı Yazma Aşamaları"
 
-#: authentik/stages/user_write/stage.py:53
+#: authentik/stages/user_write/stage.py
 msgid "No Pending data."
 msgstr "Bekleyen veri yok."
 
-#: authentik/tenants/models.py:18
+#: authentik/stages/user_write/stage.py
+msgid "No user found and can't create new user."
+msgstr "Kullanıcı bulunamadı ve yeni kullanıcı oluşturulamıyor."
+
+#: authentik/stages/user_write/stage.py
+msgid "Failed to update user. Please try again later."
+msgstr "Kullanıcı güncellenemedi. Lütfen daha sonra tekrar deneyin."
+
+#: authentik/tenants/models.py
 msgid ""
-"Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` "
-"and `ba.b`"
+"Schema name must start with t_, only contain lowercase letters and numbers "
+"and be less than 63 characters."
 msgstr ""
-"Bu sakini etkinleştiren etki alanı. Bir süperset olabilir, yani `aa.b` ve "
-"`ba.b` için `a.b`"
+"Şema adı t_ ile başlamalı, yalnızca küçük harf ve rakam içermeli ve 63 "
+"karakterden az olmalıdır."
 
-#: authentik/tenants/models.py:70
+#: authentik/tenants/models.py
+msgid "Configure how authentik should show avatars for users."
+msgstr ""
+"Authentik'in kullanıcılar için avatarları nasıl göstereceğini yapılandırın."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their name."
+msgstr "Kullanıcıların adlarını değiştirebilmelerini etkinleştirin."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their email address."
+msgstr "Kullanıcıların e-posta adreslerini değiştirebilmelerini sağlayın."
+
+#: authentik/tenants/models.py
+msgid "Enable the ability for users to change their username."
+msgstr "Kullanıcıların kullanıcı adlarını değiştirebilmelerini etkinleştirin."
+
+#: authentik/tenants/models.py
+msgid ""
+"Events will be deleted after this duration.(Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+msgstr ""
+"Olaylar bu süreden sonra silinecektir (Format: "
+"weeks=3;days=2;hours=3,seconds=2)."
+
+#: authentik/tenants/models.py
+msgid "The option configures the footer links on the flow executor pages."
+msgstr ""
+"Bu seçenek, akış yürütücü sayfalarındaki altbilgi bağlantılarını "
+"yapılandırır."
+
+#: authentik/tenants/models.py
+msgid ""
+"When enabled, all the events caused by a user will be deleted upon the "
+"user's deletion."
+msgstr ""
+"Etkinleştirildiğinde, bir kullanıcının neden olduğu tüm olaylar, kullanıcı "
+"silindiğinde silinecektir."
+
+#: authentik/tenants/models.py
+msgid "Globally enable/disable impersonation."
+msgstr "Kimliğe bürünmeyi global olarak etkinleştirin/devre dışı bırakın."
+
+#: authentik/tenants/models.py
+msgid "Require administrators to provide a reason for impersonating a user."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Default token duration"
+msgstr "Varsayılan jeton süresi"
+
+#: authentik/tenants/models.py
+msgid "Default token length"
+msgstr "Varsayılan jeton uzunluğu"
+
+#: authentik/tenants/models.py
 msgid "Tenant"
-msgstr "Sakin"
+msgstr "Kiracı"
 
-#: authentik/tenants/models.py:71
+#: authentik/tenants/models.py
 msgid "Tenants"
-msgstr "Sakinler"
+msgstr "Kiracılar"
+
+#: authentik/tenants/models.py
+msgid "Domain"
+msgstr "Etki Alanı"
+
+#: authentik/tenants/models.py
+msgid "Domains"
+msgstr "Etki Alanları"

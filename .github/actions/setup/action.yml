@@ -9,17 +9,22 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install poetry & deps
+    - name: Install apt deps
       shell: bash
       run: |
-        pipx install poetry || true
         sudo apt-get update
-        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext
-    - name: Setup python and restore poetry
+        sudo apt-get install --no-install-recommends -y libpq-dev openssl libxmlsec1-dev pkg-config gettext libkrb5-dev krb5-kdc krb5-user krb5-admin-server
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        enable-cache: true
+    - name: Setup python
       uses: actions/setup-python@v5
       with:
         python-version-file: "pyproject.toml"
-        cache: "poetry"
+    - name: Install Python deps
+      shell: bash
+      run: uv sync --all-extras --dev --frozen
     - name: Setup node
       uses: actions/setup-node@v4
       with:
@@ -30,15 +35,18 @@ runs:
       uses: actions/setup-go@v5
       with:
         go-version-file: "go.mod"
+    - name: Setup docker cache
+      uses: ScribeMD/docker-cache@0.5.0
+      with:
+        key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/docker-compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
       shell: bash
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
-        poetry install
         cd web && npm ci
     - name: Generate config
-      shell: poetry run python {0}
+      shell: uv run python {0}
       run: |
         from authentik.lib.generators import generate_id
         from yaml import safe_dump

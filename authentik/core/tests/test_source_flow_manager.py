@@ -81,6 +81,22 @@ class TestSourceFlowManager(TestCase):
             reverse("authentik_core:if-user") + "#/settings;page-sources",
         )
 
+    def test_authenticated_auth(self):
+        """Test authenticated user linking"""
+        user = User.objects.create(username="foo", email="foo@bar.baz")
+        UserOAuthSourceConnection.objects.create(
+            user=user, source=self.source, identifier=self.identifier
+        )
+        request = get_request("/", user=user)
+        flow_manager = OAuthSourceFlowManager(
+            self.source, request, self.identifier, {"info": {}}, {}
+        )
+        action, connection = flow_manager.get_action()
+        self.assertEqual(action, Action.AUTH)
+        self.assertIsNotNone(connection.pk)
+        response = flow_manager.get_flow()
+        self.assertEqual(response.status_code, 302)
+
     def test_unauthenticated_link(self):
         """Test un-authenticated user linking"""
         flow_manager = OAuthSourceFlowManager(

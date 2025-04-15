@@ -9,7 +9,14 @@ from unittest import mock
 from django.conf import ImproperlyConfigured
 from django.test import TestCase
 
-from authentik.lib.config import ENV_PREFIX, UNSET, Attr, AttrEncoder, ConfigLoader
+from authentik.lib.config import (
+    ENV_PREFIX,
+    UNSET,
+    Attr,
+    AttrEncoder,
+    ConfigLoader,
+    django_db_config,
+)
 
 
 class TestConfig(TestCase):
@@ -151,6 +158,18 @@ class TestConfig(TestCase):
             test_obj = Test()
             dumps(test_obj, indent=4, cls=AttrEncoder)
 
+    def test_get_optional_int(self):
+        config = ConfigLoader()
+        self.assertEqual(config.get_optional_int("foo", 21), 21)
+        self.assertEqual(config.get_optional_int("foo"), None)
+        config.set("foo", "21")
+        self.assertEqual(config.get_optional_int("foo"), 21)
+        self.assertEqual(config.get_optional_int("foo", 0), 21)
+        self.assertEqual(config.get_optional_int("foo", "null"), 21)
+        config.set("foo", "null")
+        self.assertEqual(config.get_optional_int("foo"), None)
+        self.assertEqual(config.get_optional_int("foo", 21), None)
+
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
         """Test config key re-write for deprecated env vars"""
@@ -175,3 +194,386 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("foo.bar", "baz")
         self.assertEqual(list(config.get_keys("foo")), ["bar"])
+
+    def test_db_default(self):
+        """Test default DB Config"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                }
+            },
+        )
+
+    def test_db_conn_max_age(self):
+        """Test DB conn_max_age Config"""
+        config = ConfigLoader()
+        config.set("postgresql.conn_max_age", "null")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf["default"]["CONN_MAX_AGE"],
+            None,
+        )
+
+    def test_db_read_replicas(self):
+        """Test read replicas"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        # Read replica
+        config.set("postgresql.read_replicas.0.host", "bar")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                },
+                "replica_0": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "bar",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                },
+            },
+        )
+
+    def test_db_read_replicas_pgbouncer(self):
+        """Test read replicas"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        config.set("postgresql.use_pgbouncer", True)
+        # Read replica
+        config.set("postgresql.read_replicas.0.host", "bar")
+        # Override conn_max_age
+        config.set("postgresql.read_replicas.0.conn_max_age", 10)
+        # This isn't supported
+        config.set("postgresql.read_replicas.0.use_pgbouncer", False)
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": None,
+                    "CONN_HEALTH_CHECKS": False,
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                },
+                "replica_0": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 10,
+                    "CONN_HEALTH_CHECKS": False,
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "bar",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                },
+            },
+        )
+
+    def test_db_read_replicas_pgpool(self):
+        """Test read replicas"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        config.set("postgresql.use_pgpool", True)
+        # Read replica
+        config.set("postgresql.read_replicas.0.host", "bar")
+        # This isn't supported
+        config.set("postgresql.read_replicas.0.use_pgpool", False)
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                },
+                "replica_0": {
+                    "DISABLE_SERVER_SIDE_CURSORS": True,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "bar",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                },
+            },
+        )
+
+    def test_db_read_replicas_diff_ssl(self):
+        """Test read replicas (with different SSL Settings)"""
+        """Test read replicas"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.sslmode", "foo")
+        config.set("postgresql.sslrootcert", "foo")
+        config.set("postgresql.sslcert", "foo")
+        config.set("postgresql.sslkey", "foo")
+        config.set("postgresql.test.name", "foo")
+        # Read replica
+        config.set("postgresql.read_replicas.0.host", "bar")
+        config.set("postgresql.read_replicas.0.sslcert", "bar")
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "foo",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                },
+                "replica_0": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "bar",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": False,
+                        "sslcert": "bar",
+                        "sslkey": "foo",
+                        "sslmode": "foo",
+                        "sslrootcert": "foo",
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                },
+            },
+        )
+
+    def test_db_pool(self):
+        """Test DB Config with pool"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.test.name", "foo")
+        config.set("postgresql.use_pool", True)
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": True,
+                        "sslcert": None,
+                        "sslkey": None,
+                        "sslmode": None,
+                        "sslrootcert": None,
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                }
+            },
+        )
+
+    def test_db_pool_options(self):
+        """Test DB Config with pool"""
+        config = ConfigLoader()
+        config.set("postgresql.host", "foo")
+        config.set("postgresql.name", "foo")
+        config.set("postgresql.user", "foo")
+        config.set("postgresql.password", "foo")
+        config.set("postgresql.port", "foo")
+        config.set("postgresql.test.name", "foo")
+        config.set("postgresql.use_pool", True)
+        config.set(
+            "postgresql.pool_options",
+            base64.b64encode(
+                dumps(
+                    {
+                        "max_size": 15,
+                    }
+                ).encode()
+            ).decode(),
+        )
+        conf = django_db_config(config)
+        self.assertEqual(
+            conf,
+            {
+                "default": {
+                    "ENGINE": "authentik.root.db",
+                    "HOST": "foo",
+                    "NAME": "foo",
+                    "OPTIONS": {
+                        "pool": {
+                            "max_size": 15,
+                        },
+                        "sslcert": None,
+                        "sslkey": None,
+                        "sslmode": None,
+                        "sslrootcert": None,
+                    },
+                    "PASSWORD": "foo",
+                    "PORT": "foo",
+                    "TEST": {"NAME": "foo"},
+                    "USER": "foo",
+                    "CONN_MAX_AGE": 0,
+                    "CONN_HEALTH_CHECKS": False,
+                    "DISABLE_SERVER_SIDE_CURSORS": False,
+                }
+            },
+        )

@@ -5,10 +5,19 @@ import modify from "rollup-plugin-modify";
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-import { cssImportMaps } from "./css-import-maps";
-
 export const isProdBuild = process.env.NODE_ENV === "production";
 export const apiBasePath = process.env.AK_API_BASE_PATH || "";
+
+const importInlinePatterns = [
+    'import AKGlobal from "(\\.\\./)*common/styles/authentik\\.css',
+    'import AKGlobal from "@goauthentik/common/styles/authentik\\.css',
+    'import PF.+ from "@patternfly/patternfly/\\S+\\.css',
+    'import ThemeDark from "@goauthentik/common/styles/theme-dark\\.css',
+    'import OneDark from "@goauthentik/common/styles/one-dark\\.css',
+    'import styles from "\\./LibraryPageImpl\\.css',
+];
+
+const importInlineRegexp = new RegExp(importInlinePatterns.map((a) => `(${a})`).join("|"));
 
 const config: StorybookConfig = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
@@ -31,6 +40,10 @@ const config: StorybookConfig = {
             from: "../src/common/styles/theme-dark.css",
             to: "@goauthentik/common/styles/theme-dark.css",
         },
+        {
+            from: "../src/common/styles/one-dark.css",
+            to: "@goauthentik/common/styles/one-dark.css",
+        },
     ],
     framework: {
         name: "@storybook/web-components-vite",
@@ -43,7 +56,12 @@ const config: StorybookConfig = {
         return {
             ...config,
             plugins: [
-                modify(cssImportMaps),
+                modify({
+                    find: importInlineRegexp,
+                    replace: (match: RegExpMatchArray) => {
+                        return `${match}?inline`;
+                    },
+                }),
                 replace({
                     "process.env.NODE_ENV": JSON.stringify(
                         isProdBuild ? "production" : "development",

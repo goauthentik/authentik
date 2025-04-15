@@ -3,7 +3,7 @@
 {% load authentik_core %}
 
 {% block head %}
-{% versioned_script "dist/admin/AdminInterface-%v.js" %}
+<script src="{% versioned_script 'dist/admin/AdminInterface-%v.js' %}" type="module"></script>
 <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 {% include "base/header_js.html" %}

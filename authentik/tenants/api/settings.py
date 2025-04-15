@@ -20,9 +20,12 @@ class SettingsSerializer(ModelSerializer):
             "default_user_change_email",
             "default_user_change_username",
             "event_retention",
+            "reputation_lower_limit",
+            "reputation_upper_limit",
             "footer_links",
             "gdpr_compliance",
             "impersonation",
+            "impersonation_require_reason",
             "default_token_duration",
             "default_token_length",
         ]

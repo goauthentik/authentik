@@ -4,12 +4,12 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
+import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.mdx";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 
@@ -158,7 +158,7 @@ export class OAuth2ProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersOauth2Oauth2provider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersOauth2Oauth2provider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -175,7 +175,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                   </div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
+                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list">
@@ -221,7 +221,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                    <div class="pf-c-description-list__text pf-m-monospace">
                                         ${this.provider.clientId}
                                     </div>
                                 </dd>
@@ -234,7 +234,13 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
-                                        ${this.provider.redirectUris}
+                                        <ul>
+                                            ${this.provider.redirectUris.map((ru) => {
+                                                return html`<li class="pf-m-monospace">
+                                                    ${ru.matchingMode}: ${ru.url}
+                                                </li>`;
+                                            })}
+                                        </ul>
                                     </div>
                                 </dd>
                             </div>
@@ -351,22 +357,20 @@ export class OAuth2ProviderViewPage extends AKElement {
                     class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
                     <div class="pf-c-card__body">
-                        <ak-markdown
+                        <ak-mdx
+                            .url=${MDProviderOAuth2}
                             .replacers=${[
                                 (input: string) => {
                                     if (!this.provider) {
                                         return input;
                                     }
                                     return input.replaceAll(
-                                        "&lt;application slug&gt;",
+                                        "<application slug>",
                                         this.provider.assignedApplicationSlug,
                                     );
                                 },
                             ]}
-                            .md=${MDProviderOAuth2}
-                            meta="providers/oauth2/index.md"
-                            ;
-                        ></ak-markdown>
+                        ></ak-mdx>
                     </div>
                 </div>
             </div>`;

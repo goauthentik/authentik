@@ -1,24 +1,12 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, render as litRender } from "lit";
-
-import AKGlobal from "../../common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { html } from "lit";
 
 import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
-import { ensureCSSStyleSheet } from "../../elements/utils/ensureCSSStyleSheet.js";
 import "./EnterpriseStatusCard.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
 
 describe("ak-enterprise-status-card", () => {
     it("should not error when no data is loaded", async () => {

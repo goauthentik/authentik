@@ -1,0 +1,72 @@
+---
+title: Integrate with RustDesk Server Pro
+sidebar_label: RustDesk Server Pro
+support_level: community
+---
+
+## What is RustDesk Server Pro?
+
+> RustDesk Server Pro is a premium self-hosted solution for managing remote desktop connections securely and efficiently.
+> It offers enhanced performance, advanced security features, and customization options like branding to meet professional needs.
+> Ideal for businesses, it provides full control over data while ensuring scalable and reliable remote access.
+>
+> -- https://rustdesk.com/
+>
+> This guide explains how to configure Rustdesk Server Pro to use authentik as the OAuth provider for logging in to the Web GUI.
+
+## Preparation
+
+This guide uses the following placeholders:
+
+- `rustdesk.company` is the FQDN of the RustDesk Server Pro installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Rustdesk Server Pro with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>rustdesk.company</em>/api/oidc/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## RustDesk Server Pro configuration
+
+1. Sign in to RustDesk Server Pro using a browser.
+2. In the left menu, select **Settings** and then **OIDC**.
+3. Click **+ New Auth Provider**.
+4. In the popup window, select **custom** as the **Auth Type** and click **OK**.
+5. Configure the following values using information from the authentik provider:
+    - Set **Name** to `authentik`
+    - Set **Client ID** to the Client ID copied from authentik.
+    - Set **Client secret** to the Client Secret copied from authentik.
+    - Set **Issuer** to <kbd>https://<em>authentik.company</em>/application/o/<em>slug</em>/</kbd>
+    - Set **Authorization Endpoint** to <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
+    - Set **Token Endpoint** to <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
+    - Set **Userinfo Endpoint** to <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+    - Set **JWKS Endpoint** to <kbd>https://<em>authentik.company</em>/application/o/<em>slug</em>/jwks/</kbd>
+
+:::info
+Users are created automatically on login. Permissions must be assigned by an administrator after user creation.
+:::
+
+## Test the Login
+
+- Open a browser and navigate to <kbd>https://<em>rustdesk.company</em></kbd>.
+- Click **Continue with authentik**.
+- You should be redirected to authentik (with the login flows you configured). After logging in, authentik will redirect you back to <kbd>https://<em>rustdesk.company</em></kbd>.
+- If you are redirected back to <kbd>https://<em>rustdesk.company</em></kbd> and can read the username in the top right corner, the setup was successful.

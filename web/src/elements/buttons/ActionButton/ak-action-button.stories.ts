@@ -7,7 +7,7 @@ import "./ak-action-button";
 import AKActionButton from "./ak-action-button";
 
 const metadata: Meta<AKActionButton> = {
-    title: "Elements / Action Button",
+    title: "Elements / <ak-action-button>",
     component: "ak-action-button",
     parameters: {
         docs: {

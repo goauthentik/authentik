@@ -1,17 +1,19 @@
+import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderGroupList";
 import "@goauthentik/admin/providers/scim/SCIMProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
-import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
+import MDSCIMProvider from "@goauthentik/docs/add-secure-apps/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -129,7 +131,7 @@ export class SCIMProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersScimScimprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersScimScimprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -150,7 +152,7 @@ export class SCIMProviderViewPage extends AKElement {
                 <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
                     <div class="pf-c-card pf-m-12-col pf-l-stack__item">
                         <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                            <dl class="pf-c-description-list pf-m-4-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
@@ -160,6 +162,38 @@ export class SCIMProviderViewPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             ${this.provider.name}
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Assigned to application")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ak-provider-related-application
+                                                mode="backchannel"
+                                                .provider=${this.provider}
+                                            ></ak-provider-related-application>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Dry-run")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ak-status-label
+                                                ?good=${!this.provider.dryRun}
+                                                type="info"
+                                                good-label=${msg("No")}
+                                                bad-label=${msg("Yes")}
+                                            ></ak-status-label>
                                         </div>
                                     </dd>
                                 </div>
@@ -209,10 +243,7 @@ export class SCIMProviderViewPage extends AKElement {
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-5-col">
                     <div class="pf-c-card__body">
-                        <ak-markdown
-                            .md=${MDSCIMProvider}
-                            meta="providers/scim/index.md"
-                        ></ak-markdown>
+                        <ak-mdx .url=${MDSCIMProvider}></ak-mdx>
                     </div>
                 </div>
             </div>`;

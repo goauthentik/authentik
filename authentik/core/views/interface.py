@@ -16,6 +16,7 @@ from authentik.api.v3.config import ConfigView
 from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
 from authentik.core.models import UserTypes
+from authentik.lib.config import CONFIG
 from authentik.policies.denied import AccessDeniedResponse
 
 
@@ -51,6 +52,8 @@ class InterfaceView(TemplateView):
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
         kwargs["build"] = get_build_hash()
         kwargs["url_kwargs"] = self.kwargs
+        kwargs["base_url"] = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
+        kwargs["base_url_rel"] = CONFIG.get("web.path", "/")
         return super().get_context_data(**kwargs)
 
 

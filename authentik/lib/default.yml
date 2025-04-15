@@ -1,15 +1,30 @@
-# update website/docs/installation/configuration.mdx
-# This is the default configuration file
+# authentik configuration
+#
+# https://docs.goauthentik.io/docs/install-config/configuration/
+#
+# To override the settings in this file, run the following command from the repository root:
+#
+# ```shell
+# make gen-dev-config
+# ```
+#
+# You may edit the generated file to override the configuration below.  
+#
+# When making modifying the default configuration file, 
+# ensure that the corresponding documentation is updated to match.
+#
+# @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
+
 postgresql:
   host: localhost
   name: authentik
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
-  use_pgbouncer: false
-  use_pgpool: false
+  use_pool: False
   test:
     name: test_authentik
+  default_schema: public
   read_replicas: {}
   # For example
   # 0:
@@ -23,6 +38,7 @@ listen:
   listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
   listen_debug: 0.0.0.0:9900
+  listen_debug_py: 0.0.0.0:9901
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -45,6 +61,8 @@ redis:
 #   url: ""
 #   transport_options: ""
 
+http_timeout: 30
+
 cache:
   # url: ""
   timeout: 300
@@ -59,11 +77,13 @@ cache:
 #   transport_options: ""
 
 debug: false
-remote_debug: false
+debugger: false
 
 log_level: info
 
 session_storage: cache
+sessions:
+  unauthenticated_age: days=1
 
 error_reporting:
   enabled: false
@@ -105,6 +125,10 @@ ldap:
   tls:
     ciphers: null
 
+sources:
+  kerberos:
+    task_timeout_hours: 2
+
 reputation:
   expiry: 86400
 
@@ -131,6 +155,7 @@ web:
   # No default here as it's set dynamically
   # workers: 2
   threads: 4
+  path: /
 
 worker:
   concurrency: 2

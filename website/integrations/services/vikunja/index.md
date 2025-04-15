@@ -1,11 +1,8 @@
 ---
 title: Integrate with Vikunja
 sidebar_label: Vikunja
+support_level: community
 ---
-
-# Vikunja
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Vikunja
 
@@ -19,35 +16,38 @@ This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `vik.company` is the FQDN of Vikunja.
--   `authentik.company` is the FQDN of authentik.
--   `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
-
-### Step 1
-
-In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
+- `vik.company` is the FQDN of Vikunja.
+- `authentik.company` is the FQDN of authentik.
+- `authentik Login` is the name shown on Vikunja set in config.yml, and used for the Redirect URI. If the name set in config.yml has capitalization or spaces like in this example, they will be set to lowercase and no spaces in the callback URL, like `authentiklogin`.
 
 :::note
-Only settings that have been modified from default have been listed.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-**Protocol Settings**
+## authentik configuration
 
--   Name: Vikunja
--   Client ID: Copy and Save this for Later
--   Client Secret: Copy and Save this for later
--   Signing Key: Select one of the available signing keys (Without this, Vikunja will not recognize Authentik's signing key method as a valid one and the login will not work)
--   Redirect URIs/Origins:
+To support the integration of Vikunja with authentik, you need to create an application/provider pair in authentik.
 
-```
-https://vik.company/auth/openid/authentiklogin
-```
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>vik.company</em>/auth/openid/authentiklogin</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ![](./vikunja1.png)
 
-### Step 2
+## Vikunja configuration
 
 Edit/Create your `config.yml` file for Vikunja. Local authentication can be safely disabled in the Local block if all users must login through authentik, in this example it is left enabled.
 
@@ -95,7 +95,7 @@ Vikunja Configuration Reference: https://vikunja.io/docs/config-options/#auth
 
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 
--   Name: Vikunja
--   Slug: vikunja
--   Provider: vikunja
--   Launch URL: https://vik.company
+- Name: Vikunja
+- Slug: vikunja
+- Provider: vikunja
+- Launch URL: https://vik.company

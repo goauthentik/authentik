@@ -1,61 +1,84 @@
+/* #region Global */
+
 :root {
     --pf-global--Color--100: var(--ak-dark-foreground) !important;
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
-    --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
+    --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
+    --ak-mermaid-message-text: var(--ak-dark-foreground) !important;
+    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter) !important;
+    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
 }
+
 body {
     background-color: var(--ak-dark-background) !important;
 }
+
 .pf-c-radio {
     --pf-c-radio__label--Color: var(--ak-dark-foreground);
 }
+
 /* Global page background colour */
 .pf-c-page {
     --pf-c-page--BackgroundColor: var(--ak-dark-background);
 }
+
 .pf-c-drawer__content {
     --pf-c-drawer__content--BackgroundColor: var(--ak-dark-background);
 }
+
 .pf-c-title {
     color: var(--ak-dark-foreground);
 }
+
 .pf-u-mb-xl {
     color: var(--ak-dark-foreground);
 }
+
+/* #endregion */
+
 /* Header sections */
+
 .pf-c-page__main-section {
     --pf-c-page__main-section--BackgroundColor: var(--ak-dark-background);
 }
+
 .sidebar-trigger,
 .notification-trigger {
     background-color: transparent !important;
 }
-.pf-c-page__main-section.pf-m-light {
-    background-color: transparent;
-}
+
 .pf-c-content {
     color: var(--ak-dark-foreground);
 }
-/* Card */
+
+/* #region Card */
+
 .pf-c-card {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-light);
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-card.pf-m-non-selectable-raised {
     --pf-c-card--BackgroundColor: var(--ak-dark-background-lighter);
 }
+
 .pf-c-card__title,
 .pf-c-card__body {
     color: var(--ak-dark-foreground);
 }
+
+/* #endregion */
+
 .pf-c-toolbar {
     --pf-c-toolbar--BackgroundColor: var(--ak-dark-background-light);
 }
+
 .pf-c-pagination.pf-m-bottom {
     background-color: var(--ak-dark-background-light);
 }
-/* table */
+
+/* #region Tables */
 .pf-c-table {
     --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
     --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
@@ -63,41 +86,58 @@ body {
     --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
     --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
 }
+
 .pf-c-table__text {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-table__sort:not(.pf-m-selected) .pf-c-table__button .pf-c-table__text {
     color: var(--ak-dark-foreground) !important;
 }
+
 .pf-c-table__sort-indicator i {
     color: var(--ak-dark-foreground) !important;
 }
+
 .pf-c-table__expandable-row.pf-m-expanded {
     --pf-c-table__expandable-row--m-expanded--BorderBottomColor: var(--ak-dark-background-lighter);
 }
-/* tabs */
+
+/* #endregion  */
+
+/* #region Tabs */
+
 .pf-c-tabs {
     background-color: transparent;
 }
+
 .pf-c-tabs.pf-m-box.pf-m-vertical .pf-c-tabs__list::before {
     border-color: transparent;
 }
+
 .pf-c-tabs.pf-m-box .pf-c-tabs__item.pf-m-current:first-child .pf-c-tabs__link::before {
     border-color: transparent;
 }
+
 .pf-c-tabs__link::before {
     border-color: transparent;
 }
+
 .pf-c-tabs__item.pf-m-current {
     --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
 }
+
 .pf-c-tabs__link {
     --pf-c-tabs__link--Color: var(--ak-dark-foreground);
 }
+
 .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
     background-color: transparent;
 }
-/* table, on mobile */
+
+/* #endregion */
+
+/* #Region Mobile Tables */
 @media screen and (max-width: 1200px) {
     .pf-m-grid-xl.pf-c-table tbody:first-of-type {
         border-top-color: var(--ak-dark-background);
@@ -106,32 +146,42 @@ body {
         border-bottom-color: var(--ak-dark-background);
     }
 }
+
+/* #endregion */
+
 /* class for pagination text */
 .pf-c-options-menu__toggle {
     color: var(--ak-dark-foreground);
 }
+
 /* table icon used for expanding rows */
 .pf-c-table__toggle-icon {
     color: var(--ak-dark-foreground);
 }
+
 /* expandable elements */
 .pf-c-expandable-section__toggle-text {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-expandable-section__toggle-icon {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-expandable-section.pf-m-display-lg {
     background-color: var(--ak-dark-background-light-ish);
 }
+
 /* header for form group */
 .pf-c-form__field-group-header-title-text {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-form__field-group {
     border-bottom: 0;
 }
-/* inputs */
+
+/* #region Inputs */
 optgroup,
 option {
     color: var(--ak-dark-foreground);
@@ -140,9 +190,11 @@ select[multiple] optgroup:checked,
 select[multiple] option:checked {
     color: var(--ak-dark-background);
 }
+
 .pf-c-input-group {
     --pf-c-input-group--BackgroundColor: transparent;
 }
+
 .pf-c-form-control {
     --pf-c-form-control--BorderTopColor: transparent !important;
     --pf-c-form-control--BorderRightColor: transparent !important;
@@ -151,12 +203,15 @@ select[multiple] option:checked {
     --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
     --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
 }
+
 .pf-c-form-control:disabled {
     background-color: var(--ak-dark-background-light);
 }
+
 .pf-c-form-control[readonly] {
     background-color: var(--ak-dark-background-light) !important;
 }
+
 .pf-c-switch__input:checked ~ .pf-c-switch__label {
     --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
 }
@@ -164,38 +219,47 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator,
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
 }
+
 /* select toggle */
 .pf-c-select__toggle::before {
     --pf-c-select__toggle--before--BorderTopColor: var(--ak-dark-background-lighter);
     --pf-c-select__toggle--before--BorderRightColor: var(--ak-dark-background-lighter);
     --pf-c-select__toggle--before--BorderLeftColor: var(--ak-dark-background-lighter);
 }
+
 .pf-c-select__toggle.pf-m-typeahead {
     --pf-c-select__toggle--BackgroundColor: var(--ak-dark-background-light);
 }
+
 .pf-c-select__menu {
     --pf-c-select__menu--BackgroundColor: var(--ak-dark-background-light-ish);
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-select__menu-item {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-select__menu-wrapper:hover,
 .pf-c-select__menu-item:hover {
     --pf-c-select__menu-item--hover--BackgroundColor: var(--ak-dark-background-lighter);
 }
+
 .pf-c-select__menu-wrapper:focus-within,
 .pf-c-select__menu-wrapper.pf-m-focus,
 .pf-c-select__menu-item:focus,
 .pf-c-select__menu-item.pf-m-focus {
     --pf-c-select__menu-item--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+
 .pf-c-button:disabled {
     color: var(--ak-dark-background-lighter);
 }
+
 .pf-c-button.pf-m-plain:hover {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-button.pf-m-control {
     --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter)
         var(--ak-dark-background-lighter) var(--pf-c-button--m-control--after--BorderBottomColor)
@@ -203,92 +267,127 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     background-color: var(--ak-dark-background-light);
     color: var(--ak-dark-foreground);
 }
+
 .pf-m-tertiary,
 .pf-c-button.pf-m-tertiary {
     --pf-c-button--after--BorderColor: var(--ak-dark-foreground-darker);
     color: var(--ak-dark-foreground-darker);
 }
+
 .pf-m-tertiary:hover,
 .pf-c-button.pf-m-tertiary:hover {
     --pf-c-button--after--BorderColor: var(--ak-dark-background-lighter);
 }
+
 .pf-c-form__label-text {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-check__label {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }
+
 .pf-c-dropdown__menu {
     --pf-c-dropdown__menu--BackgroundColor: var(--ak-dark-background);
 }
+
 .pf-c-dropdown__menu-item {
     --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background);
     --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
 }
+
 .pf-c-dropdown__menu-item:hover,
 .pf-c-dropdown__menu-item:focus {
     --pf-c-dropdown__menu-item--BackgroundColor: var(--ak-dark-background-light-ish);
     --pf-c-dropdown__menu-item--Color: var(--ak-dark-foreground);
 }
+
 .pf-c-toggle-group__button {
     color: var(--ak-dark-foreground) !important;
 }
+
 .pf-c-toggle-group__button:not(.pf-m-selected) {
     background-color: var(--ak-dark-background-light) !important;
 }
+
 .pf-c-toggle-group__button.pf-m-selected {
     color: var(--ak-dark-foreground) !important;
     background-color: var(--pf-global--primary-color--100) !important;
 }
+
 /* inputs help text */
 .pf-c-form__helper-text:not(.pf-m-error) {
     color: var(--ak-dark-foreground);
 }
-/* modal */
+
+/* #endregion */
+
+/* #region Modal */
+
 .pf-c-modal-box,
 .pf-c-modal-box__header,
 .pf-c-modal-box__footer,
 .pf-c-modal-box__body {
     background-color: var(--ak-dark-background);
 }
-/* sidebar */
+
+/* #endregion */
+
+/* #region Sidebar */
+
 .pf-c-nav {
     background-color: var(--ak-dark-background-light);
 }
-/* flows */
+
+/* #endregion */
+
+/* #region Flows */
+
 .pf-c-login__main {
     --pf-c-login__main--BackgroundColor: var(--ak-dark-background);
 }
+
 .pf-c-login__main-body,
 .pf-c-login__main-header,
 .pf-c-login__main-header-desc {
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-login__main-footer-links-item img,
 .pf-c-login__main-footer-links-item .fas {
     filter: invert(1);
 }
+
 .pf-c-login__main-footer-band {
     --pf-c-login__main-footer-band--BackgroundColor: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
+
 .form-control-static {
     color: var(--ak-dark-foreground);
 }
-/* notifications */
+
+/* #endregion */
+
+/* #region Notifications */
+
 .pf-c-drawer__panel {
     background-color: var(--ak-dark-background);
 }
+
 .pf-c-notification-drawer {
     --pf-c-notification-drawer--BackgroundColor: var(--ak-dark-background);
 }
+
 .pf-c-notification-drawer__header {
     background-color: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
+
 .pf-c-notification-drawer__list-item {
     background-color: var(--ak-dark-background-light-ish);
     color: var(--ak-dark-foreground);
@@ -296,46 +395,84 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         --ak-dark-background-lighter
     ) !important;
 }
-/* data list */
+
+/* #endregion */
+
+/* #region Data List */
+
 .pf-c-data-list {
     padding-inline-start: 0;
     border-top-color: var(--ak-dark-background-lighter);
 }
+
 .pf-c-data-list__item {
     --pf-c-data-list__item--BackgroundColor: transparent;
     --pf-c-data-list__item--BorderBottomColor: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
-/* wizards */
+
+/* #endregion */
+
+/* #region Wizards */
+
 .pf-c-wizard__nav {
     --pf-c-wizard__nav--BackgroundColor: var(--ak-dark-background-lighter);
     --pf-c-wizard__nav--lg--BorderRightColor: transparent;
 }
+
 .pf-c-wizard__main {
     background-color: var(--ak-dark-background-light-ish);
 }
+
 .pf-c-wizard__footer {
     --pf-c-wizard__footer--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+
 .pf-c-wizard__toggle-num,
 .pf-c-wizard__nav-link::before {
     --pf-c-wizard__nav-link--before--BackgroundColor: transparent;
 }
-/* tree view */
+
+/* #endregion */
+
+/* #region Tree view */
+
 .pf-c-tree-view__node {
     --pf-c-tree-view__node--Color: var(--ak-dark-foreground);
 }
+
 .pf-c-tree-view__node-toggle {
     --pf-c-tree-view__node-toggle--Color: var(--ak-dark-foreground);
 }
+
 .pf-c-tree-view__node:focus {
     --pf-c-tree-view__node--focus--BackgroundColor: var(--ak-dark-background-light-ish);
 }
+
 .pf-c-tree-view__content:hover,
 .pf-c-tree-view__content:focus-within {
     --pf-c-tree-view__node--hover--BackgroundColor: var(--ak-dark-background-light-ish);
 }
-/* stepper */
+
+/* #endregion */
+
+/* #region Stepper */
 .pf-c-progress-stepper__step-title {
     --pf-c-progress-stepper__step-title--Color: var(--ak-dark-foreground);
 }
+
+/* #endregion */
+
+/* #region Mermaid */
+
+svg[id^="mermaid-svg-"] {
+    line[class^="messageLine"] {
+        /*
+            Mermaid's support for dynamic palette changes leaves a lot to be desired.
+            This is a workaround to keep content readable while not breaking the rest of the theme.
+         */
+        filter: invert(1) !important;
+    }
+}
+
+/* #endregion */

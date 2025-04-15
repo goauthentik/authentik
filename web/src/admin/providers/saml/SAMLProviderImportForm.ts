@@ -1,6 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -26,6 +26,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
+            invalidationFlow: data.invalidationFlow || "",
         });
     }
 
@@ -44,6 +45,20 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 ></ak-flow-search-no-default>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Invalidation flow")}
+                ?required=${true}
+                name="invalidationFlow"
+            >
+                <ak-flow-search-no-default
+                    flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                    defaultFlowSlug="default-provider-invalidation-flow"
+                    required
+                ></ak-flow-search-no-default>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Flow used when logging out of this provider.")}
                 </p>
             </ak-form-element-horizontal>
 

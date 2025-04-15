@@ -8,6 +8,7 @@ import { localized } from "@lit/localize";
 import { LitElement, ReactiveElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import OneDark from "@goauthentik/common/styles/one-dark.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
 import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
@@ -22,26 +23,6 @@ type AkInterface = HTMLElement & {
 
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
     (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
-
-let css: Promise<string[]> | undefined;
-function fetchCustomCSS(): Promise<string[]> {
-    if (!css) {
-        css = Promise.all(
-            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map(
-                (link) => {
-                    return fetch(link.href)
-                        .then((res) => {
-                            return res.text();
-                        })
-                        .finally(() => {
-                            return "";
-                        });
-                },
-            ),
-        );
-    }
-    return css;
-}
 
 export const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
@@ -70,6 +51,7 @@ export class AKElement extends LitElement {
         styleRoot.adoptedStyleSheets = adaptCSS([
             ...styleRoot.adoptedStyleSheets,
             ensureCSSStyleSheet(AKGlobal),
+            ensureCSSStyleSheet(OneDark),
         ]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
@@ -100,16 +82,13 @@ export class AKElement extends LitElement {
         this._applyTheme(root, await this.getTheme());
     }
 
-    private async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const sheets = await fetchCustomCSS();
-        sheets.map((css) => {
-            if (css === "") {
-                return;
-            }
-            new CSSStyleSheet().replace(css).then((sheet) => {
-                root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
-            });
-        });
+    async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
+        const brand = globalAK().brand;
+        if (!brand) {
+            return;
+        }
+        const sheet = await new CSSStyleSheet().replace(brand.brandingCustomCss);
+        root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     }
 
     _applyTheme(root: DocumentOrShadowRoot, theme?: UiThemeEnum): void {

@@ -4,6 +4,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test.client import RequestFactory
 from django.urls.base import reverse
+from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
@@ -13,6 +14,7 @@ from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
+from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDigits
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
@@ -76,8 +78,8 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         conf_stage = AuthenticatorStaticStage.objects.create(
             name=generate_id(),
         )
-        conf_stage2 = AuthenticatorStaticStage.objects.create(
-            name=generate_id(),
+        conf_stage2 = AuthenticatorTOTPStage.objects.create(
+            name=generate_id(), digits=TOTPDigits.SIX
         )
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(),
@@ -153,10 +155,14 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             {
                 "device_class": "static",
                 "device_uid": "1",
+                "challenge": {},
+                "last_used": now(),
             },
             {
                 "device_class": "totp",
                 "device_uid": "2",
+                "challenge": {},
+                "last_used": now(),
             },
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -169,6 +175,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                     "device_class": "baz",
                     "device_uid": "quox",
                     "challenge": {},
+                    "last_used": None,
                 }
             },
         )
@@ -188,6 +195,7 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                     "device_class": "static",
                     "device_uid": "1",
                     "challenge": {},
+                    "last_used": None,
                 },
             },
         )

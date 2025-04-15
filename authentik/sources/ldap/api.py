@@ -15,11 +15,22 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.property_mappings import PropertyMappingFilterSet, PropertyMappingSerializer
-from authentik.core.api.sources import SourceSerializer
+from authentik.core.api.sources import (
+    GroupSourceConnectionSerializer,
+    GroupSourceConnectionViewSet,
+    SourceSerializer,
+    UserSourceConnectionSerializer,
+    UserSourceConnectionViewSet,
+)
 from authentik.core.api.used_by import UsedByMixin
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.sync.outgoing.api import SyncStatusSerializer
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
 from authentik.sources.ldap.tasks import CACHE_KEY_STATUS, SYNC_CLASSES
 
 
@@ -99,6 +110,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_groups",
             "sync_parent_group",
             "connectivity",
+            "lookup_groups_from_user",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -110,6 +122,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     serializer_class = LDAPSourceSerializer
     lookup_field = "slug"
     filterset_fields = [
+        "pbm_uuid",
         "name",
         "slug",
         "enabled",
@@ -133,6 +146,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "sync_parent_group",
         "user_property_mappings",
         "group_property_mappings",
+        "lookup_groups_from_user",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]
@@ -218,3 +232,23 @@ class LDAPSourcePropertyMappingViewSet(UsedByMixin, ModelViewSet):
     filterset_class = LDAPSourcePropertyMappingFilter
     search_fields = ["name"]
     ordering = ["name"]
+
+
+class UserLDAPSourceConnectionSerializer(UserSourceConnectionSerializer):
+    class Meta(UserSourceConnectionSerializer.Meta):
+        model = UserLDAPSourceConnection
+
+
+class UserLDAPSourceConnectionViewSet(UserSourceConnectionViewSet, ModelViewSet):
+    queryset = UserLDAPSourceConnection.objects.all()
+    serializer_class = UserLDAPSourceConnectionSerializer
+
+
+class GroupLDAPSourceConnectionSerializer(GroupSourceConnectionSerializer):
+    class Meta(GroupSourceConnectionSerializer.Meta):
+        model = GroupLDAPSourceConnection
+
+
+class GroupLDAPSourceConnectionViewSet(GroupSourceConnectionViewSet, ModelViewSet):
+    queryset = GroupLDAPSourceConnection.objects.all()
+    serializer_class = GroupLDAPSourceConnectionSerializer

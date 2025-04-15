@@ -43,8 +43,17 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
 
     firstUpdated(): void {
         if (this.promptUser) {
+            document.addEventListener("keydown", (ev) => {
+                if (ev.key === "Enter") {
+                    this.redirect();
+                }
+            });
             return;
         }
+        this.redirect();
+    }
+
+    redirect() {
         console.debug(
             "authentik/stages/redirect: redirecting to url from server",
             this.challenge.to,

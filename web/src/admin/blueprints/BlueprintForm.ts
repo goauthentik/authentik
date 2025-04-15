@@ -159,7 +159,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                       target="_blank"
                                       rel="noopener noreferrer"
                                       href="${docLink(
-                                          "/developer-docs/blueprints/?utm_source=authentik#storage---oci",
+                                          "/docs/customize/blueprints/?utm_source=authentik#storage---oci",
                                       )}"
                                       >${msg("Documentation")}</a
                                   >

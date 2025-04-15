@@ -36,6 +36,7 @@ from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
     Provider,
+    Session,
     Source,
     User,
     UserSourceConnection,
@@ -50,7 +51,11 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderGroup,
     MicrosoftEntraProviderUser,
 )
-from authentik.enterprise.providers.rac.models import ConnectionToken
+from authentik.enterprise.providers.ssf.models import StreamEvent
+from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
+    EndpointDevice,
+    EndpointDeviceConnection,
+)
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
@@ -61,7 +66,13 @@ from authentik.lib.utils.reflection import get_apps
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.policies.reputation.models import Reputation
-from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    DeviceToken,
+    RefreshToken,
+)
+from authentik.providers.rac.models import ConnectionToken
 from authentik.providers.scim.models import SCIMProviderGroup, SCIMProviderUser
 from authentik.rbac.models import Role
 from authentik.sources.scim.models import SCIMSourceGroup, SCIMSourceUser
@@ -69,7 +80,7 @@ from authentik.stages.authenticator_webauthn.models import WebAuthnDeviceType
 from authentik.tenants.models import Tenant
 
 # Context set when the serializer is created in a blueprint context
-# Update website/developer-docs/blueprints/v1/models.md when used
+# Update website/docs/customize/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
@@ -98,6 +109,7 @@ def excluded_models() -> list[type[Model]]:
         Policy,
         PolicyBindingModel,
         # Classes that have other dependencies
+        Session,
         AuthenticatedSession,
         # Classes which are only internally managed
         # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin
@@ -119,6 +131,10 @@ def excluded_models() -> list[type[Model]]:
         GoogleWorkspaceProviderGroup,
         MicrosoftEntraProviderUser,
         MicrosoftEntraProviderGroup,
+        EndpointDevice,
+        EndpointDeviceConnection,
+        DeviceToken,
+        StreamEvent,
     )
 
 
@@ -287,7 +303,11 @@ class Importer:
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
-        if not isinstance(model(), BaseMetaModel) and model_instance:
+        if (
+            not isinstance(model(), BaseMetaModel)
+            and model_instance
+            and entry.state != BlueprintEntryDesiredState.MUST_CREATED
+        ):
             self.logger.debug(
                 "Initialise serializer with instance",
                 model=model,
@@ -297,11 +317,12 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
         elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
+            msg = (
+                f"State is set to {BlueprintEntryDesiredState.MUST_CREATED.value} "
+                "and object exists already",
+            )
             raise EntryInvalidError.from_entry(
-                (
-                    f"State is set to {BlueprintEntryDesiredState.MUST_CREATED} "
-                    "and object exists already",
-                ),
+                ValidationError({k: msg for k in entry.identifiers.keys()}, "unique"),
                 entry,
             )
         else:
@@ -429,7 +450,7 @@ class Importer:
         orig_import = deepcopy(self._import)
         if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
-            return False, [{"event": "Invalid blueprint version"}]
+            return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
         with (
             transaction_rollback(),
             capture_logs() as logs,

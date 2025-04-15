@@ -2,7 +2,7 @@ authentik takes security very seriously. We follow the rules of [responsible di
 
 ## Independent audits and pentests
 
-In May/June of 2023 [Cure53](https://cure53.de) conducted an audit and pentest. The [results](https://cure53.de/pentest-report_authentik.pdf) are published on the [Cure53 website](https://cure53.de/#publications-2023). For more details about authentik's response to the findings of the audit refer to [2023-06 Cure53 Code audit](https://goauthentik.io/docs/security/2023-06-cure53).
+We are committed to engaging in regular pentesting and security audits of authentik. Defining and adhering to a cadence of external testing ensures a stronger probability that our code base, our features, and our architecture is as secure and non-exploitable as possible. For more details about specific audits and pentests, refer to "Audits and Certificates" in our [Security documentation](https://docs.goauthentik.io/docs/security).
 
 ## What authentik classifies as a CVE
 
@@ -18,10 +18,10 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 (.x being the latest patch release for each version)
 
-| Version  | Supported |
-| -------- | --------- |
-| 2024.6.x | ✅        |
-| 2024.8.x | ✅        |
+| Version   | Supported |
+| --------- | --------- |
+| 2024.12.x | ✅        |
+| 2025.2.x  | ✅        |
 
 ## Reporting a Vulnerability
 

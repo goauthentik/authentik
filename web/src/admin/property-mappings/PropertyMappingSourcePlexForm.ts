@@ -10,7 +10,7 @@ import { PlexSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api
 @customElement("ak-property-mapping-source-plex-form")
 export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexSourcePropertyMapping> {
     docLink(): string {
-        return "/docs/sources/property-mappings/expressions?utm_source=authentik";
+        return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
     loadInstance(pk: string): Promise<PlexSourcePropertyMapping> {

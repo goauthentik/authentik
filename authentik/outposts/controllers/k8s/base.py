@@ -1,5 +1,6 @@
 """Base Kubernetes Reconciler"""
 
+import re
 from dataclasses import asdict
 from json import dumps
 from typing import TYPE_CHECKING, Generic, TypeVar
@@ -67,13 +68,24 @@ class KubernetesObjectReconciler(Generic[T]):
     @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return (
+
+        base_name = (
             self.controller.outpost.config.object_naming_template
             % {
                 "name": slugify(self.controller.outpost.name),
                 "uuid": self.controller.outpost.uuid.hex,
             }
         ).lower()
+
+        formatted = slugify(base_name)
+        formatted = re.sub(r"[^a-z0-9-]", "-", formatted)
+        formatted = re.sub(r"-+", "-", formatted)
+        formatted = formatted[:63]
+
+        if not formatted:
+            formatted = f"outpost-{self.controller.outpost.uuid.hex}"[:63]
+
+        return formatted
 
     def get_patched_reference_object(self) -> T:
         """Get patched reference object"""
@@ -112,7 +124,6 @@ class KubernetesObjectReconciler(Generic[T]):
             try:
                 current = self.retrieve()
             except (OpenApiException, HTTPError) as exc:
-
                 if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
@@ -156,7 +167,6 @@ class KubernetesObjectReconciler(Generic[T]):
             self.delete(current)
             self.logger.debug("Removing")
         except (OpenApiException, HTTPError) as exc:
-
             if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                 self.logger.debug("Failed to get current, assuming non-existent")
                 return
@@ -207,7 +217,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/instance": slugify(self.controller.outpost.name),
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
-                "app.kubernetes.io/version": get_version(),
+                "app.kubernetes.io/version": get_version().replace("+", "-"),
                 "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
                 "goauthentik.io/outpost-type": str(self.controller.outpost.type),
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jellyfin
 sidebar_label: Jellyfin
+support_level: community
 ---
-
-# Jellyfin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jellyfin
 
@@ -27,13 +24,17 @@ An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `jellyfin.company` is the FQDN of the Jellyfin install.
--   `authentik.company` is the FQDN of the authentik install.
--   `ldap.company` the FQDN of the LDAP outpost.
--   `dc=company,dc=com` the Base DN of the LDAP outpost.
--   `ldap_bind_user` the username of the desired LDAP Bind User
+- `jellyfin.company` is the FQDN of the Jellyfin installation.
+- `authentik.company` is the FQDN of the authentik installation.
+- `ldap.company` the FQDN of the LDAP outpost.
+- `dc=company,dc=com` the Base DN of the LDAP outpost.
+- `ldap_bind_user` the username of the desired LDAP Bind User
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## LDAP Configuration
 
@@ -70,28 +71,28 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
 At this point, click **Save and Test LDAP Server Settings**. If the settings are correct, you will see:
 `Connect(Success); Bind(Success); Base Search (Found XY Entities)`
 
--   `LDAP User Filter`: This is used to a user filter on what users are allowed to login. **This must be set**
-    -   To allow all users: `(objectClass=user)`
-    -   To only allow users in a specific group: `(memberOf=cn=jellyfin_users,ou=groups,dc=company,dc=com)`
-    -   Good Docs on LDAP Filters: [atlassian.com](https://confluence.atlassian.com/kb/how-to-write-ldap-search-filters-792496933.html)
--   `LDAP Admin Base DN`: All the users in this DN are automatically set as admins.
-    -   This can be left blank. Admins can be set manually outside this filter
--   `LDAP Admin Filter`: Similar to the user filter, but every matched user is set as admin.
-    -   This can be left blank. Admins can be set manually outside this filter
+- `LDAP User Filter`: This is used to a user filter on what users are allowed to login. **This must be set**
+    - To allow all users: `(objectClass=user)`
+    - To only allow users in a specific group: `(memberOf=cn=jellyfin_users,ou=groups,dc=company,dc=com)`
+    - Good Docs on LDAP Filters: [atlassian.com](https://confluence.atlassian.com/kb/how-to-write-ldap-search-filters-792496933.html)
+- `LDAP Admin Base DN`: All the users in this DN are automatically set as admins.
+    - This can be left blank. Admins can be set manually outside this filter
+- `LDAP Admin Filter`: Similar to the user filter, but every matched user is set as admin.
+    - This can be left blank. Admins can be set manually outside this filter
 
 At this point, click **Save and Test LDAP Filter Settings**. If the settings are correct, you will see:
 `Found X user(s), Y admin(s)`
 
--   `LDAP Attributes`: `uid, cn, mail, displayName`
--   `Enable case Insensitive Username`: **Checked**
+- `LDAP Attributes`: `uid, cn, mail, displayName`
+- `Enable case Insensitive Username`: **Checked**
 
 At this point, enter a username and click **Save Search Attribute Settings and Query User**. If the settings are correct, you will see:
 `Found User: cn=test,ou=users,dc=company,dc=com`
 
--   `Enabled User Creation`: **Checked**
--   `LDAP Name Attribute`: `cn`
--   `LDAP Password Attribute`: `userPassword`
--   `Library Access`: Set this according to desired library access
+- `Enabled User Creation`: **Checked**
+- `LDAP Name Attribute`: `cn`
+- `LDAP Password Attribute`: `userPassword`
+- `Library Access`: Set this according to desired library access
 
 1. Click "Save"
 2. Logout, and login with a LDAP user. Username **must** be used, logging in with email will not work.
@@ -104,8 +105,8 @@ At this point, enter a username and click **Save Search Attribute Settings and Q
 
 In authentik under **Providers**, create an OAuth2/OpenID Provider with these settings:
 
--   Name: `jellyfin`
--   Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
+- Name: `jellyfin`
+- Redirect URI: `https://jellyfin.company/sso/OID/redirect/authentik`
 
 Everything else is up to you, just make sure to grab the client ID and the client secret!
 
@@ -121,9 +122,9 @@ Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
 
 ### Jellyfin Configuration
 
-1. Navigate to your Jellyfin installation and log in with the admin account or currently configured local admin.
-2. Open the **Administrator dashboard** and go to the **Plugins** section.
-3. Then click the **Repositories** section at the top and add the below repository with the name of SSO-Auth
+1. Log in to Jellyfin with an admin account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
+2. Go to **Dashboard > Plugins > Repositories**.
+3. Click the **+** in the top left to add a new repository. Use the following URL and name it "SSO-Auth":
 
 ```
 https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json

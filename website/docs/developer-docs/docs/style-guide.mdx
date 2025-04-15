@@ -1,0 +1,289 @@
+---
+title: Style Guide
+---
+
+This Style Guide provides guidelines to ensure that the authentik documentation is consistent, clear, and easy to follow. It standardizes aspects like phrasing, formatting, tone, and structure across all documentation.
+
+We appreciate all contributions to our documentation — whether it's fixing a typo, adding new content, or writing an entirely new topic. To help us review and merge your contributions more efficiently, please follow our [writing documentation](./writing-documentation.md) guidelines. If you notice any inconsistencies, feel free to open an [Issue](https://github.com/goauthentik/authentik/issues) or submit a [Pull Request](https://github.com/goauthentik/authentik/pulls) to fix them.
+
+- [General Style Guidelines](#general-style-guidelines)
+- [Terminology](#terminology)
+- [Writing Style](#writing-style)
+- [Word Choices](#word-choices)
+- [Formatting Guidelines](#formatting-guidelines)
+- [Component-Based Formatting](#component-based-formatting)
+- [Error Message Formatting and Troubleshooting](#error-message-formatting-and-troubleshooting)
+- [Accessibility Best Practices](#accessibility-best-practices)
+- [Notes and Warnings](#notes-and-warnings)
+
+---
+
+## General style guidelines
+
+### Logical order
+
+- Documentation should be structured to follow the natural order of tasks, making it easier for users to follow. Organize sections in a manner that reflects the actual workflow used to complete tasks.
+
+- When writing procedural documentation (How Tos) the steps should follow the workflow in the UI, specifying the exact pages to navigate and the precise fields, tabs, etc., to select or complete. Present the UI components in the document in the same order they appear in the UI.
+
+### Headings
+
+Use headings (sub-titles) to break up large blocks of text, making it easier for users to navigate the content and find specific sections quickly.
+
+### Look and feel of the docs
+
+In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large call0outs or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
+
+### Cross-references
+
+Always include cross-references to related content. If a concept is referenced elsewhere in the documentation, link to the relevant section to provide users with additional context or instructions.
+
+### Relative vs. absolute paths
+
+Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between our Integration Guides and our regular technical docs, then use an absolute path.
+
+### Markdown file type
+
+The standard file type for documentation is `.md`. Use `.mdx` only if React components, such as interactive elements, are required.
+
+### OS-agnostic, clarify where needed
+
+Try to write procedural (How To) docs generically enough that it does not endorse or force a specific operating system. If it is necessary to specify a specific OS be sure to label it clearly. Consider using tabs (with MDX) to show the different OSes.
+
+## Terminology
+
+### authentik product naming conventions
+
+- The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence. This consistent style should be followed throughout the documentation.
+- The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security**.
+
+### Industry terms and technology names
+
+- When referring to external tools or industry terms, always use the exact capitalization and naming conventions that the product or company uses. Refer to their website or official documentation for the proper formatting. For example, use "OAuth", "SAML", or "Docker" as per the official conventions.
+- Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
+- If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)".
+
+## Writing style
+
+### Tone
+
+The tone of the authentik documentation should be friendly but professional. It should be approachable, yet not overly casual. When appropriate, address the reader directly using second-person pronouns (e.g., "Next, you need to configure the login settings").
+
+### Language
+
+The documentation uses **American English** spelling conventions (e.g., "customize" instead of "customise").
+
+### Punctuation
+
+For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
+
+### Voice
+
+Use **active voice** and **present tense** for clear, direct communication.
+
+- **DON'T:** "The Applications page will be loaded."
+- **DO:** "The Applications page displays."
+
+### User-friendly phrasing
+
+Avoid phrasing that blames the user. Be subjective and polite when providing instructions.
+
+- **DON'T:** "Never modify the default file."
+- **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
+
+## Word choices
+
+### "May" versus "Might" versus "Can"
+
+- Typically, avoid using the word "may" in technical writing, as it implies permission rather than ability to perform an action. Instead, use **"can"** to suggest possibility.
+- **"Might"** should be used to indicate that something could happen under certain conditions, but use it sparingly. It implies unpredictability, which can be undesirable in software documentation.
+
+    - **DON'T:** "You may use an Expression policy to enforce MFA adherence."
+    - **DO:** "You can use an Expression policy to enforce MFA adherence."
+    - **DO:** "Values might differ depending on the source of the property mappings."
+
+### "Login", "Log in", and "Log in to"
+
+- As a noun or descriptive term, use **login** (e.g., "The login panel").
+- As a verb, use **"log in"** (e.g., "This stage prompts the user to log in").
+- As a verb followed by the proposition **"to"**, use **"log in to"** (e.g., "Log in to the application").
+
+### Use "that" as a conjunction
+
+It's important to use "that" as a conjunction to introduce a dependent clause, or as a "connection" between a noun and a verb ("The provider that you created in Step 3."). Including "that" as a conjunction helps non-native English speakers more easily parse phrases, and improves output for translation tools.
+
+- **DO:** "Ensure that the new user's password is valid."
+- **DON'T:** "Ensure the new user's password is valid."
+
+### "which" vs "that"
+
+Th easiest way to remember when to use "which" versus "that" is:
+
+- if the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, then you should use "which".
+
+For more information, see https://www.grammarly.com/blog/which-vs-that/.
+
+### “since” (time-based) vs “because” (causal)
+
+When writing about a status or anything that is causal ("this happened because of that"), use the word "because". Use the word "since" for time-based topics (this will be rare in technical writing).
+
+### Avoid using “once” (numeric) to mean “after” (time-based).
+
+When writing out steps in a procedural topic, avoid starting with "Once...". Instead, you can say "After you have created the scope mapping...".
+
+## Formatting guidelines
+
+### Fonts and Font Styling
+
+- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
+
+- When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
+
+- Use **bold** to highlight:
+
+    - UI elements such as field names, labels, buttons, or options (e.g., **Save** button, **Username** field).
+    - Key actions in instructions (e.g., **Click Next**).
+
+- Use _italic_ for:
+
+    - Variables or placeholders to indicate that the value should be replaced by the user (e.g., _your-domain.com_). Clearly indicate whether variables in code snippets need to be defined by the user, are system-provided, or generated.
+    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section.
+
+- Use `code formatting` for:
+
+    - Commands (e.g., `docker run`).
+    - File paths, file names, and directory names (e.g., `/usr/local/bin/`).
+    - Inline code snippets (e.g., `.env`).
+
+- When handling URLs:
+
+    - For URLs entered as values or defined in fields _italicize_ any variables within them to emphasize that placeholders require user input.
+
+        In Markdown, use this syntax: `<kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>`
+
+        Rendered formatting: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
+
+    - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
+
+### Titles and headers
+
+- Titles and headers (H1, H2, H3) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.
+
+    - **DO:** "Configure the Google Workspace provider"
+    - **DON'T:** "CONFIGURE THE GOOGLE WORKSPACE PROVIDER"
+    - **DON'T:** "Configure The Google Workspace Provider"
+
+- Ensure titles and headers are descriptive and clearly convey the purpose of the section. Avoid vague titles like "Overview." Instead, opt for something more specific, like "About authentik policies."
+
+- Use the **imperative verb form** in procedural topics. For example, use "Configure your instance" instead of "Configuring your instance."
+
+### Examples
+
+When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
+
+    **Example**:
+
+    This expression policy uses an expression based on the user's name:
+        ```
+        if request.context["pending_user"].username == "marie":
+            return True
+            return False
+        ```
+
+## Component-Based Formatting
+
+This section covers the usage of React components within our documentation. Files that use component-based formatting must use the `.mdx` extension.
+
+### Multiline Code Blocks
+
+For displaying multiline code blocks, especially when variables need to be defined, use the **`IntegrationsMultilineCodeblock`** React component. Insert the following lines wherever you want the code block to appear:
+
+```jsx
+import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
+
+<IntegrationsMultilineCodeblock>
+    {`
+OIDC_DISCOVERY_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/
+`}
+</IntegrationsMultilineCodeblock>;
+```
+
+This is especially useful for configuration files like JSON, YAML, or `.env` files, where placeholders must be replaced.
+
+### Tabs for Multiple Configurations
+
+Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. Insert the following lines wherever you want the code block to appear:
+
+```jsx
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs
+    defaultValue="oidc"
+    values={[
+        { label: "OIDC", value: "oidc" },
+        { label: "SAML", value: "saml" },
+    ]}
+>
+    <TabItem value="oidc">OIDC configuration details go here.</TabItem>
+    <TabItem value="saml">SAML configuration details go here.</TabItem>
+</Tabs>;
+```
+
+Tabs improve readability when presenting different configurations or setup options.
+
+## Error Message Formatting and Troubleshooting
+
+When documenting error messages:
+
+- Display the error message
+- Explain possible causes
+- Offer solutions
+
+Example:
+
+- **Error message:**
+
+    ```sh
+    Error: Authentication failed. Invalid credentials.
+    ```
+
+- **Possible causes:**
+
+    - Incorrect username or password
+    - Account is locked due to too many failed login attempts
+
+- **Solution:**
+
+    - Verify your username and password
+    - Reset your password if necessary
+    - Contact an administrator if your account is locked
+
+## Accessibility Best Practices
+
+- Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
+- Provide **descriptive link text**. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
+    - **DON'T:** "Click here."
+    - **DO:** "See the [Authentication Settings](/) for more details."
+
+## Notes and Warnings
+
+For notes and important information:
+
+**Notes** are formatted using:
+
+```
+:::info
+Write your note here.
+:::
+```
+
+**Warnings** are formatted using:
+
+```
+:::warning
+Write your warning here.
+:::
+```
+
+Use these conventions to ensure that the reader's attention is drawn to crucial information.

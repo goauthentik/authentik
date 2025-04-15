@@ -274,6 +274,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -352,6 +353,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan
@@ -432,6 +434,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
+                "last_used": None,
             }
         ]
         session[SESSION_KEY_PLAN] = plan

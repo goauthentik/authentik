@@ -2,10 +2,15 @@
 
 from collections.abc import Callable
 from contextvars import ContextVar
+from functools import partial
 from uuid import uuid4
 
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ImproperlyConfigured
 from django.http import HttpRequest, HttpResponse
-from django.utils.translation import activate
+from django.utils.deprecation import MiddlewareMixin
+from django.utils.functional import SimpleLazyObject
+from django.utils.translation import override
 from sentry_sdk.api import set_tag
 from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 
@@ -20,6 +25,40 @@ CTX_HOST = ContextVar[str | None](STRUCTLOG_KEY_PREFIX + "host", default=None)
 CTX_AUTH_VIA = ContextVar[str | None](STRUCTLOG_KEY_PREFIX + KEY_AUTH_VIA, default=None)
 
 
+def get_user(request):
+    if not hasattr(request, "_cached_user"):
+        user = None
+        if (authenticated_session := request.session.get("authenticatedsession", None)) is not None:
+            user = authenticated_session.user
+        request._cached_user = user or AnonymousUser()
+    return request._cached_user
+
+
+async def aget_user(request):
+    if not hasattr(request, "_cached_user"):
+        user = None
+        if (
+            authenticated_session := await request.session.aget("authenticatedsession", None)
+        ) is not None:
+            user = authenticated_session.user
+        request._cached_user = user or AnonymousUser()
+    return request._cached_user
+
+
+class AuthenticationMiddleware(MiddlewareMixin):
+    def process_request(self, request):
+        if not hasattr(request, "session"):
+            raise ImproperlyConfigured(
+                "The Django authentication middleware requires session "
+                "middleware to be installed. Edit your MIDDLEWARE setting to "
+                "insert "
+                "'authentik.root.middleware.SessionMiddleware' before "
+                "'authentik.core.middleware.AuthenticationMiddleware'."
+            )
+        request.user = SimpleLazyObject(lambda: get_user(request))
+        request.auser = partial(aget_user, request)
+
+
 class ImpersonateMiddleware:
     """Middleware to impersonate users"""
 
@@ -31,16 +70,20 @@ class ImpersonateMiddleware:
     def __call__(self, request: HttpRequest) -> HttpResponse:
         # No permission checks are done here, they need to be checked before
         # SESSION_KEY_IMPERSONATE_USER is set.
+        locale_to_set = None
         if request.user.is_authenticated:
             locale = request.user.locale(request)
             if locale != "":
-                activate(locale)
+                locale_to_set = locale
 
         if SESSION_KEY_IMPERSONATE_USER in request.session:
             request.user = request.session[SESSION_KEY_IMPERSONATE_USER]
             # Ensure that the user is active, otherwise nothing will work
             request.user.is_active = True
 
+        if locale_to_set:
+            with override(locale_to_set):
+                return self.get_response(request)
         return self.get_response(request)
 
 

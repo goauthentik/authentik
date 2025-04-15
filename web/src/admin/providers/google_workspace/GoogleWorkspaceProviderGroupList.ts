@@ -8,7 +8,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { GoogleWorkspaceProviderGroup, ProvidersApi, SyncObjectModelEnum } from "@goauthentik/api";
+import {
+    GoogleWorkspaceProviderGroup,
+    ProvidersApi,
+    ProvidersGoogleWorkspaceSyncObjectCreateRequest,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-groups-list")
 export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProviderGroup> {
@@ -30,9 +35,12 @@ export class GoogleWorkspaceProviderGroupList extends Table<GoogleWorkspaceProvi
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
-                    .sync=${new ProvidersApi(DEFAULT_CONFIG)
-                        .providersGoogleWorkspaceSyncObjectCreate}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    .sync=${(data: ProvidersGoogleWorkspaceSyncObjectCreateRequest) => {
+                        return new ProvidersApi(
+                            DEFAULT_CONFIG,
+                        ).providersGoogleWorkspaceSyncObjectCreate(data);
+                    }}
                     slot="form"
                 >
                 </ak-sync-object-form>

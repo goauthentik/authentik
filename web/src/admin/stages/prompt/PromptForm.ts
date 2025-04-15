@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIError } from "@goauthentik/common/errors";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -21,9 +21,8 @@ import {
     Prompt,
     PromptChallenge,
     PromptTypeEnum,
-    ResponseError,
     StagesApi,
-    ValidationError,
+    instanceOfValidationError,
 } from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
@@ -78,15 +77,22 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 return;
             }
         }
-        try {
-            this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
+
+        return new StagesApi(DEFAULT_CONFIG)
+            .stagesPromptPromptsPreviewCreate({
                 promptRequest: prompt,
+            })
+            .then((nextPreview) => {
+                this.preview = nextPreview;
+                this.previewError = undefined;
+            })
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.previewError = instanceOfValidationError(parsedError)
+                    ? parsedError.nonFieldErrors
+                    : [pluckErrorDetail(parsedError, msg("Failed to preview prompt"))];
             });
-            this.previewError = undefined;
-        } catch (exc) {
-            const errorMessage = parseAPIError(exc as ResponseError);
-            this.previewError = (errorMessage as ValidationError).nonFieldErrors;
-        }
     }
 
     getSuccessMessage(): string {
@@ -217,7 +223,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;

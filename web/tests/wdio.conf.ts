@@ -1,3 +1,50 @@
+import { browser } from "@wdio/globals";
+
+const lemmeSee = process.env.WDIO_LEMME_SEE !== undefined;
+
+const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
+const testFirefox = process.env.WDIO_TEST_FIREFOX !== undefined;
+const skipChrome = process.env.WDIO_SKIP_CHROME !== undefined;
+const runHeadless = process.env.CI !== undefined;
+
+const capabilities = [];
+
+if (!skipChrome) {
+    capabilities.push({
+        "browserName": "chrome",
+        "wdio:chromedriverOptions": {
+            binary: "./node_modules/.bin/chromedriver",
+        },
+        "goog:chromeOptions": {
+            args: ["disable-infobars", "window-size=1280,800"].concat(
+                (function () {
+                    return runHeadless
+                        ? [
+                              "headless",
+                              "no-sandbox",
+                              "disable-gpu",
+                              "disable-setuid-sandbox",
+                              "disable-dev-shm-usage",
+                          ]
+                        : [];
+                })(),
+            ),
+        },
+    });
+}
+
+if (testSafari) {
+    capabilities.push({
+        browserName: "safari", // or "firefox", "microsoftedge", "safari"
+    });
+}
+
+if (testFirefox) {
+    capabilities.push({
+        browserName: "firefox", // or "firefox", "microsoftedge", "safari"
+    });
+}
+
 export const config: WebdriverIO.Config = {
     //
     // ====================
@@ -50,30 +97,7 @@ export const config: WebdriverIO.Config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [
-        {
-            "browserName": "chrome",
-            "wdio:chromedriverOptions": {
-                binary: "./node_modules/.bin/chromedriver",
-            },
-            "goog:chromeOptions": {
-                args: ["--disable-infobars", "--window-size=1280,800"].concat(
-                    (function () {
-                        return process.env.HEADLESS_CHROME === "1"
-                            ? [
-                                  "--headless",
-                                  "--no-sandbox",
-                                  "--disable-gpu",
-                                  "--disable-setuid-sandbox",
-                                  "--disable-dev-shm-usage",
-                              ]
-                            : [];
-                    })(),
-                ),
-            },
-        },
-    ],
-
+    capabilities,
     //
     // ===================
     // Test Configurations
@@ -246,9 +270,13 @@ export const config: WebdriverIO.Config = {
      * @param {boolean} result.passed    true if test has passed, otherwise false
      * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-    // },
-
+    // Below is the full signature; we're not using any of them.
+    //     afterTest: async function (test, context, { error, result, duration, passed, retries }) {
+    afterTest: async function () {
+        if (lemmeSee) {
+            await browser.pause(500);
+        }
+    },
     /**
      * Hook that gets executed after the suite has ended
      * @param {object} suite suite details

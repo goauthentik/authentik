@@ -1,0 +1,46 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as AppIconStories from "./AppIcon.stories";
+
+<Meta of={AppIconStories} />
+
+# Application Icon
+
+AppIcon displays an icon associated with an authentik application on the User Library page. It takes
+an API "Application" object and a size, with a default size of "medium."
+
+## Usage
+
+Note that the variables passed in are how they are used in authentik. Any string and any FontAwesome
+icon supported by the current theme can be referenced.
+
+```Typescript
+import "@goauthentik/components/ak-app-icon.js";
+```
+
+```html
+<ak-app-icon name=${app.name} icon=${app.metaIcon}></ak-ak-app-icon>
+```
+
+## Demo
+
+### Standard App Icon
+
+In this example, the app has no icon reference and is just named "Default." The first letter is used
+as the icon.
+
+<Story of={AppIconStories.DefaultStory} />
+
+### App Icon with Icon
+
+In this example, the app contains an icon reference: `{ metaIcon: "fa://fa-yin-yang" }`, which is
+preferred to just using the first letter.
+
+<Story of={AppIconStories.WithIcon} />
+
+### App Icon with Missing Data
+
+This is what is shown if both the name and icon fields of an application are `undefined`. In practice,
+you should never see this.
+
+<Story of={AppIconStories.AllDataUndefined} />

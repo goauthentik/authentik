@@ -7,15 +7,15 @@ from pathlib import Path
 
 import orjson
 from celery.schedules import crontab
-from django.conf import ImproperlyConfigured
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import __version__
-from authentik.lib.config import CONFIG, redis_url
+from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
@@ -32,6 +32,8 @@ LOGIN_URL = "authentik_flows:default-authentication"
 # Custom user model
 AUTH_USER_MODEL = "authentik_core.User"
 
+CSRF_COOKIE_PATH = LANGUAGE_COOKIE_PATH = SESSION_COOKIE_PATH = CONFIG.get("web.path", "/")
+
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
@@ -40,7 +42,6 @@ SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     BACKEND_INBUILT,
     BACKEND_APP_PASSWORD,
     BACKEND_LDAP,
@@ -85,11 +86,13 @@ TENANT_APPS = [
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
+    "authentik.providers.rac",
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
     "authentik.rbac",
     "authentik.recovery",
+    "authentik.sources.kerberos",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
     "authentik.sources.plex",
@@ -97,6 +100,7 @@ TENANT_APPS = [
     "authentik.sources.scim",
     "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
+    "authentik.stages.authenticator_email",
     "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
@@ -111,6 +115,7 @@ TENANT_APPS = [
     "authentik.stages.invitation",
     "authentik.stages.password",
     "authentik.stages.prompt",
+    "authentik.stages.redirect",
     "authentik.stages.user_delete",
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
@@ -125,6 +130,7 @@ TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
 
 TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
+PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
 GUARDIAN_MONKEY_PATCH = False
 
@@ -221,20 +227,13 @@ CACHES = {
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-match CONFIG.get("session_storage", "cache"):
-    case "cache":
-        SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-    case "db":
-        SESSION_ENGINE = "django.contrib.sessions.backends.db"
-    case _:
-        raise ImproperlyConfigured(
-            "Invalid session_storage setting, allowed values are db and cache"
-        )
-SESSION_SERIALIZER = "authentik.root.sessions.pickle.PickleSerializer"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.unauthenticated_age", "days=1")
+).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
@@ -245,7 +244,7 @@ MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "authentik.root.middleware.ClientIPMiddleware",
     "authentik.stages.user_login.middleware.BoundSessionMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
     "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
@@ -294,45 +293,7 @@ CHANNEL_LAYERS = {
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
 ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
-DATABASES = {
-    "default": {
-        "ENGINE": "authentik.root.db",
-        "HOST": CONFIG.get("postgresql.host"),
-        "NAME": CONFIG.get("postgresql.name"),
-        "USER": CONFIG.get("postgresql.user"),
-        "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": CONFIG.get("postgresql.port"),
-        "SSLMODE": CONFIG.get("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.get("postgresql.sslcert"),
-        "SSLKEY": CONFIG.get("postgresql.sslkey"),
-        "TEST": {
-            "NAME": CONFIG.get("postgresql.test.name"),
-        },
-    }
-}
-
-if CONFIG.get_bool("postgresql.use_pgpool", False):
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-
-if CONFIG.get_bool("postgresql.use_pgbouncer", False):
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
-
-for replica in CONFIG.get_keys("postgresql.read_replicas"):
-    _database = DATABASES["default"].copy()
-    for setting in DATABASES["default"].keys():
-        default = object()
-        if setting in ("TEST",):
-            continue
-        override = CONFIG.get(
-            f"postgresql.read_replicas.{replica}.{setting.lower()}", default=default
-        )
-        if override is not default:
-            _database[setting] = override
-    DATABASES[f"replica_{replica}"] = _database
+DATABASES = django_db_config()
 
 DATABASE_ROUTERS = (
     "authentik.tenants.db.FailoverRouter",
@@ -423,7 +384,7 @@ if _ERROR_REPORTING:
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
-STATIC_URL = "/static/"
+STATIC_URL = CONFIG.get("web.path", "/") + "static/"
 
 STORAGES = {
     "staticfiles": {

@@ -1,4 +1,5 @@
 import "@goauthentik/admin/sources/SourceWizard";
+import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
@@ -56,10 +57,13 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled =
+            this.selectedElements.length < 1 ||
+            this.selectedElements.some((item) => item.component === "");
+        const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Source(s)")}
-            .objects=${this.selectedElements}
+            .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
                     slug: item.slug,

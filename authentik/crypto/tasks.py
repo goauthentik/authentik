@@ -85,5 +85,5 @@ def certificate_discovery(self: SystemTask):
         if dirty:
             cert.save()
     self.set_status(
-        TaskStatus.SUCCESSFUL, _("Successfully imported %(count)d files." % {"count": discovered})
+        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=discovered))
     )

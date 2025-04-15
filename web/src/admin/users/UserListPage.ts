@@ -2,15 +2,17 @@ import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
+import "@goauthentik/admin/users/UserImpersonateForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
+import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
@@ -22,7 +24,7 @@ import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showAPIErrorMessage, showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -38,7 +40,7 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CoreApi, ResponseError, SessionUser, User, UserPath } from "@goauthentik/api";
+import { CoreApi, SessionUser, User, UserPath } from "@goauthentik/api";
 
 export const requestRecoveryLink = (user: User) =>
     new CoreApi(DEFAULT_CONFIG)
@@ -56,16 +58,7 @@ export const requestRecoveryLink = (user: User) =>
                 }),
             ),
         )
-        .catch((ex: ResponseError) =>
-            ex.response.json().then(() =>
-                showMessage({
-                    level: MessageLevel.error,
-                    message: msg(
-                        "The current brand must have a recovery flow configured to use a recovery link",
-                    ),
-                }),
-            ),
-        );
+        .catch((error: unknown) => parseAPIResponseError(error).then(showAPIErrorMessage));
 
 export const renderRecoveryEmailRequest = (user: User) =>
     html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
@@ -125,14 +118,15 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
+        return [...TablePage.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
     }
 
     constructor() {
         super();
-        this.activePath = getURLParam<string>("path", "/");
+        const defaultPath = new DefaultUIConfig().defaults.userPath;
+        this.activePath = getURLParam<string>("path", defaultPath);
         uiConfig().then((c) => {
-            if (c.defaults.userPath !== new DefaultUIConfig().defaults.userPath) {
+            if (c.defaults.userPath !== defaultPath) {
                 this.activePath = c.defaults.userPath;
             }
         });
@@ -246,11 +240,11 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
-                <small>${item.name === "" ? msg("<No name set>") : item.name}</small>
+                <small>${item.name ? item.name : html`&lt;${msg("No name set")}&gt;`}</small>
             </a>`,
             html`<ak-status-label ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
                       <small>${item.lastLogin.toLocaleString()}</small>`
                 : msg("-")}`,
             html`${userTypeToLabel(item.type)}`,
@@ -266,20 +260,22 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                 </ak-forms-modal>
                 ${canImpersonate
                     ? html`
-                          <ak-action-button
-                              class="pf-m-tertiary"
-                              .apiRequest=${() => {
-                                  return new CoreApi(DEFAULT_CONFIG)
-                                      .coreUsersImpersonateCreate({
-                                          id: item.pk,
-                                      })
-                                      .then(() => {
-                                          window.location.href = "/";
-                                      });
-                              }}
-                          >
-                              ${msg("Impersonate")}
-                          </ak-action-button>
+                          <ak-forms-modal size=${PFSize.Medium} id="impersonate-request">
+                              <span slot="submit">${msg("Impersonate")}</span>
+                              <span slot="header">${msg("Impersonate")} ${item.username}</span>
+                              <ak-user-impersonate-form
+                                  slot="form"
+                                  .instancePk=${item.pk}
+                              ></ak-user-impersonate-form>
+                              <button slot="trigger" class="pf-c-button pf-m-tertiary">
+                                  <pf-tooltip
+                                      position="top"
+                                      content=${msg("Temporarily assume the identity of this user")}
+                                  >
+                                      <span>${msg("Impersonate")}</span>
+                                  </pf-tooltip>
+                              </button>
+                          </ak-forms-modal>
                       `
                     : html``}`,
         ];
@@ -374,7 +370,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active brand.",
+                                                  "To let a user directly reset their password, configure a recovery flow on the currently active brand.",
                                               )}
                                           </p>`}
                                 </div>
@@ -392,7 +388,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
             <ak-forms-modal>
                 <span slot="submit"> ${msg("Create")} </span>
                 <span slot="header"> ${msg("Create User")} </span>
-                <ak-user-form slot="form"> </ak-user-form>
+                <ak-user-form defaultPath=${this.activePath} slot="form"> </ak-user-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal .closeAfterSuccessfulSubmit=${false} .cancelText=${msg("Close")}>
@@ -414,6 +410,9 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                     <ak-treeview
                         .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
+                        @ak-refresh=${(ev: CustomEvent<{ path: string }>) => {
+                            this.activePath = ev.detail.path;
+                        }}
                     ></ak-treeview>
                 </div>
             </div>

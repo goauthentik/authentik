@@ -1,11 +1,8 @@
 ---
 title: Integrate with Mobilizon
 sidebar_label: Mobilizon
+support_level: community
 ---
-
-# Mobilizon
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Mobilizon
 
@@ -15,29 +12,35 @@ sidebar_label: Mobilizon
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `mobilizon.company` is the FQDN of the mobilizon install.
--   `authentik.company` is the FQDN of the authentik install.
+- `mobilizon.company` is the FQDN of the Mobilizon installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-## authentik Configuration
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-### Step 1 - OAuth2/OpenID Provider
+## authentik configuration
 
-Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
+To support the integration of Mobilizon with authentik, you need to create an application/provider pair in authentik.
 
--   Name : mobilizon
--   Redirect URI: `https://mobilizon.company/auth/keycloak/callback`
+### Create an application and provider in authentik
 
-### Step 3 - Application
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-Create an application (under _Resources/Applications_) with these settings:
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>mobilizon.company</em>/auth/keycloak/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
--   Name: Mobilizon
--   Slug: mobilizon
--   Provider: mobilizon
+3. Click **Submit** to save the new application and provider.
 
-## Mobilizon Setup
+## Mobilizon configuration
 
 Configure Mobilizon settings by editing the `config.exs` and add the following:
 
@@ -56,10 +59,10 @@ config :mobilizon, :auth,
 config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
   client_id: "<Client ID>",
   client_secret: "<Client Secret>",
-  site: "https://mobilizon.company",
-  authorize_url: "https://mobilizon.company/application/o/authorize/",
-  token_url: "https://mobilizon.company/application/o/token/",
-  userinfo_url: "https://mobilizon.company/application/o/userinfo/",
+  site: "https://authentik.company",
+  authorize_url: "https://authentik.company/application/o/authorize/",
+  token_url: "https://authentik.company/application/o/token/",
+  userinfo_url: "https://authentik.company/application/o/userinfo/",
   token_method: :post
 ```
 
@@ -67,4 +70,4 @@ Restart mobilizon.service
 
 ## Additional Resources
 
--   https://docs.joinmobilizon.org/administration/configure/auth/
+- https://docs.joinmobilizon.org/administration/configure/auth/

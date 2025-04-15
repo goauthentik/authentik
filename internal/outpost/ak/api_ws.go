@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -16,11 +17,22 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
+func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, query url.Values) *url.URL {
+	wsUrl := &url.URL{}
+	wsUrl.Scheme = strings.ReplaceAll(akURL.Scheme, "http", "ws")
+	wsUrl.Host = akURL.Host
+	_p, _ := url.JoinPath(akURL.Path, "ws/outpost/", outpostUUID, "/")
+	wsUrl.Path = _p
+	v := url.Values{}
+	maps.Insert(v, maps.All(akURL.Query()))
+	maps.Insert(v, maps.All(query))
+	wsUrl.RawQuery = v.Encode()
+	return wsUrl
+}
+
 func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
-	pathTemplate := "%s://%s/ws/outpost/%s/?%s"
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
-	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
@@ -37,7 +49,9 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		},
 	}
 
-	ws, _, err := dialer.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID, akURL.Query().Encode()), header)
+	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
+	ac.logger.WithField("url", wsu).Debug("connecting to websocket")
+	ws, _, err := dialer.Dial(wsu, header)
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to connect websocket")
 		return err
@@ -83,6 +97,7 @@ func (ac *APIController) reconnectWS() {
 	u := url.URL{
 		Host:   ac.Client.GetConfig().Host,
 		Scheme: ac.Client.GetConfig().Scheme,
+		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
 	}
 	attempt := 1
 	for {
@@ -133,7 +148,8 @@ func (ac *APIController) startWSHandler() {
 			"outpost_type": ac.Server.Type(),
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
-		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
+		switch wsMsg.Instruction {
+		case WebsocketInstructionTriggerUpdate:
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
@@ -148,7 +164,7 @@ func (ac *APIController) startWSHandler() {
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
-		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
+		case WebsocketInstructionProviderSpecific:
 			for _, h := range ac.wsHandlers {
 				h(context.Background(), wsMsg.Args)
 			}

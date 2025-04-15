@@ -1,11 +1,8 @@
 ---
 title: Integrate with Hashicorp Vault
 sidebar_label: Hashicorp Vault
+support_level: authentik
 ---
-
-# Hashicorp Vault
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Vault
 
@@ -19,49 +16,35 @@ This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ bet
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of authentik.
--   `vault.company` is the FQDN of Vault.
-
-### Step 1
-
-In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
+- `authentik.company` is the FQDN of the authentik installation.
+- `vault.company` is the FQDN of the Vault installation.
 
 :::note
-Only settings that have been modified from default have been listed.
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-**Protocol Settings**
+## authentik configuration
 
--   Name: Vault
--   Signing Key: Select any available key
+To support the integration of Hashicorp Vault with authentik, you need to create an application/provider pair in authentik.
 
--   Redirect URIs/Origins:
+### Create an application and provider in authentik
 
-```
-https://vault.company/ui/vault/auth/oidc/oidc/callback
-https://vault.company/oidc/callback
-http://localhost:8250/oidc/callback
-```
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-:::note
-Take note of the `Client ID` and `Client Secret`, you'll need to give them to Vault in _Step 3_.
-:::
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Add three `Strict` redirect URIs and set them to <kbd>https://<em>vault.company</em>/ui/vault/auth/oidc/oidc/callback</kbd>, <kbd>https://<em>vault.company</em>/oidc/callback</kbd>, and <kbd>http://localhost:8250/oidc/callback</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-### Step 2
+3. Click **Submit** to save the new application and provider.
 
-In authentik, create an application (under _Resources/Applications_) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-
-:::note
-Only settings that have been modified from default have been listed.
-:::
-
--   Name: Vault
--   Slug: vault-slug
--   Provider: Vault
-
-### Step 3
+## Hashicorp Vault configuration
 
 Enable the oidc auth method
 `vault auth enable oidc`
@@ -88,5 +71,63 @@ vault write auth/oidc/role/reader \
       policies="reader"
 ```
 
-You should then be able to sign in via OIDC
+## External Groups
+
+If you wish to manage group membership in Hashicorp Vault via Authentik you have to use [external groups](https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-auth#create-an-external-vault-group).
+
+:::note
+This assumes that the steps above have already been completed and tested.
+:::
+
+### Step 1
+
+In authentik, edit the OIDC provider created above. Under **Advanced protocol settings** add `authentik default OAuth Mapping: OpenID 'profile'` This includes the groups mapping.
+
+### Step 2
+
+In Vault, change the reader role to have the following settings:
+
+```
+vault write auth/oidc/role/reader \
+      bound_audiences="Client ID" \
+      allowed_redirect_uris="https://vault.company/ui/vault/auth/oidc/oidc/callback" \
+      allowed_redirect_uris="https://vault.company/oidc/callback" \
+      allowed_redirect_uris="http://localhost:8250/oidc/callback" \
+      user_claim="sub" \
+      policies="reader" \
+      groups_claim="groups" \
+      oidc_scopes=[ "openid profile email" ]
+```
+
+Add a group.
+
+```
+vault write identity/group/reader \
+    name="reader" \
+    policies=["reader"] \
+    type="external"
+```
+
+Get the canonical ID of the group.
+
+```
+vault list identity/group/id
+```
+
+Get the ID of the OIDC accessor.
+
+```
+vault auth list
+```
+
+Add a group alias, this maps the group to the OIDC backend.
+
+```
+vault write identity/group-alias \
+    mount_accessor="auth_oidc_xxxxxx" \
+    canonical_id="group_id" \
+    name="group name in authentik"
+```
+
+You should then be able to sign in via OIDC.
 `vault login -method=oidc role="reader"`

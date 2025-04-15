@@ -5,6 +5,7 @@ import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { isResponseErrorLike } from "@goauthentik/common/errors/network";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
@@ -23,12 +24,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    Flow,
-    FlowsApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    ResponseError,
-} from "@goauthentik/api";
+import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
@@ -191,17 +187,19 @@ export class FlowViewPage extends AKElement {
                                                                 const finalURL = `${
                                                                     link.link
                                                                 }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                    `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
-                                                            .catch((exc: ResponseError) => {
-                                                                // This request can return a HTTP 400 when a flow
-                                                                // is not applicable.
-                                                                window.open(
-                                                                    exc.response.url,
-                                                                    "_blank",
-                                                                );
+                                                            .catch(async (error: unknown) => {
+                                                                if (isResponseErrorLike(error)) {
+                                                                    // This request can return a HTTP 400 when a flow
+                                                                    // is not applicable.
+                                                                    window.open(
+                                                                        error.response.url,
+                                                                        "_blank",
+                                                                    );
+                                                                }
                                                             });
                                                     }}
                                                 >
@@ -280,7 +278,7 @@ export class FlowViewPage extends AKElement {
                 <ak-rbac-object-permission-page
                     slot="page-permissions"
                     data-tab-title="${msg("Permissions")}"
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;

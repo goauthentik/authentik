@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
@@ -35,7 +35,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
 
     checkbox = true;
     clearOnRefresh = true;
-    order = "expires";
+    order = "-expires";
 
     columns(): TableColumn[] {
         return [
@@ -93,11 +93,11 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 bad-label=${msg("Yes")}
             ></ak-status-label>`,
             html`${item.expires
-                ? html`<div>${getRelativeTime(item.expires)}</div>
+                ? html`<div>${formatElapsedTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
             html`<ak-chip-group>
-                ${item.scope.map((scope) => {
+                ${item.scope.sort().map((scope) => {
                     return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
                 })}
             </ak-chip-group>`,

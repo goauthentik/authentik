@@ -90,8 +90,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
         this.authenticating = true;
         this.authenticate()
-            .catch((e: Error) => {
-                console.warn("authentik/flows/authenticator_validate/webauthn: failed to auth", e);
+            .catch((error: unknown) => {
+                console.warn(
+                    "authentik/flows/authenticator_validate/webauthn: failed to auth",
+                    error,
+                );
                 this.errorMessage = msg("Authentication failed. Please try again.");
             })
             .finally(() => {
@@ -107,7 +110,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                     ?loading="${this.authenticating}"
                     header=${this.authenticating
                         ? msg("Authenticating...")
-                        : this.errorMessage || msg("Failed to authenticate")}
+                        : this.errorMessage || msg("Loading")}
                     icon="fa-times"
                 >
                 </ak-empty-state>

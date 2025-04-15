@@ -2,6 +2,7 @@
 
 from pydantic import Field
 from pydanticscim.group import Group as BaseGroup
+from pydanticscim.responses import PatchOperation as BasePatchOperation
 from pydanticscim.responses import PatchRequest as BasePatchRequest
 from pydanticscim.responses import SCIMError as BaseSCIMError
 from pydanticscim.service_provider import Bulk as BaseBulk
@@ -18,6 +19,7 @@ SCIM_GROUP_SCHEMA = "urn:ietf:params:scim:schemas:core:2.0:Group"
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
+    id: str | int | None = None
     schemas: list[str] = [SCIM_USER_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
@@ -26,6 +28,7 @@ class User(BaseUser):
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
+    id: str | int | None = None
     schemas: list[str] = [SCIM_GROUP_SCHEMA]
     externalId: str | None = None
     meta: dict | None = None
@@ -66,6 +69,12 @@ class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
     schemas: tuple[str] = ("urn:ietf:params:scim:api:messages:2.0:PatchOp",)
+
+
+class PatchOperation(BasePatchOperation):
+    """PatchOperation with optional path"""
+
+    path: str | None
 
 
 class SCIMError(BaseSCIMError):

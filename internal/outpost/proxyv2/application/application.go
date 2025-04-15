@@ -23,6 +23,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"goauthentik.io/internal/outpost/proxyv2/hs256"
@@ -121,6 +122,14 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	bs := string(h.Sum([]byte(*p.ClientId)))
 	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
 
+	// When HOST_BROWSER is set, use that as Host header for token requests to make the issuer match
+	// otherwise we use the internally configured authentik_host
+	tokenEndpointHost := server.API().Outpost.Config["authentik_host"].(string)
+	if config.Get().AuthentikHostBrowser != "" {
+		tokenEndpointHost = config.Get().AuthentikHostBrowser
+	}
+	publicHTTPClient := web.NewHostInterceptor(c, tokenEndpointHost)
+
 	a := &Application{
 		Host:                 externalHost.Host,
 		log:                  muxLogger,
@@ -131,7 +140,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 		tokenVerifier:        verifier,
 		proxyConfig:          p,
 		httpClient:           c,
-		publicHostHTTPClient: web.NewHostInterceptor(c, server.API().Outpost.Config["authentik_host"].(string)),
+		publicHostHTTPClient: publicHTTPClient,
 		mux:                  mux,
 		errorTemplates:       templates.GetTemplates(),
 		ak:                   server.API(),

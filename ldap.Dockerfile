@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -27,12 +27,13 @@ COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
 FROM ghcr.io/goauthentik/fips-debian:bookworm-slim-fips
 
+ARG VERSION
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
@@ -41,6 +42,11 @@ LABEL org.opencontainers.image.description="goauthentik.io LDAP outpost, see htt
 LABEL org.opencontainers.image.source=https://github.com/goauthentik/authentik
 LABEL org.opencontainers.image.version=${VERSION}
 LABEL org.opencontainers.image.revision=${GIT_BUILD_HASH}
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get clean && \
+    rm -rf /tmp/* /var/lib/apt/lists/*
 
 COPY --from=builder /go/ldap /
 

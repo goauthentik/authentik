@@ -4,11 +4,12 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
+import "@goauthentik/flow/stages/captcha/CaptchaStage";
 import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -41,13 +42,15 @@ export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
 });
 
 @customElement("ak-stage-identification")
-export class IdentificationStage extends BaseStage<
-    IdentificationChallenge,
-    IdentificationChallengeResponseRequest
-> {
+export class IdentificationStage extends BaseStage<IdentificationChallenge, IdentificationChallengeResponseRequest> {
     form?: HTMLFormElement;
 
     rememberMe: AkRememberMeController;
+
+    @state()
+    captchaToken = "";
+    @state()
+    captchaRefreshedAt = new Date();
 
     static get styles(): CSSResult[] {
         return [
@@ -173,21 +176,23 @@ export class IdentificationStage extends BaseStage<
             PasswordManagerPrefill.totp = el.value;
             // Because totp managers fill username, then password, then optionally,
             // we need to re-focus the uid_field here too
-            (this.shadowRoot || this)
-                .querySelectorAll<HTMLInputElement>("input[name=uidField]")
-                .forEach((input) => {
-                    // Because we assume only one input field exists that matches this
-                    // call focus so the user can press enter
-                    input.focus();
-                });
+            (this.shadowRoot || this).querySelectorAll<HTMLInputElement>("input[name=uidField]").forEach((input) => {
+                // Because we assume only one input field exists that matches this
+                // call focus so the user can press enter
+                input.focus();
+            });
         };
         this.form.appendChild(totp);
     }
 
-    cleanup(): void {
+    onSubmitSuccess(): void {
         if (this.form) {
             this.form.remove();
         }
+    }
+
+    onSubmitFailure(): void {
+        this.captchaRefreshedAt = new Date();
     }
 
     renderSource(source: LoginSource): TemplateResult {
@@ -220,9 +225,7 @@ export class IdentificationStage extends BaseStage<
                 : nothing}
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
-                      <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${msg("Forgot username or password?")}</a
-                      >
+                      <a id="recovery" href="${this.challenge.recoveryUrl}">${msg("Forgot username or password?")}</a>
                   </p>`
                 : nothing}
         </div>`;
@@ -248,7 +251,7 @@ export class IdentificationStage extends BaseStage<
                 ? html`
                       <p>
                           ${msg(
-                              "Enter the email associated with your account, and we'll send you a link to reset your password.",
+                              "Enter the email associated with your account, and we'll send you a link to reset your password."
                           )}
                       </p>
                   `
@@ -265,6 +268,7 @@ export class IdentificationStage extends BaseStage<
                     placeholder=${label}
                     autofocus=""
                     autocomplete="username"
+                    spellcheck="false"
                     class="pf-c-form-control"
                     value=${this.rememberMe?.username ?? ""}
                     required
@@ -285,14 +289,25 @@ export class IdentificationStage extends BaseStage<
                   `
                 : nothing}
             ${this.renderNonFieldErrors()}
+            ${this.challenge.captchaStage
+                ? html`
+                      <input name="captchaToken" type="hidden" .value="${this.captchaToken}" />
+                      <ak-stage-captcha
+                          .challenge=${this.challenge.captchaStage}
+                          .onTokenChange=${(token: string) => {
+                              this.captchaToken = token;
+                          }}
+                          .refreshedAt=${this.captchaRefreshedAt}
+                          embedded
+                      ></ak-stage-captcha>
+                  `
+                : nothing}
             <div class="pf-c-form__group pf-m-action">
                 <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
             </div>
-            ${this.challenge.passwordlessUrl
-                ? html`<ak-divider>${msg("Or")}</ak-divider>`
-                : nothing}`;
+            ${this.challenge.passwordlessUrl ? html`<ak-divider>${msg("Or")}</ak-divider>` : nothing}`;
     }
 
     render(): TemplateResult {
@@ -310,9 +325,7 @@ export class IdentificationStage extends BaseStage<
                     }}
                 >
                     ${this.challenge.applicationPre
-                        ? html`<p>
-                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
-                          </p>`
+                        ? html`<p>${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}</p>`
                         : nothing}
                     ${this.renderInput()}
                     ${this.challenge.passwordlessUrl

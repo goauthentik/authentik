@@ -3,8 +3,6 @@
 from dataclasses import asdict
 from time import sleep
 
-from docker.client import DockerClient, from_env
-from docker.models.containers import Container
 from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult
@@ -24,29 +22,18 @@ from tests.e2e.utils import SeleniumTestCase, retry
 class TestProviderLDAP(SeleniumTestCase):
     """LDAP and Outpost e2e tests"""
 
-    ldap_container: Container
-
-    def tearDown(self) -> None:
-        super().tearDown()
-        self.output_container_logs(self.ldap_container)
-        self.ldap_container.kill()
-
-    def start_ldap(self, outpost: Outpost) -> Container:
+    def start_ldap(self, outpost: Outpost):
         """Start ldap container based on outpost created"""
-        client: DockerClient = from_env()
-        container = client.containers.run(
+        self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
-            detach=True,
             ports={
                 "3389": "3389",
                 "6636": "6636",
             },
             environment={
-                "AUTHENTIK_HOST": self.live_server_url,
                 "AUTHENTIK_TOKEN": outpost.token.key,
             },
         )
-        return container
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
@@ -68,7 +55,7 @@ class TestProviderLDAP(SeleniumTestCase):
         )
         outpost.providers.add(ldap)
 
-        self.ldap_container = self.start_ldap(outpost)
+        self.start_ldap(outpost)
 
         # Wait until outpost healthcheck succeeds
         healthcheck_retries = 0

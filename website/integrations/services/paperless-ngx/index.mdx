@@ -1,41 +1,43 @@
 ---
 title: Integrate with Paperless-ngx
 sidebar_label: Paperless-ngx
+support_level: community
 ---
-
-# Paperless-ngx
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Paperless-ngx
 
-> Paperless-ngx is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from paperless-ngx, in turn a fork from the original Paperless, neither of which are maintained any longer.
+> Paperless-ngx is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from Paperless-ng, in turn a fork from the original Paperless, neither of which are maintained any longer.
 >
 > -- https://github.com/paperless-ngx/paperless-ngx
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `paperless.company` is the FQDN of the Paperless-ngx install.
--   `authentik.company` is the FQDN of the authentik install.
+- `paperless.company` is the FQDN of the Paperless-ngx installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-## authentik Configuration
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-### Step 1 - OAuth2/OpenID Provider
+## authentik configuration
 
-Create a OAuth2/OpenID Provider (under Applications/Providers) with these settings:
+To support the integration of Paperless-ngx with authentik, you need to create an application/provider pair in authentik.
 
-    Name : Paperless
-    Redirect URI: https://paperless.company/accounts/oidc/authentik/login/callback/
+### Create an application and provider in authentik
 
-### Step 2 - Application
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-Create an application (under Resources/Applications) with these settings:
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>paperless.company</em>/accounts/oidc/authentik/login/callback/</kbd>.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-    Name: Paperless
-    Slug: paperless
-    Provider: Paperless
+3. Click **Submit** to save the new application and provider.
 
 ## Paperless Configuration
 
@@ -81,16 +83,17 @@ Now restart your container:
 
 You need to update your `paperless.conf` configuration file. Paperless will search for this configuration file in the following locations and use the first one it finds:
 
--   The environment variable `PAPERLESS_CONFIGURATION_PATH`
--   `/path/to/paperless/paperless.conf`
--   `/etc/paperless.conf`
--   `/usr/local/etc/paperless.conf`
+- The environment variable `PAPERLESS_CONFIGURATION_PATH`
+- `/path/to/paperless/paperless.conf`
+- `/etc/paperless.conf`
+- `/usr/local/etc/paperless.conf`
 
 Edit your `paperless.conf` and add the following:
 
 ```ini
+PAPERLESS_ENABLE_ALLAUTH=true
 PAPERLESS_APPS=allauth.socialaccount.providers.openid_connect
-PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"Authentik","client_id":"<Client ID>","secret":<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
+PAPERLESS_SOCIALACCOUNT_PROVIDERS={"openid_connect":{"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"authentik","name":"authentik","client_id":"<Client ID>","secret":"<Client Secret>","settings":{"server_url":"https://authentik.company/application/o/paperless/.well-known/openid-configuration"}}]}}
 ```
 
 Now restart your Paperless services using `sudo systemctl restart paperless-*`

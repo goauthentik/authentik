@@ -1,116 +1,52 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    ClientTypeEnum,
-    FlowsInstancesListDesignationEnum,
-    IssuerModeEnum,
-    OAuth2Provider,
-    ProvidersApi,
-    SubModeEnum,
-} from "@goauthentik/api";
+import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
-import {
-    makeOAuth2PropertyMappingsSelector,
-    oauth2PropertyMappingsProvider,
-} from "./OAuth2PropertyMappings.js";
-import { makeSourceSelector, oauth2SourcesProvider } from "./OAuth2Sources.js";
+import { renderForm } from "./OAuth2ProviderFormForm.js";
 
-export const clientTypeOptions = [
-    {
-        label: msg("Confidential"),
-        value: ClientTypeEnum.Confidential,
-        default: true,
-        description: html`${msg(
-            "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets",
-        )}`,
-    },
-    {
-        label: msg("Public"),
-        value: ClientTypeEnum.Public,
-        description: html`${msg(
-            "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
-        )}`,
-    },
-];
+const providerToSelect = (provider: OAuth2Provider) => [provider.pk, provider.name];
 
-export const subjectModeOptions = [
-    {
-        label: msg("Based on the User's hashed ID"),
-        value: SubModeEnum.HashedUserId,
-        default: true,
-    },
-    {
-        label: msg("Based on the User's ID"),
-        value: SubModeEnum.UserId,
-    },
-    {
-        label: msg("Based on the User's UUID"),
-        value: SubModeEnum.UserUuid,
-    },
-    {
-        label: msg("Based on the User's username"),
-        value: SubModeEnum.UserUsername,
-    },
-    {
-        label: msg("Based on the User's Email"),
-        value: SubModeEnum.UserEmail,
-        description: html`${msg("This is recommended over the UPN mode.")}`,
-    },
-    {
-        label: msg("Based on the User's UPN"),
-        value: SubModeEnum.UserUpn,
-        description: html`${msg(
-            "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.",
-        )}`,
-    },
-];
+export async function oauth2ProvidersProvider(page = 1, search = "") {
+    const oauthProviders = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2List({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+    });
 
-export const issuerModeOptions = [
-    {
-        label: msg("Each provider has a different issuer, based on the application slug"),
-        value: IssuerModeEnum.PerProvider,
-        default: true,
-    },
-    {
-        label: msg("Same identifier is used for all providers"),
-        value: IssuerModeEnum.Global,
-    },
-];
+    return {
+        pagination: oauthProviders.pagination,
+        options: oauthProviders.results.map((provider) => providerToSelect(provider)),
+    };
+}
 
-const redirectUriHelpMessages = [
-    msg(
-        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
-    ),
-    msg(
-        "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
-    ),
-    msg(
-        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
-    ),
-];
+export function oauth2ProviderSelector(instanceProviders: number[] | undefined) {
+    if (!instanceProviders) {
+        return async (mappings: DualSelectPair<OAuth2Provider>[]) =>
+            mappings.filter(
+                ([_0, _1, _2, source]: DualSelectPair<OAuth2Provider>) => source !== undefined,
+            );
+    }
 
-export const redirectUriHelp = html`${redirectUriHelpMessages.map(
-    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
-)}`;
+    return async () => {
+        const oauthSources = new ProvidersApi(DEFAULT_CONFIG);
+        const mappings = await Promise.allSettled(
+            instanceProviders.map((instanceId) =>
+                oauthSources.providersOauth2Retrieve({ id: instanceId }),
+            ),
+        );
+
+        return mappings
+            .filter((s) => s.status === "fulfilled")
+            .map((s) => s.value)
+            .map(providerToSelect);
+    };
+}
 
 /**
  * Form page for OAuth2 Authentication Method
@@ -123,6 +59,14 @@ export const redirectUriHelp = html`${redirectUriHelpMessages.map(
 export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
     @state()
     showClientSecret = true;
+
+    static get styles() {
+        return super.styles.concat(css`
+            ak-array-input {
+                width: 100%;
+            }
+        `);
+    }
 
     async loadInstance(pk: number): Promise<OAuth2Provider> {
         const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
@@ -145,203 +89,11 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
         }
     }
 
-    renderForm(): TemplateResult {
-        const provider = this.instance;
-
-        return html` <ak-text-input
-                name="name"
-                label=${msg("Name")}
-                value=${ifDefined(provider?.name)}
-                required
-            ></ak-text-input>
-
-            <ak-form-element-horizontal
-                name="authenticationFlow"
-                label=${msg("Authentication flow")}
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${provider?.authenticationFlow}
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization flow")}
-                required
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${provider?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
-
-            <ak-form-group .expanded=${true}>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-radio-input
-                        name="clientType"
-                        label=${msg("Client type")}
-                        .value=${provider?.clientType}
-                        required
-                        @change=${(ev: CustomEvent<{ value: ClientTypeEnum }>) => {
-                            this.showClientSecret = ev.detail.value !== ClientTypeEnum.Public;
-                        }}
-                        .options=${clientTypeOptions}
-                    >
-                    </ak-radio-input>
-                    <ak-text-input
-                        name="clientId"
-                        label=${msg("Client ID")}
-                        value="${first(
-                            provider?.clientId,
-                            randomString(40, ascii_letters + digits),
-                        )}"
-                        required
-                    >
-                    </ak-text-input>
-                    <ak-text-input
-                        name="clientSecret"
-                        label=${msg("Client Secret")}
-                        value="${first(
-                            provider?.clientSecret,
-                            randomString(128, ascii_letters + digits),
-                        )}"
-                        ?hidden=${!this.showClientSecret}
-                    >
-                    </ak-text-input>
-                    <ak-textarea-input
-                        name="redirectUris"
-                        label=${msg("Redirect URIs/Origins (RegEx)")}
-                        .value=${provider?.redirectUris}
-                        .bighelp=${redirectUriHelp}
-                    >
-                    </ak-textarea-input>
-
-                    <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
-                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
-                        <ak-crypto-certificate-search
-                            certificate=${ifDefined(this.instance?.signingKey ?? undefined)}
-                            singleton
-                        ></ak-crypto-certificate-search>
-                        <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-text-input
-                        name="accessCodeValidity"
-                        label=${msg("Access code validity")}
-                        required
-                        value="${first(provider?.accessCodeValidity, "minutes=1")}"
-                        .bighelp=${html`<p class="pf-c-form__helper-text">
-                                ${msg("Configure how long access codes are valid for.")}
-                            </p>
-                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
-                    >
-                    </ak-text-input>
-                    <ak-text-input
-                        name="accessTokenValidity"
-                        label=${msg("Access Token validity")}
-                        value="${first(provider?.accessTokenValidity, "minutes=5")}"
-                        required
-                        .bighelp=${html` <p class="pf-c-form__helper-text">
-                                ${msg("Configure how long access tokens are valid for.")}
-                            </p>
-                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
-                    >
-                    </ak-text-input>
-
-                    <ak-text-input
-                        name="refreshTokenValidity"
-                        label=${msg("Refresh Token validity")}
-                        value="${first(provider?.refreshTokenValidity, "days=30")}"
-                        ?required=${true}
-                        .bighelp=${html` <p class="pf-c-form__helper-text">
-                                ${msg("Configure how long refresh tokens are valid for.")}
-                            </p>
-                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
-                    >
-                    </ak-text-input>
-                    <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
-                        <ak-dual-select-dynamic-selected
-                            .provider=${oauth2PropertyMappingsProvider}
-                            .selector=${makeOAuth2PropertyMappingsSelector(
-                                provider?.propertyMappings,
-                            )}
-                            available-label=${msg("Available Scopes")}
-                            selected-label=${msg("Selected Scopes")}
-                        ></ak-dual-select-dynamic-selected>
-
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-radio-input
-                        name="subMode"
-                        label=${msg("Subject mode")}
-                        required
-                        .options=${subjectModeOptions}
-                        .value=${provider?.subMode}
-                        help=${msg(
-                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
-                        )}
-                    >
-                    </ak-radio-input>
-                    <ak-switch-input
-                        name="includeClaimsInIdToken"
-                        label=${msg("Include claims in id_token")}
-                        ?checked=${first(provider?.includeClaimsInIdToken, true)}
-                        help=${msg(
-                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
-                        )}
-                    ></ak-switch-input>
-                    <ak-radio-input
-                        name="issuerMode"
-                        label=${msg("Issuer mode")}
-                        required
-                        .options=${issuerModeOptions}
-                        .value=${provider?.issuerMode}
-                        help=${msg(
-                            "Configure how the issuer field of the ID Token should be filled.",
-                        )}
-                    >
-                    </ak-radio-input>
-                </div>
-            </ak-form-group>
-
-            <ak-form-group>
-                <span slot="header">${msg("Machine-to-Machine authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Trusted OIDC Sources")}
-                        name="jwksSources"
-                    >
-                        <ak-dual-select-dynamic-selected
-                            .provider=${oauth2SourcesProvider}
-                            .selector=${makeSourceSelector(provider?.jwksSources)}
-                            available-label=${msg("Available Sources")}
-                            selected-label=${msg("Selected Sources")}
-                        ></ak-dual-select-dynamic-selected>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>`;
+    renderForm() {
+        const showClientSecretCallback = (show: boolean) => {
+            this.showClientSecret = show;
+        };
+        return renderForm(this.instance ?? {}, [], this.showClientSecret, showClientSecretCallback);
     }
 }
 

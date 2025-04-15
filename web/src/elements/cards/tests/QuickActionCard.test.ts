@@ -1,22 +1,10 @@
+import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, expect } from "@wdio/globals";
 
-import { TemplateResult, html, render as litRender } from "lit";
+import { html } from "lit";
 
-import AKGlobal from "../../../common/styles/authentik.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ensureCSSStyleSheet } from "../../utils/ensureCSSStyleSheet.js";
 import { QuickAction } from "../QuickActionsCard.js";
 import "../QuickActionsCard.js";
-
-const render = (body: TemplateResult) => {
-    document.adoptedStyleSheets = [
-        ...document.adoptedStyleSheets,
-        ensureCSSStyleSheet(PFBase),
-        ensureCSSStyleSheet(AKGlobal),
-    ];
-    return litRender(body, document.body);
-};
 
 const ACTIONS: QuickAction[] = [
     ["Create a new application", "/core/applications"],

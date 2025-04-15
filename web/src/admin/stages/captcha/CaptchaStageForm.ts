@@ -2,6 +2,7 @@ import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
+import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -58,7 +59,9 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.publicKey || "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -73,13 +76,29 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey"
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                        <input
+                            type="text"
+                            value=""
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                        />
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="interactive"
+                        label=${msg("Interactive")}
+                        ?checked="${this.instance?.interactive}"
+                        help=${msg(
+                            "Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.",
+                        )}
+                    >
+                    </ak-switch-input>
                     <ak-number-input
                         label=${msg("Score minimum threshold")}
                         required
@@ -125,12 +144,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="jsUrl"
                     >
                         <input
-                            type="text"
+                            type="url"
                             value="${ifDefined(
                                 this.instance?.jsUrl ||
                                     "https://www.recaptcha.net/recaptcha/api.js",
                             )}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -145,12 +166,14 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         name="apiUrl"
                     >
                         <input
-                            type="text"
+                            type="url"
                             value="${ifDefined(
                                 this.instance?.apiUrl ||
                                     "https://www.recaptcha.net/recaptcha/api/siteverify",
                             )}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">

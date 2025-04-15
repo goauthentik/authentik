@@ -1,14 +1,41 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
+import { bound } from "@goauthentik/elements/decorators/bound";
 import "@goauthentik/elements/forms/FormElement";
+import { isActiveElement } from "@goauthentik/elements/utils/focus";
 
 import { msg } from "@lit/localize";
-import { html, nothing, render } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { html, nothing } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+import { Ref, createRef, ref } from "lit/directives/ref.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+/**
+ * A configuration object for the visibility states of the password input.
+ */
+interface VisibilityProps {
+    icon: string;
+    label: string;
+}
+
+/**
+ * Enum-like object for the visibility states of the password input.
+ */
+const Visibility = {
+    Reveal: {
+        icon: "fa-eye",
+        label: msg("Show password"),
+    },
+    Mask: {
+        icon: "fa-eye-slash",
+        label: msg("Hide password"),
+    },
+} as const satisfies Record<string, VisibilityProps>;
 
 @customElement("ak-flow-input-password")
 export class InputPassword extends AKElement {
@@ -16,21 +43,51 @@ export class InputPassword extends AKElement {
         return [PFBase, PFInputGroup, PFFormControl, PFButton];
     }
 
+    //#region Properties
+
+    /**
+     * The ID of the input field.
+     *
+     * @attr
+     */
     @property({ type: String, attribute: "input-id" })
     inputId = "ak-stage-password-input";
 
+    /**
+     * The name of the input field.
+     *
+     * @attr
+     */
     @property({ type: String })
     name = "password";
 
+    /**
+     * The label for the input field.
+     *
+     * @attr
+     */
     @property({ type: String })
     label = msg("Password");
 
+    /**
+     * The placeholder text for the input field.
+     *
+     * @attr
+     */
     @property({ type: String })
     placeholder = msg("Please enter your password");
 
+    /**
+     * The initial value of the input field.
+     *
+     * @attr
+     */
     @property({ type: String, attribute: "prefill" })
-    passwordPrefill = "";
+    initialValue = "";
 
+    /**
+     * The errors for the input field.
+     */
     @property({ type: Object })
     errors: Record<string, string> = {};
 
@@ -41,113 +98,220 @@ export class InputPassword extends AKElement {
     @property({ type: String })
     invalid?: string;
 
+    /**
+     * Whether to allow the user to toggle the visibility of the password.
+     *
+     * @attr
+     */
     @property({ type: Boolean, attribute: "allow-show-password" })
     allowShowPassword = false;
 
     /**
+     * Whether the password is currently visible.
+     *
+     * @attr
+     */
+    @property({ type: Boolean, attribute: "password-visible" })
+    passwordVisible = false;
+
+    /**
      * Automatically grab focus after rendering.
+     *
      * @attr
      */
     @property({ type: Boolean, attribute: "grab-focus" })
     grabFocus = false;
 
-    timer?: number;
+    //#endregion
 
-    input?: HTMLInputElement;
+    //#region Refs
 
-    cleanup(): void {
-        if (this.timer) {
-            console.debug("authentik/stages/password: cleared focus timer");
-            window.clearInterval(this.timer);
-            this.timer = undefined;
+    inputRef: Ref<HTMLInputElement> = createRef();
+
+    toggleVisibilityRef: Ref<HTMLButtonElement> = createRef();
+
+    //#endregion
+
+    //#region State
+
+    /**
+     * Whether the caps lock key is enabled.
+     */
+    @state()
+    capsLock = false;
+
+    //#endregion
+
+    //#region Listeners
+
+    /**
+     * Toggle the visibility of the password field.
+     *
+     * Directly affects the DOM, so no `.requestUpdate()` required. Effect is immediately visible.
+     *
+     * @param event The event that triggered the visibility toggle.
+     */
+    @bound
+    togglePasswordVisibility(event?: PointerEvent) {
+        event?.stopPropagation();
+        event?.preventDefault();
+
+        const input = this.inputRef.value;
+
+        if (!input) {
+            console.warn("ak-flow-password-input: unable to identify input field");
+
+            return;
         }
+
+        input.type = input.type === "password" ? "text" : "password";
+
+        this.syncVisibilityToggle(input);
     }
 
-    // Must support both older browsers and shadyDom; we'll keep using this in-line, but it'll still
-    // be in the scope of the parent element, not an independent shadowDOM.
+    /**
+     * Listen for key events, synchronizing the caps lock indicators.
+     */
+    @bound
+    capsLockListener(event: KeyboardEvent) {
+        this.capsLock = event.getModifierState("CapsLock");
+    }
+
+    //#region Lifecycle
+
+    /**
+     * Interval ID for the focus observer.
+     *
+     * @see {@linkcode observeInputFocus}
+     */
+    inputFocusIntervalID?: ReturnType<typeof setInterval>;
+
+    /**
+     * Periodically attempt to focus the input field until it is focused.
+     *
+     * This is some-what of a crude way to get autofocus, but in most cases
+     * the `autofocus` attribute isn't enough, due to timing within shadow doms and such.
+     */
+    observeInputFocus(): void {
+        if (!this.grabFocus) {
+            return;
+        }
+        this.inputFocusIntervalID = setInterval(() => {
+            const input = this.inputRef.value;
+
+            if (!input) return;
+
+            if (isActiveElement(input, document.activeElement)) {
+                console.debug("authentik/stages/password: cleared focus observer");
+                clearInterval(this.inputFocusIntervalID);
+            }
+
+            input.focus();
+        }, 10);
+
+        console.debug("authentik/stages/password: started focus observer");
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+
+        this.observeInputFocus();
+
+        addEventListener("keydown", this.capsLockListener);
+        addEventListener("keyup", this.capsLockListener);
+    }
+
+    disconnectedCallback() {
+        if (this.inputFocusIntervalID) {
+            clearInterval(this.inputFocusIntervalID);
+        }
+
+        super.disconnectedCallback();
+
+        removeEventListener("keydown", this.capsLockListener);
+        removeEventListener("keyup", this.capsLockListener);
+    }
+
+    //#endregion
+
+    //#region Render
+
+    /**
+     * Create the render root for the password input.
+     *
+     * Must support both older browsers and shadyDom; we'll keep using this in-line,
+     * but it'll still be in the scope of the parent element, not an independent shadowDOM.
+     */
     createRenderRoot() {
         return this;
     }
 
-    // State is saved in the DOM, and read from the DOM. Directly affects the DOM,
-    // so no `.requestUpdate()` required. Effect is immediately visible.
-    togglePasswordVisibility(ev: PointerEvent) {
-        const passwordField = this.renderRoot.querySelector(`#${this.inputId}`) as HTMLInputElement;
-        ev.stopPropagation();
-        ev.preventDefault();
+    /**
+     * Render the password visibility toggle button.
+     *
+     * In the unlikely event that we want to make "show password" the _default_ behavior,
+     * this effect handler is broken out into its own method.
+     *
+     * The current behavior in the main {@linkcode render} method assumes the field is of type "password."
+     *
+     * To have this effect, er, take effect, call it in an {@linkcode updated} method.
+     *
+     * @param input The password field to render the visibility features for.
+     */
+    syncVisibilityToggle(input: HTMLInputElement | undefined = this.inputRef.value): void {
+        if (!input) return;
 
-        if (!passwordField) {
-            throw new Error("ak-flow-password-input: unable to identify input field");
-        }
+        const toggleElement = this.toggleVisibilityRef.value;
 
-        passwordField.type = passwordField.type === "password" ? "text" : "password";
-        this.renderPasswordVisibilityFeatures(passwordField);
-    }
+        if (!toggleElement) return;
 
-    // In the unlikely event that we want to make "show password" the _default_ behavior, this
-    // effect handler is broken out into its own method. The current behavior in the main
-    // `.render()` method assumes the field is of type "password." To have this effect, er, take
-    // effect, call it in an `.updated()` method.
-    renderPasswordVisibilityFeatures(passwordField: HTMLInputElement) {
-        const toggleId = `#${this.inputId}-visibility-toggle`;
-        const visibilityToggle = this.renderRoot.querySelector(toggleId) as HTMLButtonElement;
-        if (!visibilityToggle) {
-            return;
-        }
-        const show = passwordField.type === "password";
-        visibilityToggle?.setAttribute(
+        const masked = input.type === "password";
+
+        toggleElement.setAttribute(
             "aria-label",
-            show ? msg("Show password") : msg("Hide password"),
+            masked ? Visibility.Reveal.label : Visibility.Mask.label,
         );
-        visibilityToggle?.querySelector("i")?.remove();
-        render(
-            show
-                ? html`<i class="fas fa-eye" aria-hidden="true"></i>`
-                : html`<i class="fas fa-eye-slash" aria-hidden="true"></i>`,
-            visibilityToggle,
-        );
+
+        const iconElement = toggleElement.querySelector("i")!;
+
+        iconElement.classList.remove(Visibility.Mask.icon, Visibility.Reveal.icon);
+        iconElement.classList.add(masked ? Visibility.Reveal.icon : Visibility.Mask.icon);
     }
 
-    renderInput(): HTMLInputElement {
-        this.input = document.createElement("input");
-        this.input.id = `${this.inputId}`;
-        this.input.type = "password";
-        this.input.name = this.name;
-        this.input.placeholder = this.placeholder;
-        this.input.autofocus = true;
-        this.input.autocomplete = "current-password";
-        this.input.classList.add("pf-c-form-control");
-        this.input.required = true;
-        this.input.value = this.passwordPrefill ?? "";
-        if (this.invalid) {
-            this.input.setAttribute("aria-invalid", this.invalid);
-        }
-        // This is somewhat of a crude way to get autofocus, but in most cases the `autofocus` attribute
-        // isn't enough, due to timing within shadow doms and such.
+    renderVisibilityToggle() {
+        if (!this.allowShowPassword) return nothing;
 
-        if (this.grabFocus) {
-            this.timer = window.setInterval(() => {
-                if (!this.input) {
-                    return;
-                }
-                // Because activeElement behaves differently with shadow dom
-                // we need to recursively check
-                const rootEl = document.activeElement;
-                const isActive = (el: Element | null): boolean => {
-                    if (!rootEl) return false;
-                    if (!("shadowRoot" in rootEl)) return false;
-                    if (rootEl.shadowRoot === null) return false;
-                    if (rootEl.shadowRoot.activeElement === el) return true;
-                    return isActive(rootEl.shadowRoot.activeElement);
-                };
-                if (isActive(this.input)) {
-                    this.cleanup();
-                }
-                this.input.focus();
-            }, 10);
-            console.debug("authentik/stages/password: started focus timer");
-        }
-        return this.input;
+        const { label, icon } = this.passwordVisible ? Visibility.Mask : Visibility.Reveal;
+
+        return html`<button
+            ${ref(this.toggleVisibilityRef)}
+            aria-label=${label}
+            @click=${this.togglePasswordVisibility}
+            class="pf-c-button pf-m-control"
+            type="button"
+        >
+            <i class="fas ${icon}" aria-hidden="true"></i>
+        </button>`;
+    }
+
+    renderHelperText() {
+        if (!this.capsLock) return nothing;
+
+        return html`<div
+            class="pf-c-form__helper-text"
+            id="helper-text-form-caps-lock-helper"
+            aria-live="polite"
+        >
+            <div class="pf-c-helper-text">
+                <div class="pf-c-helper-text__item pf-m-warning">
+                    <span class="pf-c-helper-text__item-icon">
+                        <i class="fas fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
+                    </span>
+
+                    <span class="pf-c-helper-text__item-text">${msg("Caps Lock is enabled.")}</span>
+                </div>
+            </div>
+        </div>`;
     }
 
     render() {
@@ -157,22 +321,34 @@ export class InputPassword extends AKElement {
             class="pf-c-form__group"
             .errors=${this.errors}
         >
-            <div class="pf-c-input-group">
-                ${this.renderInput()}
-                ${this.allowShowPassword
-                    ? html` <button
-                          id="${this.inputId}-visibility-toggle"
-                          class="pf-c-button pf-m-control ak-stage-password-toggle-visibility"
-                          type="button"
-                          aria-label=${msg("Show password")}
-                          @click=${(ev: PointerEvent) => this.togglePasswordVisibility(ev)}
-                      >
-                          <i class="fas fa-eye" aria-hidden="true"></i>
-                      </button>`
-                    : nothing}
+            <div class="pf-c-form__group-control">
+                <div class="pf-c-input-group">
+                    <input
+                        type=${this.passwordVisible ? "text" : "password"}
+                        id=${this.inputId}
+                        name=${this.name}
+                        placeholder=${this.placeholder}
+                        autocomplete="current-password"
+                        class="${classMap({
+                            "pf-c-form-control": true,
+                            "pf-m-icon": true,
+                            "pf-m-caps-lock": this.capsLock,
+                        })}"
+                        required
+                        aria-invalid=${ifDefined(this.invalid)}
+                        value=${this.initialValue}
+                        ${ref(this.inputRef)}
+                    />
+
+                    ${this.renderVisibilityToggle()}
+                </div>
+
+                ${this.renderHelperText()}
             </div>
         </ak-form-element>`;
     }
+
+    //#endregion
 }
 
 declare global {

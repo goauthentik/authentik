@@ -11,7 +11,6 @@ import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
@@ -31,66 +30,60 @@ export class ObjectPermissionPage extends AKElement {
     embedded = false;
 
     static get styles() {
-        return [PFBase, PFGrid, PFPage, PFCard, PFBanner];
+        return [PFBase, PFGrid, PFPage, PFCard];
     }
 
     render() {
-        return html`${!this.embedded
-                ? html`<div class="pf-c-banner pf-m-info">
-                      ${msg("RBAC is in preview.")}
-                      <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
-                  </div>`
+        return html` <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser
+                ? this.renderCoreUser()
                 : nothing}
-            <ak-tabs pageIdentifier="permissionPage" ?vertical=${!this.embedded}>
-                ${this.model === RbacPermissionsAssignedByUsersListModelEnum.CoreUser
-                    ? this.renderCoreUser()
-                    : nothing}
-                ${this.model === RbacPermissionsAssignedByUsersListModelEnum.RbacRole
-                    ? this.renderRbacRole()
-                    : nothing}
-                <section
-                    slot="page-object-user"
-                    data-tab-title="${msg("User Object Permissions")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">${msg("User Object Permissions")}</div>
-                            <div class="pf-c-card__body">
-                                ${msg("Permissions set on users which affect this object.")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-rbac-user-object-permission-table
-                                    .model=${this.model}
-                                    .objectPk=${this.objectPk}
-                                >
-                                </ak-rbac-user-object-permission-table>
-                            </div>
+            ${this.model === RbacPermissionsAssignedByUsersListModelEnum.AuthentikRbacRole
+                ? this.renderRbacRole()
+                : nothing}
+            <section
+                slot="page-object-user"
+                data-tab-title="${msg("User Object Permissions")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("User Object Permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg("Permissions set on users which affect this object.")}
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-rbac-user-object-permission-table
+                                .model=${this.model}
+                                .objectPk=${this.objectPk}
+                            >
+                            </ak-rbac-user-object-permission-table>
                         </div>
                     </div>
-                </section>
-                <section
-                    slot="page-object-role"
-                    data-tab-title="${msg("Role Object Permissions")}"
-                    class="pf-c-page__main-section pf-m-no-padding-mobile"
-                >
-                    <div class="pf-l-grid pf-m-gutter">
-                        <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                            <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
-                            <div class="pf-c-card__body">
-                                ${msg("Permissions set on roles which affect this object.")}
-                            </div>
-                            <div class="pf-c-card__body">
-                                <ak-rbac-role-object-permission-table
-                                    .model=${this.model}
-                                    .objectPk=${this.objectPk}
-                                >
-                                </ak-rbac-role-object-permission-table>
-                            </div>
+                </div>
+            </section>
+            <section
+                slot="page-object-role"
+                data-tab-title="${msg("Role Object Permissions")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Role Object Permissions")}</div>
+                        <div class="pf-c-card__body">
+                            ${msg("Permissions set on roles which affect this object.")}
+                        </div>
+                        <div class="pf-c-card__body">
+                            <ak-rbac-role-object-permission-table
+                                .model=${this.model}
+                                .objectPk=${this.objectPk}
+                            >
+                            </ak-rbac-role-object-permission-table>
                         </div>
                     </div>
-                </section>
-            </ak-tabs>`;
+                </div>
+            </section>
+        </ak-tabs>`;
     }
 
     renderCoreUser() {

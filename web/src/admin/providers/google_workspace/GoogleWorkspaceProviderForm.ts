@@ -1,8 +1,8 @@
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import {
-    googleWorkspacePropertyMappingsProvider,
-    makeGoogleWorkspacePropertyMappingsSelector,
-} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderPropertyMappings";
+    propertyMappingsProvider,
+    propertyMappingsSelector,
+} from "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -82,7 +82,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="email"
                             value="${first(this.instance?.delegatedSubject, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -99,7 +99,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         <input
                             type="text"
                             value="${first(this.instance?.defaultGroupEmailDomain, "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -161,6 +161,26 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         help=${msg("Determines what authentik will do when a Group is deleted.")}
                     >
                     </ak-radio-input>
+                    <ak-form-element-horizontal name="dryRun">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.dryRun, false)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When enabled, mutating requests will be dropped and logged instead.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>
@@ -224,8 +244,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${googleWorkspacePropertyMappingsProvider}
-                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappings,
                                 "goauthentik.io/providers/google_workspace/user",
                             )}
@@ -241,8 +261,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                         name="propertyMappingsGroup"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${googleWorkspacePropertyMappingsProvider}
-                            .selector=${makeGoogleWorkspacePropertyMappingsSelector(
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(
                                 this.instance?.propertyMappingsGroup,
                                 "goauthentik.io/providers/google_workspace/group",
                             )}

@@ -88,7 +88,8 @@ class Migration(migrations.Migration):
             model_name="flowstagebinding",
             name="re_evaluate_policies",
             field=models.BooleanField(
-                default=False, help_text="Evaluate policies when the Stage is present to the user."
+                default=False,
+                help_text="Evaluate policies when the Stage is presented to the user.",
             ),
         ),
         migrations.AddField(

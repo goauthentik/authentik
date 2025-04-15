@@ -2,6 +2,7 @@
 
 from typing import TYPE_CHECKING
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest
 from django.http.request import QueryDict
@@ -13,7 +14,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import User
+from authentik.core.models import Application, User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -21,6 +22,7 @@ from authentik.flows.challenge import (
     ContextualFlowInfo,
     HttpChallengeResponse,
     RedirectChallenge,
+    SessionEndChallenge,
     WithUserInfoChallenge,
 )
 from authentik.flows.exceptions import StageInvalidException
@@ -91,7 +93,11 @@ class ChallengeStageView(StageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Return a challenge for the frontend to solve"""
-        challenge = self._get_challenge(*args, **kwargs)
+        try:
+            challenge = self._get_challenge(*args, **kwargs)
+        except StageInvalidException as exc:
+            self.logger.debug("Got StageInvalidException", exc=exc)
+            return self.executor.stage_invalid()
         if not challenge.is_valid():
             self.logger.warning(
                 "f(ch): Invalid challenge",
@@ -125,7 +131,7 @@ class ChallengeStageView(StageView):
             with (
                 start_span(
                     op="authentik.flow.stage.challenge_invalid",
-                    description=self.__class__.__name__,
+                    name=self.__class__.__name__,
                 ),
                 HIST_FLOWS_STAGE_TIME.labels(
                     stage_type=self.__class__.__name__, method="challenge_invalid"
@@ -135,7 +141,7 @@ class ChallengeStageView(StageView):
         with (
             start_span(
                 op="authentik.flow.stage.challenge_valid",
-                description=self.__class__.__name__,
+                name=self.__class__.__name__,
             ),
             HIST_FLOWS_STAGE_TIME.labels(
                 stage_type=self.__class__.__name__, method="challenge_valid"
@@ -161,20 +167,16 @@ class ChallengeStageView(StageView):
         with (
             start_span(
                 op="authentik.flow.stage.get_challenge",
-                description=self.__class__.__name__,
+                name=self.__class__.__name__,
             ),
             HIST_FLOWS_STAGE_TIME.labels(
                 stage_type=self.__class__.__name__, method="get_challenge"
             ).time(),
         ):
-            try:
-                challenge = self.get_challenge(*args, **kwargs)
-            except StageInvalidException as exc:
-                self.logger.debug("Got StageInvalidException", exc=exc)
-                return self.executor.stage_invalid()
+            challenge = self.get_challenge(*args, **kwargs)
         with start_span(
             op="authentik.flow.stage._get_challenge",
-            description=self.__class__.__name__,
+            name=self.__class__.__name__,
         ):
             if not hasattr(challenge, "initial_data"):
                 challenge.initial_data = {}
@@ -182,7 +184,7 @@ class ChallengeStageView(StageView):
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url,
+                        "background": self.executor.flow.background_url(self.request),
                         "cancel_url": reverse("authentik_flows:cancel"),
                         "layout": self.executor.flow.layout,
                     }
@@ -223,6 +225,14 @@ class ChallengeStageView(StageView):
                 full_errors[field].append(field_error)
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
+            if settings.TEST:
+                raise StageInvalidException(
+                    (
+                        f"Invalid challenge response: \n\t{challenge_response.errors}"
+                        f"\n\nValidated data:\n\t {challenge_response.data}"
+                        f"\n\nInitial data:\n\t {challenge_response.initial_data}"
+                    ),
+                )
             self.logger.error(
                 "f(ch): invalid challenge response",
                 errors=challenge_response.errors,
@@ -230,7 +240,7 @@ class ChallengeStageView(StageView):
         return HttpChallengeResponse(challenge_response)
 
 
-class AccessDeniedChallengeView(ChallengeStageView):
+class AccessDeniedStage(ChallengeStageView):
     """Used internally by FlowExecutor's stage_invalid()"""
 
     error_message: str | None
@@ -268,3 +278,31 @@ class RedirectStage(ChallengeStageView):
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         return HttpChallengeResponse(self.get_challenge())
+
+
+class SessionEndStage(ChallengeStageView):
+    """Stage inserted when a flow is used as invalidation flow. By default shows actions
+    that the user is likely to take after signing out of a provider."""
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        application: Application | None = self.executor.plan.context.get(PLAN_CONTEXT_APPLICATION)
+        data = {
+            "component": "ak-stage-session-end",
+            "brand_name": self.request.brand.branding_title,
+        }
+        if application:
+            data["application_name"] = application.name
+            data["application_launch_url"] = application.get_launch_url(self.get_pending_user())
+        if self.request.brand.flow_invalidation:
+            data["invalidation_flow_url"] = reverse(
+                "authentik_core:if-flow",
+                kwargs={
+                    "flow_slug": self.request.brand.flow_invalidation.slug,
+                },
+            )
+        return SessionEndChallenge(data=data)
+
+    # This can never be reached since this challenge is created on demand and only the
+    # .get() method is called
+    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:  # pragma: no cover
+        return self.executor.cancel()

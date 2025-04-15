@@ -1,6 +1,8 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { globalAK } from "@goauthentik/common/global";
 import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -10,7 +12,7 @@ import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/tab
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -72,7 +74,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `/if/user/#/settings;${JSON.stringify({
+                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"
@@ -89,10 +91,12 @@ export class MFADevicesPage extends Table<Device> {
 
     async deleteWrapper(device: Device) {
         const api = new AuthenticatorsApi(DEFAULT_CONFIG);
-        const id = { id: device.pk };
+        const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsDuoDestroy(id);
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsEmailDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":
@@ -102,7 +106,9 @@ export class MFADevicesPage extends Table<Device> {
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
                 return api.authenticatorsWebauthnDestroy(id);
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
@@ -124,13 +130,14 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.created.getTime() > 0
-                ? html`<div>${getRelativeTime(item.created)}</div>
+                ? html`<div>${formatElapsedTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`
                 : html`-`}`,
             html`${item.lastUsed
-                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`
                 : html`-`}`,
             html`

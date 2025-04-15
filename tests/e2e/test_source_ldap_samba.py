@@ -1,7 +1,5 @@
 """test LDAP Source"""
 
-from typing import Any
-
 from django.db.models import Q
 from ldap3.core.exceptions import LDAPSessionTerminatedByServerError
 
@@ -22,22 +20,18 @@ class TestSourceLDAPSamba(SeleniumTestCase):
     def setUp(self):
         self.admin_password = generate_key()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "ghcr.io/beryju/test-samba-dc:latest",
-            "detach": True,
-            "cap_add": ["SYS_ADMIN"],
-            "ports": {
+        self.samba = self.run_container(
+            image="ghcr.io/beryju/test-samba-dc:latest",
+            cap_add=["SYS_ADMIN"],
+            ports={
                 "389": "389/tcp",
             },
-            "auto_remove": True,
-            "environment": {
+            environment={
                 "SMB_DOMAIN": "test.goauthentik.io",
                 "SMB_NETBIOS": "goauthentik",
                 "SMB_ADMIN_PASSWORD": self.admin_password,
             },
-        }
+        )
 
     @retry(exceptions=[LDAPSessionTerminatedByServerError])
     @apply_blueprint(
@@ -148,7 +142,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         UserLDAPSynchronizer(source).sync_full()
         username = "bob"
         password = generate_id()
-        result = self.container.exec_run(
+        result = self.samba.exec_run(
             ["samba-tool", "user", "setpassword", username, "--newpassword", password]
         )
         self.assertEqual(result.exit_code, 0)
@@ -156,14 +150,14 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         # Ensure user has an unusable password directly after sync
         self.assertFalse(user.has_usable_password())
         # Auth (which will fallback to bind)
-        LDAPBackend().auth_user(source, password, username=username)
+        LDAPBackend().auth_user(None, source, password, username=username)
         user.refresh_from_db()
         # User should now have a usable password in the database
         self.assertTrue(user.has_usable_password())
         self.assertTrue(user.check_password(password))
         # Set new password
         new_password = generate_id()
-        result = self.container.exec_run(
+        result = self.samba.exec_run(
             ["samba-tool", "user", "setpassword", username, "--newpassword", new_password]
         )
         self.assertEqual(result.exit_code, 0)

@@ -3,8 +3,7 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-array-input.js";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -13,13 +12,19 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { AdminApi, Settings, SettingsRequest } from "@goauthentik/api";
+import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
+
+import "./AdminSettingsFooterLinks.js";
+import { IFooterLinkInput, akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
+
+const DEFAULT_REPUTATION_LOWER_LIMIT = -5;
+const DEFAULT_REPUTATION_UPPER_LIMIT = 5;
 
 @customElement("ak-admin-settings-form")
 export class AdminSettingsForm extends Form<SettingsRequest> {
@@ -40,7 +45,14 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
     private _settings?: Settings;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFList);
+        return super.styles.concat(
+            PFList,
+            css`
+                ak-array-input {
+                    width: 100%;
+                }
+            `,
+        );
     }
 
     getSuccessMessage(): string {
@@ -61,6 +73,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 name="avatars"
                 label=${msg("Avatars")}
                 value="${ifDefined(this._settings?.avatars)}"
+                inputHint="code"
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -147,6 +160,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="eventRetention"
                 label=${msg("Event retention")}
+                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -154,7 +168,8 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     </p>
                     <p class="pf-c-form__helper-text">
                         ${msg(
-                            'When using an external logging solution for archiving, this can be set to "minutes=5".',
+                            html`When using an external logging solution for archiving, this can be
+                                set to <code>minutes=5</code>.`,
                         )}
                     </p>
                     <p class="pf-c-form__helper-text">
@@ -165,16 +180,42 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                     <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
             >
             </ak-text-input>
+            <ak-number-input
+                label=${msg("Reputation: lower limit")}
+                required
+                name="reputationLowerLimit"
+                value="${first(
+                    this._settings?.reputationLowerLimit,
+                    DEFAULT_REPUTATION_LOWER_LIMIT,
+                )}"
+                help=${msg("Reputation cannot decrease lower than this value. Zero or negative.")}
+            ></ak-number-input>
+            <ak-number-input
+                label=${msg("Reputation: upper limit")}
+                required
+                name="reputationUpperLimit"
+                value="${first(
+                    this._settings?.reputationUpperLimit,
+                    DEFAULT_REPUTATION_UPPER_LIMIT,
+                )}"
+                help=${msg("Reputation cannot increase higher than this value. Zero or positive.")}
+            ></ak-number-input>
             <ak-form-element-horizontal label=${msg("Footer links")} name="footerLinks">
-                <ak-codemirror
-                    mode=${CodeMirrorMode.YAML}
-                    .value="${first(this._settings?.footerLinks, [])}"
-                ></ak-codemirror>
+                <ak-array-input
+                    .items=${this._settings?.footerLinks ?? []}
+                    .newItem=${() => ({ name: "", href: "" })}
+                    .row=${(f?: FooterLink) =>
+                        akFooterLinkInput({
+                            ".footerLink": f,
+                            "style": "width: 100%",
+                            "name": "footer-link",
+                        } as unknown as IFooterLinkInput)}
+                >
+                </ak-array-input>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "This option configures the footer links on the flow executor pages. It must be a valid YAML or JSON list and can be used as follows:",
+                        "This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.",
                     )}
-                    <code>[{"name": "Link Name","href":"https://goauthentik.io"}]</code>
                 </p>
             </ak-form-element-horizontal>
             <ak-switch-input
@@ -193,9 +234,17 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 help=${msg("Globally enable/disable impersonation.")}
             >
             </ak-switch-input>
+            <ak-switch-input
+                name="impersonationRequireReason"
+                label=${msg("Require reason for impersonation")}
+                ?checked="${this._settings?.impersonationRequireReason}"
+                help=${msg("Require administrators to provide a reason for impersonating a user.")}
+            >
+            </ak-switch-input>
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}
+                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.defaultTokenDuration)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">

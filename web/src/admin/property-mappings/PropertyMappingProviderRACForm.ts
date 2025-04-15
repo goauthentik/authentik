@@ -154,7 +154,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href="${docLink(
-                                    "/docs/providers/property-mappings/expression?utm_source=authentik",
+                                    "/docs/add-secure-apps/providers/property-mappings/expression?utm_source=authentik",
                                 )}"
                             >
                                 ${msg("See documentation for a list of all variables.")}

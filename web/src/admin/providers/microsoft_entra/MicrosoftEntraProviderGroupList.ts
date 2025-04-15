@@ -8,7 +8,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { MicrosoftEntraProviderGroup, ProvidersApi, SyncObjectModelEnum } from "@goauthentik/api";
+import {
+    MicrosoftEntraProviderGroup,
+    ProvidersApi,
+    ProvidersMicrosoftEntraSyncObjectCreateRequest,
+    SyncObjectModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-groups-list")
 export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProviderGroup> {
@@ -27,9 +32,12 @@ export class MicrosoftEntraProviderGroupList extends Table<MicrosoftEntraProvide
                 <span slot="header">${msg("Sync Group")}</span>
                 <ak-sync-object-form
                     .provider=${this.providerId}
-                    model=${SyncObjectModelEnum.Group}
-                    .sync=${new ProvidersApi(DEFAULT_CONFIG)
-                        .providersMicrosoftEntraSyncObjectCreate}
+                    model=${SyncObjectModelEnum.AuthentikCoreModelsGroup}
+                    .sync=${(data: ProvidersMicrosoftEntraSyncObjectCreateRequest) => {
+                        return new ProvidersApi(
+                            DEFAULT_CONFIG,
+                        ).providersMicrosoftEntraSyncObjectCreate(data);
+                    }}
                     slot="form"
                 >
                 </ak-sync-object-form>

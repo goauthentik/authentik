@@ -19,10 +19,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { FlowsInstancesListDesignationEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
 
-import {
-    makeRACPropertyMappingsSelector,
-    racPropertyMappingsProvider,
-} from "./RACPropertyMappings.js";
+import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {
@@ -86,7 +83,9 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 <input
                     type="text"
                     value="${first(this.instance?.connectionExpiry, "hours=8")}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -127,10 +126,8 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         name="propertyMappings"
                     >
                         <ak-dual-select-dynamic-selected
-                            .provider=${racPropertyMappingsProvider}
-                            .selector=${makeRACPropertyMappingsSelector(
-                                this.instance?.propertyMappings,
-                            )}
+                            .provider=${propertyMappingsProvider}
+                            .selector=${propertyMappingsSelector(this.instance?.propertyMappings)}
                             available-label="${msg("Available Property Mappings")}"
                             selected-label="${msg("Selected Property Mappings")}"
                         ></ak-dual-select-dynamic-selected>

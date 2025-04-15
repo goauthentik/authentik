@@ -215,7 +215,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     <a
                         target="_blank"
                         rel="noopener noreferrer"
-                        href="${docLink("/docs/outposts?utm_source=authentik")}"
+                        href="${docLink("/docs/add-secure-apps/outposts?utm_source=authentik")}"
                         >${msg("See documentation")}</a
                     >.
                 </p>
@@ -251,7 +251,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 href="${docLink(
-                                    "/docs/outposts?utm_source=authentik#configuration",
+                                    "/docs/add-secure-apps/outposts?utm_source=authentik#configuration",
                                 )}"
                                 >${msg("Documentation")}</a
                             >

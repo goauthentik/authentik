@@ -3,6 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -21,6 +22,7 @@ export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
+    brandingCustomCss: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
@@ -42,6 +44,9 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                     align-items: center;
                     height: 114px;
                     min-height: 114px;
+                    border-bottom: var(--pf-global--BorderWidth--sm);
+                    border-bottom-style: solid;
+                    border-bottom-color: var(--pf-global--BorderColor--100);
                 }
                 .pf-c-brand img {
                     padding: 0 0.5rem;
@@ -86,7 +91,7 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                 <div class="pf-c-brand ak-brand">
                     <img
                         src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
-                        alt="authentik Logo"
+                        alt="${msg("authentik Logo")}"
                         loading="lazy"
                     />
                 </div>
