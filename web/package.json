@@ -42,7 +42,7 @@
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.4.1",
-        "rapidoc": "^9.3.7",
+        "rapidoc": "^9.3.8",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "rehype-highlight": "^7.0.2",
