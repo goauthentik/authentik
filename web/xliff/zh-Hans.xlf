@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL "
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot;
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3778,10 +3778,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新
-        <x id="0" equiv-text="${this.objectLabel}"/>"
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4847,7 +4847,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5206,7 +5206,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7492,7 +7492,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>成功创建用户并添加到组 <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
   <target>此用户将会被添加到组 &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;。</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8778,7 +8778,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>同步组</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/>（&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;，类型为 <x id="2" equiv-text="${p.type}"/>）</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -9026,8 +9026,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>授权流程成功后有效的重定向 URI。还可以在此处为隐式流程指定任何来源。</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
-  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <target>要允许任何重定向 URI，请设置模式为正则表达式，并将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9696,61 +9696,80 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>预览输入失败</target>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'。当选中“使用用户属性查询”时，此配置应该为用户属性，否则为组属性。</target>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
+  <target>使用用户属性查询</target>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>包含用户所属组 DN 的字段。此字段用于从用户查询组，例如 'memberOf'。要在 Active Directory 环境中查询嵌套组，则使用 'memberOf:1.2.840.113556.1.4.1941:'。</target>
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
+  <target>初始权限</target>
 </trans-unit>
 <trans-unit id="sedb57bf4b42a8e40">
   <source>Unknown Initial Permissions mode</source>
+  <target>未知初始权限模式</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
+  <target>已成功更新初始权限。</target>
 </trans-unit>
 <trans-unit id="sfddf7896ab5938b6">
   <source>Successfully created initial permissions.</source>
+  <target>已成功创建初始权限。</target>
 </trans-unit>
 <trans-unit id="s5c5f240cbb6d0bae">
   <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+  <target>当所选角色的用户创建对象时，初始权限会应用于该对象。</target>
 </trans-unit>
 <trans-unit id="sbf27294eef56ac81">
   <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+  <target>初始权限既可以属于创建对象的用户，又可以属于上一个字段中设置的角色。</target>
 </trans-unit>
 <trans-unit id="s93f04537efda1b24">
   <source>Available Permissions</source>
+  <target>可用权限</target>
 </trans-unit>
 <trans-unit id="s297bc57f9e494470">
   <source>Selected Permissions</source>
+  <target>已选权限</target>
 </trans-unit>
 <trans-unit id="s0ea71d53764d781c">
   <source>Permissions to grant when a new object is created.</source>
+  <target>创建新对象时授予的权限。</target>
 </trans-unit>
 <trans-unit id="s06fc21a40f5d7de1">
   <source>Set initial permissions for newly created objects.</source>
+  <target>为新创建的对象设置初始权限。</target>
 </trans-unit>
 <trans-unit id="sc7104a4d0fc35c7c">
   <source>Update Initial Permissions</source>
+  <target>更新初始权限</target>
 </trans-unit>
 <trans-unit id="s83fa005829a65be9">
   <source>Create Initial Permissions</source>
+  <target>创建初始权限</target>
 </trans-unit>
 <trans-unit id="se37ac6cf9c72f21a">
   <source>Reputation: lower limit</source>
+  <target>信誉：下限值</target>
 </trans-unit>
 <trans-unit id="sa634ffa797037aac">
   <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+  <target>信誉无法降低到此值以下。可为零或负数。</target>
 </trans-unit>
 <trans-unit id="s862986ce8e70edd7">
   <source>Reputation: upper limit</source>
+  <target>信誉：上限值</target>
 </trans-unit>
 <trans-unit id="sdd04913b3b46cf30">
   <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+  <target>信誉无法提高到此值以上。可为零或正数。</target>
 </trans-unit>
     </body>
   </file>
