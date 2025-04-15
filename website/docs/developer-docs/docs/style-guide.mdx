@@ -208,6 +208,7 @@ and_backend_roles: []
 description: "Maps admin to all_access"
 ` ` `
 ```
+
 Which is rendered as:
 
 ```yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
@@ -223,12 +224,13 @@ and_backend_roles: []
 description: "Maps admin to all_access"
 ```
 
-- ``` ` ` ` yaml ``` defines the language used for syntax highlighting. Other languages can be used such as; `jsx`, `python`, `bash` and `text`.
+- `` ` ` ` yaml `` defines the language used for syntax highlighting. Other languages can be used such as; `jsx`, `python`, `bash` and `text`.
 
 Optional configurations:
+
 - `showLineNumbers`: enables the line numbering on the left-hand side of the code block.
 - `title=" "`: defines the title displayed at the top of the code block. This is useful for defining filenames and paths.
-- `{5}`: defines the line number that will be highlighted. Ranges and lists can alse be used (e.g. `{5, 7, 9-11}`).
+- `{5}`: defines the line number that will be highlighted. Ranges and lists can also be used (e.g. `{5, 7, 9-11}`).
 - `// highlight-next-line`: is used within a code block to highlight the next line.
 - `// highlight-start` and `// highlight-end`: are used within a code block to highlight one or more lines.
 
