@@ -1,7 +1,7 @@
 """authentik policy engine"""
 
 from collections.abc import Iterator
-from multiprocessing import current_process
+from multiprocessing import current_process, get_context
 from multiprocessing.queues import Queue
 from time import perf_counter
 
@@ -131,7 +131,8 @@ class PolicyEngine:
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
 
-                result_queue = Queue()
+                ctx = get_context()
+                result_queue = ctx.Queue()
                 task = PolicyProcess(binding, self.request, result_queue)
                 task.daemon = False
 
