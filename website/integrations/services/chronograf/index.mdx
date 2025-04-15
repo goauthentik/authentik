@@ -3,8 +3,6 @@ title: Integrate with Chronograf
 sidebar_label: Chronograf
 ---
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
 # Integrate with Chronograf
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -55,23 +53,21 @@ Add the following environment variables to your Chronograf setup. If you are usi
 Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
-<IntegrationsMultilineCodeblock>
-    {`
-PUBLIC_URL=https://<em>chronograf.company</em>
-TOKEN_SECRET=<em>Your random secret</em>
-JWKS_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks/
-GENERIC_NAME=authentik
-GENERIC_CLIENT_ID=<em>Your Client ID</em>
-GENERIC_CLIENT_SECRET=<em>Your Client Secret</em>
-GENERIC_SCOPES=email,profile,openid
-GENERIC_DOMAINS=<em>authentik.company</em>
-GENERIC_AUTH_URL=https://<em>authentik.company</em>/application/o/authorize/
-GENERIC_TOKEN_URL=https://<em>authentik.company</em>/application/o/token/
-GENERIC_API_URL=https://<em>authentik.company</em>/application/o/userinfo/
-GENERIC_API_KEY=email
-USE_ID_TOKEN=true
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers
+    PUBLIC_URL=https://chronograf.company
+    TOKEN_SECRET=Your random secret
+    JWKS_URL=https://authentik.company/application/o/<your-application-slug>/jwks/
+    GENERIC_NAME=authentik
+    GENERIC_CLIENT_ID=<Your Client ID>
+    GENERIC_CLIENT_SECRET=<Your Client Secret>
+    GENERIC_SCOPES=email,profile,openid
+    GENERIC_DOMAINS=authentik.company
+    GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
+    GENERIC_TOKEN_URL=https://authentik.company/application/o/token/
+    GENERIC_API_URL=https://authentik.company/application/o/userinfo/
+    GENERIC_API_KEY=email
+    USE_ID_TOKEN=true
+    ```
 
 ## Resources
 

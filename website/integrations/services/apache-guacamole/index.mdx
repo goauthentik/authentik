@@ -6,7 +6,6 @@ support_level: authentik
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
 
 # Integrate with Apache Guacamole™
 
@@ -66,39 +65,33 @@ You can configure Apache Guacamole to use either the `sub` or `preferred_usernam
   <TabItem value="docker">
 Docker containers are typically configured using environment variables. To ensure proper integration, add the following variables to your `.env` file:
 
-<IntegrationsMultilineCodeblock>
-    {`
-OPENID_AUTHORIZATION_ENDPOINT=https://<em>authentik.company</em>/application/o/authorize/
-OPENID_CLIENT_ID=<em>Client ID from authentik</em>
-OPENID_ISSUER=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/
-OPENID_JWKS_ENDPOINT=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/jwks/
-OPENID_REDIRECT_URI=https://<em>guacamole.company</em>/ # Must match Redirect URI in authentik
-OPENID_USERNAME_CLAIM_TYPE=preferred_username
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers
+    OPENID_AUTHORIZATION_ENDPOINT=https://authentik.company/application/o/authorize/
+    OPENID_CLIENT_ID=<Client ID from authentik>
+    OPENID_ISSUER=https://authentik.company/application/o/<your-slug>/
+    OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<your-slug>/jwks/
+    OPENID_REDIRECT_URI=https://guacamole.company/ # Must match Redirect URI in authentik
+    OPENID_USERNAME_CLAIM_TYPE=preferred_username
+    ```
 
 Additionally, ensure your `guacamole.properties` file (typically located in `/etc/guacamole/`) includes the following line. This setting allows environment variables to be evaluated before static configuration files:
 
-<IntegrationsMultilineCodeblock>
-    {`
-enable-environment-properties: true
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml
+    enable-environment-properties: true
+    ```
 
   </TabItem>
   <TabItem value="standalone">
     To set up Apache Guacamole in a standalone environment, you'll need to adjust the settings in the `guacamole.properties` file, usually found in the `/etc/guacamole/` directory. Add the following settings:
 
-<IntegrationsMultilineCodeblock>
-    {`
-openid-authorization-endpoint=https://<em>authentik.company</em>/application/o/authorize/
-openid-client-id=<em>Client ID from authentik</em>
-openid-issuer=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/
-openid-jwks-endpoint=https://<em>authentik.company</em>/application/o/<em>your-slug</em>/jwks/
-openid-redirect-uri=https://<em>guacamole.company</em>/ # This must match the Redirect URI set in authentik (Including trailing slash).
-openid-username-claim-type=preferred_username
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers title="/etc/guacamole/guacamole.properties"
+    openid-authorization-endpoint=https://authentik.company/application/o/authorize/
+    openid-client-id=<Client ID from authentik>
+    openid-issuer=https://authentik.company/application/o/<your-slug>/
+    openid-jwks-endpoint=https://authentik.company/application/o/<your-slug>/jwks/
+    openid-redirect-uri=https://guacamole.company/ # This must match the Redirect URI set in authentik (Including trailing slash).
+    openid-username-claim-type=preferred_username
+    ```
 
   </TabItem>
 </Tabs>
@@ -119,9 +112,9 @@ This section depends on the operating system hosting Apache Guacamole.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates
-```
+    ```shell
+    update-ca-certificates
+    ```
 
 ##### For _Synology_ systems:
 
@@ -129,23 +122,23 @@ update-ca-certificates
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates.sh
-```
+    ```shell
+    update-ca-certificates.sh
+    ```
 
 #### Adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
 
 1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 
-```shell
-openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
-```
+    ```shell
+    openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+    ```
 
 2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
 
-```shell
-keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
-```
+    ```shell
+    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+    ```
 
 :::note
 More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
@@ -167,9 +160,9 @@ This section depends on the operating system hosting Apache Guacamole.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates
-```
+    ```shell
+    update-ca-certificates
+    ```
 
 ##### For _Synology_ systems:
 
@@ -177,23 +170,23 @@ update-ca-certificates
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates.sh
-```
+    ```shell
+    update-ca-certificates.sh
+    ```
 
 #### Adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
 
 1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 
-```shell
-openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
-```
+    ```shell
+    openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+    ```
 
 2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
 
-```shell
-keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
-```
+    ```shell
+    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+    ```
 
 :::note
 More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)

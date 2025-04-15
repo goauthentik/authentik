@@ -3,8 +3,6 @@ title: Integrate with FreshRSS
 sidebar_label: FreshRSS
 ---
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
 # Integrate with FreshRSS
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -57,16 +55,14 @@ Before restarting your Docker container, ensure that at least one Admin user in 
 
 To enable OIDC login with FreshRSS, update your `.env` file to include the following variables:
 
-<IntegrationsMultilineCodeblock>
-    {`
-OIDC_ENABLED=1
-OIDC_PROVIDER_METADATA_URL=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/.well-known/openid-configuration
-OIDC_CLIENT_ID=<em>Your Client ID from authentik</em>
-OIDC_CLIENT_SECRET=<em>Your Client Secret from authentik</em>
-OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
-OIDC_SCOPES=openid email profile
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers
+    OIDC_ENABLED=1
+    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<your-application-slug>/.well-known/openid-configuration
+    OIDC_CLIENT_ID=<Your Client ID from authentik<>
+    OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+    OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
+    OIDC_SCOPES=openid email profile
+    ```
 
 Once your container or pod is restarted, attempt to login as a user that exists in both FreshRSS and authentik. Go to **Settings** -> **Authentication** and set the authentication method to **HTTP**.
 

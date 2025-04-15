@@ -4,8 +4,6 @@ sidebar_label: AdventureLog
 support_level: community
 ---
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
 ## What is AdventureLog
 
 > AdventureLog is a self-hosted travel tracker and trip planner. AdventureLog is the ultimate travel companion for the modern-day explorer.
@@ -57,18 +55,9 @@ To support the integration of AdventureLog with authentik, you need to create an
         - **Client ID**: Enter the Client ID from authentik
         - **Secret Key**: Enter the Client Secret from authentik
         - **Key**: Leave this line blank
-        - **Settings**:
-
-        <IntegrationsMultilineCodeblock>
-            {`
-
-    {
-    "server_url": "https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/"
-    }
-    `}
-    </IntegrationsMultilineCodeblock>
-
-        - **Sites**: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
+        - Under **Settings**:
+            - **server_url**: <kbd><em>https://authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>
+            - **Sites**: move over the sites you want to enable authentik on, usually `example.com` and `www.example.com` unless you renamed your sites.
 
 ### Linking to Existing Account
 

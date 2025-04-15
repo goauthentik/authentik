@@ -3,8 +3,6 @@ title: Integrate with Gatus
 sidebar_label: Gatus
 ---
 
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
-
 # Integrate with Gatus
 
 <span class="badge badge--secondary">Support level: Community</span>
@@ -53,24 +51,20 @@ To enable OIDC in Gatus, update your `config.yaml` file, typically found at `/co
 Gatus automatically updates its configuration approximately every 30 seconds. If the changes are not reflected, restart the instance to ensure the changes are applied.
 :::
 
-<IntegrationsMultilineCodeblock>
-    {`
-OIDC_CLIENT_ID=<em>Your Client ID from authentik</em>
-OIDC_CLIENT_SECRET=<em>Your Client Secret from authentik</em>
-    `}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers title=".env"
+    OIDC_CLIENT_ID=<Your Client ID from authentik>
+    OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+    ```
 
-<IntegrationsMultilineCodeblock>
-    {`
-security:
-    oidc:
-        issuer-url: https://<em>authentik.company</em>/application/o/<em>your-slug</em>/
-        client-id: $\{OIDC_CLIENT_ID}
-        client-secret: $\{OIDC_CLIENT_SECRET}
-        redirect-url: https://<em>gatus.company</em>/authorization-code/callback
-        scopes: [openid]
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers title="config.yaml"
+    security:
+        oidc:
+            issuer-url: https://authentik.company/application/o/<your-application-slug>/
+            client-id: $\{OIDC_CLIENT_ID}
+            client-secret: $\{OIDC_CLIENT_SECRET}
+            redirect-url: https://gatus.company/authorization-code/callback
+            scopes: [openid]
+    ```
 
 ## Resources
 

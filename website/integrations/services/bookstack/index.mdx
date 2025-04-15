@@ -5,7 +5,6 @@ sidebar_label: BookStack
 
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import IntegrationsMultilineCodeblock from "@site/src/components/MultilineCodeblock";
 
 # Integrate with BookStack
 
@@ -63,19 +62,17 @@ To support the integration of BookStack with authentik, you need to create an ap
 
 Once that's done, the next step is to update your `.env` file to include the following variables:
 
-<IntegrationsMultilineCodeblock>
-    {`
-AUTH_METHOD=oidc
-AUTH_AUTO_INITIATE=false # Set this to "true" to automatically redirect the user to authentik.
-OIDC_NAME=authentik # The display name shown on the login page.
-OIDC_DISPLAY_NAME_CLAIMS=name # Claim(s) for the user's display name. Can have multiple attributes listed, separated with a '|' in which case those values will be joined with a space.
-OIDC_CLIENT_ID=<em>Client ID from authentik</em>
-OIDC_CLIENT_SECRET=<em>Client Secret from authentik</em>
-OIDC_ISSUER=https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>
-OIDC_ISSUER_DISCOVER=true
-OIDC_END_SESSION_ENDPOINT=true
-`}
-</IntegrationsMultilineCodeblock>
+    ```yaml showLineNumbers
+    AUTH_METHOD=oidc
+    AUTH_AUTO_INITIATE=false # Set this to "true" to automatically redirect the user to authentik.
+    OIDC_NAME=authentik # The display name shown on the login page.
+    OIDC_DISPLAY_NAME_CLAIMS=name # Claim(s) for the user's display name. Can have multiple attributes listed, separated with a '|' in which case those values will be joined with a space.
+    OIDC_CLIENT_ID=<Client ID from authentik>
+    OIDC_CLIENT_SECRET=<Client Secret from authentik>
+    OIDC_ISSUER=https://authentik.company/application/o/<your-application-slug>
+    OIDC_ISSUER_DISCOVER=true
+    OIDC_END_SESSION_ENDPOINT=true
+    ```
 
 </TabItem>
 
@@ -112,8 +109,7 @@ To support the integration of BookStack with authentik, you need to create an ap
 
 Once that's done, the next step is to update your `.env` file to include the following variables:
 
-<IntegrationsMultilineCodeblock>
-    {`
+    ```yaml showLineNumbers
     AUTH_METHOD=saml2
     AUTH_AUTO_INITIATE=true # Set this to "true" to automatically redirect the user to authentik.
     SAML2_NAME=authentik # The display name shown on the login page.
@@ -122,10 +118,9 @@ Once that's done, the next step is to update your `.env` file to include the fol
     SAML2_USER_TO_GROUPS=true
     SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
     SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
-    SAML2_IDP_ENTITYID=https://<em>authentik.company</em>/api/v3/providers/saml/<em>000</em>/metadata/?download
+    SAML2_IDP_ENTITYID=https://authentik.company/api/v3/providers/saml/<your-application-slug>/metadata/?download
     SAML2_AUTOLOAD_METADATA=true
-    `}
-</IntegrationsMultilineCodeblock>
+    ```
 
 </TabItem>
 </Tabs>
