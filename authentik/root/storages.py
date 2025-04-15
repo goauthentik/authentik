@@ -791,16 +791,18 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 "Either session_profile or (access_key and secret_key) must be set."
             )
 
-        # Validate bucket exists and is accessible
+        # Validate bucket exists and is accessible by attempting to list objects
+        # This only requires s3:ListBucket permission on the specific bucket
         try:
             _ = self.client  # Ensure client is initialized
-            self._s3_client.head_bucket(Bucket=self._bucket_name)
+            # Try to list objects in the bucket with max_keys=1 to minimize data transfer
+            self._s3_client.list_objects_v2(Bucket=self._bucket_name, MaxKeys=1)
         except ClientError as e:
             error_code = e.response.get("Error", {}).get("Code", "Unknown")
-            if error_code == "404":
+            if error_code == "NoSuchBucket":
                 LOGGER.error("S3 bucket does not exist", bucket=self._bucket_name)
                 raise ImproperlyConfigured(f"S3 bucket '{self._bucket_name}' does not exist") from e
-            elif error_code == "403":
+            elif error_code == "AccessDenied":
                 LOGGER.error("No permission to access S3 bucket", bucket=self._bucket_name)
                 raise ImproperlyConfigured(
                     f"No permission to access S3 bucket '{self._bucket_name}'"
