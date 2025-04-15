@@ -1,6 +1,7 @@
 """authentik policy task"""
 
-from multiprocessing import Queue, get_context
+from multiprocessing import get_context
+from multiprocessing.queues import Queue
 
 from django.core.cache import cache
 from sentry_sdk import start_span

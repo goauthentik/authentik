@@ -1,7 +1,8 @@
 """authentik policy engine"""
 
 from collections.abc import Iterator
-from multiprocessing import Queue, current_process
+from multiprocessing import current_process
+from multiprocessing.queues import Queue
 from time import perf_counter
 
 from django.core.cache import cache
