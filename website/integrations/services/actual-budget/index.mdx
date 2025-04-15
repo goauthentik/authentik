@@ -59,27 +59,27 @@ To support the integration of Actual Budget with authentik, you need to create a
   <TabItem value="env">
   You can configure OpenID Connect with Actual Budget by adding the following variables to your `.env` file.
 
-  ```txt title=".env" showLineNumbers
-  ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/application-slug/
-  ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
-  ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
-  ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
-  ```
+    ```yaml showLineNumbers
+    ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<your-application-slug>/
+    ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
+    ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
+    ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
+    ```
 
   </TabItem>
   <TabItem value="json">
 
 You can configure Actual Budget to authenticate users with OpenID Connect by modifying the `/data/config.json` file or it's equivalent specified by the `ACTUAL_DATA_DIR` environment variable.
 
-  ```json title="/data/config.json" showLineNumbers
-    "openId": {
-            "issuer": "<kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>",
-            "client_id": "<em>Client ID from authentik</em>",
-            "client_secret": "<em>Client Secret from authentik</em>",
-            "server_hostname": "https://<em>actual.company</em>",
-            "authMethod": "openid"
-        }
-  ```
+```json showLineNumbers title="/data/config.json"
+  "openId": {
+          "issuer": "https://authentik.company/application/o/<your-application-slug>/",
+          "client_id": "<Client ID from authentik>",
+          "client_secret": "<Client Secret from authentik>",
+          "server_hostname": "https://actual.company",
+          "authMethod": "openid"
+      }
+```
 
   </TabItem>
   <TabItem value="ui">
