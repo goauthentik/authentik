@@ -2984,15 +2984,12 @@ wheels = [
 
 [[package]]
 name = "tenant-schemas-celery"
-version = "3.0.0"
+version = "4.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "celery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/fe/cfe19eb7cc3ad8e39d7df7b7c44414bf665b6ac6660c998eb498f89d16c6/tenant_schemas_celery-3.0.0.tar.gz", hash = "sha256:6be3ae1a5826f262f0f3dd343c6a85a34a1c59b89e04ae37de018f36562fed55", size = 15954 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/2c/376e1e641ad08b374c75d896468a7be2e6906ce3621fd0c9f9dc09ff1963/tenant_schemas_celery-3.0.0-py3-none-any.whl", hash = "sha256:ca0f69e78ef698eb4813468231df5a0ab6a660c08e657b65f5ac92e16887eec8", size = 18108 },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/6e/51c6a172cad0fb52bf02a9e986c057948002a5291deebe0d2dc61923f257/tenant-schemas-celery-4.0.0.tar.gz", hash = "sha256:cca35c675ea31e0b4d252724831ac7f8aba67eb7b07523b787c63e39f181b3fd", size = 18628 }
 
 [[package]]
 name = "tornado"
