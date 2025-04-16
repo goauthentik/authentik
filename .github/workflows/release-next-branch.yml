@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   update-next:
+    name: Update Next Branch
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     environment: internal-production

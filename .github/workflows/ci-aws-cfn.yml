@@ -18,6 +18,7 @@ env:
 
 jobs:
   check-changes-applied:
+    name: Check changes applied
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,6 +37,7 @@ jobs:
           uv run make aws-cfn
           git diff --exit-code
   ci-aws-cfn-mark:
+    name: CI AWS CloudFormation Mark
     if: always()
     needs:
       - check-changes-applied

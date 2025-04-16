@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   cleanup:
+    name: Cleanup Cache
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

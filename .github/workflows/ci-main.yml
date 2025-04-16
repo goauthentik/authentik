@@ -19,6 +19,7 @@ env:
 
 jobs:
   lint:
+    name: Lint
     strategy:
       fail-fast: false
       matrix:
@@ -33,9 +34,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: run job
+      - name: Run job ${{ matrix.job }}
         run: uv run make ci-${{ matrix.job }}
   test-migrations:
+    name: Test Migrations
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -44,6 +46,7 @@ jobs:
       - name: run migrations
         run: uv run python -m lifecycle.migrate
   test-make-seed:
+    name: Test Make Seed
     runs-on: ubuntu-latest
     steps:
       - id: seed
@@ -52,7 +55,7 @@ jobs:
     outputs:
       seed: ${{ steps.seed.outputs.seed }}
   test-migrations-from-stable:
-    name: test-migrations-from-stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: Test Migrations From Stable - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: test-make-seed
@@ -67,7 +70,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: checkout stable
+      - name: Checkout Stable
         run: |
           # Copy current, latest config to local
           # Temporarly comment the .github backup while migrating to uv
@@ -84,9 +87,9 @@ jobs:
         with:
           postgresql_version: ${{ matrix.psql }}
         continue-on-error: true
-      - name: run migrations to stable
+      - name: Run migrations to stable
         run: poetry run python -m lifecycle.migrate
-      - name: checkout current code
+      - name: Checkout current code
         run: |
           set -x
           git fetch
@@ -97,10 +100,10 @@ jobs:
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
-      - name: migrate to latest
+      - name: Migrate to latest
         run: |
           uv run python -m lifecycle.migrate
-      - name: run tests
+      - name: Run tests
         env:
           # Test in the main database that we just migrated from the previous stable version
           AUTHENTIK_POSTGRESQL__TEST__NAME: authentik
@@ -110,7 +113,7 @@ jobs:
         run: |
           uv run make ci-test
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
+    name: Unit tests - PostgreSQL ${{ matrix.psql }} - Run ${{ matrix.run_id }}/5
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: test-make-seed
@@ -123,7 +126,7 @@ jobs:
         run_id: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
-      - name: Setup authentik env
+      - name: Setup authentik env (${{ matrix.psql }})
         uses: ./.github/actions/setup
         with:
           postgresql_version: ${{ matrix.psql }}
@@ -146,6 +149,7 @@ jobs:
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-integration:
+    name: Integration tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -154,7 +158,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
         uses: helm/kind-action@v1.12.0
-      - name: run integration
+      - name: Run integration
         run: |
           uv run coverage run manage.py test tests/integration
           uv run coverage xml
@@ -170,34 +174,34 @@ jobs:
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-e2e:
-    name: test-e2e (${{ matrix.job.name }})
+    name: Test E2E (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         job:
-          - name: proxy
+          - name: Proxy Provider
             glob: tests/e2e/test_provider_proxy*
-          - name: oauth
+          - name: OAuth2 Provider
             glob: tests/e2e/test_provider_oauth2* tests/e2e/test_source_oauth*
-          - name: oauth-oidc
+          - name: OIDC Provider
             glob: tests/e2e/test_provider_oidc*
-          - name: saml
+          - name: SAML Provider
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
-          - name: ldap
+          - name: LDAP Provider
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
-          - name: radius
+          - name: RADIUS Provider
             glob: tests/e2e/test_provider_radius*
-          - name: scim
+          - name: SCIM Source
             glob: tests/e2e/test_source_scim*
-          - name: flows
+          - name: Flows
             glob: tests/e2e/test_flows*
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Setup e2e env (chrome, etc)
+      - name: Setup E2E env (chrome, etc)
         run: |
           docker compose -f tests/e2e/docker-compose.yml up -d --quiet-pull
       - id: cache-web
@@ -205,14 +209,14 @@ jobs:
         with:
           path: web/dist
           key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
-      - name: prepare web ui
+      - name: Prepare Web UI
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
         run: |
           npm ci
           make -C .. gen-client-ts
           npm run build
-      - name: run e2e
+      - name: Run E2E tests
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml
@@ -228,6 +232,7 @@ jobs:
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   ci-core-mark:
+    name: CI Core Mark
     if: always()
     needs:
       - lint
@@ -242,6 +247,7 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   build:
+    name: Build
     permissions:
       # Needed to upload container images to ghcr.io
       packages: write
@@ -255,6 +261,7 @@ jobs:
       image_name: ghcr.io/goauthentik/dev-server
       release: false
   pr-comment:
+    name: PR Comment
     needs:
       - build
     runs-on: ubuntu-latest
@@ -267,7 +274,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
