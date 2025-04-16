@@ -67,6 +67,12 @@ export class NavigationButtons extends AKElement {
                 :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
                     color: var(--ak-global--Color--100) !important;
                 }
+
+                @media (max-width: 768px) {
+                    .pf-c-avatar {
+                        display: none;
+                    }
+                }
             `,
         ];
     }
@@ -156,9 +162,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderImpersonation() {
-        if (!this.me?.original) {
-            return nothing;
-        }
+        if (!this.me?.original) return nothing;
 
         const onClick = async () => {
             await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
@@ -173,6 +177,14 @@ export class NavigationButtons extends AKElement {
                     </ak-action-button>
                 </div>
             </div>`;
+    }
+
+    renderAvatar() {
+        return html`<img
+            class="pf-c-avatar"
+            src=${ifDefined(this.me?.user.avatar)}
+            alt="${msg("Avatar image")}"
+        />`;
     }
 
     get userDisplayName() {
@@ -212,11 +224,7 @@ export class NavigationButtons extends AKElement {
                       </div>
                   </div>`
                 : nothing}
-            <img
-                class="pf-c-avatar"
-                src=${ifDefined(this.me?.user.avatar)}
-                alt="${msg("Avatar image")}"
-            />
+            ${this.renderAvatar()}
         </div>`;
     }
 }

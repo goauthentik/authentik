@@ -4,6 +4,7 @@ import { ROUTES } from "@goauthentik/admin/Routes";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
+    EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
@@ -11,6 +12,8 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
+import "@goauthentik/elements/banner/EnterpriseStatusBanner";
+import "@goauthentik/elements/banner/VersionBanner";
 import "@goauthentik/elements/banner/VersionBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
@@ -40,6 +43,8 @@ if (process.env.NODE_ENV === "development") {
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends AuthenticatedInterface {
+    //#region Properties
+
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -54,6 +59,17 @@ export class AdminInterface extends AuthenticatedInterface {
     @query("ak-about-modal")
     aboutModal?: AboutModal;
 
+    @state()
+    sidebarVisible = false;
+
+    #toggleSidebar = () => {
+        this.sidebarVisible = !this.sidebarVisible;
+    };
+
+    //#endregion
+
+    //#region Styles
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -67,29 +83,40 @@ export class AdminInterface extends AuthenticatedInterface {
                     z-index: auto !important;
                     background-color: transparent;
                 }
+
                 .display-none {
                     display: none;
                 }
+
                 .pf-c-page {
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
-                /* Global page background colour */
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
+
+                :host([theme="dark"]) {
+                    /* Global page background colour */
+                    .pf-c-page {
+                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
+                    }
                 }
-                ak-enterprise-status,
-                ak-version-banner {
+
+                ak-page-navbar {
                     grid-area: header;
                 }
+
                 ak-admin-sidebar {
                     grid-area: nav;
                 }
+
                 .pf-c-drawer__panel {
                     z-index: var(--pf-global--ZIndex--xl);
                 }
             `,
         ];
     }
+
+    //#endregion
+
+    //#region Lifecycle
 
     constructor() {
         super();
@@ -123,12 +150,26 @@ export class AdminInterface extends AuthenticatedInterface {
         }
     }
 
+    async connectedCallback(): Promise<void> {
+        super.connectedCallback();
+
+        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
+    }
+
     render(): TemplateResult {
         const sidebarClasses = {
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,
+            "pf-m-expanded": !this.sidebarVisible,
+            "pf-m-collapsed": this.sidebarVisible,
         };
 
         const drawerOpen = this.notificationDrawerOpen || this.apiDrawerOpen;
+
         const drawerClasses = {
             "pf-m-expanded": drawerOpen,
             "pf-m-collapsed": !drawerOpen,
@@ -136,11 +177,16 @@ export class AdminInterface extends AuthenticatedInterface {
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
-                <ak-enterprise-status interface="admin"></ak-enterprise-status>
-                <ak-version-banner></ak-version-banner>
+                <ak-page-navbar>
+                    <ak-version-banner></ak-version-banner>
+                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                </ak-page-navbar>
+
                 <ak-admin-sidebar
-                    class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
+                    class="pf-c-page__sidebar
+                     ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>
+
                 <div class="pf-c-page__drawer">
                     <div class="pf-c-drawer ${classMap(drawerClasses)}">
                         <div class="pf-c-drawer__main">
