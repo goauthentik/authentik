@@ -1,8 +1,11 @@
 ---
 title: Integrate with FreshRSS
 sidebar_label: FreshRSS
-support_level: community
 ---
+
+# Integrate with FreshRSS
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is FreshRSS
 
@@ -15,11 +18,10 @@ support_level: community
 The following placeholders are used in this guide:
 
 - `freshrss.company` is the FQDN of the FreshRSS installation.
-- `port` is the port on which the FreshRSS install is running (usually 443)
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
-This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+This documentation only lists the settings that have been changed from their default values. Please verify your changes carefully to avoid any issues accessing your application.
 :::
 
 ## authentik configuration
@@ -44,21 +46,31 @@ To support the integration of FreshRss with authentik, you need to create an app
 ## FreshRSS configuration
 
 :::info
-This integration only works with the Docker or Kubernetes install of FreshRSS, using [FreshRSS docker image](https://hub.docker.com/r/freshrss/freshrss/), on x86_64 systems and without the Alpine version of the image. More information can be found on [this issue on FreshRSS GitHub](https://github.com/FreshRSS/FreshRSS/issues/5722)
+This integration is compatible only with Docker or Kubernetes installations of FreshRSS that use the [FreshRSS Docker image](https://hub.docker.com/r/freshrss/freshrss/) on x86_64 systems. Note that the Alpine version of the image is not supported. For more details, see [this issue on the FreshRSS GitHub repository](https://github.com/FreshRSS/FreshRSS/issues/5722).
 :::
 
-Add those environment variables to your _Docker_ image :
+:::warning
+Before restarting your Docker container, ensure that at least one Admin user in your FreshRSS instance has a username that matches an authentik user.
+:::
 
-- `OIDC_ENABLED` : `1`
-- `OIDC_PROVIDER_METADATA_URL` : `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` replacing `<application-slug>` with the slug of your created application
-- `OIDC_CLIENT_ID` : the client ID of your provider
-- `OIDC_CLIENT_SECRET` : the client secret of your provider
-- `OIDC_X_FORWARDED_HEADERS` : `X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host`
-- `OIDC_SCOPES` : `openid email profile`
+To enable OIDC login with FreshRSS, update your `.env` file to include the following variables:
 
-Before restarting your Docker container, ensure that one of the Admin users of your FreshRSS instance has the same login as one of your Authentik user.
+    ```yaml showLineNumbers
+    OIDC_ENABLED=1
+    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<your-application-slug>/.well-known/openid-configuration
+    OIDC_CLIENT_ID=<Your Client ID from authentik<>
+    OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
+    OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
+    OIDC_SCOPES=openid email profile
+    ```
 
-Restart your FreshRSS container, and login as a user that exists on both FreshRSS and your Authentik.
-Navigate to _Settings_ > _Authentication_ in your FreshRSS instance, and choose as an authentication method _HTTP (for advanced users with HTTPS)_
+Once your container or pod is restarted, attempt to login as a user that exists in both FreshRSS and authentik. Go to **Settings** -> **Authentication** and set the authentication method to **HTTP**.
 
-You can find additional information on [FreshRSS documentation](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect.html)
+## Resources
+
+- [FreshRSS documentation for OpenID Connect](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect.html).
+- [FreshRSS documentation for OIDC with authentik](https://freshrss.github.io/FreshRSS/en/admins/16_OpenID-Connect-Authentik.html)
+
+## Configuration verification
+
+To verify that authentik is correctly set up with FreshRSS, log out of FreshRSS and try logging back in using authentik. You should see a new button on the login page for OIDC authentication.
