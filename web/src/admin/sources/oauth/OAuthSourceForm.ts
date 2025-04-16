@@ -7,6 +7,7 @@ import {
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import {
@@ -255,7 +256,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           </ak-form-element-horizontal>`
                     : html``}
                 ${this.providerType.name === ProviderTypeEnum.Openidconnect
-                    ? html` <ak-radio-input
+                    ? html`<ak-radio-input
                           label=${msg("Authorization code authentication method")}
                           name="authorizationCodeAuthMethod"
                           required
