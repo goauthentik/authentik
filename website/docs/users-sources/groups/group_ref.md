@@ -13,7 +13,9 @@ The Group object has the following properties:
 
 ## Examples
 
-### List all users in a group
+### List all group members
+
+Use the following examples to list all users that are members of a group:
 
 ```python
 group.users.all()
