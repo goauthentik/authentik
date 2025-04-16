@@ -66,7 +66,9 @@ class GeoIPPolicy(Policy):
         if not static_results and not dynamic_results:
             return PolicyResult(True)
 
-        passing = any(r.passing for r in static_results) and all(r.passing for r in dynamic_results)
+        static_passing = any(r.passing for r in static_results) if static_results else True
+        dynamic_passing = all(r.passing for r in dynamic_results)
+        passing = static_passing and dynamic_passing
         messages = chain(
             *[r.messages for r in static_results], *[r.messages for r in dynamic_results]
         )
@@ -113,13 +115,19 @@ class GeoIPPolicy(Policy):
         to previous authentication requests"""
         # Get previous login event and GeoIP data
         previous_logins = Event.objects.filter(
-            action=EventAction.LOGIN, user__pk=request.user.pk, context__geo__isnull=False
+            action=EventAction.LOGIN,
+            user__pk=request.user.pk,  # context__geo__isnull=False
         ).order_by("-created")[: self.history_login_count]
         _now = now()
         geoip_data: GeoIPDict | None = request.context.get("geoip")
         if not geoip_data:
             return PolicyResult(False)
+        if not previous_logins.exists():
+            return PolicyResult(True)
+        result = False
         for previous_login in previous_logins:
+            if "geo" not in previous_login.context:
+                continue
             previous_login_geoip: GeoIPDict = previous_login.context["geo"]
 
             # Figure out distance
@@ -142,7 +150,8 @@ class GeoIPPolicy(Policy):
                 (MAX_DISTANCE_HOUR_KM * rel_time_hours) + self.distance_tolerance_km
             ):
                 return PolicyResult(False, _("Distance is further than possible."))
-        return PolicyResult(True)
+            result = True
+        return PolicyResult(result)
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("GeoIP Policy")
