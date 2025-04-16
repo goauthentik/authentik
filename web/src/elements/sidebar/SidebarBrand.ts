@@ -1,4 +1,3 @@
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";
@@ -42,21 +41,15 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    height: 114px;
-                    min-height: 114px;
+                    height: var(--ak-navbar-height);
                     border-bottom: var(--pf-global--BorderWidth--sm);
                     border-bottom-style: solid;
                     border-bottom-color: var(--pf-global--BorderColor--100);
                 }
+
                 .pf-c-brand img {
                     padding: 0 0.5rem;
                     height: 42px;
-                }
-                button.pf-c-button.sidebar-trigger {
-                    background-color: transparent;
-                    border-radius: 0px;
-                    height: 100%;
-                    color: var(--ak-dark-foreground);
                 }
             `,
         ];
@@ -70,32 +63,15 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
     }
 
     render(): TemplateResult {
-        return html` ${window.innerWidth <= MIN_WIDTH
-                ? html`
-                      <button
-                          class="sidebar-trigger pf-c-button"
-                          @click=${() => {
-                              this.dispatchEvent(
-                                  new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
-                                      bubbles: true,
-                                      composed: true,
-                                  }),
-                              );
-                          }}
-                      >
-                          <i class="fas fa-bars"></i>
-                      </button>
-                  `
-                : html``}
-            <a href="#/" class="pf-c-page__header-brand-link">
-                <div class="pf-c-brand ak-brand">
-                    <img
-                        src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
-                        alt="${msg("authentik Logo")}"
-                        loading="lazy"
-                    />
-                </div>
-            </a>`;
+        return html` <a href="#/" class="pf-c-page__header-brand-link">
+            <div class="pf-c-brand ak-brand">
+                <img
+                    src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
+                    alt="${msg("authentik Logo")}"
+                    loading="lazy"
+                />
+            </div>
+        </a>`;
     }
 }
 

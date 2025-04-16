@@ -74,7 +74,8 @@ export class AdminInterface extends AuthenticatedInterface {
                     --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
                 ak-enterprise-status,
-                ak-version-banner {
+                ak-version-banner,
+                ak-page-navbar {
                     grid-area: header;
                 }
                 ak-admin-sidebar {
@@ -131,6 +132,8 @@ export class AdminInterface extends AuthenticatedInterface {
 
     render(): TemplateResult {
         const sidebarClasses = {
+            // "pf-m-expanded": "",
+            // "pf-m-collapsed": "",
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,
         };
 
@@ -139,11 +142,14 @@ export class AdminInterface extends AuthenticatedInterface {
             "pf-m-expanded": drawerOpen,
             "pf-m-collapsed": !drawerOpen,
         };
+        // const name = this.user?.user.name ?? this.user?.user.username;
+        // <span slot="header"> ${msg(str`Welcome, ${name || ""}.`)} </span>
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 <ak-version-banner></ak-version-banner>
+                <ak-page-navbar></ak-page-navbar>
                 <ak-admin-sidebar
                     class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>

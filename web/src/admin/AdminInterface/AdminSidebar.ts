@@ -87,7 +87,6 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
         // a browser reflow, which may trigger some other styling the application is monitoring,
         // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
         // living with that since jQuery, and it's both well-known and fortunately rare.
-
         // eslint-disable-next-line wc/no-self-class
         this.classList.remove("pf-m-expanded", "pf-m-collapsed");
         // eslint-disable-next-line wc/no-self-class
