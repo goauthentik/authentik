@@ -1,4 +1,3 @@
-import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
@@ -31,14 +30,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
         me().then((user: SessionUser) => {
             this.impersonation = user.original ? user.user.username : null;
         });
-        this.toggleOpen = this.toggleOpen.bind(this);
         this.checkWidth = this.checkWidth.bind(this);
-    }
-
-    // This has to be a bound method so the event listener can be removed on disconnection as
-    // needed.
-    toggleOpen() {
-        this.open = !this.open;
     }
 
     checkWidth() {
@@ -52,7 +44,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
 
     connectedCallback() {
         super.connectedCallback();
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.toggleOpen);
+
         window.addEventListener("resize", this.checkWidth);
         // After connecting to the DOM, we can now perform this check to see if the sidebar should
         // be open by default.
@@ -63,7 +55,6 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     // connection, and removing them before disconnection.
 
     disconnectedCallback() {
-        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.toggleOpen);
         window.removeEventListener("resize", this.checkWidth);
         super.disconnectedCallback();
     }
@@ -71,27 +62,15 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     render() {
         return html`
             <ak-sidebar
-                class="pf-c-page__sidebar ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this
-                    .activeTheme === UiThemeEnum.Light
+                class="pf-c-page__sidebar
+                ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this.activeTheme ===
+                UiThemeEnum.Light
                     ? "pf-m-light"
                     : ""}"
             >
                 ${this.renderSidebarItems()}
             </ak-sidebar>
         `;
-    }
-
-    updated() {
-        // This is permissible as`:host.classList` is not one of the properties Lit uses as a
-        // scheduling trigger. This sort of shenanigans can trigger an loop, in that it will trigger
-        // a browser reflow, which may trigger some other styling the application is monitoring,
-        // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
-        // living with that since jQuery, and it's both well-known and fortunately rare.
-
-        // eslint-disable-next-line wc/no-self-class
-        this.classList.remove("pf-m-expanded", "pf-m-collapsed");
-        // eslint-disable-next-line wc/no-self-class
-        this.classList.add(this.open ? "pf-m-expanded" : "pf-m-collapsed");
     }
 
     renderSidebarItems(): TemplateResult {
