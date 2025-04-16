@@ -13,6 +13,7 @@ on:
 
 jobs:
   lint:
+    name: Lint
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -39,12 +40,13 @@ jobs:
       - working-directory: ${{ matrix.project }}/
         run: |
           npm ci
-      - name: Generate API
+      - name: Generate TypeScript API
         run: make gen-client-ts
       - name: Lint
         working-directory: ${{ matrix.project }}/
         run: npm run ${{ matrix.command }}
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -61,6 +63,7 @@ jobs:
         working-directory: web/
         run: npm run build
   ci-web-mark:
+    name: CI Web Mark
     if: always()
     needs:
       - build

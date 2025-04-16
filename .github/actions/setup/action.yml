@@ -1,4 +1,4 @@
-name: "Setup authentik testing environment"
+name: Setup authentik testing environment
 description: "Setup authentik testing environment"
 
 inputs:

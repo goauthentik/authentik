@@ -1,6 +1,5 @@
 ---
 name: "Prepare docker environment variables"
-description: "Prepare docker environment variables"
 
 inputs:
   image-name:

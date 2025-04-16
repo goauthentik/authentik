@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   stale:
+    name: Stale Issues
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:

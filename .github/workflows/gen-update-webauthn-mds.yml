@@ -11,6 +11,7 @@ env:
 
 jobs:
   build:
+    name: Update WebAuthn MDS
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:

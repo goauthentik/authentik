@@ -20,7 +20,7 @@ on:
 
 jobs:
   compress:
-    name: compress
+    name: Compress Docker images
     runs-on: ubuntu-latest
     # Don't run on forks. Token will not be available. Will run on main and open a PR anyway
     if: |

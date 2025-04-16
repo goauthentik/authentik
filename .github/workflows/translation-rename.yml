@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   rename_pr:
+    name: Rename PR
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
     steps:

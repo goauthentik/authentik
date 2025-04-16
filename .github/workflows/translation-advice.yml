@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   post-comment:
+    name: Post Comment
     runs-on: ubuntu-latest
     steps:
       - name: Find Comment
