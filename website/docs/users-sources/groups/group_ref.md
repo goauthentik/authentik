@@ -11,6 +11,19 @@ The Group object has the following properties:
 - `parent` The parent Group of this Group.
 - `attributes` Dynamic attributes, see [Attributes](#attributes)
 
+## Examples
+
+### List all users in a group
+
+```python
+group.users.all()
+```
+
+```python
+from authentik.core.models import Group
+Group.objects.get(name="name of group").users.all()
+```
+
 ## Attributes
 
 See [the user reference](../user/user_ref.mdx#attributes) for well-known attributes.
