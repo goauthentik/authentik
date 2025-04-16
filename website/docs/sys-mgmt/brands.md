@@ -3,17 +3,19 @@ title: Brands
 slug: /brands
 ---
 
-As an authentik admin, you can control your instance's appearance and behaviour using brands. While a single authentik instance can only have a single brand, if you have different domains running for that instance, you can apply a deparate brand each domain.
+As an authentik admin, you can control your instance's appearance and behaviour using brands. While a single authentik instance can only have a single brand, if you have different domains running for that instance, you can apply a separate brand each domain.
+
+For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
 
 To create or edit a brand, follow these steps:
 
-1. Log in as an administrator, open the Admin interface, and navigate to **System -> Brands**.
+1. Log in as an administrator, open the Admin interface, and navigate to **System** > **Brands**.
 
-2. Click **Create** create a new brand, or click the edit icon beside an existing brand modify it.
+2. Click **Create** to create a new brand, or click the edit icon beside an existing brand modify it.
 
 3. Define the configurations in the following settings:
 
-## Branding settings
+### Branding settings
 
 The brand configuration controls the branding title (shown in website document title and several other places), the sidebar/header logo that appears in the upper left of the product interface, and the favicon on a browser tab.
 
@@ -21,7 +23,7 @@ The brand configuration controls the branding title (shown in website document t
 Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
 :::
 
-## External user settings
+### External user settings
 
 You can configure authentik to redirect external users to a default application when they successfully authenticate (without being sent from a specific application). To do so, follow these steps:
 
@@ -29,7 +31,7 @@ You can configure authentik to redirect external users to a default application 
 2. Click the **Edit** button on the relevant brand.
 3. Under **External user settings** select a **Default application**
 
-## Default flows
+### Default flows
 
 You can explicitly select, in your instance's Brand settings, the _default flows_ to use for the current brand. You can optionally configure these default flows ([learn more about each default flow](../add-secure-apps/flows-stages/flow/examples/default_flows.md).):
 
