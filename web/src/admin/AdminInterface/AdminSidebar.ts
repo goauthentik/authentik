@@ -11,7 +11,7 @@ import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -71,8 +71,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     render() {
         return html`
             <ak-sidebar
-                class="pf-c-page__sidebar ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this
-                    .activeTheme === UiThemeEnum.Light
+                class="pf-c-page__sidebar
+                ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this.activeTheme ===
+                UiThemeEnum.Light
                     ? "pf-m-light"
                     : ""}"
             >
@@ -87,7 +88,6 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
         // a browser reflow, which may trigger some other styling the application is monitoring,
         // triggering a re-render which triggers a browser reflow, ad infinitum. But we've been
         // living with that since jQuery, and it's both well-known and fortunately rare.
-
         // eslint-disable-next-line wc/no-self-class
         this.classList.remove("pf-m-expanded", "pf-m-collapsed");
         // eslint-disable-next-line wc/no-self-class

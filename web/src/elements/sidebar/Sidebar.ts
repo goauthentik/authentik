@@ -70,7 +70,6 @@ export class Sidebar extends AKElement {
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
             aria-label=${msg("Global")}
         >
-            <ak-sidebar-brand></ak-sidebar-brand>
             <ul class="pf-c-nav__list">
                 <slot></slot>
             </ul>

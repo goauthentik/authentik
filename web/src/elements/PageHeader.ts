@@ -10,10 +10,12 @@ import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { themeImage } from "@goauthentik/elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -26,28 +28,44 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
-@customElement("ak-page-header")
-export class PageHeader extends WithBrandConfig(AKElement) {
-    @property()
-    icon?: string;
+//#region Page Navbar
 
-    @property({ type: Boolean })
-    iconImage = false;
-
-    @property()
-    header = "";
-
-    @property()
+export interface PageNavbarDetails {
+    header?: string;
     description?: string;
+    icon?: string;
+    iconImage?: boolean;
+}
 
-    @property({ type: Boolean })
-    hasIcon = true;
+/**
+ * A global navbar component at the top of the page.
+ *
+ * Internally, this component listens for the `ak-page-header` event, which is
+ * dispatched by the `ak-page-header` component.
+ */
+@customElement("ak-page-navbar")
+export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavbarDetails {
+    //#region Static Properties
 
-    @state()
-    me?: SessionUser;
+    private static elementRef: AKPageNavbar | null = null;
 
-    @state()
-    uiConfig!: UIConfig;
+    static readonly setNavbarDetails = (detail: Partial<PageNavbarDetails>): void => {
+        const { elementRef } = AKPageNavbar;
+        if (!elementRef) {
+            console.debug(
+                `ak-page-header: Could not find ak-page-navbar, skipping event dispatch.`,
+            );
+            return;
+        }
+
+        const { header, description, icon, iconImage } = detail;
+
+        elementRef.header = header;
+        elementRef.description = description;
+        elementRef.icon = icon;
+        elementRef.iconImage = iconImage || false;
+        elementRef.hasIcon = !!icon;
+    };
 
     static get styles(): CSSResult[] {
         return [
@@ -63,54 +81,124 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                     position: sticky;
                     top: 0;
                     z-index: var(--pf-global--ZIndex--lg);
+                    --pf-c-page__header-tools--MarginRight: 0;
+                    --ak-brand-logo-height: var(--pf-global--FontSize--4xl, 2.25rem);
+
+                    @media (prefers-color-scheme: dark) {
+                        color: var(--ak-dark-foreground);
+                    }
                 }
-                .bar {
+
+                navbar {
                     border-bottom: var(--pf-global--BorderWidth--sm);
                     border-bottom-style: solid;
                     border-bottom-color: var(--pf-global--BorderColor--100);
+                    background-color: var(--pf-c-page--BackgroundColor);
+
                     display: flex;
                     flex-direction: row;
-                    min-height: 114px;
-                    max-height: 114px;
-                    background-color: var(--pf-c-page--BackgroundColor);
+                    min-height: 9rem;
+
+                    padding-inline-end: var(--pf-global--spacer--xl);
+                    display: grid;
+                    grid-template-columns: auto 1fr auto;
+                    justify-content: space-between;
+                    gap: var(--pf-global--spacer--lg);
+                    align-items: center;
+                    width: 100%;
                 }
-                .pf-c-page__main-section.pf-m-light {
-                    background-color: transparent;
+
+                .items {
+                    display: block;
+
+                    &.primary {
+                        padding-block: var(--pf-global--spacer--lg);
+
+                        .accent-icon {
+                            height: 1em;
+                            width: 1em;
+                        }
+                    }
+
+                    &.secondary {
+                        padding-block: var(--pf-global--spacer--lg);
+                        flex: 0 0 auto;
+                        justify-self: end;
+                    }
                 }
-                .pf-c-page__main-section {
-                    flex-grow: 1;
-                    flex-shrink: 1;
+
+                .logo {
+                    flex: 0 0 auto;
+                    height: var(--ak-brand-logo-height);
+
+                    & img {
+                        height: 100%;
+                    }
+                }
+
+                .brand {
+                    width: var(--pf-c-page__sidebar--Width);
+                    padding-inline: var(--pf-global--spacer--sm);
+
                     display: flex;
-                    flex-direction: column;
                     justify-content: center;
                 }
-                img.pf-icon {
-                    max-height: 24px;
+
+                @media (min-width: 1120px) {
+                    .brand {
+                        justify-content: center;
+                    }
                 }
+
                 .sidebar-trigger,
                 .notification-trigger {
                     font-size: 24px;
                 }
+
                 .notification-trigger.has-notifications {
                     color: var(--pf-global--active-color--100);
                 }
+
+                .page-title {
+                    display: flex;
+                    gap: var(--pf-global--spacer--sm);
+                }
+
                 h1 {
                     display: flex;
                     flex-direction: row;
                     align-items: center !important;
                 }
-                .pf-c-page__header-tools {
-                    flex-shrink: 0;
-                }
-                .pf-c-page__header-tools-group {
-                    height: 100%;
-                }
-                :host([theme="dark"]) .pf-c-page__header-tools {
-                    color: var(--ak-dark-foreground) !important;
-                }
             `,
         ];
     }
+
+    //#endregion
+
+    //#region Properties
+
+    @property({ type: String })
+    icon?: string;
+
+    @property({ type: Boolean })
+    iconImage = false;
+
+    @property({ type: String })
+    header?: string;
+
+    @property({ type: String })
+    description?: string;
+
+    @property({ type: Boolean })
+    hasIcon = true;
+
+    @state()
+    me?: SessionUser;
+
+    @state()
+    uiConfig!: UIConfig;
+
+    //#endregion
 
     constructor() {
         super();
@@ -119,13 +207,23 @@ export class PageHeader extends WithBrandConfig(AKElement) {
         });
     }
 
-    async firstUpdated() {
+    connectedCallback(): void {
+        super.connectedCallback();
+        AKPageNavbar.elementRef = this;
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        AKPageNavbar.elementRef = null;
+    }
+
+    public async firstUpdated() {
         this.me = await me();
         this.uiConfig = await uiConfig();
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
     }
 
-    setTitle(header?: string) {
+    #setTitle(header?: string) {
         const currentIf = currentInterface();
         let title = this.brand?.brandingTitle || TITLE_DEFAULT;
         if (currentIf === "admin") {
@@ -141,47 +239,63 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     willUpdate() {
         // Always update title, even if there's no header value set,
         // as in that case we still need to return to the generic title
-        this.setTitle(this.header);
+        this.#setTitle(this.header);
     }
+
+    //#region Render
 
     renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
-                return html`<img class="pf-icon" src="${this.icon}" alt="page icon" />`;
+                return html`<img class="accent-icon pf-icon" src="${this.icon}" alt="page icon" />`;
             }
+
             const icon = this.icon.replaceAll("fa://", "fa ");
-            return html`<i class=${icon}></i>`;
+
+            return html`<i class="accent-icon ${icon}"></i>`;
         }
         return nothing;
     }
 
     render(): TemplateResult {
-        return html`<div class="bar">
-            <button
-                class="sidebar-trigger pf-c-button pf-m-plain"
-                @click=${() => {
-                    this.dispatchEvent(
-                        new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }}
-            >
-                <i class="fas fa-bars"></i>
-            </button>
-            <section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        ${this.hasIcon
-                            ? html`<slot name="icon">${this.renderIcon()}</slot>&nbsp;`
-                            : nothing}
-                        <slot name="header">${this.header}</slot>
-                    </h1>
-                    ${this.description ? html`<p>${this.description}</p>` : html``}
-                </div>
+        return html`<navbar aria-label="Main" class="navbar">
+            <aside class="brand">
+                <button
+                    style="display: none"
+                    class="sidebar-trigger pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
+                >
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="#/">
+                    <div class="logo">
+                        <img
+                            src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
+                            alt="${msg("authentik Logo")}"
+                            loading="lazy"
+                        />
+                    </div>
+                </a>
+            </aside>
+
+            <section class="items primary pf-c-content">
+                <h1 class="page-title">
+                    ${this.hasIcon ? html`<slot name="icon">${this.renderIcon()}</slot>` : nothing}
+                    ${this.header}
+                </h1>
+
+                ${this.description ? html`<p>${this.description}</p>` : nothing}
             </section>
-            <div class="pf-c-page__header-tools">
+
+            <section class="items secondary">
                 <div class="pf-c-page__header-tools-group">
                     <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
                         <a
@@ -193,13 +307,75 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                         </a>
                     </ak-nav-buttons>
                 </div>
-            </div>
-        </div>`;
+            </section>
+        </navbar>`;
+    }
+
+    //#endregion
+}
+
+//#endregion
+
+//#region Page Header
+
+/**
+ * A page header component, used to display the page title and description.
+ *
+ * Internally, this component dispatches the `ak-page-header` event, which is
+ * listened to by the `ak-page-navbar` component.
+ *
+ * @singleton
+ */
+@customElement("ak-page-header")
+export class AKPageHeader extends LitElement implements PageNavbarDetails {
+    @property({ type: String })
+    header?: string;
+
+    @property({ type: String })
+    description?: string;
+
+    @property({ type: String })
+    icon?: string;
+
+    @property({ type: Boolean })
+    iconImage = false;
+
+    static get styles(): CSSResult[] {
+        return [
+            css`
+                :host {
+                    display: none;
+                }
+            `,
+        ];
+    }
+
+    connectedCallback(): void {
+        super.connectedCallback();
+
+        AKPageNavbar.setNavbarDetails({
+            header: this.header,
+            description: this.description,
+            icon: this.icon,
+            iconImage: this.iconImage,
+        });
+    }
+
+    update(): void {
+        AKPageNavbar.setNavbarDetails({
+            header: this.header,
+            description: this.description,
+            icon: this.icon,
+            iconImage: this.iconImage,
+        });
     }
 }
 
+//#endregion
+
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-page-header": PageHeader;
+        "ak-page-header": AKPageHeader;
+        "ak-page-navbar": AKPageNavbar;
     }
 }
