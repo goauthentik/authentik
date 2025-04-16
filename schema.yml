@@ -42110,6 +42110,11 @@ components:
             format: uuid
       required:
       - name
+    AuthorizationCodeAuthMethodEnum:
+      enum:
+      - basic_auth
+      - post_body
+      type: string
     AutoSubmitChallengeResponseRequest:
       type: object
       description: Pseudo class for autosubmit response
@@ -48753,6 +48758,11 @@ components:
         oidc_jwks_url:
           type: string
         oidc_jwks: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code
+            token request flow
       required:
       - callback_url
       - component
@@ -48922,6 +48932,11 @@ components:
         oidc_jwks_url:
           type: string
         oidc_jwks: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code
+            token request flow
       required:
       - consumer_key
       - consumer_secret
@@ -53024,6 +53039,11 @@ components:
         oidc_jwks_url:
           type: string
         oidc_jwks: {}
+        authorization_code_auth_method:
+          allOf:
+          - $ref: '#/components/schemas/AuthorizationCodeAuthMethodEnum'
+          description: How to perform authentication during an authorization_code
+            token request flow
     PatchedOutpostRequest:
       type: object
       description: Outpost Serializer
