@@ -103,6 +103,8 @@ export function setSentryInterface(interfaceName: RouteInterfaceName) {
  * @category Sentry
  */
 export function tryInitializeSentry({ errorReporting, capabilities }: Config): void {
+    if (!errorReporting.enabled) return
+
     init({
         ...DEFAULT_SENTRY_BROWSER_OPTIONS,
         dsn: errorReporting.sentryDsn,
