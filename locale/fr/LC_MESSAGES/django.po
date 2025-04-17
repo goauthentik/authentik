@@ -2563,7 +2563,7 @@ msgid ""
 "flow"
 msgstr ""
 "Comment effectuer l'authentification lors d'une demande de jeton pour le "
-"flux authorization_code."
+"flux authorization_code"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
