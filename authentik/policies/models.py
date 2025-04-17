@@ -101,6 +101,10 @@ class PolicyBinding(SerializerModel):
     )
 
     order = models.IntegerField()
+    honor_order = models.BooleanField(
+        default=False,
+        help_text=_("Honor order when evaluating policies."),
+    )
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if request passes this PolicyBinding, check policy, group or user"""
