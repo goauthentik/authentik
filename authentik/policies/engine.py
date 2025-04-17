@@ -131,7 +131,7 @@ class PolicyEngine:
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
 
-                result_queue = Queue()
+                result_queue = get_context().Queue()
                 task = PolicyProcess(binding, self.request, result_queue)
                 task.daemon = False
 
