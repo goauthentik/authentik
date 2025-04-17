@@ -1,26 +1,7 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.0.4",
     "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
-    "license": "MIT",
-    "private": true,
-    "main": "index.js",
-    "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
-        },
-        "./client": {
-            "import": "./client/index.js",
-            "types": "./out/client/index.d.ts"
-        },
-        "./plugin": {
-            "import": "./plugin/index.js",
-            "types": "./out/plugin/index.d.ts"
-        }
-    },
+    "version": "1.0.4",
     "dependencies": {
         "find-free-ports": "^3.1.1"
     },
@@ -33,21 +14,40 @@
         "prettier": "^3.3.3",
         "typescript": "^5.6.2"
     },
-    "peerDependencies": {
-        "esbuild": "^0.25.0"
-    },
     "engines": {
         "node": ">=20.11"
     },
-    "types": "./out/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
+        },
+        "./client": {
+            "types": "./out/client/index.d.ts",
+            "import": "./client/index.js"
+        },
+        "./plugin": {
+            "types": "./out/plugin/index.d.ts",
+            "import": "./plugin/index.js"
+        }
+    },
     "files": [
         "./index.js",
         "client/**/*",
         "plugin/**/*",
         "out/**/*"
     ],
+    "license": "MIT",
+    "main": "index.js",
+    "peerDependencies": {
+        "esbuild": "^0.25.0"
+    },
     "prettier": "@goauthentik/prettier-config",
+    "private": true,
     "publishConfig": {
         "access": "public"
-    }
+    },
+    "type": "module",
+    "types": "./out/index.d.ts"
 }

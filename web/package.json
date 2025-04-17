@@ -60,10 +60,10 @@
         "yaml": "^2.5.1"
     },
     "devDependencies": {
-        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
-        "@goauthentik/tsconfig": "^1.0.4",
         "@eslint/js": "^9.11.1",
+        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
         "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
