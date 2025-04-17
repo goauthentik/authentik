@@ -86,7 +86,6 @@
         margin: 0;
     }
 
-
     .navbar__item.navbar__link {
         font-size: 1.1rem;
     }
@@ -120,12 +119,8 @@
 
         @media (min-width: 999px) {
             border-inline-start: 1px solid var(--ifm-hover-overlay);
-            margin-inline-start: calc(
-                var(--ifm-navbar-item-padding-horizontal) / 2
-            );
-            padding-inline-start: calc(
-                var(--ifm-navbar-item-padding-horizontal) / 2
-            );
+            margin-inline-start: calc(var(--ifm-navbar-item-padding-horizontal) / 2);
+            padding-inline-start: calc(var(--ifm-navbar-item-padding-horizontal) / 2);
         }
     }
 
@@ -149,19 +144,14 @@
         hsl(236.84deg 34.55% 10.78%)
     );
     --docsearch-key-shadow:
-        inset 0 -2px 0 0 hsl(233.33deg 36% 24.51%),
-        inset 0 0 1px 1px hsl(232.11deg 34.86% 57.25%),
+        inset 0 -2px 0 0 hsl(233.33deg 36% 24.51%), inset 0 0 1px 1px hsl(232.11deg 34.86% 57.25%),
         0 2px 2px 0 rgba(3, 4, 9, 0.3);
     --docsearch-key-pressed-shadow:
-        inset 0 -2px 0 0 #282d55,
-        inset 0 0 1px 1px hsl(231.82deg 21.36% 40.39%),
+        inset 0 -2px 0 0 #282d55, inset 0 0 1px 1px hsl(231.82deg 21.36% 40.39%),
         0 1px 1px 0 hsl(230deg 50% 2.35% / 30.2%);
 
-    padding: var(--ifm-navbar-item-padding-vertical)
-        var(--ifm-navbar-item-padding-horizontal) !important;
-    padding-inline-end: calc(
-        var(--ifm-navbar-item-padding-horizontal) * 1.25
-    ) !important;
+    padding: var(--ifm-navbar-item-padding-vertical) var(--ifm-navbar-item-padding-horizontal) !important;
+    padding-inline-end: calc(var(--ifm-navbar-item-padding-horizontal) * 1.25) !important;
 
     .DocSearch-Button-Placeholder {
         font-family: var(--ifm-heading-font-family);
