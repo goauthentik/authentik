@@ -26,11 +26,13 @@ class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
+    result_queue: Queue
     result: PolicyResult | None
     binding: PolicyBinding
 
-    def __init__(self, process: PolicyProcess, binding: PolicyBinding):
+    def __init__(self, process: PolicyProcess, result_queue: Queue, binding: PolicyBinding):
         self.process = process
+        self.result_queue = result_queue
         self.binding = binding
         self.result = None
 
@@ -62,7 +64,7 @@ class PolicyEngine:
         if request:
             self.request.set_http_request(request)
         self.__cached_policies: list[PolicyResult] = []
-        self.__processes_results: list[PolicyResult] = []
+        self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
 
@@ -121,10 +123,6 @@ class PolicyEngine:
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
-
-            processes: list[PolicyProcessInfo] = []
-            result_queue: Queue = get_context().Queue()
-
             for binding in self.iterate_bindings():
                 self.__expected_result_count += 1
 
@@ -133,6 +131,7 @@ class PolicyEngine:
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
 
+                result_queue = Queue()
                 task = PolicyProcess(binding, self.request, result_queue)
                 task.daemon = False
 
@@ -141,20 +140,23 @@ class PolicyEngine:
                     task.run()
                 else:
                     task.start()
-                processes.append(PolicyProcessInfo(process=task, binding=binding))
+                self.__processes.append(
+                    PolicyProcessInfo(process=task, result_queue=result_queue, binding=binding)
+                )
             # If all policies are cached, we have an empty list here.
-            for proc_info in processes:
+            for proc_info in self.__processes:
                 if proc_info.process.is_alive():
                     proc_info.process.join(proc_info.binding.timeout)
-            # Collect results
-            while not result_queue.empty():
-                self.__processes_results.append(result_queue.get())
+                # Only call .recv() if no result is saved, otherwise we just deadlock here
+                if not proc_info.result:
+                    proc_info.result = proc_info.result_queue.get()
             return self
 
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
-        all_results = list(self.__processes_results + self.__cached_policies)
+        process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
+        all_results = list(process_results + self.__cached_policies)
         if len(all_results) < self.__expected_result_count:  # pragma: no cover
             raise AssertionError("Got less results than polices")
         # No results, no policies attached -> passing
