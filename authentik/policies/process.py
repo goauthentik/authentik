@@ -147,4 +147,4 @@ class PolicyProcess(PROCESS_CLASS):
             self.result_queue.put_nowait(self.profiling_wrapper())
         except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
-            self.result_queue.put(PolicyResult(False, str(exc)))
+            self.result_queue.put_nowait(PolicyResult(False, str(exc)))
