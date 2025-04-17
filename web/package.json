@@ -63,6 +63,7 @@
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@eslint/js": "^9.11.1",
+        "@goauthentik/prettier-config": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
@@ -74,7 +75,7 @@
         "@storybook/manager-api": "^8.3.4",
         "@storybook/web-components": "^8.3.4",
         "@storybook/web-components-vite": "^8.3.4",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
@@ -137,6 +138,7 @@
             "axios": "^1.8.4"
         }
     },
+    "prettier": "@goauthentik/prettier-config",
     "private": true,
     "scripts": {
         "build": "wireit",
