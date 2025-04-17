@@ -4,7 +4,7 @@ import {
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
+import { tryInitializeSentry } from "@goauthentik/common/sentry";
 import { ServerContext } from "@goauthentik/common/server-context";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -237,10 +237,12 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry();
+        tryInitializeSentry(ServerContext.config);
+
         if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
+
         this.loading = true;
         try {
             const challenge = await new FlowsApi(DEFAULT_CONFIG).flowsExecutorGet({

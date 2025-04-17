@@ -4,7 +4,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
+import { setSentryPII, tryInitializeSentry } from "@goauthentik/common/sentry";
 import { ServerContext } from "@goauthentik/common/server-context";
 import { UIConfig, getConfigForUser } from "@goauthentik/common/ui/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
@@ -284,7 +284,9 @@ export class UserInterface extends AuthenticatedInterface {
         super();
         this.ws = new WebsocketClient();
         this.fetchConfigurationDetails();
-        configureSentry(true);
+
+        tryInitializeSentry(ServerContext.config);
+
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
@@ -324,6 +326,8 @@ export class UserInterface extends AuthenticatedInterface {
         me().then((session: SessionUser) => {
             this.me = session;
             this.uiConfig = getConfigForUser(session.user);
+
+            setSentryPII(session.user);
 
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
