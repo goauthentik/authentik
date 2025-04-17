@@ -75,19 +75,17 @@
         --ifm-navbar-item-padding-horizontal: 1rem;
     }
 
-    .docs-wrapper .navbar {
+    .navbar {
         margin: 0;
         padding-inline-start: 0;
     }
 
     .navbar__brand {
         justify-content: center;
-    }
-
-    .docs-wrapper .navbar__brand {
-        width: var(--doc-sidebar-width);
+        width: var(--doc-sidebar-width, 300px);
         margin: 0;
     }
+
 
     .navbar__item.navbar__link {
         font-size: 1.1rem;
