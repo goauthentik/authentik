@@ -1,5 +1,14 @@
 {% load i18n %}
-{% get_current_language as LANGUAGE_CODE %}
+
+{{ config_json|json_script:":ak-config:" }}
+
+{{ brand_json|json_script:":ak-brand:" }}
+
+<meta name="ak-version-family" content="{{ version_family }}">
+<meta name="ak-version-subdomain" content="{{ version_subdomain }}">
+<meta name="ak-build" content="{{ build }}">
+<meta name="ak-base-url" content="{{ base_url }}">
+<meta name="ak-base-url-rel" content="{{ base_url_rel }}">
 
 <script>
     window.authentik = {

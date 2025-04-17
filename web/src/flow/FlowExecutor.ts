@@ -4,9 +4,8 @@ import {
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
@@ -201,7 +200,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
+        return ServerContext?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
@@ -487,7 +486,8 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+        const prefilledFlow = ServerContext.flowLayout || FlowLayoutEnum.Stacked;
+
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -526,11 +526,9 @@ export class FlowExecutor extends Interface implements StageHost {
                                             >
                                                 <img
                                                     src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
+                                                        this.brand?.brandingLogo ||
+                                                            ServerContext.brand.brandingLogo ||
                                                             DefaultBrand.brandingLogo,
-                                                        ),
                                                     )}"
                                                     alt="${msg("authentik Logo")}"
                                                 />

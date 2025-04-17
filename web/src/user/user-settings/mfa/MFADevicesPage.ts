@@ -1,7 +1,7 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
 import { deviceTypeName } from "@goauthentik/common/labels";
 import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -74,7 +74,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
+                                    `${ServerContext.baseURL}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"

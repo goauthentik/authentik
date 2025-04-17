@@ -1,5 +1,5 @@
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { UIConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
@@ -78,15 +78,14 @@ export class AKElement extends LitElement {
     async _initTheme(root: DocumentOrShadowRoot): Promise<void> {
         // Early activate theme based on media query to prevent light flash
         // when dark is preferred
-        this._applyTheme(root, globalAK().brand.uiTheme);
+        this._applyTheme(root, ServerContext.brand.uiTheme);
         this._applyTheme(root, await this.getTheme());
     }
 
     async _initCustomCSS(root: DocumentOrShadowRoot): Promise<void> {
-        const brand = globalAK().brand;
-        if (!brand) {
-            return;
-        }
+        const { brand } = ServerContext;
+        if (!brand) return;
+
         const sheet = await new CSSStyleSheet().replace(brand.brandingCustomCss);
         root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
     }

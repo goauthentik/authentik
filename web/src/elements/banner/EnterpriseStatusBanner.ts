@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
@@ -76,7 +76,7 @@ export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {
                 : "pf-m-gold"}"
         >
             ${message}
-            <a href="${globalAK().api.base}if/admin/#/enterprise/licenses"
+            <a href="${ServerContext.baseURL}if/admin/#/enterprise/licenses"
                 >${msg("Click here for more info.")}</a
             >
         </div>`;
