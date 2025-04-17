@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-15 00:11+0000\n"
+"POT-Creation-Date: 2025-04-17 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -2509,6 +2509,14 @@ msgid "No token received."
 msgstr "Pas de jeton reçu."
 
 #: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "Authentification HTTP Basic"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "Inclure le client ID et secret comme paramètres de la requête"
+
+#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "URL du jeton de requête"
 
@@ -2548,6 +2556,14 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Portées additionnelles"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
+"Comment effectuer l'authentification lors d'une demande de jeton pour le "
+"flux authorization_code."
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
