@@ -2,49 +2,85 @@
 {% load i18n %}
 {% load authentik_core %}
 
-<!DOCTYPE html>
+<!doctype html>
+<html lang="{{ get_current_language }}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        {# Darkreader breaks the site regardless of theme as its not compatible with webcomponents, and we default to a dark theme based on preferred colour-scheme #}
-        <meta name="darkreader-lock">
-        <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
-        <link rel="icon" href="{{ brand.branding_favicon_url }}">
-        <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
-        {% block head_before %}
-        {% endblock %}
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
-        <style>{{ brand.branding_custom_css }}</style>
-        <script src="{% versioned_script 'dist/poly-%v.js' %}" type="module"></script>
-        <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
-        {% block head %}
-        {% endblock %}
-        <meta name="sentry-trace" content="{{ sentry_trace }}" />
-    </head>
-    <body>
-        {% block body %}
-        {% endblock %}
-        {% block scripts %}
-        {% endblock %}
+    {% comment %}
+      Darkreader breaks the site regardless of theme as its not compatible with webcomponents,
+      and we default to a dark theme based on preferred colour-scheme.
+    {% endcomment %}
 
-        <noscript>
-          <style>
-            body {
-              font-family: var(--ak-font-family-base), sans-serif;
-            }
-          </style>
+    <meta name="darkreader-lock">
 
-          <h1>
-            JavaScript is required to use
-            {% trans title|default:brand.branding_title %}
-          </h1>
+    <title>{% block title %}{% trans title|default:brand.branding_title %}{% endblock %}</title>
 
-          <p>
-            Please enable JavaScript in your browser settings and reload the page.
-            If you are using a browser extension that blocks JavaScript, please disable it for this site.
-          </p>
-        </noscript>
-    </body>
+    <link rel="icon" href="{{ brand.branding_favicon_url }}">
+    <link rel="shortcut icon" href="{{ brand.branding_favicon_url }}">
+
+    {% block head_before %}
+    {% endblock %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
+
+    <style data-test-id="color-scheme">
+      @media (prefers-color-scheme: dark) {
+        :root {
+          color-scheme: dark light;
+        }
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root {
+          color-scheme: light dark;
+        }
+      }
+    </style>
+
+    <style data-test-id="custom-branding-css">
+      {{ brand.branding_custom_css }}
+    </style>
+
+    <script
+      data-test-id="entrypoint-polyfill"
+      src="{% versioned_script 'dist/poly-%v.js' %}"
+      type="module">
+    </script>
+
+    <script
+      data-test-id="entrypoint-loading"
+      src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}"
+      type="module">
+    </script>
+
+    {% block head %}
+    {% endblock %}
+
+    <meta name="sentry-trace" content="{{ sentry_trace }}">
+  </head>
+
+  <body>
+    {% block body %}{% endblock %}
+    {% block scripts %}{% endblock %}
+
+    <noscript>
+      <style>
+        body {
+          font-family: var(--ak-font-family-base), sans-serif;
+        }
+      </style>
+
+      <h1>
+        JavaScript is required to use
+        {% trans title|default:brand.branding_title %}
+      </h1>
+
+      <p>
+        Please enable JavaScript in your browser settings and reload the page.
+        If you are using a browser extension that blocks JavaScript, please disable it for this site.
+      </p>
+    </noscript>
+  </body>
 </html>
