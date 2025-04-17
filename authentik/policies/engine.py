@@ -1,5 +1,7 @@
 """authentik policy engine"""
 
+from time import sleep
+
 from collections.abc import Iterator
 from multiprocessing import current_process, get_context
 from multiprocessing.queues import Queue
@@ -26,13 +28,11 @@ class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
-    result: PolicyResult | None
     binding: PolicyBinding
 
     def __init__(self, process: PolicyProcess, binding: PolicyBinding):
         self.process = process
         self.binding = binding
-        self.result = None
 
 
 class PolicyEngine:
@@ -122,38 +122,54 @@ class PolicyEngine:
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
 
-            processes: list[PolicyProcessInfo] = []
+            self.processes: list[PolicyProcessInfo] = []
             result_queue: Queue = get_context().Queue()
 
             for binding in self.iterate_bindings():
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)
-                if self._check_cache(binding):
-                    continue
+                # if self._check_cache(binding):
+                #     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
 
-                task = PolicyProcess(binding, self.request, result_queue)
+                task = PolicyProcess(
+                    binding=binding,
+                    request=self.request,
+                    result_queue=result_queue,
+                )
                 task.daemon = False
 
                 self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
                 if not CURRENT_PROCESS._config.get("daemon"):
+                    self.logger.error(f"no daemon")
                     task.run()
                 else:
                     task.start()
-                processes.append(PolicyProcessInfo(process=task, binding=binding))
+                self.processes.append(PolicyProcessInfo(process=task, binding=binding))
             # If all policies are cached, we have an empty list here.
-            for proc_info in processes:
+            for proc_info in self.processes:
+                # self.logger.error(f"timeout: {proc_info.binding.timeout}")
                 if proc_info.process.is_alive():
                     proc_info.process.join(proc_info.binding.timeout)
+                    self.logger.error("mdr")
+                # self.logger.error(f"proc_info: {proc_info}")
+            # self.logger.debug("whatver")
+            #  sleep(0.00000000000001)
+            # print("mdr")
             # Collect results
-            while not result_queue.empty():
+            while result_queue.qsize() != 0:
+                self.logger.error("not empty")
                 self.__processes_results.append(result_queue.get())
+            self.logger.error(f"qsize: {result_queue.qsize()}")
             return self
 
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
+        # self.logger.error(f"processes: {self.processes[0].process.is_alive()}")
+        self.logger.error(f"processes_results: {self.__processes_results}")
+        self.logger.error(f"cached_policies: {self.__cached_policies}")
         all_results = list(self.__processes_results + self.__cached_policies)
         if len(all_results) < self.__expected_result_count:  # pragma: no cover
             raise AssertionError("Got less results than polices")
