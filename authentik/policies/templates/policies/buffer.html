@@ -5,21 +5,28 @@
 
 {% block head %}
 {{ block.super }}
+
 <script>
   let redirecting = false;
+
   const checkAuth = async () => {
     if (redirecting) return true;
+
     const url = "{{ check_auth_url }}";
     console.debug("authentik/policies/buffer: Checking authentication...");
+
     try {
       const result = await fetch(url, {
         method: "HEAD",
       });
+
       if (result.status >= 400) {
         return false
       }
+
       console.debug("authentik/policies/buffer: Continuing");
       redirecting = true;
+
       if ("{{ auth_req_method }}" === "post") {
         document.querySelector("form").submit();
       } else {
@@ -29,61 +36,75 @@
       return false;
     }
   };
+
   let timeout = 100;
   let offset = 20;
   let attempt = 0;
+
   const main = async () => {
     attempt += 1;
+
     await checkAuth();
+
     console.debug(`authentik/policies/buffer: Waiting ${timeout}ms...`);
+
     setTimeout(main, timeout);
+
     timeout += (offset * attempt);
+
     if (timeout >= 2000) {
       timeout = 2000;
     }
   }
+
   document.addEventListener("visibilitychange", async () => {
     if (document.hidden) return;
+
     console.debug("authentik/policies/buffer: Checking authentication on tab activate...");
+
     await checkAuth();
   });
+
   main();
 </script>
 {% endblock %}
 
 {% block title %}
-{% trans 'Waiting for authentication...' %} - {{ brand.branding_title }}
+  {% trans 'Waiting for authentication...' %} - {{ brand.branding_title }}
 {% endblock %}
 
 {% block card_title %}
-{% trans 'Waiting for authentication...' %}
+  {% trans 'Waiting for authentication...' %}
 {% endblock %}
 
 {% block card %}
-<form class="pf-c-form" method="{{ auth_req_method }}" action="{{ continue_url }}">
-  {% if auth_req_method == "post" %}
-    {% for key, value in auth_req_body.items %}
-      <input type="hidden" name="{{ key }}" value="{{ value }}" />
-    {% endfor %}
-  {% endif %}
-  <div class="pf-c-empty-state">
-    <div class="pf-c-empty-state__content">
-      <div class="pf-c-empty-state__icon">
-        <span class="pf-c-spinner pf-m-xl" role="progressbar">
-          <span class="pf-c-spinner__clipper"></span>
-          <span class="pf-c-spinner__lead-ball"></span>
-          <span class="pf-c-spinner__tail-ball"></span>
-        </span>
+  <form class="pf-c-form" method="{{ auth_req_method }}" action="{{ continue_url }}">
+    {% if auth_req_method == "post" %}
+      {% for key, value in auth_req_body.items %}
+        <input type="hidden" name="{{ key }}" value="{{ value }}">
+      {% endfor %}
+    {% endif %}
+
+    <div class="pf-c-empty-state">
+      <div class="pf-c-empty-state__content">
+        <div class="pf-c-empty-state__icon">
+          <span class="pf-c-spinner pf-m-xl" role="progressbar">
+            <span class="pf-c-spinner__clipper"></span>
+            <span class="pf-c-spinner__lead-ball"></span>
+            <span class="pf-c-spinner__tail-ball"></span>
+          </span>
+        </div>
+
+        <h1 class="pf-c-title pf-m-lg">
+          {% trans "You're already authenticating in another tab. This page will refresh once authentication is completed." %}
+        </h1>
       </div>
-      <h1 class="pf-c-title pf-m-lg">
-        {% trans "You're already authenticating in another tab. This page will refresh once authentication is completed." %}
-      </h1>
     </div>
-  </div>
-  <div class="pf-c-form__group pf-m-action">
-    <a href="{{ auth_req_url }}" class="pf-c-button pf-m-primary pf-m-block">
-      {% trans "Authenticate in this tab" %}
-    </a>
-  </div>
-</form>
+
+    <div class="pf-c-form__group pf-m-action">
+      <a href="{{ auth_req_url }}" class="pf-c-button pf-m-primary pf-m-block">
+        {% trans "Authenticate in this tab" %}
+      </a>
+    </div>
+  </form>
 {% endblock %}
