@@ -9771,6 +9771,22 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Reputation cannot increase higher than this value. Zero or positive.</source>
   <target>信誉无法提高到此值以上。可为零或正数。</target>
 </trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+  <target>HTTP 基本身份验证</target>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+  <target>包括客户端 ID 和密钥作为请求参数</target>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+  <target>Authorization code 身份验证方法</target>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+  <target>在 authorization_code 令牌请求流程期间，如何执行身份验证</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
