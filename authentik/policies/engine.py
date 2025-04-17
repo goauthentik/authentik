@@ -108,6 +108,9 @@ class PolicyEngine:
         self.__cached_policies.append(cached_policy)
         return True
 
+    def _should_fork(self, binding: PolicyBinding) -> bool:
+        return binding.policy is not None
+
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
         with (
@@ -134,7 +137,7 @@ class PolicyEngine:
                 task = PolicyProcess(binding, self.request, task_end)
                 task.daemon = False
                 self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
-                if not CURRENT_PROCESS._config.get("daemon"):
+                if not CURRENT_PROCESS._config.get("daemon") or not self._should_fork(binding):
                     task.run()
                 else:
                     task.start()
