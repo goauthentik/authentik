@@ -1,5 +1,5 @@
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
@@ -45,7 +45,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
         if (!this.version || !this.licenseSummary) {
             return nothing;
         }
-        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+        let product = ServerContext.brand.brandingTitle || DefaultBrand.brandingTitle;
         if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }

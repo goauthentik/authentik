@@ -4,8 +4,8 @@ import {
     EVENT_FLOW_INSPECTOR_TOGGLE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
@@ -481,7 +481,8 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     getLayout(): string {
-        const prefilledFlow = globalAK()?.flow?.layout || FlowLayoutEnum.Stacked;
+        const prefilledFlow = ServerContext.flowLayout || FlowLayoutEnum.Stacked;
+
         if (this.challenge) {
             return this.challenge?.flowInfo?.layout || prefilledFlow;
         }
@@ -521,7 +522,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 <img
                                                     src="${themeImage(
                                                         this.brand?.brandingLogo ??
-                                                            globalAK()?.brand.brandingLogo ??
+                                                            ServerContext.brand.brandingLogo ??
                                                             DefaultBrand.brandingLogo,
                                                     )}"
                                                     alt="${msg("authentik Logo")}"

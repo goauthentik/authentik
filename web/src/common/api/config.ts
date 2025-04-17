@@ -5,21 +5,13 @@ import {
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 
-import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
+import { Configuration, CurrentBrand } from "@goauthentik/api";
 
 // HACK: Workaround for ESBuild not being able to hoist import statement across entrypoints.
 // This can be removed after ESBuild uses a single build context for all entrypoints.
 export { CSRFHeaderName };
-
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
-export function config(): Promise<Config> {
-    if (!globalConfigPromise) {
-        globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
-    }
-    return globalConfigPromise;
-}
 
 export function brandSetFavicon(brand: CurrentBrand) {
     /**
@@ -52,35 +44,22 @@ export function brandSetLocale(brand: CurrentBrand) {
     );
 }
 
-let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
-export function brand(): Promise<CurrentBrand> {
-    if (!globalBrandPromise) {
-        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreBrandsCurrentRetrieve()
-            .then((brand) => {
-                brandSetFavicon(brand);
-                brandSetLocale(brand);
-                return brand;
-            });
-    }
-    return globalBrandPromise;
-}
-
 export function getMetaContent(key: string): string {
     const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
     if (!metaEl) return "";
+
     return metaEl.content;
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: `${globalAK().api.base}api/v3`,
+    basePath: `${ServerContext.baseURL}api/v3`,
     headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
+        "sentry-trace": ServerContext.sentryTrace,
     },
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
-        new LoggingMiddleware(globalAK().brand),
+        new LoggingMiddleware(ServerContext.brand),
     ],
 });
 
