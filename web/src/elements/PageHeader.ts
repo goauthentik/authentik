@@ -21,6 +21,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationBadge from "@patternfly/patternfly/components/NotificationBadge/notification-badge.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -72,6 +73,8 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
             PFBase,
             PFButton,
             PFPage,
+            PFDrawer,
+
             PFNotificationBadge,
             PFContent,
             PFAvatar,
@@ -86,6 +89,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                     @media (prefers-color-scheme: dark) {
                         color: var(--ak-dark-foreground);
+                        --pf-c-page__sidebar--BackgroundColor: var(--ak-dark-background-light);
                     }
                 }
 
@@ -97,34 +101,91 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                     display: flex;
                     flex-direction: row;
-                    min-height: 9rem;
+                    min-height: 6rem;
+                    padding-block: var(--pf-global--spacer--xs);
+                    row-gap: var(--pf-global--spacer--xs);
 
-                    padding-inline-end: var(--pf-global--spacer--xl);
                     display: grid;
-                    grid-template-columns: auto 1fr auto;
-                    justify-content: space-between;
-                    gap: var(--pf-global--spacer--lg);
-                    align-items: center;
-                    width: 100%;
+                    column-gap: var(--pf-global--spacer--xs);
+                    grid-template-columns: [brand] auto [toggle] auto [primary] 1fr [secondary] auto;
+                    grid-template-rows: auto auto;
+                    grid-template-areas:
+                        "brand toggle primary secondary"
+                        "brand toggle description secondary";
+
+                    @media (max-width: 768px) {
+                        row-gap: var(--pf-global--spacer--xs);
+
+                        align-items: center;
+                        grid-template-areas:
+                            "toggle primary secondary"
+                            "toggle description description";
+                        justify-content: space-between;
+                        width: 100%;
+                    }
                 }
 
                 .items {
                     display: block;
 
                     &.primary {
-                        padding-block: var(--pf-global--spacer--lg);
+                        grid-area: primary;
+                        align-content: center;
+                        padding-inline: var(--pf-global--spacer--sm);
+                        padding-block-start: var(--pf-global--spacer--md);
 
                         .accent-icon {
                             height: 1em;
                             width: 1em;
+
+                            @media (max-width: 767px) {
+                                display: none;
+                            }
+                        }
+                    }
+
+                    &.page-description {
+                        grid-area: description;
+                        padding-inline: var(--pf-global--spacer--sm);
+                        padding-block-end: var(--pf-global--spacer--md);
+
+                        @media (min-width: 769px) {
+                            text-wrap: balance;
                         }
                     }
 
                     &.secondary {
+                        grid-area: secondary;
                         padding-block: var(--pf-global--spacer--lg);
                         flex: 0 0 auto;
                         justify-self: end;
+                        padding-inline-end: var(--pf-global--spacer--xl);
                     }
+                }
+
+                .brand {
+                    grid-area: brand;
+                    background-color: var(--pf-c-page__sidebar--BackgroundColor);
+                    height: 100%;
+                    width: var(--pf-c-page__sidebar--Width);
+                    align-items: center;
+                    padding-inline: var(--pf-global--spacer--sm);
+
+                    display: flex;
+                    justify-content: center;
+
+                    &.pf-m-collapsed {
+                        display: none;
+                    }
+
+                    @media (max-width: 1279px) {
+                        display: none;
+                    }
+                }
+
+                .sidebar-trigger {
+                    grid-area: toggle;
+                    height: 100%;
                 }
 
                 .logo {
@@ -136,23 +197,9 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
                     }
                 }
 
-                .brand {
-                    width: var(--pf-c-page__sidebar--Width);
-                    padding-inline: var(--pf-global--spacer--sm);
-
-                    display: flex;
-                    justify-content: center;
-                }
-
-                @media (min-width: 1120px) {
-                    .brand {
-                        justify-content: center;
-                    }
-                }
-
                 .sidebar-trigger,
                 .notification-trigger {
-                    font-size: 24px;
+                    font-size: 1.5rem;
                 }
 
                 .notification-trigger.has-notifications {
@@ -192,6 +239,9 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
     @property({ type: Boolean })
     hasIcon = true;
 
+    @property({ type: Boolean })
+    open = true;
+
     @state()
     me?: SessionUser;
 
@@ -199,6 +249,22 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
     uiConfig!: UIConfig;
 
     //#endregion
+
+    //#endregion
+    //#region Methods
+
+    #toggleSidebar() {
+        this.open = !this.open;
+
+        this.dispatchEvent(
+            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+                bubbles: true,
+                composed: true,
+            }),
+        );
+    }
+
+    //#region Constructor
 
     constructor() {
         super();
@@ -259,56 +325,55 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
     render(): TemplateResult {
         return html`<navbar aria-label="Main" class="navbar">
-            <aside class="brand">
+                <aside class="brand ${this.open ? "" : "pf-m-collapsed"}">
+                    <a href="#/">
+                        <div class="logo">
+                            <img
+                                src=${themeImage(
+                                    this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
+                                )}
+                                alt="${msg("authentik Logo")}"
+                                loading="lazy"
+                            />
+                        </div>
+                    </a>
+                </aside>
                 <button
-                    style="display: none"
                     class="sidebar-trigger pf-c-button pf-m-plain"
-                    @click=${() => {
-                        this.dispatchEvent(
-                            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
-                                bubbles: true,
-                                composed: true,
-                            }),
-                        );
-                    }}
+                    @click=${this.#toggleSidebar}
+                    aria-label=${msg("Toggle sidebar")}
+                    aria-expanded=${this.open ? "true" : "false"}
                 >
                     <i class="fas fa-bars"></i>
                 </button>
 
-                <a href="#/">
-                    <div class="logo">
-                        <img
-                            src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
-                            alt="${msg("authentik Logo")}"
-                            loading="lazy"
-                        />
+                <section class="items primary pf-c-content">
+                    <h1 class="page-title">
+                        ${this.hasIcon
+                            ? html`<slot name="icon">${this.renderIcon()}</slot>`
+                            : nothing}
+                        ${this.header}
+                    </h1>
+                </section>
+                <section class="items page-description pf-c-content">
+                    ${this.description ? html`<p>${this.description}</p>` : nothing}
+                </section>
+
+                <section class="items secondary">
+                    <div class="pf-c-page__header-tools-group">
+                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
+                            <a
+                                class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                                href="${globalAK().api.base}if/user/"
+                                slot="extra"
+                            >
+                                ${msg("User interface")}
+                            </a>
+                        </ak-nav-buttons>
                     </div>
-                </a>
-            </aside>
-
-            <section class="items primary pf-c-content">
-                <h1 class="page-title">
-                    ${this.hasIcon ? html`<slot name="icon">${this.renderIcon()}</slot>` : nothing}
-                    ${this.header}
-                </h1>
-
-                ${this.description ? html`<p>${this.description}</p>` : nothing}
-            </section>
-
-            <section class="items secondary">
-                <div class="pf-c-page__header-tools-group">
-                    <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
-                        <a
-                            class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                            href="${globalAK().api.base}if/user/"
-                            slot="extra"
-                        >
-                            ${msg("User interface")}
-                        </a>
-                    </ak-nav-buttons>
-                </div>
-            </section>
-        </navbar>`;
+                </section>
+            </navbar>
+            <slot></slot>`;
     }
 
     //#endregion
@@ -361,7 +426,7 @@ export class AKPageHeader extends LitElement implements PageNavbarDetails {
         });
     }
 
-    update(): void {
+    updated(): void {
         AKPageNavbar.setNavbarDetails({
             header: this.header,
             description: this.description,
