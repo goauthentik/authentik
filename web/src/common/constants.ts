@@ -18,7 +18,6 @@ export const EVENT_LOCALE_CHANGE = "ak-locale-change";
 export const EVENT_LOCALE_REQUEST = "ak-locale-request";
 export const EVENT_REQUEST_POST = "ak-request-post";
 export const EVENT_MESSAGE = "ak-message";
-export const EVENT_THEME_CHANGE = "ak-theme-change";
 export const EVENT_REFRESH_ENTERPRISE = "ak-refresh-enterprise";
 
 export const WS_MSG_TYPE_MESSAGE = "message";

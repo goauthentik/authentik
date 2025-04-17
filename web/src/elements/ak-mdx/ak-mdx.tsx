@@ -186,7 +186,7 @@ export class AKMDX extends AKElement {
                     rehypeMermaid,
                     {
                         prefix: "mermaid-svg-",
-                        colorScheme: this.activeTheme === UiThemeEnum.Dark ? "dark" : "light",
+                        colorScheme: this.colorScheme === UiThemeEnum.Dark ? "dark" : "light",
                     } satisfies RehypeMermaidOptions,
                 ],
             ],

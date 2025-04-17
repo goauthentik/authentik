@@ -6,26 +6,9 @@
     "scripts": {
         "build": "tsc -p ."
     },
+    "main": "./index.js",
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "import": "./index.js",
-            "types": "./out/index.d.ts"
-        },
-        "./react-config": {
-            "import": "./lib/react-config.js",
-            "types": "./out/lib/react-config.d.ts"
-        },
-        "./javascript-config": {
-            "import": "./lib/javascript-config.js",
-            "types": "./out/lib/javascript-config.d.ts"
-        },
-        "./typescript-config": {
-            "import": "./lib/typescript-config.js",
-            "types": "./out/lib/typescript-config.d.ts"
-        }
-    },
+    "exports": "./index.js",
     "dependencies": {
         "eslint": "^9.23.0",
         "eslint-plugin-import": "^2.31.0",
@@ -35,8 +18,8 @@
         "eslint-plugin-wc": "^2.1.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.1",
-        "@goauthentik/tsconfig": "^1.0.1",
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@types/eslint": "^9.6.1",
         "typescript": "^5.8.2",
         "typescript-eslint": "^8.29.0"

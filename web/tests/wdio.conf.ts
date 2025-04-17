@@ -11,7 +11,7 @@ const capabilities = [];
 
 if (!skipChrome) {
     capabilities.push({
-        "browserName": "chrome",
+        browserName: "chrome",
         "wdio:chromedriverOptions": {
             binary: "./node_modules/.bin/chromedriver",
         },
@@ -228,7 +228,6 @@ export const config: WebdriverIO.Config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {object}         browser      instance of created browser/device session
      */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     before: function (_capabilities, _specs) {},
     /**
      * Runs before a WebdriverIO command gets executed.

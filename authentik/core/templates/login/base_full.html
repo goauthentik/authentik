@@ -5,78 +5,82 @@
 
 {% block head_before %}
 <link rel="prefetch" href="{{ request.brand.branding_default_flow_background_url }}" />
-<link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}">
-<link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly.min.css' %}" />
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'dist/theme-dark.css' %}"
+  media="(prefers-color-scheme: dark)"
+/>
 {% include "base/header_js.html" %}
 {% endblock %}
 
 {% block head %}
-<style>
-:root {
+<style data-test-id="base-full-root-styles">
+  :root {
     --ak-flow-background: url("{{ request.brand.branding_default_flow_background_url }}");
     --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
     --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
-}
-/* Form with user */
-.form-control-static {
+  }
+  /* Form with user */
+  .form-control-static {
     margin-top: var(--pf-global--spacer--sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
-}
-.form-control-static .avatar {
+  }
+  .form-control-static .avatar {
     display: flex;
     align-items: center;
-}
-.form-control-static img {
+  }
+  .form-control-static img {
     margin-right: var(--pf-global--spacer--xs);
-}
-.form-control-static a {
+  }
+  .form-control-static a {
     padding-top: var(--pf-global--spacer--xs);
     padding-bottom: var(--pf-global--spacer--xs);
     line-height: var(--pf-global--spacer--xl);
-}
+  }
 </style>
 {% endblock %}
 
 {% block body %}
-<div class="pf-c-background-image">
-</div>
+<div class="pf-c-background-image"></div>
 <ak-message-container></ak-message-container>
 <div class="pf-c-login stacked">
-    <div class="ak-login-container">
-        <main class="pf-c-login__main">
-            <div class="pf-c-login__main-header pf-c-brand ak-brand">
-                <img src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
-            </div>
-            <header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">
-                    {% block card_title %}
-                    {% endblock %}
-                </h1>
-            </header>
-            <div class="pf-c-login__main-body">
-                {% block card %}
-                {% endblock %}
-            </div>
-        </main>
-        <footer class="pf-c-login__footer">
-            <ul class="pf-c-list pf-m-inline">
-                {% for link in footer_links %}
-                <li>
-                    <a href="{{ link.href }}">{{ link.name }}</a>
-                </li>
-                {% endfor %}
-                <li>
-                    <span>
-                        {% trans 'Powered by authentik' %}
-                    </span>
-                </li>
-            </ul>
-        </footer>
-    </div>
+  <div class="ak-login-container">
+    <main class="pf-c-login__main">
+      <div class="pf-c-login__main-header pf-c-brand ak-brand">
+        <img src="{{ brand.branding_logo_url }}" alt="authentik Logo" />
+      </div>
+      <header class="pf-c-login__main-header">
+        <h1 class="pf-c-title pf-m-3xl">
+          {% block card_title %}
+          {% endblock %}
+        </h1>
+      </header>
+      <div class="pf-c-login__main-body">
+        {% block card %}
+        {% endblock %}
+      </div>
+    </main>
+    <footer class="pf-c-login__footer">
+      <ul class="pf-c-list pf-m-inline">
+        {% for link in footer_links %}
+        <li>
+          <a href="{{ link.href }}">{{ link.name }}</a>
+        </li>
+        {% endfor %}
+        <li>
+          <span>
+            {% trans 'Powered by authentik' %}
+          </span>
+        </li>
+      </ul>
+    </footer>
+  </div>
 </div>
 {% endblock %}

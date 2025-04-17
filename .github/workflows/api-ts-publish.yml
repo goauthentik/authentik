@@ -1,4 +1,4 @@
-name: authentik-api-ts-publish
+name: "TypeScript API Publish"
 on:
   push:
     branches: [main]
@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: "Build and Publish"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
@@ -20,9 +21,9 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: package.json
           registry-url: "https://registry.npmjs.org"
-      - name: Generate API Client
+      - name: Generate TypeScript API Client
         run: make gen-client-ts
       - name: Publish package
         working-directory: gen-ts-api/

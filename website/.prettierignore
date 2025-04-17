@@ -1,7 +1,0 @@
-# Ignore artifacts:
-build
-coverage
-.docusaurus
-node_modules
-help
-static

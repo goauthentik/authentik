@@ -2,19 +2,16 @@
     "name": "@goauthentik/tsconfig",
     "version": "1.0.4",
     "description": "authentik's base TypeScript configuration.",
+    "license": "MIT",
+    "main": "tsconfig.json",
+    "type": "module",
+    "engines": {
+        "node": ">=20.11"
+    },
     "keywords": [
         "tsconfig",
         "typescript"
     ],
-    "license": "MIT",
-    "scripts": {
-        "build": ""
-    },
-    "type": "module",
-    "main": "tsconfig.json",
-    "engines": {
-        "node": ">=20.11"
-    },
     "publishConfig": {
         "access": "public"
     }

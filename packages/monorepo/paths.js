@@ -2,7 +2,7 @@ import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const relativeDirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * @typedef {'~authentik'} MonoRepoRoot
@@ -11,7 +11,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 /**
  * The root of the authentik monorepo.
  */
-export const MonoRepoRoot = /** @type {MonoRepoRoot} */ (resolve(__dirname, "..", ".."));
+export const MonoRepoRoot = /** @type {MonoRepoRoot} */ (resolve(relativeDirname, "..", ".."));
 
 const require = createRequire(import.meta.url);
 

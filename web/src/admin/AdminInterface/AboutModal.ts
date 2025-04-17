@@ -2,9 +2,9 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/elements/EmptyState";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
+import { WithLicenseSummary } from "@goauthentik/elements/mixins/license";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg } from "@lit/localize";
@@ -59,7 +59,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
 
     renderModal() {
         let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
-        if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
+        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
         return html`<div

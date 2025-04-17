@@ -1,13 +1,14 @@
-import type { Config } from "@docusaurus/types";
 import type * as Preset from "@docusaurus/preset-classic";
-import { themes as prismThemes } from "prism-react-renderer";
+import type { Config } from "@docusaurus/types";
 import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+import { themes as prismThemes } from "prism-react-renderer";
+import remarkDirective from "remark-directive";
 import remarkGithub, { BuildUrlValues } from "remark-github";
 import { defaultBuildUrl } from "remark-github";
-import remarkDirective from "remark-directive";
-import remarkVersionDirective from "./remark/version-directive.js";
-import remarkPreviewDirective from "./remark/preview-directive.js";
-import remarkSupportDirective from "./remark/support-directive.js";
+
+import remarkPreviewDirective from "./remark/preview-directive.mjs";
+import remarkSupportDirective from "./remark/support-directive.mjs";
+import remarkVersionDirective from "./remark/version-directive.mjs";
 
 const createConfig = (): Config => {
     return {
@@ -109,10 +110,9 @@ const createConfig = (): Config => {
                 {
                     docs: {
                         id: "docs",
-                        sidebarPath: "./sidebars.js",
+                        sidebarPath: "./sidebars.mts",
                         showLastUpdateTime: false,
-                        editUrl:
-                            "https://github.com/goauthentik/authentik/edit/main/website/",
+                        editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
 
                         beforeDefaultRemarkPlugins: [
@@ -128,8 +128,7 @@ const createConfig = (): Config => {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
                                     buildUrl: (values: BuildUrlValues) => {
-                                        return values.type === "issue" ||
-                                            values.type === "mention"
+                                        return values.type === "issue" || values.type === "mention"
                                             ? defaultBuildUrl(values)
                                             : false;
                                     },
@@ -138,9 +137,7 @@ const createConfig = (): Config => {
                         ],
                     },
                     theme: {
-                        customCss: require.resolve(
-                            "@goauthentik/docusaurus-config/css/index.css",
-                        ),
+                        customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
                     },
                 } satisfies Preset.Options,
             ],
@@ -152,9 +149,8 @@ const createConfig = (): Config => {
                     id: "docsIntegrations",
                     path: "integrations",
                     routeBasePath: "integrations",
-                    sidebarPath: "./sidebarsIntegrations.js",
-                    editUrl:
-                        "https://github.com/goauthentik/authentik/edit/main/website/",
+                    sidebarPath: "./sidebarsIntegrations.mjs",
+                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
             ],
             [

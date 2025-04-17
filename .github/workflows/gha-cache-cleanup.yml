@@ -1,6 +1,6 @@
 ---
 # See https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries
-name: Cleanup cache after PR is closed
+name: "Post-PR Closed Cache Cleanup"
 on:
   pull_request:
     types:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   cleanup:
+    name: "Cleanup Cache"
     runs-on: ubuntu-latest
     steps:
       - name: Check out code

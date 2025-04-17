@@ -1,4 +1,5 @@
-name: authentik-api-py-publish
+name: "Python API Publish"
+
 on:
   push:
     branches: [main]
@@ -7,6 +8,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: "Build and Publish"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     permissions:
@@ -30,7 +32,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - name: Generate API Client
+      - name: Generate Python API Client
         run: make gen-client-py
       - name: Publish package
         working-directory: gen-py-api/

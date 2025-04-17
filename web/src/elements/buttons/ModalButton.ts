@@ -1,6 +1,7 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
+    ModalElement,
     ModalHideEvent,
     ModalShowEvent,
 } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
@@ -36,7 +37,7 @@ export const MODAL_BUTTON_STYLES = css`
 `;
 
 @customElement("ak-modal-button")
-export class ModalButton extends AKElement {
+export class ModalButton extends AKElement implements ModalElement {
     @property()
     size: PFSize = PFSize.Large;
 

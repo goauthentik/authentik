@@ -1,5 +1,5 @@
 ---
-name: authentik-on-tag
+name: "authentik on Tag Release"
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Create Release from Tag
+    name: "Create Release from Tag"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:

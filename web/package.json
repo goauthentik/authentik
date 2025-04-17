@@ -1,13 +1,39 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
-    "overrides": {
-        "rapidoc": {
-            "@apitools/openapi-parser@": "0.0.37"
-        },
-        "chromedriver": {
-            "axios": "^1.8.4"
-        }
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "build-locales": "wireit",
+        "build-locales:build": "wireit",
+        "build-proxy": "wireit",
+        "build:sfe": "wireit",
+        "esbuild:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "wireit",
+        "format": "wireit",
+        "lint": "wireit",
+        "lint:imports": "wireit",
+        "lint:lockfile": "wireit",
+        "lit-analyse": "wireit",
+        "postinstall": "bash scripts/patch-spotlight.sh",
+        "precommit": "wireit",
+        "prettier": "wireit",
+        "prettier-check": "wireit",
+        "pseudolocalize": "wireit",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "wireit",
+        "test:e2e": "wireit",
+        "test:e2e:watch": "wireit",
+        "test:watch": "wireit",
+        "watch": "run-s build-locales esbuild:watch"
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./paths": "./paths.js",
+        "./scripts/*": "./scripts/*.mjs"
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
@@ -44,6 +70,7 @@
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.2.4",
+        "esbuild-plugin-copy": "^2.1.1",
         "fuse.js": "^7.0.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
@@ -62,6 +89,7 @@
         "remark-gfm": "^4.0.1",
         "remark-mdx-frontmatter": "^5.0.0",
         "style-mod": "^4.1.2",
+        "trusted-types": "^2.0.0",
         "ts-pattern": "^5.4.0",
         "unist-util-visit": "^5.0.0",
         "webcomponent-qr-code": "^1.2.0",
@@ -69,12 +97,15 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
+        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/monorepo": "^1.0.4",
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
         "@storybook/addon-essentials": "^8.3.4",
         "@storybook/addon-links": "^8.3.4",
-        "@storybook/api": "^7.6.17",
         "@storybook/blocks": "^8.3.4",
         "@storybook/builder-vite": "^8.3.4",
         "@storybook/manager-api": "^8.3.4",
@@ -84,13 +115,13 @@
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
-        "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.2",
         "@types/mocha": "^10.0.8",
-        "@types/node": "^22.7.4",
+        "@types/node": "^22.14.1",
         "@types/react": "^18.3.13",
         "@types/react-dom": "^18.3.0",
+        "@types/trusted-types": "^2.0.7",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "9.4",
@@ -105,18 +136,15 @@
         "eslint-plugin-wc": "^2.1.1",
         "find-free-ports": "^3.1.1",
         "github-slugger": "^2.0.0",
-        "glob": "^11.0.0",
-        "globals": "^15.10.0",
         "knip": "^5.30.6",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
-        "prettier": "^3.3.3",
+        "prettier": "^3.5.3",
         "pseudolocale": "^2.1.0",
         "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
         "storybook": "^8.3.4",
         "storybook-addon-mock": "^5.0.0",
-        "syncpack": "^13.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.8.0",
@@ -124,10 +152,6 @@
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.9"
     },
-    "engines": {
-        "node": ">=20"
-    },
-    "license": "MIT",
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.24.0",
         "@esbuild/linux-amd64": "^0.18.11",
@@ -136,39 +160,6 @@
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"
     },
-    "private": true,
-    "scripts": {
-        "build": "wireit",
-        "build-locales": "wireit",
-        "build-locales:build": "wireit",
-        "build-proxy": "wireit",
-        "build:sfe": "wireit",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "wireit",
-        "format": "wireit",
-        "lint": "wireit",
-        "lint:imports": "wireit",
-        "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:package": "wireit",
-        "lint:precommit": "wireit",
-        "lint:types": "wireit",
-        "lit-analyse": "wireit",
-        "postinstall": "bash scripts/patch-spotlight.sh",
-        "precommit": "wireit",
-        "prettier": "wireit",
-        "prettier-check": "wireit",
-        "pseudolocalize": "wireit",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "wireit",
-        "test": "wireit",
-        "test:e2e": "wireit",
-        "test:e2e:watch": "wireit",
-        "test:watch": "wireit",
-        "tsc": "wireit",
-        "watch": "run-s build-locales esbuild:watch"
-    },
-    "type": "module",
     "wireit": {
         "build": {
             "#comment": [
@@ -245,10 +236,7 @@
             "command": "lit-localize extract"
         },
         "format": {
-            "command": "prettier --write .",
-            "dependencies": [
-                "lint:package"
-            ]
+            "command": "prettier --write ."
         },
         "format:packages": {
             "dependencies": [
@@ -267,16 +255,6 @@
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
         },
-        "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
-        },
-        "lint:types": {
-            "command": "tsc --noEmit -p .",
-            "dependencies": [
-                "build-locales",
-                "lint:types:tests"
-            ]
-        },
         "lint:lockfile": {
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
             "shell": true,
@@ -287,27 +265,6 @@
                 "./packages/sfe:lint:lockfile"
             ]
         },
-        "lint:package": {
-            "command": "syncpack format -i '    '"
-        },
-        "lint:nightmare": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
         "lint:spelling": {
             "command": "node scripts/check-spelling.mjs"
         },
@@ -317,13 +274,10 @@
         "precommit": {
             "command": "prettier --write .",
             "dependencies": [
-                "lint:types",
                 "lint:components",
                 "lint:spelling",
-                "lint:package",
                 "lint:lockfile",
                 "lint:lockfiles",
-                "lint:precommit",
                 "format:packages"
             ]
         },
@@ -331,9 +285,6 @@
             "dependencies": [
                 "format"
             ]
-        },
-        "prettier-check": {
-            "command": "prettier --check ."
         },
         "pseudolocalize": {
             "command": "node scripts/pseudolocalize.mjs"
@@ -378,15 +329,18 @@
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
-        },
-        "tsc": {
-            "dependencies": [
-                "lint:types"
-            ]
         }
     },
-    "workspaces": [
-        ".",
-        "./packages/*"
-    ]
+    "engines": {
+        "node": ">=22.14.0"
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
+    }
 }

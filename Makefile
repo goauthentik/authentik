@@ -36,6 +36,13 @@ test: ## Run the server tests and produce a coverage report (locally)
 	uv run coverage html
 	uv run coverage report
 
+node-check-compile: ## Check and compile the TypeScript source code
+	npm run typecheck
+
+node-lint-fix: ## Lint and automatically fix errors in the javascript source code
+	lint-codespell
+	npm run lint:fix
+
 lint-fix: lint-codespell  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	uv run black $(PY_SOURCES)
 	uv run ruff check --fix $(PY_SOURCES)
@@ -46,9 +53,6 @@ lint-codespell:  ## Reports spelling errors.
 lint: ## Lint the python and golang sources
 	uv run bandit -c pyproject.toml -r $(PY_SOURCES)
 	golangci-lint run -v
-
-core-install:
-	uv sync --frozen
 
 migrate: ## Run the Authentik Django server's migrations
 	uv run python -m lifecycle.migrate
@@ -72,7 +76,9 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install:  ## Install all requires dependencies for `web`, `website` and `core`
+	npm ci
+	uv sync --frozen
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -94,6 +100,7 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		uv run ak make_blueprint_schema > blueprints/schema.json
+
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
@@ -101,19 +108,24 @@ gen-build:  ## Extract the schema from the database
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+
 	npx prettier --write changelog.md
 
 gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
 	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > old_schema.yml
+
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		docker.io/openapitools/openapi-diff:2.1.0-beta.8 \
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
+
 	rm old_schema.yml
+
 	sed -i 's/{/&#123;/g' diff.md
 	sed -i 's/}/&#125;/g' diff.md
+
 	npx prettier --write diff.md
 
 gen-clean-ts:  ## Remove generated API client for Typescript
@@ -133,46 +145,57 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
-		-i /local/schema.yml \
-		-g typescript-fetch \
-		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api-ts-config.yaml \
+		--input-spec /local/schema.yml \
+		--generator-name typescript-fetch \
+		--output /local/${GEN_API_TS} \
+		--config /local/scripts/api-ts-config.yaml \
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ./${GEN_API_TS} && npm i
-	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+
+	npm install
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
+
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
 		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
-		-i /local/schema.yml \
-		-g python \
-		-o /local/${GEN_API_PY} \
-		-c /local/scripts/api-py-config.yaml \
+		--input-spec /local/schema.yml \
+		--generator-name python \
+		--output /local/${GEN_API_PY} \
+		--config /local/scripts/api-py-config.yaml \
 		--additional-properties=packageVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
+
 	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
+
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml \
+		-O ./${GEN_API_GO}/config.yaml
+
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache \
+		-O ./${GEN_API_GO}/templates/README.mustache
+
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache \
+		-O ./${GEN_API_GO}/templates/go.mod.mustache
+
 	cp schema.yml ./${GEN_API_GO}/
+
 	docker run \
 		--rm -v ${PWD}/${GEN_API_GO}:/local \
 		--user ${UID}:${GID} \
 		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
+		--input-spec /local/schema.yml \
+		--generator-name go \
+		--output /local/ \
+		--config /local/config.yaml
+
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
+
 	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
@@ -184,56 +207,38 @@ gen: gen-build gen-client-ts
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
-
-web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
-
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
+web: web-lint-fix web-lint node-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run test -w @goauthentik/web
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
+	npm run watch -w @goauthentik/web
 
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run storybook -w @goauthentik/web
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run prettier -w @goauthentik/web
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
-
-web-check-compile:
-	cd web && npm run tsc
+	npm run lint -w @goauthentik/web
+	npm run lit-analyse -w @goauthentik/web
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run extract-locales -w @goauthentik/web
 
 #########################
 ## Website
 #########################
 
-website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
-
-website-install:
-	cd website && npm ci
-
-website-lint-fix: lint-codespell
-	cd website && npm run prettier
+website: node-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
 website-build:
-	cd website && npm run build
+	npm run build -w @goauthentik/docs
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+	npm run watch -w @goauthentik/docs
 
 #########################
 ## Docker

@@ -1,3 +1,20 @@
+/**
+ * @file Global type declarations.
+ */
+
+// TODO: Come back to this. Maybe fix with ESBuild plugin?
+// declare module "*.css" {
+//     /**
+//      * The style content of a CSS file.
+//      */
+//     const content: string;
+
+//     export default content;
+// }
+
+/**
+ * The style content of a CSS file.
+ */
 declare module "*.css";
 
 declare module "*.md" {

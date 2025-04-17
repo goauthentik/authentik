@@ -10,8 +10,6 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { UiThemeEnum } from "@goauthentik/api";
-
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
     static get styles(): CSSResult[] {
@@ -67,7 +65,7 @@ export class Sidebar extends AKElement {
 
     render(): TemplateResult {
         return html`<nav
-            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
+            class="pf-c-nav ${this.colorScheme === "light" ? "pf-m-light" : ""}"
             aria-label=${msg("Global")}
         >
             <ak-sidebar-brand></ak-sidebar-brand>

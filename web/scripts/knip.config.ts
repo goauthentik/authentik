@@ -1,7 +1,7 @@
 import { type KnipConfig } from "knip";
 
 const config: KnipConfig = {
-    "entry": [
+    entry: [
         "./src/admin/AdminInterface/AdminInterface.ts",
         "./src/user/UserInterface.ts",
         "./src/flow/FlowInterface.ts",
@@ -10,18 +10,18 @@ const config: KnipConfig = {
         "./src/standalone/loading/index.ts",
         "./src/polyfill/poly.ts",
     ],
-    "project": ["src/**/*.ts", "src/**/*.js", "./scripts/*.mjs", ".storybook/*.ts"],
+    project: ["src/**/*.ts", "src/**/*.js", "./scripts/*.mjs", ".storybook/*.ts"],
     // "ignore": ["src/**/*.test.ts", "src/**/*.stories.ts"],
     // Prevent Knip from complaining about web components, which export their classes but also
     // export their registration, and we don't always use both.
-    "ignoreExportsUsedInFile": true,
-    "typescript": {
+    ignoreExportsUsedInFile: true,
+    typescript: {
         config: ["tsconfig.json"],
     },
-    "wireit": {
+    wireit: {
         config: ["package.json"],
     },
-    "storybook": {
+    storybook: {
         config: [".storybook/{main,test-runner}.{js,ts}"],
         entry: [
             ".storybook/{manager,preview}.{js,jsx,ts,tsx}",
@@ -29,7 +29,7 @@ const config: KnipConfig = {
         ],
         project: [".storybook/**/*.{js,jsx,ts,tsx}"],
     },
-    "eslint": {
+    eslint: {
         entry: [
             "eslint.config.mjs",
             "scripts/eslint.precommit.mjs",

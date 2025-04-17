@@ -1,5 +1,5 @@
 # Re-usable workflow for a single-architecture build
-name: Single-arch Container build
+name: "Single-arch Container build"
 
 on:
   workflow_call:
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: docker/setup-qemu-action@v3.6.0
       - uses: docker/setup-buildx-action@v3
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
@@ -64,12 +64,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: make empty clients
+      - name: Make empty clients
         if: ${{ inputs.release }}
         run: |
           mkdir -p ./gen-ts-api
           mkdir -p ./gen-go-api
-      - name: generate ts client
+      - name: Generate TypeScript API Client
         if: ${{ !inputs.release }}
         run: make gen-client-ts
       - name: Build Docker Image

@@ -1,4 +1,5 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { createColorSchemeEffect } from "@goauthentik/common/color-scheme";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { DOM_PURIFY_STRICT } from "@goauthentik/common/purify";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -8,8 +9,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -54,17 +53,28 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
+    readonly #colorSchemeAbortController = new AbortController();
+
     firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
-            if (ev.detail === UiThemeEnum.Dark) {
-                this.config.theme = "dark";
-            } else {
-                this.config.theme = "default";
-            }
-            mermaid.initialize(this.config);
-        }) as EventListener);
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches) => {
+                if (matches) {
+                    this.config.theme = "dark";
+                } else {
+                    this.config.theme = "default";
+                }
+
+                mermaid.initialize(this.config);
+            },
+        );
+
         this.handlerBound = true;
         this.refreshHandler();
     }
@@ -72,6 +82,8 @@ export class Diagram extends AKElement {
     disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener(EVENT_REFRESH, this.refreshHandler);
+
+        this.#colorSchemeAbortController.abort();
     }
 
     render(): TemplateResult {

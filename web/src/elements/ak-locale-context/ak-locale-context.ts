@@ -5,7 +5,7 @@ import { customEvent } from "@goauthentik/elements/utils/customEvents";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { WithBrandConfig } from "../Interface/brandProvider";
+import { WithBrandConfig } from "../mixins/brand";
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
 import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";

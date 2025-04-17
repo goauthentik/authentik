@@ -1,4 +1,4 @@
-name: "authentik-repo-stale"
+name: "authentik Repository Stale Issues"
 
 on:
   schedule:
@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   stale:
+    name: "Stale Issues"
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:

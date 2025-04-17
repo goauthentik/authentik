@@ -1,4 +1,4 @@
-name: ghcr-retention
+name: "authentik GHCR Retention Policy"
 
 on:
   # schedule:
@@ -8,7 +8,7 @@ on:
 jobs:
   clean-ghcr:
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
-    name: Delete old unused container images
+    name: "Delete old unused container images"
     runs-on: ubuntu-latest
     steps:
       - id: generate_token

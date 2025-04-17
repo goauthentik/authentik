@@ -1,3 +1,6 @@
+/**
+ * @file Flow executor component.
+ */
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_FLOW_ADVANCE,
@@ -8,7 +11,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
+import { InterfaceElement } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
@@ -46,11 +49,14 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
-    UiThemeEnum,
 } from "@goauthentik/api";
 
+/**
+ * A component for managing flow challenges, WebSocket connections,
+ * and providing the user interface for the flow execution.
+ */
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
+export class FlowExecutor extends InterfaceElement implements StageHost {
     @property()
     flowSlug: string = window.location.pathname.split("/")[3];
 
@@ -198,10 +204,6 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
@@ -539,7 +541,17 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <ak-brand-links
                                             class="pf-c-login__footer"
-                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                            .links=${[
+                                                ...(this.brand?.uiFooterLinks || []),
+                                                {
+                                                    href: "https://example.com",
+                                                    name: `<span style="color: red">Example</span>`,
+                                                },
+                                                {
+                                                    href: "https://evil.com",
+                                                    name: `<h1>evil</h1><script>alert('evil')</script>`,
+                                                },
+                                            ]}
                                         ></ak-brand-links>
                                     </div>
                                 </div>
