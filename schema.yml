@@ -46049,6 +46049,9 @@ components:
             $ref: '#/components/schemas/LoginSource'
         show_source_labels:
           type: boolean
+        enable_remember_me:
+          type: boolean
+          default: true
       required:
       - flow_designation
       - password_fields
@@ -46161,6 +46164,10 @@ components:
           type: boolean
           description: When enabled, the stage will succeed and continue even when
             incorrect user info is entered.
+        enable_remember_me:
+          type: boolean
+          description: Show the user the 'Remember me on this device' toggle, allowing
+            repeat users to skip straight to entering their password.
       required:
       - component
       - meta_model_name
@@ -46235,6 +46242,10 @@ components:
           type: boolean
           description: When enabled, the stage will succeed and continue even when
             incorrect user info is entered.
+        enable_remember_me:
+          type: boolean
+          description: Show the user the 'Remember me on this device' toggle, allowing
+            repeat users to skip straight to entering their password.
       required:
       - name
     ImpersonationRequest:
@@ -52290,6 +52301,10 @@ components:
           type: boolean
           description: When enabled, the stage will succeed and continue even when
             incorrect user info is entered.
+        enable_remember_me:
+          type: boolean
+          description: Show the user the 'Remember me on this device' toggle, allowing
+            repeat users to skip straight to entering their password.
     PatchedInitialPermissionsRequest:
       type: object
       description: InitialPermissions serializer

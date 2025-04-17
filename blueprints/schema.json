@@ -11893,6 +11893,11 @@
                     "type": "boolean",
                     "title": "Pretend user exists",
                     "description": "When enabled, the stage will succeed and continue even when incorrect user info is entered."
+                },
+                "enable_remember_me": {
+                    "type": "boolean",
+                    "title": "Enable remember me",
+                    "description": "Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password."
                 }
             },
             "required": []
