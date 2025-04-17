@@ -73,13 +73,13 @@
       </style>
 
       <h1>
-        JavaScript is required to use
-        {% trans title|default:brand.branding_title %}
+        {% blocktrans with brand_title=title|default:brand.branding_title %}
+          JavaScript is required to use {{ brand_title }}
+        {% endblocktrans %}
       </h1>
 
       <p>
-        Please enable JavaScript in your browser settings and reload the page.
-        If you are using a browser extension that blocks JavaScript, please disable it for this site.
+        {% trans 'Please enable JavaScript in your browser settings and reload the page. If you are using a browser extension that blocks JavaScript, please disable it for this site.' %}
       </p>
     </noscript>
   </body>
