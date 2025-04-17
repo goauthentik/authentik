@@ -65,10 +65,7 @@ kimai:
                   saml: $http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress,
                   kimai: email,
               }
-            - {
-                  saml: $http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name,
-                  kimai: alias,
-              }
+            - { saml: $http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name, kimai: alias }
         roles:
             attribute: http://schemas.xmlsoap.org/claims/Group
             mapping:

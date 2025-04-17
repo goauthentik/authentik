@@ -1,15 +1,19 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
+/**
+ * @file Remark plugin to transform `ak-preview` directives into preview badges.
+ *
+ * @import { Root } from "mdast";
+ */
 import { h } from "hastscript";
-import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * MDAST plugin to transform `ak-preview` directives into preview badges.
  */
 function remarkPreviewDirective() {
-    return function (tree: Root) {
+    /**
+     * @param {Root} tree The MDAST tree to transform.
+     */
+    return function (tree) {
         visit(tree, "textDirective", function (node) {
             if (node.name !== "ak-preview") return SKIP;
 
@@ -17,10 +21,10 @@ function remarkPreviewDirective() {
 
             const hast = h("span", {
                 ...node.attributes,
-                className: "badge badge--preview",
-                title: `This feature is in preview and may change in the future.`,
+                "className": "badge badge--preview",
+                "title": `This feature is in preview and may change in the future.`,
                 "aria-description": "Preview badge",
-                role: "img",
+                "role": "img",
             });
 
             data.hName = hast.tagName;
