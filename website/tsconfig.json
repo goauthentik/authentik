@@ -1,8 +1,32 @@
+// @file TSConfig used by the docs package during development.
+//
+// @remarks
+// While this configuration will influence the IDE experience,
+// Docusaurus will instead use an internal configuration to build the site.
+//
+// @see https://docusaurus.io/docs/typescript-support
 {
-    // This file is not used in compilation. It is here just for a nice editor experience.
-    "extends": "@docusaurus/tsconfig",
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "baseUrl": "."
+        "noEmit": true,
+        "checkJs": true,
+        "allowJs": true,
+        "composite": false,
+        "esModuleInterop": true,
+        "moduleResolution": "bundler",
+        "module": "esnext",
+        "jsx": "preserve",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "baseUrl": ".",
+        "paths": {
+            "@site/*": ["./*"]
+        }
     },
-    "exclude": [".docusaurus", "build", "node_modules"]
+    "exclude": [
+        // ---
+        "./out/**/*",
+        "./dist/**/*",
+        ".docusaurus",
+        "build"
+    ]
 }
