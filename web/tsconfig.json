@@ -52,11 +52,14 @@
         "./out/**/*",
         "./dist/**/*",
         "src/**/*.test.ts",
-        "./tests"
+        "./tests",
+
+        // TODO: Remove after monorepo cleanup.
+        "src/**/*.comp.ts"
     ],
     "references": [
         {
             "path": "./packages/esbuild-plugin-live-reload"
         }
-    ]
+    ],
 }
