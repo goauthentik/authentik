@@ -274,7 +274,7 @@
             "command": "tsc --noEmit -p ./tests"
         },
         "lint:types": {
-            "command": "tsc --noEmit -p .",
+            "command": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
             "dependencies": [
                 "build-locales",
                 "lint:types:tests"
