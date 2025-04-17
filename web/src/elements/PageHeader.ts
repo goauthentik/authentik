@@ -31,7 +31,7 @@ import { SessionUser } from "@goauthentik/api";
 //#region Page Navbar
 
 export interface PageNavbarDetails {
-    titleContent?: string;
+    header?: string;
     description?: string;
     icon?: string;
     iconImage?: boolean;
@@ -58,9 +58,9 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
             return;
         }
 
-        const { titleContent, description, icon, iconImage } = detail;
+        const { header, description, icon, iconImage } = detail;
 
-        elementRef.titleContent = titleContent;
+        elementRef.header = header;
         elementRef.description = description;
         elementRef.icon = icon;
         elementRef.iconImage = iconImage || false;
@@ -97,7 +97,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                     display: flex;
                     flex-direction: row;
-                    min-height: 3.75rem;
+                    min-height: 9rem;
 
                     padding-inline-end: var(--pf-global--spacer--xl);
                     display: grid;
@@ -184,7 +184,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
     iconImage = false;
 
     @property({ type: String })
-    titleContent?: string;
+    header?: string;
 
     @property({ type: String })
     description?: string;
@@ -239,7 +239,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
     willUpdate() {
         // Always update title, even if there's no header value set,
         // as in that case we still need to return to the generic title
-        this.#setTitle(this.titleContent);
+        this.#setTitle(this.header);
     }
 
     //#region Render
@@ -289,7 +289,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
             <section class="items primary pf-c-content">
                 <h1 class="page-title">
                     ${this.hasIcon ? html`<slot name="icon">${this.renderIcon()}</slot>` : nothing}
-                    ${this.titleContent}
+                    ${this.header}
                 </h1>
 
                 ${this.description ? html`<p>${this.description}</p>` : nothing}
@@ -329,7 +329,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 @customElement("ak-page-header")
 export class AKPageHeader extends LitElement implements PageNavbarDetails {
     @property({ type: String })
-    titleContent?: string;
+    header?: string;
 
     @property({ type: String })
     description?: string;
@@ -354,7 +354,7 @@ export class AKPageHeader extends LitElement implements PageNavbarDetails {
         super.connectedCallback();
 
         AKPageNavbar.setNavbarDetails({
-            titleContent: this.titleContent,
+            header: this.header,
             description: this.description,
             icon: this.icon,
             iconImage: this.iconImage,
@@ -363,7 +363,7 @@ export class AKPageHeader extends LitElement implements PageNavbarDetails {
 
     update(): void {
         AKPageNavbar.setNavbarDetails({
-            titleContent: this.titleContent,
+            header: this.header,
             description: this.description,
             icon: this.icon,
             iconImage: this.iconImage,

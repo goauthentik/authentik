@@ -97,7 +97,7 @@ export class ApplicationViewPage extends AKElement {
 
     render(): TemplateResult {
         return html`<ak-page-header
-                titleContent=${this.application?.name || msg("Loading")}
+                header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
                 .iconImage=${true}
             >

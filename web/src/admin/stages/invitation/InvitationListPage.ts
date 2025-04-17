@@ -175,7 +175,7 @@ export class InvitationListPage extends TablePage<Invitation> {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
-                titleContent=${this.pageTitle()}
+                header=${this.pageTitle()}
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>

@@ -151,8 +151,10 @@ export class AdminInterface extends AuthenticatedInterface {
                 <ak-version-banner></ak-version-banner>
                 <ak-page-navbar></ak-page-navbar>
                 <ak-admin-sidebar
-                    class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
+                    class="pf-c-page__sidebar pf-m-hidden pf-m-visible-on-lg
+                     ${classMap(sidebarClasses)}"
                 ></ak-admin-sidebar>
+
                 <div class="pf-c-page__drawer">
                     <div class="pf-c-drawer ${classMap(drawerClasses)}">
                         <div class="pf-c-drawer__main">

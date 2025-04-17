@@ -11,7 +11,7 @@ import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
@@ -71,8 +71,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     render() {
         return html`
             <ak-sidebar
-                class="pf-c-page__sidebar ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this
-                    .activeTheme === UiThemeEnum.Light
+                class="pf-c-page__sidebar
+                ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this.activeTheme ===
+                UiThemeEnum.Light
                     ? "pf-m-light"
                     : ""}"
             >

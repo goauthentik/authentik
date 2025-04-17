@@ -63,7 +63,7 @@ export class FlowViewPage extends AKElement {
         }
         return html`<ak-page-header
                 icon="pf-icon pf-icon-process-automation"
-                titleContent=${this.flow.name}
+                header=${this.flow.name}
                 description=${this.flow.title}
             >
             </ak-page-header>
