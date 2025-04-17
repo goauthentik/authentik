@@ -43,6 +43,10 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
 
+if (process.env.NODE_ENV === "development") {
+    await import("@goauthentik/esbuild-plugin-live-reload/client");
+}
+
 const customStyles = css`
     .pf-c-page__main,
     .pf-c-drawer__content,
@@ -291,12 +295,6 @@ export class UserInterface extends AuthenticatedInterface {
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
-
-        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
-
-            new ESBuildObserver(process.env.WATCHER_URL);
-        }
     }
 
     disconnectedCallback() {
