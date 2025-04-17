@@ -1,3 +1,4 @@
+/// <reference types="@docusaurus/plugin-content-docs" />
 /**
  * @file Swizzled DocItemContent component.
  *
@@ -7,21 +8,17 @@
  * the content of a documentation page. However, it also adds support for
  * support badges, and Authentik version badges.
  */
-
-import React from "react";
-import clsx from "clsx";
-import { ThemeClassNames } from "@docusaurus/theme-common";
-import {
-    DocContextValue,
-    useDoc,
-} from "@docusaurus/plugin-content-docs/client";
-import Heading from "@theme/Heading";
-import MDXContent from "@theme/MDXContent";
-import type { Props } from "@theme/DocItem/Content";
 import { DocFrontMatter } from "@docusaurus/plugin-content-docs";
-import { useSyntheticTitle } from "@site/src/hooks/title";
+import { DocContextValue, useDoc } from "@docusaurus/plugin-content-docs/client";
+import { ThemeClassNames } from "@docusaurus/theme-common";
 import { SupportBadge } from "@site/src/components/SupportBadge";
 import { VersionBadge } from "@site/src/components/VersionBadge";
+import { useSyntheticTitle } from "@site/src/hooks/title";
+import type { Props } from "@theme/DocItem/Content";
+import Heading from "@theme/Heading";
+import MDXContent from "@theme/MDXContent";
+import clsx from "clsx";
+import React from "react";
 
 interface SwizzledDocFrontMatter extends DocFrontMatter {
     support_level?: string;
@@ -37,12 +34,8 @@ interface SwizzledDocContextValue extends DocContextValue {
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
     const { frontMatter } = useDoc() as SwizzledDocContextValue;
-    const {
-        support_level,
-        authentik_version,
-        authentik_enterprise,
-        authentik_preview,
-    } = frontMatter;
+    const { support_level, authentik_version, authentik_enterprise, authentik_preview } =
+        frontMatter;
 
     const badges: JSX.Element[] = [];
 
@@ -71,9 +64,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
                     {badges.length ? (
                         <p className="badge-group">
                             {badges.map((badge, index) => (
-                                <React.Fragment key={index}>
-                                    {badge}
-                                </React.Fragment>
+                                <React.Fragment key={index}>{badge}</React.Fragment>
                             ))}
                         </p>
                     ) : null}

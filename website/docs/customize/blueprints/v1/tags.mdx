@@ -53,11 +53,7 @@ configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 ```
 
 ```yaml
-configure_flow:
-    !Find [
-        authentik_flows.flow,
-        [!Context property_name, !Context property_value],
-    ]
+configure_flow: !Find [authentik_flows.flow, [!Context property_name, !Context property_value]]
 ```
 
 Looks up any model and resolves to the the matches' primary key.
@@ -214,11 +210,7 @@ configuration_stages: !Enumerate [
         !Context map_of_totp_stage_names_and_types,
         SEQ, # Output a sequence
         !Find [
-            !Format [
-                "authentik_stages_authenticator_%s.authenticator%sstage",
-                !Index 0,
-                !Index 0,
-            ],
+            !Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, !Index 0],
             [name, !Value 0],
         ], # The value of each item in the sequence
     ]
@@ -277,12 +269,7 @@ example: !Enumerate [
                 # Notice depth is 1, not 0, since we are inside the nested enumeration tag!
                 !Value 1,
                 SEQ, # Output a sequence
-                !Format [
-                    "%s: (index: %d, letter: %s)",
-                    !Value 1,
-                    !Index 0,
-                    !Value 0,
-                ],
+                !Format ["%s: (index: %d, letter: %s)", !Value 1, !Index 0, !Value 0],
             ],
         ],
     ]

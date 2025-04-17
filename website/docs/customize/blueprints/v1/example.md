@@ -22,8 +22,7 @@ entries:
       model: authentik_flows.flow
       id: flow
     - attrs:
-          configure_flow:
-              !Find [authentik_flows.flow, [slug, default-password-change]]
+          configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
       identifiers:
           name: default-authentication-password
       id: default-authentication-password

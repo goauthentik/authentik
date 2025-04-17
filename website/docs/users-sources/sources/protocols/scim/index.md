@@ -34,10 +34,7 @@ Each top level SCIM attribute is available as a variable in the expression. For 
 
 ```json
 {
-    "schemas": [
-        "urn:scim:schemas:core:2.0",
-        "urn:scim:schemas:extension:enterprise:2.0"
-    ],
+    "schemas": ["urn:scim:schemas:core:2.0", "urn:scim:schemas:extension:enterprise:2.0"],
     "userName": "foo.bar",
     "name": {
         "familyName": "bar",
