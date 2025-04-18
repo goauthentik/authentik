@@ -127,6 +127,7 @@ func (ac *APIController) startWSHandler() {
 	for {
 		var wsMsg websocketMessage
 		if ac.wsConn == nil {
+			logger.Debug("Websocket connection lost, attempting to reconnect...")
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
@@ -139,6 +140,7 @@ func (ac *APIController) startWSHandler() {
 				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
 			logger.WithError(err).Warning("ws read error")
+			ac.wsConn = nil
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
@@ -150,12 +152,16 @@ func (ac *APIController) startWSHandler() {
 		}).Set(1)
 		switch wsMsg.Instruction {
 		case WebsocketInstructionTriggerUpdate:
-			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
-			err := ac.OnRefresh()
-			if err != nil {
-				logger.WithError(err).Debug("Failed to update")
-			} else {
+			// Retry the update a few times if it fails
+			maxRetries := 3
+			for i := 0; i < maxRetries; i++ {
+				err := ac.OnRefresh()
+				if err != nil {
+					logger.WithError(err).Warning("Failed to update, retrying...")
+					time.Sleep(time.Second * time.Duration(i+1))
+					continue
+				}
 				LastUpdate.With(prometheus.Labels{
 					"outpost_name": ac.Outpost.Name,
 					"outpost_type": ac.Server.Type(),
@@ -163,6 +169,7 @@ func (ac *APIController) startWSHandler() {
 					"version":      constants.VERSION,
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
+				break
 			}
 		case WebsocketInstructionProviderSpecific:
 			for _, h := range ac.wsHandlers {

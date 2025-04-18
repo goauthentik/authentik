@@ -68,27 +68,31 @@ class OutpostConsumer(JsonWebsocketConsumer):
             raise DenyConnection()
         self.logger = self.logger.bind(outpost=outpost)
         try:
+            # Accept the connection first
             self.accept()
+            # Then set up the outpost and groups
+            self.outpost = outpost
+            query = QueryDict(self.scope["query_string"].decode())
+            self.instance_uid = query.get("instance_uuid", self.channel_name)
+            async_to_sync(self.channel_layer.group_add)(
+                OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
+            )
+            async_to_sync(self.channel_layer.group_add)(
+                OUTPOST_GROUP_INSTANCE
+                % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
+                self.channel_name,
+            )
+            GAUGE_OUTPOSTS_CONNECTED.labels(
+                tenant=connection.schema_name,
+                outpost=self.outpost.name,
+                uid=self.instance_uid,
+                expected=self.outpost.config.kubernetes_replicas,
+            ).inc()
         except RuntimeError as exc:
-            self.logger.warning("runtime error during accept", exc=exc)
+            self.logger.warning("runtime error during connection setup", exc=exc)
+            # If we fail to set up, close the connection cleanly
+            self.close()
             raise DenyConnection() from None
-        self.outpost = outpost
-        query = QueryDict(self.scope["query_string"].decode())
-        self.instance_uid = query.get("instance_uuid", self.channel_name)
-        async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
-        )
-        async_to_sync(self.channel_layer.group_add)(
-            OUTPOST_GROUP_INSTANCE
-            % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
-            self.channel_name,
-        )
-        GAUGE_OUTPOSTS_CONNECTED.labels(
-            tenant=connection.schema_name,
-            outpost=self.outpost.name,
-            uid=self.instance_uid,
-            expected=self.outpost.config.kubernetes_replicas,
-        ).inc()
 
     def disconnect(self, code):
         if self.outpost:
