@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-17 00:09+0000\n"
+"POT-Creation-Date: 2025-04-18 00:09+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3142,6 +3142,12 @@ msgstr ""
 msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
+msgstr ""
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users "
+"to skip straight to entering their password."
 msgstr ""
 
 #: authentik/stages/identification/models.py
