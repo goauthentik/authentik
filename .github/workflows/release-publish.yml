@@ -7,6 +7,7 @@ on:
 
 jobs:
   build-server:
+    name: Build server
     uses: ./.github/workflows/_reusable-docker-build.yaml
     secrets: inherit
     permissions:
@@ -21,6 +22,7 @@ jobs:
       registry_dockerhub: true
       registry_ghcr: true
   build-outpost:
+    name: Build outpost
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload container images to ghcr.io
@@ -45,14 +47,14 @@ jobs:
         uses: docker/setup-qemu-action@v3.6.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
           image-name: ghcr.io/goauthentik/${{ matrix.type }},beryju/authentik-${{ matrix.type }}
-      - name: make empty clients
+      - name: Make empty clients
         run: |
           mkdir -p ./gen-ts-api
           mkdir -p ./gen-go-api
@@ -85,6 +87,7 @@ jobs:
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
   build-outpost-binary:
+    name: Build outpost binary
     timeout-minutes: 120
     runs-on: ubuntu-latest
     permissions:
@@ -129,6 +132,7 @@ jobs:
           asset_name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
           tag: ${{ github.ref }}
   upload-aws-cfn-template:
+    name: Upload AWS CloudFormation template
     permissions:
       # Needed for AWS login
       id-token: write
@@ -150,6 +154,7 @@ jobs:
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.${{ github.ref }}.yaml
           aws s3 cp --acl=public-read lifecycle/aws/template.yaml s3://authentik-cloudformation-templates/authentik.ecs.latest.yaml
   test-release:
+    name: Test release
     needs:
       - build-server
       - build-outpost
@@ -166,6 +171,7 @@ jobs:
           docker compose start postgresql redis
           docker compose run -u root server test-all
   sentry-release:
+    name: Sentry release
     needs:
       - build-server
       - build-outpost
@@ -173,7 +179,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: prepare variables
+      - name: Prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev
         env:

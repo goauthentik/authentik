@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: Build and Publish
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     permissions:
@@ -14,6 +15,7 @@ jobs:
     steps:
       - id: generate_token
         uses: tibdex/github-app-token@v2
+        name: Generate token
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
@@ -30,7 +32,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-      - name: Generate API Client
+      - name: Generate Python API Client
         run: make gen-client-py
       - name: Publish package
         working-directory: gen-py-api/

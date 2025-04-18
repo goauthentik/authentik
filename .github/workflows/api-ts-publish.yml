@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
+    name: Build and Publish
     if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +23,7 @@ jobs:
         with:
           node-version-file: web/package.json
           registry-url: "https://registry.npmjs.org"
-      - name: Generate API Client
+      - name: Generate TypeScript API Client
         run: make gen-client-ts
       - name: Publish package
         working-directory: gen-ts-api/
