@@ -67,7 +67,10 @@
   to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow.md"
   status = 302
 
-
+[[redirects]]
+  from = "/docs/customize/brands.md"
+  to = "/docs/customize/branding.md"
+  status = 302
 
 
 # Migration to new structure with script Sept 2025

@@ -368,6 +368,10 @@ export default {
             type: "category",
             label: "Customize your instance",
             collapsed: true,
+            link: {
+                type: "doc",
+                id: "customize/index",
+            },
             items: [
                 {
                     type: "category",
@@ -438,7 +442,7 @@ export default {
                         },
                     ],
                 },
-                "customize/brands",
+                "customize/branding",
             ],
         },
         {
@@ -582,6 +586,7 @@ export default {
             label: "System Management",
             collapsed: true,
             items: [
+                "sys-mgmt/brands",
                 {
                     type: "category",
                     label: "Operations",
