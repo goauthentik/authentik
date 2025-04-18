@@ -168,6 +168,15 @@ class GitLabOAuthSource(CreatableType, OAuthSource):
         verbose_name_plural = _("GitLab OAuth Sources")
 
 
+class LarkOAuthSource(CreatableType, OAuthSource):
+    """Social Login using Lark OAuth Source"""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Lark OAuth Source")
+        verbose_name_plural = _("Lark OAuth Sources")
+
+
 class TwitchOAuthSource(CreatableType, OAuthSource):
     """Social Login using Twitch."""
 
