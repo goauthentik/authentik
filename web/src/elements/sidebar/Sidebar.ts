@@ -35,10 +35,7 @@ export class Sidebar extends AKElement {
                 .pf-c-nav__section + .pf-c-nav__section {
                     --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
                 }
-                .pf-c-nav__list .sidebar-brand {
-                    max-height: 82px;
-                    margin-bottom: -0.5rem;
-                }
+
                 nav {
                     display: flex;
                     flex-direction: column;
@@ -70,7 +67,6 @@ export class Sidebar extends AKElement {
             class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
             aria-label=${msg("Global")}
         >
-            <ak-sidebar-brand></ak-sidebar-brand>
             <ul class="pf-c-nav__list">
                 <slot></slot>
             </ul>
