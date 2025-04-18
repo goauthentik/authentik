@@ -85,7 +85,7 @@ class TestEvaluator(TestCase):
         )
         evaluator = PolicyEvaluator("test")
         evaluator.set_policy_request(self.request)
-        proc = PolicyProcess(PolicyBinding(policy=expr), request=self.request, connection=None)
+        proc = PolicyProcess(PolicyBinding(policy=expr), request=self.request, result_queue=None)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/",))
 
@@ -107,7 +107,7 @@ class TestEvaluator(TestCase):
                 ak_message(msg)
             """,
         )
-        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, result_queue=None)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 
@@ -130,7 +130,7 @@ class TestEvaluator(TestCase):
             """,
         )
         self.request.obj = None
-        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, connection=None)
+        proc = PolicyProcess(PolicyBinding(policy=expr2), request=self.request, result_queue=None)
         res = proc.profiling_wrapper()
         self.assertEqual(res.messages, ("/", "/", "/"))
 

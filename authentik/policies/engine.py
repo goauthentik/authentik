@@ -1,8 +1,9 @@
 """authentik policy engine"""
 
+import queue
 from collections.abc import Iterator
-from multiprocessing import Pipe, current_process
-from multiprocessing.connection import Connection
+from multiprocessing import current_process, get_context
+from multiprocessing.queues import Queue
 from time import perf_counter
 
 from django.core.cache import cache
@@ -26,13 +27,13 @@ class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
-    connection: Connection
+    result_queue: Queue
     result: PolicyResult | None
     binding: PolicyBinding
 
-    def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):
+    def __init__(self, process: PolicyProcess, result_queue: Queue, binding: PolicyBinding):
         self.process = process
-        self.connection = connection
+        self.result_queue = result_queue
         self.binding = binding
         self.result = None
 
@@ -130,16 +131,18 @@ class PolicyEngine:
                 if self._check_cache(binding):
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
-                our_end, task_end = Pipe(False)
-                task = PolicyProcess(binding, self.request, task_end)
+
+                result_queue = get_context().Queue()
+                task = PolicyProcess(binding, self.request, result_queue)
                 task.daemon = False
+
                 self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
                 if not CURRENT_PROCESS._config.get("daemon"):
                     task.run()
                 else:
                     task.start()
                 self.__processes.append(
-                    PolicyProcessInfo(process=task, connection=our_end, binding=binding)
+                    PolicyProcessInfo(process=task, result_queue=result_queue, binding=binding)
                 )
             # If all policies are cached, we have an empty list here.
             for proc_info in self.__processes:
@@ -147,7 +150,14 @@ class PolicyEngine:
                     proc_info.process.join(proc_info.binding.timeout)
                 # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
-                    proc_info.result = proc_info.connection.recv()
+                    try:
+                        proc_info.result = proc_info.result_queue.get(
+                            timeout=proc_info.binding.timeout
+                        )
+                    except queue.Empty:
+                        raise RuntimeError(
+                            "Policy failed to return within timeout"
+                        ) from queue.Empty()
             return self
 
     @property
