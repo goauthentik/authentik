@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-17 00:09+0000\n"
+"POT-Creation-Date: 2025-04-15 00:11+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -2287,14 +2287,6 @@ msgid "No token received."
 msgstr "未收到令牌。"
 
 #: authentik/sources/oauth/models.py
-msgid "HTTP Basic Authentication"
-msgstr "HTTP 基本身份验证"
-
-#: authentik/sources/oauth/models.py
-msgid "Include the client ID and secret as request parameters"
-msgstr "包括客户端 ID 和密钥作为请求参数"
-
-#: authentik/sources/oauth/models.py
 msgid "Request Token URL"
 msgstr "请求令牌 URL"
 
@@ -2331,12 +2323,6 @@ msgstr "authentik 用来获取用户信息的 URL。"
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "额外的作用域"
-
-#: authentik/sources/oauth/models.py
-msgid ""
-"How to perform authentication during an authorization_code token request "
-"flow"
-msgstr "在 authorization_code 令牌请求流程期间，如何执行身份验证"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
