@@ -4,38 +4,47 @@
 {% load i18n %}
 
 {% block content %}
-<tr>
-  <td align="center">
-    <h1>
-      {% trans 'Welcome!' %}
-    </h1>
-  </td>
-</tr>
-<tr>
-  <td align="center">
-    <table border="0">
-      <tr>
-        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
-          {% trans "We're excited to have you get started. First, you need to confirm your account. Just press the button below."%}
-        </td>
-      </tr>
-      <tr>
-        <td align="center" class="btn btn-primary">
-          <a id="confirm" href="{{ url }}" rel="noopener noreferrer" target="_blank">{% trans 'Confirm Account' %}</a>
-        </td>
-      </tr>
-    </table>
-  </td>
-</tr>
-<td>
+  <tr>
+    <td align="center">
+      <h1>
+        {% trans 'Welcome!' %}
+      </h1>
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <table border="0">
+        <tr>
+          <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+            {% trans "We're excited to have you get started. First, you need to confirm your account. Just press the button below."%}
+          </td>
+        </tr>
+
+        <tr>
+          <td align="center" class="btn btn-primary">
+            <a
+              id="confirm"
+              href="{{ url }}"
+              rel="noopener noreferrer"
+              target="_blank">
+              {% trans 'Confirm Account' %}
+            </a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <td>
 {% endblock %}
 
 {% block sub_content %}
-<tr>
-  <td style="padding: 20px; font-size: 12px; color: #212124;word-break: break-all; overflow-wrap: break-word;" align="center">
-    {% blocktrans with url=url %}
-    If that doesn't work, copy and paste the following link in your browser: {{ url }}
-    {% endblocktrans %}
-  </td>
-</tr>
+  <tr>
+    <td style="padding: 20px; font-size: 12px; color: #212124;word-break: break-all; overflow-wrap: break-word;" align="center">
+      {% blocktrans with url=url %}
+        If that doesn't work, copy and paste the following link in your browser: {{ url }}
+      {% endblocktrans %}
+    </td>
+  </tr>
 {% endblock %}

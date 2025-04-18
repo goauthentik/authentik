@@ -3,16 +3,22 @@
 {% load authentik_core %}
 
 {% block head %}
-<script src="{% versioned_script 'dist/rac/index-%v.js' %}" type="module"></script>
-<meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-<link rel="icon" href="{{ tenant.branding_favicon_url }}">
-<link rel="shortcut icon" href="{{ tenant.branding_favicon_url }}">
-{% include "base/header_js.html" %}
+  <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+  <link rel="icon" href="{{ tenant.branding_favicon_url }}">
+  <link rel="shortcut icon" href="{{ tenant.branding_favicon_url }}">
+
+  {% include "base/header_js.html" %}
+
+  <script
+    src="{% versioned_script 'dist/rac/index-%v.js' %}"
+    type="module">
+  </script>
 {% endblock %}
 
 {% block body %}
-<ak-rac token="{{ url_kwargs.token }}" endpointName="{{ token.endpoint.name }}">
-  <ak-loading></ak-loading>
-</ak-rac>
+  <ak-rac token="{{ url_kwargs.token }}" endpointName="{{ token.endpoint.name }}">
+    <ak-loading></ak-loading>
+  </ak-rac>
 {% endblock %}

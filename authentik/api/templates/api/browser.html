@@ -3,15 +3,20 @@
 {% load authentik_core %}
 
 {% block title %}
-API Browser - {{ brand.branding_title }}
+  API Browser - {{ brand.branding_title }}
 {% endblock %}
 
 {% block head %}
-<script src="{% versioned_script 'dist/standalone/api-browser/index-%v.js' %}" type="module"></script>
-<meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+  <script
+    data-test-id="entrypoint"
+    src="{% versioned_script 'dist/standalone/api-browser/index-%v.js' %}"
+    type="module">
+  </script>
 {% endblock %}
 
 {% block body %}
-<ak-api-browser schemaPath="{{ path }}"></ak-api-browser>
+  <ak-api-browser schemaPath="{{ path }}"></ak-api-browser>
 {% endblock %}

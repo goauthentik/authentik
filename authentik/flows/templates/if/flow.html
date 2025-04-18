@@ -4,31 +4,45 @@
 {% load authentik_core %}
 
 {% block head_before %}
-{{ block.super }}
-<link rel="prefetch" href="{{ flow.background_url }}" />
-{% if flow.compatibility_mode and not inspector %}
-<script>ShadyDOM = { force: !navigator.webdriver };</script>
-{% endif %}
-{% include "base/header_js.html" %}
-<script>
-window.authentik.flow = {
-    "layout": "{{ flow.layout }}",
-};
-</script>
+  {{ block.super }}
+
+  <link rel="prefetch" href="{{ flow.background_url }}">
+
+  {% if flow.compatibility_mode and not inspector %}
+    <script>
+      window.ShadyDOM = { force: !navigator.webdriver };
+    </script>
+  {% endif %}
+
+  {% include "base/header_js.html" %}
+
+  <script>
+    window.authentik.flow = {
+      layout: "{{ flow.layout }}",
+    };
+  </script>
+
+  <meta name="ak-flow-layout" content="{{ flow.layout }}">
+
 {% endblock %}
 
 {% block head %}
-<script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
-<style>
-:root {
-    --ak-flow-background: url("{{ flow.background_url }}");
-}
-</style>
+  <script
+    data-test-id="entrypoint"
+    src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}"
+    type="module">
+  </script>
+
+  <style data-test-id="flow-root-styles">
+    :root {
+      --ak-flow-background: url("{{ flow.background_url }}");
+    }
+  </style>
 {% endblock %}
 
 {% block body %}
-<ak-message-container></ak-message-container>
-<ak-flow-executor flowSlug="{{ flow.slug }}">
+  <ak-message-container></ak-message-container>
+  <ak-flow-executor flowSlug="{{ flow.slug }}">
     <ak-loading></ak-loading>
-</ak-flow-executor>
+  </ak-flow-executor>
 {% endblock %}

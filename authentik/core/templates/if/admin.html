@@ -3,15 +3,22 @@
 {% load authentik_core %}
 
 {% block head %}
-<script src="{% versioned_script 'dist/admin/AdminInterface-%v.js' %}" type="module"></script>
-<meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
-<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-{% include "base/header_js.html" %}
+  <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+  {% include "base/header_js.html" %}
+
+  <script
+    data-test-id="entrypoint"
+    src="{% versioned_script 'dist/admin/AdminInterface-%v.js' %}"
+    type="module">
+  </script>
 {% endblock %}
 
 {% block body %}
-<ak-message-container></ak-message-container>
-<ak-interface-admin>
+  <ak-message-container></ak-message-container>
+
+  <ak-interface-admin>
     <ak-loading></ak-loading>
-</ak-interface-admin>
+  </ak-interface-admin>
 {% endblock %}

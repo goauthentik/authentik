@@ -4,18 +4,22 @@
 {% load i18n %}
 
 {% block title %}
-{{ brand.branding_title }}
+  {{ brand.branding_title }}
 {% endblock %}
 
 {% block card_title %}
-{% trans title %}
+  {% trans title %}
 {% endblock %}
 
 {% block card %}
-<form method="POST" class="pf-c-form">
+  <form method="POST" class="pf-c-form">
     <p>{% trans message %}</p>
-    <a id="ak-back-home" href="{% url 'authentik_core:root-redirect' %}" class="pf-c-button pf-m-primary">
-        {% trans 'Go home' %}
+
+    <a
+      id="ak-back-home"
+      href="{% url 'authentik_core:root-redirect' %}"
+      class="pf-c-button pf-m-primary">
+      {% trans 'Go home' %}
     </a>
-</form>
+  </form>
 {% endblock %}
