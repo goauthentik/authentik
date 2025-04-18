@@ -5623,6 +5623,11 @@
                     "maximum": 2147483647,
                     "title": "Order"
                 },
+                "honor_order": {
+                    "type": "boolean",
+                    "title": "Honor order",
+                    "description": "Honor order when evaluating policies."
+                },
                 "timeout": {
                     "type": "integer",
                     "minimum": 0,

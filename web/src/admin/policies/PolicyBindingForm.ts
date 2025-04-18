@@ -310,6 +310,26 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="honorOrder">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.honorOrder, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Honor order")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Honor the order of policies. Use if policies must be evaluated sequentially following the specified order. May impact performance.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
                 <input
                     type="number"

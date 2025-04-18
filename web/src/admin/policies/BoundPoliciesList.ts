@@ -61,6 +61,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             new TableColumn(this.allowedTypesLabel),
             new TableColumn(msg("Enabled"), "enabled"),
             new TableColumn(msg("Timeout"), "timeout"),
+            new TableColumn(msg("Honor order"), "honor_order"),
             new TableColumn(msg("Actions")),
         ];
     }
@@ -165,6 +166,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             html`${this.getPolicyUserGroupRow(item)}`,
             html`<ak-status-label type="warning" ?good=${item.enabled}></ak-status-label>`,
             html`${item.timeout}`,
+            html`<ak-status-label type="info" ?good=${item.honorOrder}></ak-status-label>`,
             html` ${this.getObjectEditButton(item)}
                 <ak-forms-modal size=${PFSize.Medium}>
                     <span slot="submit"> ${msg("Update")} </span>
