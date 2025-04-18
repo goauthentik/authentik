@@ -1,5 +1,6 @@
 """authentik policy engine"""
 
+import queue
 from collections.abc import Iterator
 from multiprocessing import current_process, get_context
 from multiprocessing.queues import Queue
@@ -149,7 +150,14 @@ class PolicyEngine:
                     proc_info.process.join(proc_info.binding.timeout)
                 # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
-                    proc_info.result = proc_info.result_queue.get()
+                    try:
+                        proc_info.result = proc_info.result_queue.get(
+                            timeout=proc_info.binding.timeout
+                        )
+                    except queue.Empty:
+                        raise RuntimeError(
+                            "Policy failed to return within timeout"
+                        ) from queue.Empty()
             return self
 
     @property
