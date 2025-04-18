@@ -1,13 +1,18 @@
+/// <reference types="./types.js" />
+
 /**
- * @file
- * Client-side observer for ESBuild events.
+ * @file Client-side observer for ESBuild events.
+ *
+ * @import { Message as ESBuildMessage } from "esbuild";
  */
-import type { Message as ESBuildMessage } from "esbuild";
 
 const logPrefix = "👷 [ESBuild]";
 const log = console.debug.bind(console, logPrefix);
 
-type BuildEventListener<Data = unknown> = (event: MessageEvent<Data>) => void;
+/**
+ * @template {unknown} [Data=unknown]
+ * @typedef {(event: MessageEvent) => void} BuildEventListener
+ */
 
 /**
  * A client-side watcher for ESBuild.
@@ -16,14 +21,13 @@ type BuildEventListener<Data = unknown> = (event: MessageEvent<Data>) => void;
  * ESBuild may tree-shake it out of production builds.
  *
  * ```ts
- * if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
- *   const { ESBuildObserver } = await import("@goauthentik/common/client");
- *
- *   new ESBuildObserver(process.env.WATCHER_URL);
+ * if (process.env.NODE_ENV === "development") {
+ *   await import("@goauthentik/esbuild-plugin-live-reload/client")
+ *     .catch(() => console.warn("Failed to import watcher"))
  * }
  * ```
-}
-
+ *
+ * @implements {Disposable}
  */
 export class ESBuildObserver extends EventSource {
     /**
@@ -58,15 +62,19 @@ export class ESBuildObserver extends EventSource {
 
     /**
      * The interval for the keep-alive check.
+     * @type {ReturnType<typeof setInterval> | undefined}
      */
-    #keepAliveInterval: ReturnType<typeof setInterval> | undefined;
+    #keepAliveInterval;
 
     #trackActivity = () => {
         this.lastUpdatedAt = Date.now();
         this.alive = true;
     };
 
-    #startListener: BuildEventListener = () => {
+    /**
+     * @type {BuildEventListener}
+     */
+    #startListener = () => {
         this.#trackActivity();
         log("⏰  Build started...");
     };
@@ -82,13 +90,18 @@ export class ESBuildObserver extends EventSource {
         }
     };
 
-    #errorListener: BuildEventListener<string> = (event) => {
+    /**
+     * @type {BuildEventListener<string>}
+     */
+    #errorListener = (event) => {
         this.#trackActivity();
 
-        // eslint-disable-next-line no-console
         console.group(logPrefix, "⛔️⛔️⛔️  Build error...");
 
-        const esbuildErrorMessages: ESBuildMessage[] = JSON.parse(event.data);
+        /**
+         * @type {ESBuildMessage[]}
+         */
+        const esbuildErrorMessages = JSON.parse(event.data);
 
         for (const error of esbuildErrorMessages) {
             console.warn(error.text);
@@ -101,11 +114,13 @@ export class ESBuildObserver extends EventSource {
             }
         }
 
-        // eslint-disable-next-line no-console
         console.groupEnd();
     };
 
-    #endListener: BuildEventListener = () => {
+    /**
+     * @type {BuildEventListener}
+     */
+    #endListener = () => {
         cancelAnimationFrame(this.#reloadFrameID);
 
         this.#trackActivity();
@@ -126,12 +141,36 @@ export class ESBuildObserver extends EventSource {
         });
     };
 
-    #keepAliveListener: BuildEventListener = () => {
+    /**
+     * @type {BuildEventListener}
+     */
+    #keepAliveListener = () => {
         this.#trackActivity();
         log("🏓 Keep-alive");
     };
 
-    constructor(url: string | URL) {
+    /**
+     * Initialize the ESBuild observer.
+     * This should be called once in your application.
+     *
+     * @param {string | URL} [url]
+     * @returns {ESBuildObserver}
+     */
+    static initialize = (url) => {
+        const esbuildObserver = new ESBuildObserver(url);
+
+        return esbuildObserver;
+    };
+
+    /**
+     *
+     * @param {string | URL} [url]
+     */
+    constructor(url) {
+        if (!url) {
+            throw new TypeError("ESBuildObserver: Cannot construct without a URL");
+        }
+
         super(url);
 
         this.addEventListener("esbuild:start", this.#startListener);
@@ -167,4 +206,14 @@ export class ESBuildObserver extends EventSource {
             log("👋  Waiting for build to start...");
         }, 15_000);
     }
+
+    [Symbol.dispose]() {
+        return this.close();
+    }
+
+    dispose() {
+        return this[Symbol.dispose]();
+    }
 }
+
+export default ESBuildObserver;
