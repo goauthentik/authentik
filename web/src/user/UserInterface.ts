@@ -4,8 +4,8 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { configureSentry } from "@goauthentik/common/sentry";
+import { setSentryPII, tryInitializeSentry } from "@goauthentik/common/sentry";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { UIConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -166,14 +166,14 @@ class UserInterfacePresentation extends AKElement {
 
         return html`<a
                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                href="${globalAK().api.base}if/admin/"
+                href="${ServerContext.baseURL}if/admin/"
                 slot="extra"
             >
                 ${msg("Admin interface")}
             </a>
             <a
                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none-on-md pf-u-display-block"
-                href="${globalAK().api.base}if/admin/"
+                href="${ServerContext.baseURL}if/admin/"
                 slot="extra"
             >
                 ${msg("Admin")}
@@ -280,7 +280,9 @@ export class UserInterface extends AuthenticatedInterface {
         super();
         this.ws = new WebsocketClient();
         this.fetchConfigurationDetails();
-        configureSentry(true);
+
+        tryInitializeSentry(ServerContext.config);
+
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
@@ -321,8 +323,10 @@ export class UserInterface extends AuthenticatedInterface {
     }
 
     fetchConfigurationDetails() {
-        me().then((me: SessionUser) => {
-            this.me = me;
+        me().then((session: SessionUser) => {
+            this.me = session;
+            setSentryPII(session.user);
+
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
                     seen: false,

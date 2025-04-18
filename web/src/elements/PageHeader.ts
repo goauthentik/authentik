@@ -3,13 +3,13 @@ import {
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { currentInterface } from "@goauthentik/common/sentry";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -126,7 +126,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
     }
 
     setTitle(header?: string) {
-        const currentIf = currentInterface();
+        const currentIf = readInterfaceRouteParam();
         let title = this.brand?.brandingTitle || TITLE_DEFAULT;
         if (currentIf === "admin") {
             title = `${msg("Admin")} - ${title}`;
@@ -186,7 +186,7 @@ export class PageHeader extends WithBrandConfig(AKElement) {
                     <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
                         <a
                             class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                            href="${globalAK().api.base}if/user/"
+                            href="${ServerContext.baseURL}if/user/"
                             slot="extra"
                         >
                             ${msg("User interface")}

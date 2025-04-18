@@ -1,6 +1,5 @@
 """Interface views"""
 
-from json import dumps
 from typing import Any
 
 from django.http import HttpRequest
@@ -46,14 +45,19 @@ class InterfaceView(TemplateView):
     """Base interface view"""
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        kwargs["config_json"] = dumps(ConfigView(request=Request(self.request)).get_config().data)
-        kwargs["brand_json"] = dumps(CurrentBrandSerializer(self.request.brand).data)
+        """Add common context data to all interface views"""
+
+        kwargs["config_json"] = ConfigView(request=Request(self.request)).get_config().data
+        kwargs["brand_json"] = CurrentBrandSerializer(self.request.brand).data
+
         kwargs["version_family"] = f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}"
         kwargs["version_subdomain"] = f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}"
+
         kwargs["build"] = get_build_hash()
         kwargs["url_kwargs"] = self.kwargs
         kwargs["base_url"] = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
         kwargs["base_url_rel"] = CONFIG.get("web.path", "/")
+
         return super().get_context_data(**kwargs)
 
 

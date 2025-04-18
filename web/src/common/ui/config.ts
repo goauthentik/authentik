@@ -1,5 +1,5 @@
-import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
+import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
 
 import { UiThemeEnum, UserSelf } from "@goauthentik/api";
 
@@ -77,7 +77,7 @@ export class DefaultUIConfig implements UIConfig {
     };
 
     constructor() {
-        if (currentInterface() === "user") {
+        if (readInterfaceRouteParam() === "user") {
             this.enabledFeatures.apiDrawer = false;
         }
     }
