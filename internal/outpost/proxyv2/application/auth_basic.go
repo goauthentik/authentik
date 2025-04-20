@@ -37,18 +37,15 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.publicHostHTTPClient.Do(req)
-	
-	hasBody := res != nil && res.Body != nil
-	if hasBody {
+	if res != nil && res.Body != nil {
 		defer func() {
 			if err := res.Body.Close(); err != nil {
 				a.log.WithError(err).Warning("failed to close response body")
 			}
 		}()
 	}
-	
-	if err != nil || res == nil || res.StatusCode >= 300 {
-		if hasBody {
+	if err != nil || res == nil || res.StatusCode > 200 {
+		if res != nil && res.Body != nil {
 			b, readErr := io.ReadAll(res.Body)
 			if readErr != nil {
 				b = []byte(readErr.Error())
@@ -59,7 +56,6 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 		}
 		return nil
 	}
-	
 	var token TokenResponse
 	err = json.NewDecoder(res.Body).Decode(&token)
 	if err != nil {
