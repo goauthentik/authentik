@@ -38,7 +38,11 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.publicHostHTTPClient.Do(req)
 	if res != nil && res.Body != nil {
-		defer res.Body.Close()
+		defer func() {
+			if err := res.Body.Close(); err != nil {
+				a.log.WithError(err).Warning("failed to close response body")
+			}
+		}()
 	}
 	if err != nil || res == nil || res.StatusCode > 200 {
 		if res != nil && res.Body != nil {
