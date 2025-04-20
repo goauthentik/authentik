@@ -1,0 +1,12 @@
+:root {
+    --docusaurus-highlighted-code-line-bg: #efefef;
+}
+
+html[data-theme="dark"] {
+    /* Color which works with dark mode syntax highlighting theme */
+    --docusaurus-highlighted-code-line-bg: #3f3f3f;
+}
+
+.theme-code-block pre code {
+    font-weight: 500;
+}

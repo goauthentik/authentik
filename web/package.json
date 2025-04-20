@@ -12,7 +12,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2025.2.3-1743464496",
+        "@goauthentik/api": "^2025.2.4-1744886287",
         "@lit-labs/ssr": "^3.2.2",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
@@ -42,7 +42,7 @@
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.4.1",
-        "rapidoc": "^9.3.7",
+        "rapidoc": "^9.3.8",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "rehype-highlight": "^7.0.2",
@@ -127,6 +127,14 @@
         "@rollup/rollup-darwin-arm64": "4.23.0",
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"
+    },
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
     },
     "private": true,
     "scripts": {
