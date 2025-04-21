@@ -101,6 +101,7 @@
     "devDependencies": {
         "@eslint/js": "^9.11.1",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/monorepo": "^1.0.0",
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
