@@ -35,6 +35,11 @@
         "watch": "run-s build-locales esbuild:watch"
     },
     "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./paths": "./paths.js",
+        "./scripts/*": "./scripts/*.mjs"
+    },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",

@@ -4,20 +4,21 @@
  * @import { BuildOptions } from "esbuild";
  */
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
-import { execFileSync } from "child_process";
+import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
-import * as path from "path";
-import { cwd } from "process";
-import process from "process";
-import { fileURLToPath } from "url";
+import { execFileSync } from "node:child_process";
+import { copyFileSync, mkdirSync, readFileSync, statSync } from "node:fs";
+import * as fs from "node:fs/promises";
+import * as path from "node:path";
+import process, { cwd } from "node:process";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const logPrefix = "[Build]";
+
 let authentikProjectRoot = path.join(__dirname, "..", "..");
 
 try {
@@ -46,7 +47,6 @@ const definitions = Object.fromEntries(
         return [`process.env.${key}`, JSON.stringify(value)];
     }),
 );
-
 /**
  * All is magic is just to make sure the assets are copied into the right places. This is a very
  * stripped down version of what the rollup-copy-plugin does, without any of the features we don't
@@ -93,38 +93,23 @@ for (const [source, rawdest, strip] of assetsFileMappings) {
 }
 
 /**
- * @typedef {[source: string, destination: string]} EntryPoint
- */
-
-/**
- * This starts the definitions used for esbuild: Our targets, our arguments, the function for
- * running a build, and three options for building: watching, building, and building the proxy.
- * Ordered by largest to smallest interface to build even faster
- *
- * @type {EntryPoint[]}
- */
-const entryPoints = [
-    ["admin/AdminInterface/AdminInterface.ts", "admin"],
-    ["user/UserInterface.ts", "user"],
-    ["flow/FlowInterface.ts", "flow"],
-    ["standalone/api-browser/index.ts", "standalone/api-browser"],
-    ["rac/index.ts", "rac"],
-    ["standalone/loading/index.ts", "standalone/loading"],
-    ["polyfill/poly.ts", "."],
-];
-
-/**
- * @type {import("esbuild").BuildOptions}
+ * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
+    entryNames: `[dir]/[name]-${composeVersionID()}`,
+    chunkNames: "[dir]/chunks/[name]-[hash]",
+    assetNames: "assets/[dir]/[name]-[hash]",
+    publicPath: path.join("/static", DistDirectoryName),
+    outdir: DistDirectory,
     bundle: true,
     write: true,
     sourcemap: true,
     minify: NODE_ENV === "production",
+    legalComments: "external",
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
-    tsconfig: path.resolve(__dirname, "..", "tsconfig.build.json"),
+    tsconfig: path.resolve(PackageRoot, "tsconfig.build.json"),
     loader: {
         ".css": "text",
     },
@@ -166,54 +151,43 @@ function composeVersionID() {
     return version;
 }
 
-/**
- * Build a single entry point.
- *
- * @param {EntryPoint} buildTarget
- * @param {Partial<esbuild.BuildOptions>} [overrides]
- * @throws {Error} on build failure
- */
-function createEntryPointOptions([source, dest], overrides = {}) {
-    const outdir = path.join(__dirname, "..", "dist", dest);
+async function cleanDistDirectory() {
+    const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
 
-    /**
-     * @type {esbuild.BuildOptions}
-     */
+    console.time(timerLabel);
 
-    const entryPointConfig = {
-        entryPoints: [`./src/${source}`],
-        entryNames: `[dir]/[name]-${composeVersionID()}`,
-        publicPath: path.join("/static", "dist", dest),
-        outdir,
-    };
+    await fs.rm(DistDirectory, {
+        recursive: true,
+        force: true,
+    });
 
-    /**
-     * @type {esbuild.BuildOptions}
-     */
-    const mergedConfig = deepmerge(BASE_ESBUILD_OPTIONS, entryPointConfig, overrides);
+    await fs.mkdir(DistDirectory, {
+        recursive: true,
+    });
 
-    return mergedConfig;
+    console.timeEnd(timerLabel);
 }
 
 /**
- * Build all entry points in parallel.
+ * Creates an ESBuild options, extending the base options with the given overrides.
  *
- * @param {EntryPoint[]} entryPoints
- * @returns {Promise<esbuild.BuildResult[]>}
+ * @param {BuildOptions} overrides
+ * @returns {BuildOptions}
  */
-async function buildParallel(entryPoints) {
-    return Promise.all(
-        entryPoints.map((entryPoint) => {
-            return esbuild.build(createEntryPointOptions(entryPoint));
-        }),
-    );
+export function createESBuildOptions(overrides) {
+    /**
+     * @type {BuildOptions}
+     */
+    const mergedOptions = deepmerge(BASE_ESBUILD_OPTIONS, overrides);
+
+    return mergedOptions;
 }
 
 function doHelp() {
     console.log(`Build the authentik UI
 
         options:
-            -w, --watch: Build all ${entryPoints.length} interfaces
+            -w, --watch: Build all interfaces
             -p, --proxy: Build only the polyfills and the loading application
             -h, --help: This help message
 `);
@@ -222,27 +196,29 @@ function doHelp() {
 }
 
 async function doWatch() {
-    console.log("Watching all entry points...");
+    console.group(`${logPrefix} 🤖 Watching entry points`);
 
-    const buildContexts = await Promise.all(
-        entryPoints.map((entryPoint) => {
-            return esbuild.context(
-                createEntryPointOptions(entryPoint, {
-                    define: definitions,
-                    plugins: [
-                        liveReloadPlugin({
-                            logPrefix: `Build Observer (${entryPoint[1]})`,
-                            relativeRoot: path.join(__dirname, ".."),
-                        }),
-                    ],
-                }),
-            );
-        }),
-    );
+    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
+        console.log(entrypointID);
 
-    await Promise.all(buildContexts.map((context) => context.rebuild()));
+        return target;
+    });
 
-    await Promise.allSettled(buildContexts.map((context) => context.watch()));
+    console.groupEnd();
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+        plugins: [
+            liveReloadPlugin({
+                relativeRoot: PackageRoot,
+            }),
+        ],
+    });
+
+    const buildContext = await esbuild.context(buildOptions);
+
+    await buildContext.rebuild();
+    await buildContext.watch();
 
     return /** @type {Promise<void>} */ (
         new Promise((resolve) => {
@@ -254,15 +230,34 @@ async function doWatch() {
 }
 
 async function doBuild() {
-    console.log("Building all entry points");
+    console.group(`${logPrefix} 🚀 Building entry points:`);
 
-    return buildParallel(entryPoints);
+    const entryPoints = Object.entries(EntryPoint).map(([entrypointID, target]) => {
+        console.log(entrypointID);
+
+        return target;
+    });
+
+    console.groupEnd();
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+    });
+
+    await esbuild.build(buildOptions);
+
+    console.log("Build complete");
 }
 
 async function doProxy() {
-    return buildParallel(
-        entryPoints.filter(([_, dest]) => ["standalone/loading", "."].includes(dest)),
-    );
+    const entryPoints = [EntryPoint.StandaloneLoading];
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+    });
+
+    await esbuild.build(buildOptions);
+    console.log("Proxy build complete");
 }
 
 async function delegateCommand() {
@@ -284,12 +279,16 @@ async function delegateCommand() {
     }
 }
 
-await delegateCommand()
-    .then(() => {
-        console.log("Build complete");
-        process.exit(0);
-    })
-    .catch((error) => {
-        console.error(error);
-        process.exit(1);
-    });
+await cleanDistDirectory()
+    // ---
+    .then(() =>
+        delegateCommand()
+            .then(() => {
+                console.log("Build complete");
+                process.exit(0);
+            })
+            .catch((error) => {
+                console.error(error);
+                process.exit(1);
+            }),
+    );
