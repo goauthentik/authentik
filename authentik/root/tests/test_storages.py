@@ -1085,10 +1085,7 @@ class TestS3Storage(TestCase):
         mock_s3_client = MagicMock()
         mock_s3_client.list_objects_v2.return_value = {
             "KeyCount": 2,
-            "Contents": [
-                {"Key": "file1.txt"},
-                {"Key": "file2.txt"}
-            ]
+            "Contents": [{"Key": "file1.txt"}, {"Key": "file2.txt"}],
         }
         mock_client.return_value = None
         self.storage._s3_client = mock_s3_client

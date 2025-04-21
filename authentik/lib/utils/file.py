@@ -2,9 +2,9 @@
 
 import os
 import uuid
+
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
-from django.http import HttpResponseBadRequest
 from rest_framework.fields import BooleanField, CharField, FileField
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -45,11 +45,11 @@ def set_file(request: Request, obj: Model, field_name: str):
     serializer = FileUploadSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
-    
+
     field = getattr(obj, field_name)
     file = request.FILES.get("file", None)
     action = serializer.validated_data.get("action", "update")
-    
+
     # Clear action - delete the file and return empty meta_icon
     if action == "clear" and field:
         try:
@@ -64,7 +64,7 @@ def set_file(request: Request, obj: Model, field_name: str):
         except Exception as exc:
             LOGGER.warning("Failed to clear file", exc=exc)
             return Response({"error": f"Failed to clear file: {str(exc)}"}, status=500)
-    
+
     # Update action - check for file upload
     if action == "update":
         # If replacing, delete the old file first
@@ -88,11 +88,11 @@ def set_file(request: Request, obj: Model, field_name: str):
                 return Response({"meta_icon": None})
             except Exception as exc:
                 LOGGER.warning("Failed to clear file using legacy method", exc=exc)
-                
+
         if file:
             # Get the upload_to path from the model field
             upload_to = field.field.upload_to
-            
+
             # If upload_to is set, ensure the file name includes the directory
             if upload_to:
                 # Generate a unique filename to prevent conflicts
@@ -100,7 +100,7 @@ def set_file(request: Request, obj: Model, field_name: str):
                 unique_filename = f"{filename}_{uuid.uuid4().hex[:8]}{extension}"
                 # Construct a clean path within the upload directory
                 file.name = f"{upload_to}/{unique_filename}"
-                
+
             setattr(obj, field_name, file)
             try:
                 obj.save()
@@ -120,11 +120,21 @@ def set_file(request: Request, obj: Model, field_name: str):
                 return Response(
                     {"error": "An unexpected error occurred while saving the file"}, status=500
                 )
-            return Response({"meta_icon": getattr(obj, field_name).url if hasattr(getattr(obj, field_name), 'url') else None})
+            return Response(
+                {
+                    "meta_icon": (
+                        getattr(obj, field_name).url
+                        if hasattr(getattr(obj, field_name), "url")
+                        else None
+                    )
+                }
+            )
         return Response({"error": "No file provided for update action"}, status=400)
-    
+
     # Invalid action
-    return Response({"error": f"Invalid action: {action}. Must be 'update' or 'clear'."}, status=400)
+    return Response(
+        {"error": f"Invalid action: {action}. Must be 'update' or 'clear'."}, status=400
+    )
 
 
 def set_file_url(request: Request, obj: Model, field: str):
@@ -133,11 +143,11 @@ def set_file_url(request: Request, obj: Model, field: str):
     serializer = FilePathSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(serializer.errors, status=400)
-    
+
     field_obj = getattr(obj, field)
     url = serializer.validated_data.get("url")
     action = serializer.validated_data.get("action", "update")
-    
+
     # Clear action
     if action == "clear" and field_obj and field_obj.name:
         try:
@@ -147,22 +157,24 @@ def set_file_url(request: Request, obj: Model, field: str):
         except Exception as exc:
             LOGGER.warning("Failed to clear file", exc=exc)
             return Response({"error": f"Failed to clear file: {str(exc)}"}, status=500)
-    
+
     # Update action
     if action == "update":
         if url is None:
             return Response({"error": "URL is required for update action"}, status=400)
-        
+
         # Delete old file if it exists
         if field_obj and field_obj.name:
             try:
                 field_obj.delete(save=False)
             except Exception as exc:
                 LOGGER.warning("Failed to delete old file", exc=exc)
-        
+
         field_obj.name = url
         obj.save()
         return Response({"meta_icon": url})
-    
+
     # Invalid action
-    return Response({"error": f"Invalid action: {action}. Must be 'update' or 'clear'."}, status=400)
+    return Response(
+        {"error": f"Invalid action: {action}. Must be 'update' or 'clear'."}, status=400
+    )

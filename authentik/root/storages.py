@@ -4,6 +4,7 @@ This module provides custom storage backends for handling file storage in a mult
 environment. It supports both filesystem and S3 storage options with proper tenant isolation.
 """
 
+import io
 import os
 import uuid
 from pathlib import Path
@@ -22,7 +23,6 @@ from PIL import Image
 from storages.backends.s3 import S3Storage as BaseS3Storage
 from storages.utils import safe_join
 from structlog.stdlib import get_logger
-import io
 
 from authentik.lib.config import CONFIG
 
@@ -234,7 +234,7 @@ def validate_image_file(file: UploadedFile) -> bool:
 
 def optimize_image(content):
     """Optimize image by resizing if needed and applying compression.
-    
+
     Used for application icons and other image uploads to reduce file size
     and improve loading performance.
 
@@ -246,42 +246,42 @@ def optimize_image(content):
     """
     if not hasattr(content, "content_type") or not content.content_type.startswith("image/"):
         return content
-    
+
     # Skip for SVG and ICO files which don't support Pillow optimization
     name = content.name.lower() if hasattr(content, "name") else ""
     ext = os.path.splitext(name)[1] if name else ""
     if ext in (".svg", ".ico"):
         return content
-    
+
     original_pos = content.tell() if hasattr(content, "tell") else 0
-    
+
     try:
         # Try to open the image
         img = Image.open(content)
-        
+
         # Reset file position after reading
         if hasattr(content, "seek"):
             content.seek(0)
-        
+
         # Check if we need to optimize this image
         if img.format not in ("JPEG", "PNG", "GIF", "WEBP"):
             return content
-        
+
         # Create in-memory buffer for the optimized image
         buffer = io.BytesIO()
-        
-        # Resize large images to a reasonable size (max 512px in any dimension)
-        if max(img.size) > 512:
+
+        # Maximum dimension for images in pixels
+        MAX_IMAGE_DIMENSION = 512
+
+        # Resize large images to a reasonable size
+        if max(img.size) > MAX_IMAGE_DIMENSION:
             LOGGER.debug(
-                "Resizing large image",
-                original_size=img.size,
-                format=img.format,
-                name=name
+                "Resizing large image", original_size=img.size, format=img.format, name=name
             )
-            ratio = 512.0 / max(img.size)
+            ratio = float(MAX_IMAGE_DIMENSION) / max(img.size)
             new_size = (int(img.size[0] * ratio), int(img.size[1] * ratio))
             img = img.resize(new_size, Image.LANCZOS)
-        
+
         # Save with optimization based on format
         if img.format == "JPEG":
             img.save(buffer, format="JPEG", quality=85, optimize=True)
@@ -294,18 +294,19 @@ def optimize_image(content):
         else:
             # Fallback for unsupported optimization
             return content
-        
+
         # Reset buffer position
         buffer.seek(0)
-        
+
         # Create a new ContentFile with the optimized image
         from django.core.files.base import ContentFile
+
         optimized = ContentFile(buffer.getvalue())
-        
+
         # Copy needed attributes from original content
         optimized.name = content.name if hasattr(content, "name") else "optimized.img"
         optimized.content_type = content.content_type if hasattr(content, "content_type") else None
-        
+
         # Log the optimization results
         if hasattr(content, "size"):
             original_size = content.size
@@ -317,9 +318,9 @@ def optimize_image(content):
                 new_size=new_size,
                 reduction_percent=f"{reduction:.1f}%",
                 format=img.format,
-                name=name
+                name=name,
             )
-        
+
         return optimized
     except Exception as e:
         LOGGER.warning("Image optimization failed, using original image", error=str(e), name=name)
