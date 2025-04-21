@@ -1,4 +1,4 @@
-import { AdminInterface } from "@goauthentik/admin/AdminInterface";
+import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";

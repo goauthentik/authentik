@@ -1,4 +1,4 @@
-import type { AdminInterface } from "@goauthentik/admin/AdminInterface/AdminInterface";
+import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
 import { globalAK } from "@goauthentik/common/global";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
