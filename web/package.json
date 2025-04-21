@@ -1,6 +1,40 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "wireit",
+        "build-locales": "wireit",
+        "build-locales:build": "wireit",
+        "build-proxy": "wireit",
+        "build:sfe": "wireit",
+        "esbuild:watch": "node scripts/build-web.mjs --watch",
+        "extract-locales": "wireit",
+        "format": "wireit",
+        "lint": "wireit",
+        "lint:imports": "wireit",
+        "lint:lockfile": "wireit",
+        "lint:nightmare": "wireit",
+        "lint:package": "wireit",
+        "lint:precommit": "wireit",
+        "lint:types": "wireit",
+        "lit-analyse": "wireit",
+        "postinstall": "bash scripts/patch-spotlight.sh",
+        "precommit": "wireit",
+        "prettier": "wireit",
+        "prettier-check": "wireit",
+        "pseudolocalize": "wireit",
+        "storybook": "storybook dev -p 6006",
+        "storybook:build": "wireit",
+        "test": "wireit",
+        "test:e2e": "wireit",
+        "test:e2e:watch": "wireit",
+        "test:watch": "wireit",
+        "tsc": "wireit",
+        "watch": "run-s build-locales esbuild:watch"
+    },
+    "type": "module",
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",
@@ -118,10 +152,6 @@
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.9"
     },
-    "engines": {
-        "node": ">=20"
-    },
-    "license": "MIT",
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.24.0",
         "@esbuild/linux-amd64": "^0.18.11",
@@ -130,48 +160,6 @@
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"
     },
-    "overrides": {
-        "rapidoc": {
-            "@apitools/openapi-parser@": "0.0.37"
-        },
-        "chromedriver": {
-            "axios": "^1.8.4"
-        }
-    },
-    "prettier": "@goauthentik/prettier-config",
-    "private": true,
-    "scripts": {
-        "build": "wireit",
-        "build-locales": "wireit",
-        "build-locales:build": "wireit",
-        "build-proxy": "wireit",
-        "build:sfe": "wireit",
-        "esbuild:watch": "node scripts/build-web.mjs --watch",
-        "extract-locales": "wireit",
-        "format": "wireit",
-        "lint": "wireit",
-        "lint:imports": "wireit",
-        "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:package": "wireit",
-        "lint:precommit": "wireit",
-        "lint:types": "wireit",
-        "lit-analyse": "wireit",
-        "postinstall": "bash scripts/patch-spotlight.sh",
-        "precommit": "wireit",
-        "prettier": "wireit",
-        "prettier-check": "wireit",
-        "pseudolocalize": "wireit",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "wireit",
-        "test": "wireit",
-        "test:e2e": "wireit",
-        "test:e2e:watch": "wireit",
-        "test:watch": "wireit",
-        "tsc": "wireit",
-        "watch": "run-s build-locales esbuild:watch"
-    },
-    "type": "module",
     "wireit": {
         "build": {
             "#comment": [
@@ -388,8 +376,20 @@
             ]
         }
     },
+    "engines": {
+        "node": ">=20"
+    },
     "workspaces": [
         ".",
         "./packages/*"
-    ]
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
+    }
 }
