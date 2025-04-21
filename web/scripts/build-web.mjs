@@ -4,99 +4,38 @@
  * @import { BuildOptions } from "esbuild";
  */
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
+import {
+    MonoRepoRoot,
+    NodeEnvironment,
+    readBuildIdentifier,
+    resolvePackage,
+    serializeEnvironmentVars,
+} from "@goauthentik/monorepo";
 import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
+import copy from "esbuild-plugin-copy";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import { globSync } from "glob";
-import { execFileSync } from "node:child_process";
-import { copyFileSync, mkdirSync, readFileSync, statSync } from "node:fs";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import process, { cwd } from "node:process";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 
 const logPrefix = "[Build]";
 
-let authentikProjectRoot = path.join(__dirname, "..", "..");
+const definitions = serializeEnvironmentVars({
+    NODE_ENV: NodeEnvironment,
+    CWD: process.cwd(),
+    AK_API_BASE_PATH: process.env.AK_API_BASE_PATH,
+});
 
-try {
-    // Use the package.json file in the root folder, as it has the current version information.
-    authentikProjectRoot = execFileSync("git", ["rev-parse", "--show-toplevel"], {
-        encoding: "utf8",
-    }).replace("\n", "");
-} catch (_error) {
-    // We probably don't have a .git folder, which could happen in container builds.
-}
-
-const packageJSONPath = path.join(authentikProjectRoot, "./package.json");
-const rootPackage = JSON.parse(readFileSync(packageJSONPath, "utf8"));
-
-const NODE_ENV = process.env.NODE_ENV || "development";
-const AK_API_BASE_PATH = process.env.AK_API_BASE_PATH || "";
-
-const environmentVars = new Map([
-    ["NODE_ENV", NODE_ENV],
-    ["CWD", cwd()],
-    ["AK_API_BASE_PATH", AK_API_BASE_PATH],
-]);
-
-const definitions = Object.fromEntries(
-    Array.from(environmentVars).map(([key, value]) => {
-        return [`process.env.${key}`, JSON.stringify(value)];
-    }),
-);
-/**
- * All is magic is just to make sure the assets are copied into the right places. This is a very
- * stripped down version of what the rollup-copy-plugin does, without any of the features we don't
- * use, and using globSync instead of globby since we already had globSync lying around thanks to
- * Typescript. If there's a third argument in an array entry, it's used to replace the internal path
- * before concatenating it all together as the destination target.
- * @type {Array<[string, string, string?]>}
- */
-const assetsFileMappings = [
-    ["node_modules/@patternfly/patternfly/patternfly.min.css", "."],
-    ["node_modules/@patternfly/patternfly/assets/**", ".", "node_modules/@patternfly/patternfly/"],
-    ["src/common/styles/**", "."],
-    ["src/assets/images/**", "./assets/images"],
-    ["./icons/*", "./assets/icons"],
-];
-
-/**
- * @param {string} filePath
- */
-const isFile = (filePath) => statSync(filePath).isFile();
-
-/**
- * @param {string} src Source file
- * @param {string} dest Destination folder
- * @param {string} [strip] Path to strip from the source file
- */
-function nameCopyTarget(src, dest, strip) {
-    const target = path.join(dest, strip ? src.replace(strip, "") : path.parse(src).base);
-    return [src, target];
-}
-
-for (const [source, rawdest, strip] of assetsFileMappings) {
-    const matchedPaths = globSync(source);
-    const dest = path.join("dist", rawdest);
-
-    const copyTargets = matchedPaths.map((path) => nameCopyTarget(path, dest, strip));
-
-    for (const [src, dest] of copyTargets) {
-        if (isFile(src)) {
-            mkdirSync(path.dirname(dest), { recursive: true });
-            copyFileSync(src, dest);
-        }
-    }
-}
+const patternflyPath = resolvePackage("@patternfly/patternfly");
 
 /**
  * @type {Readonly<BuildOptions>}
  */
 const BASE_ESBUILD_OPTIONS = {
-    entryNames: `[dir]/[name]-${composeVersionID()}`,
+    entryNames: `[dir]/[name]-${readBuildIdentifier()}`,
     chunkNames: "[dir]/chunks/[name]-[hash]",
     assetNames: "assets/[dir]/[name]-[hash]",
     publicPath: path.join("/static", DistDirectoryName),
@@ -104,7 +43,7 @@ const BASE_ESBUILD_OPTIONS = {
     bundle: true,
     write: true,
     sourcemap: true,
-    minify: NODE_ENV === "production",
+    minify: NodeEnvironment === "production",
     legalComments: "external",
     splitting: true,
     treeShaking: true,
@@ -114,13 +53,37 @@ const BASE_ESBUILD_OPTIONS = {
         ".css": "text",
     },
     plugins: [
+        copy({
+            assets: [
+                {
+                    from: path.join(patternflyPath, "patternfly.min.css"),
+                    to: ".",
+                },
+                {
+                    from: path.join(patternflyPath, "assets", "**"),
+                    to: "./assets",
+                },
+                {
+                    from: path.resolve(PackageRoot, "src", "common", "styles", "**"),
+                    to: ".",
+                },
+                {
+                    from: path.resolve(PackageRoot, "src", "assets", "images", "**"),
+                    to: "./assets/images",
+                },
+                {
+                    from: path.resolve(PackageRoot, "icons", "*"),
+                    to: "./assets/icons",
+                },
+            ],
+        }),
         polyfillNode({
             polyfills: {
                 path: true,
             },
         }),
         mdxPlugin({
-            root: authentikProjectRoot,
+            root: MonoRepoRoot,
         }),
     ],
     define: definitions,
@@ -135,21 +98,6 @@ const BASE_ESBUILD_OPTIONS = {
         "invalid-source-url": "silent",
     },
 };
-
-/**
- * Creates a version ID for the build.
- * @returns {string}
- */
-function composeVersionID() {
-    const { version } = rootPackage;
-    const buildHash = process.env.GIT_BUILD_HASH;
-
-    if (buildHash) {
-        return `${version}+${buildHash}`;
-    }
-
-    return version;
-}
 
 async function cleanDistDirectory() {
     const timerLabel = `${logPrefix} ♻️ Cleaning previous builds...`;
