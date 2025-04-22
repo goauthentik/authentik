@@ -9,7 +9,7 @@ import type { ReactiveController } from "lit";
 import type { CurrentBrand } from "@goauthentik/api";
 import { CoreApi } from "@goauthentik/api";
 
-import type { AkInterface } from "./Interface";
+import type { AkInterface } from "./InterfaceElement.js";
 
 export class BrandContextController implements ReactiveController {
     host!: ReactiveElementHost<AkInterface>;

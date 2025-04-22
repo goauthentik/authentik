@@ -1,5 +1,4 @@
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
-import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
@@ -10,10 +9,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
 import { UiThemeEnum } from "@goauthentik/api";
 
-import { AKElement, rootInterface } from "../Base";
+import { AKElement } from "../Base.js";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
-import { EnterpriseContextController } from "./EnterpriseContextController";
 
 export type AkInterface = HTMLElement & {
     getTheme: () => Promise<UiThemeEnum>;
@@ -25,8 +23,10 @@ export type AkInterface = HTMLElement & {
 const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
-const versionContext = Symbol("versionContext");
 
+/**
+ * A UI interface representing an entry point within the application.
+ */
 export class Interface extends AKElement implements AkInterface {
     [brandContext]!: BrandContextController;
 
@@ -60,9 +60,7 @@ export class Interface extends AKElement implements AkInterface {
         if (theme === this._activeTheme) {
             return;
         }
-        console.debug(
-            `authentik/interface[${rootInterface()?.tagName.toLowerCase()}]: Enabling theme ${theme}`,
-        );
+
         // Special case for root interfaces, as they need to modify the global document CSS too
         // Instead of calling ._activateTheme() twice, we insert the root document in the call
         // since multiple calls to ._activateTheme() would not do anything after the first call
@@ -83,26 +81,3 @@ export type AkAuthenticatedInterface = AkInterface & {
     licenseSummary?: LicenseSummary;
     version?: Version;
 };
-
-const enterpriseContext = Symbol("enterpriseContext");
-
-export class AuthenticatedInterface extends Interface {
-    [enterpriseContext]!: EnterpriseContextController;
-    [versionContext]!: VersionContextController;
-
-    @state()
-    licenseSummary?: LicenseSummary;
-
-    @state()
-    version?: Version;
-
-    constructor() {
-        super();
-    }
-
-    _initContexts(): void {
-        super._initContexts();
-        this[enterpriseContext] = new EnterpriseContextController(this);
-        this[versionContext] = new VersionContextController(this);
-    }
-}

@@ -9,7 +9,7 @@ import type { ReactiveController } from "lit";
 import type { LicenseSummary } from "@goauthentik/api";
 import { EnterpriseApi } from "@goauthentik/api";
 
-import type { AkAuthenticatedInterface } from "./Interface";
+import type { AkAuthenticatedInterface } from "./InterfaceElement.js";
 
 export class EnterpriseContextController implements ReactiveController {
     host!: ReactiveElementHost<AkAuthenticatedInterface>;

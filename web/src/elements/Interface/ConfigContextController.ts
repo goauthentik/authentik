@@ -10,7 +10,7 @@ import type { ReactiveController } from "lit";
 import type { Config } from "@goauthentik/api";
 import { RootApi } from "@goauthentik/api";
 
-import type { AkInterface } from "./Interface";
+import type { AkInterface } from "./InterfaceElement.js";
 
 export class ConfigContextController implements ReactiveController {
     host!: ReactiveElementHost<AkInterface>;
