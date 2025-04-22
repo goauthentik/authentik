@@ -113,6 +113,7 @@ module.exports = {
                         "services/terrakube/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
+                        "services/xcreds/index",
                         "services/zammad/index",
                     ],
                 },
