@@ -9799,15 +9799,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Remember me on this device</source>
   <target>在此设备上记住我</target>
 </trans-unit>
-<trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
-</trans-unit>
-<trans-unit id="sfa72bca733f40692">
-  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
-</trans-unit>
-<trans-unit id="s1c336c2d6cef77b3">
-  <source>Remember me on this device</source>
-</trans-unit>
     </body>
   </file>
 </xliff>
