@@ -13,21 +13,20 @@ LOGGER = get_logger()
 
 @CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def purge_password_history_table(self: SystemTask):
-    """Remove all entries from the UserPasswordHistory table"""
-    unique_pwd_policy_count = UniquePasswordPolicy.objects.count()
+def check_and_purge_password_history(self: SystemTask):
+    """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
+    This is run on a schedule instead of being triggered by policy binding deletion.
+    """
+    if not UniquePasswordPolicy.objects.exists():
+        UserPasswordHistory.objects.all().delete()
+        LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")
+        self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
 
-    if unique_pwd_policy_count > 0:
-        # No-op; A UniquePasswordPolicy exists, no need to purge the table
-        self.set_status(
-            TaskStatus.SUCCESSFUL,
-            """No need to purge UserPasswordHistory table.
+    self.set_status(
+        TaskStatus.SUCCESSFUL,
+        """No need to purge UserPasswordHistory table.
             A Unique Password Policy instance still exists.""",
-        )
-        return
-
-    UserPasswordHistory.objects.all().delete()
-    self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
+    )
 
 
 @CELERY_APP.task()
@@ -86,13 +85,3 @@ def trim_all_password_histories():
         trim_user_password_history.delay(user_pk)
 
     LOGGER.debug("Scheduled password history trimming for users", count=len(users_with_history))
-
-
-@CELERY_APP.task()
-def check_and_purge_password_history():
-    """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
-    This is run on a schedule instead of being triggered by policy binding deletion.
-    """
-    if not UniquePasswordPolicy.objects.exists():
-        UserPasswordHistory.objects.all().delete()
-        LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")

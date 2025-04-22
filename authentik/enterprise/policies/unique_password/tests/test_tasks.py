@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 
-from authentik.core.models import User
 from authentik.core.tests.utils import create_test_user
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
@@ -10,7 +9,6 @@ from authentik.enterprise.policies.unique_password.models import (
 )
 from authentik.enterprise.policies.unique_password.tasks import (
     check_and_purge_password_history,
-    purge_password_history_table,
     trim_all_password_histories,
     trim_user_password_history,
 )
@@ -44,44 +42,6 @@ class TestUniquePasswordPolicyModel(TestCase):
 
         # Verify is_in_use returns True
         self.assertTrue(UniquePasswordPolicy.is_in_use())
-
-
-class TestPurgePasswordHistory(TestCase):
-    def setUp(self) -> None:
-        super().setUp()
-        self.user = User.objects.create(username="testuser")
-
-    def test_purge_password_history_table(self):
-        """Tests the task empties the UserPasswordHistory table"""
-        UserPasswordHistory.objects.bulk_create(
-            [
-                UserPasswordHistory(user=self.user, old_password="hunter1"),  # nosec B106
-                UserPasswordHistory(user=self.user, old_password="hunter2"),  # nosec B106
-            ]
-        )
-        purge_password_history_table.delay().get()
-        self.assertFalse(UserPasswordHistory.objects.all())
-
-    def test_purge_password_history_table_with_multiple_policies(self):
-        """Tests the task doesn't purge UserPasswordHistory when multiple policies exist"""
-        # Create password history entries
-        UserPasswordHistory.objects.bulk_create(
-            [
-                UserPasswordHistory(user=self.user, old_password="hunter1"),  # nosec B106
-                UserPasswordHistory(user=self.user, old_password="hunter2"),  # nosec B106
-            ]
-        )
-
-        # Create multiple UniquePasswordPolicy objects
-        UniquePasswordPolicy.objects.create(name="Policy 1", num_historical_passwords=3)
-        UniquePasswordPolicy.objects.create(name="Policy 2", num_historical_passwords=5)
-
-        # Run the purge task
-        purge_password_history_table.delay().get()
-
-        # Verify the password history entries still exist
-        self.assertTrue(UserPasswordHistory.objects.exists())
-        self.assertEqual(UserPasswordHistory.objects.count(), 2)
 
 
 class TestTrimAllPasswordHistories(TestCase):
