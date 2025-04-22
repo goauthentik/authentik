@@ -75,7 +75,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             if self._source.group_membership_field == "memberUid":
                 # If memberships are based on the posixGroup's 'memberUid'
                 # attribute we use the RDN instead of the FDN to lookup members.
-                membership_mapping_attribute = LDAP_UNIQUENESS
+                membership_mapping_attribute = 'uid'
 
             users = User.objects.filter(
                 Q(**{f"attributes__{membership_mapping_attribute}__in": members})
