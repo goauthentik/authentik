@@ -42,7 +42,7 @@ For comprehensive password security, consider using this policy alongside:
 
 To implement a policy that prevents users from reusing their last 3 passwords:
 
-1. In the Admin interface, navigate to **Customization** -> **Policies**.
+1. In the Admin interface, navigate to **Customization** > **Policies**.
 2. Create a **Password Uniqueness Policy**
 3. Set **Number of Historical Passwords** to 3
 4. Bind the policy to your **password prompt stage**
