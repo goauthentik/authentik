@@ -1,4 +1,5 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { createColorSchemeEffect } from "@goauthentik/common/color-scheme";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import {
     APIError,
     parseAPIResponseError,
@@ -27,8 +28,6 @@ import "chartjs-adapter-date-fns";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -106,24 +105,37 @@ export abstract class AKChart<T> extends AKElement {
         ];
     }
 
+    readonly #colorSchemeAbortController = new AbortController();
+
     connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
-            if (ev.detail === UiThemeEnum.Light) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
-            } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
-            }
-            this.chart?.update();
-        }) as EventListener);
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches) => {
+                if (matches) {
+                    this.fontColour = FONT_COLOUR_LIGHT_MODE;
+                } else {
+                    this.fontColour = FONT_COLOUR_DARK_MODE;
+                }
+
+                this.chart?.update();
+            },
+        );
     }
 
     disconnectedCallback(): void {
         super.disconnectedCallback();
         window.removeEventListener("resize", this.resizeHandler);
         this.removeEventListener(EVENT_REFRESH, this.refreshHandler);
+        this.#colorSchemeAbortController.abort();
+        this.chart?.destroy();
+        this.chart = undefined;
     }
 
     refreshHandler(): void {

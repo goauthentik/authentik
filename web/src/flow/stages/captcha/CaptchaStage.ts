@@ -1,5 +1,6 @@
 /// <reference types="@hcaptcha/types"/>
 /// <reference types="turnstile-types"/>
+import { resolveColorScheme } from "@goauthentik/common/color-scheme";
 import { renderStaticHTMLUnsafe } from "@goauthentik/common/purify";
 import "@goauthentik/elements/EmptyState";
 import { akEmptyState } from "@goauthentik/elements/EmptyState";
@@ -251,7 +252,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
             html`<div
                 class="h-captcha ak-captcha-container"
                 data-sitekey="${this.challenge.siteKey}"
-                data-theme="${this.activeTheme ? this.activeTheme : "light"}"
+                data-theme="${resolveColorScheme()}"
                 data-callback="callback"
             ></div> `,
         );

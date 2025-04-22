@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
+import { InterfaceElement } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
@@ -46,11 +46,10 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
-    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
+export class FlowExecutor extends InterfaceElement implements StageHost {
     @property()
     flowSlug: string = window.location.pathname.split("/")[3];
 
@@ -139,13 +138,15 @@ export class FlowExecutor extends Interface implements StageHost {
                 padding-top: 0;
                 padding-bottom: 0;
             }
-            :host([theme="dark"]) .pf-c-login.sidebar_left .ak-login-container,
-            :host([theme="dark"]) .pf-c-login.sidebar_right .ak-login-container {
-                background-color: var(--ak-dark-background);
-            }
-            :host([theme="dark"]) .pf-c-login.sidebar_left .pf-c-list,
-            :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
-                color: var(--ak-dark-foreground);
+            @media (prefers-color-scheme: dark) {
+                .pf-c-login.sidebar_left .ak-login-container,
+                .pf-c-login.sidebar_right .ak-login-container {
+                    background-color: var(--ak-dark-background);
+                }
+                .pf-c-login.sidebar_left .pf-c-list,
+                .pf-c-login.sidebar_right .pf-c-list {
+                    color: var(--ak-dark-foreground);
+                }
             }
             .pf-c-brand {
                 padding-top: calc(
@@ -198,10 +199,6 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(

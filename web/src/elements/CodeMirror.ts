@@ -15,14 +15,12 @@ import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { createColorSchemeEffect, resolveColorScheme } from "@goauthentik/common/color-scheme";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
 import { CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 export enum CodeMirrorMode {
     XML = "xml",
@@ -157,26 +155,17 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    firstUpdated(): void {
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
-            if (ev.detail === UiThemeEnum.Dark) {
-                this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeDark),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
-                    ],
-                });
-            } else {
-                this.editor?.dispatch({
-                    effects: [
-                        this.theme.reconfigure(this.themeLight),
-                        this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
-                    ],
-                });
-            }
-        }) as EventListener);
+    readonly #colorSchemeAbortController = new AbortController();
 
-        const dark = this.activeTheme === UiThemeEnum.Dark;
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#colorSchemeAbortController.abort();
+        this.editor?.destroy();
+        this.editor = undefined;
+    }
+
+    firstUpdated(): void {
+        const dark = resolveColorScheme() === "dark";
 
         const extensions = [
             history(),
@@ -197,17 +186,47 @@ export class CodeMirrorTextarea<T> extends AKElement {
             }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
+
             this.syntaxHighlighting.of(
                 dark ? this.syntaxHighlightingDark : this.syntaxHighlightingLight,
             ),
+
             this.theme.of(dark ? this.themeDark : this.themeLight),
         ];
+
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],
             root: this.shadowRoot || document,
             doc: this._value,
         });
+
         this.shadowRoot?.appendChild(this.editor.dom);
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches) => {
+                if (!this.editor) return;
+
+                if (matches) {
+                    this.editor.dispatch({
+                        effects: [
+                            this.theme.reconfigure(this.themeDark),
+                            this.syntaxHighlighting.reconfigure(this.syntaxHighlightingDark),
+                        ],
+                    });
+                } else {
+                    this.editor.dispatch({
+                        effects: [
+                            this.theme.reconfigure(this.themeLight),
+                            this.syntaxHighlighting.reconfigure(this.syntaxHighlightingLight),
+                        ],
+                    });
+                }
+            },
+        );
     }
 }
 

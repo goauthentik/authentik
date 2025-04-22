@@ -1,5 +1,5 @@
 import { TITLE_DEFAULT } from "@goauthentik/common/constants";
-import { Interface } from "@goauthentik/elements/Interface";
+import { InterfaceElement } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
@@ -43,7 +43,7 @@ const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
-export class RacInterface extends Interface {
+export class RacInterface extends InterfaceElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,

@@ -1,9 +1,10 @@
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/AdminInterface";
 import { globalAK } from "@goauthentik/common/global";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+import { AKElement } from "@goauthentik/elements/Base";
+import { WithLicenseSummary } from "@goauthentik/elements/mixins/license";
+import { WithVersion } from "@goauthentik/elements/mixins/version";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css, html, nothing } from "lit";
@@ -52,7 +53,7 @@ export class SidebarVersion extends WithLicenseSummary(WithVersion(AKElement)) {
         return html`<button
             class="pf-c-button pf-m-plain"
             @click=${() => {
-                const int = rootInterface<AdminInterface>();
+                const int = findThemedRootElement<AdminInterface>();
                 int?.aboutModal?.onClick();
             }}
         >

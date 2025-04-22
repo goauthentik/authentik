@@ -6,12 +6,12 @@ import {
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, getConfigForUser } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
-import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
+import { AuthenticatedInterfaceElement } from "@goauthentik/elements/Interface/AuthenticatedInterfaceElement";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -59,8 +59,10 @@ const customStyles = css`
         box-shadow: none !important;
         color: black !important;
     }
-    :host([theme="light"]) .pf-c-button.pf-m-secondary {
-        color: var(--ak-global--Color--100) !important;
+    @media (prefers-color-scheme: light) {
+        .pf-c-button.pf-m-secondary {
+            color: var(--ak-global--Color--100) !important;
+        }
     }
     .pf-c-page {
         background-color: transparent;
@@ -89,8 +91,10 @@ const customStyles = css`
         clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
         height: 50vh;
     }
-    :host([theme="dark"]) .background-default-slant {
-        background-color: black;
+    @media (prefers-color-scheme: dark) {
+        .background-default-slant {
+            background-color: black;
+        }
     }
     ak-locale-context {
         display: flex;
@@ -265,7 +269,7 @@ class UserInterfacePresentation extends AKElement {
 //
 //
 @customElement("ak-interface-user")
-export class UserInterface extends AuthenticatedInterface {
+export class UserInterface extends AuthenticatedInterfaceElement {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -301,6 +305,7 @@ export class UserInterface extends AuthenticatedInterface {
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+
         super.disconnectedCallback();
     }
 
@@ -319,8 +324,10 @@ export class UserInterface extends AuthenticatedInterface {
     }
 
     fetchConfigurationDetails() {
-        me().then((me: SessionUser) => {
-            this.me = me;
+        me().then((session: SessionUser) => {
+            this.me = session;
+            this.uiConfig = getConfigForUser(session.user);
+
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
                     seen: false,
@@ -340,6 +347,9 @@ export class UserInterface extends AuthenticatedInterface {
 
     render() {
         if (!this.isFullyConfigured) {
+            console.debug(
+                "ak-interface-user: UserInterface not fully configured, waiting for UIConfig and me",
+            );
             return nothing;
         }
 

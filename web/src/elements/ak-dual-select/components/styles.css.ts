@@ -94,18 +94,20 @@ export const globalVariables = css`
         --pf-c-dual-list-panels__gap: var(--pf-global--spacer--xs);
     }
 
-    :host([theme="dark"]) {
-        --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
-        --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
-        --pf-c-dual-list-selector__list-item-row--BackgroundColor: var(
-            --ak-dark-background-light-ish
-        );
-        --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
-            --ak-dark-background-lighter;
-        );
-        --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
-            --pf-global--BackgroundColor--400
-        );
+    @media (prefers-color-scheme: dark) {
+        :host {
+            --pf-c-dual-list-selector__menu--BorderColor: var(--ak-dark-background-lighter);
+            --pf-c-dual-list-selector__item-text--Color: var(--ak-dark-foreground);
+            --pf-c-dual-list-selector__list-item-row--BackgroundColor: var(
+                --ak-dark-background-light-ish
+            );
+            --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
+                --ak-dark-background-lighter;
+            );
+            --pf-c-dual-list-selector__list-item-row--hover--BackgroundColor: var(
+                --pf-global--BackgroundColor--400
+            );
+        }
     }
 `;
 

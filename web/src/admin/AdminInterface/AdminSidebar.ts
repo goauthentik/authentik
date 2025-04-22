@@ -1,10 +1,11 @@
+import { createColorSchemeEffect, resolveColorScheme } from "@goauthentik/common/color-scheme";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+} from "@goauthentik/elements/mixins/capabilities";
+import { WithVersion } from "@goauthentik/elements/mixins/version";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { getRootStyle } from "@goauthentik/elements/utils/getRootStyle";
 import { spread } from "@open-wc/lit-helpers";
@@ -14,7 +15,6 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
 
-import { UiThemeEnum } from "@goauthentik/api";
 import type { SessionUser, UserSelf } from "@goauthentik/api";
 
 @customElement("ak-admin-sidebar")
@@ -42,8 +42,23 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
         this.open = window.innerWidth >= minWidth;
     }
 
-    connectedCallback() {
+    @state()
+    public colorScheme = resolveColorScheme();
+
+    readonly #colorSchemeAbortController = new AbortController();
+
+    public connectedCallback() {
         super.connectedCallback();
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches, currentColorScheme) => {
+                this.colorScheme = currentColorScheme;
+            },
+        );
 
         window.addEventListener("resize", this.checkWidth);
         // After connecting to the DOM, we can now perform this check to see if the sidebar should
@@ -54,8 +69,9 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
     // The symmetry (☟, ☝) here is critical in that you want to start adding these handlers after
     // connection, and removing them before disconnection.
 
-    disconnectedCallback() {
+    public disconnectedCallback() {
         window.removeEventListener("resize", this.checkWidth);
+        this.#colorSchemeAbortController.abort();
         super.disconnectedCallback();
     }
 
@@ -63,8 +79,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
         return html`
             <ak-sidebar
                 class="pf-c-page__sidebar
-                ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this.activeTheme ===
-                UiThemeEnum.Light
+                ${this.open ? "pf-m-expanded" : "pf-m-collapsed"} ${this.colorScheme === "light"
                     ? "pf-m-light"
                     : ""}"
             >

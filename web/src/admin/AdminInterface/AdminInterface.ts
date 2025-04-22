@@ -1,6 +1,7 @@
 import "@goauthentik/admin/AdminInterface/AboutModal";
 import type { AboutModal } from "@goauthentik/admin/AdminInterface/AboutModal";
 import { ROUTES } from "@goauthentik/admin/Routes";
+import { createColorSchemeEffect, resolveColorScheme } from "@goauthentik/common/color-scheme";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -9,7 +10,7 @@ import {
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
+import { AuthenticatedInterfaceElement } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -33,7 +34,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { SessionUser } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
@@ -42,9 +43,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends AuthenticatedInterface {
+export class AdminInterface extends AuthenticatedInterfaceElement {
     //#region Properties
-
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -144,20 +144,38 @@ export class AdminInterface extends AuthenticatedInterface {
         }
     }
 
-    async connectedCallback(): Promise<void> {
-        super.connectedCallback();
+    /**
+     * @todo Remove after PatternFly upgrade.
+     */
+    @state()
+    public colorScheme = resolveColorScheme();
 
+    readonly #colorSchemeAbortController = new AbortController();
+
+    public async connectedCallback(): Promise<void> {
+        super.connectedCallback();
         window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches, currentColorScheme) => {
+                this.colorScheme = currentColorScheme;
+            },
+        );
     }
 
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
+        this.#colorSchemeAbortController.abort();
         window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
     }
 
     render(): TemplateResult {
         const sidebarClasses = {
-            "pf-m-light": this.activeTheme === UiThemeEnum.Light,
+            "pf-m-light": this.colorScheme === "light",
             "pf-m-expanded": !this.sidebarVisible,
             "pf-m-collapsed": this.sidebarVisible,
         };

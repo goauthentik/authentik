@@ -2,10 +2,8 @@
 import "rapidoc";
 
 import { CSRFHeaderName } from "@goauthentik/common/api/config";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
-import { Interface } from "@goauthentik/elements/Interface";
+import { InterfaceElement } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
@@ -14,11 +12,10 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
+import { createColorSchemeEffect } from "@goauthentik/common/color-scheme";
 
 @customElement("ak-api-browser")
-export class APIBrowser extends Interface {
+export class APIBrowser extends InterfaceElement {
     @property()
     schemaPath?: string;
 
@@ -39,31 +36,33 @@ export class APIBrowser extends Interface {
 
     @state()
     textColor = "#000000";
+    readonly #colorSchemeAbortController = new AbortController();
 
-    firstUpdated(): void {
-        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
-            const style = getComputedStyle(document.documentElement);
-            if (ev.detail === UiThemeEnum.Light) {
-                this.bgColor = style
-                    .getPropertyValue("--pf-global--BackgroundColor--light-300")
-                    .trim();
-                this.textColor = style.getPropertyValue("--pf-global--Color--300").trim();
-            } else {
-                this.bgColor = style.getPropertyValue("--ak-dark-background").trim();
-                this.textColor = style.getPropertyValue("--ak-dark-foreground").trim();
-            }
-        }) as EventListener);
-        this.dispatchEvent(
-            new CustomEvent(EVENT_THEME_CHANGE, {
-                bubbles: true,
-                composed: true,
-                detail: UiThemeEnum.Automatic,
-            }),
+    public firstUpdated(): void {
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches) => {
+                const style = getComputedStyle(document.documentElement);
+
+                if (matches) {
+                    this.bgColor = style.getPropertyValue("--ak-dark-background").trim();
+                    this.textColor = style.getPropertyValue("--ak-dark-foreground").trim();
+                } else {
+                    this.bgColor = style
+                        .getPropertyValue("--pf-global--BackgroundColor--light-300")
+                        .trim();
+                    this.textColor = style.getPropertyValue("--pf-global--Color--300").trim();
+                }
+            },
         );
     }
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#colorSchemeAbortController.abort();
     }
 
     render(): TemplateResult {

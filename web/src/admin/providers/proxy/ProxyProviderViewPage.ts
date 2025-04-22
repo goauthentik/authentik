@@ -94,8 +94,10 @@ export class ProxyProviderViewPage extends AKElement {
             PFDescriptionList,
             PFBanner,
             css`
-                :host(:not([theme="dark"])) .ak-markdown-section {
-                    background-color: var(--pf-c-card--BackgroundColor);
+                @media (prefers-color-scheme: light) {
+                    .ak-markdown-section {
+                        background-color: var(--pf-c-card--BackgroundColor);
+                    }
                 }
             `,
         ];

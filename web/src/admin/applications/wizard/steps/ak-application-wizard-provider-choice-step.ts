@@ -2,10 +2,10 @@ import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/Ap
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/EmptyState.js";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import { WithLicenseSummary } from "@goauthentik/elements/mixins/license";
 import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
 

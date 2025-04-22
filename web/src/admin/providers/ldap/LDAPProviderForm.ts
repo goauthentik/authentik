@@ -2,7 +2,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 
 import { customElement } from "lit/decorators.js";
 

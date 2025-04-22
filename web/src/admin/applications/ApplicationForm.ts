@@ -8,10 +8,6 @@ import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/elements/Alert.js";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
@@ -19,6 +15,10 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/mixins/capabilities";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

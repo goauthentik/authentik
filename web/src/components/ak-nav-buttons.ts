@@ -59,13 +59,19 @@ export class NavigationButtons extends AKElement {
                 .pf-c-page__header-tools {
                     display: flex;
                 }
-                :host([theme="dark"]) .pf-c-page__header-tools {
-                    color: var(--ak-dark-foreground) !important;
+
+                @media (prefers-color-scheme: dark) {
+                    .pf-c-page__header-tools {
+                        color: var(--ak-dark-foreground) !important;
+                    }
                 }
-                :host([theme="light"]) .pf-c-page__header-tools-item .fas,
-                :host([theme="light"]) .pf-c-notification-badge__count,
-                :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
-                    color: var(--ak-global--Color--100) !important;
+
+                @media (prefers-color-scheme: light) {
+                    .pf-c-page__header-tools-item .fas,
+                    .pf-c-notification-badge__count,
+                    .pf-c-page__header-tools-group .pf-c-button {
+                        color: var(--ak-global--Color--100) !important;
+                    }
                 }
             `,
         ];

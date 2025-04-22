@@ -36,9 +36,13 @@ const customCSS = css`
         display: flex;
         align-items: center;
     }
-    :host([theme="dark"]) .authenticator-button {
-        color: var(--ak-dark-foreground) !important;
+
+    @media (prefers-color-scheme: dark) {
+        .authenticator-button {
+            color: var(--ak-dark-foreground) !important;
+        }
     }
+
     i {
         font-size: 1.5rem;
         padding: 1rem 0;

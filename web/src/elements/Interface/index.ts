@@ -1,5 +1,4 @@
-import { AuthenticatedInterface } from "./AuthenticatedInterfaceElement.js";
-import { Interface } from "./InterfaceElement.js";
+export * from "./InterfaceElement.js";
+export * from "./AuthenticatedInterfaceElement.js";
 
-export { Interface, AuthenticatedInterface };
-export default Interface;
+export { InterfaceElement as default } from "./InterfaceElement.js";

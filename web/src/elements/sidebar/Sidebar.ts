@@ -1,16 +1,15 @@
+import { createColorSchemeEffect, resolveColorScheme } from "@goauthentik/common/color-scheme";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarVersion";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
@@ -28,8 +27,11 @@ export class Sidebar extends AKElement {
                 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
                     --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
                 }
-                :host([theme="light"]) {
-                    border-right-color: transparent !important;
+
+                @media (prefers-color-scheme: light) {
+                    :host {
+                        border-right-color: transparent !important;
+                    }
                 }
 
                 .pf-c-nav__section + .pf-c-nav__section {
@@ -62,9 +64,35 @@ export class Sidebar extends AKElement {
         ];
     }
 
+    /**
+     * @todo Remove after PatternFly upgrade.
+     */
+    @state()
+    public colorScheme = resolveColorScheme();
+    readonly #colorSchemeAbortController = new AbortController();
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+
+        createColorSchemeEffect(
+            {
+                colorScheme: "dark",
+                signal: this.#colorSchemeAbortController.signal,
+            },
+            (matches, currentColorScheme) => {
+                this.colorScheme = currentColorScheme;
+            },
+        );
+    }
+
+    public disconnectedCallback(): void {
+        super.disconnectedCallback();
+        this.#colorSchemeAbortController.abort();
+    }
+
     render(): TemplateResult {
         return html`<nav
-            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
+            class="pf-c-nav ${this.colorScheme === "light" ? "pf-m-light" : ""}"
             aria-label=${msg("Global")}
         >
             <ul class="pf-c-nav__list">

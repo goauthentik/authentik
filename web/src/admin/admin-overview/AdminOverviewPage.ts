@@ -11,11 +11,11 @@ import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { VERSION } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 import "@goauthentik/elements/cards/QuickActionsCard.js";
 import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
+import { WithLicenseSummary, isEnterpriseLicense } from "@goauthentik/elements/mixins/license.js";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { msg, str } from "@lit/localize";
@@ -167,15 +167,16 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     renderCards() {
-        const isEnterprise = this.hasEnterpriseLicense;
+        const enterprise = isEnterpriseLicense(this.licenseSummary);
+
         const classes = {
             "card-container": true,
             "pf-l-grid__item": true,
             "pf-m-6-col": true,
-            "pf-m-4-col-on-md": !isEnterprise,
-            "pf-m-4-col-on-xl": !isEnterprise,
-            "pf-m-3-col-on-md": isEnterprise,
-            "pf-m-3-col-on-xl": isEnterprise,
+            "pf-m-4-col-on-md": !enterprise,
+            "pf-m-4-col-on-xl": !enterprise,
+            "pf-m-3-col-on-md": enterprise,
+            "pf-m-3-col-on-xl": enterprise,
         };
 
         return html`<div class=${classMap(classes)}>
@@ -187,7 +188,7 @@ export class AdminOverviewPage extends AdminOverviewBase {
             <div class=${classMap(classes)}>
                 <ak-admin-status-card-workers> </ak-admin-status-card-workers>
             </div>
-            ${isEnterprise
+            ${enterprise
                 ? html` <div class=${classMap(classes)}>
                       <ak-admin-fips-status-system> </ak-admin-fips-status-system>
                   </div>`

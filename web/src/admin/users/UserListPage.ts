@@ -14,21 +14,21 @@ import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { showAPIErrorMessage, showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/mixins/capabilities";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
@@ -158,7 +158,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
-        const currentUser = rootInterface<AdminInterface>()?.user;
+        const currentUser = findThemedRootElement<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
             return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
         });

@@ -1,10 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/sources/SourceSettings";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
@@ -53,11 +54,13 @@ export class UserSettingsPage extends AKElement {
                 .pf-c-page__main-section {
                     --pf-c-page__main-section--BackgroundColor: transparent;
                 }
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: transparent;
-                }
-                :host([theme="dark"]) .pf-c-page__main-section {
-                    --pf-c-page__main-section--BackgroundColor: transparent;
+                @media (prefers-color-scheme: dark) {
+                    .pf-c-page {
+                        --pf-c-page--BackgroundColor: transparent;
+                    }
+                    .pf-c-page__main-section {
+                        --pf-c-page__main-section--BackgroundColor: transparent;
+                    }
                 }
                 .pf-c-page__main {
                     min-height: 100vh;
@@ -122,7 +125,7 @@ export class UserSettingsPage extends AKElement {
                             <div class="pf-c-card__body">
                                 <ak-user-session-list
                                     targetUser=${ifDefined(
-                                        rootInterface<UserInterface>()?.me?.user.username,
+                                        findThemedRootElement<UserInterface>()?.me?.user.username,
                                     )}
                                 ></ak-user-session-list>
                             </div>
@@ -136,7 +139,9 @@ export class UserSettingsPage extends AKElement {
                         <div class="pf-c-card">
                             <div class="pf-c-card__body">
                                 <ak-user-consent-list
-                                    userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                    userId=${ifDefined(
+                                        findThemedRootElement<UserInterface>()?.me?.user.pk,
+                                    )}
                                 ></ak-user-consent-list>
                             </div>
                         </div>
@@ -166,7 +171,9 @@ export class UserSettingsPage extends AKElement {
                                 )}
                             </div>
                             <ak-user-settings-source
-                                userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                userId=${ifDefined(
+                                    findThemedRootElement<UserInterface>()?.me?.user.pk,
+                                )}
                             ></ak-user-settings-source>
                         </div>
                     </section>

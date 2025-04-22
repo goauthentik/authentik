@@ -1,7 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { me } from "@goauthentik/common/users";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
+import { findThemedRootElement } from "@goauthentik/elements/utils/theme";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
@@ -47,7 +48,9 @@ export class LibraryPage extends AKElement {
 
     constructor() {
         super();
-        const uiConfig = rootInterface()?.uiConfig;
+
+        const { uiConfig } = findThemedRootElement() || {};
+
         if (!uiConfig) {
             throw new Error("Could not retrieve uiConfig. Reason: unknown. Check logs.");
         }

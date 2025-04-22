@@ -56,19 +56,23 @@ export const globalVariables = css`
         --pf-c-text-input-group--m-disabled--BackgroundColor: var(--pf-global--disabled-color--300);
     }
 
-    :host([theme="dark"]) {
-        --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
-        --pf-c-text-input-group--Color: var(--ak-dark-foreground);
+    @media (prefers-color-scheme: dark) {
+        :host {
+            --pf-c-text-input-group--BackgroundColor: var(--ak-dark-background-light);
+            --pf-c-text-input-group--Color: var(--ak-dark-foreground);
 
-        --pf-c-text-input-group__text--before--BorderColor: var(--ak-dark-background-lighter);
-        --pf-c-text-input-group__text--before--BorderWidth: 0;
+            --pf-c-text-input-group__text--before--BorderColor: var(--ak-dark-background-lighter);
+            --pf-c-text-input-group__text--before--BorderWidth: 0;
 
-        --pf-c-text-input-group--m-disabled--Color: var(--pf-global--disabled-color--300);
-        --pf-c-text-input-group--m-disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+            --pf-c-text-input-group--m-disabled--Color: var(--pf-global--disabled-color--300);
+            --pf-c-text-input-group--m-disabled--BackgroundColor: var(
+                --pf-global--disabled-color--200
+            );
 
-        --pf-c-text-input-group__text--before--BorderBottomColor: var(
-            --pf-global--BorderColor--200
-        );
+            --pf-c-text-input-group__text--before--BorderBottomColor: var(
+                --pf-global--BorderColor--200
+            );
+        }
     }
 `;
 

@@ -1,35 +1,31 @@
-import { Interface } from "@goauthentik/elements/Interface/InterfaceElement";
-import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
+import { LicenseController } from "@goauthentik/elements/mixins/license";
+import { SessionController } from "@goauthentik/elements/mixins/session";
+import { VersionController } from "@goauthentik/elements/mixins/version";
+import { ThemedElement } from "@goauthentik/elements/utils/theme";
 
 import { state } from "lit/decorators.js";
 
 import type { LicenseSummary, Version } from "@goauthentik/api";
 
-import { EnterpriseContextController } from "./EnterpriseContextController";
-
-const enterpriseContext = Symbol("enterpriseContext");
-const versionContext = Symbol("versionContext");
+import { InterfaceElement } from "./InterfaceElement.js";
 
 /**
  * A UI interface representing an  authenticated entry point within the application.
  */
-export class AuthenticatedInterface extends Interface {
-    [enterpriseContext]!: EnterpriseContextController;
-    [versionContext]!: VersionContextController;
-
+export abstract class AuthenticatedInterfaceElement
+    extends InterfaceElement
+    implements ThemedElement
+{
     @state()
     licenseSummary?: LicenseSummary;
 
     @state()
     version?: Version;
 
-    constructor() {
-        super();
-    }
-
-    _initContexts(): void {
-        super._initContexts();
-        this[enterpriseContext] = new EnterpriseContextController(this);
-        this[versionContext] = new VersionContextController(this);
+    public override registerControllers() {
+        super.registerControllers();
+        new LicenseController(this);
+        new VersionController(this);
+        new SessionController(this);
     }
 }

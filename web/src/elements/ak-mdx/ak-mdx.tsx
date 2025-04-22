@@ -1,3 +1,4 @@
+import { resolveColorScheme } from "@goauthentik/common/color-scheme";
 import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 import {
@@ -32,8 +33,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 const highlightThemeOptions: HighlightOptions = {
     languages: {
@@ -186,7 +185,7 @@ export class AKMDX extends AKElement {
                     rehypeMermaid,
                     {
                         prefix: "mermaid-svg-",
-                        colorScheme: this.activeTheme === UiThemeEnum.Dark ? "dark" : "light",
+                        colorScheme: resolveColorScheme(),
                     } satisfies RehypeMermaidOptions,
                 ],
             ],

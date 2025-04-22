@@ -1,6 +1,6 @@
 import { VERSION } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+import { WithVersion } from "@goauthentik/elements/mixins/version";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";

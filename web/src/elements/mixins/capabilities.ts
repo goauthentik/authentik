@@ -1,5 +1,5 @@
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
-import { createMixin } from "@goauthentik/elements/types";
+import { authentikConfigContext } from "@goauthentik/elements/mixins/config";
+import { createMixin } from "@goauthentik/elements/utils/mixins";
 
 import { consume } from "@lit/context";
 
@@ -10,7 +10,7 @@ import { Config } from "@goauthentik/api";
  * A consumer that provides the capability methods to the element.
  *
  */
-export interface CapabilitiesMixin {
+export interface CapabilitiesConsumer {
     /**
      * Predicate to determine if the current user has a given capability.
      */
@@ -37,7 +37,7 @@ const kCapabilitiesConfig: unique symbol = Symbol("capabilitiesConfig");
  * After importing, simply mixin this function:
  *
  * ```ts
- * export class AkMyNiftyNewFeature extends withCapabilitiesContext(AKElement) {
+ * export class AKMyNiftyNewFeature extends withCapabilitiesContext(AKElement) {
  * }
  * ```
  *
@@ -47,15 +47,12 @@ const kCapabilitiesConfig: unique symbol = Symbol("capabilitiesConfig");
  * if (this.can(CapabilitiesEnum.IsEnterprise) { ... }
  * ```
  *
- *
- * Passing `true` as the second mixin argument
- *
  * @category Mixin
  *
  */
-export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin>(
+export const WithCapabilitiesConfig = createMixin<CapabilitiesConsumer>(
     ({ SuperClass, subscribe = true }) => {
-        abstract class CapabilitiesProvider extends SuperClass implements CapabilitiesMixin {
+        abstract class CapabilitiesProvider extends SuperClass implements CapabilitiesConsumer {
             @consume({
                 context: authentikConfigContext,
                 subscribe,

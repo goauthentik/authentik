@@ -9,7 +9,7 @@ import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

@@ -2,14 +2,14 @@ import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/util
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/mixins/capabilities";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

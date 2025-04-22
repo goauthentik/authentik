@@ -51,11 +51,15 @@ export class LibraryPageApplicationSearch extends AKElement {
                     background-color: transparent;
                     font-size: 1.5rem;
                 }
+
                 input:focus {
                     outline: 0;
                 }
-                :host([theme="dark"]) input {
-                    color: var(--ak-dark-foreground) !important;
+
+                @media (prefers-color-scheme: dark) {
+                    input {
+                        color: var(--ak-dark-foreground) !important;
+                    }
                 }
             `,
         ];

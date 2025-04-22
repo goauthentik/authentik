@@ -10,14 +10,14 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
+import {
+    CapabilitiesEnum,
+    WithCapabilitiesConfig,
+} from "@goauthentik/elements/mixins/capabilities";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

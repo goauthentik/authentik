@@ -1,5 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
-import { Interface } from "@goauthentik/elements/Interface";
+import { InterfaceElement } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,10 +9,8 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { UiThemeEnum } from "@goauthentik/api";
-
 @customElement("ak-loading")
-export class Loading extends Interface {
+export class Loading extends InterfaceElement {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -21,8 +18,10 @@ export class Loading extends Interface {
             PFSpinner,
             PFEmptyState,
             css`
-                :host([theme="dark"]) h1 {
-                    color: var(--ak-dark-foreground);
+                @media (prefers-color-scheme: dark) {
+                    h1 {
+                        color: var(--ak-dark-foreground);
+                    }
                 }
             `,
         ];
@@ -36,10 +35,6 @@ export class Loading extends Interface {
 
     async _initCustomCSS(): Promise<void> {
         // Stub function to avoid fetching custom CSS.
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {

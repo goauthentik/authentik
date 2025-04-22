@@ -85,13 +85,11 @@ export class DefaultUIConfig implements UIConfig {
 
 let globalUiConfig: Promise<UIConfig>;
 
-export function getConfigForUser(user: UserSelf): UIConfig {
-    const settings = user.settings;
+export function getConfigForUser(user?: UserSelf): UIConfig {
     let config = new DefaultUIConfig();
-    if (!settings) {
-        return config;
-    }
-    config = Object.assign(new DefaultUIConfig(), settings);
+    if (!user?.settings) return config;
+
+    config = Object.assign(new DefaultUIConfig(), user.settings);
     return config;
 }
 

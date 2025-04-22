@@ -1,11 +1,11 @@
 import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
+import { WithBrandConfig } from "@goauthentik/elements/mixins/brand";
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { WithBrandConfig } from "../Interface/brandProvider";
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
 import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
