@@ -2,30 +2,35 @@
 {% get_current_language as LANGUAGE_CODE %}
 
 <script>
-    window.authentik = {
-        locale: "{{ LANGUAGE_CODE }}",
-        config: JSON.parse('{{ config_json|escapejs }}'),
-        brand: JSON.parse('{{ brand_json|escapejs }}'),
-        versionFamily: "{{ version_family }}",
-        versionSubdomain: "{{ version_subdomain }}",
-        build: "{{ build }}",
-        api: {
-            base: "{{ base_url }}",
-            relBase: "{{ base_url_rel }}",
-        },
-    };
-    window.addEventListener("DOMContentLoaded", function () {
-        {% for message in messages %}
-        window.dispatchEvent(
-            new CustomEvent("ak-message", {
-                bubbles: true,
-                composed: true,
-                detail: {
-                    level: "{{ message.tags|escapejs }}",
-                    message: "{{ message.message|escapejs }}",
-                },
-            }),
-        );
-        {% endfor %}
-    });
+  window.authentik = {
+    locale: "{{ LANGUAGE_CODE }}",
+    config: JSON.parse('{{ config_json|escapejs }}' || '{}'),
+    brand: JSON.parse('{{ brand_json|escapejs }}' || '{}'),
+    versionFamily: '{{ version_family }}',
+    versionSubdomain: '{{ version_subdomain }}',
+    build: '{{ build }}',
+    api: {
+      base: '{{ base_url }}',
+      relBase: '{{ base_url_rel }}',
+    },
+  };
 </script>
+
+{% if messages %}
+  <script>
+    window.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+        window.dispatchEvent(
+          new CustomEvent("ak-message", {
+              bubbles: true,
+              composed: true,
+              detail: {
+                  level: "{{ message.tags|escapejs }}",
+                  message: "{{ message.message|escapejs }}",
+              },
+          }),
+        );
+      {% endfor %}
+    });
+  </script>
+{% endif %}

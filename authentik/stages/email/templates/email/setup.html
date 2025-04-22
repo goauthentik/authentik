@@ -4,22 +4,23 @@
 {% load i18n %}
 
 {% block content %}
-<tr>
+  <tr>
     <td class="alert alert-brand">
-        {% trans 'authentik Test-Email' %}
+      {% trans 'authentik Test-Email' %}
     </td>
-</tr>
-<tr>
+  </tr>
+
+  <tr>
     <td class="content-wrap">
-        <table width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-                <td class="content-block">
-                    {% blocktrans %}
-                    This is a test email to inform you, that you've successfully configured authentik emails.
-                    {% endblocktrans %}
-                </td>
-            </tr>
-        </table>
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td class="content-block">
+            {% blocktrans %}
+              This is a test email to inform you, that you've successfully configured authentik emails.
+            {% endblocktrans %}
+          </td>
+        </tr>
+      </table>
     </td>
-</tr>
+  </tr>
 {% endblock %}

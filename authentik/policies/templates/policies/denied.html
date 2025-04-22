@@ -13,63 +13,69 @@
 
 {% block card %}
 <form class="pf-c-form">
-    {% csrf_token %}
-    {% if user.is_authenticated %}
-        <div class="pf-c-form__group">
-            <div class="form-control-static">
-                <div class="avatar">
-                    <img class="pf-c-avatar" src="{{ user.avatar }}" alt="{% trans "User's avatar" %}" />
-                    {{ user.username }}
-                </div>
-                <div slot="link">
-                    <a href="{{ cancel }}">{% trans "Not you?" %}</a>
-                </div>
-            </div>
-        </div>
-    {% endif %}
+  {% csrf_token %}
+
+  {% if user.is_authenticated %}
     <div class="pf-c-form__group">
-        <p>
-            <i class="pf-icon pf-icon-error-circle-o"></i>
-            {% trans 'Request has been denied.' %}
-        </p>
-        {% if error %}
-        <hr>
-        <p>
-            {{ error }}
-        </p>
-        {% endif %}
-        {% if policy_result %}
-            <hr>
-            {% if policy_result.messages %}
-            <em>{% trans 'Messages:' %}</em>
-            <ul class="pf-c-list">
-                {% for message in policy_result.messages %}
-                <li>
-                    {{ message }}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-            {% if policy_result.source_results %}
-            <em>{% trans 'Explanation:' %}</em>
-            <ul class="pf-c-list">
-                {% for source_result in policy_result.source_results %}
-                <li>
-                    {% blocktrans with name=source_result.source_binding result=source_result.passing %}
-                    Policy binding '{{ name }}' returned result '{{ result }}'
-                    {% endblocktrans %}
-                    {% if source_result.messages %}
-                    <ul class="pf-c-list">
-                        {% for message in source_result.messages %}
-                            <li>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% endif %}
-                </li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        {% endif %}
+      <div class="form-control-static">
+        <div class="avatar">
+          <img class="pf-c-avatar" src="{{ user.avatar }}" alt="{% trans "User's avatar" %}">
+          {{ user.username }}
+        </div>
+        <div slot="link">
+          <a href="{{ cancel }}">{% trans "Not you?" %}</a>
+        </div>
+      </div>
     </div>
+  {% endif %}
+
+  <div class="pf-c-form__group">
+    <p>
+      <i class="pf-icon pf-icon-error-circle-o"></i>
+      {% trans 'Request has been denied.' %}
+    </p>
+
+    {% if error %}
+      <hr>
+
+      <p>{{ error }}</p>
+    {% endif %}
+
+    {% if policy_result %}
+      <hr>
+
+      {% if policy_result.messages %}
+        <em>{% trans 'Messages:' %}</em>
+
+        <ul class="pf-c-list">
+          {% for message in policy_result.messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if policy_result.source_results %}
+        <em>{% trans 'Explanation:' %}</em>
+
+        <ul class="pf-c-list">
+          {% for source_result in policy_result.source_results %}
+            <li>
+              {% blocktrans with name=source_result.source_binding result=source_result.passing %}
+              Policy binding '{{ name }}' returned result '{{ result }}'
+              {% endblocktrans %}
+
+              {% if source_result.messages %}
+                <ul class="pf-c-list">
+                  {% for message in source_result.messages %}
+                    <li>{{ message }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+  </div>
 </form>
 {% endblock %}
