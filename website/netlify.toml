@@ -63,13 +63,13 @@
   status = 302
 
 [[redirects]]
-  from = "/docs/add-secure-apps/flows-stages/flow/layouts.md"
-  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  from = "/docs/add-secure-apps/flows-stages/flow/layouts"
+  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow"
   status = 302
 
 [[redirects]]
-  from = "/docs/customize/brands.md"
-  to = "/docs/customize/branding.md"
+  from = "/docs/customize/brands"
+  to = "/docs/customize/branding"
   status = 302
 
 
