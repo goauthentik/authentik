@@ -1,3 +1,4 @@
+from django.db.models.aggregates import Count
 from structlog import get_logger
 
 from authentik.enterprise.policies.unique_password.models import (
@@ -21,16 +22,15 @@ def check_and_purge_password_history(self: SystemTask):
         UserPasswordHistory.objects.all().delete()
         LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")
         self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
+        return
 
     self.set_status(
-        TaskStatus.SUCCESSFUL,
-        """No need to purge UserPasswordHistory table.
-            A Unique Password Policy instance still exists.""",
+        TaskStatus.SUCCESSFUL, "Not purging password histories, a unique password policy exists"
     )
 
 
-@CELERY_APP.task()
-def trim_user_password_history(user_pk: int):
+@CELERY_APP.task(bind=True, base=SystemTask)
+def trim_password_histories(self: SystemTask):
     """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.
 
@@ -38,40 +38,15 @@ def trim_user_password_history(user_pk: int):
     UniquePasswordPolicy policies.
     """
 
-    # All enable policy bindings for UniquePasswordPolicy
-    enabled_bindings = PolicyBinding.in_use.for_policy(UniquePasswordPolicy).all()
-
-    if not enabled_bindings.exists():
+    # No policy, we'll let the cleanup above do its thing
+    if not UniquePasswordPolicy.objects.exists():
         return
 
     num_rows_to_preserve = 0
-    for binding in enabled_bindings:
-        if hasattr(binding.policy, "num_historical_passwords"):
-            num_rows_to_preserve = max(
-                num_rows_to_preserve, binding.policy.num_historical_passwords
-            )
+    for policy in UniquePasswordPolicy.objects.all():
+        num_rows_to_preserve = max(num_rows_to_preserve, policy.num_historical_passwords)
 
-    entries = UserPasswordHistory.objects.filter(user__pk=user_pk)
-    count = entries.count()
-
-    # Only delete if we have more entries than we need to preserve
-    if count > num_rows_to_preserve:
-        # Keep newest records, delete the rest
-        to_keep_ids = entries.order_by("-created_at")[:num_rows_to_preserve].values_list(
-            "id", flat=True
-        )
-        num_deleted, _ = entries.exclude(id__in=to_keep_ids).delete()
-        LOGGER.debug(
-            "Deleted stale password history records for user", user_id=user_pk, records=num_deleted
-        )
-
-
-@CELERY_APP.task()
-def trim_all_password_histories():
-    """Trim password history for all users who have password history entries.
-    This is run on a schedule to ensure password histories don't grow indefinitely.
-    """
-    from django.db.models import Count
+    all_pks_to_keep = []
 
     # Get all users who have password history entries
     users_with_history = (
@@ -80,8 +55,13 @@ def trim_all_password_histories():
         .filter(count__gt=0)
         .values_list("user", flat=True)
     )
-
     for user_pk in users_with_history:
-        trim_user_password_history.delay(user_pk)
+        entries = UserPasswordHistory.objects.filter(user__pk=user_pk)
+        pks_to_keep = entries.order_by("-created_at")[:num_rows_to_preserve].values_list(
+            "pk", flat=True
+        )
+        all_pks_to_keep.extend(pks_to_keep)
 
-    LOGGER.debug("Scheduled password history trimming for users", count=len(users_with_history))
+    num_deleted, _ = UserPasswordHistory.objects.exclude(pk__in=all_pks_to_keep).delete()
+    LOGGER.debug("Deleted stale password history records", count=num_deleted)
+    self.set_status(TaskStatus.SUCCESSFUL, f"Delete {num_deleted} stale password history records")

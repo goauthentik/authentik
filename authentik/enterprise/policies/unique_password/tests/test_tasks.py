@@ -9,8 +9,7 @@ from authentik.enterprise.policies.unique_password.models import (
 )
 from authentik.enterprise.policies.unique_password.tasks import (
     check_and_purge_password_history,
-    trim_all_password_histories,
-    trim_user_password_history,
+    trim_password_histories,
 )
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 
@@ -59,54 +58,6 @@ class TestTrimAllPasswordHistories(TestCase):
             enabled=True,
             order=0,
         )
-
-    def test_trim_all_password_histories(self):
-        """Test that trim_all_password_histories schedules trim tasks for all users with history"""
-        # Create password history entries for both users
-        now = datetime.now()
-        UserPasswordHistory.objects.bulk_create(
-            [
-                # User 1 has 2 entries
-                UserPasswordHistory(
-                    user=self.user1,
-                    old_password="password1",  # nosec B106
-                    created_at=now - timedelta(days=2),
-                ),
-                UserPasswordHistory(
-                    user=self.user1,
-                    old_password="password2",  # nosec B106
-                    created_at=now,
-                ),
-                # User 2 has 2 entries
-                UserPasswordHistory(
-                    user=self.user2,
-                    old_password="password3",  # nosec B106
-                    created_at=now - timedelta(days=2),
-                ),
-                UserPasswordHistory(
-                    user=self.user2,
-                    old_password="password4",  # nosec B106
-                    created_at=now,
-                ),
-            ]
-        )
-
-        # Verify we have 4 entries total (2 per user)
-        self.assertEqual(UserPasswordHistory.objects.count(), 4)
-
-        # Mock the delay method to verify it's called for each user
-        from unittest import mock
-
-        task_path = (
-            "authentik.enterprise.policies.unique_password.tasks.trim_user_password_history.delay"
-        )
-        with mock.patch(task_path) as mock_delay:
-            trim_all_password_histories()
-            # Verify it was called twice (once for each user)
-            self.assertEqual(mock_delay.call_count, 2)
-            # Verify it was called with the correct user IDs
-            mock_delay.assert_any_call(self.user1.pk)
-            mock_delay.assert_any_call(self.user2.pk)
 
 
 class TestCheckAndPurgePasswordHistory(TestCase):
@@ -191,7 +142,7 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_user_password_history(self.user.pk)
+        trim_password_histories.delay()
         user_pwd_history_qs = UserPasswordHistory.objects.filter(user=self.user)
         self.assertEqual(len(user_pwd_history_qs), 1)
 
@@ -208,8 +159,8 @@ class TestTrimPasswordHistory(TestCase):
             enabled=False,
             order=0,
         )
-        trim_user_password_history(self.user.pk)
-        self.assertTrue(UserPasswordHistory.objects.filter(user=self.user))
+        trim_password_histories.delay()
+        self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())
 
     def test_trim_password_history_fewer_records_than_maximum_is_no_op(self):
         """Test no passwords deleted if fewer passwords exist than limit"""
@@ -223,5 +174,5 @@ class TestTrimPasswordHistory(TestCase):
             enabled=True,
             order=0,
         )
-        trim_user_password_history(self.user.pk)
+        trim_password_histories.delay()
         self.assertTrue(UserPasswordHistory.objects.filter(user=self.user).exists())
