@@ -157,11 +157,11 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 - When handling URLs:
 
-    - For URLs entered as values or defined in fields _italicize_ any variables within them to emphasize that placeholders require user input.
+    - For URLs entered as values or defined in fields, enclose any variables inside angle brackets (`< >`) to clearly indicate that these are placeholders that require user input.
 
-        In Markdown, use this syntax: `<kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>`
+        In Markdown, use this syntax: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
 
-        Rendered formatting: <kbd>https://<em>company-domain</em>/source/oauth/callback/<em>source-slug</em></kbd>
+        Rendered formatting: https://authentik.company/application/o/<slug>/.well-known/openid-configuration
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
 
