@@ -1,11 +1,12 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -17,15 +18,6 @@ import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlaid.
 export const MIN_WIDTH = 1200;
-
-// Extend the Window interface to include our global state
-declare global {
-    interface Window {
-        authentik?: {
-            brand?: CurrentBrand;
-        };
-    }
-}
 
 export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
@@ -71,9 +63,6 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
         ];
     }
 
-    @property({ type: Boolean })
-    loading = true;
-
     constructor() {
         super();
         window.addEventListener("resize", () => {
@@ -81,21 +70,11 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
         });
     }
 
-    updated(changedProperties: Map<string | number | symbol, unknown>): void {
-        super.updated(changedProperties);
-        // Only set loading to false when brand is actually loaded
-        if (changedProperties.has("brand") && this.brand) {
-            this.loading = false;
-        }
-    }
-
     render(): TemplateResult {
-        // Get the initial brand from the global state
-        const initialBrand = window.authentik?.brand;
         const logoUrl =
-            initialBrand?.brandingLogo || this.brand?.brandingLogo || DefaultBrand.brandingLogo;
+            globalAK().brand.brandingLogo || this.brand?.brandingLogo || DefaultBrand.brandingLogo;
 
-        return html` ${window.innerWidth <= MIN_WIDTH
+        return html`${window.innerWidth <= MIN_WIDTH
                 ? html`
                       <button
                           class="sidebar-trigger pf-c-button"
@@ -111,7 +90,7 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                           <i class="fas fa-bars"></i>
                       </button>
                   `
-                : html``}
+                : nothing}
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img src=${themeImage(logoUrl)} alt="${msg("authentik Logo")}" loading="lazy" />
