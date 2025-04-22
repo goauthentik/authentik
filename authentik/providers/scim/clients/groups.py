@@ -34,7 +34,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
     connection_type = SCIMProviderGroup
-    connection_type_query = "group"
+    connection_attr = "scimprovidergroup_set"
     mapper: PropertyMappingManager
 
     def __init__(self, provider: SCIMProvider):
