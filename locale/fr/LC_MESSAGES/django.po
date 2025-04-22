@@ -9,9 +9,9 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
-# nerdinator <florian.dupret@gmail.com>, 2024
 # Charles Leclerc, 2025
 # Tina, 2025
+# nerdinator <florian.dupret@gmail.com>, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 00:10+0000\n"
+"POT-Creation-Date: 2025-04-17 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -194,6 +194,7 @@ msgid "User's display name."
 msgstr "Nom d'affichage de l'utilisateur"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "Utilisateur"
 
@@ -381,6 +382,18 @@ msgstr "Mappage de propriété"
 #: authentik/core/models.py
 msgid "Property Mappings"
 msgstr "Mappages de propriété"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr "Données de session"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "Session"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "Sessions"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -2198,6 +2211,10 @@ msgid "Roles"
 msgstr "Rôles"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "Permissions initiales"
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "Permission système"
 
@@ -2447,6 +2464,9 @@ msgid ""
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
 msgstr ""
+"Recherche de l'appartenance aux groupes basée sur un attribut utilisateur "
+"plutôt que sur un attribut de groupe. Cela permet la résolution des groupes "
+"imbriqués sur des systèmes tels que FreeIPA et Active Directory."
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
@@ -2464,6 +2484,22 @@ msgstr "Mappage de propriété source LDAP"
 msgid "LDAP Source Property Mappings"
 msgstr "Mappages de propriété source LDAP"
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "Connexion de l'utilisateur à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "Connexions de l'utilisateur à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "Connexion du groupe à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "Connexions du groupe à la source LDAP"
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Le mot de passe ne correspond pas à la complexité d'Active Directory."
@@ -2471,6 +2507,14 @@ msgstr "Le mot de passe ne correspond pas à la complexité d'Active Directory."
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "Pas de jeton reçu."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "Authentification HTTP Basic"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "Inclure le client ID et secret comme paramètres de la requête"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2512,6 +2556,14 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Portées additionnelles"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
+"Comment effectuer l'authentification lors d'une demande de jeton pour le "
+"flux authorization_code"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3816,6 +3868,17 @@ msgid ""
 msgstr ""
 "Les évènements seront supprimés après cet interval. (Format : "
 "weeks=3;days=2;hours=3,seconds=2)"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+"La réputation ne peut pas descendre en dessous de cette valeur. Zéro ou "
+"négatif."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+"La réputation ne peut pas monter au dessus de cette valeur. Zéro ou positif."
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 00:10+0000\n"
+"POT-Creation-Date: 2025-04-18 00:09+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -178,6 +178,7 @@ msgid "User's display name."
 msgstr "用户的显示名称。"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "用户"
 
@@ -343,6 +344,18 @@ msgstr "属性映射"
 #: authentik/core/models.py
 msgid "Property Mappings"
 msgstr "属性映射"
+
+#: authentik/core/models.py
+msgid "session data"
+msgstr "会话数据"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "会话"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "会话"
 
 #: authentik/core/models.py
 msgid "Authenticated Session"
@@ -1999,6 +2012,10 @@ msgid "Roles"
 msgstr "角色"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "初始权限"
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "系统权限"
 
@@ -2226,7 +2243,7 @@ msgid ""
 "Lookup group membership based on a user attribute instead of a group "
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
-msgstr ""
+msgstr "基于用户属性而非组属性查询组成员身份。这允许在 FreeIPA 或 Active Directory 等系统上支持嵌套组决策"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
@@ -2244,6 +2261,22 @@ msgstr "LDAP 源属性映射"
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP 源属性映射"
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "用户 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "用户 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "组 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "组 LDAP 源连接"
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "密码与 Active Directory 复杂度不匹配。"
@@ -2251,6 +2284,14 @@ msgstr "密码与 Active Directory 复杂度不匹配。"
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "未收到令牌。"
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "HTTP 基本身份验证"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "包括客户端 ID 和密钥作为请求参数"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2289,6 +2330,12 @@ msgstr "authentik 用来获取用户信息的 URL。"
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "额外的作用域"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr "在 authorization_code 令牌请求流程期间，如何执行身份验证"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3161,6 +3208,12 @@ msgid ""
 msgstr "启用时，即使输入错误的用户信息，此阶段也会成功并继续。"
 
 #: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr "向用户显示“在此设备上记住我”开关，允许相同用户直接跳过输入密码。"
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "可选注册流程，链接在页面底部。"
 
@@ -3503,6 +3556,14 @@ msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
 msgstr "事件会在多久后被删除。（格式：weeks=3;days=2;hours=3,seconds=2）。"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "信誉无法降低到此值以下。可为零或负数。"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr "信誉无法提高到此值以上。可为零或正数。"
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

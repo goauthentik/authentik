@@ -1,8 +1,11 @@
 ---
 title: Integrate with Chronograf
 sidebar_label: Chronograf
-support_level: community
 ---
+
+# Integrate with Chronograf
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Chronograf
 
@@ -50,20 +53,26 @@ Add the following environment variables to your Chronograf setup. If you are usi
 Refer to the [Chronograf configuration options documentation](https://docs.influxdata.com/chronograf/v1/administration/config-options/) for more information.
 :::
 
-```
-PUBLIC_URL=https://chronograf.company
-TOKEN_SECRET=<A random secret>
-JWKS_URL=https://authentik.company/application/o/<application-slug>/jwks/
-GENERIC_NAME=authentik
-GENERIC_CLIENT_ID=<client-id>
-GENERIC_CLIENT_SECRET=<client-secret>
-GENERIC_SCOPES=email,profile,openid
-GENERIC_DOMAINS=authentik.company
-GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
-GENERIC_TOKEN_URL=https://auth.authentik.company/application/o/token/
-GENERIC_API_URL=https://auth.authentik.company/application/o/userinfo/
-GENERIC_API_KEY=email
-USE_ID_TOKEN=true
-```
+    ```yaml showLineNumbers
+    PUBLIC_URL=https://chronograf.company
+    TOKEN_SECRET=Your random secret
+    JWKS_URL=https://authentik.company/application/o/<your-application-slug>/jwks/
+    GENERIC_NAME=authentik
+    GENERIC_CLIENT_ID=<Your Client ID>
+    GENERIC_CLIENT_SECRET=<Your Client Secret>
+    GENERIC_SCOPES=email,profile,openid
+    GENERIC_DOMAINS=authentik.company
+    GENERIC_AUTH_URL=https://authentik.company/application/o/authorize/
+    GENERIC_TOKEN_URL=https://authentik.company/application/o/token/
+    GENERIC_API_URL=https://authentik.company/application/o/userinfo/
+    GENERIC_API_KEY=email
+    USE_ID_TOKEN=true
+    ```
 
-After restarting your Chronograf instance, the login page should display a "Log in with authentik" button.
+## Resources
+
+- [Chronograf official documentation on OpenID Connect integration](https://docs.influxdata.com/chronograf/v1/administration/managing-security/#configure-chronograf-to-use-any-oauth-20-provider)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Chronograf, visit your Chronograf installation, and click **Log in with authentik**.

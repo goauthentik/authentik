@@ -24,7 +24,7 @@ module.exports = {
                     items: [
                         "services/bookstack/index",
                         "services/dokuwiki/index",
-                        "services/espoCRM/index",
+                        "services/espocrm/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mailcow/index",
@@ -113,6 +113,7 @@ module.exports = {
                         "services/terrakube/index",
                         "services/truecommand/index",
                         "services/veeam-enterprise-manager/index",
+                        "services/xcreds/index",
                         "services/zammad/index",
                     ],
                 },
