@@ -106,8 +106,9 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         }
         this.registerRunning = true;
         this.register()
-            .catch((e) => {
-                console.warn("authentik/flows/authenticator_webauthn: failed to register", e);
+            .catch((error: unknown) => {
+                console.warn("authentik/flows/authenticator_webauthn: failed to register", error);
+
                 this.registerMessage = msg("Failed to register. Please try again.");
             })
             .finally(() => {

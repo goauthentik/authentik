@@ -1,8 +1,13 @@
+/**
+ * @file ESBuild script for building the authentik web UI.
+ *
+ * @import { BuildOptions } from "esbuild";
+ */
+import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
 import { execFileSync } from "child_process";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
-import findFreePorts from "find-free-ports";
 import { copyFileSync, mkdirSync, readFileSync, statSync } from "fs";
 import { globSync } from "glob";
 import * as path from "path";
@@ -11,7 +16,6 @@ import process from "process";
 import { fileURLToPath } from "url";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
-import { buildObserverPlugin } from "./esbuild/build-observer-plugin.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 let authentikProjectRoot = path.join(__dirname, "..", "..");
@@ -120,7 +124,7 @@ const BASE_ESBUILD_OPTIONS = {
     splitting: true,
     treeShaking: true,
     external: ["*.woff", "*.woff2"],
-    tsconfig: "./tsconfig.json",
+    tsconfig: path.resolve(__dirname, "..", "tsconfig.build.json"),
     loader: {
         ".css": "text",
     },
@@ -220,26 +224,17 @@ function doHelp() {
 async function doWatch() {
     console.log("Watching all entry points...");
 
-    const wathcherPorts = await findFreePorts(entryPoints.length);
-
     const buildContexts = await Promise.all(
-        entryPoints.map((entryPoint, i) => {
-            const port = wathcherPorts[i];
-            const serverURL = new URL(`http://localhost:${port}/events`);
-
+        entryPoints.map((entryPoint) => {
             return esbuild.context(
                 createEntryPointOptions(entryPoint, {
+                    define: definitions,
                     plugins: [
-                        buildObserverPlugin({
-                            serverURL,
-                            logPrefix: entryPoint[1],
+                        liveReloadPlugin({
+                            logPrefix: `Build Observer (${entryPoint[1]})`,
                             relativeRoot: path.join(__dirname, ".."),
                         }),
                     ],
-                    define: {
-                        ...definitions,
-                        "process.env.WATCHER_URL": JSON.stringify(serverURL.toString()),
-                    },
                 }),
             );
         }),

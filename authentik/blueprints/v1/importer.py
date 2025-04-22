@@ -36,6 +36,7 @@ from authentik.core.models import (
     GroupSourceConnection,
     PropertyMapping,
     Provider,
+    Session,
     Source,
     User,
     UserSourceConnection,
@@ -109,6 +110,7 @@ def excluded_models() -> list[type[Model]]:
         Policy,
         PolicyBindingModel,
         # Classes that have other dependencies
+        Session,
         AuthenticatedSession,
         # Classes which are only internally managed
         # FIXME: these shouldn't need to be explicitly listed, but rather based off of a mixin

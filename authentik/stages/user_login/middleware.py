@@ -6,14 +6,12 @@ from django.contrib.auth.views import redirect_to_login
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
-from authentik.core.models import AuthenticatedSession
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
-SESSION_KEY_LAST_IP = "authentik/stages/user_login/last_ip"
 SESSION_KEY_BINDING_NET = "authentik/stages/user_login/binding/net"
 SESSION_KEY_BINDING_GEO = "authentik/stages/user_login/binding/geo"
 LOGGER = get_logger()
@@ -91,7 +89,7 @@ class BoundSessionMiddleware(SessionMiddleware):
 
     def recheck_session(self, request: HttpRequest):
         """Check if a session is still valid with a changed IP"""
-        last_ip = request.session.get(SESSION_KEY_LAST_IP)
+        last_ip = request.session.get(request.session.model.Keys.LAST_IP)
         new_ip = ClientIPMiddleware.get_client_ip(request)
         # Check changed IP
         if new_ip == last_ip:
@@ -111,10 +109,7 @@ class BoundSessionMiddleware(SessionMiddleware):
         if SESSION_KEY_BINDING_NET in request.session or SESSION_KEY_BINDING_GEO in request.session:
             # Only set the last IP in the session if there's a binding specified
             # (== basically requires the user to be logged in)
-            request.session[SESSION_KEY_LAST_IP] = new_ip
-        AuthenticatedSession.objects.filter(session_key=request.session.session_key).update(
-            last_ip=new_ip, last_user_agent=request.META.get("HTTP_USER_AGENT", "")
-        )
+            request.session[request.session.model.Keys.LAST_IP] = new_ip
 
     def recheck_session_net(self, binding: NetworkBinding, last_ip: str, new_ip: str):
         """Check network/ASN binding"""

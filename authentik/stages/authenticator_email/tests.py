@@ -244,6 +244,7 @@ class TestAuthenticatorEmailStage(FlowTestCase):
         )
         masked_email = mask_email(self.user.email)
         self.assertEqual(masked_email, response.json()["email"])
+        self.client.logout()
 
         # Test without email
         self.client.force_login(self.user_noemail)

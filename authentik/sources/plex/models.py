@@ -156,7 +156,6 @@ class UserPlexSourceConnection(UserSourceConnection):
     """Connect user and plex source"""
 
     plex_token = models.TextField()
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> type[Serializer]:

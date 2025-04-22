@@ -159,6 +159,43 @@ class LDAPSyncTests(TestCase):
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
             self.assertFalse(User.objects.get(username="user-nsaccountlock").is_active)
 
+    def test_sync_groups_freeipa_memberOf(self):
+        """Test group sync when membership is derived from memberOf user attribute"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.lookup_groups_from_user = True
+        self.source.group_membership_field = "memberOf"
+        self.source.user_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        self.source.group_property_mappings.set(
+            LDAPSourcePropertyMapping.objects.filter(
+                managed="goauthentik.io/sources/ldap/openldap-cn"
+            )
+        )
+        connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync_full()
+            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync.sync_full()
+            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync.sync_full()
+
+            self.assertTrue(
+                User.objects.filter(username="user4_sn").exists(), "User does not exist"
+            )
+            # Test if membership mapping based on memberOf works.
+            memberof_group = Group.objects.filter(name="reverse-lookup-group")
+            self.assertTrue(memberof_group.exists(), "Group does not exist")
+            self.assertTrue(
+                memberof_group.first().users.filter(username="user4_sn").exists(),
+                "User not a member of the group",
+            )
+
     def test_sync_groups_ad(self):
         """Test group sync"""
         self.source.user_property_mappings.set(

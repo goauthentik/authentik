@@ -20,4 +20,4 @@ def logout_proxy_revoke_direct(sender: type[User], request: HttpRequest, **_):
 @receiver(pre_delete, sender=AuthenticatedSession)
 def logout_proxy_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
-    proxy_on_logout.send(instance.session_key)
+    proxy_on_logout.send(instance.session.session_key)

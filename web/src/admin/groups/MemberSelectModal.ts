@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -105,7 +105,7 @@ export class MemberSelectTable extends TableModal<User> {
                 <small>${item.name}</small>`,
             html` <ak-status-label type="warning" ?good=${item.isActive}></ak-status-label>`,
             html`${item.lastLogin
-                ? html`<div>${getRelativeTime(item.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(item.lastLogin)}</div>
                       <small>${item.lastLogin.toLocaleString()}</small>`
                 : msg("-")}`,
         ];

@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.2.3 Blueprint schema",
+    "title": "authentik 2025.2.4 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -1409,6 +1409,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_rbac.initialpermissions"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_kerberos.kerberossource"
                             },
                             "id": {
@@ -1638,6 +1678,86 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
                             }
                         }
                     },
@@ -3729,6 +3849,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_google_workspace.googleworkspaceprovider"
                             },
                             "id": {
@@ -5125,6 +5285,7 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
@@ -5176,12 +5337,15 @@
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
+                        "authentik_rbac.initialpermissions",
                         "authentik_sources_kerberos.kerberossource",
                         "authentik_sources_kerberos.kerberossourcepropertymapping",
                         "authentik_sources_kerberos.userkerberossourceconnection",
                         "authentik_sources_kerberos.groupkerberossourceconnection",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldapsourcepropertymapping",
+                        "authentik_sources_ldap.userldapsourceconnection",
+                        "authentik_sources_ldap.groupldapsourceconnection",
                         "authentik_sources_oauth.oauthsource",
                         "authentik_sources_oauth.oauthsourcepropertymapping",
                         "authentik_sources_oauth.useroauthsourceconnection",
@@ -5234,6 +5398,7 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
@@ -7385,6 +7550,14 @@
                             "authentik_policies_reputation.delete_reputationpolicy",
                             "authentik_policies_reputation.view_reputation",
                             "authentik_policies_reputation.view_reputationpolicy",
+                            "authentik_policies_unique_password.add_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.add_userpasswordhistory",
+                            "authentik_policies_unique_password.change_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.change_userpasswordhistory",
+                            "authentik_policies_unique_password.delete_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.delete_userpasswordhistory",
+                            "authentik_policies_unique_password.view_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.view_userpasswordhistory",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -7511,12 +7684,16 @@
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
+                            "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
+                            "authentik_rbac.change_initialpermissions",
                             "authentik_rbac.change_role",
+                            "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -7536,14 +7713,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
@@ -7788,6 +7973,64 @@
                             "change_role",
                             "delete_role",
                             "view_role"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_rbac.initialpermissions": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "user",
+                        "role"
+                    ],
+                    "title": "Mode"
+                },
+                "role": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Role"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Permissions"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.initialpermissions_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_initialpermissions",
+                            "change_initialpermissions",
+                            "delete_initialpermissions",
+                            "view_initialpermissions"
                         ]
                     },
                     "user": {
@@ -8313,6 +8556,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync parent group"
+                },
+                "lookup_groups_from_user": {
+                    "type": "boolean",
+                    "title": "Lookup groups from user",
+                    "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
                 }
             },
             "required": []
@@ -8383,6 +8631,107 @@
                             "change_ldapsourcepropertymapping",
                             "delete_ldapsourcepropertymapping",
                             "view_ldapsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userldapsourceconnection",
+                            "change_userldapsourceconnection",
+                            "delete_userldapsourceconnection",
+                            "view_userldapsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupldapsourceconnection",
+                            "change_groupldapsourceconnection",
+                            "delete_groupldapsourceconnection",
+                            "view_groupldapsourceconnection"
                         ]
                     },
                     "user": {
@@ -8565,6 +8914,15 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Oidc jwks"
+                },
+                "authorization_code_auth_method": {
+                    "type": "string",
+                    "enum": [
+                        "basic_auth",
+                        "post_body"
+                    ],
+                    "title": "Authorization code auth method",
+                    "description": "How to perform authentication during an authorization_code token request flow"
                 }
             },
             "required": []
@@ -8659,7 +9017,6 @@
                 },
                 "identifier": {
                     "type": "string",
-                    "maxLength": 255,
                     "minLength": 1,
                     "title": "Identifier"
                 },
@@ -12014,6 +12371,11 @@
                     "type": "boolean",
                     "title": "Pretend user exists",
                     "description": "When enabled, the stage will succeed and continue even when incorrect user info is entered."
+                },
+                "enable_remember_me": {
+                    "type": "boolean",
+                    "title": "Enable remember me",
+                    "description": "Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password."
                 }
             },
             "required": []
@@ -13900,6 +14262,14 @@
                             "authentik_policies_reputation.delete_reputationpolicy",
                             "authentik_policies_reputation.view_reputation",
                             "authentik_policies_reputation.view_reputationpolicy",
+                            "authentik_policies_unique_password.add_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.add_userpasswordhistory",
+                            "authentik_policies_unique_password.change_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.change_userpasswordhistory",
+                            "authentik_policies_unique_password.delete_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.delete_userpasswordhistory",
+                            "authentik_policies_unique_password.view_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.view_userpasswordhistory",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -14026,12 +14396,16 @@
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
+                            "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
+                            "authentik_rbac.change_initialpermissions",
                             "authentik_rbac.change_role",
+                            "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -14051,14 +14425,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
@@ -14565,6 +14947,61 @@
                             "change_license",
                             "delete_license",
                             "view_license"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "password_field": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Password field",
+                    "description": "Field key to check, field keys defined in Prompt stages are available."
+                },
+                "num_historical_passwords": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Num historical passwords",
+                    "description": "Number of passwords to check against."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_uniquepasswordpolicy",
+                            "change_uniquepasswordpolicy",
+                            "delete_uniquepasswordpolicy",
+                            "view_uniquepasswordpolicy"
                         ]
                     },
                     "user": {

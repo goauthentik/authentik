@@ -94,9 +94,9 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Download uv
-FROM ghcr.io/astral-sh/uv:0.6.12 AS uv
+FROM ghcr.io/astral-sh/uv:0.6.16 AS uv
 # Stage 6: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.12.9-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.12.10-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

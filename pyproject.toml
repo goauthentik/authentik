@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.2.3"
+version = "2025.2.4"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.12.*"
@@ -26,7 +26,7 @@ dependencies = [
     "django-redis",
     "django-storages[s3]",
     "django-tenants",
-    "djangorestframework ==3.14.0",
+    "djangorestframework",
     "djangorestframework-guardian",
     "docker",
     "dramatiq[watch]",
@@ -50,7 +50,7 @@ dependencies = [
     "opencontainers",
     "packaging",
     "paramiko",
-    "psycopg[c]",
+    "psycopg[c, pool]",
     "pydantic",
     "pydantic-scim",
     "pyjwt",
@@ -108,6 +108,7 @@ dev = [
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
+djangorestframework = { git = "https://github.com/authentik-community/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"
@@ -133,6 +134,7 @@ skip = [
     "**/web/src/locales",
     "**/web/xliff",
     "./web/storybook-static",
+    "./web/custom-elements.json",
     "./website/build",
     "./gen-ts-api",
     "./gen-py-api",
