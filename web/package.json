@@ -12,7 +12,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.5.7",
         "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2025.2.4-1744139776",
+        "@goauthentik/api": "^2025.2.4-1744886287",
         "@lit-labs/ssr": "^3.2.2",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
@@ -42,7 +42,7 @@
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.4.1",
-        "rapidoc": "^9.3.7",
+        "rapidoc": "^9.3.8",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "rehype-highlight": "^7.0.2",
@@ -61,6 +61,9 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
+        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
@@ -72,7 +75,7 @@
         "@storybook/manager-api": "^8.3.4",
         "@storybook/web-components": "^8.3.4",
         "@storybook/web-components-vite": "^8.3.4",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
@@ -95,7 +98,6 @@
         "eslint": "^9.11.1",
         "eslint-plugin-lit": "^1.15.0",
         "eslint-plugin-wc": "^2.1.1",
-        "find-free-ports": "^3.1.1",
         "github-slugger": "^2.0.0",
         "glob": "^11.0.0",
         "globals": "^15.10.0",
@@ -128,6 +130,15 @@
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"
     },
+    "overrides": {
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        }
+    },
+    "prettier": "@goauthentik/prettier-config",
     "private": true,
     "scripts": {
         "build": "wireit",
@@ -263,7 +274,7 @@
             "command": "tsc --noEmit -p ./tests"
         },
         "lint:types": {
-            "command": "tsc --noEmit -p .",
+            "command": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
             "dependencies": [
                 "build-locales",
                 "lint:types:tests"
