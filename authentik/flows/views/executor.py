@@ -69,7 +69,6 @@ SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
-SESSION_KEY_AUTH_STARTED = "authentik/flows/auth_started"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
 
@@ -454,7 +453,6 @@ class FlowExecutorView(APIView):
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
-            SESSION_KEY_AUTH_STARTED,
             # We might need the initial POST payloads for later requests
             # SESSION_KEY_POST,
             # We don't delete the history on purpose, as a user might
