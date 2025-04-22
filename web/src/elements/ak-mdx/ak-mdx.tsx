@@ -71,6 +71,14 @@ export class AKMDX extends AKElement {
             PFList,
             PFContent,
             css`
+                :host {
+                    /**
+                     * TODO: Issue #13839 reports this as necessary, but can't reproduce.
+                     * Look into if this is still necessary.
+                     */
+                    color: var(--pf-global--Color--100);
+                }
+
                 a {
                     --pf-global--link--Color: var(--pf-global--link--Color--light);
                     --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
@@ -117,6 +125,10 @@ export class AKMDX extends AKElement {
                 table th {
                     border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
                     padding: var(--pf-global--spacer--md);
+                }
+
+                pre {
+                    overflow: auto;
                 }
 
                 pre:has(.hljs) {
