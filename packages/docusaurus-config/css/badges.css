@@ -18,9 +18,7 @@
 }
 
 .badge--support-community {
-    --ifm-badge-background-color: var(
-        --ifm-color-secondary-contrast-foreground
-    );
+    --ifm-badge-background-color: var(--ifm-color-secondary-contrast-foreground);
     --ifm-badge-border-color: var(--ifm-color-secondary-dark);
     --ifm-badge-color: var(--ifm-color-secondary-contrast-background);
 }
