@@ -127,9 +127,9 @@ module.exports = {
                         "services/fortigate-ssl/index",
                         "services/fortimanager/index",
                         "services/gravity/index",
+                        "services/netbird/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
-                        "services/netbird/index",
                     ],
                 },
                 {
