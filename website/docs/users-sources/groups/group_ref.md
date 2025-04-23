@@ -23,7 +23,7 @@ Use the following examples to list all users that are members of a group:
 group.users.all()
 ```
 
-```python title="Define a Group object based on name and get all of its members"
+```python title="Define a group object based on name and get all of its members"
 from authentik.core.models import Group
 Group.objects.get(name="name of group").users.all()
 ```
