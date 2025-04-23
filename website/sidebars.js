@@ -2,14 +2,13 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
-    "releases/2025/v2025.4",
     "releases/2025/v2025.2",
     "releases/2024/v2024.12",
+    "releases/2024/v2024.10",
     {
         type: "category",
         label: "Previous versions",
         items: [
-            "releases/2024/v2024.10",
             "releases/2024/v2024.8",
             "releases/2024/v2024.6",
             "releases/2024/v2024.4",
