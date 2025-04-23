@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { ThemedElement } from "@goauthentik/common/theme";
 import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
 import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
 
@@ -10,14 +11,12 @@ import type { ReactiveController } from "lit";
 import type { Config } from "@goauthentik/api";
 import { RootApi } from "@goauthentik/api";
 
-import type { AkInterface } from "./Interface";
-
 export class ConfigContextController implements ReactiveController {
-    host!: ReactiveElementHost<AkInterface>;
+    host!: ReactiveElementHost<ThemedElement>;
 
     context!: ContextProvider<{ __context__: Config | undefined }>;
 
-    constructor(host: ReactiveElementHost<AkInterface>) {
+    constructor(host: ReactiveElementHost<ThemedElement>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikConfigContext,

@@ -67,12 +67,6 @@ export class NavigationButtons extends AKElement {
                 :host([theme="light"]) .pf-c-page__header-tools-group .pf-c-button {
                     color: var(--ak-global--Color--100) !important;
                 }
-
-                @media (max-width: 768px) {
-                    .pf-c-avatar {
-                        display: none;
-                    }
-                }
             `,
         ];
     }
@@ -101,7 +95,7 @@ export class NavigationButtons extends AKElement {
             );
         };
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
             <button class="pf-c-button pf-m-plain" type="button" @click=${onClick}>
                 <pf-tooltip position="top" content=${msg("Open API drawer")}>
                     <i class="fas fa-code" aria-hidden="true"></i>
@@ -122,7 +116,7 @@ export class NavigationButtons extends AKElement {
             );
         };
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
             <button
                 class="pf-c-button pf-m-plain"
                 type="button"
@@ -181,7 +175,7 @@ export class NavigationButtons extends AKElement {
 
     renderAvatar() {
         return html`<img
-            class="pf-c-avatar"
+            class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             src=${ifDefined(this.me?.user.avatar)}
             alt="${msg("Avatar image")}"
         />`;
@@ -218,8 +212,8 @@ export class NavigationButtons extends AKElement {
             </div>
             ${this.renderImpersonation()}
             ${this.userDisplayName != ""
-                ? html`<div class="pf-c-page__header-tools-group">
-                      <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+                ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
+                      <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
                           ${this.userDisplayName}
                       </div>
                   </div>`
