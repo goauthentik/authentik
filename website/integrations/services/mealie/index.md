@@ -43,22 +43,33 @@ To support the integration of Mealie with authentik, you need to create an appli
 
 3. Click **Submit** to save the new application and provider.
 
+### Create the users and administrators groups
+
+Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create** to create two groups, with names of your choosing, one for **Users** (ex: mealie-users) and one for **Admins** (ex: mealie-admins).
+
+After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed. An admin will need to be added as a member to both groups to function properly.
+
 ## Mealie configuration
 
-Add the following environment variables to your Mealie configuration. Make sure to fill in the Client ID, Client Secret, and Configuration URL from your authentik instance.
+To enable OIDC login with Mealie, update your environment variables to include the following:
 
-```yaml
-OIDC_AUTH_ENABLED: true
-OIDC_PROVIDER_NAME: authentik
-OIDC_CONFIGURATION_URL: "https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration"
-OIDC_CLIENT_ID: <Client ID from authentik>
-OIDC_CLIENT_SECRET: <Client secret from authentik>
-OIDC_SIGNUP_ENABLED: true
-# Optional: If authentik groups were created to scope access set the values to the exact name of your groups.
-# OIDC_USER_GROUP: "mealie-users"
-# OIDC_ADMIN_GROUP: "mealie-admin"
-# OIDC_AUTO_REDIRECT: true   # Optional: The login page will be bypassed an you will be sent directly to your Identity Provider.
-# OIDC_REMEMBER_ME: true     # Optional: By setting this value to true, a session will be extended as if "Remember Me" was checked.
+```yaml showLineNumbers
+OIDC_AUTH_ENABLED=true
+OIDC_PROVIDER_NAME=authentik
+OIDC_CONFIGURATION_URL="https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration"
+OIDC_CLIENT_ID=<Client ID from authentik>
+OIDC_CLIENT_SECRET=<Client secret from authentik>
+OIDC_SIGNUP_ENABLED=true
+OIDC_USER_GROUP="<Your users group created in authentik>"
+OIDC_ADMIN_GROUP="<Your admins group created in authentik>"
+OIDC_AUTO_REDIRECT=true   # Optional: The login page will be bypassed and you will be sent directly to your Identity Provider.
+OIDC_REMEMBER_ME=true     # Optional: By setting this value to true, a session will be extended as if "Remember Me" was checked.
 ```
 
 Restart the Mealie service for the changes to take effect.
+
+## Configuration verification
+
+1. To confirm that authentik is properly configured with Mealie, log out and log back in via authentik.
+2. In Mealie click on the user profile icon in the top left. Then click on **Members**, confirm the admins set in your authentik group are an **Admin** in Mealie as expected.
+
