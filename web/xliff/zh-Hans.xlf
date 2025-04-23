@@ -9799,14 +9799,13 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Remember me on this device</source>
   <target>在此设备上记住我</target>
 </trans-unit>
-<trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+  <target>确保用户的密码与之前使用的不同。可以配置检查多少个历史密码。</target>
 </trans-unit>
-<trans-unit id="sfa72bca733f40692">
-  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
-</trans-unit>
-<trans-unit id="s1c336c2d6cef77b3">
-  <source>Remember me on this device</source>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
+  <target>检查历史密码数量</target>
 </trans-unit>
     </body>
   </file>

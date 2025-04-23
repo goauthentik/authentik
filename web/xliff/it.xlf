@@ -9773,6 +9773,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1c336c2d6cef77b3">
   <source>Remember me on this device</source>
 </trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

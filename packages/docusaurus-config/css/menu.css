@@ -1,5 +1,5 @@
 :root {
-    --ifm-menu-link-padding-vertical: 1em;
+    --ifm-menu-link-padding-vertical: 0.5em;
 }
 
 .menu__list-item {
