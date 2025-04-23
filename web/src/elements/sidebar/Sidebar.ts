@@ -22,6 +22,7 @@ export class Sidebar extends AKElement {
             css`
                 :host {
                     z-index: 100;
+                    --pf-c-page__sidebar--Transition: 0 !important;
                 }
                 .pf-c-nav__link.pf-m-current::after,
                 .pf-c-nav__link.pf-m-current:hover::after,

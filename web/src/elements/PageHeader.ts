@@ -5,7 +5,7 @@ import {
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { currentInterface } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -202,7 +202,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
                         display: none;
                     }
 
-                    @media (max-width: 1279px) {
+                    @media (max-width: 1199px) {
                         display: none;
                     }
                 }
@@ -267,15 +267,28 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
     open = true;
 
     @state()
-    me?: SessionUser;
+    session?: SessionUser;
 
     @state()
     uiConfig!: UIConfig;
 
     //#endregion
 
-    //#endregion
-    //#region Methods
+    //#region Private Methods
+
+    #setTitle(header?: string) {
+        const currentIf = currentInterface();
+        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+
+        if (currentIf === "admin") {
+            title = `${msg("Admin")} - ${title}`;
+        }
+        // Prepend the header to the title
+        if (header) {
+            title = `${header} - ${title}`;
+        }
+        document.title = title;
+    }
 
     #toggleSidebar() {
         this.open = !this.open;
@@ -288,42 +301,28 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
         );
     }
 
-    //#region Constructor
+    //#endregion
 
-    constructor() {
-        super();
+    //#region Lifecycle
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        AKPageNavbar.elementRef = this;
+
         window.addEventListener(EVENT_WS_MESSAGE, () => {
             this.firstUpdated();
         });
     }
 
-    connectedCallback(): void {
-        super.connectedCallback();
-        AKPageNavbar.elementRef = this;
-    }
-
-    disconnectedCallback(): void {
+    public disconnectedCallback(): void {
         super.disconnectedCallback();
         AKPageNavbar.elementRef = null;
     }
 
     public async firstUpdated() {
-        this.me = await me();
-        this.uiConfig = await uiConfig();
+        this.session = await me();
+        this.uiConfig = getConfigForUser(this.session.user);
         this.uiConfig.navbar.userDisplay = UserDisplay.none;
-    }
-
-    #setTitle(header?: string) {
-        const currentIf = currentInterface();
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
-        if (currentIf === "admin") {
-            title = `${msg("Admin")} - ${title}`;
-        }
-        // Prepend the header to the title
-        if (header !== undefined && header !== "") {
-            title = `${header} - ${title}`;
-        }
-        document.title = title;
     }
 
     willUpdate() {
@@ -331,6 +330,8 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
         // as in that case we still need to return to the generic title
         this.#setTitle(this.header);
     }
+
+    //#endregion
 
     //#region Render
 
@@ -389,7 +390,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                 <section class="items secondary">
                     <div class="pf-c-page__header-tools-group">
-                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.me}>
+                        <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                 href="${globalAK().api.base}if/user/"
