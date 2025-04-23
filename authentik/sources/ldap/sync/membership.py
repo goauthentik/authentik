@@ -77,15 +77,27 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 # attribute we use the RDN instead of the FDN to lookup members.
                 membership_mapping_attribute = 'uid'
 
-            users = User.objects.filter(
-                Q(**{f"attributes__{membership_mapping_attribute}__in": members})
-                | Q(
-                    **{
-                        f"attributes__{membership_mapping_attribute}__isnull": True,
-                        "ak_groups__in": [ak_group],
-                    }
+            if membership_mapping_attribute == "uid":
+                users = []
+                for u in User.objects.all():
+                    dn = u.attributes.get("distinguishedName", "")
+                    if dn.startswith("uid="):
+                        uid = dn.split(",")[0].split("=")[1]
+                        if uid in members:
+                            users.append(u)
+                    elif u.ak_groups.filter(pk=ak_group.pk).exists():
+                        users.append(u)
+            else:
+                users = User.objects.filter(
+                    Q(**{f"attributes__{membership_mapping_attribute}__in": members})
+                    | Q(
+                        **{
+                            f"attributes__{membership_mapping_attribute}__isnull": True,
+                            "ak_groups__in": [ak_group],
+                        }
+                    )
                 )
-            ).distinct()
+                
             membership_count += 1
             membership_count += users.count()
             ak_group.users.set(users)
