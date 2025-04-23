@@ -279,6 +279,7 @@ class LDAPSyncTests(TestCase):
             membership_sync.sync_full()
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
+            self.assertIsNotNone(posix_group)
             self.assertTrue(posix_group.users.filter(name="user-posix").exists())
 
     def test_tasks_ad(self):
