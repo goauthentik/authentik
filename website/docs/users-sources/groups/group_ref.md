@@ -6,7 +6,7 @@ title: Group properties and attributes
 
 The Group object has the following properties:
 
-- `name`: The Group's display name.
+- `name`: The group's display name.
 - `is_superuser`: A boolean field that determines if the Group's users are superusers.
 - `parent`: The parent Group of this Group.
 - `attributes`: Dynamic attributes, see [Attributes](#attributes)
