@@ -148,6 +148,7 @@ module.exports = {
                         "services/immich/index",
                         "services/jellyfin/index",
                         "services/komga/index",
+                        "services/mealie/index",
                         "services/miniflux/index",
                         "services/node-red/index",
                         "services/open-webui/index",
