@@ -37,14 +37,16 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
 class PolicyProcess(PROCESS_CLASS):
     """Evaluate a single policy within a separate process"""
 
-    result_queue: Queue | None
+    result_queue: Queue[tuple[str, PolicyResult]] | None
     binding: PolicyBinding
     request: PolicyRequest
+    task_id: str
 
     def __init__(
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
+        task_id: str,
         result_queue: Queue | None,
     ):
         super().__init__()
@@ -53,6 +55,7 @@ class PolicyProcess(PROCESS_CLASS):
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
         self.result_queue = result_queue
+        self.task_id = task_id
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
@@ -142,7 +145,7 @@ class PolicyProcess(PROCESS_CLASS):
         if self.result_queue is None:
             raise RuntimeError("PolicyProcess.run() should be called with a result queue set.")
         try:
-            self.result_queue.put_nowait(self.profiling_wrapper())
+            self.result_queue.put_nowait((self.task_id, self.profiling_wrapper()))
         except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
-            self.result_queue.put_nowait(PolicyResult(False, str(exc)))
+            self.result_queue.put_nowait((self.task_id, PolicyResult(False, str(exc))))

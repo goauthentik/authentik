@@ -1,10 +1,13 @@
 """authentik policy engine"""
 
 import queue
+import threading
 from collections.abc import Iterator
-from multiprocessing import current_process, get_context
+from multiprocessing import current_process
 from multiprocessing.queues import Queue
+from queue import Queue as ThreadQueue
 from time import perf_counter
+from uuid import uuid4
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -30,12 +33,54 @@ class PolicyProcessInfo:
     result_queue: Queue
     result: PolicyResult | None
     binding: PolicyBinding
+    task_id: str
 
-    def __init__(self, process: PolicyProcess, result_queue: Queue, binding: PolicyBinding):
+    def __init__(
+        self, process: PolicyProcess, result_queue: Queue, binding: PolicyBinding, task_id: str
+    ):
         self.process = process
         self.result_queue = result_queue
         self.binding = binding
         self.result = None
+        self.task_id = task_id
+
+
+class PolicyQueueCoordinator:
+    result_queue: Queue[tuple[str, PolicyResult]]
+    _result_map: dict[str, ThreadQueue[PolicyResult]]
+
+    def __init__(self) -> None:
+        self.result_queue = Queue()
+        self._result_map = {}
+
+        self._collector_thread = threading.Thread(
+            target=self._result_collector_loop,
+            daemon=True,
+        )
+        self._collector_thread.start()
+
+    def create_task(self) -> tuple[str, Queue[tuple[str, PolicyResult]]]:
+        """Create a new task"""
+        task_id = str(uuid4())
+        self._result_map[task_id] = ThreadQueue()
+        return task_id, self.result_queue
+
+    def _result_collector_loop(self):
+        while True:
+            task_id, result = self.result_queue.get()
+            if local_queue := self._result_map.pop(task_id, None):
+                local_queue.put(result)
+
+    def wait_for_result(self, task_id: str, timeout: int = 30) -> PolicyResult:
+        """Wait for result"""
+        task_queue = self._result_map.pop(task_id, None)
+        if not task_queue:
+            raise ValueError(f"Task {task_id} not found")
+
+        try:
+            return task_queue.get(timeout=timeout)
+        except queue.Empty:
+            raise TimeoutError(f"Task {task_id} timed out") from queue.Empty()
 
 
 class PolicyEngine:
@@ -48,6 +93,7 @@ class PolicyEngine:
     mode: PolicyEngineMode
     # Allow objects with no policies attached to pass
     empty_result: bool
+    coordinator: PolicyQueueCoordinator
 
     def __init__(self, pbm: PolicyBindingModel, user: User, request: HttpRequest = None):
         self.logger = get_logger().bind()
@@ -68,6 +114,8 @@ class PolicyEngine:
         self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
+
+        self.coordinator = PolicyQueueCoordinator()
 
     def iterate_bindings(self) -> Iterator[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
@@ -132,8 +180,8 @@ class PolicyEngine:
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
 
-                result_queue = get_context().Queue()
-                task = PolicyProcess(binding, self.request, result_queue)
+                task_id, result_queue = self.coordinator.create_task()
+                task = PolicyProcess(binding, self.request, task_id, result_queue)
                 task.daemon = False
 
                 self.logger.debug("P_ENG: Starting Process", binding=binding, request=self.request)
@@ -142,7 +190,9 @@ class PolicyEngine:
                 else:
                     task.start()
                 self.__processes.append(
-                    PolicyProcessInfo(process=task, result_queue=result_queue, binding=binding)
+                    PolicyProcessInfo(
+                        process=task, result_queue=result_queue, binding=binding, task_id=task_id
+                    )
                 )
             # If all policies are cached, we have an empty list here.
             for proc_info in self.__processes:
@@ -151,8 +201,8 @@ class PolicyEngine:
                 # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
                     try:
-                        proc_info.result = proc_info.result_queue.get(
-                            timeout=proc_info.binding.timeout
+                        self.coordinator.wait_for_result(
+                            proc_info.task_id, timeout=proc_info.binding.timeout
                         )
                     except queue.Empty:
                         raise RuntimeError(
