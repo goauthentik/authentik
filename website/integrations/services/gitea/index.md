@@ -10,10 +10,6 @@ support_level: community
 >
 > -- https://gitea.io/
 
-:::note
-This is based on authentik 2022.10.1 and Gitea 1.17.3 installed using the official docker image [https://docs.gitea.io/en-us/install-with-docker/](https://docs.gitea.io/en-us/install-with-docker/). Instructions may differ between versions.
-:::
-
 ## Preparation
 
 The following placeholders are used in this guide:
@@ -38,7 +34,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>gitea.company</em>/user/oauth2/authentik/callback</kbd>.
+    - Set a `Strict` redirect URI to `https://gitea.company/user/oauth2/authentik/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -46,19 +42,20 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ## Gitea configuration
 
-1. Navigate to the **Authentication Sources** page at https://gitea.company/admin/auths and click **Add Authentication Source**
-2. Set the following required configurations:
+1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
+2. Select the **Authentication Sources** tab and click **Add Authentication Source**.
+3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section)
     - **OAuth2 Provider**: `OpenID Connect`
-    - **Client ID (Key)**: <authentik client ID>
-    - **Client Secret**: <authentik client Secret>
+    - **Client ID (Key)**: authentik client ID
+    - **Client Secret**: authentik client Secret
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.svg`
     - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
-    - **Additional Scopes**: `email profile``
+    - **Additional Scopes**: `email profile`
 
 ![](./gitea1.png)
 
-3. Click **Add Authentication Source**.
+4. Click **Add Authentication Source**.
 
 ### Claims for authorization management (optional)
 
@@ -66,9 +63,9 @@ To support the integration of Gitea with authentik, you need to create an applic
 This step is **optional** and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
 :::
 
-#### Define groups
+#### Create groups
 
-The following groups will be used:
+The following groups will be created:
 
 - `gituser`: normal Gitea users.
 - `gitadmin`: Gitea users with administrative permissions.
@@ -78,60 +75,73 @@ The following groups will be used:
 Users who are in none of these groups will not be able to log in to gitea.
 :::
 
-In authentik, create three groups (under _Directory/Groups_) with the _Name_ as mentioned above and leave other settings untouched. You can add Members to the groups now or anytime later.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set the name of the group as `gituser` and click **Create**.
+4. Repeat steps 2-3 and create groups named `gitadmin` and `gitrestricted`.
+5. In turn, click the names of the newly created groups and navigate to the **Users** tab.
+6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
 
-#### Create custom Property Mapping
+:::Note
+Users can be added to the groups at any point
+:::
 
-In authentik, create a custom property mapping (under _Customization/Property Mappings_) which has the type **Scope Mapping**.
+#### Create custom property mapping
 
-- Name: authentik gitea OAuth Mapping: OpenID 'gitea'
-- Scope name: gitea
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
 
-And as **Expression** set the following:
+    - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
+    - **Scope name**: `gitea`
+    - **Expression**:
 
-```(python)
-gitea_claims = {}
-if request.user.ak_groups.filter(name="gituser").exists():
-    gitea_claims["gitea"]= "user"
-if request.user.ak_groups.filter(name="gitadmin").exists():
-    gitea_claims["gitea"]= "admin"
-if request.user.ak_groups.filter(name="gitrestricted").exists():
-    gitea_claims["gitea"]= "restricted"
+    ```python showLineNumbers
+    gitea_claims = {}
 
-return gitea_claims
-```
+    if request.user.ak_groups.filter(name="gituser").exists():
+        gitea_claims["gitea"]= "user"
+    if request.user.ak_groups.filter(name="gitadmin").exists():
+        gitea_claims["gitea"]= "admin"
+    if request.user.ak_groups.filter(name="gitrestricted").exists():
+        gitea_claims["gitea"]= "restricted"
+
+    return gitea_claims
+    ```
+
+3. Click **Finish**.
 
 #### Add the custom property mapping to the Gitea provider
 
-In authentik, edit the **Gitea** provider (under _Applications/Providers_) by clicking the pencil Icon.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the **Edit** icon of the Gitea provider.
+3. Under **Advanced protocol settings** > **Scopes** add the following scopes to **Selected Scopes**:
 
-Unfold the _Advanced protocol settings_ and activate these Mappings:
+    - `authentik default OAuth Mapping: OpenID 'email'`
+    - `authentik default OAuth Mapping: OpenID 'profile'`
+    - `authentik default OAuth Mapping: OpenID 'openid'`
+    - `authentik gitea OAuth Mapping: OpenID 'gitea'`
 
-- authentik default OAuth Mapping: OpenID 'email'
-- authentik default OAuth Mapping: OpenID 'profile'
-- authentik default OAuth Mapping: OpenID 'openid'
-- authentik gitea OAuth Mapping: OpenID 'gitea'
-
-Click `Update` and the configuration authentik is done.
+4. Click **Update**.
 
 #### Configure Gitea to use the new claims
 
 :::note
-Gitea must set `ENABLE_AUTO_REGISTRATION: true`.
+For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set.
 :::
 
-1. Navigate to the **Authentication Sources** page at https://gitea.company/admin/auths and edit the **authentik** Authentication Source.
-2. Set the following configurations:
+1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
+2. Select the **Authentication Sources** tab and edit the **authentik** Authentication Source.
+3. Set the following configurations:
     - **Additional Scopes**: `email profile gitea`
     - **Required Claim Name**: `gitea`
     - **Claim name providing group names for this source.** (Optional): `gitea`
     - **Group Claim value for administrator users.** (Optional - requires claim name to be set): `admin`
-    - **Group Claim value for restricted users.** (Optional - requires claim to be set): `restricted`
-3. Click **Update Authentication Source**.
+    - **Group Claim value for restricted users.** (Optional - requires claim name to be set): `restricted`
+4. Click **Update Authentication Source**.
 
 :::note
-Users without any of the defined groups should no longer be able to log in.
-Users of the group **gitadmin** should have administrative privileges, and users in the group **gitrestricted** should be restricted.
+Users without any of the defined groups will no longer be able to log in.
+Users of the group **gitadmin** will have administrative privileges, and users in the group **gitrestricted** will be restricted.
 :::
 
 ### Helm Chart Configuration
