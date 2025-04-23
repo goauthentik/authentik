@@ -48,13 +48,21 @@ Returns the value of the given environment variable. Can be used as a scalar wit
 
 Examples:
 
+{/* prettier-ignore-start */}
+
 ```yaml
 configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
 ```
 
 ```yaml
-configure_flow: !Find [authentik_flows.flow, [!Context property_name, !Context property_value]]
+configure_flow:
+    !Find [
+        authentik_flows.flow,
+        [!Context property_name, !Context property_value],
+    ]
 ```
+
+{/* prettier-ignore-end */}
 
 Looks up any model and resolves to the the matches' primary key.
 First argument is the model to be queried, remaining arguments are expected to be pairs of key=value pairs to query for.
@@ -63,9 +71,14 @@ First argument is the model to be queried, remaining arguments are expected to b
 
 Example:
 
+{/* prettier-ignore-start */}
+
+
 ```yaml
 configure_flow: !Context foo
 ```
+
+{/* prettier-ignore-end */}
 
 Find values from the context. Can optionally be called with a default like `!Context [foo, default-value]`.
 
@@ -205,16 +218,24 @@ For example, given a sequence like this - `["a", "b", "c"]`, this tag will resol
 
 Minimal examples:
 
+{/* prettier-ignore-start */}
+
 ```yaml
 configuration_stages: !Enumerate [
         !Context map_of_totp_stage_names_and_types,
         SEQ, # Output a sequence
         !Find [
-            !Format ["authentik_stages_authenticator_%s.authenticator%sstage", !Index 0, !Index 0],
+            !Format [
+                "authentik_stages_authenticator_%s.authenticator%sstage",
+                !Index 0,
+                !Index 0,
+            ],
             [name, !Value 0],
         ], # The value of each item in the sequence
     ]
 ```
+
+{/* prettier-ignore-end */}
 
 The above example will resolve to something like this:
 
@@ -257,6 +278,8 @@ Full example:
 Note that an `!Enumeration` tag's iterable can never be an `!Item` or `!Value` tag with a depth of `0`. Minimum depth allowed is `1`. This is because a depth of `0` refers to the `!Enumeration` tag the `!Item` or `!Value` tag is in, and an `!Enumeration` tag cannot iterate over itself.
 :::
 
+{/* prettier-ignore-start */}
+
 ```yaml
 example: !Enumerate [
         !Context sequence, # ["foo", "bar"]
@@ -269,11 +292,18 @@ example: !Enumerate [
                 # Notice depth is 1, not 0, since we are inside the nested enumeration tag!
                 !Value 1,
                 SEQ, # Output a sequence
-                !Format ["%s: (index: %d, letter: %s)", !Value 1, !Index 0, !Value 0],
+                !Format [
+                    "%s: (index: %d, letter: %s)",
+                    !Value 1,
+                    !Index 0,
+                    !Value 0,
+                ],
             ],
         ],
     ]
 ```
+
+{/* prettier-ignore-end */}
 
 The above example will resolve to something like this:
 
