@@ -4,7 +4,7 @@ title: Group properties and attributes
 
 ## Object properties
 
-The Group object has the following properties:
+The group object has the following properties:
 
 - `name`: The group's display name.
 - `is_superuser`: A boolean field that determines if the group's users are superusers.
@@ -30,6 +30,6 @@ Group.objects.get(name="name of group").users.all()
 
 ## Attributes
 
-By default, authentik Group objects are created with no attributes, however custom attributes can be set.
+By default, authentik group objects are created with no attributes, however custom attributes can be set.
 
 See [the user reference](../user/user_ref.mdx#attributes) for well-known attributes.
