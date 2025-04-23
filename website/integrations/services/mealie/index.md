@@ -45,7 +45,7 @@ To support the integration of _Mealie_ with authentik, you need to create an app
 
 ## Mealie configuration
 
-Add the following environment variables to your Homarr configuration. Make sure to fill in the Client ID, Client Secret, OIDC Issuer, and OIDC URI from your authentik instance.
+Add the following environment variables to your Mealie configuration. Make sure to fill in the Client ID, Client Secret, OIDC Issuer, and OIDC URI from your authentik instance.
 
 ```yaml
 OIDC_AUTH_ENABLED: true
