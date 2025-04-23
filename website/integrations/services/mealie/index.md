@@ -41,7 +41,7 @@ To support the integration of Mealie with authentik, you need to create an appli
 
 ### Create the users and administrators groups
 
-Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create** to create two groups, with names of your choosing, one for **Users** (ex: mealie-users) and one for **Admins** (ex: mealie-admins).
+Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create** to create two groups, with names of your choosing, one for **Users** (ex: `mealie-users`) and one for **Admins** (ex: `mealie-admins`).
 
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed. An admin will need to be added as a member to both groups to function properly.
 
