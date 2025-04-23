@@ -36,8 +36,8 @@ To support the integration of NetBird with authentik, you need to create an appl
     - Under **Protocol Settings**:
         - Note the **Client ID**, and **slug** values because they will be required later.
         - Set **Client type** to `Public`.
-        - Add two `Strict` redirect URIs: <kbd>http://localhost:53000</kbd> and <kbd>https://<em>netbird.company</em></kbd>.
-        - Add a `Regex` redirect: <kbd>https://<em>netbird.company</em>.\*</kbd>.
+        - Add two `Strict` redirect URIs: `http://localhost:53000` and `https://<netbird.company>`.
+        - Add a `Regex` redirect: `https://<netbird.company>.*`.
         - Select any available signing key.
     - Under **Advanced Protocol Settings**:
         - Set **Access Code Validity** to `minutes=10`.
@@ -88,7 +88,7 @@ NetBird requires the service account to have full administrative access to the a
 To configure NetBird to use authentik, add the following environment variables to your NetBird deployment:
 
 ```yaml showLineNumbers
-NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://<authentik.company>/application/o/<application slug>/.well-known/openid-configuration"
+NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"
