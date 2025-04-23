@@ -109,7 +109,7 @@ To confirm that authentik is properly configured with NetBird, log out and log b
 
 ## Troubleshooting
 
-If using a reverse proxy to access NetBird it's possible to get stuck in a loop where the `/peers` URL will reload. To resolve this set the following variables in your NetBird `setup.env` file:
+When accessing NetBird through a reverse proxy, you might encounter a loop where the `/peers` URL continuously reloads. To resolve this, set the following variables accordingly:
 
 ```yaml title="setup.env"
 NETBIRD_MGMT_API_PORT=443
