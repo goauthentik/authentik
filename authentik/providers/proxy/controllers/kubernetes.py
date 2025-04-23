@@ -3,8 +3,8 @@
 from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost
+from authentik.providers.proxy.controllers.k8s.httproute import HTTPRouteReconciler
 from authentik.providers.proxy.controllers.k8s.ingress import IngressReconciler
-from authentik.providers.proxy.controllers.k8s.route import HTTPRouteReconciler
 from authentik.providers.proxy.controllers.k8s.traefik import TraefikMiddlewareReconciler
 
 

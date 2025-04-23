@@ -3,7 +3,6 @@
 from authentik.outposts.controllers.base import DeploymentPort
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost
-from authentik.providers.ldap.controllers.k8s.route import TCPRouteReconciler
 
 
 class LDAPKubernetesController(KubernetesController):
@@ -16,5 +15,3 @@ class LDAPKubernetesController(KubernetesController):
             DeploymentPort(636, "ldaps", "tcp", 6636),
             DeploymentPort(9300, "http-metrics", "tcp", 9300),
         ]
-        self.reconcilers[TCPRouteReconciler.reconciler_name()] = TCPRouteReconciler
-        self.reconcile_order.append(TCPRouteReconciler.reconciler_name())
