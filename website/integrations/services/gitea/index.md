@@ -46,27 +46,33 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ## Gitea configuration
 
-Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and click `Add Authentication Source`
-
-Set the following required configurations: - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section) - **OAuth2 Provider**: `OpenID Connect` - **Client ID (Key)**: <authentik client ID> - **Client Secret**: <authentik client Secret> - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.svg` - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` - **Additional Scopes**: `email profile``
+1. Navigate to the **Authentication Sources** page at https://gitea.company/admin/auths and click **Add Authentication Source**
+2. Set the following required configurations:
+    - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section)
+    - **OAuth2 Provider**: `OpenID Connect`
+    - **Client ID (Key)**: <authentik client ID>
+    - **Client Secret**: <authentik client Secret>
+    - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.svg`
+    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
+    - **Additional Scopes**: `email profile``
 
 ![](./gitea1.png)
 
-`Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
+3. Click **Add Authentication Source**.
 
 ### Claims for authorization management (optional)
 
 :::note
-This step is **optional** and shows how to set claims to control the permissions of users in gitea by adding them to groups.
+This step is **optional** and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
 :::
 
-#### Define Groups
+#### Define groups
 
 The following groups will be used:
 
-- `gituser` for normal Gitea users.
-- `gitadmin` for Gitea users with administrative permissions.
-- `gitrestricted` for restricted Gitea users.
+- `gituser`: normal Gitea users.
+- `gitadmin`: Gitea users with administrative permissions.
+- `gitrestricted`: restricted Gitea users.
 
 :::note
 Users who are in none of these groups will not be able to log in to gitea.
@@ -74,7 +80,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 
 In authentik, create three groups (under _Directory/Groups_) with the _Name_ as mentioned above and leave other settings untouched. You can add Members to the groups now or anytime later.
 
-#### Create Custom Property Mapping
+#### Create custom Property Mapping
 
 In authentik, create a custom property mapping (under _Customization/Property Mappings_) which has the type **Scope Mapping**.
 
@@ -95,7 +101,7 @@ if request.user.ak_groups.filter(name="gitrestricted").exists():
 return gitea_claims
 ```
 
-#### Add the custom Property Mapping to the Gitea Provider
+#### Add the custom property mapping to the Gitea provider
 
 In authentik, edit the **Gitea** provider (under _Applications/Providers_) by clicking the pencil Icon.
 
@@ -114,32 +120,27 @@ Click `Update` and the configuration authentik is done.
 Gitea must set `ENABLE_AUTO_REGISTRATION: true`.
 :::
 
-Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and edit the **authentik** Authentication Source.
-
-Change the following fields
-
-- Additional Scopes: `email profile gitea`
-- Required Claim Name: `gitea`
-- Claim name providing group names for this source. (Optional): `gitea`
-- Group Claim value for administrator users. (Optional - requires claim name above): `admin`
-- Group Claim value for restricted users. (Optional - requires claim name above): `restricted`
-
-`Update Authentication Source` and you should be done.
-
-Users without any of the defined groups should no longer be able to log in.
-Users of the group **gitadmin** should have administrative privileges, and users in the group **gitrestricted** should be restricted.
-
-## Helm Chart Configuration
-
-authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
+1. Navigate to the **Authentication Sources** page at https://gitea.company/admin/auths and edit the **authentik** Authentication Source.
+2. Set the following configurations:
+    - **Additional Scopes**: `email profile gitea`
+    - **Required Claim Name**: `gitea`
+    - **Claim name providing group names for this source.** (Optional): `gitea`
+    - **Group Claim value for administrator users.** (Optional - requires claim name to be set): `admin`
+    - **Group Claim value for restricted users.** (Optional - requires claim to be set): `restricted`
+3. Click **Update Authentication Source**.
 
 :::note
-This is based on authentik 2022.8.2, Gitea v17.2, and Gitea Helm Chart v6.0.1. Instructions may differ between versions.
+Users without any of the defined groups should no longer be able to log in.
+Users of the group **gitadmin** should have administrative privileges, and users in the group **gitrestricted** should be restricted.
 :::
 
-Add the following to the Gitea Helm Chart `values.yaml` file:
+### Helm Chart Configuration
 
-```yaml
+Authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
+
+Add the following to your Gitea Helm Chart `values.yaml` file:
+
+```yaml showLineNumbers
 gitea:
     oauth:
         - name: "authentik"
@@ -155,28 +156,32 @@ gitea:
 
 Alternatively you can use a Kubernetes secret to set the `key` and `secret` values.
 
-Create a Kubernetes secret with the following:
+1. Create a Kubernetes secret with the following configurations:
 
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-    name: gitea-authentik-secret
-type: Opaque
-stringData:
-    key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
-    secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-```
+    ```yaml showLineNumbers
+    apiVersion: v1
+    kind: Secret
+    metadata:
+        name: gitea-authentik-secret
+    type: Opaque
+    stringData:
+        key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+        secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+    ```
 
-Add the following to the Gitea Helm Chart `values.yaml` file:
+2. Add the following to the Gitea Helm Chart `values.yaml` file:
 
-```yaml
-gitea:
-    oauth:
-        - name: "authentik"
-          provider: "openidConnect"
-          existingSecret: gitea-authentik-secret
-          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
-          iconUrl: "https://goauthentik.io/img/icon.png"
-          scopes: "email profile"
-```
+    ```yaml showLineNumbers
+    gitea:
+        oauth:
+            - name: "authentik"
+            provider: "openidConnect"
+            existingSecret: gitea-authentik-secret
+            autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+            iconUrl: "https://goauthentik.io/img/icon.png"
+            scopes: "email profile"
+    ```
+
+## Configuration verification
+
+To confirm that authentik is properly configured with Gitea, log out and log back in via the **Sign in with authentik** button.
