@@ -1,4 +1,4 @@
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
@@ -64,10 +64,18 @@ class HTTPRouteSpec:
 
 
 @dataclass(slots=True)
+class HTTPRouteMetadata:
+    name: str
+    namespace: str
+    annotations: dict = field(default_factory=dict)
+    labels: dict = field(default_factory=dict)
+
+
+@dataclass(slots=True)
 class HTTPRoute:
     apiVersion: str
     kind: str
-    metadata: V1ObjectMeta
+    metadata: HTTPRouteMetadata
     spec: HTTPRouteSpec
 
 
@@ -119,8 +127,6 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
 
     def get_object_meta(self, **kwargs) -> V1ObjectMeta:
         return super().get_object_meta(
-            name=self.name,
-            annotations=self.controller.outpost.config.kubernetes_httproute_annotations,
             **kwargs,
         )
 
@@ -137,7 +143,10 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
                     matches=[
                         HTTPRouteSpecRuleMatch(
                             headers=[
-                                HTTPRouteSpecRuleMatchHeader(name="Host", value=external_host_name)
+                                HTTPRouteSpecRuleMatchHeader(
+                                    name="Host",
+                                    value=external_host_name.hostname,
+                                )
                             ],
                             path=HTTPRouteSpecRuleMatchPath(
                                 type="PathPrefix", value="/outpost.goauthentik.io"
@@ -151,19 +160,27 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
                     matches=[
                         HTTPRouteSpecRuleMatch(
                             headers=[
-                                HTTPRouteSpecRuleMatchHeader(name="Host", value=external_host_name)
+                                HTTPRouteSpecRuleMatchHeader(
+                                    name="Host",
+                                    value=external_host_name.hostname,
+                                )
                             ],
                             path=HTTPRouteSpecRuleMatchPath(type="PathPrefix", value="/"),
                         )
                     ],
                 )
-            hostnames.append(external_host_name)
+            hostnames.append(external_host_name.hostname)
             rules.append(rule)
 
         return HTTPRoute(
             apiVersion=f"{self.crd_group}/{self.crd_version}",
             kind="HTTPRoute",
-            metadata=self.get_object_meta(),
+            metadata=HTTPRouteMetadata(
+                name=self.name,
+                namespace=self.namespace,
+                annotations=self.controller.outpost.config.kubernetes_httproute_annotations,
+                labels=self.get_object_meta().labels,
+            ),
             spec=HTTPRouteSpec(
                 parentRefs=[
                     from_dict(RouteSpecParentRefs, spec)
