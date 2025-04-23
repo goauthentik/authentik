@@ -44,25 +44,17 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 3. Click **Submit** to save the new application and provider.
 
-### Step 3
+## Gitea configuration
 
 Navigate to the _Authentication Sources_ page at https://gitea.company/admin/auths and click `Add Authentication Source`
 
-Change the following fields
-
-- Authentication Name: authentik
-- OAuth2 Provider: OpenID Connect
-- Client ID (Key): Step 1
-- Client Secret: Step 1
-- Icon URL: https://authentik.company/static/dist/assets/icons/icon.svg
-- OpenID Connect Auto Discovery URL: https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration
-- Additional Scopes: `email profile`
+Set the following required configurations: - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section) - **OAuth2 Provider**: `OpenID Connect` - **Client ID (Key)**: <authentik client ID> - **Client Secret**: <authentik client Secret> - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.svg` - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration` - **Additional Scopes**: `email profile``
 
 ![](./gitea1.png)
 
 `Add Authentication Source` and you should be done. Your Gitea login page should now have a `Sign in With` followed by the authentik logo which you can click on to sign-in to Gitea with Authentik creds.
 
-### Step 4 _(optional Claims for authorization management)_
+### Claims for authorization management (optional)
 
 :::note
 This step is **optional** and shows how to set claims to control the permissions of users in gitea by adding them to groups.
@@ -80,19 +72,11 @@ The following groups will be used:
 Users who are in none of these groups will not be able to log in to gitea.
 :::
 
-In authentik, create three groups (under _Directory/Groups_) with the _Name_ as mentioned above and leave other settings untouched.
-
-:::note
-You can add Members to the groups now or anytime later.
-:::
+In authentik, create three groups (under _Directory/Groups_) with the _Name_ as mentioned above and leave other settings untouched. You can add Members to the groups now or anytime later.
 
 #### Create Custom Property Mapping
 
 In authentik, create a custom property mapping (under _Customization/Property Mappings_) which has the type **Scope Mapping**.
-
-:::note
-Only settings that have been modified from default have been listed.
-:::
 
 - Name: authentik gitea OAuth Mapping: OpenID 'gitea'
 - Scope name: gitea
