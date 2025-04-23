@@ -17,7 +17,7 @@ These are examples of how Group objects can be used within **Policies** and **Pr
 
 ### List all group members
 
-Use the following examples to list all users that are members of a Group:
+Use the following examples to list all users that are members of a group:
 
 ```python title="Get all members of a Group object"
 group.users.all()
