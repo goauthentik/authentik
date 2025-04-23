@@ -13,7 +13,7 @@ The Group object has the following properties:
 
 ## Examples
 
-These are examples of how Group objects can be used within **Policies** and **Property Mappings**.
+These are examples of how group objects can be used within authentik policies and property mappings.
 
 ### List all group members
 
