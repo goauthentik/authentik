@@ -3,7 +3,7 @@
 import queue
 import threading
 from collections.abc import Iterator
-from multiprocessing import current_process
+from multiprocessing import current_process, get_context
 from multiprocessing.queues import Queue
 from queue import Queue as ThreadQueue
 from time import perf_counter
@@ -50,7 +50,7 @@ class PolicyQueueCoordinator:
     _result_map: dict[str, ThreadQueue[PolicyResult]]
 
     def __init__(self) -> None:
-        self.result_queue = Queue()
+        self.result_queue = get_context().Queue()
         self._result_map = {}
 
         self._collector_thread = threading.Thread(
