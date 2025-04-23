@@ -21,10 +21,6 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-:::tip
-_Optionally_, create new groups like `mealie-users` and `mealie-admin` to scope access to the mealie application.  An admin user will need to be added as a member to both groups for this application.
-:::
-
 ## authentik configuration
 
 To support the integration of Mealie with authentik, you need to create an application/provider pair in authentik.
