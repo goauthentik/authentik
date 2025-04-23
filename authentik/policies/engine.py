@@ -48,10 +48,12 @@ class PolicyProcessInfo:
 class PolicyQueueCoordinator:
     result_queue: Queue[tuple[str, PolicyResult]]
     _result_map: dict[str, ThreadQueue[PolicyResult]]
+    _map_lock: threading.Lock
 
     def __init__(self) -> None:
         self.result_queue = get_context().Queue()
         self._result_map = {}
+        self._map_lock = threading.Lock()
 
         self._collector_thread = threading.Thread(
             target=self._result_collector_loop,
@@ -62,24 +64,44 @@ class PolicyQueueCoordinator:
     def create_task(self) -> tuple[str, Queue[tuple[str, PolicyResult]]]:
         """Create a new task"""
         task_id = str(uuid4())
-        self._result_map[task_id] = ThreadQueue()
+        with self._map_lock:
+            self._result_map[task_id] = ThreadQueue()
         return task_id, self.result_queue
 
     def _result_collector_loop(self):
         while True:
             task_id, result = self.result_queue.get()
-            if local_queue := self._result_map.pop(task_id, None):
-                local_queue.put(result)
+
+            local_queue = None
+            with self._map_lock:
+                local_queue = self._result_map.get(task_id, None)
+
+            if local_queue is None:
+                continue
+
+            try:
+                local_queue.put_nowait(result)
+            except queue.Full:
+                raise RuntimeError(f"Task {task_id} result queue is full") from queue.Full
 
     def wait_for_result(self, task_id: str, timeout: int = 30) -> PolicyResult:
         """Wait for result"""
-        task_queue = self._result_map.pop(task_id, None)
+        task_queue = None
+        with self._map_lock:
+            task_queue = self._result_map.get(task_id, None)
+
         if not task_queue:
             raise ValueError(f"Task {task_id} not found")
 
         try:
-            return task_queue.get(timeout=timeout)
+            result = task_queue.get(timeout=timeout)
+            with self._map_lock:
+                self._result_map.pop(task_id, None)
+            return result
         except queue.Empty:
+            with self._map_lock:
+                self._result_map.pop(task_id, None)
+
             raise TimeoutError(f"Task {task_id} timed out") from queue.Empty()
 
 
