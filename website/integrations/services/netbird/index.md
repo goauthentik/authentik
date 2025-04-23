@@ -72,7 +72,7 @@ NetBird requires the service account to have full administrative access to the a
 ### Create and apply a device token authentication flow
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Flows & Stages** > **Flows** and click **Create**.
+2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
 3. Set the following required configurations:
     - **Name**: provide a name (e.g. `default-device-code-flow`)
     - **Title**: provide a title (e.g. `Device code flow`)
