@@ -19,11 +19,11 @@ These are examples of how group objects can be used within authentik policies an
 
 Use the following examples to list all users that are members of a group:
 
-```python title="Get all members of a Group object"
+```python title="Get all members of a group object"
 group.users.all()
 ```
 
-```python title="Define a group object based on name and get all of its members"
+```python title="Specify a group object based on name and get all of its members"
 from authentik.core.models import Group
 Group.objects.get(name="name of group").users.all()
 ```
