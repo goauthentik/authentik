@@ -5,9 +5,9 @@ import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 import remarkGithub, { BuildUrlValues } from "remark-github";
 import { defaultBuildUrl } from "remark-github";
 import remarkDirective from "remark-directive";
-import remarkVersionDirective from "./remark/version-directive";
-import remarkPreviewDirective from "./remark/preview-directive";
-import remarkSupportDirective from "./remark/support-directive";
+import remarkVersionDirective from "./remark/version-directive.js";
+import remarkPreviewDirective from "./remark/preview-directive.js";
+import remarkSupportDirective from "./remark/support-directive.js";
 
 const createConfig = (): Config => {
     return {
@@ -31,19 +31,19 @@ const createConfig = (): Config => {
                 },
                 items: [
                     {
-                        to: "https://goauthentik.io/blog",
-                        label: "Blog",
+                        to: "https://goauthentik.io/features",
+                        label: "Features",
                         position: "left",
                         target: "_self",
                     },
                     {
-                        to: "docs/",
-                        label: "Documentation",
+                        to: "integrations/",
+                        label: "Integrations",
                         position: "left",
                     },
                     {
-                        to: "integrations/",
-                        label: "Integrations",
+                        to: "docs/",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
@@ -53,15 +53,21 @@ const createConfig = (): Config => {
                         target: "_self",
                     },
                     {
+                        to: "https://goauthentik.io/blog",
+                        label: "Blog",
+                        position: "left",
+                        target: "_self",
+                    },
+                    {
                         href: "https://github.com/goauthentik/authentik",
-                        className: "header-github-link",
-                        "aria-label": "GitHub repository",
+                        "data-icon": "github",
+                        "aria-label": "GitHub",
                         position: "right",
                     },
                     {
                         href: "https://goauthentik.io/discord",
-                        className: "header-discord-link",
-                        "aria-label": "GitHub repository",
+                        "data-icon": "discord",
+                        "aria-label": "Discord",
                         position: "right",
                     },
                 ],
@@ -71,7 +77,8 @@ const createConfig = (): Config => {
                 copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
             },
             tableOfContents: {
-                maxHeadingLevel: 5,
+                minHeadingLevel: 2,
+                maxHeadingLevel: 3,
             },
             colorMode: {
                 respectPrefersColorScheme: true,
@@ -92,6 +99,7 @@ const createConfig = (): Config => {
                     "json",
                     "nginx",
                     "python",
+                    "bash",
                 ],
             },
         },
@@ -102,9 +110,11 @@ const createConfig = (): Config => {
                     docs: {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
+                        showLastUpdateTime: false,
                         editUrl:
                             "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
+
                         beforeDefaultRemarkPlugins: [
                             remarkDirective,
                             remarkVersionDirective,
@@ -128,7 +138,9 @@ const createConfig = (): Config => {
                         ],
                     },
                     theme: {
-                        customCss: require.resolve("./src/css/custom.css"),
+                        customCss: require.resolve(
+                            "@goauthentik/docusaurus-config/css/index.css",
+                        ),
                     },
                 } satisfies Preset.Options,
             ],
@@ -152,7 +164,7 @@ const createConfig = (): Config => {
                     docsPluginId: "docs",
                     config: {
                         authentik: {
-                            specPath: "static/schema.yaml",
+                            specPath: "static/schema.yml",
                             outputDir: "docs/developer-docs/api/reference/",
                             hideSendButton: true,
                             sidebarOptions: {
@@ -165,6 +177,9 @@ const createConfig = (): Config => {
         ],
         markdown: {
             mermaid: true,
+        },
+        future: {
+            experimental_faster: true,
         },
         themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
     };

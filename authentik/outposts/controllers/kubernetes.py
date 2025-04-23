@@ -61,9 +61,14 @@ class KubernetesController(BaseController):
     client: KubernetesClient
     connection: KubernetesServiceConnection
 
-    def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection) -> None:
+    def __init__(
+        self,
+        outpost: Outpost,
+        connection: KubernetesServiceConnection,
+        client: KubernetesClient | None = None,
+    ) -> None:
         super().__init__(outpost, connection)
-        self.client = KubernetesClient(connection)
+        self.client = client if client else KubernetesClient(connection)
         self.reconcilers = {
             SecretReconciler.reconciler_name(): SecretReconciler,
             DeploymentReconciler.reconciler_name(): DeploymentReconciler,

@@ -124,7 +124,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
             r#move.1.display(),
             tmp_file
         ));
-        // delete file if it didnt already exist
+        // delete file if it didn't already exist
         if let Ok(_) = tmp_file {
             let _ = remove_file(&r#move.1);
         };
@@ -223,7 +223,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 );
                 continue;
             };
-            // delete file if it didnt already exist
+            // delete file if it didn't already exist
             //if let Ok(_) = tmp_file {
             //    let _ = remove_file(&absolute_link);
             //};
@@ -275,7 +275,7 @@ fn replace_links(migrate_path: PathBuf, moves: Vec<(PathBuf, PathBuf)>) {
                 .collect::<PathBuf>();
 
             let new_link = escapes.join(tmp_absolute_link.iter().collect::<PathBuf>());
-            // add a . to the begining if it doesnt already start with . or ..
+            // add a . to the beginning if it doesn't already start with . or ..
             let new_link = match new_link
                 .components()
                 .collect::<Vec<_>>()

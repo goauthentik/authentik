@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 00:11+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -169,6 +169,7 @@ msgid "User's display name."
 msgstr ""
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr ""
 
@@ -336,6 +337,18 @@ msgid "Property Mappings"
 msgstr ""
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr ""
 
@@ -436,6 +449,36 @@ msgstr ""
 
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
 msgstr ""
 
 #: authentik/enterprise/policy.py
@@ -614,6 +657,18 @@ msgstr ""
 
 #: authentik/events/models.py authentik/stages/authenticator_validate/models.py
 msgid "Email"
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
+"Customize the body of the request. Mapping should return data that is JSON-"
+"serializable."
+msgstr ""
+
+#: authentik/events/models.py
+msgid ""
+"Configure additional headers to be sent. Mapping should return a dictionary "
+"of key-value pairs"
 msgstr ""
 
 #: authentik/events/models.py
@@ -865,6 +920,12 @@ msgstr ""
 msgid "Invalid next URL"
 msgstr ""
 
+#: authentik/lib/sync/outgoing/models.py
+msgid ""
+"When enabled, provider will not modify or create objects in the remote "
+"system."
+msgstr ""
+
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Starting full provider sync"
 msgstr ""
@@ -877,6 +938,10 @@ msgstr ""
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
 msgid "Syncing page {page} of groups"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Dropping mutating request due to dry run"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -1141,20 +1206,12 @@ msgid "Clear Policy's cache metrics"
 msgstr ""
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr ""
 
 #: authentik/policies/password/models.py
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
-msgstr ""
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
 msgstr ""
 
 #: authentik/policies/password/models.py
@@ -1363,6 +1420,14 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py
 msgid "ES256 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES384 (Asymmetric Encryption)"
+msgstr ""
+
+#: authentik/providers/oauth2/models.py
+msgid "ES512 (Asymmetric Encryption)"
 msgstr ""
 
 #: authentik/providers/oauth2/models.py
@@ -1739,6 +1804,17 @@ msgid ""
 msgstr ""
 
 #: authentik/providers/saml/models.py
+msgid "AuthnContextClassRef Property Mapping"
+msgstr ""
+
+#: authentik/providers/saml/models.py
+msgid ""
+"Configure how the AuthnContextClassRef value will be created. When left "
+"empty, the AuthnContextClassRef will be set based on which authentication "
+"methods the user used to authenticate."
+msgstr ""
+
+#: authentik/providers/saml/models.py
 msgid ""
 "Assertion valid not before current time + this value (Format: hours=-1;"
 "minutes=-2;seconds=-3)."
@@ -1866,11 +1942,31 @@ msgid "SAML Providers from Metadata"
 msgstr ""
 
 #: authentik/providers/scim/models.py
+msgid "Default"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "AWS"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Slack"
+msgstr ""
+
+#: authentik/providers/scim/models.py
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
 #: authentik/providers/scim/models.py
 msgid "Authentication token"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "SCIM Compatibility Mode"
+msgstr ""
+
+#: authentik/providers/scim/models.py
+msgid "Alter authentik behavior for vendor-specific SCIM implementations."
 msgstr ""
 
 #: authentik/providers/scim/models.py
@@ -1895,6 +1991,10 @@ msgstr ""
 
 #: authentik/rbac/models.py
 msgid "Roles"
+msgstr ""
+
+#: authentik/rbac/models.py
+msgid "Initial Permissions"
 msgstr ""
 
 #: authentik/rbac/models.py
@@ -2116,6 +2216,13 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr ""
 
@@ -2131,12 +2238,36 @@ msgstr ""
 msgid "LDAP Source Property Mappings"
 msgstr ""
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr ""
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr ""
 
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
@@ -2174,6 +2305,11 @@ msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request flow"
 msgstr ""
 
 #: authentik/sources/oauth/models.py
@@ -2517,6 +2653,7 @@ msgid ""
 msgstr ""
 
 #: authentik/stages/authenticator_email/models.py
+#: authentik/stages/email/models.py
 msgid "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
 msgstr ""
 
@@ -2856,10 +2993,6 @@ msgid "Activate users upon completion of stage."
 msgstr ""
 
 #: authentik/stages/email/models.py
-msgid "Time in minutes the token sent is valid."
-msgstr ""
-
-#: authentik/stages/email/models.py
 msgid "Email Stage"
 msgstr ""
 
@@ -3017,6 +3150,12 @@ msgstr ""
 msgid ""
 "When enabled, the stage will succeed and continue even when incorrect user "
 "info is entered."
+msgstr ""
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users "
+"to skip straight to entering their password."
 msgstr ""
 
 #: authentik/stages/identification/models.py
@@ -3359,6 +3498,14 @@ msgstr ""
 msgid ""
 "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,"
 "seconds=2)."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
 msgstr ""
 
 #: authentik/tenants/models.py

@@ -282,16 +282,14 @@ class ConfigLoader:
 
     def get_optional_int(self, path: str, default=None) -> int | None:
         """Wrapper for get that converts value into int or None if set"""
-        value = self.get(path, default)
+        value = self.get(path, UNSET)
         if value is UNSET:
             return default
         try:
             return int(value)
         except (ValueError, TypeError) as exc:
             if value is None or (isinstance(value, str) and value.lower() == "null"):
-                return default
-            if value is UNSET:
-                return default
+                return None
             self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
             return default
 
@@ -358,6 +356,14 @@ def redis_url(db: int) -> str:
 def django_db_config(config: ConfigLoader | None = None) -> dict:
     if not config:
         config = CONFIG
+
+    pool_options = False
+    use_pool = config.get_bool("postgresql.use_pool", False)
+    if use_pool:
+        pool_options = config.get_dict_from_b64_json("postgresql.pool_options", True)
+        if not pool_options:
+            pool_options = True
+
     db = {
         "default": {
             "ENGINE": "authentik.root.db",
@@ -371,10 +377,11 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
                 "sslrootcert": config.get("postgresql.sslrootcert"),
                 "sslcert": config.get("postgresql.sslcert"),
                 "sslkey": config.get("postgresql.sslkey"),
+                "pool": pool_options,
             },
-            "CONN_MAX_AGE": CONFIG.get_optional_int("postgresql.conn_max_age", 0),
-            "CONN_HEALTH_CHECKS": CONFIG.get_bool("postgresql.conn_health_checks", False),
-            "DISABLE_SERVER_SIDE_CURSORS": CONFIG.get_bool(
+            "CONN_MAX_AGE": config.get_optional_int("postgresql.conn_max_age", 0),
+            "CONN_HEALTH_CHECKS": config.get_bool("postgresql.conn_health_checks", False),
+            "DISABLE_SERVER_SIDE_CURSORS": config.get_bool(
                 "postgresql.disable_server_side_cursors", False
             ),
             "TEST": {
@@ -383,8 +390,8 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         }
     }
 
-    conn_max_age = CONFIG.get_optional_int("postgresql.conn_max_age", UNSET)
-    disable_server_side_cursors = CONFIG.get_bool("postgresql.disable_server_side_cursors", UNSET)
+    conn_max_age = config.get_optional_int("postgresql.conn_max_age", UNSET)
+    disable_server_side_cursors = config.get_bool("postgresql.disable_server_side_cursors", UNSET)
     if config.get_bool("postgresql.use_pgpool", False):
         db["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
         if disable_server_side_cursors is not UNSET:

@@ -1,11 +1,27 @@
-# update website/docs/install-config/configuration/configuration.mdx
-# This is the default configuration file
+# authentik configuration
+#
+# https://docs.goauthentik.io/docs/install-config/configuration/
+#
+# To override the settings in this file, run the following command from the repository root:
+#
+# ```shell
+# make gen-dev-config
+# ```
+#
+# You may edit the generated file to override the configuration below.  
+#
+# When making modifying the default configuration file, 
+# ensure that the corresponding documentation is updated to match.
+#
+# @see {@link ../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
+
 postgresql:
   host: localhost
   name: authentik
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
+  use_pool: False
   test:
     name: test_authentik
   default_schema: public
@@ -44,6 +60,8 @@ redis:
 # broker:
 #   url: ""
 #   transport_options: ""
+
+http_timeout: 30
 
 cache:
   # url: ""

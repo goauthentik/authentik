@@ -1,3 +1,5 @@
+/* #region Global */
+
 :root {
     --ak-accent: #fd4b2d;
 
@@ -17,19 +19,27 @@
     --ak-sidebar--minimum-auto-width: 80rem;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-    background-color: transparent;
+@supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--ak-accent);
+    }
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
 }
-::-webkit-scrollbar-thumb {
-    background-color: var(--ak-accent);
-}
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-::-webkit-scrollbar-corner {
-    background-color: transparent;
+
+@supports not selector(::-webkit-scrollbar) {
+    :root {
+        scrollbar-color: var(--ak-accent) transparent;
+    }
 }
 
 html {
@@ -45,7 +55,9 @@ html > form > input {
     left: -2000px;
 }
 
-/*#region Icons*/
+/* #endregion */
+
+/* #region Icons */
 
 .pf-icon {
     display: inline-block;
@@ -66,7 +78,7 @@ html > form > input {
     );
 }
 
-/*#endregion*/
+/* #endregion */
 
 .pf-c-page__header {
     z-index: 0;
@@ -74,15 +86,15 @@ html > form > input {
     box-shadow: var(--pf-global--BoxShadow--lg-bottom);
 }
 
-/*****************************
-* Login adjustments
-*****************************/
+/* #region Login adjustments */
+
 /* Ensure card is displayed on small screens */
 .pf-c-login__main {
     display: block;
     position: relative;
     width: 100%;
 }
+
 .ak-login-container {
     height: calc(100vh - var(--pf-global--spacer--lg) - var(--pf-global--spacer--lg));
     width: 35rem;
@@ -90,30 +102,34 @@ html > form > input {
     flex-direction: column;
     justify-content: space-between;
 }
+
 .pf-c-login__header {
     flex-grow: 1;
 }
+
 .pf-c-login__footer {
     flex-grow: 2;
     display: flex;
     justify-content: end;
     flex-direction: column;
 }
+
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
     padding: 2rem 0;
 }
-/*****************************
-* End Login adjustments
-*****************************/
+
+/* #endregion */
 
 .pf-c-content h1 {
     display: flex;
     align-items: flex-start;
 }
+
 .pf-c-content h1 i {
     font-style: normal;
 }
+
 .pf-c-content h1 :first-child {
     margin-right: var(--pf-global--spacer--sm);
 }
@@ -127,9 +143,11 @@ html > form > input {
 .pf-m-success {
     color: var(--pf-global--success-color--100) !important;
 }
+
 .pf-m-warning {
     color: var(--pf-global--warning-color--100);
 }
+
 .pf-m-danger {
     color: var(--pf-global--danger-color--100);
 }
@@ -167,6 +185,7 @@ html > form > input {
     justify-content: center;
     width: 100%;
 }
+
 .ak-brand img {
     padding: 0 2rem;
     max-height: inherit;
@@ -181,3 +200,11 @@ html > form > input {
 .pf-c-data-list {
     padding-inline-start: 0;
 }
+
+/* #region Code blocks */
+
+pre:has(.hljs) {
+    padding: var(--pf-global--spacer--md);
+}
+
+/* #endregion */

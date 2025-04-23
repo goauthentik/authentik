@@ -4,13 +4,13 @@ import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUse
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/SyncStatusCard";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/sync/SyncStatusCard";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -173,6 +173,23 @@ export class GoogleWorkspaceProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         ${this.provider.name}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Dry-run")}</span
+                                    >
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ak-status-label
+                                            ?good=${!this.provider.dryRun}
+                                            type="info"
+                                            good-label=${msg("No")}
+                                            bad-label=${msg("Yes")}
+                                        ></ak-status-label>
                                     </div>
                                 </dd>
                             </div>

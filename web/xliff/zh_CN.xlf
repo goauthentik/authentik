@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -2863,11 +2863,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>组成员资格字段</target>
         
       </trans-unit>
-      <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
-        
-      </trans-unit>
       <trans-unit id="s026555347e589f0e">
         <source>Object uniqueness field</source>
         <target>对象唯一性字段</target>
@@ -3776,7 +3771,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>成功更新 <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>更新
         <x id="0" equiv-text="${this.objectLabel}"/> 失败：
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3868,11 +3863,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>已成功生成恢复链接</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>未配置恢复流程。</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -5001,16 +4991,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>令牌过期</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>发出令牌的有效时间（单位为分钟）。</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>模板</target>
@@ -5697,11 +5677,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s6873bdbfa24615fb">
         <source>Webhook URL</source>
         <target>Webhook URL</target>
-        
-      </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Webhook 映射</target>
         
       </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
@@ -6774,7 +6749,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>解绑源失败：
         <x id="0" equiv-text="${exc}"/></target>
         
@@ -7452,10 +7427,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Statistics</source>
   <target>用户统计</target>
 </trans-unit>
-<trans-unit id="s0924f51b028233a3">
-  <source>&lt;No name set&gt;</source>
-  <target>&lt;未设置名称&gt;</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>新创建用户使用的用户类型。</target>
@@ -7791,10 +7762,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
   <target>要让用户直接重置密码，请在当前活动的品牌上配置恢复流程。</target>
-</trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
-  <target>当前品牌必须配置恢复流程才能使用恢复链接</target>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
@@ -8382,10 +8349,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Finished with errors</source>
   <target>已完成但有错误</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target><x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/>（<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>） 完成</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>当前正在同步</target>
@@ -8699,8 +8662,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>俄语</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>上次出现：<x id="0" equiv-text="${getRelativeTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>上次出现：<x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/>（<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>）</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9047,8 +9010,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>此选项配置流程执行器页面上的页脚链接。URL 限为 Web 和电子邮件地址。如果名称留空，则显示 URL 自身。</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9483,6 +9446,358 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s47b7ce63a543564c">
   <source>Fewer details</source>
   <target>显示更少</target>
+</trans-unit>
+<trans-unit id="s140111d464591e6b">
+  <source>Create a new application and configure a provider for it.</source>
+  <target>创建一个应用程序并为它配置提供程序。</target>
+</trans-unit>
+<trans-unit id="s5e0c81c05565bf42">
+  <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+  <target>此表单只会创建应用程序。要设置此应用程序的身份验证，您需要手动为它配对一个提供程序。</target>
+</trans-unit>
+<trans-unit id="s035bfd9c5f97e4d3">
+  <source>Distance settings</source>
+  <target>距离设置</target>
+</trans-unit>
+<trans-unit id="s207e6f8a8b3515fd">
+  <source>Check historical distance of logins</source>
+  <target>检查历史登录距离</target>
+</trans-unit>
+<trans-unit id="s8158f4b3e5c869be">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
+  <target>启用此选项时，策略请求的 GeoIP 数据会用来与指定数量的历史登录比较。</target>
+</trans-unit>
+<trans-unit id="sb8b7450c8515894c">
+  <source>Maximum distance</source>
+  <target>最大距离</target>
+</trans-unit>
+<trans-unit id="s40cdbaa532bc9899">
+  <source>Maximum distance a login attempt is allowed from in kilometers.</source>
+  <target>允许登录请求的最大距离，单位为千米。</target>
+</trans-unit>
+<trans-unit id="seef852b5c0f8a529">
+  <source>Distance tolerance</source>
+  <target>距离误差</target>
+</trans-unit>
+<trans-unit id="sce567ced300aeb8a">
+  <source>Tolerance in checking for distances in kilometers.</source>
+  <target>检查距离时允许的误差，单位为千米。</target>
+</trans-unit>
+<trans-unit id="s9ea9cdabd74f8f97">
+  <source>Historical Login Count</source>
+  <target>历史登录次数</target>
+</trans-unit>
+<trans-unit id="s27aec4c2de1ae777">
+  <source>Amount of previous login events to check against.</source>
+  <target>检查指定次数的历史登录事件。</target>
+</trans-unit>
+<trans-unit id="s48611ce6e85874dc">
+  <source>Check impossible travel</source>
+  <target>检查不可能的行程</target>
+</trans-unit>
+<trans-unit id="s8cf926e8311f8065">
+  <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+  <target>启用此选项时，策略请求的 GeoIP 数据会用来与指定数量的历史登录比较，以及自上次活动以来移动的距离是否可能在该时段内完成。</target>
+</trans-unit>
+<trans-unit id="sa963d05af436770b">
+  <source>Impossible travel tolerance</source>
+  <target>不可能行程的误差</target>
+</trans-unit>
+<trans-unit id="s5760cd97ca42a238">
+  <source>Static rule settings</source>
+  <target>静态规则设置</target>
+</trans-unit>
+<trans-unit id="s8fec035fa1737294">
+  <source>Create with Provider</source>
+  <target>以提供程序创建</target>
+</trans-unit>
+<trans-unit id="sca2487321ec12bd6">
+  <source>Email address the verification email will be sent from.</source>
+  <target>用于发送验证邮件的电子邮件地址。</target>
+</trans-unit>
+<trans-unit id="s24a8fdfc73e8137f">
+  <source>Stage used to configure an email-based authenticator.</source>
+  <target>用来配置基于电子邮件的身份验证器的阶段。</target>
+</trans-unit>
+<trans-unit id="sea0da186a814a212">
+  <source>Use global connection settings</source>
+  <target>使用全局连接设置</target>
+</trans-unit>
+<trans-unit id="s7754fa56a4439de4">
+  <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+  <target>启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。</target>
+</trans-unit>
+<trans-unit id="s7e2bcca51126ec9c">
+  <source>Subject of the verification email.</source>
+  <target>验证邮件的主题。</target>
+</trans-unit>
+<trans-unit id="sc12c90b1da0f3a47">
+  <source>Token expiration</source>
+  <target>令牌过期时间</target>
+</trans-unit>
+<trans-unit id="sc264a82f9c710f14">
+  <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+  <target>发出令牌有效的时间（格式：hours=3,minutes=17,seconds=300）。</target>
+</trans-unit>
+<trans-unit id="s15986693bfc99fb7">
+  <source>Email-based Authenticators</source>
+  <target>基于电子邮件的身份验证器</target>
+</trans-unit>
+<trans-unit id="s6bb30c61df4cf486">
+  <source>Caps Lock is enabled.</source>
+  <target>大写锁定已启用。</target>
+</trans-unit>
+<trans-unit id="s3f8a07912545e72e">
+  <source>Configure your email</source>
+  <target>配置您的电子邮件</target>
+</trans-unit>
+<trans-unit id="scedf77e8b75cad5a">
+  <source>Please enter your email address.</source>
+  <target>请输入您的电子邮件地址。</target>
+</trans-unit>
+<trans-unit id="s7cdd62c100b6b17b">
+  <source>Please enter the code you received via email</source>
+  <target>请输入您通过电子邮件收到的代码</target>
+</trans-unit>
+<trans-unit id="s1d64dba9bb8b284d">
+  <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+  <target>一份代码已通过电子邮件地址 <x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/> 发送给您</target>
+</trans-unit>
+<trans-unit id="s833cfe815918c143">
+  <source>Tokens sent via email.</source>
+  <target>通过电子邮件发送的令牌。</target>
+</trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+  <target>启用试运行模式</target>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+  <target>启用时，变更请求将会被放弃，仅记录日志。</target>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+  <target>覆盖试运行模式</target>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+  <target>启用时，此同步仍将执行变更请求，无论提供程序是否启用试运行模式。</target>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
+  <target>试运行</target>
+</trans-unit>
+<trans-unit id="s34661765d81e7340">
+  <source>Successfully cleared application cache</source>
+  <target>已成功清除应用程序缓存</target>
+</trans-unit>
+<trans-unit id="s9377ae285bc0157c">
+  <source>Failed to delete application cache</source>
+  <target>删除应用程序缓存失败</target>
+</trans-unit>
+<trans-unit id="s754153d9e524ffce">
+  <source>Clear Application cache</source>
+  <target>清除应用程序缓存</target>
+</trans-unit>
+<trans-unit id="sea5092df2c72b064">
+  <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+  <target>确实要清除应用程序缓存吗？这将导致所有策略在下次使用时重新评估。</target>
+</trans-unit>
+<trans-unit id="s1367dcd6e8749fcd">
+  <source>No name set</source>
+  <target>未设置名称</target>
+</trans-unit>
+<trans-unit id="s85a91d843c3eb4ad">
+  <source>Show inactive users</source>
+  <target>显示不活跃的用户</target>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
+  <target>发出令牌的有效时间。</target>
+</trans-unit>
+<trans-unit id="s3483d693c72e412e">
+  <source>Compatibility Mode</source>
+  <target>兼容模式</target>
+</trans-unit>
+<trans-unit id="se7195530fa981896">
+  <source>Default behavior.</source>
+  <target>默认行为。</target>
+</trans-unit>
+<trans-unit id="sfa5ba219a0991116">
+  <source>AWS</source>
+  <target>AWS</target>
+</trans-unit>
+<trans-unit id="s44e80dc905ab2ecc">
+  <source>Altered behavior for usage with Amazon Web Services.</source>
+  <target>更改行为以使用 Amazon Web 服务。</target>
+</trans-unit>
+<trans-unit id="s2f5e2bcd583fbc27">
+  <source>Slack</source>
+  <target>Slack</target>
+</trans-unit>
+<trans-unit id="s7f40ef46b7f213ea">
+  <source>Altered behavior for usage with Slack.</source>
+  <target>更改行为以使用 Slack。</target>
+</trans-unit>
+<trans-unit id="s054cb3c0a84eefe5">
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
+  <target>更改 authentik 的行为，以兼容特定厂商的 SCIM 实现。</target>
+</trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+  <target>AuthnContextClassRef 属性映射</target>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>配置如何创建 AuthnContextClassRef 值。留空时，AuthnContextClassRef 会基于用户使用的身份验证方式设置。</target>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+  <target>SSF URL</target>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+  <target>无分配应用</target>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+  <target>自定义 CSS</target>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>当品牌启用时，应用到页面的自定义 CSS。</target>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+  <target>默认流程背景</target>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+  <target>流程执行过程中使用的默认背景。可以按流程单独覆盖。</target>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+  <target>任务</target>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+  <target>已完成</target>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+  <target>Webhook 主体映射</target>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
+  <target>Webhook 标头映射</target>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
+  <target>预览输入失败</target>
+</trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'。当选中“使用用户属性查询”时，此配置应该为用户属性，否则为组属性。</target>
+</trans-unit>
+<trans-unit id="s1d47b4f61ca53e8e">
+  <source>Lookup using user attribute</source>
+  <target>使用用户属性查询</target>
+</trans-unit>
+<trans-unit id="s17359123e1f24504">
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>包含用户所属组 DN 的字段。此字段用于从用户查询组，例如 'memberOf'。要在 Active Directory 环境中查询嵌套组，则使用 'memberOf:1.2.840.113556.1.4.1941:'。</target>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+  <target>初始权限</target>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+  <target>未知初始权限模式</target>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+  <target>已成功更新初始权限。</target>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+  <target>已成功创建初始权限。</target>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+  <target>当所选角色的用户创建对象时，初始权限会应用于该对象。</target>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+  <target>初始权限既可以属于创建对象的用户，又可以属于上一个字段中设置的角色。</target>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+  <target>可用权限</target>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+  <target>已选权限</target>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+  <target>创建新对象时授予的权限。</target>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+  <target>为新创建的对象设置初始权限。</target>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+  <target>更新初始权限</target>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+  <target>创建初始权限</target>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+  <target>信誉：下限值</target>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+  <target>信誉无法降低到此值以下。可为零或负数。</target>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+  <target>信誉：上限值</target>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+  <target>信誉无法提高到此值以上。可为零或正数。</target>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+  <target>HTTP 基本身份验证</target>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+  <target>包括客户端 ID 和密钥作为请求参数</target>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+  <target>Authorization code 身份验证方法</target>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+  <target>在 authorization_code 令牌请求流程期间，如何执行身份验证</target>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable &quot;Remember me on this device&quot;</source>
+  <target>启用“在此设备上记住我”</target>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+  <target>启用时，用户可以在 Cookie 中保存用户名，以直接跳过输入密码。</target>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+  <target>在此设备上记住我</target>
 </trans-unit>
     </body>
   </file>

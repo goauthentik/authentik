@@ -1,0 +1,21 @@
+:root {
+    --ifm-button-color: var(--white);
+}
+
+.button-row {
+    gap: var(--ifm-global-spacing);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.button--outline {
+    --ifm-button-color: var(--white);
+    --ifm-button-border-color: var(--white);
+
+    &:hover {
+        --ifm-button-color: var(--ifm-color-primary);
+    }
+}

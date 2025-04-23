@@ -34,6 +34,10 @@ import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
+if (process.env.NODE_ENV === "development") {
+    await import("@goauthentik/esbuild-plugin-live-reload/client");
+}
+
 @customElement("ak-interface-admin")
 export class AdminInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
@@ -90,12 +94,14 @@ export class AdminInterface extends AuthenticatedInterface {
     constructor() {
         super();
         this.ws = new WebsocketClient();
+
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
                 notificationDrawerOpen: this.notificationDrawerOpen,
             });
         });
+
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, () => {
             this.apiDrawerOpen = !this.apiDrawerOpen;
             updateURLParams({
@@ -107,6 +113,7 @@ export class AdminInterface extends AuthenticatedInterface {
     async firstUpdated(): Promise<void> {
         configureSentry(true);
         this.user = await me();
+
         const canAccessAdmin =
             this.user.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema

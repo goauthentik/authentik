@@ -5,6 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import "@goauthentik/flow/stages/captcha/CaptchaStage";
+import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -47,8 +48,12 @@ export class IdentificationStage extends BaseStage<
 > {
     form?: HTMLFormElement;
 
+    rememberMe: AkRememberMeController;
+
     @state()
     captchaToken = "";
+    @state()
+    captchaRefreshedAt = new Date();
 
     static get styles(): CSSResult[] {
         return [
@@ -60,8 +65,9 @@ export class IdentificationStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            /* login page's icons */
+            AkRememberMeController.styles,
             css`
+                /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
                     background-color: transparent;
                     border: 0;
@@ -77,6 +83,11 @@ export class IdentificationStage extends BaseStage<
                 }
             `,
         ];
+    }
+
+    constructor() {
+        super();
+        this.rememberMe = new AkRememberMeController(this);
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -179,10 +190,14 @@ export class IdentificationStage extends BaseStage<
         this.form.appendChild(totp);
     }
 
-    cleanup(): void {
+    onSubmitSuccess(): void {
         if (this.form) {
             this.form.remove();
         }
+    }
+
+    onSubmitFailure(): void {
+        this.captchaRefreshedAt = new Date();
     }
 
     renderSource(source: LoginSource): TemplateResult {
@@ -262,8 +277,10 @@ export class IdentificationStage extends BaseStage<
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
+                    value=${this.rememberMe?.username ?? ""}
                     required
                 />
+                ${this.rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
@@ -287,6 +304,7 @@ export class IdentificationStage extends BaseStage<
                           .onTokenChange=${(token: string) => {
                               this.captchaToken = token;
                           }}
+                          .refreshedAt=${this.captchaRefreshedAt}
                           embedded
                       ></ak-stage-captcha>
                   `

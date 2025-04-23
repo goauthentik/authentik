@@ -77,7 +77,7 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
 - `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
 - `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `0` (no persistent connections). Can be set to `null` for unlimited persistent connections. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-max-age) for more details.
-- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK`: Existing persistent database connections will be health checked before they are reused if set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details.
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Existing persistent database connections will be health checked before they are reused if set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details.
 - `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disable server side cursors when set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#disable-server-side-cursors) for more details.
 
 The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
@@ -108,7 +108,7 @@ The same PostgreSQL settings as described above are used for each read replica.
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECK`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
 - `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
 
 ### Using a PostgreSQL connection pooler (PgBouncer or PgPool)
@@ -123,9 +123,9 @@ When your PostgreSQL database(s) are running behind a connection pooler, like Pg
 
 - `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`
 
-    Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `false`.
+    Using a connection pooler in transaction pool mode (e.g. PgPool, or PgBouncer in transaction or statement pool mode) requires disabling server-side cursors, so this setting must be set to `true`.
 
-Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECK` to perform health checks on persistent database connections before they are reused.
+Additionally, you can set `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS` to perform health checks on persistent database connections before they are reused.
 
 ## Redis Settings
 

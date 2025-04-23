@@ -1,8 +1,145 @@
-[tool.poetry]
+[project]
 name = "authentik"
-version = "2025.2.0"
+version = "2025.2.4"
 description = ""
-authors = ["authentik Team <hello@goauthentik.io>"]
+authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
+requires-python = "==3.12.*"
+dependencies = [
+    "argon2-cffi",
+    "celery",
+    "channels",
+    "channels-redis",
+    "cryptography",
+    "dacite",
+    "deepmerge",
+    "defusedxml",
+    "django",
+    "django-countries",
+    "django-cte",
+    "django-filter",
+    "django-guardian",
+    "django-model-utils",
+    "django-pglock",
+    "django-prometheus",
+    "django-redis",
+    "django-storages[s3]",
+    "django-tenants",
+    "djangorestframework",
+    "djangorestframework-guardian",
+    "docker",
+    "drf-orjson-renderer",
+    "drf-spectacular",
+    "dumb-init",
+    "duo-client",
+    "fido2",
+    "flower",
+    "geoip2",
+    "geopy",
+    "google-api-python-client",
+    "gssapi",
+    "gunicorn",
+    "jsonpatch",
+    "jwcrypto",
+    "kubernetes",
+    "ldap3",
+    "lxml",
+    "msgraph-sdk",
+    "opencontainers",
+    "packaging",
+    "paramiko",
+    "psycopg[c, pool]",
+    "pydantic",
+    "pydantic-scim",
+    "pyjwt",
+    "pyrad",
+    "python-kadmin-rs ==0.6.0",
+    "pyyaml",
+    "requests-oauthlib",
+    "scim2-filter-parser",
+    "sentry-sdk",
+    "service_identity",
+    "setproctitle",
+    "structlog",
+    "swagger-spec-validator",
+    "tenant-schemas-celery",
+    "twilio",
+    "ua-parser",
+    "unidecode",
+    "urllib3 <3",
+    "uvicorn[standard]",
+    "watchdog",
+    "webauthn",
+    "wsproto",
+    "xmlsec <= 1.3.14",
+    "zxcvbn",
+]
+
+[dependency-groups]
+dev = [
+    "aws-cdk-lib",
+    "bandit",
+    "black",
+    "bump2version",
+    "channels[daphne]",
+    "codespell",
+    "colorama",
+    "constructs",
+    "coverage[toml]",
+    "debugpy",
+    "drf-jsonschema-serializer",
+    "freezegun",
+    "importlib-metadata",
+    "k5test",
+    "pdoc",
+    "pytest",
+    "pytest-django",
+    "pytest-github-actions-annotate-failures",
+    "pytest-randomly",
+    "pytest-timeout",
+    "requests-mock",
+    "ruff",
+    "selenium",
+]
+
+[tool.uv.sources]
+django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
+opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
+djangorestframework = { git = "https://github.com/authentik-community/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+
+[project.scripts]
+ak = "lifecycle.ak:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.bandit]
+exclude_dirs = ["**/node_modules/**"]
+
+[tool.codespell]
+skip = [
+    "**/node_modules",
+    "**/package-lock.json",
+    "schema.yml",
+    "unittest.xml",
+    "./blueprints/schema.json",
+    "go.sum",
+    "locale",
+    "**/dist",
+    "**/storybook-static",
+    "**/web/src/locales",
+    "**/web/xliff",
+    "./web/storybook-static",
+    "./web/custom-elements.json",
+    "./website/build",
+    "./gen-ts-api",
+    "./gen-py-api",
+    "./gen-go-api",
+    "*.api.mdx",
+    "./htmlcov",
+]
+dictionary = ".github/codespell-dictionary.txt,-"
+ignore-words = ".github/codespell-words.txt"
 
 [tool.black]
 line-length = 100
@@ -34,6 +171,7 @@ select = [
 ignore = [
     "DJ001", # Avoid using `null=True` on string-based fields,
 ]
+
 [tool.ruff.lint.pylint]
 max-args = 7
 max-branches = 18
@@ -81,107 +219,3 @@ filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
-
-[tool.poetry.dependencies]
-argon2-cffi = "*"
-celery = "*"
-channels = "*"
-channels-redis = "*"
-cryptography = "*"
-dacite = "*"
-deepmerge = "*"
-defusedxml = "*"
-django = "*"
-django-countries = "*"
-django-cte = "*"
-django-filter = "*"
-django-guardian = "*"
-django-model-utils = "*"
-django-pglock = "*"
-django-prometheus = "*"
-django-redis = "*"
-django-storages = { extras = ["s3"], version = "*" }
-# See https://github.com/django-tenants/django-tenants/pull/997
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
-djangorestframework = "3.14.0"
-djangorestframework-guardian = "*"
-docker = "*"
-drf-orjson-renderer = "*"
-drf-spectacular = "*"
-dumb-init = "*"
-duo-client = "*"
-fido2 = "*"
-flower = "*"
-geoip2 = "*"
-geopy = "*"
-google-api-python-client = "*"
-gunicorn = "*"
-gssapi = "*"
-jsonpatch = "*"
-jwcrypto = "*"
-kubernetes = "*"
-ldap3 = "*"
-lxml = "*"
-msgraph-sdk = "*"
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf", extras = ["reggie"] }
-packaging = "*"
-paramiko = "*"
-psycopg = { extras = ["c"], version = "*" }
-pydantic = "*"
-pydantic-scim = "*"
-pyjwt = "*"
-pyrad = "*"
-python = "~3.12"
-python-kadmin-rs = "0.5.3"
-pyyaml = "*"
-requests-oauthlib = "*"
-scim2-filter-parser = "*"
-sentry-sdk = "*"
-service_identity = "*"
-setproctitle = "*"
-structlog = "*"
-swagger-spec-validator = "*"
-tenant-schemas-celery = "*"
-twilio = "*"
-ua-parser = "*"
-unidecode = "*"
-# Pinned because of botocore https://github.com/orgs/python-poetry/discussions/7937
-urllib3 = { extras = ["secure"], version = "<3" }
-uvicorn = { extras = ["standard"], version = "*" }
-watchdog = "*"
-webauthn = "*"
-wsproto = "*"
-xmlsec = "*"
-zxcvbn = "*"
-
-[tool.poetry.group.dev.dependencies]
-aws-cdk-lib = "*"
-bandit = "*"
-black = "*"
-bump2version = "*"
-channels = { version = "*", extras = ["daphne"] }
-codespell = "*"
-colorama = "*"
-constructs = "*"
-coverage = { extras = ["toml"], version = "*" }
-debugpy = "*"
-drf-jsonschema-serializer = "*"
-freezegun = "*"
-importlib-metadata = "*"
-k5test = "*"
-pdoc = "*"
-pytest = "*"
-pytest-django = "*"
-pytest-github-actions-annotate-failures = "*"
-pytest-randomly = "*"
-pytest-timeout = "*"
-requests-mock = "*"
-ruff = "*"
-selenium = "*"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-ak = "lifecycle.ak:main"

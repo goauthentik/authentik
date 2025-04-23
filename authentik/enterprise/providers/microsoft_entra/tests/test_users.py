@@ -32,7 +32,6 @@ class MicrosoftEntraUserTests(APITestCase):
 
     @apply_blueprint("system/providers-microsoft-entra.yaml")
     def setUp(self) -> None:
-
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
         Tenant.objects.update(avatars="none")
@@ -96,6 +95,38 @@ class MicrosoftEntraUserTests(APITestCase):
             self.assertIsNotNone(microsoft_user)
             self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
             user_create.assert_called_once()
+
+    def test_user_create_dry_run(self):
+        """Test user creation (dry run)"""
+        self.provider.dry_run = True
+        self.provider.save()
+        uid = generate_id()
+        with (
+            patch(
+                "authentik.enterprise.providers.microsoft_entra.models.MicrosoftEntraProvider.microsoft_credentials",
+                MagicMock(return_value={"credentials": self.creds}),
+            ),
+            patch(
+                "msgraph.generated.organization.organization_request_builder.OrganizationRequestBuilder.get",
+                AsyncMock(
+                    return_value=OrganizationCollectionResponse(
+                        value=[
+                            Organization(verified_domains=[VerifiedDomain(name="goauthentik.io")])
+                        ]
+                    )
+                ),
+            ),
+        ):
+            user = User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+            microsoft_user = MicrosoftEntraProviderUser.objects.filter(
+                provider=self.provider, user=user
+            ).first()
+            self.assertIsNone(microsoft_user)
+            self.assertFalse(Event.objects.filter(action=EventAction.SYSTEM_EXCEPTION).exists())
 
     def test_user_not_created(self):
         """Test without property mappings, no group is created"""

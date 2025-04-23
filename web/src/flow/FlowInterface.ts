@@ -13,3 +13,7 @@ import "@goauthentik/flow/stages/identification/IdentificationStage";
 import "@goauthentik/flow/stages/password/PasswordStage";
 
 // end of stage import
+
+if (process.env.NODE_ENV === "development") {
+    await import("@goauthentik/esbuild-plugin-live-reload/client");
+}

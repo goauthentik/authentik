@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -2856,11 +2856,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Gruppenmitgliedschaftsfeld</target>
         
       </trans-unit>
-      <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Feld, das Mitglieder einer Gruppe enthält. Beachten Sie, dass bei Verwendung des Felds „memberUid“ davon ausgegangen wird, dass der Wert einen relativ definierten Namen enthält. z.B. 'memberUid=some-user' statt 'memberUid=cn=some-user,ou=groups,...'</target>
-        
-      </trans-unit>
       <trans-unit id="s026555347e589f0e">
         <source>Object uniqueness field</source>
         <target>Feld für die Eindeutigkeit des Objekts</target>
@@ -3744,7 +3739,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target><x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/> erfolgreich aktualisiert</target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
@@ -3828,11 +3823,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>Erfolgreich generierter Wiederherstellungslink</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>Es ist kein Wiederherstellungs-Flow konfiguriert.</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -4909,16 +4899,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Wenn diese Option aktiviert ist, werden die globalen E-Mail Verbindungseinstellungen benutzt und die unten angegebenen Einstellungen ignoriert</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Ablauf des Tokens</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Zeit in Minuten wie lange der verschickte Token gültig ist</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Schablone</target>
@@ -5584,11 +5564,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s6873bdbfa24615fb">
         <source>Webhook URL</source>
         <target>Webhook URL</target>
-        
-      </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Webhook Zuordnung</target>
         
       </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
@@ -6642,7 +6617,7 @@ Bindings to groups/users are checked against the user of the event.</source>
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         
       </trans-unit>
       <trans-unit id="sd2208cd1a767644b">
@@ -7276,9 +7251,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User Statistics</source>
   <target>Benutzerstatistiken</target>
 </trans-unit>
-<trans-unit id="s0924f51b028233a3">
-  <source>&lt;No name set&gt;</source>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>Benutzertyp, der für neu angelegte Benutzer verwendet wird.</target>
@@ -7543,9 +7515,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
-</trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
@@ -8035,10 +8004,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Finished with errors</source>
   <target>Mit Fehlern beendet</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target>Beendet <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>Synchronisation läuft gerade</target>
@@ -8311,7 +8276,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Russisch</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
   <target>Zuletzt gesehen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
@@ -9016,6 +8981,186 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+</trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
+</trans-unit>
+<trans-unit id="s34661765d81e7340">
+  <source>Successfully cleared application cache</source>
+</trans-unit>
+<trans-unit id="s9377ae285bc0157c">
+  <source>Failed to delete application cache</source>
+</trans-unit>
+<trans-unit id="s754153d9e524ffce">
+  <source>Clear Application cache</source>
+</trans-unit>
+<trans-unit id="sea5092df2c72b064">
+  <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+</trans-unit>
+<trans-unit id="s1367dcd6e8749fcd">
+  <source>No name set</source>
+</trans-unit>
+<trans-unit id="s85a91d843c3eb4ad">
+  <source>Show inactive users</source>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
+</trans-unit>
+<trans-unit id="s3483d693c72e412e">
+  <source>Compatibility Mode</source>
+</trans-unit>
+<trans-unit id="se7195530fa981896">
+  <source>Default behavior.</source>
+</trans-unit>
+<trans-unit id="sfa5ba219a0991116">
+  <source>AWS</source>
+</trans-unit>
+<trans-unit id="s44e80dc905ab2ecc">
+  <source>Altered behavior for usage with Amazon Web Services.</source>
+</trans-unit>
+<trans-unit id="s2f5e2bcd583fbc27">
+  <source>Slack</source>
+</trans-unit>
+<trans-unit id="s7f40ef46b7f213ea">
+  <source>Altered behavior for usage with Slack.</source>
+</trans-unit>
+<trans-unit id="s054cb3c0a84eefe5">
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
+</trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
+</trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+</trans-unit>
+<trans-unit id="s1d47b4f61ca53e8e">
+  <source>Lookup using user attribute</source>
+</trans-unit>
+<trans-unit id="s17359123e1f24504">
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable "Remember me on this device"</source>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
 </trans-unit>
     </body>
   </file>

@@ -15,8 +15,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { userTypeToLabel } from "@goauthentik/common/labels";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/components/DescriptionList";
 import {
     type DescriptionPair,
@@ -155,11 +155,11 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
             [msg("Last login"), user.lastLogin
-                ? html`<div>${getRelativeTime(user.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(user.lastLogin)}</div>
                       <small>${user.lastLogin.toLocaleString()}</small>`
                 : html`${msg("-")}`],
             [msg("Last password change"), user.passwordChangeDate
-                ? html`<div>${getRelativeTime(user.passwordChangeDate)}</div>
+                ? html`<div>${formatElapsedTime(user.passwordChangeDate)}</div>
                       <small>${user.passwordChangeDate.toLocaleString()}</small>`
                 : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],

@@ -554,7 +554,7 @@
         
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source><x id="0" equiv-text="${field}"/>: <x id="1" equiv-text="${errMsg}"/></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>
         <x id="0" equiv-text="${this.errorMessage}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -2862,11 +2862,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Champ d'appartenance au groupe</target>
         
       </trans-unit>
-      <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'</target>
-        
-      </trans-unit>
       <trans-unit id="s026555347e589f0e">
         <source>Object uniqueness field</source>
         <target>Champ d'unicité de l'objet</target>
@@ -3775,7 +3770,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Mise à jour effectuée avec succès <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>Échec de la mise à jour de
         <x id="0" equiv-text="${this.objectLabel}"/>:
         <x id="1" equiv-text="${e.toString()}"/></target>
@@ -3867,11 +3862,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s0ae3395d8f48e624">
         <source>Successfully generated recovery link</source>
         <target>Lien de récupération généré avec succès</target>
-        
-      </trans-unit>
-      <trans-unit id="s8ca0dbaec5d48563">
-        <source>No recovery flow is configured.</source>
-        <target>Aucun flux de récupération n'est configuré.</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -5000,16 +4990,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Si activé, les paramètres globaux de connexion courriel seront utilisés et les paramètres de connexion ci-dessous seront ignorés.</target>
         
       </trans-unit>
-      <trans-unit id="sb1fe947f9ad27b9d">
-        <source>Token expiry</source>
-        <target>Expiration du jeton</target>
-        
-      </trans-unit>
-      <trans-unit id="s1c6ba8d100453392">
-        <source>Time in minutes the token sent is valid.</source>
-        <target>Temps en minutes durant lequel le jeton envoyé est valide.</target>
-        
-      </trans-unit>
       <trans-unit id="se47baf2fd16b9d2b">
         <source>Template</source>
         <target>Modèle</target>
@@ -5696,11 +5676,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s6873bdbfa24615fb">
         <source>Webhook URL</source>
         <target>URL Webhoo</target>
-        
-      </trans-unit>
-      <trans-unit id="s25ec2846f6b88214">
-        <source>Webhook Mapping</source>
-        <target>Mappage de Webhook</target>
         
       </trans-unit>
       <trans-unit id="sca2879d96f58a39c">
@@ -6572,7 +6547,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
       </trans-unit>
       <trans-unit id="s0e516232f2ab4e04">
         <source>Tokens sent via SMS.</source>
-        <target>Jeton envoyé par SMS</target>
+        <target>Jetons envoyés par SMS.</target>
         
       </trans-unit>
       <trans-unit id="s6ae0d087036e6d6d">
@@ -6773,7 +6748,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
         
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
         <target>Erreur de la déconnexion de la source :
         <x id="0" equiv-text="${exc}"/></target>
         
@@ -7451,10 +7426,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>User Statistics</source>
   <target>Statistiques Utilisateur</target>
 </trans-unit>
-<trans-unit id="s0924f51b028233a3">
-  <source>&lt;No name set&gt;</source>
-  <target>&lt;No name set&gt;</target>
-</trans-unit>
 <trans-unit id="s32babfed740fd3c1">
   <source>User type used for newly created users.</source>
   <target>Type d'utilisateur pour les utilisateurs nouvellement créés.</target>
@@ -7790,10 +7761,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="sa9d13ce9e83aac17">
   <source>To let a user directly reset a their password, configure a recovery flow on the currently active brand.</source>
   <target>Pour laisser les utilisateurs réinitialiser leur mot de passe, configurez un flux de récupération sur la marque actuelle.</target>
-</trans-unit>
-<trans-unit id="s6709b81e1ed4e39f">
-  <source>The current brand must have a recovery flow configured to use a recovery link</source>
-  <target>La marque actuelle doit avoir un flux de récupération configuré pour utiliser un lien de récupération</target>
 </trans-unit>
 <trans-unit id="s634e2fd82c397576">
   <source>Successfully updated settings.</source>
@@ -8381,10 +8348,6 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <source>Finished with errors</source>
   <target>Fini avec erreurs</target>
 </trans-unit>
-<trans-unit id="sbd12ed8a1053a108">
-  <source>Finished <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</source>
-  <target>Fini <x id="0" equiv-text="${getRelativeTime(task.finishTimestamp)}"/> (<x id="1" equiv-text="${task.finishTimestamp.toLocaleString()}"/>)</target>
-</trans-unit>
 <trans-unit id="sc3c334d642866997">
   <source>Sync currently running</source>
   <target>Synchronisation en cours</target>
@@ -8698,8 +8661,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Russe</target>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
-  <source>Last seen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Vu pour la dernière fois : <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
+  <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
+  <target>Vu pour la dernière fois : <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9047,7 +9010,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
+  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9485,93 +9448,358 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s140111d464591e6b">
   <source>Create a new application and configure a provider for it.</source>
+  <target>Créer une nouvelle application et configurer un fournisseur pour celle-ci.</target>
 </trans-unit>
 <trans-unit id="s5e0c81c05565bf42">
   <source>Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.</source>
+  <target>L'utilisation de ce formulaire ne créera qu'une application. Afin de vous authentifier auprès de l'application, vous devrez l'associer manuellement à un fournisseur.</target>
 </trans-unit>
 <trans-unit id="s035bfd9c5f97e4d3">
   <source>Distance settings</source>
+  <target>Réglages de distance</target>
 </trans-unit>
 <trans-unit id="s207e6f8a8b3515fd">
   <source>Check historical distance of logins</source>
+  <target>Vérifier l'historique de distance des connexions</target>
 </trans-unit>
 <trans-unit id="s8158f4b3e5c869be">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins.</source>
+  <target>Lorsque cette option est activée, les données GeoIP de la demande de politique sont comparées au nombre spécifié de connexions historiques.</target>
 </trans-unit>
 <trans-unit id="sb8b7450c8515894c">
   <source>Maximum distance</source>
+  <target>Distance maximale</target>
 </trans-unit>
 <trans-unit id="s40cdbaa532bc9899">
   <source>Maximum distance a login attempt is allowed from in kilometers.</source>
+  <target>Distance maximale autorisée pour une tentative de connexion en kilomètres.</target>
 </trans-unit>
 <trans-unit id="seef852b5c0f8a529">
   <source>Distance tolerance</source>
+  <target>Tolérance de distance</target>
 </trans-unit>
 <trans-unit id="sce567ced300aeb8a">
   <source>Tolerance in checking for distances in kilometers.</source>
+  <target>Tolérance de vérification des distances en kilomètres.</target>
 </trans-unit>
 <trans-unit id="s9ea9cdabd74f8f97">
   <source>Historical Login Count</source>
+  <target>Nombre de connexions historiques</target>
 </trans-unit>
 <trans-unit id="s27aec4c2de1ae777">
   <source>Amount of previous login events to check against.</source>
+  <target>Nombre d'événements de connexion précédents à vérifier.</target>
 </trans-unit>
 <trans-unit id="s48611ce6e85874dc">
   <source>Check impossible travel</source>
+  <target>Vérifier les déplacements impossibles</target>
 </trans-unit>
 <trans-unit id="s8cf926e8311f8065">
   <source>When this option enabled, the GeoIP data of the policy request is compared to the specified number of historical logins and if the travel would have been possible in the amount of time since the previous event.</source>
+  <target>Lorsque cette option est activée, les données GeoIP de la demande de politique sont comparées au nombre spécifié de connexions historiques et si le voyage aurait été possible dans le laps de temps écoulé depuis l'événement précédent.</target>
 </trans-unit>
 <trans-unit id="sa963d05af436770b">
   <source>Impossible travel tolerance</source>
+  <target>Tolérance de déplacement impossible</target>
 </trans-unit>
 <trans-unit id="s5760cd97ca42a238">
   <source>Static rule settings</source>
+  <target>Paramètres de règle statique</target>
 </trans-unit>
 <trans-unit id="s8fec035fa1737294">
   <source>Create with Provider</source>
+  <target>Créer avec un fournisseur</target>
 </trans-unit>
 <trans-unit id="sca2487321ec12bd6">
   <source>Email address the verification email will be sent from.</source>
+  <target>Adresse courriel depuis laquelle le courriel de vérification sera envoyé.</target>
 </trans-unit>
 <trans-unit id="s24a8fdfc73e8137f">
   <source>Stage used to configure an email-based authenticator.</source>
+  <target>Étape utilisée pour configurer un authentificateur courriel.</target>
 </trans-unit>
 <trans-unit id="sea0da186a814a212">
   <source>Use global connection settings</source>
+  <target>Utiliser les paramètres de connexion globaux</target>
 </trans-unit>
 <trans-unit id="s7754fa56a4439de4">
   <source>When enabled, global email connection settings will be used and connection settings below will be ignored.</source>
+  <target>Si activé, les paramètres globaux de connexion courriel seront utilisés et les paramètres de connexion ci-dessous seront ignorés.</target>
 </trans-unit>
 <trans-unit id="s7e2bcca51126ec9c">
   <source>Subject of the verification email.</source>
+  <target>Objet du courriel de vérification.</target>
 </trans-unit>
 <trans-unit id="sc12c90b1da0f3a47">
   <source>Token expiration</source>
+  <target>Expiration du jeton</target>
 </trans-unit>
 <trans-unit id="sc264a82f9c710f14">
   <source>Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).</source>
+  <target>Durée de validité du jeton envoyé (Format : hours=3,minutes=17,seconds=300).</target>
 </trans-unit>
 <trans-unit id="s15986693bfc99fb7">
   <source>Email-based Authenticators</source>
+  <target>Authenticatificateurs basé sur courriel</target>
 </trans-unit>
 <trans-unit id="s6bb30c61df4cf486">
   <source>Caps Lock is enabled.</source>
+  <target>La touche Verr Maj est activée.</target>
 </trans-unit>
 <trans-unit id="s3f8a07912545e72e">
   <source>Configure your email</source>
+  <target>Configurer votre courriel</target>
 </trans-unit>
 <trans-unit id="scedf77e8b75cad5a">
   <source>Please enter your email address.</source>
+  <target>Veuillez entrer votre adresse courriel.</target>
 </trans-unit>
 <trans-unit id="s7cdd62c100b6b17b">
   <source>Please enter the code you received via email</source>
+  <target>Veuillez entrer le code que vous avez reçu par courriel</target>
 </trans-unit>
 <trans-unit id="s1d64dba9bb8b284d">
   <source>A code has been sent to you via email<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></source>
+  <target>Un code vous a été envoyé par courriel<x id="0" equiv-text="${email ? ` ${email}` : &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s833cfe815918c143">
   <source>Tokens sent via email.</source>
+  <target>Jetons envoyés par courriel.</target>
+</trans-unit>
+<trans-unit id="s4d3933feb8dc7cee">
+  <source>Enable dry-run mode</source>
+  <target>Activer le mode simulation</target>
+</trans-unit>
+<trans-unit id="s8c9ca09b5eeb5ae9">
+  <source>When enabled, mutating requests will be dropped and logged instead.</source>
+  <target>Si activé, les requêtes de mutations seront abandonnées et affichées à la place.</target>
+</trans-unit>
+<trans-unit id="sc4bf1a365af696eb">
+  <source>Override dry-run mode</source>
+  <target>Forcer la désactivation du mode simulation</target>
+</trans-unit>
+<trans-unit id="s94a5233931be4110">
+  <source>When enabled, this sync will still execute mutating requests regardless of the dry-run mode in the provider.</source>
+  <target>Si activé, la synchronisation exécutera les requêtes de mutations sans vérifier le réglage du mode simulation du fournisseur.</target>
+</trans-unit>
+<trans-unit id="sc2473aae093ce256">
+  <source>Dry-run</source>
+  <target>Mode simulation</target>
+</trans-unit>
+<trans-unit id="s34661765d81e7340">
+  <source>Successfully cleared application cache</source>
+  <target>Cache d'application vidé avec succès</target>
+</trans-unit>
+<trans-unit id="s9377ae285bc0157c">
+  <source>Failed to delete application cache</source>
+  <target>Impossible de vider le cache d'application</target>
+</trans-unit>
+<trans-unit id="s754153d9e524ffce">
+  <source>Clear Application cache</source>
+  <target>Vider le cache d'application</target>
+</trans-unit>
+<trans-unit id="sea5092df2c72b064">
+  <source>Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.</source>
+  <target>Êtes-vous sûr de vouloir vider le cache des applications ? Cela entraînera la réévaluation de toutes les politiques lors de leur prochaine utilisation.</target>
+</trans-unit>
+<trans-unit id="s1367dcd6e8749fcd">
+  <source>No name set</source>
+  <target>Aucun nom défini</target>
+</trans-unit>
+<trans-unit id="s85a91d843c3eb4ad">
+  <source>Show inactive users</source>
+  <target>Afficher les utilisateurs inactifs</target>
+</trans-unit>
+<trans-unit id="sa3fc920064fc8380">
+  <source>Time the token sent is valid.</source>
+  <target>Temps durant lequel le jeton envoyé est valide.</target>
+</trans-unit>
+<trans-unit id="s3483d693c72e412e">
+  <source>Compatibility Mode</source>
+  <target>Mode de compatibilité</target>
+</trans-unit>
+<trans-unit id="se7195530fa981896">
+  <source>Default behavior.</source>
+  <target>Comportement par défaut.</target>
+</trans-unit>
+<trans-unit id="sfa5ba219a0991116">
+  <source>AWS</source>
+  <target>AWS</target>
+</trans-unit>
+<trans-unit id="s44e80dc905ab2ecc">
+  <source>Altered behavior for usage with Amazon Web Services.</source>
+  <target>Comportement spécifique pour utilisation avec Amazon Web Services.</target>
+</trans-unit>
+<trans-unit id="s2f5e2bcd583fbc27">
+  <source>Slack</source>
+  <target>Slack</target>
+</trans-unit>
+<trans-unit id="s7f40ef46b7f213ea">
+  <source>Altered behavior for usage with Slack.</source>
+  <target>Comportement spécifique pour utilisation avec Slack.</target>
+</trans-unit>
+<trans-unit id="s054cb3c0a84eefe5">
+  <source>Alter authentik's behavior for vendor-specific SCIM implementations.</source>
+  <target>Change le comportement d'authentik en fonction des spécificités d'implémentations des fournisseurs SCIM.</target>
+</trans-unit>
+<trans-unit id="sc838e297aa5e58ba">
+  <source>AuthnContextClassRef Property Mapping</source>
+  <target>Mappage de propriété AuthnContextClassRef</target>
+</trans-unit>
+<trans-unit id="sd7ba1793c3abf4fe">
+  <source>Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.</source>
+  <target>Configure comment la valeur AuthnContextClassRef sera créée. Lorsque non sélectionné, AuthnContextClassRef sera défini en fonction de quelle méthode d'authentification l'utilisateur a utilisé pour s'authentifier.</target>
+</trans-unit>
+<trans-unit id="sc83697908e3e2b46">
+  <source>SSF URL</source>
+  <target>URL SSF</target>
+</trans-unit>
+<trans-unit id="s5a1fc8f3b2e072d0">
+  <source>No assigned application</source>
+  <target>Aucune application assignée</target>
+</trans-unit>
+<trans-unit id="sf16aa54bf77362e1">
+  <source>Custom CSS</source>
+  <target>CSS personnalisé</target>
+</trans-unit>
+<trans-unit id="s6171ded034da4e96">
+  <source>Custom CSS to apply to pages when this brand is active.</source>
+  <target>CSS personnalisé à appliquer sur les pages lorsque cette marque est active.</target>
+</trans-unit>
+<trans-unit id="s8e56764914a939d2">
+  <source>Default flow background</source>
+  <target>Arrière-plan des flux par défaut</target>
+</trans-unit>
+<trans-unit id="sea64900dbcf879c8">
+  <source>Default background used during flow execution. Can be overridden per flow.</source>
+  <target>Arrière plan utilisé lors de l'exécution des flux. Peut être personnalisé au niveau de chaque flux.</target>
+</trans-unit>
+<trans-unit id="s03ee3cfb0919c62c">
+  <source>Task</source>
+  <target>Tâche</target>
+</trans-unit>
+<trans-unit id="sbb99d4ec27fbb263">
+  <source>Finished</source>
+  <target>Finie</target>
+</trans-unit>
+<trans-unit id="s04fbc36687266544">
+  <source>Webhook Body Mapping</source>
+  <target>Mappage de corps de Webhook</target>
+</trans-unit>
+<trans-unit id="s149fd588c9f4b891">
+  <source>Webhook Header Mapping</source>
+  <target>Mappage d'en-têtes de Webhook</target>
+</trans-unit>
+<trans-unit id="sc7524ea24eeeb019">
+  <source>Failed to preview prompt</source>
+  <target>Échec de la prévisualisation de l'invite</target>
+</trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'. Lorsque "Recherche avec un attribut utilisateur" est sélectionné, cet attribut doit être un attribut utilisateur, sinon un attribut de groupe.</target>
+</trans-unit>
+<trans-unit id="s1d47b4f61ca53e8e">
+  <source>Lookup using user attribute</source>
+  <target>Recherche avec un attribut utilisateur</target>
+</trans-unit>
+<trans-unit id="s17359123e1f24504">
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>Champ contenant les DN des groupes dont l'utilisateur est membre. Ce champ est utilisé pour rechercher les groupes d'un utilisateur, par exemple 'memberOf'. Pour rechercher les groupes imbriqués dans un environnement Active Directory, utilisez 'memberOf:1.2.840.113556.1.4.1941:'.</target>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+  <target>Permissions initiales</target>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+  <target>Mode de permissions initiales inconnu</target>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+  <target>Permissions initiales mises à jour avec succès.</target>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+  <target>Permissions initiales créées avec succès.</target>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+  <target>Lorsqu'un utilisateur avec le rôle sélectionné crée un objet, les permissions initiales seront appliquées à cet objet,</target>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+  <target>Les permissions initiales peuvent soit être placées sur l'utilisateur créant l'objet, ou sur le rôle sélectionné au champ précédent.</target>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+  <target>Permissions disponibles</target>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+  <target>Permissions sélectionnées</target>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+  <target>Permissions à attribuer lorsqu'un nouvel objet est créé.</target>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+  <target>Définir des permissions initiales pour les objets nouvellement créés.</target>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+  <target>Mettre à jour les permissions initiales</target>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+  <target>Créer des permissions initiales</target>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+  <target>Réputation : limite inférieure</target>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+  <target>La réputation ne peut pas descendre en dessous de cette valeur. Zéro ou négatif.</target>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+  <target>Réputation : limite supérieure</target>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+  <target>La réputation ne peut pas monter au dessus de cette valeur. Zéro ou positif.</target>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+  <target>HTTP Basic Auth</target>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+  <target>Inclure le client ID et secret comme paramètres de la requête</target>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+  <target>Méthode d'authentification pour authorization_code</target>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+  <target>Comment effectuer l'authentification lors d'une demande de jeton pour le flux authorization_code</target>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable "Remember me on this device"</source>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
 </trans-unit>
     </body>
   </file>
