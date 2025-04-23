@@ -3,13 +3,15 @@ title: Brands
 slug: /brands
 ---
 
-As an authentik admin, you can control your instance's appearance and behaviour using brands. While a single authentik instance can only have a single brand, if you have different domains running for that instance, you can apply a separate brand to each domain.
+As an authentik admin, you can customize your instance's appearance and behavior using brands. While a single authentik instance supports only one brand per domain, you can apply a separate brand to each domain.
 
 For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
 
+## Create or edit a brand
+
 To create or edit a brand, follow these steps:
 
-1. Log in as an administrator, open the Admin interface, and navigate to **System** > **Brands**.
+1. Log in as an administrator, open the authentik Admin interface, and navigate to **System** > **Brands**.
 
 2. Click **Create** to create a new brand, or click the edit icon beside an existing brand modify it.
 
@@ -17,7 +19,11 @@ To create or edit a brand, follow these steps:
 
 ### Branding settings
 
-The brand configuration controls the branding title (shown in website document title and several other places), the sidebar/header logo that appears in the upper left of the product interface, and the favicon on a browser tab.
+The brand settings define the visual identity of the brand, including:
+
+- **Branding title**: Displayed in the browser tab (document title) and throughout the UI;
+- **Logo**: Appears in the sidebar/header;
+- **Favicon**: Shown on the browser tab.
 
 :::info
 Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
@@ -25,7 +31,7 @@ Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the
 
 ### External user settings
 
-You can configure authentik to redirect external users to a default application when they successfully authenticate (without being sent from a specific application). To do so, follow these steps:
+You can configure authentik to redirect external users to a default application after they log in (if they weren't originally redirected from a specific application). To do this:
 
 1. Open the authentik Admin interface and navigate to **System** > **Brands**.
 2. Click the **Edit** icon for the relevant brand.
