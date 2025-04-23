@@ -150,16 +150,16 @@ Authentik can be configured automatically in Gitea Kubernetes deployments via it
 
 Add the following to your Gitea Helm Chart `values.yaml` file:
 
-```yaml showLineNumbers
+```yaml showLineNumbers title="values.yaml"
 gitea:
     oauth:
         - name: "authentik"
-          provider: "openidConnect"
-          key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
-          secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-          autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
-          iconUrl: "https://goauthentik.io/img/icon.png"
-          scopes: "email profile"
+        provider: "openidConnect"
+        key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+        secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+        autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+        iconUrl: "https://goauthentik.io/img/icon.png"
+        scopes: "email profile"
 ```
 
 ### Kubernetes Secret
@@ -168,29 +168,29 @@ Alternatively you can use a Kubernetes secret to set the `key` and `secret` valu
 
 1. Create a Kubernetes secret with the following configurations:
 
-    ```yaml showLineNumbers
-    apiVersion: v1
-    kind: Secret
-    metadata:
-        name: gitea-authentik-secret
-    type: Opaque
-    stringData:
-        key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
-        secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-    ```
+```yaml showLineNumbers
+apiVersion: v1
+kind: Secret
+metadata:
+    name: gitea-authentik-secret
+type: Opaque
+stringData:
+    key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
+    secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+```
 
-2. Add the following to the Gitea Helm Chart `values.yaml` file:
+2. Add the following configurations to your Gitea Helm Chart `values.yaml` file:
 
-    ```yaml showLineNumbers
-    gitea:
-        oauth:
-            - name: "authentik"
-            provider: "openidConnect"
-            existingSecret: gitea-authentik-secret
-            autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
-            iconUrl: "https://goauthentik.io/img/icon.png"
-            scopes: "email profile"
-    ```
+```yaml showLineNumbers title="values.yaml"
+gitea:
+    oauth:
+        - name: "authentik"
+        provider: "openidConnect"
+        existingSecret: gitea-authentik-secret
+        autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+        iconUrl: "https://goauthentik.io/img/icon.png"
+        scopes: "email profile"
+```
 
 ## Configuration verification
 
