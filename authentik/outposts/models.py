@@ -36,7 +36,6 @@ from authentik.lib.config import CONFIG
 from authentik.lib.models import InheritanceForeignKey, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
-from authentik.outposts.controllers.k8s.httproute import RouteSpecParentRefs
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
 OUR_VERSION = parse(__version__)
