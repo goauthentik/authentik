@@ -30,27 +30,25 @@ class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
     process: PolicyProcess
-    result_queue: Queue
     result: PolicyResult | None
     binding: PolicyBinding
     task_id: str
 
-    def __init__(
-        self, process: PolicyProcess, result_queue: Queue, binding: PolicyBinding, task_id: str
-    ):
+    def __init__(self, process: PolicyProcess, binding: PolicyBinding, task_id: str):
         self.process = process
-        self.result_queue = result_queue
         self.binding = binding
         self.result = None
         self.task_id = task_id
 
 
 class PolicyQueueCoordinator:
+    logger: BoundLogger
     result_queue: Queue[tuple[str, PolicyResult]]
     _result_map: dict[str, ThreadQueue[PolicyResult]]
     _map_lock: threading.Lock
 
     def __init__(self) -> None:
+        self.logger = get_logger().bind()
         self.result_queue = get_context().Queue()
         self._result_map = {}
         self._map_lock = threading.Lock()
@@ -64,6 +62,7 @@ class PolicyQueueCoordinator:
     def create_task(self) -> tuple[str, Queue[tuple[str, PolicyResult]]]:
         """Create a new task"""
         task_id = str(uuid4())
+        self.logger.debug("Creating new task", task_id=task_id)
         with self._map_lock:
             self._result_map[task_id] = ThreadQueue()
         return task_id, self.result_queue
@@ -86,6 +85,7 @@ class PolicyQueueCoordinator:
 
     def wait_for_result(self, task_id: str, timeout: int = 30) -> PolicyResult:
         """Wait for result"""
+        self.logger.debug("Waiting for result", task_id=task_id, timeout=timeout)
         task_queue = None
         with self._map_lock:
             task_queue = self._result_map.get(task_id, None)
@@ -97,6 +97,7 @@ class PolicyQueueCoordinator:
             result = task_queue.get(timeout=timeout)
             with self._map_lock:
                 self._result_map.pop(task_id, None)
+            self.logger.debug("Result received; returning", task_id=task_id, result=result)
             return result
         except queue.Empty:
             with self._map_lock:
@@ -212,20 +213,18 @@ class PolicyEngine:
                 else:
                     task.start()
                 self.__processes.append(
-                    PolicyProcessInfo(
-                        process=task, result_queue=result_queue, binding=binding, task_id=task_id
-                    )
+                    PolicyProcessInfo(process=task, binding=binding, task_id=task_id)
                 )
             # If all policies are cached, we have an empty list here.
             for proc_info in self.__processes:
                 if proc_info.process.is_alive():
                     proc_info.process.join(proc_info.binding.timeout)
-                # Only call .recv() if no result is saved, otherwise we just deadlock here
                 if not proc_info.result:
                     try:
-                        self.coordinator.wait_for_result(
+                        result = self.coordinator.wait_for_result(
                             proc_info.task_id, timeout=proc_info.binding.timeout
                         )
+                        proc_info.result = result
                     except queue.Empty:
                         raise RuntimeError(
                             "Policy failed to return within timeout"
