@@ -3496,7 +3496,7 @@ msgid ""
 "Show the user the 'Remember me on this device' toggle, allowing repeat users"
 " to skip straight to entering their password."
 msgstr ""
-"Afficher à l'utilisateur l'option « Se souvenir de moi sur cet appareil », "
+"Afficher à l'utilisateur l'option \"Se souvenir de moi sur cet appareil\", "
 "afin de permettre aux utilisateurs réguliers de passer directement à la "
 "saisie de leur mot de passe."
 
