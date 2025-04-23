@@ -165,7 +165,10 @@ class HTTPRouteReconciler(KubernetesObjectReconciler):
             kind="HTTPRoute",
             metadata=self.get_object_meta(),
             spec=HTTPRouteSpec(
-                parentRefs=self.controller.outpost.config.kubernetes_httproute_parent_refs,
+                parentRefs=[
+                    from_dict(RouteSpecParentRefs, spec)
+                    for spec in self.controller.outpost.config.kubernetes_httproute_parent_refs
+                ],
                 hostnames=hostnames,
                 rules=rules,
             ),
