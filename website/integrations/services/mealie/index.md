@@ -52,12 +52,12 @@ To enable OIDC login with Mealie, update your environment variables to include t
 ```yaml showLineNumbers
 OIDC_AUTH_ENABLED=true
 OIDC_PROVIDER_NAME=authentik
-OIDC_CONFIGURATION_URL="https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration"
+OIDC_CONFIGURATION_URL=https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration
 OIDC_CLIENT_ID=<Client ID from authentik>
 OIDC_CLIENT_SECRET=<Client secret from authentik>
 OIDC_SIGNUP_ENABLED=true
-OIDC_USER_GROUP="<Your users group created in authentik>"
-OIDC_ADMIN_GROUP="<Your admins group created in authentik>"
+OIDC_USER_GROUP=<Your users group created in authentik>
+OIDC_ADMIN_GROUP=<Your admins group created in authentik>
 OIDC_AUTO_REDIRECT=true   # Optional: The login page will be bypassed and you will be sent directly to your Identity Provider.
 OIDC_REMEMBER_ME=true     # Optional: By setting this value to true, a session will be extended as if "Remember Me" was checked.
 ```
