@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `mealie.company` is the FQDN of the Service installation.
+- `mealie.company` is the FQDN of the Mealie installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
