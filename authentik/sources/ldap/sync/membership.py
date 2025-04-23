@@ -96,7 +96,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                             "ak_groups__in": [ak_group],
                         }
                     )
-                )
+                ).distinct()
                 
             membership_count += 1
             membership_count += users.count()
