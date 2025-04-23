@@ -49,7 +49,7 @@ Add the following environment variables to your Mealie configuration. Make sure 
 
 ```yaml
 OIDC_AUTH_ENABLED: true
-OIDC_PROVIDER_NAME: Authentik
+OIDC_PROVIDER_NAME: authentik
 OIDC_CONFIGURATION_URL: "https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration"
 OIDC_CLIENT_ID: <Client ID from authentik>
 OIDC_CLIENT_SECRET: <Client secret from authentik>
