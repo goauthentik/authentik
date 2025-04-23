@@ -4,7 +4,7 @@ import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
 } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
+import { AKLocalDefinitions } from "@goauthentik/elements/ak-locale-context/definitions";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
@@ -199,15 +199,15 @@ ${prompt.initialValue}</textarea
                 })}`;
             case PromptTypeEnum.AkLocale: {
                 const locales = this.can(CapabilitiesEnum.CanDebug)
-                    ? LOCALES
-                    : LOCALES.filter((locale) => locale.code !== "debug");
+                    ? AKLocalDefinitions
+                    : AKLocalDefinitions.filter((locale) => locale.languageCode !== "debug");
                 const options = locales.map(
                     (locale) =>
                         html`<option
-                            value=${locale.code}
-                            ?selected=${locale.code === prompt.initialValue}
+                            value=${locale.languageCode}
+                            ?selected=${locale.languageCode === prompt.initialValue}
                         >
-                            ${locale.code.toUpperCase()} - ${locale.label()}
+                            ${locale.languageCode.toUpperCase()} - ${locale.formatLabel()}
                         </option> `,
                 );
 

@@ -1,15 +1,19 @@
-import * as _enLocale from "@goauthentik/locales/en";
+import * as EnglishLocaleModule from "@goauthentik/locales/en";
 
 import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
-import { AkLocale, LocaleRow } from "./types";
+import { AKLocaleDefinition, LocaleRow } from "./types.js";
 
-export const DEFAULT_FALLBACK = "en";
+/**
+ * The default ISO 639-1 language code.
+ */
+export const DEFAULT_LANGUAGE_CODE = "en";
 
-const enLocale: LocaleModule = _enLocale;
-
-export { enLocale };
+/**
+ * The default English locale module.
+ */
+export const DefaultLocaleModule: LocaleModule = EnglishLocaleModule;
 
 // NOTE: This table cannot be made any shorter, despite all the repetition of syntax. Bundlers look
 // for the `await import` string as a *string target* for doing alias substitution, so putting
@@ -35,34 +39,44 @@ export { enLocale };
 // - Text Label
 // - Locale loader.
 
-// prettier-ignore
 const debug: LocaleRow = [
-    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  async () => await import("@goauthentik/locales/pseudo-LOCALE"),
+    "pseudo-LOCALE",
+    /^pseudo/i,
+    () => msg("Pseudolocale (for testing)"),
+    () => import("@goauthentik/locales/pseudo-LOCALE"),
 ];
 
 // prettier-ignore
-const LOCALE_TABLE: LocaleRow[] = [
-    ["de",      /^de([_-]|$)/i,      () => msg("German"),                async () => await import("@goauthentik/locales/de")],
-    ["en",      /^en([_-]|$)/i,      () => msg("English"),               async () => await import("@goauthentik/locales/en")],
-    ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               async () => await import("@goauthentik/locales/es")],
-    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                async () => await import("@goauthentik/locales/fr")],
-    ["it",      /^it([_-]|$)/i,      () => msg("Italian"),               async () => await import("@goauthentik/locales/it")],
-    ["ko",      /^ko([_-]|$)/i,      () => msg("Korean"),                async () => await import("@goauthentik/locales/ko")],
-    ["nl",      /^nl([_-]|$)/i,      () => msg("Dutch"),                 async () => await import("@goauthentik/locales/nl")],
-    ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                async () => await import("@goauthentik/locales/pl")],
-    ["ru",      /^ru([_-]|$)/i,      () => msg("Russian"),               async () => await import("@goauthentik/locales/ru")],
-    ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               async () => await import("@goauthentik/locales/tr")],
-    ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    async () => await import("@goauthentik/locales/zh_TW")],
-    ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  async () => await import("@goauthentik/locales/zh-Hans")],
-    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), async () => await import("@goauthentik/locales/zh-Hant")],
-    debug
+const LOCALE_TABLE: readonly LocaleRow[] = [
+    // English loaded when the application is first instantiated.
+    ["en", /^en([_-]|$)/i,   () => msg("English"), () => Promise.resolve(DefaultLocaleModule)],
+    ["de", /^de([_-]|$)/i,   () => msg("German"),  () => import("@goauthentik/locales/de")],
+    ["es", /^es([_-]|$)/i,   () => msg("Spanish"), () => import("@goauthentik/locales/es")],
+    ["fr", /^fr([_-]|$)/i,   () => msg("French"),  () => import("@goauthentik/locales/fr")],
+    ["it", /^it([_-]|$)/i,   () => msg("Italian"), () => import("@goauthentik/locales/it")],
+    ["ko", /^ko([_-]|$)/i,   () => msg("Korean"),  () => import("@goauthentik/locales/ko")],
+    ["nl", /^nl([_-]|$)/i,   () => msg("Dutch"),   () => import("@goauthentik/locales/nl")],
+    ["pl", /^pl([_-]|$)/i,   () => msg("Polish"),  () => import("@goauthentik/locales/pl")],
+    ["ru", /^ru([_-]|$)/i,   () => msg("Russian"), () => import("@goauthentik/locales/ru")],
+    ["tr", /^tr([_-]|$)/i,   () => msg("Turkish"), () => import("@goauthentik/locales/tr")],
+    ["zh_TW", /^zh[_-]TW$/i, () => msg("Taiwanese Mandarin"), () => import("@goauthentik/locales/zh_TW")],
+    ["zh-Hans", /^zh(\b|_)/i, () => msg("Chinese (simplified)"), () => import("@goauthentik/locales/zh-Hans")],
+    ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), () => import("@goauthentik/locales/zh-Hant")],
+    debug,
 ];
 
-export const LOCALES: AkLocale[] = LOCALE_TABLE.map(([code, match, label, locale]) => ({
-    code,
-    match,
-    label,
-    locale,
-}));
+/**
+ * Available locales, identified by their ISO 639-1 language code.
+ */
+export const AKLocalDefinitions: readonly AKLocaleDefinition[] = LOCALE_TABLE.map(
+    ([languageCode, pattern, formatLabel, fetch]) => {
+        return {
+            languageCode,
+            pattern,
+            formatLabel,
+            fetch,
+        };
+    },
+);
 
-export default LOCALES;
+export default AKLocalDefinitions;

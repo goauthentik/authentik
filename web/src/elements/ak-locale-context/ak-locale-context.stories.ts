@@ -1,11 +1,9 @@
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { customEvent } from "@goauthentik/elements/utils/customEvents";
-
 import { localized, msg } from "@lit/localize";
 import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import "./ak-locale-context";
+import { EVENT_LOCALE_REQUEST, LocaleContextEventDetail } from "./events.js";
 
 export default {
     title: "Elements / Shell / Locale Context",
@@ -37,10 +35,18 @@ export const InFrench = () =>
     </div>`;
 
 export const SwitchingBackAndForth = () => {
-    let lang = "en";
+    let languageCode = "en";
+
     window.setInterval(() => {
-        lang = lang === "en" ? "fr" : "en";
-        window.dispatchEvent(customEvent(EVENT_LOCALE_REQUEST, { locale: lang }));
+        languageCode = languageCode === "en" ? "fr" : "en";
+
+        window.dispatchEvent(
+            new CustomEvent<LocaleContextEventDetail>(EVENT_LOCALE_REQUEST, {
+                composed: true,
+                bubbles: true,
+                detail: { locale: languageCode },
+            }),
+        );
     }, 1000);
 
     return html`<div style="background: #fff; padding: 4em">

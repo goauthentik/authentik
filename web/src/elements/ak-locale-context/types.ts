@@ -1,10 +1,21 @@
 import type { LocaleModule } from "@lit/localize";
 
-export type LocaleRow = [string, RegExp, () => string, () => Promise<LocaleModule>];
+/**
+ * - ISO 639-1 code for the locale.
+ * - Pattern to match the user-supplied locale.
+ * - Human-readable label for the locale.
+ * - Locale loader.
+ */
+export type LocaleRow = [
+    languageCode: string,
+    pattern: RegExp,
+    formatLabel: () => string,
+    fetch: () => Promise<LocaleModule>,
+];
 
-export type AkLocale = {
-    code: string;
-    match: RegExp;
-    label: () => string;
-    locale: () => Promise<LocaleModule>;
-};
+export interface AKLocaleDefinition {
+    languageCode: string;
+    pattern: RegExp;
+    formatLabel(): string;
+    fetch(): Promise<LocaleModule>;
+}

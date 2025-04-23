@@ -1,39 +1,44 @@
 import { configureLocalization } from "@lit/localize";
 
-import { sourceLocale, targetLocales } from "../../locale-codes";
-import { getBestMatchLocale } from "./helpers";
+import { sourceLocale, targetLocales } from "../../locale-codes.js";
+import { findLocaleDefinition } from "./helpers.js";
 
-type LocaleGetter = ReturnType<typeof configureLocalization>["getLocale"];
-type LocaleSetter = ReturnType<typeof configureLocalization>["setLocale"];
+export type ConfigureLocalizationResult = ReturnType<typeof configureLocalization>;
 
-// Internal use only.
-//
-// This is where the lit-localization module is initialized with our loader, which associates our
-// collection of locales with its getter and setter functions.
+export type GetLocale = ConfigureLocalizationResult["getLocale"];
+export type SetLocale = ConfigureLocalizationResult["setLocale"];
 
-let getLocale: LocaleGetter | undefined = undefined;
-let setLocale: LocaleSetter | undefined = undefined;
+export type LocaleState = [GetLocale, SetLocale];
 
-export function initializeLocalization(): [LocaleGetter, LocaleSetter] {
-    if (getLocale && setLocale) {
-        return [getLocale, setLocale];
-    }
+let cachedLocaleState: LocaleState | undefined = undefined;
 
-    ({ getLocale, setLocale } = configureLocalization({
+/**
+ * This is where the lit-localization module is initialized with our loader,
+ * which associates our collection of locales with its getter and setter functions.
+ *
+ * @returns A tuple of getter and setter functions.
+ * @internal
+ */
+export function initializeLocalization(): LocaleState {
+    if (cachedLocaleState) return cachedLocaleState;
+
+    const { getLocale, setLocale } = configureLocalization({
         sourceLocale,
         targetLocales,
-        loadLocale: async (locale: string) => {
-            const localeDef = getBestMatchLocale(locale);
-            if (!localeDef) {
-                console.warn(`Unrecognized locale: ${localeDef}`);
-                return Promise.reject("");
-            }
-            return localeDef.locale();
-        },
-    }));
+        loadLocale: (languageCode) => {
+            const localeDef = findLocaleDefinition(languageCode);
 
-    return [getLocale, setLocale];
+            if (!localeDef) {
+                throw new Error(`Unrecognized locale: ${localeDef}`);
+            }
+
+            return localeDef.fetch();
+        },
+    });
+
+    cachedLocaleState = [getLocale, setLocale];
+
+    return cachedLocaleState;
 }
 
 export default initializeLocalization;
-export type { LocaleGetter, LocaleSetter };

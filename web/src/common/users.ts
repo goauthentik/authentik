@@ -1,6 +1,9 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 import { isResponseErrorLike } from "@goauthentik/common/errors/network";
+import {
+    EVENT_LOCALE_REQUEST,
+    LocaleContextEventDetail,
+} from "@goauthentik/elements/ak-locale-context/events.js";
 
 import { CoreApi, SessionUser } from "@goauthentik/api";
 
@@ -57,7 +60,7 @@ export async function me(): Promise<SessionUser> {
                 console.debug(`authentik/locale: Activating user's configured locale '${locale}'`);
 
                 window.dispatchEvent(
-                    new CustomEvent(EVENT_LOCALE_REQUEST, {
+                    new CustomEvent<LocaleContextEventDetail>(EVENT_LOCALE_REQUEST, {
                         composed: true,
                         bubbles: true,
                         detail: { locale },

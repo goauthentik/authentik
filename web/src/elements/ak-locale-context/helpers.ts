@@ -1,59 +1,80 @@
 import { globalAK } from "@goauthentik/common/global";
 
-import { LOCALES as RAW_LOCALES, enLocale } from "./definitions";
-import { AkLocale } from "./types";
+import { AKLocalDefinitions } from "./definitions.js";
+import { AKLocaleDefinition } from "./types.js";
 
 export const DEFAULT_LOCALE = "en";
 
 export const EVENT_REQUEST_LOCALE = "ak-request-locale";
 
-const TOMBSTONE = "⛼⛼tombstone⛼⛼";
+/**
+ * Find the locale definition for a given language code.
+ */
+export function findLocaleDefinition(languageCode: string): AKLocaleDefinition | null {
+    for (const locale of AKLocalDefinitions) {
+        if (locale.pattern.test(languageCode)) {
+            return locale;
+        }
+    }
 
-// NOTE: This is the definition of the LOCALES table that most of the code uses. The 'definitions'
-// file is relatively pure, but here we establish that we want the English locale to loaded when an
-// application is first instantiated.
-
-export const LOCALES = RAW_LOCALES.map((locale) =>
-    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale,
-);
-
-export function getBestMatchLocale(locale: string): AkLocale | undefined {
-    return LOCALES.find((l) => l.match.test(locale));
+    return null;
 }
 
 // This looks weird, but it's sensible: we have several candidates, and we want to find the first
 // one that has a supported locale. Then, from *that*, we have to extract that first supported
 // locale.
 
-export function findSupportedLocale(candidates: string[]) {
-    const candidate = candidates.find((candidate: string) => getBestMatchLocale(candidate));
-    return candidate ? getBestMatchLocale(candidate) : undefined;
+export function findSupportedLocale(candidates: string[]): AKLocaleDefinition | null {
+    for (const candidate of candidates) {
+        const locale = findLocaleDefinition(candidate);
+
+        if (locale) return locale;
+    }
+
+    return null;
 }
 
-export function localeCodeFromUrl(param = "locale") {
-    const url = new URL(window.location.href);
-    return url.searchParams.get(param) || "";
+export function localeCodeFromURL(param = "locale") {
+    const searchParams = new URLSearchParams(window.location.search);
+
+    return searchParams.get(param);
 }
 
-// Get all locales we can, in order
-// - Global authentik settings (contains user settings)
-// - URL parameter
-// - A requested code passed in, if any
-// - Navigator
-// - Fallback (en)
+function isLocaleCodeCandidate(input: unknown): input is string {
+    if (typeof input !== "string") return false;
 
-const isLocaleCandidate = (v: unknown): v is string =>
-    typeof v === "string" && v !== "" && v !== TOMBSTONE;
+    return !!input;
+}
 
-export function autoDetectLanguage(userReq = TOMBSTONE, brandReq = TOMBSTONE): string {
-    const localeCandidates: string[] = [
-        localeCodeFromUrl("locale"),
-        userReq,
-        window.navigator?.language ?? TOMBSTONE,
-        brandReq,
-        globalAK()?.locale ?? TOMBSTONE,
-        DEFAULT_LOCALE,
-    ].filter(isLocaleCandidate);
+/**
+ * Auto-detect the most appropriate locale.
+ *
+ * @remarks
+ *
+ * The order of precedence is:
+ *
+ * 1. URL parameter `locale`.
+ * 2. User's preferred locale, if any.
+ * 3. Browser's preferred locale, if any.
+ * 4. Brand's preferred locale, if any.
+ * 5. Default locale.
+ *
+ * @param requestedLanguageCode - The user's preferred locale, if any.
+ * @param brandLanguageCode - The brand's preferred locale, if any.
+ *
+ * @returns The most appropriate locale.
+ */
+export function autoDetectLanguage(
+    requestedLanguageCode?: string,
+    brandLanguageCode?: string,
+): string {
+    const localeCandidates = [
+        localeCodeFromURL("locale"),
+        requestedLanguageCode,
+        window.navigator?.language,
+        brandLanguageCode,
+        globalAK()?.locale,
+    ].filter(isLocaleCodeCandidate);
 
     const firstSupportedLocale = findSupportedLocale(localeCandidates);
 
@@ -61,10 +82,11 @@ export function autoDetectLanguage(userReq = TOMBSTONE, brandReq = TOMBSTONE): s
         console.debug(
             `authentik/locale: No locale found for '[${localeCandidates}.join(',')]', falling back to ${DEFAULT_LOCALE}`,
         );
+
         return DEFAULT_LOCALE;
     }
 
-    return firstSupportedLocale.code;
+    return firstSupportedLocale.languageCode;
 }
 
 export default autoDetectLanguage;

@@ -4,8 +4,12 @@ import {
     EventMiddleware,
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
+import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import {
+    EVENT_LOCALE_REQUEST,
+    LocaleContextEventDetail,
+} from "@goauthentik/elements/ak-locale-context/events.js";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
@@ -44,7 +48,7 @@ export function brandSetLocale(brand: CurrentBrand) {
     }
     console.debug("authentik/locale: setting locale from brand default");
     window.dispatchEvent(
-        new CustomEvent(EVENT_LOCALE_REQUEST, {
+        new CustomEvent<LocaleContextEventDetail>(EVENT_LOCALE_REQUEST, {
             composed: true,
             bubbles: true,
             detail: { locale: brand.defaultLocale },
