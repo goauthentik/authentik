@@ -4,17 +4,13 @@ import { ROUTES } from "@goauthentik/admin/Routes";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
-import "@goauthentik/elements/banner/EnterpriseStatusBanner";
-import "@goauthentik/elements/banner/VersionBanner";
 import "@goauthentik/elements/banner/VersionBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
@@ -25,32 +21,25 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
-import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import {
-    AdminSidebarEnterpriseEntries,
-    AdminSidebarEntries,
-    renderSidebarItems,
-} from "./AdminSidebar.js";
+import "./AdminSidebar";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
-    //#region Properties
-
+export class AdminInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -65,29 +54,12 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     @query("ak-about-modal")
     aboutModal?: AboutModal;
 
-    @property({ type: Boolean, reflect: true })
-    public sidebarOpen: boolean;
-
-    #toggleSidebar = () => {
-        this.sidebarOpen = !this.sidebarOpen;
-    };
-
-    #sidebarMatcher: MediaQueryList;
-    #sidebarListener = (event: MediaQueryListEvent) => {
-        this.sidebarOpen = event.matches;
-    };
-
-    //#endregion
-
-    //#region Styles
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
             PFPage,
             PFButton,
             PFDrawer,
-            PFNav,
             css`
                 .pf-c-page__main,
                 .pf-c-drawer__content,
@@ -95,30 +67,23 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
                     z-index: auto !important;
                     background-color: transparent;
                 }
-
                 .display-none {
                     display: none;
                 }
-
                 .pf-c-page {
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
-
-                :host([theme="dark"]) {
-                    /* Global page background colour */
-                    .pf-c-page {
-                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                    }
+                /* Global page background colour */
+                :host([theme="dark"]) .pf-c-page {
+                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
-
-                ak-page-navbar {
+                ak-enterprise-status,
+                ak-version-banner {
                     grid-area: header;
                 }
-
-                .ak-sidebar {
+                ak-admin-sidebar {
                     grid-area: nav;
                 }
-
                 .pf-c-drawer__panel {
                     z-index: var(--pf-global--ZIndex--xl);
                 }
@@ -126,22 +91,9 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
         ];
     }
 
-    //#endregion
-
-    //#region Lifecycle
-
     constructor() {
         super();
         this.ws = new WebsocketClient();
-
-        this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
-        this.sidebarOpen = this.#sidebarMatcher.matches;
-    }
-
-    public connectedCallback() {
-        super.connectedCallback();
-
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
 
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
@@ -156,14 +108,6 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
                 apiDrawerOpen: this.apiDrawerOpen,
             });
         });
-
-        this.#sidebarMatcher.addEventListener("change", this.#sidebarListener);
-    }
-
-    public disconnectedCallback(): void {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
-        this.#sidebarMatcher.removeEventListener("change", this.#sidebarListener);
     }
 
     async firstUpdated(): Promise<void> {
@@ -174,7 +118,6 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
             this.user.user.isSuperuser ||
             // TODO: somehow add `access_admin_interface` to the API schema
             this.user.user.systemPermissions.includes("access_admin_interface");
-
         if (!canAccessAdmin && this.user.user.pk > 0) {
             window.location.assign("/if/user/");
         }
@@ -182,14 +125,10 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
     render(): TemplateResult {
         const sidebarClasses = {
-            "pf-c-page__sidebar": true,
             "pf-m-light": this.activeTheme === UiThemeEnum.Light,
-            "pf-m-expanded": this.sidebarOpen,
-            "pf-m-collapsed": !this.sidebarOpen,
         };
 
         const drawerOpen = this.notificationDrawerOpen || this.apiDrawerOpen;
-
         const drawerClasses = {
             "pf-m-expanded": drawerOpen,
             "pf-m-collapsed": !drawerOpen,
@@ -197,18 +136,11 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
-                <ak-page-navbar>
-                    <ak-version-banner></ak-version-banner>
-                    <ak-enterprise-status interface="admin"></ak-enterprise-status>
-                </ak-page-navbar>
-
-                <ak-sidebar class="${classMap(sidebarClasses)}">
-                    ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed
-                        ? renderSidebarItems(AdminSidebarEnterpriseEntries)
-                        : nothing}
-                </ak-sidebar>
-
+                <ak-enterprise-status interface="admin"></ak-enterprise-status>
+                <ak-version-banner></ak-version-banner>
+                <ak-admin-sidebar
+                    class="pf-c-page__sidebar ${classMap(sidebarClasses)}"
+                ></ak-admin-sidebar>
                 <div class="pf-c-page__drawer">
                     <div class="pf-c-drawer ${classMap(drawerClasses)}">
                         <div class="pf-c-drawer__main">

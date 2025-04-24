@@ -1,4 +1,4 @@
-import { BrandedHTMLPolicy, sanitizeHTML } from "@goauthentik/common/purify";
+import { purify } from "@goauthentik/common/purify";
 import { AKElement } from "@goauthentik/elements/Base.js";
 
 import { msg } from "@lit/localize";
@@ -21,6 +21,8 @@ const styles = css`
     }
 `;
 
+const poweredBy: FooterLink = { name: msg("Powered by authentik"), href: null };
+
 @customElement("ak-brand-links")
 export class BrandLinks extends AKElement {
     static get styles() {
@@ -31,21 +33,13 @@ export class BrandLinks extends AKElement {
     links: FooterLink[] = [];
 
     render() {
-        const links = [...(this.links ?? [])];
-
+        const links = [...(this.links ?? []), poweredBy];
         return html` <ul class="pf-c-list pf-m-inline">
-            ${map(links, (link) => {
-                const children = sanitizeHTML(BrandedHTMLPolicy, link.name);
-
-                if (link.href) {
-                    return html`<li><a href="${link.href}">${children}</a></li>`;
-                }
-
-                return html`<li>
-                    <span> ${children} </span>
-                </li>`;
-            })}
-            <li><span>${msg("Powered by authentik")}</span></li>
+            ${map(links, (link) =>
+                link.href
+                    ? purify(html`<li><a href="${link.href}">${link.name}</a></li>`)
+                    : html`<li><span>${link.name}</span></li>`,
+            )}
         </ul>`;
     }
 }

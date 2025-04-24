@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { ThemedElement } from "@goauthentik/common/theme";
 import { authentikBrandContext } from "@goauthentik/elements/AuthentikContexts";
 import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
 
@@ -10,12 +9,14 @@ import type { ReactiveController } from "lit";
 import type { CurrentBrand } from "@goauthentik/api";
 import { CoreApi } from "@goauthentik/api";
 
+import type { AkInterface } from "./Interface";
+
 export class BrandContextController implements ReactiveController {
-    host!: ReactiveElementHost<ThemedElement>;
+    host!: ReactiveElementHost<AkInterface>;
 
     context!: ContextProvider<{ __context__: CurrentBrand | undefined }>;
 
-    constructor(host: ReactiveElementHost<ThemedElement>) {
+    constructor(host: ReactiveElementHost<AkInterface>) {
         this.host = host;
         this.context = new ContextProvider(this.host, {
             context: authentikBrandContext,
