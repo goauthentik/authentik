@@ -47,8 +47,8 @@ To support the integration of Gitea with authentik, you need to create an applic
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section)
     - **OAuth2 Provider**: `OpenID Connect`
-    - **Client ID (Key)**: authentik client ID
-    - **Client Secret**: authentik client Secret
+    - **Client ID (Key)**: Enter the client ID from authentik.
+    - **Client Secret**: Enter the Client Secret from authentik.
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.svg`
     - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
     - **Additional Scopes**: `email profile`
@@ -78,9 +78,10 @@ Users who are in none of these groups will not be able to log in to gitea.
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set the name of the group as `gituser` and click **Create**.
-4. Repeat steps 2-3 and create groups named `gitadmin` and `gitrestricted`.
-5. In turn, click the names of the newly created groups and navigate to the **Users** tab.
+4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
+5. Click the name of a newly created group and navigate to the **Users** tab.
 6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
+7. Repeat steps 5 and 6 for the two additional groups.
 
 :::Note
 Users can be added to the groups at any point
@@ -126,7 +127,7 @@ Users can be added to the groups at any point
 #### Configure Gitea to use the new claims
 
 :::note
-For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set.
+For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must be set. More information on configurations variables in the [Gitea Configuration Cheat Sheet](https://docs.gitea.com/administration/config-cheat-sheet).
 :::
 
 1. Log in to Gitea as an admin. Click on your profile icon at the top right > **Site Administration**.
@@ -146,18 +147,18 @@ Users of the group **gitadmin** will have administrative privileges, and users i
 
 ### Helm Chart Configuration
 
-Authentik can be configured automatically in Gitea Kubernetes deployments via it's [Helm Chart](https://gitea.com/gitea/helm-chart/).
+authentik can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 
-Add the following to your Gitea Helm Chart `values.yaml` file:
+Add the following to your Gitea Helm chart `values.yaml` file:
 
 ```yaml showLineNumbers title="values.yaml"
 gitea:
     oauth:
         - name: "authentik"
         provider: "openidConnect"
-        key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
-        secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
-        autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+        key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
+        secret: "<CLIENT_SECRET_FROM_AUTHENTIK>" #Step 1
+        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
         iconUrl: "https://goauthentik.io/img/icon.png"
         scopes: "email profile"
 ```
@@ -166,7 +167,7 @@ gitea:
 
 Alternatively you can use a Kubernetes secret to set the `key` and `secret` values.
 
-1. Create a Kubernetes secret with the following configurations:
+1. Create a Kubernetes secret with the following variables:
 
 ```yaml showLineNumbers
 apiVersion: v1
@@ -175,8 +176,8 @@ metadata:
     name: gitea-authentik-secret
 type: Opaque
 stringData:
-    key: "CLIENT_ID_FROM_AUTHENTIK" #Step 1
-    secret: "CLIENT_SECRET_FROM_AUTHENTIK" #Step 1
+    key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
+    secret: "<CLIENT_SECRET_FROM_AUTHENTIK?" #Step 1
 ```
 
 2. Add the following configurations to your Gitea Helm Chart `values.yaml` file:
@@ -187,11 +188,11 @@ gitea:
         - name: "authentik"
         provider: "openidConnect"
         existingSecret: gitea-authentik-secret
-        autoDiscoverUrl: "https://authentik.company/application/o/gitea-slug/.well-known/openid-configuration"
+        autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
         iconUrl: "https://goauthentik.io/img/icon.png"
         scopes: "email profile"
 ```
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Gitea, log out and log back in via the **Sign in with authentik** button.
+To verify that authentik is correctly set up with Gitea, log out and then log back in using the **Sign in with authentik** button.
