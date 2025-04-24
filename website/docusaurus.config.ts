@@ -137,7 +137,10 @@ const createConfig = (): Config => {
                         ],
                     },
                     theme: {
-                        customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+                        // TODO: Use the package once it is published.
+                        // customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
+
+                        customCss: require.resolve("../packages/docusaurus-config/css/index.css"),
                     },
                 } satisfies Preset.Options,
             ],
