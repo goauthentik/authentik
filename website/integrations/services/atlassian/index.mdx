@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Atlassian
 
-> Atlassian is an Australian-American proprietary software company that specializes in collaboration tools designed primarily for software development and project management. Their popular products include Jira, Confluence, Bitbucket and Trello.
+> Atlassian is an Australian-American proprietary software company that specializes in collaboration tools designed primarily for software development and project management. Their popular apps include Jira, Confluence, Bitbucket and Trello.
 >
 > -- https://www.atlassian.com/
 
@@ -16,7 +16,11 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-SAML SSO for Atlassian products requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription. Further information on Atlassian requirements can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
+SAML SSO for Atlassian cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription.
+
+Further information on Atlassian requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
+
+This guide applies to all Atlassian cloud products including; Jira, Confluence, Trello, and others.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -34,18 +38,56 @@ To support the integration of Atlassian with authentik, you need to create an ap
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - _If there are any specific settings required, list them here. Refer to the [ownCloud integration documentation](https://github.com/goauthentik/authentik/blob/main/website/integrations/services/owncloud/index.md) for a complex requirements example._
+    - Temporarily Set the **ACS URL** and **Issuer** to `https://temp.temp`
+    - Set the **Service Provider Binding** to `Post`.
+    - Under **Advanced protocol settings**, select an available signing certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## Service configuration
 
-Insert Service configuration
+Login to admin.atlassian.com as an admin
 
-1. Write first step here...
+Navigate to admin > identity providers. Under **Choose an identity provider** select **Other provider**
 
-2. Continue with steps....
+select a **Directory name** e.g authentik and click Add
+
+click **set up saml single sign-on** and next
+
+set the following required configurations: - **Identity provider Entity ID**: `authentik` - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/` - **Public x509 certificate**: paste in your public certificate
+
+click **Add**
+
+You will be shown a \*Service provider entity URL** and **Service provider assertion consumer service URL\*\*. Copy both
+
+click next
+
+Under link domain select a verified domain
+
+Click **Stop and save SAML**
+
+### Enabling SSO
+
+Navigate to admin > external users
+
+click on **External user policy**
+
+Under **Authorization method** check "Single sign-on"
+
+Under **Identity provider** select `authentik`.
+
+Click update
+
+### in authentik
+
+edit the atlassian provider
+
+set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example)
+
+set the audience to the copied **Service provider entitty URL** (e.g. https://auth.atlassian.com/saml/example)
+
+click Update
 
 ## Configuration verification
 
