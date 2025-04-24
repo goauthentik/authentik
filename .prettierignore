@@ -33,8 +33,6 @@ coverage
 # Templates
 # TODO: Rename affected files to *.template.* or similar.
 *.html
-*.mdx
-*.md
 
 ## Import order matters
 poly.ts

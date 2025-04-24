@@ -1,30 +1,35 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
+/**
+ * @file Remark plugin to transform `ak-support` directives into support level badges.
+ *
+ * @import { Root } from "mdast";
+ */
 import { h } from "hastscript";
-import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
-import { coerce } from "semver";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Support levels for authentik.
+ * @typedef {"authentik" | "community" | "vendor" | "deprecated"} SupportLevel
  */
-export type SupportLevel = "authentik" | "community" | "vendor" | "deprecated";
 
 /**
  * Mapping of support levels to badge classes.
+ *
+ * @satisfies {Record<SupportLevel, string>}
  */
-export const SupportLevelToLabel = {
+export const SupportLevelToLabel = /** @type {const} */ ({
     authentik: "authentik",
     community: "Community",
     vendor: "Vendor",
     deprecated: "Deprecated",
-} as const satisfies Record<SupportLevel, string>;
+});
 
 /**
  * Type-predicate to determine if a string is a known support level.
+ *
+ * @param {string} input The string to check.
+ * @return {input is SupportLevel} True if the string is a known support level.
  */
-export function isSupportLevel(input: string): input is SupportLevel {
+export function isSupportLevel(input) {
     return Object.hasOwn(SupportLevelToLabel, input);
 }
 
@@ -32,7 +37,10 @@ export function isSupportLevel(input: string): input is SupportLevel {
  * MDAST plugin to transform `ak-support` directives into preview badges.
  */
 function remarkSupportDirective() {
-    return function (tree: Root) {
+    /**
+     * @param {Root} tree The MDAST tree to transform.
+     */
+    return function (tree) {
         visit(tree, "textDirective", function (node) {
             if (node.name !== "ak-support") return SKIP;
 
@@ -52,10 +60,10 @@ function remarkSupportDirective() {
 
             const hast = h("span", {
                 ...node.attributes,
-                className: `badge badge--support-${level}`,
-                title: `This feature is supported at the ${label} level.`,
+                "className": `badge badge--support-${level}`,
+                "title": `This feature is supported at the ${label} level.`,
                 "aria-description": "Support level badge",
-                role: "img",
+                "role": "img",
             });
 
             data.hName = hast.tagName;
