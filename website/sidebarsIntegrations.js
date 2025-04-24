@@ -183,6 +183,7 @@ module.exports = {
                     type: "category",
                     label: "Platforms",
                     items: [
+                        "services/atlassian/index",
                         "services/budibase/index",
                         "services/drupal/index",
                         "services/pocketbase/index",
