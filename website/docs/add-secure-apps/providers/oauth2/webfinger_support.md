@@ -4,7 +4,7 @@ title: WebFinger support
 
 ## About WebFinger
 
-The [WebFinger](https://webfinger.net/) protocol can be used to discover information about people or other entities on the Internet using standard HTTP methods. WebFinger discovers information for a URI that might not be usable as a locator otherwise, such as account or email URIs.
+The [WebFinger protocol](https://webfinger.net/) allows for the discovery of information about individuals or entities on the Internet through standard HTTP methods. It enables the retrieval of information associated with a URI that might not be directly usable as a locator, such as those for accounts or email addresses.
 
 ## authentik WebFinger support
 
