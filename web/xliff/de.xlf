@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>Die URL "
-<x id="0" equiv-text="${this.url}"/>" wurde nicht gefunden.</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>Die URL &quot;
+<x id="0" equiv-text="${this.url}"/>&quot; wurde nicht gefunden.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1091,7 +1091,7 @@
       </trans-unit>
       <trans-unit id="sd62cfc27ad4aa33b">
         <source>Based on the User's Email</source>
-        <target>Basierend auf der E-Mail Adresse des Benutzers</target>
+        <target>Basierend auf der E-Mail-Adresse des Benutzers</target>
         
       </trans-unit>
       <trans-unit id="s55eb75bedf96be0f">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon "fa-test" zu verwenden</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Geben Sie entweder eine vollständige URL oder einen relativen Pfad ein oder geben Sie 'fa://fa-test' ein, um das Font Awesome-Icon &quot;fa-test&quot; zu verwenden</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2361,6 +2361,7 @@
       </trans-unit>
       <trans-unit id="s9307f3dbb07a73b5">
         <source>Only fail the policy, don't invalidate user's password</source>
+        <target>Nur die Richtlinie fehlschlagen lassen, das Passwort des Benutzers nicht ungültig machen.</target>
         
       </trans-unit>
       <trans-unit id="scea1f16238093e35">
@@ -2809,6 +2810,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sfbc59ff17a73503d">
         <source>User path</source>
+        <target>Nutzerpfad</target>
         
       </trans-unit>
       <trans-unit id="sd18170637295bace">
@@ -2878,6 +2880,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s995535e7af30d754">
         <source>Use the user's email address, but deny enrollment when the email address already exists</source>
+        <target>Verwende die E-Mail-Adresse des Benutzers, aber verweigere die Registrierung, wenn die E-Mail-Adresse bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s542ecb4130f6cea5">
@@ -2886,6 +2889,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2a1debf34e5aeba4">
         <source>Use the user's username, but deny enrollment when the username already exists</source>
+        <target>Verwende den Anmeldenamen des Benutzers, aber verweigere die Registrierung von der Anmeldename bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s81ce0d54727f42d2">
@@ -3740,10 +3744,13 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <target>Aktualisieren von 
+        <x id="0" equiv-text="${this.objectLabel}"/>fehlgeschlagen: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4761,8 +4768,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Ein "Roaming"-Authentifikator, wie ein YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Ein &quot;Roaming&quot;-Authentifikator, wie ein YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -4951,7 +4958,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se50a08ab71bb96ed">
         <source>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
-        <target>Sofern eine gültige E-Mailadresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
+        <target>Sofern eine gültige E-Mail-Adresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
         
       </trans-unit>
       <trans-unit id="s0295ce5d6f635d75">
@@ -5110,7 +5117,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -6245,7 +6252,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-        <target>Anmelden um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
+        <target>Anmelden, um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
         
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
@@ -7307,7 +7314,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Benutzer erfolgreich erstellt und zu Gruppe <x id="0" equiv-text="${this.group.name}"/> hinzugefügt.</target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -7451,6 +7458,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Verbindung nach <x id="0" equiv-text="${this.connectionAttempt}"/> Versuch(en) fehlgeschlagen.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
@@ -7572,11 +7580,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
-  <target>Benutzer können E-Mail ändern</target>
+  <target>Benutzer können E-Mail-Adresse ändern</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
-  <target>Benutzer haben die Möglichkeit, ihre E-Mail zu ändern.</target>
+  <target>Benutzer haben die Möglichkeit, ihre E-Mail-Adresse zu ändern.</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
@@ -7801,7 +7809,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8cc0075913c67566">
   <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-  <target>Gib die Email deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
+  <target>Gib die E-Mail-Adresse deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
   <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
@@ -7885,6 +7893,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1673c93148583ba">
   <source>Request failed. Please try again later.</source>
+  <target>Anfrage fehlgeschlagen. Bitte versuchen Sie es später erneut.</target>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -8277,7 +8286,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Zuletzt gesehen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8383,7 +8391,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Gruppe synchronisieren</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8577,7 +8585,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -8849,9 +8857,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Keine Benachrichtigungen gefunden.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>Sie haben zur Zeit keine Benachrichtigungen.</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
   <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
@@ -9079,7 +9089,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
@@ -9148,7 +9158,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>How to perform authentication during an authorization_code token request flow</source>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
+  <source>Enable &quot;Remember me on this device&quot;</source>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
