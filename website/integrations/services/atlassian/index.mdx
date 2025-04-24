@@ -23,6 +23,11 @@ Further information on Atlassian requirements for SSO can be found in the [Atlas
 This guide applies to all Atlassian cloud products including; Jira, Confluence, Trello, and others.
 
 :::note
+This guide only provides instructions for setting up authentik as a SAML provider for Atlassian. It does not provide instructions for user provisioning.
+This requires creating a custom Atlassian API integration that and is beyond the scope of this document.
+:::
+
+:::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
@@ -36,6 +41,7 @@ To support the integration of Atlassian with authentik, you need to create an ap
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - Note the application slug, it will be required in the `Identity provider SSO URL` in the Atlassian configuration section.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Temporarily Set the **ACS URL** and **Issuer** to `https://temp.temp`
@@ -45,50 +51,49 @@ To support the integration of Atlassian with authentik, you need to create an ap
 
 3. Click **Submit** to save the new application and provider.
 
-## Service configuration
+### Download the signing certificate
 
-Login to admin.atlassian.com as an admin
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the newly created Atlassian provider.
+3. Under **Download signing certificate** click the **Download** button. This certificate will be required by Atlassian.
 
-Navigate to admin > identity providers. Under **Choose an identity provider** select **Other provider**
+## Atlassian configuration
 
-select a **Directory name** e.g authentik and click Add
+1. Login to admin.atlassian.com as an admin.
+2. Navigate to **Security** > **Identity providers**.
+3. Under **Choose an identity provider** select **Other provider**.
+4. Provide a **Directory name** e.g authentik and click **Add**.
+5. Click **Set up SAML single sign-on** and then **Next**.
+6. Set the following required configurations:
+    - **Identity provider Entity ID**: `authentik`
+    - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/`
+    - **Public x509 certificate**: paste in your public certificate (explain how to copy it from authentik)
+7. Click **Add**.
+8. You will be shown a **Service provider entity URL** and **Service provider assertion consumer service URL**. Copy both, they will be required in authentik.
+9. Click **Next**
+10. Under **Link domain** select a verified domain.
+11. Click **Stop and save SAML**
 
-click **set up saml single sign-on** and next
+### Add URLs to authentik provider
 
-set the following required configurations: - **Identity provider Entity ID**: `authentik` - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/` - **Public x509 certificate**: paste in your public certificate
-
-click **Add**
-
-You will be shown a \*Service provider entity URL** and **Service provider assertion consumer service URL\*\*. Copy both
-
-click next
-
-Under link domain select a verified domain
-
-Click **Stop and save SAML**
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Atlassian provider.
+3. Under **Protocol settgins**, set the following required configurations:
+    - **ACS URL**: set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
+    - **Audience**: set the audience to the copied **Service provider entitty URL** (e.g. https://auth.atlassian.com/saml/example).
+4. Click **Update**
 
 ### Enabling SSO
 
-Navigate to admin > external users
-
-click on **External user policy**
-
-Under **Authorization method** check "Single sign-on"
-
-Under **Identity provider** select `authentik`.
-
-Click update
-
-### in authentik
-
-edit the atlassian provider
-
-set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example)
-
-set the audience to the copied **Service provider entitty URL** (e.g. https://auth.atlassian.com/saml/example)
-
-click Update
+1. Login to admin.atlassian.com as an admin.
+2. Navigate to **Security** > **External users**.
+3. Click on **External user policy**.
+4. Under **Authorization method** check **Single sign-on**.
+5. Under **Identity provider** select `authentik`.
+6. Click **Update**.
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Atlassian, log out and log back in via authentik.
+To confirm that authentik is properly configured with Atlassian, log out of Atlassian cloud and log in using your `External User` Atlassian cloud credentials.
+
+Open an Atlassian app such as Jira. You will be asked to verify your identity and redirected to your authentik instance. Enter your authentik credentials and you should now be logged into the Atlassian app.
