@@ -46,6 +46,7 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
+    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
@@ -197,6 +198,10 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
+    }
+
+    async getTheme(): Promise<UiThemeEnum> {
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
