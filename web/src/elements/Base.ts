@@ -45,8 +45,6 @@ export class AKElement extends LitElement implements ThemedElement {
     })
     public activeTheme: ResolvedUITheme;
 
-    protected static readonly DarkColorSchemeStyleSheet = createStyleSheetUnsafe(ThemeDark);
-
     protected static finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
         // Ensure all style sheets being passed are really style sheets.
         const baseStyles: StyleSheetInit[] = [AKGlobal, OneDark];
@@ -79,6 +77,7 @@ export class AKElement extends LitElement implements ThemedElement {
 
     #styleParents: StyleSheetParent[] = [];
     #customCSSStyleSheet: CSSStyleSheet | null;
+    #darkThemeStyleSheet: CSSStyleSheet | null = null;
 
     #themeAbortController: AbortController | null = null;
 
@@ -109,9 +108,12 @@ export class AKElement extends LitElement implements ThemedElement {
         createUIThemeEffect(
             (currentUITheme) => {
                 if (currentUITheme === UiThemeEnum.Dark) {
-                    appendStyleSheet(AKElement.DarkColorSchemeStyleSheet, ...styleParents);
-                } else {
-                    removeStyleSheet(AKElement.DarkColorSchemeStyleSheet, ...styleParents);
+                    this.#darkThemeStyleSheet ||= createStyleSheetUnsafe(ThemeDark);
+
+                    appendStyleSheet(this.#darkThemeStyleSheet, ...styleParents);
+                } else if (this.#darkThemeStyleSheet) {
+                    removeStyleSheet(this.#darkThemeStyleSheet, ...styleParents);
+                    this.#darkThemeStyleSheet = null;
                 }
                 this.activeTheme = currentUITheme;
             },
