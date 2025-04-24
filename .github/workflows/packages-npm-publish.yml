@@ -3,10 +3,10 @@ on:
   push:
     branches: [main]
     paths:
-      - packages/docusaurus-config
-      - packages/eslint-config
-      - packages/prettier-config
-      - packages/tsconfig
+      - packages/docusaurus-config/**
+      - packages/eslint-config/**
+      - packages/prettier-config/**
+      - packages/tsconfig/**
   workflow_dispatch:
 jobs:
   publish:
