@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="nl" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -591,7 +591,7 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1695,8 +1695,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>Voer een volledige URL, een relatief pad in, of gebruik 'fa://fa-test' om het Font Awesome-pictogram "fa-test" te gebruiken.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>Voer een volledige URL, een relatief pad in, of gebruik 'fa://fa-test' om het Font Awesome-pictogram &quot;fa-test&quot; te gebruiken.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -2835,7 +2835,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sf325a4adba4d6278">
         <source>Group membership field</source>
-        <target>Veld dat leden van een groep bevat. Let op dat als het veld "memberUid" wordt gebruikt, de waarde wordt verondersteld een relatieve Distinguished Name te bevatten. Bijv. 'memberUid=some-user' in plaats van 'memberUid=cn=some-user,ou=groups,...'</target>
+        <target>Veld dat leden van een groep bevat. Let op dat als het veld &quot;memberUid&quot; wordt gebruikt, de waarde wordt verondersteld een relatieve Distinguished Name te bevatten. Bijv. 'memberUid=some-user' in plaats van 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3744,7 +3744,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4802,8 +4802,8 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
-        <target>Een "roaming" authenticator, zoals een YubiKey</target>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <target>Een &quot;roaming&quot; authenticator, zoals een YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -4878,7 +4878,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s22b10ed263b96194">
         <source>Dummy stage used for testing. Shows a simple continue button and always passes.</source>
-        <target>Dummyfase voor testdoeleinden. Toont een eenvoudige knop "Doorgaan" en slaagt altijd.</target>
+        <target>Dummyfase voor testdoeleinden. Toont een eenvoudige knop &quot;Doorgaan&quot; en slaagt altijd.</target>
         
       </trans-unit>
       <trans-unit id="sdb861d9906f18ac2">
@@ -5161,8 +5161,8 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
-        <target>Als ingesteld op een duur boven 0, heeft de gebruiker de mogelijkheid om te kiezen voor "ingelogd blijven", wat hun sessie zal verlengen met de hier opgegeven tijd.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
+        <target>Als ingesteld op een duur boven 0, heeft de gebruiker de mogelijkheid om te kiezen voor &quot;ingelogd blijven&quot;, wat hun sessie zal verlengen met de hier opgegeven tijd.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -7331,7 +7331,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Successfully created user and added to group <x id="0" equiv-text="${this.group.name}"/></source>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
+  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
   <source>Pretend user exists</source>
@@ -8293,7 +8293,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Sync Group</source>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8479,7 +8479,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -8981,7 +8981,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>Failed to preview prompt</source>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
@@ -9050,7 +9050,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
   <source>How to perform authentication during an authorization_code token request flow</source>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable "Remember me on this device"</source>
+  <source>Enable &quot;Remember me on this device&quot;</source>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
