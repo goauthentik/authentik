@@ -80,6 +80,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                 .center-value {
                     font-size: var(--pf-global--icon--FontSize--lg);
                     text-align: center;
+                    place-content: center;
                 }
                 .subtext {
                     margin-top: var(--pf-global--spacer--sm);

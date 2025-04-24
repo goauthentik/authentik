@@ -58,9 +58,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
             PFContent,
             PFDivider,
             css`
-                .pf-l-grid__item {
-                    height: 100%;
-                }
                 .pf-l-grid__item.big-graph-container {
                     height: 35em;
                 }
@@ -73,6 +70,10 @@ export class AdminOverviewPage extends AdminOverviewBase {
                     vertical-align: super;
                     line-height: normal;
                     font-size: var(--pf-global--icon--FontSize--sm);
+                }
+
+                .chart-item {
+                    aspect-ratio: 2 / 1;
                 }
             `,
         ];
@@ -104,15 +105,21 @@ export class AdminOverviewPage extends AdminOverviewBase {
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
-                    <!-- row 1 -->
-                    <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl pf-l-grid pf-m-gutter"
-                    >
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
-                            <ak-quick-actions-card .actions=${this.quickActions}>
-                            </ak-quick-actions-card>
-                        </div>
-                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl">
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-2-row pf-m-9-col-on-xl">
+                        <ak-recent-events pageSize="6"></ak-recent-events>
+                    </div>
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-sm pf-m-3-col-on-xl">
+                        <ak-quick-actions-card .actions=${this.quickActions}>
+                        </ak-quick-actions-card>
+                    </div>
+
+                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-sm pf-m-3-col-on-xl">
+                        <ak-admin-status-version> </ak-admin-status-version>
+                    </div>
+                    <div class="pf-l-grid pf-l-grid__item pf-m-12-col pf-m-gutter">
+                        ${this.renderSecondaryRow()}
+
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-md chart-item">
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
                                 header=${msg("Outpost status")}
@@ -121,24 +128,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
                                 <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
                             </ak-aggregate-card>
                         </div>
-                        <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl"
-                        >
+                        <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-md chart-item">
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col">
-                            <hr class="pf-c-divider" />
-                        </div>
-                        ${this.renderCards()}
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl">
-                        <ak-recent-events pageSize="6"></ak-recent-events>
-                    </div>
-                    <div class="pf-l-grid__item pf-m-12-col">
-                        <hr class="pf-c-divider" />
-                    </div>
+
                     <!-- row 3 -->
                     <div
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
@@ -166,32 +162,34 @@ export class AdminOverviewPage extends AdminOverviewBase {
             </section>`;
     }
 
-    renderCards() {
+    renderSecondaryRow() {
         const isEnterprise = this.hasEnterpriseLicense;
+        const colSpan = isEnterprise ? 4 : 6;
+
         const classes = {
             "card-container": true,
             "pf-l-grid__item": true,
-            "pf-m-6-col": true,
-            "pf-m-4-col-on-md": !isEnterprise,
-            "pf-m-4-col-on-xl": !isEnterprise,
-            "pf-m-3-col-on-md": isEnterprise,
-            "pf-m-3-col-on-xl": isEnterprise,
+            [`pf-m-12-col`]: true,
+            [`pf-m-${colSpan}-col-on-md`]: true,
         };
 
-        return html`<div class=${classMap(classes)}>
+        return html`
+            <div class=${classMap(classes)}>
                 <ak-admin-status-system> </ak-admin-status-system>
             </div>
-            <div class=${classMap(classes)}>
-                <ak-admin-status-version> </ak-admin-status-version>
-            </div>
+
             <div class=${classMap(classes)}>
                 <ak-admin-status-card-workers> </ak-admin-status-card-workers>
             </div>
+
             ${isEnterprise
-                ? html` <div class=${classMap(classes)}>
-                      <ak-admin-fips-status-system> </ak-admin-fips-status-system>
-                  </div>`
-                : nothing} `;
+                ? html`
+                      <div class=${classMap(classes)}>
+                          <ak-admin-fips-status-system> </ak-admin-fips-status-system>
+                      </div>
+                  `
+                : nothing}
+        `;
     }
 
     renderActions() {
