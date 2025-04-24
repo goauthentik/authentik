@@ -1,14 +1,13 @@
-import type * as Preset from "@docusaurus/preset-classic";
 import type { Config } from "@docusaurus/types";
-import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
+import type * as Preset from "@docusaurus/preset-classic";
 import { themes as prismThemes } from "prism-react-renderer";
-import remarkDirective from "remark-directive";
+import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 import remarkGithub, { BuildUrlValues } from "remark-github";
 import { defaultBuildUrl } from "remark-github";
-
-import remarkPreviewDirective from "./remark/preview-directive.mjs";
-import remarkSupportDirective from "./remark/support-directive.mjs";
-import remarkVersionDirective from "./remark/version-directive.mjs";
+import remarkDirective from "remark-directive";
+import remarkVersionDirective from "./remark/version-directive.js";
+import remarkPreviewDirective from "./remark/preview-directive.js";
+import remarkSupportDirective from "./remark/support-directive.js";
 
 const createConfig = (): Config => {
     return {
@@ -60,16 +59,16 @@ const createConfig = (): Config => {
                         target: "_self",
                     },
                     {
-                        "href": "https://github.com/goauthentik/authentik",
+                        href: "https://github.com/goauthentik/authentik",
                         "data-icon": "github",
                         "aria-label": "GitHub",
-                        "position": "right",
+                        position: "right",
                     },
                     {
-                        "href": "https://goauthentik.io/discord",
+                        href: "https://goauthentik.io/discord",
                         "data-icon": "discord",
                         "aria-label": "Discord",
-                        "position": "right",
+                        position: "right",
                     },
                 ],
             },
@@ -112,7 +111,8 @@ const createConfig = (): Config => {
                         id: "docs",
                         sidebarPath: "./sidebars.js",
                         showLastUpdateTime: false,
-                        editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
+                        editUrl:
+                            "https://github.com/goauthentik/authentik/edit/main/website/",
                         docItemComponent: "@theme/ApiItem",
 
                         beforeDefaultRemarkPlugins: [
@@ -128,7 +128,8 @@ const createConfig = (): Config => {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
                                     buildUrl: (values: BuildUrlValues) => {
-                                        return values.type === "issue" || values.type === "mention"
+                                        return values.type === "issue" ||
+                                            values.type === "mention"
                                             ? defaultBuildUrl(values)
                                             : false;
                                     },
@@ -137,10 +138,9 @@ const createConfig = (): Config => {
                         ],
                     },
                     theme: {
-                        // TODO: Use the package once it is published.
-                        // customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
-
-                        customCss: require.resolve("../packages/docusaurus-config/css/index.css"),
+                        customCss: require.resolve(
+                            "@goauthentik/docusaurus-config/css/index.css",
+                        ),
                     },
                 } satisfies Preset.Options,
             ],
@@ -153,7 +153,8 @@ const createConfig = (): Config => {
                     path: "integrations",
                     routeBasePath: "integrations",
                     sidebarPath: "./sidebarsIntegrations.js",
-                    editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
+                    editUrl:
+                        "https://github.com/goauthentik/authentik/edit/main/website/",
                 },
             ],
             [

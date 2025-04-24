@@ -24,34 +24,39 @@ The authentik product provides the following consoles:
 
 In authentik, you can use Light or Dark mode for the Admin interface, User interface, and the Flow interface.
 
-import useBaseUrl from "@docusaurus/useBaseUrl";
-import ReactBeforeSliderComponent from "react-before-after-slider-component";
-
 import "react-before-after-slider-component/dist/build.css";
+import ReactBeforeSliderComponent from "react-before-after-slider-component";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 <ReactBeforeSliderComponent
     firstImage={{
+        id: 1,
         imageUrl: useBaseUrl("img/screen_flow_dark.jpg"),
     }}
     secondImage={{
+        id: 2,
         imageUrl: useBaseUrl("img/screen_flow_light.jpg"),
     }}
 />
 
 <ReactBeforeSliderComponent
     firstImage={{
+        id: 1,
         imageUrl: useBaseUrl("img/screen_apps_dark.jpg"),
     }}
     secondImage={{
+        id: 2,
         imageUrl: useBaseUrl("img/screen_apps_light.jpg"),
     }}
 />
 
 <ReactBeforeSliderComponent
     firstImage={{
+        id: 1,
         imageUrl: useBaseUrl("img/screen_admin_dark.jpg"),
     }}
     secondImage={{
+        id: 2,
         imageUrl: useBaseUrl("img/screen_admin_light.jpg"),
     }}
 />

@@ -18,7 +18,9 @@ export const VersionBadge: React.FC<AuthentikVersionProps> = ({ semver }) => {
     const yearCutoff = new Date().getFullYear() - 2;
 
     if (parsed.major <= yearCutoff) {
-        throw new Error(`Semver version <= ${yearCutoff} is not supported: ${semver}`);
+        throw new Error(
+            `Semver version <= ${yearCutoff} is not supported: ${semver}`,
+        );
     }
 
     return (
