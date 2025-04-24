@@ -60,7 +60,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 ### Claims for authorization management (optional)
 
 :::note
-This step is **optional** and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
+This step is _optional_ and shows how to set claims to control the permissions of users in Gitea by adding them to groups.
 :::
 
 #### Create groups
@@ -159,7 +159,7 @@ gitea:
         key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
         secret: "<CLIENT_SECRET_FROM_AUTHENTIK>" #Step 1
         autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
-        iconUrl: "https://goauthentik.io/img/icon.png"
+        iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
 
@@ -189,7 +189,7 @@ gitea:
         provider: "openidConnect"
         existingSecret: gitea-authentik-secret
         autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
-        iconUrl: "https://goauthentik.io/img/icon.png"
+        iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
 
