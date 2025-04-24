@@ -1,8 +1,4 @@
-/**
- * @file Sidebar configuration for the authentik integrations.
- */
-
-const sidebarsIntegrations = {
+module.exports = {
     integrations: [
         {
             type: "doc",
@@ -209,5 +205,3 @@ const sidebarsIntegrations = {
         },
     ],
 };
-
-export default sidebarsIntegrations;

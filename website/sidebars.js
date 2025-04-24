@@ -1,38 +1,63 @@
-/**
- * @file Sidebar configuration for documentation entries.
- *
- * @todo Move releases into a JSON file.
- * @todo Fix typescript import of `apiReference`.
- */
-import apiReference from "./docs/developer-docs/api/reference/sidebar";
 import { generateVersionDropdown } from "./src/utils.js";
-import releases from "./static/releases.json" with { type: "json" };
+import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
-const SUPPORTED_RELEASE_COUNT = 3;
-
-// TODO: This logic is a placeholder for a more robust solution.
-/**
- * @type {any[]}
- */
-const releaseEntries = [
-    // Grab the latest releases and add them to the sidebar.
-    ...releases.slice(0, SUPPORTED_RELEASE_COUNT),
-];
-
-if (releases.length > SUPPORTED_RELEASE_COUNT) {
-    // Then we add the rest of the releases as a category.
-    releaseEntries.push({
+const releases = [
+    "releases/2025/v2025.2",
+    "releases/2024/v2024.12",
+    "releases/2024/v2024.10",
+    {
         type: "category",
         label: "Previous versions",
-        items: releases.slice(SUPPORTED_RELEASE_COUNT),
-    });
-}
+        items: [
+            "releases/2024/v2024.8",
+            "releases/2024/v2024.6",
+            "releases/2024/v2024.4",
+            "releases/2024/v2024.2",
+            "releases/2023/v2023.10",
+            "releases/2023/v2023.8",
+            "releases/2023/v2023.6",
+            "releases/2023/v2023.5",
+            "releases/2023/v2023.4",
+            "releases/2023/v2023.3",
+            "releases/2023/v2023.2",
+            "releases/2023/v2023.1",
+            "releases/2022/v2022.12",
+            "releases/2022/v2022.11",
+            "releases/2022/v2022.10",
+            "releases/2022/v2022.9",
+            "releases/2022/v2022.8",
+            "releases/2022/v2022.7",
+            "releases/2022/v2022.6",
+            "releases/2022/v2022.5",
+            "releases/2022/v2022.4",
+            "releases/2022/v2022.2",
+            "releases/2022/v2022.1",
+            "releases/2021/v2021.12",
+            "releases/2021/v2021.10",
+            "releases/2021/v2021.9",
+            "releases/2021/v2021.8",
+            "releases/2021/v2021.7",
+            "releases/2021/v2021.6",
+            "releases/2021/v2021.5",
+            "releases/2021/v2021.4",
+            "releases/2021/v2021.3",
+            "releases/2021/v2021.2",
+            "releases/2021/v2021.1",
+            "releases/old/v0.14",
+            "releases/old/v0.13",
+            "releases/old/v0.12",
+            "releases/old/v0.11",
+            "releases/old/v0.10",
+            "releases/old/v0.9",
+        ],
+    },
+];
 
 export default {
     docs: [
         {
             type: "html",
-            value: generateVersionDropdown(releases.slice(0, SUPPORTED_RELEASE_COUNT)),
+            value: generateVersionDropdown(releases),
         },
         {
             type: "doc",
@@ -122,7 +147,10 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/property-mappings/index",
                             },
-                            items: ["add-secure-apps/providers/property-mappings/expression"],
+                            items: [
+                                "add-secure-apps/providers/property-mappings/expression",
+                                ,
+                            ],
                         },
                         {
                             type: "category",
@@ -143,7 +171,9 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ldap/index",
                             },
-                            items: ["add-secure-apps/providers/ldap/generic_setup"],
+                            items: [
+                                "add-secure-apps/providers/ldap/generic_setup",
+                            ],
                         },
                         {
                             type: "category",
@@ -216,7 +246,9 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ssf/index",
                             },
-                            items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
+                            items: [
+                                "add-secure-apps/providers/ssf/create-ssf-provider",
+                            ],
                         },
                     ],
                 },
@@ -294,7 +326,9 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/flows-stages/bindings/index",
                             },
-                            items: ["add-secure-apps/flows-stages/bindings/work_with_bindings"],
+                            items: [
+                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
+                            ],
                         },
                     ],
                 },
@@ -436,7 +470,10 @@ export default {
                         type: "doc",
                         id: "users-sources/groups/index",
                     },
-                    items: ["users-sources/groups/manage_groups", "users-sources/groups/group_ref"],
+                    items: [
+                        "users-sources/groups/manage_groups",
+                        "users-sources/groups/group_ref",
+                    ],
                 },
                 {
                     type: "category",
@@ -480,7 +517,9 @@ export default {
                                         type: "doc",
                                         id: "users-sources/sources/protocols/kerberos/index",
                                     },
-                                    items: ["users-sources/sources/protocols/kerberos/browser"],
+                                    items: [
+                                        "users-sources/sources/protocols/kerberos/browser",
+                                    ],
                                 },
                                 "users-sources/sources/protocols/ldap/index",
                                 "users-sources/sources/protocols/oauth/index",
@@ -495,7 +534,9 @@ export default {
                                 type: "doc",
                                 id: "users-sources/sources/property-mappings/index",
                             },
-                            items: ["users-sources/sources/property-mappings/expressions"],
+                            items: [
+                                "users-sources/sources/property-mappings/expressions",
+                            ],
                         },
                         {
                             type: "category",
@@ -565,7 +606,10 @@ export default {
                         type: "doc",
                         id: "sys-mgmt/events/index",
                     },
-                    items: ["sys-mgmt/events/notifications", "sys-mgmt/events/transports"],
+                    items: [
+                        "sys-mgmt/events/notifications",
+                        "sys-mgmt/events/transports",
+                    ],
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
@@ -761,7 +805,7 @@ export default {
                 slug: "releases",
                 description: "Release Notes for recent authentik versions",
             },
-            items: releaseEntries,
+            items: releases,
         },
     ],
 };

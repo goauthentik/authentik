@@ -32,7 +32,6 @@ See the [overview](../../property-mappings/index.md) for information on how prop
 
 Each top level SCIM attribute is available as a variable in the expression. For example given an SCIM request with the payload of
 
-<!-- prettier-ignore-start -->
 ```json
 {
     "schemas": [
@@ -58,7 +57,6 @@ Each top level SCIM attribute is available as a variable in the expression. For 
     }
 }
 ```
-<!-- prettier-ignore-end -->
 
 The following variables are available in the expression:
 

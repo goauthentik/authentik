@@ -49,8 +49,6 @@ Paste the following block in your `local.yaml` file, after replacing the placeho
 
 To get the value for `x509cert`, go to _System_ > _Certificates_, and download the public Signing Certificate. To avoid further problems, concat it into "string format" using e.g.: https://www.samltool.com/format_x509cert.php
 
-<!-- prettier-ignore-start -->
-
 ```yaml
 # Optionally add this for docker debug-logging
 # monolog:
@@ -128,7 +126,5 @@ kimai:
                     displayname: "Kimai"
                     url: "https://kimai.company"
 ```
-
-<!-- prettier-ignore-end -->
 
 Afterwards, either [rebuild the cache](https://www.kimai.org/documentation/cache.html) or restart the docker container.

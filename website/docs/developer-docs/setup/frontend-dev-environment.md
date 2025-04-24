@@ -62,7 +62,7 @@ Depending on platform, some native dependencies might be required. On macOS, run
 4. From the cloned repository root, install the front-end dependencies using NPM.
 
     ```shell
-    # From the root of the repository
+    cd web
     npm ci
     ```
 
