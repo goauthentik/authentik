@@ -92,6 +92,9 @@ export function normalizeCSSSource(input: StyleSheetInit): CSSResultOrNative {
     return input;
 }
 
+/**
+ * Create a `CSSStyleSheet` from the given input.
+ */
 export function createStyleSheetUnsafe(input: StyleSheetInit): CSSStyleSheet {
     const result = normalizeCSSSource(input);
     if (result instanceof CSSStyleSheet) return result;
@@ -109,39 +112,80 @@ export function createStyleSheetUnsafe(input: StyleSheetInit): CSSStyleSheet {
 }
 
 /**
+ * A symbol to indicate that a stylesheet has been adopted by a style parent.
+ *
+ * @remarks
+ * Safari considers stylesheet removed from the `adoptedStyleSheets` array
+ * ready for garbage collection. Reuse of the stylesheet will result in tab-crash.
+ *
+ * Always discard the stylesheet after use.
+ */
+const StyleSheetAdoptedParent = Symbol("stylesheet-adopted");
+
+/**
+ * A CSS style sheet that has been adopted by a style parent.
+ */
+export interface AdoptedStyleSheet extends CSSStyleSheet {
+    [StyleSheetAdoptedParent]: WeakRef<StyleSheetParent>;
+}
+
+/**
+ * Type-predicate to determine if a given stylesheet has been adopted.
+ */
+export function isAdoptedStyleSheet(styleSheet: CSSStyleSheet): styleSheet is AdoptedStyleSheet {
+    if (!(StyleSheetAdoptedParent in styleSheet)) return false;
+
+    return styleSheet[StyleSheetAdoptedParent] instanceof WeakRef;
+}
+
+/**
  * Append stylesheet(s) to the given roots.
+ *
+ * @see {@linkcode removeStyleSheet} to remove a stylesheet from a given roots.
  */
 export function appendStyleSheet(
-    insertions: CSSStyleSheet | Iterable<CSSStyleSheet>,
-    ...styleParents: StyleSheetParent[]
+    styleParent: StyleSheetParent,
+    ...insertions: CSSStyleSheet[]
 ): void {
     insertions = Array.isArray(insertions) ? insertions : [insertions];
 
-    for (const nextStyleSheet of insertions) {
-        for (const styleParent of styleParents) {
-            if (styleParent.adoptedStyleSheets.includes(nextStyleSheet)) return;
+    for (const styleSheetInsertion of insertions) {
+        if (isAdoptedStyleSheet(styleSheetInsertion)) {
+            console.warn("Attempted to append adopted stylesheet", {
+                styleSheetInsertion,
+                currentParent: styleSheetInsertion[StyleSheetAdoptedParent]?.deref(),
+                rules: serializeStyleSheet(styleSheetInsertion),
+            });
 
-            styleParent.adoptedStyleSheets = [...styleParent.adoptedStyleSheets, nextStyleSheet];
+            throw new TypeError("Attempted to append a previously adopted stylesheet");
         }
+
+        if (styleParent.adoptedStyleSheets.includes(styleSheetInsertion)) return;
+
+        styleParent.adoptedStyleSheets = [...styleParent.adoptedStyleSheets, styleSheetInsertion];
+
+        Object.assign(styleSheetInsertion, {
+            [StyleSheetAdoptedParent]: new WeakRef(styleParent),
+        });
     }
 }
 
 /**
  * Remove a stylesheet from the given roots, matching by referential equality.
+ *
+ * @see {@linkcode appendStyleSheet} to append a stylesheet to a given roots.
  */
 export function removeStyleSheet(
-    currentStyleSheet: CSSStyleSheet,
-    ...styleParents: StyleSheetParent[]
+    styleParent: StyleSheetParent,
+    ...removals: CSSStyleSheet[]
 ): void {
-    for (const styleParent of styleParents) {
-        const nextAdoptedStyleSheets = styleParent.adoptedStyleSheets.filter(
-            (styleSheet) => styleSheet !== currentStyleSheet,
-        );
+    const nextAdoptedStyleSheets = styleParent.adoptedStyleSheets.filter(
+        (styleSheet) => !removals.includes(styleSheet),
+    );
 
-        if (nextAdoptedStyleSheets.length === styleParent.adoptedStyleSheets.length) return;
+    if (nextAdoptedStyleSheets.length === styleParent.adoptedStyleSheets.length) return;
 
-        styleParent.adoptedStyleSheets = nextAdoptedStyleSheets;
-    }
+    styleParent.adoptedStyleSheets = nextAdoptedStyleSheets;
 }
 
 /**

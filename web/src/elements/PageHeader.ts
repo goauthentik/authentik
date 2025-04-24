@@ -89,6 +89,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
                     --ak-brand-background-color: var(
                         --pf-c-page__sidebar--m-light--BackgroundColor
                     );
+                    --host-navbar-height: var(--ak-c-page-header--height, 7.5rem);
                 }
 
                 :host([theme="dark"]) {
@@ -105,7 +106,6 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                     display: flex;
                     flex-direction: row;
-                    min-height: 6rem;
 
                     display: grid;
                     row-gap: var(--pf-global--spacer--sm);
@@ -115,6 +115,10 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
                     grid-template-areas:
                         "brand toggle primary secondary"
                         "brand toggle description secondary";
+
+                    @media (min-width: 426px) {
+                        height: var(--host-navbar-height);
+                    }
 
                     @media (max-width: 768px) {
                         row-gap: var(--pf-global--spacer--xs);
@@ -161,7 +165,15 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
                     &.page-description {
                         grid-area: description;
-                        padding-block-end: var(--pf-global--spacer--md);
+                        margin-block-end: var(--pf-global--spacer--md);
+
+                        display: box;
+                        display: -webkit-box;
+                        line-clamp: 2;
+                        -webkit-line-clamp: 2;
+                        box-orient: vertical;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
 
                         @media (max-width: 425px) {
                             display: none;

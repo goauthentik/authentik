@@ -1,6 +1,7 @@
 import {
     appendStyleSheet,
     assertAdoptableStyleSheetParent,
+    createStyleSheetUnsafe,
 } from "@goauthentik/common/stylesheets.js";
 
 import { TemplateResult, render as litRender } from "lit";
@@ -15,6 +16,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export const render = (body: TemplateResult) => {
     assertAdoptableStyleSheetParent(document);
 
-    appendStyleSheet([PFBase, AKGlobal], document);
+    appendStyleSheet(document, ...[PFBase, AKGlobal].map(createStyleSheetUnsafe));
     return litRender(body, document.body);
 };
