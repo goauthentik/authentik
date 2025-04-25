@@ -51,8 +51,10 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 		b, readErr := io.ReadAll(res.Body)
 		if readErr != nil {
 			b = []byte(readErr.Error())
+			a.log.WithError(readErr).WithField("body", string(b)).Warning("failed to read error response body")
+		} else {
+			a.log.WithField("body", string(b)).Warning("failed to send token request")
 		}
-		a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
 		return nil
 	}
 
