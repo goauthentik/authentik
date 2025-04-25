@@ -176,7 +176,7 @@ metadata:
     name: gitea-authentik-secret
 type: Opaque
 stringData:
-    key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
+    key: "<Client ID from authentik>"
     secret: "<Client secret from authentik>"
 ```
 
