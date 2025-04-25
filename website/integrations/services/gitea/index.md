@@ -47,7 +47,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the **Redirect URI** in the previous section)
     - **OAuth2 Provider**: `OpenID Connect`
-    - **Client ID (Key)**: Enter the client ID from authentik.
+    - **Client ID (Key)**: Enter the Client ID from authentik.
     - **Client Secret**: Enter the Client Secret from authentik.
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.png`
     - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
@@ -141,13 +141,13 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
 4. Click **Update Authentication Source**.
 
 :::note
-Users without any of the defined groups will no longer be able to log in.
-Users of the group **gitadmin** will have administrative privileges, and users in the group **gitrestricted** will be restricted.
+Users who are not part of any defined group will be denied login access.
+In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access
 :::
 
 ### Helm Chart Configuration
 
-authentik can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
+authentik authentication can be configured automatically in Kubernetes deployments using its [Helm chart](https://gitea.com/gitea/helm-chart/).
 
 Add the following to your Gitea Helm chart `values.yaml` file:
 
@@ -156,8 +156,8 @@ gitea:
     oauth:
         - name: "authentik"
         provider: "openidConnect"
-        key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
-        secret: "<CLIENT_SECRET_FROM_AUTHENTIK>" #Step 1
+        key: "<Client ID from authentik>"
+        secret: "<Client secret from authentik>"
         autoDiscoverUrl: "https://authentik.company/application/o/<slug>/.well-known/openid-configuration"
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
@@ -165,7 +165,7 @@ gitea:
 
 ### Kubernetes Secret
 
-Alternatively you can use a Kubernetes secret to set the `key` and `secret` values.
+You can also utilize a Kubernetes Secret object to store and manage the sensitive `key` and `secret` values.
 
 1. Create a Kubernetes secret with the following variables:
 
@@ -192,6 +192,10 @@ gitea:
         iconUrl: "https://authentik.company/static/dist/assets/icons/icon.png"
         scopes: "email profile"
 ```
+
+## Resources
+
+- [Official Gitea Documentation](https://docs.gitea.com/)
 
 ## Configuration verification
 
