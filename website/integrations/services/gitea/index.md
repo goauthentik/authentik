@@ -43,7 +43,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 ## Gitea configuration
 
 1. Log in to Gitea as an admin, then click on your profile icon at the top right and select **Site Administration**.
-2. Select the **Authentication Sources** tab and click **Add Authentication Source**.
+2. Select the **Authentication Sources** tab and then click on **Add Authentication Source**.
 3. Set the following required configurations:
     - **Authentication Name**: `authentik` (This must match the name used in the Redirect URI in the previous section)
     - **OAuth2 Provider**: `OpenID Connect`
