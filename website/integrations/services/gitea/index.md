@@ -50,7 +50,7 @@ To support the integration of Gitea with authentik, you need to create an applic
     - **Client ID (Key)**: Enter the client ID from authentik.
     - **Client Secret**: Enter the Client Secret from authentik.
     - **Icon URL**: `https://authentik.company/static/dist/assets/icons/icon.png`
-    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
+    - **OpenID Connect Auto Discovery URL**: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
     - **Additional Scopes**: `email profile`
 
 ![](./gitea1.png)
