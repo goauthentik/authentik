@@ -21,6 +21,7 @@ postgresql:
   user: authentik
   port: 5432
   password: "env://POSTGRES_PASSWORD"
+  use_pool: False
   test:
     name: test_authentik
   default_schema: public

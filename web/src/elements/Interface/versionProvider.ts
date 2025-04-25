@@ -1,7 +1,7 @@
 import { authentikVersionContext } from "@goauthentik/elements/AuthentikContexts";
 
 import { consume } from "@lit/context";
-import { Constructor } from "@lit/reactive-element/decorators/base";
+import { Constructor } from "@lit/reactive-element/decorators/base.js";
 import type { LitElement } from "lit";
 
 import type { Version } from "@goauthentik/api";

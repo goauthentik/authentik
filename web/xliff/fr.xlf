@@ -9696,12 +9696,115 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s783964a224796865">
   <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <target>Champ qui contient les membres d'un groupe. Si vous utilisez le champ "memberUid", la valeur est censée contenir un nom distinctif relatif, par exemple 'memberUid=un-utilisateur' au lieu de 'memberUid=cn=un-utilisateur,ou=groups,...'. Lorsque "Recherche avec un attribut utilisateur" est sélectionné, cet attribut doit être un attribut utilisateur, sinon un attribut de groupe.</target>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
+  <target>Recherche avec un attribut utilisateur</target>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+  <target>Champ contenant les DN des groupes dont l'utilisateur est membre. Ce champ est utilisé pour rechercher les groupes d'un utilisateur, par exemple 'memberOf'. Pour rechercher les groupes imbriqués dans un environnement Active Directory, utilisez 'memberOf:1.2.840.113556.1.4.1941:'.</target>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+  <target>Permissions initiales</target>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+  <target>Mode de permissions initiales inconnu</target>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+  <target>Permissions initiales mises à jour avec succès.</target>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+  <target>Permissions initiales créées avec succès.</target>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+  <target>Lorsqu'un utilisateur avec le rôle sélectionné crée un objet, les permissions initiales seront appliquées à cet objet,</target>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+  <target>Les permissions initiales peuvent soit être placées sur l'utilisateur créant l'objet, ou sur le rôle sélectionné au champ précédent.</target>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+  <target>Permissions disponibles</target>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+  <target>Permissions sélectionnées</target>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+  <target>Permissions à attribuer lorsqu'un nouvel objet est créé.</target>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+  <target>Définir des permissions initiales pour les objets nouvellement créés.</target>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+  <target>Mettre à jour les permissions initiales</target>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+  <target>Créer des permissions initiales</target>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+  <target>Réputation : limite inférieure</target>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+  <target>La réputation ne peut pas descendre en dessous de cette valeur. Zéro ou négatif.</target>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+  <target>Réputation : limite supérieure</target>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+  <target>La réputation ne peut pas monter au dessus de cette valeur. Zéro ou positif.</target>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+  <target>HTTP Basic Auth</target>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+  <target>Inclure le client ID et secret comme paramètres de la requête</target>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+  <target>Méthode d'authentification pour authorization_code</target>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+  <target>Comment effectuer l'authentification lors d'une demande de jeton pour le flux authorization_code</target>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable "Remember me on this device"</source>
+  <target>Activer "Se souvenir de moi sur cet appareil"</target>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+  <target>Si cette option est activée, l'utilisateur peut enregistrer son nom d'utilisateur dans un cookie, ce qui lui permet de passer directement à la saisie de son mot de passe.</target>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+  <target>Se souvenir de moi sur cet appareil</target>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+  <target>Vérifiez que le nouveau mot de passe de l'utilisateur est différent de ses mots de passe précédents. Le nombre d'anciens mots de passe à vérifier est configurable.</target>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
+  <target>Nombre d'anciens mots de passe à vérifier</target>
 </trans-unit>
     </body>
   </file>
