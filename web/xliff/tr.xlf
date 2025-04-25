@@ -8620,7 +8620,6 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Son görülme: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -9546,6 +9545,12 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="s1c336c2d6cef77b3">
   <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
 </trans-unit>
     </body>
   </file>

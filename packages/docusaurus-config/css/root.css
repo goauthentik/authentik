@@ -13,7 +13,3 @@
 
     --ifm-color-content: hsl(216 35% 3%);
 }
-
-body {
-    overscroll-behavior-x: none;
-}

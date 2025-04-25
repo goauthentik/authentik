@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-18 00:09+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -460,6 +460,36 @@ msgstr "许可证使用情况"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "许可证使用情况记录"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr "要检查的字段键，可以使用输入阶段中定义的字段键。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "检查指定数量的密码。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "未在上下文中设置密码"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr "此密码被使用过。请选择其他密码。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "密码唯一性策略"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "密码唯一性策略"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "用户密码历史记录"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -1191,10 +1221,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "清除策略缓存指标"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr "要检查的字段键，可以使用输入阶段中定义的字段键。"
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr "密码哈希允许出现在 HaveIBeenPwned 中多少次"
 
@@ -1202,10 +1228,6 @@ msgstr "密码哈希允许出现在 HaveIBeenPwned 中多少次"
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
 msgstr "如果 zxcvbn 分数小于等于此值，则策略失败。"
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "未在上下文中设置密码"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1247,20 +1269,6 @@ msgstr "信誉分数"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "信誉分数"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr "正在等待身份验证…"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr "您正在另一个标签页中验证身份。身份验证完成后，此页面会刷新。"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr "在此标签页中验证身份"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"

@@ -9788,12 +9788,23 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
   <source>Enable "Remember me on this device"</source>
+  <target>Activer "Se souvenir de moi sur cet appareil"</target>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+  <target>Si cette option est activée, l'utilisateur peut enregistrer son nom d'utilisateur dans un cookie, ce qui lui permet de passer directement à la saisie de son mot de passe.</target>
 </trans-unit>
 <trans-unit id="s1c336c2d6cef77b3">
   <source>Remember me on this device</source>
+  <target>Se souvenir de moi sur cet appareil</target>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+  <target>Vérifiez que le nouveau mot de passe de l'utilisateur est différent de ses mots de passe précédents. Le nombre d'anciens mots de passe à vérifier est configurable.</target>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
+  <target>Nombre d'anciens mots de passe à vérifier</target>
 </trans-unit>
     </body>
   </file>

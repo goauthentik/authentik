@@ -336,6 +336,7 @@ export const config: Options.Testrunner = {
         { error: _error, result: _result, duration: _duration, passed: _passed, retries: _retries },
     ) {
         if (lemmeSee) {
+            // @ts-expect-error TODO
             await browser.pause(500);
         }
     },

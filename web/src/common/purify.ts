@@ -1,3 +1,4 @@
+import type { Config as DOMPurifyConfig } from "dompurify";
 import DOMPurify from "dompurify";
 
 import { render } from "@lit-labs/ssr";
@@ -6,9 +7,9 @@ import { TemplateResult, html } from "lit";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-export const DOM_PURIFY_STRICT: DOMPurify.Config = {
+export const DOM_PURIFY_STRICT = {
     ALLOWED_TAGS: ["#text"],
-};
+} as const satisfies DOMPurifyConfig;
 
 export async function renderStatic(input: TemplateResult): Promise<string> {
     return await collectResult(render(input));

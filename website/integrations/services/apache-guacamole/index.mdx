@@ -66,7 +66,7 @@ Docker containers are typically configured using environment variables. To ensur
     OPENID_CLIENT_ID=<Client ID from authentik>
     OPENID_ISSUER=https://authentik.company/application/o/<your-slug>/
     OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<your-slug>/jwks/
-    OPENID_REDIRECT_URI=https://guacamole.company/ # Must match Redirect URI in authentik
+    OPENID_REDIRECT_URI=https://guacamole.company/
     OPENID_USERNAME_CLAIM_TYPE=preferred_username
     ```
 
@@ -85,7 +85,7 @@ Additionally, ensure your `guacamole.properties` file (typically located in `/et
     openid-client-id=<Client ID from authentik>
     openid-issuer=https://authentik.company/application/o/<your-slug>/
     openid-jwks-endpoint=https://authentik.company/application/o/<your-slug>/jwks/
-    openid-redirect-uri=https://guacamole.company/ # This must match the Redirect URI set in authentik (Including trailing slash).
+    openid-redirect-uri=https://guacamole.company/
     openid-username-claim-type=preferred_username
     ```
 

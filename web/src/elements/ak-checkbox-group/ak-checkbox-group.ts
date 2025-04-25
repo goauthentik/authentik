@@ -2,7 +2,7 @@ import { AkControlElement } from "@goauthentik/elements/AkControlElement";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
-import { PropertyValues } from "@lit/reactive-element/reactive-element";
+import { PropertyValues } from "@lit/reactive-element";
 import { TemplateResult, css, html } from "lit";
 import { customElement, property, queryAll, state } from "lit/decorators.js";
 import { map } from "lit/directives/map.js";
