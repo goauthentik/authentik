@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Atlassian Cloud
 
-> Atlassian is an Australian-American proprietary software company that specializes in collaboration tools designed primarily for software development and project management. Atlassian Cloud is their cloud platform and provides access to their popular apps include Jira, Confluence, Bitbucket, and Trello.
+> Atlassian is an Australian-American proprietary software company that specializes in collaboration tools designed primarily for software development and project management. Atlassian Cloud is their cloud platform and provides access to their popular apps; Jira, Confluence, Bitbucket, Trello and others.
 >
 > -- https://www.atlassian.com/
 
@@ -54,11 +54,11 @@ To support the integration of Atlassian with authentik, you need to create an ap
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Atlassian provider.
-3. Under **Download signing certificate** click the **Download** button. This certificate will be required by Atlassian.
+3. Under **Download signing certificate** click the **Download** button. The contents of this certificate will be required in the next section.
 
 ## Atlassian configuration
 
-1. Login to admin.atlassian.com as an admin.
+1. Login to admin.atlassian.com as an Atlassian organization admin.
 2. Navigate to **Security** > **Identity providers**.
 3. Under **Choose an identity provider** select **Other provider**.
 4. Provide a **Directory name** e.g authentik and click **Add**.
@@ -66,7 +66,7 @@ To support the integration of Atlassian with authentik, you need to create an ap
 6. Set the following required configurations:
     - **Identity provider Entity ID**: `authentik`
     - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/`
-    - **Public x509 certificate**: paste in your public certificate (explain how to copy it from authentik)
+    - **Public x509 certificate**: enter the contents of the certificate that was downloaded in the previous section.
 7. Click **Add**.
 8. You will be shown a **Service provider entity URL** and **Service provider assertion consumer service URL**. Copy both, they will be required in authentik.
 9. Click **Next**
@@ -93,6 +93,6 @@ To support the integration of Atlassian with authentik, you need to create an ap
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Atlassian, log out of Atlassian cloud and log in using your `External User` Atlassian cloud credentials.
+To confirm that authentik is properly configured with Atlassian Cloud, log out of Atlassian Cloud and log in using your `External User` Atlassian Cloud credentials.
 
-Open an Atlassian app such as Jira. You will be asked to verify your identity and redirected to your authentik instance. Enter your authentik credentials and you should now be logged into the Atlassian app.
+At the dashboard, select an Atlassian app such as Jira. You will be asked to verify your identity and be redirected to your authentik instance. Enter your authentik credentials and are now logged into the selected Atlassian app.
