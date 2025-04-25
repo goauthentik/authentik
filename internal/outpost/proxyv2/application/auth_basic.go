@@ -37,25 +37,25 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.publicHostHTTPClient.Do(req)
-	if res != nil && res.Body != nil {
-		defer func() {
-			if err := res.Body.Close(); err != nil {
-				a.log.WithError(err).Warning("failed to close response body")
-			}
-		}()
-	}
-	if err != nil || res == nil || res.StatusCode > 200 {
-		if res != nil && res.Body != nil {
-			b, readErr := io.ReadAll(res.Body)
-			if readErr != nil {
-				b = []byte(readErr.Error())
-			}
-			a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
-		} else {
-			a.log.WithError(err).Warning("failed to send token request, no response body")
-		}
+	if err != nil {
+		a.log.WithError(err).Warning("failed to send token request")
 		return nil
 	}
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			a.log.WithError(err).Warning("failed to close response body")
+		}
+	}()
+
+	if res.StatusCode > 200 {
+		b, readErr := io.ReadAll(res.Body)
+		if readErr != nil {
+			b = []byte(readErr.Error())
+		}
+		a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
+		return nil
+	}
+
 	var token TokenResponse
 	err = json.NewDecoder(res.Body).Decode(&token)
 	if err != nil {
