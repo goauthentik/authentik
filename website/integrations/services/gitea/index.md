@@ -177,7 +177,7 @@ metadata:
 type: Opaque
 stringData:
     key: "<CLIENT_ID_FROM_AUTHENTIK>" #Step 1
-    secret: "<CLIENT_SECRET_FROM_AUTHENTIK?" #Step 1
+    secret: "<Client secret from authentik>"
 ```
 
 2. Add the following configurations to your Gitea Helm Chart `values.yaml` file:
