@@ -14,7 +14,12 @@ from authentik.core.models import Group
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
+from authentik.sources.ldap.models import (
+    LDAP_UNIQUENESS,
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    flatten,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 
@@ -89,6 +94,12 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     defaults,
                 )
                 self._logger.debug("Created group with attributes", **defaults)
+                if not GroupLDAPSourceConnection.objects.filter(
+                    source=self._source, identifier=uniq
+                ):
+                    GroupLDAPSourceConnection.objects.create(
+                        source=self._source, group=ak_group, identifier=uniq
+                    )
             except SkipObjectException:
                 continue
             except PropertyMappingExpressionException as exc:

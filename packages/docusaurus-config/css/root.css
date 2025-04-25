@@ -1,0 +1,15 @@
+:root {
+    --white: hsl(0deg 0% 95%);
+
+    --ifm-color-primary: #fd4b2d;
+    --ifm-color-primary-dark: #fd320f;
+    --ifm-color-primary-darker: #fb2602;
+    --ifm-color-primary-darkest: #cf1f02;
+    --ifm-color-primary-light: #fd644b;
+    --ifm-color-primary-lighter: #fd7159;
+    --ifm-color-primary-lightest: #fe9786;
+
+    --ifm-hover-overlay: hsl(0deg 0% 100% / 25%);
+
+    --ifm-color-content: hsl(216 35% 3%);
+}

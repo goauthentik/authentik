@@ -22,6 +22,7 @@ export default [
             "coverage/",
             "src/locale-codes.ts",
             "storybook-static/",
+            "scripts/esbuild",
             "src/locales/",
         ],
     },

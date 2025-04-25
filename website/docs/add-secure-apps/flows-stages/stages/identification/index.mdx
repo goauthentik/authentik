@@ -34,6 +34,10 @@ These fields specify if and which flows are linked on the form. The enrollment f
 
 When enabled, any user identifier will be accepted as valid (as long as they match the correct format, i.e. when [User fields](#user-fields) is set to only allow Emails, then the identifier still needs to be an Email). The stage will succeed and the flow will continue to the next stage. Stages like the [Password stage](../password/index.md) and [Email stage](../email/index.mdx) are aware of this "pretend" user and will behave the same as if the user would exist.
 
+## Enable "Remember me on this device":ak-version[2025.4]
+
+When enabled, users will be given the option at login of having their username stored on the device. If selected, on future logins this stage will automatically fill in the username and fast-forward to the password field. Users will still have the options of clicking "Not you?" and going back to provide a different username or disable this feature.
+
 ## Source settings
 
 Some sources (like the [OAuth Source](../../../../users-sources/sources/protocols/oauth/index.mdx) and [SAML Source](../../../../users-sources/sources/protocols/saml/index.md)) require user interaction. To make these sources available to users, they can be selected in the Identification stage settings, which will show them below the selected [user field](#user-fields).

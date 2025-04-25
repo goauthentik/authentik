@@ -5,9 +5,9 @@ import type * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
 import remarkGithub, { BuildUrlValues } from "remark-github";
 import { defaultBuildUrl } from "remark-github";
 import remarkDirective from "remark-directive";
-import remarkVersionDirective from "./remark/version-directive";
-import remarkPreviewDirective from "./remark/preview-directive";
-import remarkSupportDirective from "./remark/support-directive";
+import remarkVersionDirective from "./remark/version-directive.js";
+import remarkPreviewDirective from "./remark/preview-directive.js";
+import remarkSupportDirective from "./remark/support-directive.js";
 
 const createConfig = (): Config => {
     return {
@@ -60,14 +60,14 @@ const createConfig = (): Config => {
                     },
                     {
                         href: "https://github.com/goauthentik/authentik",
-                        className: "header-github-link",
-                        "aria-label": "GitHub repository",
+                        "data-icon": "github",
+                        "aria-label": "GitHub",
                         position: "right",
                     },
                     {
                         href: "https://goauthentik.io/discord",
-                        className: "header-discord-link",
-                        "aria-label": "GitHub repository",
+                        "data-icon": "discord",
+                        "aria-label": "Discord",
                         position: "right",
                     },
                 ],
@@ -138,7 +138,9 @@ const createConfig = (): Config => {
                         ],
                     },
                     theme: {
-                        customCss: require.resolve("./src/css/custom.css"),
+                        customCss: require.resolve(
+                            "@goauthentik/docusaurus-config/css/index.css",
+                        ),
                     },
                 } satisfies Preset.Options,
             ],

@@ -4,6 +4,9 @@ sidebar_label: Apache Guacamole™
 support_level: authentik
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## What is Apache Guacamole™
 
 > Apache Guacamole is a clientless remote desktop gateway. It supports standard protocols like VNC, RDP, and SSH.
@@ -41,12 +44,13 @@ To support the integration of Apache Guacamole with authentik, you need to creat
 
 3. Click **Submit** to save the new application and provider.
 
-## Guacamole configuration
+## Apache Guacamole Configuration
 
-It is recommended you configure an admin account in Guacamole before setting up SSO to make things easier. Create a user in Guacamole using the username of your user in authentik and give them admin permissions. Without this, you might lose access to the Guacamole admin settings and have to revert the settings below.
+It is recommended to create an admin account in Guacamole before configuring Single Sign-On to simplify the process. Create a user in Guacamole using the same username as in authentik and grant them admin permissions. This step is important to avoid losing access to the Guacamole admin settings, as you may need to revert your changes without it.
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+:::warning
+You can configure Apache Guacamole to use either the `sub` or `preferred_username` as the UID field under `user-name-attribute`. When using `preferred_username` as the user identifier, ensure that the [**Allow users to change username** setting](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) is disabled to prevent authentication issues. The `sub` option uses a unique, stable identifier for the user, while `preferred_username` uses the username configured in authentik.
+:::
 
 <Tabs
   defaultValue="docker"
@@ -55,29 +59,35 @@ import TabItem from "@theme/TabItem";
     { label: 'Standalone', value: 'standalone' },
   ]}>
   <TabItem value="docker">
-    The Docker containers are configured via environment variables. The following variables are required:
+Docker containers are typically configured using environment variables. To ensure proper integration, add the following variables to your `.env` file:
 
-```yaml
-OPENID_AUTHORIZATION_ENDPOINT: https://authentik.company/application/o/authorize/
-OPENID_CLIENT_ID: # client ID from above
-OPENID_ISSUER: https://authentik.company/application/o/*Slug of the application from above*/
-OPENID_JWKS_ENDPOINT: https://authentik.company/application/o/*Slug of the application from above*/jwks/
-OPENID_REDIRECT_URI: https://guacamole.company/ # This must match the redirect URI above
-OPENID_USERNAME_CLAIM_TYPE: preferred_username
-```
+    ```yaml showLineNumbers
+    OPENID_AUTHORIZATION_ENDPOINT=https://authentik.company/application/o/authorize/
+    OPENID_CLIENT_ID=<Client ID from authentik>
+    OPENID_ISSUER=https://authentik.company/application/o/<your-slug>/
+    OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<your-slug>/jwks/
+    OPENID_REDIRECT_URI=https://guacamole.company/
+    OPENID_USERNAME_CLAIM_TYPE=preferred_username
+    ```
+
+Additionally, ensure your `guacamole.properties` file (typically located in `/etc/guacamole/`) includes the following line. This setting allows environment variables to be evaluated before static configuration files:
+
+    ```yaml
+    enable-environment-properties: true
+    ```
 
   </TabItem>
   <TabItem value="standalone">
-    Standalone Guacamole is configured using the `guacamole.properties` file. Add the following settings:
+    To set up Apache Guacamole in a standalone environment, you'll need to adjust the settings in the `guacamole.properties` file, usually found in the `/etc/guacamole/` directory. Add the following settings:
 
-```
-openid-authorization-endpoint=https://authentik.company/application/o/authorize/
-openid-client-id=# client ID from above
-openid-issuer=https://authentik.company/application/o/*Slug of the application from above*/
-openid-jwks-endpoint=https://authentik.company/application/o/*Slug of the application from above*/jwks/
-openid-redirect-uri=https://guacamole.company/ # This must match the redirect URI above
-openid-username-claim-type=preferred_username
-```
+    ```yaml showLineNumbers title="/etc/guacamole/guacamole.properties"
+    openid-authorization-endpoint=https://authentik.company/application/o/authorize/
+    openid-client-id=<Client ID from authentik>
+    openid-issuer=https://authentik.company/application/o/<your-slug>/
+    openid-jwks-endpoint=https://authentik.company/application/o/<your-slug>/jwks/
+    openid-redirect-uri=https://guacamole.company/
+    openid-username-claim-type=preferred_username
+    ```
 
   </TabItem>
 </Tabs>
@@ -98,9 +108,9 @@ This section depends on the operating system hosting Apache Guacamole.
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates
-```
+    ```shell
+    update-ca-certificates
+    ```
 
 ##### For _Synology_ systems:
 
@@ -108,24 +118,80 @@ update-ca-certificates
 
 2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
 
-```shell
-update-ca-certificates.sh
-```
+    ```shell
+    update-ca-certificates.sh
+    ```
 
 #### Adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
 
 1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
 
-```shell
-openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
-```
+    ```shell
+    openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+    ```
 
 2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
 
-```shell
-keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
-```
+    ```shell
+    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+    ```
 
 :::note
 More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
 :::
+
+### Self Signed Certificates
+
+When using a self-signed certificate, it is necessary to incorporate the certificate of the corresponding Certificate Authority into both the `/etc/ssl/certs/ca-certificates.crt` file and the `/opt/java/openjkd/jre/lib/security/cacerts` keystore on your Apache Guacamole host. This ensures that the self-signed certificate is trusted by both the system and the Java runtime environment used by Guacamole.
+
+#### Adding Certificate Authority certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`
+
+:::note
+This section depends on the operating system hosting Apache Guacamole.
+:::
+
+##### For _Debian_ based operating systems:
+
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/local/share/ca-certificates/` directory on the Apache Guacamole host. Ensure that the file extension is `.crt`.
+
+2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
+
+    ```shell
+    update-ca-certificates
+    ```
+
+##### For _Synology_ systems:
+
+1. Copy the certificate of the Certificate Authority (e.g. `<CA_certificate>.crt`) to the `/usr/syno/etc/security-profile/ca-bundle-profile/ca-certificates/` directory on the Synology host. Ensure that the filetype is `.crt`.
+
+2. To add the certificate as trusted in `/etc/ssl/certs/ca-certificates.crt`, use the following command:
+
+    ```shell
+    update-ca-certificates.sh
+    ```
+
+#### Adding Certificate Authority certificate to `/opt/java/openjkd/jre/lib/security/cacerts`
+
+1. To export the certificate of the Certificate Authority, use the following command on the Certificate Authority host:
+
+    ```shell
+    openssl pkcs12 -export -in <CA_certificate>.crt -inkey <CA_certificate>.key -out <CA_certificate>.p12 -passout pass:<password>
+    ```
+
+2. To import the certificate to the `/opt/java/openjdk/jre/lib/security/cacerts` keystore on the Apache Guacamole host, use the following command:
+
+    ```shell
+    keytool -importkeystore -srckeystore <CA_certificate>.p12 -srcstoretype PKCS12 -keystore /opt/java/openjdk/jre/lib/security/cacerts -deststorepass <destination_store_password> -nopromt -srcstorepass <password>
+    ```
+
+:::note
+More information on the keytool command can be found in the [Oracle documentation.](https://docs.oracle.com/en/java/javase/21/docs/specs/man/keytool.html)
+:::
+
+## Resources
+
+- [Apache Guacamole official documentation on OpenID Connect integrations](https://guacamole.apache.org/doc/gug/openid-auth.html#configuring-guacamole-for-single-sign-on-with-openid-connect)
+
+## Configuration verification
+
+To verify that authentik is correctly configured with Apache Guacamole, log out and log back in through authentik. You should notice a new button appearing at the bottom left of the login page.

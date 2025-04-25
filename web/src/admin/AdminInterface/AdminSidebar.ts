@@ -131,6 +131,7 @@ export class AkAdminSidebar extends WithCapabilitiesConfig(WithVersion(AKElement
                 ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
                 ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
                 ["/identity/roles", msg("Roles"), [`^/identity/roles/(?<id>${UUID_REGEX})$`]],
+                ["/identity/initial-permissions", msg("Initial Permissions"), [`^/identity/initial-permissions/(?<id>${ID_REGEX})$`]],
                 ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],

@@ -36,6 +36,7 @@ class IdentificationStageSerializer(StageSerializer):
             "sources",
             "show_source_labels",
             "pretend_user_exists",
+            "enable_remember_me",
         ]
 
 

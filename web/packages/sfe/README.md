@@ -9,11 +9,11 @@ It exists primarily to support late versions of Microsoft Office365 and Microsof
 software that still uses the MSEdge-18 and IE-11 _Trident_ web engine for web-based log-ins. It has
 limited support for the full language, supporting only the following stages:
 
--   identification
--   password
--   redirect
--   autosubmit
--   authenticator validation (both code and WebAuthn)
+- identification
+- password
+- redirect
+- autosubmit
+- authenticator validation (both code and WebAuthn)
 
 ### License
 
