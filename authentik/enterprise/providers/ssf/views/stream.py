@@ -4,10 +4,9 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.fields import CharField, ChoiceField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from structlog.stdlib import get_logger
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
     EventTypes,

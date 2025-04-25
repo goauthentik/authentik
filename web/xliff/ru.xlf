@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="ru" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; не найден.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>URL "
+        <x id="0" equiv-text="${this.url}"/>" не найден.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>Введите полный URL-адрес, относительный путь или используйте 'fa://fa-test', чтобы использовать иконку Font Awesome &quot;fa-test&quot;.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>Введите полный URL-адрес, относительный путь или используйте 'fa://fa-test', чтобы использовать иконку Font Awesome "fa-test".</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3742,7 +3742,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s6b6e6eb037aef7da">
         <source>Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.</source>
-        <target>Для аутентификации используйте указанные ниже имя пользователя и пароль. Пароль можно получить позже на странице &quot;Токены&quot;.</target>
+        <target>Для аутентификации используйте указанные ниже имя пользователя и пароль. Пароль можно получить позже на странице "Токены".</target>
         
       </trans-unit>
       <trans-unit id="sf6e1665c7022a1f8">
@@ -3778,10 +3778,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Вы уверены, что хотите обновить
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
-        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>"
+        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4847,7 +4847,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
+        <source>A "roaming" authenticator, like a YubiKey</source>
         <target>Переносной аутентификатор, например YubiKey</target>
         
       </trans-unit>
@@ -5202,12 +5202,12 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2512334108f06a5a">
         <source>Stay signed in offset</source>
-        <target>Смещение &quot;Оставаться в системе&quot;</target>
+        <target>Смещение "Оставаться в системе"</target>
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-        <target>Если значение продолжительности больше 0, у пользователя будет возможность выбрать опцию &quot;оставаться в системе&quot;, что продлит его сеанс на указанное здесь время.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <target>Если значение продолжительности больше 0, у пользователя будет возможность выбрать опцию "оставаться в системе", что продлит его сеанс на указанное здесь время.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -7377,7 +7377,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Одна подсказка, &quot;Мастер создания нового приложения&quot;, в настоящее время скрыта</target>
+  <target>Одна подсказка, "Мастер создания нового приложения", в настоящее время скрыта</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7492,7 +7492,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Пользователь успешно создан и добавлен в группу <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Этот пользователь будет добавлен в группу &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8615,7 +8615,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
-  <target>Внимание: Этот экземпляр authentik перешел в режим &quot;только чтение&quot; из-за истекших/превышенных лицензий.</target>
+  <target>Внимание: Этот экземпляр authentik перешел в режим "только чтение" из-за истекших/превышенных лицензий.</target>
 </trans-unit>
 <trans-unit id="se8c58e65674b6847">
   <source>This authentik instance uses a Trial license.</source>
@@ -8643,7 +8643,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Предоставить пользователям кнопку &quot;показать пароль&quot;.</target>
+  <target>Предоставить пользователям кнопку "показать пароль".</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8757,7 +8757,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Группа синхронизации </target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
   <source>Parent Group</source>
@@ -8954,7 +8954,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Valid redirect URIs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9499,13 +9499,88 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable "Remember me on this device"</source>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
 </trans-unit>
     </body>
   </file>

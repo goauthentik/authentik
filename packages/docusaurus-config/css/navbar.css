@@ -1,0 +1,179 @@
+:root {
+    --ifm-navbar-item-padding-horizontal: 0.5rem;
+    --ifm-navbar-link-color: var(--white);
+    --ifm-navbar-link-hover-color: var(--white);
+
+    --ifm-navbar-link-color: var(--white);
+    --ifm-navbar-link-hover-color: var(--white);
+}
+
+.navbar--fixed-top {
+    background-color: var(--ifm-color-primary);
+    box-shadow: none;
+}
+
+.navbar .navbar__inner {
+    margin: 0 auto;
+    max-width: 1600px;
+}
+
+/* Nav header background color on mobile */
+.navbar-sidebar__brand,
+.navbar-sidebar__items {
+    background-color: var(--ifm-color-primary);
+}
+
+.navbar__toggle,
+.navbar-sidebar__brand .clean-btn,
+.navbar__items--right .clean-btn {
+    color: var(--white);
+
+    &:hover {
+        background-color: var(--ifm-hover-overlay);
+    }
+}
+
+.navbar-sidebar__brand .navbar-sidebar__close {
+    --ifm-color-emphasis-600: var(--white);
+}
+
+.navbar__item.navbar__link {
+    user-select: none;
+}
+
+.navbar__items:not(.navbar__items--right) {
+    .navbar__item.navbar__link {
+        margin-block-start: 0.1em;
+        border-radius: var(--ifm-badge-border-radius);
+    }
+
+    .navbar__item.navbar__link.navbar__link--active {
+        background: #fff;
+        color: var(--ifm-color-primary);
+    }
+
+    .navbar__item.navbar__link:not(.navbar__link--active):hover {
+        background: var(--ifm-hover-overlay);
+        color: #fff;
+    }
+
+    .navbar__item.navbar__link + .navbar__item.navbar__link {
+        margin-inline-start: calc(var(--ifm-navbar-padding-horizontal) / 2);
+    }
+}
+
+.navbar__item.navbar__link {
+    font-weight: 600;
+}
+
+.navbar--fixed-top .navbar__inner .navbar__item {
+    filter: drop-shadow(0px -1px var(--ifm-color-primary-darker));
+}
+
+@media (min-width: 1120px) {
+    .navbar--fixed-top .navbar__items:not(.navbar__items--right) {
+        --ifm-navbar-item-padding-horizontal: 1rem;
+    }
+
+    .navbar {
+        margin: 0;
+        padding-inline-start: 0;
+    }
+
+    .navbar__brand {
+        justify-content: center;
+        width: var(--doc-sidebar-width, 300px);
+        margin: 0;
+    }
+
+    .navbar__item.navbar__link {
+        font-size: 1.1rem;
+    }
+}
+
+.navbar__logo {
+    margin: 0 0.75rem 0.2rem 0;
+}
+
+.navbar__items--right {
+    display: grid;
+
+    --ifm-hover-overlay: hsl(0deg 0% 100% / 25%);
+    --ifm-navbar-item-padding-horizontal: 0.75rem;
+
+    .navbar__item.navbar__link {
+        grid-row: 1;
+
+        &:first-child {
+            grid-column: 1 / span 1;
+        }
+
+        &:nth-child(2) {
+            grid-column: 2 / span 1;
+        }
+    }
+
+    div:has(.DocSearch) {
+        grid-column: 5 / span 1;
+        grid-row: 1;
+
+        @media (min-width: 999px) {
+            border-inline-start: 1px solid var(--ifm-hover-overlay);
+            margin-inline-start: calc(var(--ifm-navbar-item-padding-horizontal) / 2);
+            padding-inline-start: calc(var(--ifm-navbar-item-padding-horizontal) / 2);
+        }
+    }
+
+    div:has(.clean-btn) {
+        grid-column: 6 / span 1;
+        grid-row: 1;
+    }
+}
+
+.DocSearch-Button {
+    --docsearch-primary-color: var(--ifm-color-primary-darkest);
+    --docsearch-text-color: var(--ifm-navbar-link-color);
+    --docsearch-searchbox-shadow: unset;
+    --docsearch-searchbox-background: transparent;
+    --docsearch-searchbox-focus-background: var(--ifm-hover-overlay);
+
+    --docsearch-muted-color: hsl(0 0% 85% / 1);
+    --docsearch-key-gradient: linear-gradient(
+        -26.5deg,
+        hsl(236.47deg 43.59% 77.06%),
+        hsl(236.84deg 34.55% 10.78%)
+    );
+    --docsearch-key-shadow:
+        inset 0 -2px 0 0 hsl(233.33deg 36% 24.51%), inset 0 0 1px 1px hsl(232.11deg 34.86% 57.25%),
+        0 2px 2px 0 rgba(3, 4, 9, 0.3);
+    --docsearch-key-pressed-shadow:
+        inset 0 -2px 0 0 #282d55, inset 0 0 1px 1px hsl(231.82deg 21.36% 40.39%),
+        0 1px 1px 0 hsl(230deg 50% 2.35% / 30.2%);
+
+    padding: var(--ifm-navbar-item-padding-vertical) var(--ifm-navbar-item-padding-horizontal) !important;
+    padding-inline-end: calc(var(--ifm-navbar-item-padding-horizontal) * 1.25) !important;
+
+    .DocSearch-Button-Placeholder {
+        font-family: var(--ifm-heading-font-family);
+        color: var(--ifm-navbar-link-color);
+        font-weight: 600;
+        font-size: 1.1rem;
+        padding: 0;
+    }
+
+    .DocSearch-Button-Container {
+        gap: 0.5em;
+    }
+
+    .DocSearch-Search-Icon {
+        stroke-width: 1.75;
+    }
+
+    .DocSearch-Button-Keys {
+        display: none;
+    }
+}
+
+.DocSearch-Button-Key {
+    font-weight: 500;
+}
