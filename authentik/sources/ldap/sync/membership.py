@@ -75,7 +75,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             if self._source.group_membership_field == "memberUid":
                 # If memberships are based on the posixGroup's 'memberUid'
                 # attribute we use the RDN instead of the FDN to lookup members.
-                membership_mapping_attribute = 'uid'
+                membership_mapping_attribute = "uid"
 
             if membership_mapping_attribute == "uid":
                 users = []
@@ -97,7 +97,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                         }
                     )
                 ).distinct()
-                
+
             membership_count += 1
             membership_count += users.count()
             ak_group.users.set(users)
