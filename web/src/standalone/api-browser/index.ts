@@ -3,6 +3,7 @@ import "rapidoc";
 
 import { CSRFHeaderName } from "@goauthentik/common/api/config";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
@@ -59,6 +60,10 @@ export class APIBrowser extends Interface {
                 detail: UiThemeEnum.Automatic,
             }),
         );
+    }
+
+    async getTheme(): Promise<UiThemeEnum> {
+        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {

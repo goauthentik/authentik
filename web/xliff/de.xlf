@@ -1091,7 +1091,7 @@
       </trans-unit>
       <trans-unit id="sd62cfc27ad4aa33b">
         <source>Based on the User's Email</source>
-        <target>Basierend auf der E-Mail Adresse des Benutzers</target>
+        <target>Basierend auf der E-Mail-Adresse des Benutzers</target>
         
       </trans-unit>
       <trans-unit id="s55eb75bedf96be0f">
@@ -2361,6 +2361,7 @@
       </trans-unit>
       <trans-unit id="s9307f3dbb07a73b5">
         <source>Only fail the policy, don't invalidate user's password</source>
+        <target>Nur die Richtlinie fehlschlagen lassen, das Passwort des Benutzers nicht ungültig machen.</target>
         
       </trans-unit>
       <trans-unit id="scea1f16238093e35">
@@ -2809,6 +2810,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sfbc59ff17a73503d">
         <source>User path</source>
+        <target>Nutzerpfad</target>
         
       </trans-unit>
       <trans-unit id="sd18170637295bace">
@@ -2878,6 +2880,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s995535e7af30d754">
         <source>Use the user's email address, but deny enrollment when the email address already exists</source>
+        <target>Verwende die E-Mail-Adresse des Benutzers, aber verweigere die Registrierung, wenn die E-Mail-Adresse bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s542ecb4130f6cea5">
@@ -2886,6 +2889,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2a1debf34e5aeba4">
         <source>Use the user's username, but deny enrollment when the username already exists</source>
+        <target>Verwende den Anmeldenamen des Benutzers, aber verweigere die Registrierung von der Anmeldename bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s81ce0d54727f42d2">
@@ -3740,6 +3744,9 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <target>Aktualisieren von 
+        <x id="0" equiv-text="${this.objectLabel}"/>fehlgeschlagen: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
@@ -4951,7 +4958,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se50a08ab71bb96ed">
         <source>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
-        <target>Sofern eine gültige E-Mailadresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
+        <target>Sofern eine gültige E-Mail-Adresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
         
       </trans-unit>
       <trans-unit id="s0295ce5d6f635d75">
@@ -6245,7 +6252,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-        <target>Anmelden um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
+        <target>Anmelden, um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
         
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
@@ -7451,6 +7458,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Verbindung nach <x id="0" equiv-text="${this.connectionAttempt}"/> Versuch(en) fehlgeschlagen.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
@@ -7572,11 +7580,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
-  <target>Benutzer können E-Mail ändern</target>
+  <target>Benutzer können E-Mail-Adresse ändern</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
-  <target>Benutzer haben die Möglichkeit, ihre E-Mail zu ändern.</target>
+  <target>Benutzer haben die Möglichkeit, ihre E-Mail-Adresse zu ändern.</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
@@ -7801,7 +7809,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8cc0075913c67566">
   <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-  <target>Gib die Email deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
+  <target>Gib die E-Mail-Adresse deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
   <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
@@ -7885,6 +7893,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1673c93148583ba">
   <source>Request failed. Please try again later.</source>
+  <target>Anfrage fehlgeschlagen. Bitte versuchen Sie es später erneut.</target>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -8277,7 +8286,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Zuletzt gesehen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8849,9 +8857,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Keine Benachrichtigungen gefunden.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>Sie haben zur Zeit keine Benachrichtigungen.</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
   <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
