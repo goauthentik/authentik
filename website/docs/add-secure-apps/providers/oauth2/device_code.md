@@ -2,7 +2,16 @@
 
 (Also known as device flow and [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628))
 
-This type of authentication flow is useful for devices with limited input abilities and/or devices without browsers.
+This type of authentication flow is useful for devices with limited input capabilities and/or devices without browsers.
+
+> The OAuth 2.0 device authorization grant is designed for Internet-connected
+> devices that either lack a browser to perform a user-agent-based
+> authorization or are input constrained to the extent that
+> requiring the user to input text in order to authenticate during the
+> authorization flow is impractical. It enables OAuth clients on such
+> devices (like smart TVs, media consoles, digital picture frames, and
+> printers) to obtain user authorization to access protected resources
+> by using a user agent on a separate device.
 
 ### Requirements
 
