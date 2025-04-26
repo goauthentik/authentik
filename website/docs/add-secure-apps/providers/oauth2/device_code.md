@@ -19,7 +19,13 @@ This device flow is only possible if the active [brand](https://docs.goauthentik
 
 authentik doesn't ship with a default flow for this usecase, so it is required to create a new flow for this usecase with the `Designation` of `Stage Configuration`.
 
-## 
+### Steps
+
+1. Go to `Admin Interface` > `Flows and Stages` > `Flows`
+2. Create new Flow, fill the form ensuring that `Designation` is set to `Stage Configuraton`
+3. In `System` > `Brands` select the edit icon in `Actions` column
+4. Open `Default flows` section (from the accordion), select the newly created flow (from step 2.) in `Device code flow`.
+
 
 ### Device-side
 
