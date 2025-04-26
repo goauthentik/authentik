@@ -23,7 +23,7 @@ authentik does not include a default flow for this use case, so it is necessary 
 
 1. From the authentik Admin interface, navigate to **Flows and Stages** > **Flows**.
 2. Create a new Flow by clicking **Create**, and fill out the form ensuring **Designation** is set to `Stage Configuration`.
-3. In **System** > **Brands** select the edit icon in **Actions** column
+3. Under **System** > **Brands**, select your brand and click the edit icon in **Actions** column.
 4. Open **Default flows** section (from the accordion), select the newly created flow (from step 2.) in **Device code flow**.
 
 
