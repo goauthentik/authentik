@@ -17,7 +17,9 @@ This type of authentication flow is useful for devices with limited input capabi
 
 This device flow is only possible if the active [brand](https://docs.goauthentik.io/docs/brands) has a device code flow setup. This flow is run _after_ the user logs in, and before the user authenticates.
 
-authentik doesn't ship with a default flow for this usecase, so it is recommended to create a new flow for this usecase with the designation of _Stage configuration_
+authentik doesn't ship with a default flow for this usecase, so it is required to create a new flow for this usecase with the `Designation` of `Stage Configuration`.
+
+## 
 
 ### Device-side
 
