@@ -1,6 +1,6 @@
 # Device code flow
 
-(Also known as device flow, Device Authorization Grant flow and [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628))
+(Also known as device flow, Device Authorization Grant flow, and [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628))
 
 This type of authentication flow is useful for devices with limited input capabilities and/or devices without browsers.
 
