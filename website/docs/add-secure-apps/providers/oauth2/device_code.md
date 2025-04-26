@@ -17,14 +17,14 @@ This type of authentication flow is useful for devices with limited input capabi
 
 This device flow is only possible if the active [brand](../sys-mgmt/brands.md) has a device code flow setup. This flow is run _after_ the user logs in, and before the user authenticates.
 
-authentik doesn't ship with a default flow for this usecase, so it is required to create a new flow for this usecase with the `Designation` of `Stage Configuration`.
+authentik doesn't ship with a default flow for this usecase, so it is required to create a new flow for this usecase with the **Designation** of _Stage Configuration_.
 
 ### Steps
 
-1. Go to `Admin Interface` > `Flows and Stages` > `Flows`
-2. Create new Flow, fill the form ensuring that `Designation` is set to `Stage Configuraton`
-3. In `System` > `Brands` select the edit icon in `Actions` column
-4. Open `Default flows` section (from the accordion), select the newly created flow (from step 2.) in `Device code flow`.
+1. Go to **Admin Interface** > **Flows and Stages** > **Flows**
+2. Create new Flow, fill the form ensuring that **Designation** is set to _Stage Configuraton_
+3. In **System** > **Brands** select the edit icon in **Actions** column
+4. Open **Default flows** section (from the accordion), select the newly created flow (from step 2.) in **Device code flow**.
 
 
 ### Device-side
