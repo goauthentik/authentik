@@ -7,14 +7,14 @@ authentik_preview: true
 
 Initial Permissions automatically assign [object-level permissions](https://www.notion.so/authentiksecurity/permissions#object-permissions) between a newly created object and its creator.
 
-In hardened authentik installations, it is possible for a user to have permission to create an object type, but not to interact with all objects of that type in other ways. For example, you may want to prevent User A from viewing other users' information freely (global `view_user` permission), but still allow them to create new users (global `add_user` permission). Then, when User A creates User B, you might want to let them view User B specifically (object-level `view-user` permission). You can use Initial Permissions to automatically add this new object-level permission on the newly created User B object.
+Describe basics of this feature
 
 ## Common use cases
 
 write about example that Gergo did
 Mention this will be an Admin creating the IP.
 
-Mention that if they are not super-users or Admins, they will ned to have the Can view Admin interface permission.
+Mention that if they are not super-users or Admins, they will need to have the Can view Admin interface permission.
 
 Describe the scenario of a group of semi-admins who all do the same job and need to be able to share tasks and view/modify each others' work.
 
@@ -31,7 +31,7 @@ The fundamantal steps to implement initial permissions are as follows:
 3. Create an initial permissions object, and assign all needed permissions to it.
 4. Optionally, create additiikoanl users and add them to the group to which the role is assigned.
 
-Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the memeber user creates.
+Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 ## Create and implement initial permissions
 
@@ -57,4 +57,4 @@ To create a new set of initial permissions and apply them to either a single use
 
     - **Permissions**: select all permissions to add to the initial permissions object.
 
-5. Optionally, create new users and add them to the group. Each new user aded to the group will automaticlaly have the set of permissions assign in the initial permissions object.
+5. Optionally, create new users and add them to the group. Each new user added to the group will automaticlaly have the set of permissions assign in the initial permissions object.
