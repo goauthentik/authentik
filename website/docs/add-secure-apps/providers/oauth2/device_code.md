@@ -26,7 +26,6 @@ authentik does not include a default flow for this use case, so it is necessary 
 3. Under **System** > **Brands**, select your brand and click the edit icon in **Actions** column.
 4. Under **Default flows**, select, under **Device code flow** the flow created in step 2.
 
-
 ### Device-side
 
 The flow is initiated by sending a POST request to the device authorization endpoint, `/application/o/device/` with the following contents:
