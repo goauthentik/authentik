@@ -51,6 +51,13 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
         await self.init_outpost_connection()
+        
+        # Add connection to token-specific group for token-based disconnection
+        if hasattr(self, 'token') and self.token:
+            await self.channel_layer.group_add(
+                RAC_CLIENT_GROUP_TOKEN % {"token": self.token.token},
+                self.channel_name,
+            )
 
     async def disconnect(self, code):
         self.logger.debug("Disconnecting")

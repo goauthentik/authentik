@@ -94,21 +94,43 @@ class RACFinalStage(RedirectStage):
         passing = engine.result
         if not passing.passing:
             return self.executor.stage_invalid(", ".join(passing.messages))
-        # Check if we're already at the maximum connection limit
+        
+        # Check for endpoint-wide connection limits
         all_tokens = ConnectionToken.filter_not_expired(
             endpoint=self.endpoint,
+            provider=self.provider,
         )
+        
+        # Check user's existing connections for this specific endpoint and provider
+        user_tokens = all_tokens.filter(session__user=self.request.user)
+        
         if self.endpoint.maximum_connections > -1:
+            # Check if we're already at the maximum connection limit for this endpoint/provider
             if all_tokens.count() >= self.endpoint.maximum_connections:
-                msg = [_("Maximum connection limit reached.")]
-                # Check if any other tokens exist for the current user, and inform them
-                # they are already connected
-                if all_tokens.filter(session__user=self.request.user).exists():
-                    msg.append(_("(You are already connected in another tab/window)"))
-                return self.executor.stage_invalid(" ".join(msg))
+                # Check if any of these connections belong to the current user
+                if user_tokens.exists():
+                    msg = [
+                        _("You already have an active connection to this endpoint.")
+                    ]
+                    return self.executor.stage_invalid(" ".join(msg))
+                else:
+                    msg = [
+                        _("Maximum connection limit reached for this endpoint.")
+                    ]
+                    return self.executor.stage_invalid(" ".join(msg))
+                
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        # Clean up any existing tokens for this user to the same endpoint and provider
+        # to prevent multiple connections from the same user to the same endpoint/provider
+        ConnectionToken.objects.filter(
+            endpoint=self.endpoint,
+            provider=self.provider,
+            session__user=self.request.user,
+        ).delete()
+        
+        # Create a new token for this connection
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
