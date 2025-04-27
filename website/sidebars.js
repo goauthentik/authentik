@@ -494,6 +494,7 @@ export default {
                     items: [
                         "users-sources/access-control/permissions",
                         "users-sources/access-control/manage_permissions",
+                        "users-sources/access-control/initial_permissions",
                     ],
                 },
                 {

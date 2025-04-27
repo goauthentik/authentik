@@ -1,0 +1,56 @@
+---
+title: "RBAC Initial permissions"
+description: "Set permissions for object creation."
+authentik_version: "2025.4.0"
+authentik_preview: true
+---
+
+Initial Permissions automatically assign [object-level permissions](https://www.notion.so/authentiksecurity/permissions#object-permissions) between a newly created object and its creator.
+
+In hardened authentik installations, it is possible for a user to have permission to create an object type, but not to interact with all objects of that type in other ways. For example, you may want to prevent User A from viewing other users' information freely (global `view_user` permission), but still allow them to create new users (global `add_user` permission). Then, when User A creates User B, you might want to let them view User B specifically (object-level `view-user` permission). You can use Initial Permissions to automatically add this new object-level permission on the newly created User B object.
+
+## Common use cases
+
+write about example that Gergo did
+Mention this wil be an Admin creating the IP.
+
+Describe the scenario of a group of semi-admins who all do the same job and need to be able to share tasks and view/modify each others' work.
+
+Mode: this field also solves the following problem:
+
+Gergo creates a second user called SemiaAdmin2, and adds them to the SemiAdmin group, and SemiaAdmin2 then creates a user, but the original SemiAdmin user cannot see that user.
+
+## High-level workflow
+
+The fundamantal steps to implement initital permissions are as follows:
+
+1. Create a role, to which the initial permissions will be assigned.
+2. Create a group, and assign the new role to it, and add any members that you want to use the iniital permissions set. You can also create new users later, and add them to the group.
+3. Create an initial permissions object
+4. Optionally, create additiikoanl users and add them to the group to which the role is assigned.
+
+## Create and implement initial permissions
+
+To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps.
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. To [create a new role](../roles/manage_roles.md), navigate to **Directory** > **Roles** to and click **Create**.
+
+3. To [create a new group](../groups/manage_groups.mdx)navigate to **Directory** > **Groups** and click **Create**. After creating the group:
+
+    - [assign the new role to the group](../groups/manage_groups.mdx#assign-a-role-to-a-group)
+    - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) who you want to use the Initial Permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user]).
+
+4. To create an Initial Permissions object, navigoate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
+
+    - **Name**: Provide a descriptive name for the new initial permissions object.
+
+    - **Role**: Select the role to which you want to apply initial permissions. When a user who is a member of a group with this role assigned creates an object, Initial Permissions will be applied to that object.
+
+    - **Mode**:
+        -**Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
+        - **User**: the Initial Permissions will apply _only_ to the user creating the object.
+
+    - **Permissions**: The list of permissions to set on the Initial Permissions object.
+
+    Because the new Initial Permissions object is coupled with the role of SemiAdmin (and that role is assigned to a group of which the user SemiAdmin is a member), *the Initial Permissions object is applied automatically to any new users that the User SemiAdmin creates.*
