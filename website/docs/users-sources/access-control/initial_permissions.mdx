@@ -11,16 +11,15 @@ Describe basics of this feature
 
 ## Common use cases
 
-write about example that Gergo did
+write about example that Gergo did  but broaden to make clear it is al=bout all objects
+
 Mention this will be an Admin creating the IP.
 
-Mention that if they are not super-users or Admins, they will need to have the Can view Admin interface permission.
+Mention that if they are not super-users or Admins, they will need to have the Can view Admin interface permission. (??)
 
 Describe the scenario of a group of semi-admins who all do the same job and need to be able to share tasks and view/modify each others' work.
 
-Mode: this field also solves the following problem:
-
-Gergo creates a second user called SemiAdmin2, and adds them to the SemiAdmin group, and SemiaAdmin2 then creates a user, but the original SemiAdmin user cannot see that user.
+Mode field also solves the problem of the original SemiAdmin user cannot see an object created by another user.
 
 ## High-level workflow
 
@@ -38,12 +37,12 @@ Because the new initial permissions object is coupled with the role (and that ro
 To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. To [create a new role](../roles/manage_roles.md), navigate to **Directory** > **Roles** to and click **Create**.
+2. To [create a new role](../roles/manage_roles.md) navigate to **Directory** > **Roles** to and click **Create**.
 
-3. To [create a new group](../groups/manage_groups.mdx)navigate to **Directory** > **Groups** and click **Create**. After creating the group:
+3. To [create a new group](../groups/manage_groups.mdx) navigate to **Directory** > **Groups** and click **Create**. After creating the group:
 
     - [assign the new role to the group](../groups/manage_groups.mdx#assign-a-role-to-a-group)
-    - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) who you want to use the Initial Permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user]).
+    - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) who you want to use the Initial Permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user).
 
 4. To create an Initial Permissions object, navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
 
@@ -51,8 +50,10 @@ To create a new set of initial permissions and apply them to either a single use
 
     - **Role**: Select the role to which you want to apply initial permissions. When a user who is a member of a group with this role assigned creates an object, Initial Permissions will be applied to that object.
 
-    - **Mode**:
-        -**Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
+    - **Mode**: select whether you want to attach the intiital permisison to a role or to a single user.
+
+        - **Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
+
         - **User**: the Initial Permissions will apply _only_ to the user creating the object.
 
     - **Permissions**: select all permissions to add to the initial permissions object.
