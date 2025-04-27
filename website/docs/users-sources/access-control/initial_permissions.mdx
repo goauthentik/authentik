@@ -12,22 +12,26 @@ In hardened authentik installations, it is possible for a user to have permissio
 ## Common use cases
 
 write about example that Gergo did
-Mention this wil be an Admin creating the IP.
+Mention this will be an Admin creating the IP.
+
+Mention that if they are not super-users or Admins, they will ned to have the Can view Admin interface permission.
 
 Describe the scenario of a group of semi-admins who all do the same job and need to be able to share tasks and view/modify each others' work.
 
 Mode: this field also solves the following problem:
 
-Gergo creates a second user called SemiaAdmin2, and adds them to the SemiAdmin group, and SemiaAdmin2 then creates a user, but the original SemiAdmin user cannot see that user.
+Gergo creates a second user called SemiAdmin2, and adds them to the SemiAdmin group, and SemiaAdmin2 then creates a user, but the original SemiAdmin user cannot see that user.
 
 ## High-level workflow
 
-The fundamantal steps to implement initital permissions are as follows:
+The fundamantal steps to implement initial permissions are as follows:
 
 1. Create a role, to which the initial permissions will be assigned.
-2. Create a group, and assign the new role to it, and add any members that you want to use the iniital permissions set. You can also create new users later, and add them to the group.
-3. Create an initial permissions object
+2. Create a group, and assign the new role to it, and add any members that you want to use the initial permissions set. You can also create new users later, and add them to the group.
+3. Create an initial permissions object, and assign all needed permissions to it.
 4. Optionally, create additiikoanl users and add them to the group to which the role is assigned.
+
+Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the memeber user creates.
 
 ## Create and implement initial permissions
 
@@ -41,7 +45,7 @@ To create a new set of initial permissions and apply them to either a single use
     - [assign the new role to the group](../groups/manage_groups.mdx#assign-a-role-to-a-group)
     - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) who you want to use the Initial Permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user]).
 
-4. To create an Initial Permissions object, navigoate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
+4. To create an Initial Permissions object, navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
 
     - **Name**: Provide a descriptive name for the new initial permissions object.
 
@@ -51,6 +55,6 @@ To create a new set of initial permissions and apply them to either a single use
         -**Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
         - **User**: the Initial Permissions will apply _only_ to the user creating the object.
 
-    - **Permissions**: The list of permissions to set on the Initial Permissions object.
+    - **Permissions**: select all permissions to add to the initial permissions object.
 
-    Because the new Initial Permissions object is coupled with the role of SemiAdmin (and that role is assigned to a group of which the user SemiAdmin is a member), *the Initial Permissions object is applied automatically to any new users that the User SemiAdmin creates.*
+5. Optionally, create new users and add them to the group. Each new user aded to the group will automaticlaly have the set of permissions assign in the initial permissions object.
