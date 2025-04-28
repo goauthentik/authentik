@@ -38,7 +38,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{constants.OutpostUserAgent()},
+		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
 	dialer := websocket.Dialer{
