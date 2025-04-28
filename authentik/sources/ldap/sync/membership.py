@@ -99,7 +99,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 ).distinct()
 
             membership_count += 1
-            membership_count += users.count()
+            membership_count += len(users)
             ak_group.users.set(users)
             ak_group.save()
         self._logger.debug("Successfully updated group membership")
