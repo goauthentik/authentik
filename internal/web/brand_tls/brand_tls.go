@@ -3,6 +3,7 @@ package brand_tls
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
 	"strings"
 	"time"
 
@@ -57,19 +58,33 @@ func (w *Watcher) Check() {
 	}
 	for _, b := range brands {
 		kp := b.WebCertificate.Get()
-		if kp == nil {
-			continue
+		if kp != nil {
+			err := w.cs.AddKeypair(*kp)
+			if err != nil {
+				w.log.WithError(err).Warning("failed to add web certificate")
+			}
 		}
-		err := w.cs.AddKeypair(*kp)
-		if err != nil {
-			w.log.WithError(err).Warning("failed to add certificate")
+		kp = b.ClientCertificate.Get()
+		if kp != nil {
+			err := w.cs.AddKeypair(*kp)
+			if err != nil {
+				w.log.WithError(err).Warning("failed to add client certificate")
+			}
 		}
 	}
 	w.brands = brands
 }
 
-func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, error) {
+type CertificateConfig struct {
+	Web    *tls.Certificate
+	Client *x509.CertPool
+}
+
+func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) *CertificateConfig {
 	var bestSelection *api.Brand
+	config := CertificateConfig{
+		Web: w.fallback,
+	}
 	for _, t := range w.brands {
 		if t.WebCertificate.Get() == nil {
 			continue
@@ -82,11 +97,14 @@ func (w *Watcher) GetCertificate(ch *tls.ClientHelloInfo) (*tls.Certificate, err
 		}
 	}
 	if bestSelection == nil {
-		return w.fallback, nil
+		return &config
 	}
-	cert := w.cs.Get(bestSelection.GetWebCertificate())
-	if cert == nil {
-		return w.fallback, nil
+	if cert := w.cs.Get(bestSelection.GetWebCertificate()); cert != nil {
+		config.Web = cert
 	}
-	return cert, nil
+	if cert := w.cs.Get(bestSelection.GetClientCertificate()); cert != nil {
+		config.Client = x509.NewCertPool()
+		config.Client.AddCert(cert.Leaf)
+	}
+	return &config
 }

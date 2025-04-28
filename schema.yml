@@ -4461,6 +4461,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: client_certificate
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: default
         schema:
           type: boolean
@@ -42609,6 +42614,11 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Certificate used for client authentication.
         attributes: {}
       required:
       - brand_uuid
@@ -42673,6 +42683,11 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Certificate used for client authentication.
         attributes: {}
       required:
       - domain
@@ -51896,6 +51911,11 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Certificate used for client authentication.
         attributes: {}
     PatchedCaptchaStageRequest:
       type: object
