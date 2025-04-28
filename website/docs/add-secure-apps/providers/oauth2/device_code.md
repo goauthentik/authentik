@@ -49,3 +49,17 @@ device_code=device_code_from_above
 If the user has not opened the link above yet, or has not finished the authentication and authorization yet, the response will contain an `error` element set to `authorization_pending`. The device should re-send the request in the interval set above.
 
 If the user _has_ finished the authentication and authorization, the response will be similar to any other generic OAuth2 Token request, containing `access_token` and `id_token`.
+
+### Creating and applying a device code flow
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
+3. Set the following required configurations:
+    - **Name**: provide a name (e.g. `default-device-code-flow`)
+    - **Title**: provide a title (e.g. `Device code flow`)
+    - **Slug**: provide a slug (e.g `default-device-code-flow`)
+    - **Designation**: `Stage Configuration`
+    - **Authentication**: `Require authentication`
+4. Click **Create**.
+5. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
+6. Set **Default code flow** to the newly created device code flow and click **Update**.
