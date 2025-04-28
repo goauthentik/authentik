@@ -2,10 +2,13 @@ package web
 
 import (
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -15,6 +18,10 @@ import (
 
 var (
 	ErrAuthentikStarting = errors.New("authentik starting")
+)
+
+const (
+	maxBodyBytes = 32 * 1024 * 1024
 )
 
 func (ws *WebServer) configureProxy() {
@@ -28,6 +35,19 @@ func (ws *WebServer) configureProxy() {
 		}
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
+			// Always set default empty value to prevent upstream from setting it
+			req.Header.Set("X-Forwarded-Client-Cert", "")
+			if len(req.TLS.PeerCertificates) > 0 {
+				pems := make([]string, len(req.TLS.PeerCertificates))
+				for i, crt := range req.TLS.PeerCertificates {
+					pem := pem.EncodeToMemory(&pem.Block{
+						Type:  "CERTIFICATE",
+						Bytes: crt.Raw,
+					})
+					pems[i] = "Cert=" + url.QueryEscape(string(pem))
+				}
+				req.Header.Set("X-Forwarded-Client-Cert", strings.Join(pems, ","))
+			}
 		}
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
@@ -57,7 +77,7 @@ func (ws *WebServer) configureProxy() {
 		Requests.With(prometheus.Labels{
 			"dest": "core",
 		}).Observe(float64(elapsed) / float64(time.Second))
-		r.Body = http.MaxBytesReader(rw, r.Body, 32*1024*1024)
+		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
 		rp.ServeHTTP(rw, r)
 	}))
 }
