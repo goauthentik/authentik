@@ -1,0 +1,136 @@
+---
+title: Integrate with BookStack
+sidebar_label: BookStack
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Integrate with BookStack
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is BookStack
+
+> BookStack is a free and open-source wiki software aimed for a simple, self-hosted, and easy-to-use platform. It uses the ideas of books to organise pages and store information. BookStack is multilingual and available in over thirty languages. For the simplicity, BookStack is considered as suitable for smaller businesses or freelancers.
+>
+> -- https://bookstackapp.com
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `bookstack.company` is the FQDN of the BookStack installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## Configuration methods
+
+You can configure Bookstack to use either OIDC or SAML, and this guide explains both options.
+
+<Tabs
+  defaultValue="oidc"
+  values={[
+    { label: "Log in with OIDC", value: "oidc" },
+    { label: "Log in with SAML", value: "saml" },
+  ]}>
+  <TabItem value="oidc">
+
+## authentik configuration
+
+To support the integration of BookStack with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>bookstack.company</em>/oidc/callback/</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Bookstack configuration
+
+Once that's done, the next step is to update your `.env` file to include the following variables:
+
+    ```yaml showLineNumbers
+    AUTH_METHOD=oidc
+    AUTH_AUTO_INITIATE=false # Set this to "true" to automatically redirect the user to authentik.
+    OIDC_NAME=authentik # The display name shown on the login page.
+    OIDC_DISPLAY_NAME_CLAIMS=name # Claim(s) for the user's display name. Can have multiple attributes listed, separated with a '|' in which case those values will be joined with a space.
+    OIDC_CLIENT_ID=<Client ID from authentik>
+    OIDC_CLIENT_SECRET=<Client Secret from authentik>
+    OIDC_ISSUER=https://authentik.company/application/o/<your-application-slug>
+    OIDC_ISSUER_DISCOVER=true
+    OIDC_END_SESSION_ENDPOINT=true
+    ```
+
+</TabItem>
+
+  <TabItem value="saml">
+
+## authentik configuration
+
+To support the integration of BookStack with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
+- **Choose a Provider type**: select **SAML Provider** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
+    - Set the **ACS URL** to <kbd>https://<em>bookstack.company</em>/saml2/acs</kbd>.
+    - Set the **Issuer** to <kbd>https://<em>authentik.company</em></kbd>.
+    - Set the **Service Provider Binding** to `Post`.
+    - Set the **Audience** to <kbd>https://<em>bookstack.company</em>/saml2/metadata</kbd>.
+    - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Obtain the SAML metadata URL
+
+1. In the authentik Admin Interface, nagiate to **Applications** > **Providers** and click on the provider tied to the application/provider pair created in the previous step.
+2. Under the **Related objects** section, click **Copy download URL**. Take note of this value as you will need it later.
+
+## Bookstack configuration
+
+Once that's done, the next step is to update your `.env` file to include the following variables:
+
+    ```yaml showLineNumbers
+    AUTH_METHOD=saml2
+    AUTH_AUTO_INITIATE=true # Set this to "true" to automatically redirect the user to authentik.
+    SAML2_NAME=authentik # The display name shown on the login page.
+    SAML2_EMAIL_ATTRIBUTE=email
+    SAML2_EXTERNAL_ID_ATTRIBUTE=uid
+    SAML2_USER_TO_GROUPS=true
+    SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
+    SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
+    SAML2_IDP_ENTITYID=https://authentik.company/api/v3/providers/saml/<your-application-slug>/metadata/?download
+    SAML2_AUTOLOAD_METADATA=true
+    ```
+
+</TabItem>
+</Tabs>
+
+## Resources
+
+- [BookStack Administrator Documentation for OpenID Connect](https://www.bookstackapp.com/docs/admin/oidc-auth/)
+- [Bookstack Administrator Documentation for SAML2](https://www.bookstackapp.com/docs/admin/saml2-auth/)
+- [PeerTube video detailing a setup with authentik (OpenID Connect)](https://foss.video/w/a744K8GxFF1LqBFSadAsuV)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with BookStack, visit your BookStack installation, and click **Login with authentik**.

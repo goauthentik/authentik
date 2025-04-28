@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: NavyStack, 2023\n"
 "Language-Team: Korean (https://app.transifex.com/authentik/teams/119923/ko/)\n"
@@ -176,6 +176,7 @@ msgid "User's display name."
 msgstr "사용자의 표시 이름"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "사용자"
 
@@ -345,6 +346,18 @@ msgid "Property Mappings"
 msgstr "속성 매핑"
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "인증된 세션"
 
@@ -446,6 +459,36 @@ msgstr "라이선스 사용"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "라이선스 사용 기록"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr "확인하려는 필드 키, 프롬프트 스테이지에서 정의된 필드 키를 사용할 수 있습니다."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "비밀번호가 컨텍스트에 설정되지 않음"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -1183,10 +1226,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "정책의 캐시 메트릭 삭제"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr "확인하려는 필드 키, 프롬프트 스테이지에서 정의된 필드 키를 사용할 수 있습니다."
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr "비밀번호 해시가 허용되는 해시 횟수"
 
@@ -1194,10 +1233,6 @@ msgstr "비밀번호 해시가 허용되는 해시 횟수"
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
 msgstr "만약 zxcvbn 점수가 이 값과 같거나 이 값보다 작다면, 정책이 실패합니다."
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "비밀번호가 컨텍스트에 설정되지 않음"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1239,20 +1274,6 @@ msgstr "평판 점수"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "평판 점수"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -2014,6 +2035,10 @@ msgid "Roles"
 msgstr "역할"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "시스템 권한"
 
@@ -2232,6 +2257,13 @@ msgid ""
 msgstr "사용자가 비밀번호를 변경하면 LDAP로 다시 동기화합니다. 이 기능은 단일의 LDAP 소스에서만 활성화할 수 있습니다."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP 소스"
 
@@ -2247,6 +2279,22 @@ msgstr ""
 msgid "LDAP Source Property Mappings"
 msgstr ""
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr ""
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "비밀번호가 Active Directory 복잡도와 일치하지 않습니다."
@@ -2254,6 +2302,14 @@ msgstr "비밀번호가 Active Directory 복잡도와 일치하지 않습니다.
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "수신된 토큰이 없습니다."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2292,6 +2348,12 @@ msgstr "사용자 정보를 가져오기 위해 authentik에서 사용하는 URL
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "추가 스코프"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3150,6 +3212,12 @@ msgid ""
 msgstr "활성화되면 잘못된 사용자 정보가 입력되더라도 단계가 성공하고 계속됩니다."
 
 #: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "페이지 하단에 링크된,  선택적 등록 플로우를 참조하세요."
 
@@ -3499,6 +3567,14 @@ msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
 msgstr "이 기간이 지나면 이벤트가 삭제됩니다. (서식: hours=-1;minutes=-2;seconds=-3)"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

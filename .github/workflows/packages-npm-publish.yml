@@ -1,0 +1,45 @@
+name: authentik-packages-npm-publish
+on:
+  push:
+    branches: [main]
+    paths:
+      - packages/docusaurus-config/**
+      - packages/eslint-config/**
+      - packages/prettier-config/**
+      - packages/tsconfig/**
+  workflow_dispatch:
+jobs:
+  publish:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - docusaurus-config
+          - eslint-config
+          - prettier-config
+          - tsconfig
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: packages/${{ matrix.package }}/package.json
+          registry-url: "https://registry.npmjs.org"
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@ed68ef82c095e0d48ec87eccea555d944a631a4c
+        with:
+          files: |
+            packages/${{ matrix.package }}/package.json
+      - name: Publish package
+        if: steps.changed-files.outputs.any_changed == 'true'
+        working-directory: packages/${{ matrix.package}}
+        run: |
+          npm ci
+          npm run build
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}

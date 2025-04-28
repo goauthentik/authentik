@@ -48,6 +48,7 @@ class TestFlowInspector(APITestCase):
                 "allow_show_password": False,
                 "captcha_stage": None,
                 "component": "ak-stage-identification",
+                "enable_remember_me": False,
                 "flow_info": {
                     "background": "/static/dist/assets/images/flow_background.jpg",
                     "cancel_url": reverse("authentik_flows:cancel"),

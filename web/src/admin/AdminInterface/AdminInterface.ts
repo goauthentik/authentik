@@ -34,6 +34,10 @@ import { SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import "./AdminSidebar";
 
+if (process.env.NODE_ENV === "development") {
+    await import("@goauthentik/esbuild-plugin-live-reload/client");
+}
+
 @customElement("ak-interface-admin")
 export class AdminInterface extends AuthenticatedInterface {
     @property({ type: Boolean })
@@ -116,16 +120,6 @@ export class AdminInterface extends AuthenticatedInterface {
             this.user.user.systemPermissions.includes("access_admin_interface");
         if (!canAccessAdmin && this.user.user.pk > 0) {
             window.location.assign("/if/user/");
-        }
-    }
-
-    async connectedCallback(): Promise<void> {
-        super.connectedCallback();
-
-        if (process.env.NODE_ENV === "development" && process.env.WATCHER_URL) {
-            const { ESBuildObserver } = await import("@goauthentik/common/client");
-
-            new ESBuildObserver(process.env.WATCHER_URL);
         }
     }
 
