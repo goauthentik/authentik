@@ -13422,6 +13422,12 @@
                     "title": "Web certificate",
                     "description": "Web Certificate used by the authentik Core webserver."
                 },
+                "client_certificate": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Client certificate",
+                    "description": "Certificate used for client authentication."
+                },
                 "attributes": {
                     "type": "object",
                     "additionalProperties": true,
