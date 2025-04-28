@@ -304,6 +304,15 @@ export class BrandForm extends ModelForm<Brand, string> {
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Client Certificate")}
+                        name="clientCertificate"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.clientCertificate}
+                            nokey
+                        ></ak-crypto-certificate-search>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}
