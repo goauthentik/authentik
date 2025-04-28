@@ -33,9 +33,11 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Config
 		if ws.BrandTLS != nil {
 			bcert := ws.BrandTLS.GetCertificate(ch)
 			cfg.Certificates = []tls.Certificate{*bcert.Web}
+			ws.log.Trace("using brand web Certificate")
 			if bcert.Client != nil {
 				cfg.ClientCAs = bcert.Client
-				cfg.ClientAuth = tls.RequireAnyClientCert
+				cfg.ClientAuth = tls.RequestClientCert
+				ws.log.Trace("using brand client Certificate")
 			}
 			return cfg, nil
 		}
