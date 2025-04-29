@@ -30,6 +30,8 @@ Because the new initial permissions object is coupled with the role (and that ro
 
 :::info
 Typically, initial permissions are assigned to a user or role that is not a super-user nor administrator. In this scenario, the administrator needs to verify that the user has the `Can view Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
+
+Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.
 :::
 
 ## Create and implement initial permissions
@@ -37,6 +39,7 @@ Typically, initial permissions are assigned to a user or role that is not a supe
 To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
+
 2. [Create a new role](../roles/manage_roles.md): navigate to **Directory** > **Roles** and click **Create**.
 
 3. [Create a new group](../groups/manage_groups.mdx): navigate to **Directory** > **Groups** and click **Create**. After creating the group:
@@ -58,6 +61,6 @@ To create a new set of initial permissions and apply them to either a single use
 
     - **Permissions**: select all permissions to add to the initial permissions object.
 
-5. To ensure that the user or role (whichever you selected in the **Mode** configuration step above) to whom you assign the initial permissions _also_ has access to the Admin interface, check to see if the users also need [the global permission `Can view admin interface`](./manage_permissions#assign-can-view-admin-interface-permissions).
+5. To ensure that the user or role (whichever you selected in the **Mode** configuration step above) to whom you assign the initial permissions _also_ has access to the Admin interface, check to see if the users also need [the global permission `Can view admin interface`](./manage_permissions#assign-can-view-admin-interface-permissions). Furthermore, verify that the user(s) has the global permissions to add specific objects.
 
 6. Optionally, create new users and add them to the group. Each new user added to the group will automatically have the set of permissions included within the initial permissions object.
