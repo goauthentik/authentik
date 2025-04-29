@@ -171,7 +171,7 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "celery" },
     { name = "channels" },
-    { name = "channels-redis" },
+    { name = "channels-postgres" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
@@ -269,7 +269,7 @@ requires-dist = [
     { name = "argon2-cffi" },
     { name = "celery" },
     { name = "channels" },
-    { name = "channels-redis" },
+    { name = "channels-postgres", git = "https://github.com/danidee10/channels_postgres.git?branch=pyscopg3-port" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
@@ -699,18 +699,14 @@ daphne = [
 ]
 
 [[package]]
-name = "channels-redis"
-version = "4.2.1"
-source = { registry = "https://pypi.org/simple" }
+name = "channels-postgres"
+version = "1.0.7"
+source = { git = "https://github.com/danidee10/channels_postgres.git?branch=pyscopg3-port#22b86c632304e57f499586a339bf0997507eabbd" }
 dependencies = [
     { name = "asgiref" },
     { name = "channels" },
     { name = "msgpack" },
-    { name = "redis" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/c7/6d/c379c9feea4522cbdb4eba9b3d23a6270ba8cbd94e847b21834d898109d6/channels_redis-4.2.1.tar.gz", hash = "sha256:8375e81493e684792efe6e6eca60ef3d7782ef76c6664057d2e5c31e80d636dd", size = 31152 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/aa/981d08ae9627c3b9d8dd150f0fe644122a351abc1f47bcf53d2bfff80d91/channels_redis-4.2.1-py3-none-any.whl", hash = "sha256:2ca33105b3a04b5a327a9c47dd762b546f30b76a0cd3f3f593a23d91d346b6f4", size = 20487 },
+    { name = "psycopg", extra = ["pool"] },
 ]
 
 [[package]]
