@@ -5,19 +5,17 @@ authentik_version: "2025.4.0"
 authentik_preview: true
 ---
 
-Initial Permissions automatically assign [object-level permissions](https://www.notion.so/authentiksecurity/permissions#object-permissions) between a newly created object and its creator.
+Initial Permissions automatically assigns [object-level permissions](./permissions.md#object-permissions) between a newly created object and its creator.
 
-Describe basics of this feature
+The purpose of initial permissions is to assign a specific user or role a set of pre-selected permissions that are required for the user(s) to accomplish their tasks
+
+An authentik Admin creates an initial permissions object (a set of selected permissions) and then associates with with either an individiual user or with a role (in which case everyone in a group with that role will have the same initital permissions).
 
 ## Common use cases
 
-write about example that Gergo did  but broaden to make clear it is al=bout all objects
+Say you have a new team formed to help create new [flows](../../add-secure-apps/flows-stages/flow/index.md) and [stages](../../add-secure-apps/flows-stages/stages/index.md). These team members need to be able to view and manage all of the flow and stage objects that others on the team created. However, they should not be granted rights to do anything else in the Admin interface.
 
-Mention this will be an Admin creating the IP.
-
-Mention that if they are not super-users or Admins, they will need to have the Can view Admin interface permission. (??)
-
-Describe the scenario of a group of semi-admins who all do the same job and need to be able to share tasks and view/modify each others' work.
+In the example use case above, the specific objects that the users or role create and manage could be any object; you could have a team who is in charge of creating new users and managing those user objects, but should not be able to create flows or blueprints or brands, for example.
 
 Mode field also solves the problem of the original SemiAdmin user cannot see an object created by another user.
 
@@ -27,30 +25,34 @@ The fundamantal steps to implement initial permissions are as follows:
 
 1. Create a role, to which the initial permissions will be assigned.
 2. Create a group, and assign the new role to it, and add any members that you want to use the initial permissions set. You can also create new users later, and add them to the group.
-3. Create an initial permissions object, and assign all needed permissions to it.
+3. Create an initial permissions object, and add all needed permissions to it.
 4. Optionally, create additiikoanl users and add them to the group to which the role is assigned.
 
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
+
+:::info
+Typically, initial permissions are assigned to a user or role which is not super-users or Admins; if this is the case then the Admin, when implementing the nitial permissions will need to assign the [Can view Admin interface permission` in order for the user(s) to access the Admin interface. For details see Step 5 below.
+:::
 
 ## Create and implement initial permissions
 
 To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
-2. To [create a new role](../roles/manage_roles.md) navigate to **Directory** > **Roles** to and click **Create**.
+2. [Create a new role](../roles/manage_roles.md): navigate to **Directory** > **Roles** to and click **Create**.
 
-3. To [create a new group](../groups/manage_groups.mdx) navigate to **Directory** > **Groups** and click **Create**. After creating the group:
+3. [Create a new group](../groups/manage_groups.mdx): navigate to **Directory** > **Groups** and click **Create**. After creating the group:
 
     - [assign the new role to the group](../groups/manage_groups.mdx#assign-a-role-to-a-group)
     - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) who you want to use the Initial Permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user).
 
-4. To create an Initial Permissions object, navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
+4. Create an Initial Permissions object: navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the followoing settings:
 
     - **Name**: Provide a descriptive name for the new initial permissions object.
 
     - **Role**: Select the role to which you want to apply initial permissions. When a user who is a member of a group with this role assigned creates an object, Initial Permissions will be applied to that object.
 
-    - **Mode**: select whether you want to attach the intiital permisison to a role or to a single user.
+    - **Mode**: select whether you want to attach the initial permission to a _role_ or to a _single user_.
 
         - **Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
 
@@ -58,4 +60,6 @@ To create a new set of initial permissions and apply them to either a single use
 
     - **Permissions**: select all permissions to add to the initial permissions object.
 
-5. Optionally, create new users and add them to the group. Each new user added to the group will automaticlaly have the set of permissions assign in the initial permissions object.
+5. To ensure that the user or role (whichever you selected in the **Mode** configuration step above) to whom you assign the initial permissions _also_ has access to the Admin interface, you need to [grant the global permission `Can view admin interface`](./manage_permissions#assign-can-view-admin-interface-permissions).
+
+6. Optionally, create new users and add them to the group. Each new user added to the group will automaticlaly have the set of permissions assign in the initial permissions object.
