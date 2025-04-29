@@ -397,6 +397,7 @@ export default {
                                 "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
+                        "customize/policies/unique_password",
                     ],
                 },
                 {
@@ -495,6 +496,7 @@ export default {
                     items: [
                         "users-sources/access-control/permissions",
                         "users-sources/access-control/manage_permissions",
+                        "users-sources/access-control/initial_permissions",
                     ],
                 },
                 {
