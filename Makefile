@@ -4,7 +4,6 @@
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
-NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
@@ -116,49 +115,21 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-clean-ts:  ## Remove generated API client for Typescript
-	rm -rf ./${GEN_API_TS}/
-	rm -rf ./web/node_modules/@goauthentik/api/
+gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
+	./scripts/gen-client-ts.mjs
 
-gen-clean-go:  ## Remove generated API client for Go
-	rm -rf ./${GEN_API_GO}/
+	npm i --prefix ${GEN_API_TS}
 
-gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ./${GEN_API_PY}/
+	cd ./${GEN_API_TS} && npm link
+	cd ./web && npm link @goauthentik/api
 
-gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
+gen-client-py: ## Build and install the authentik API for Python
+	./scripts/gen-client-py.mjs
 
-gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
-		-i /local/schema.yml \
-		-g typescript-fetch \
-		-o /local/${GEN_API_TS} \
-		-c /local/scripts/api-ts-config.yaml \
-		--additional-properties=npmVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ./${GEN_API_TS} && npm i
-	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
-
-gen-client-py: gen-clean-py ## Build and install the authentik API for Python
-	docker run \
-		--rm -v ${PWD}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v7.11.0 generate \
-		-i /local/schema.yml \
-		-g python \
-		-o /local/${GEN_API_PY} \
-		-c /local/scripts/api-py-config.yaml \
-		--additional-properties=packageVersion=${NPM_VERSION} \
-		--git-repo-id authentik \
-		--git-user-id goauthentik
 	pip install ./${GEN_API_PY}
 
-gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
+gen-client-go:  ## Build and install the authentik API for Golang
+	rm -rf ./${GEN_API_GO}/
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
