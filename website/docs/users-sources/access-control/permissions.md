@@ -18,7 +18,7 @@ There are two main types of permissions in authentik:
 - [**Global permissions**](#global-permissions)
 - [**Object permissions**](#object-permissions)
 
-Additionally, authentik uses _initial permissions_ to simplify the granting of object-level permissions to a user or role, so that every time that user (or user within a group with that role) creates a new object, all other users (or roles) have the exact same object-level permissions on that newly-created object. Using initial permissions allows an Admin to proactively allow a user certain rights for object creation and then viewing/managing those objects and other objects created by people in the same role. For more information, see [Initial permissions](./initial_permissions.mdx).
+Additionally, authentik employs _initial permissions_ to streamline the process of granting object-level permissions when an object (user or role) is created. This feature enables an Admin to proactively assign specific rights to a user for object creation, as well as for viewing and managing those objects and other objects created by individuals in the same role. For more details, refer to [Initial permissions](./initial_permissions.mdx).
 
 ### Global permissions
 

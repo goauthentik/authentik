@@ -1,5 +1,5 @@
 ---
-title: "RBAC Initial permissions"
+title: "Initial permissions"
 description: "Set permissions for object creation."
 authentik_version: "2025.4.0"
 authentik_preview: true
@@ -13,15 +13,15 @@ An authentik Admin creates an initial permissions object (a set of selected perm
 
 ## Common use cases
 
-Say you have a new team formed to help create [flows](../../add-secure-apps/flows-stages/flow/index.md) and [stages](../../add-secure-apps/flows-stages/stages/index.md). These team members need to be able to view and manage all of the flow and stage objects that others on the team have created. However, they should not be granted rights to do anything else in the Admin interface.
+Imagine you have a new team tasked with creating [flows](../../add-secure-apps/flows-stages/flow/index.md) and [stages](../../add-secure-apps/flows-stages/stages/index.md). These team members need the ability to view and manage all the flow and stage objects created by other team members. However, they should not have permissions to perform any other actions within the Admin interface.
 
-In the example use case above, the specific objects that the users or role create and manage could be any object; you could have a team that is in charge of creating new users and managing those user objects, but not able to create flows or blueprints or brands, for example.
+In the example use case above, the specific objects that the users or role create and manage could be any object. For example, you might have a team responsible for creating new users and managing those user objects, but they should not be able to create flows, blueprints, or brands.
 
 ## High-level workflow
 
-The fundamantal steps to implement initial permissions are as follows:
+The fundamental steps to implement initial permissions are as follows:
 
-1. Create a role, to which the initial permissions will be assigned.
+1. Create a role. Initial permissions will be assigned whenever a user with this role creates a new object.
 2. Create a group, and assign the new role to it, and add any members that you want to use the initial permissions set. You can also create new users later, and add them to the group.
 3. Create an initial permissions object, and add all needed permissions to it.
 4. Optionally, create additional users and add them to the group to which the role is assigned.
@@ -29,12 +29,12 @@ The fundamantal steps to implement initial permissions are as follows:
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 :::info
-Typically, initial permissions are assigned to a user or role which is not a super-user or Admin; in this case the Admin, when implementing the initial permissions, will need to assign the `Can view Admin interface permission` in order for the user(s) to access the Admin interface. For details see Step 5 below.
+Typically, initial permissions are assigned to a user or role that is not a super-user nor administrator. In this scenario, the administrator will need to grant the `Can view Admin interface` permission to allow the user(s) to access the Admin interface. For details, see Step 5 below. (This does not apply to instances that usse the authentik API to set permissions outside of the UI.)
 :::
 
 ## Create and implement initial permissions
 
-To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps.
+To create a new set of initial permissions and apply them to either a single user or a role (and every user with that role), follow these steps:
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. [Create a new role](../roles/manage_roles.md): navigate to **Directory** > **Roles** and click **Create**.
@@ -44,7 +44,7 @@ To create a new set of initial permissions and apply them to either a single use
     - [assign the new role to the group](../groups/manage_groups.mdx#assign-a-role-to-a-group)
     - [add any members](../user/user_basic_operations.md#add-a-user-to-a-group) that require the initial permissions. You can add already existing users, or [create new users](../user/user_basic_operations.md#create-a-user).
 
-4. Create an Initial Permissions object: navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the following settings:
+4. Create an initial permissions object: navigate to **Directory** > **Initial Permissions** and click **Create**. Configure the following settings:
 
     - **Name**: Provide a descriptive name for the new initial permissions object.
 
