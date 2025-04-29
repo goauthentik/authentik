@@ -17,8 +17,6 @@ Say you have a new team formed to help create new [flows](../../add-secure-apps/
 
 In the example use case above, the specific objects that the users or role create and manage could be any object; you could have a team who is in charge of creating new users and managing those user objects, but should not be able to create flows or blueprints or brands, for example.
 
-Mode field also solves the problem of the original SemiAdmin user cannot see an object created by another user.
-
 ## High-level workflow
 
 The fundamantal steps to implement initial permissions are as follows:
@@ -26,12 +24,12 @@ The fundamantal steps to implement initial permissions are as follows:
 1. Create a role, to which the initial permissions will be assigned.
 2. Create a group, and assign the new role to it, and add any members that you want to use the initial permissions set. You can also create new users later, and add them to the group.
 3. Create an initial permissions object, and add all needed permissions to it.
-4. Optionally, create additiikoanl users and add them to the group to which the role is assigned.
+4. Optionally, create additional users and add them to the group to which the role is assigned.
 
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 :::info
-Typically, initial permissions are assigned to a user or role which is not super-users or Admins; if this is the case then the Admin, when implementing the nitial permissions will need to assign the [Can view Admin interface permission` in order for the user(s) to access the Admin interface. For details see Step 5 below.
+Typically, initial permissions are assigned to a user or role which is not a super-users or Admin; in this case the Admin, when implementing the nitial permissions, will need to assign the `Can view Admin interface permission` in order for the user(s) to access the Admin interface. For details see Step 5 below.
 :::
 
 ## Create and implement initial permissions
@@ -54,9 +52,9 @@ To create a new set of initial permissions and apply them to either a single use
 
     - **Mode**: select whether you want to attach the initial permission to a _role_ or to a _single user_.
 
-        - **Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' users.
+        - **Role**: select this to allow everyone with that role (i.e. everyone in a group to which this role is assigned) to be able to see each others' objects.
 
-        - **User**: the Initial Permissions will apply _only_ to the user creating the object.
+        - **User**: select this to apply the initial permissions _only_ to a user
 
     - **Permissions**: select all permissions to add to the initial permissions object.
 
