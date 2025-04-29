@@ -23,14 +23,6 @@ The password history is maintained automatically when this policy is in use. Old
 This policy takes effect after the first password change following policy activation. Before that first change, there's no password history data to compare against.
 :::
 
-## Configuration options
-
-The Password Uniqueness Policy has two configuration options:
-
-- **Password Field**: Enter the name of the input field to check for the new password. By default, if no custom flows are used, the field name is `password`. This field name must match the field name used in your Prompt stage.
-
-- **Number of Historical Passwords**: This setting determines how many previous passwords are checked and stored for each user, with a default of 1. For instance, if set to 3, users will not be able to reuse any of their last 3 passwords.
-
 ## Integration with other policies
 
 For comprehensive password security, consider using this policy alongside:

@@ -392,6 +392,7 @@ export default {
                                 "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
+                        "customize/policies/unique_password",
                     ],
                 },
                 {
