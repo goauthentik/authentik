@@ -288,7 +288,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state loading header=${msg("Loading")}></ak-empty-state>
+                    <ak-empty-state loading
+                        ><span slot="header">${msg("Loading")}</span></ak-empty-state
+                    >
                 </div>
             </td>
         </tr>`;
@@ -300,8 +302,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 <td role="cell" colspan="8">
                     <div class="pf-l-bullseye">
                         ${inner ??
-                        html`<ak-empty-state header="${msg("No objects found.")}"
-                            ><div slot="primary">${this.renderObjectCreate()}</div>
+                        html`<ak-empty-state
+                            ><span slot="header">${msg("No objects found.")}</span> >
+                            <div slot="primary">${this.renderObjectCreate()}</div>
                         </ak-empty-state>`}
                     </div>
                 </td>
@@ -316,7 +319,8 @@ export abstract class Table<T> extends AKElement implements TableLike {
     renderError(): SlottedTemplateResult {
         if (!this.error) return nothing;
 
-        return html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-ban">
+        return html`<ak-empty-state icon="fa-ban"
+            ><span slot="header">${msg("Failed to fetch objects.")}</span>
             <div slot="body">${pluckErrorDetail(this.error)}</div>
         </ak-empty-state>`;
     }

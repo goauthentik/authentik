@@ -88,7 +88,8 @@ export class RecentEventsCard extends Table<Event> {
         }
 
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Events found.")}>
+            html`<ak-empty-state
+                ><span slot="header">${msg("No Events found.")}</span>
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );

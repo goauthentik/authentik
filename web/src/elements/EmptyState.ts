@@ -3,6 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
+import { SlotController } from "@patternfly/pfe-core/controllers/slot-controller.js";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -33,6 +34,8 @@ export class EmptyState extends AKElement implements IEmptyState {
     @property()
     header?: string;
 
+    slots = new SlotController(this, "header", "body", "primary");
+
     static get styles() {
         return [
             PFBase,
@@ -48,6 +51,12 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
+        const showHeader = this.loading || this.slots.hasSlotted("header");
+        const header = () =>
+            this.slots.hasSlotted("header")
+                ? html`<slot name="header"></slot>`
+                : html`<span>${msg("Loading")}</span>`;
+
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
                 ${this.loading
@@ -59,15 +68,17 @@ export class EmptyState extends AKElement implements IEmptyState {
                           "fa-question-circle"} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                <h1 class="pf-c-title pf-m-lg">
-                    ${this.loading && this.header === undefined ? msg("Loading") : this.header}
-                </h1>
-                <div class="pf-c-empty-state__body">
-                    <slot name="body"></slot>
-                </div>
-                <div class="pf-c-empty-state__primary">
-                    <slot name="primary"></slot>
-                </div>
+                ${showHeader ? html` <h1 class="pf-c-title pf-m-lg">${header()}</h1>` : nothing}
+                ${this.slots.hasSlotted("body")
+                    ? html` <div class="pf-c-empty-state__body">
+                          <slot name="body"></slot>
+                      </div>`
+                    : nothing}
+                ${this.slots.hasSlotted("primary")
+                    ? html` <div class="pf-c-empty-state__primary">
+                          <slot name="primary"></slot>
+                      </div>`
+                    : nothing}
             </div>
         </div>`;
     }
