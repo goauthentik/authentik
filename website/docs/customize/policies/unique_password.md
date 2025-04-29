@@ -47,7 +47,7 @@ To implement a policy that prevents users from reusing their previous passwords,
     - **Name**: provide a descriptive name for the policy.
     - **Password field**: enter the name of the input field to check for the new password. By default, if no custom flows are used, the field name is `password`. This field name must match the field name used in your Prompt stage.
     - **Number of previous passwords to check**: enter the number of past passwords that you want to set as the number of previous passwords that are checked and stored for each user, with a default of 1. For instance, if set to 3, users will not be able to reuse any of their last 3 passwords.
-3. Bind the policy to your **password prompt stage**
+3. Bind the policy to your **password prompt stage**: For example, if you're using the `default-password-change` flow, edit the `default-password-change-prompt` stage and add the policy in the Validation Policies section.
 
 :::info
 Password history records are stored securely and cannot be used to reconstruct original passwords.
