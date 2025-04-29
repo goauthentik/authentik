@@ -32,7 +32,7 @@ To view _object_ permissions for a specific user or role:
 
 ### View stage permissions
 
-\_These instructions apply to all objects that **do not** have a detail page.\_\_
+_These instructions apply to all objects that **do not** have a detail page._
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Stages**.
 2. On the row for the specific stage whose permissions you want to view, click the **lock icon**.
