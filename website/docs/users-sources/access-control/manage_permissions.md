@@ -3,7 +3,9 @@ title: "Manage permissions"
 description: "Learn how to use global and object permissions in authentik."
 ---
 
-Refer to the following topics for instructions to view and manage permissions. To learn more about the concepts and fundamanetals of authentik permissions, refer to [About Permissions](./permissions.md).
+Refer to the following topics for instructions to view and manage permissions. To learn more about the concepts and fundamentals of authentik permissions, refer to [About Permissions](./permissions.md).
+
+To learn about using Initial Permissions, a pre-defined set of permissions, refer to our [documentation](./initial_permissions.mdxinitial_permissions.mdx).
 
 ## View permissions
 
