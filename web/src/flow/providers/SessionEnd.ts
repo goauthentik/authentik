@@ -24,8 +24,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
