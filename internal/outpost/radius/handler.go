@@ -68,8 +68,8 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		}
 	}
 	if pi == nil {
-		logValue := sha512.Sum512(r.Secret)
-		nr.Log().WithField("hashed_secret", string(logValue[:])).Warning("No provider found")
+		hashedSecret := sha512.Sum512(r.Secret)
+		nr.Log().WithField("hashed_secret", string(hashedSecret[:])).Warning("No provider found")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}
