@@ -29,7 +29,7 @@ The fundamental steps to implement initial permissions are as follows:
 Because the new initial permissions object is coupled with the role (and that role is assigned to a group), the initial permissions object is applied automatically to any new objects (users or flows or any object) that the member user creates.
 
 :::info
-Typically, initial permissions are assigned to a user or role that is not a super-user nor administrator. In this scenario, the administrator will need to grant the `Can view Admin interface` permission to allow the user(s) to access the Admin interface. For details, see Step 5 below. (This does not apply to instances that usse the authentik API to set permissions outside of the UI.)
+Typically, initial permissions are assigned to a user or role that is not a super-user nor administrator. In this scenario, the administrator needs to verify that the user has the `Can view Admin interface` permission (which allows the user to access the Admin interface). For details, see Step 5 below.
 :::
 
 ## Create and implement initial permissions
