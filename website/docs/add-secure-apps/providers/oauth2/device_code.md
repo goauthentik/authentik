@@ -17,7 +17,7 @@ This type of authentication flow is useful for devices with limited input capabi
 
 This device flow is only possible if the active [brand](../../../sys-mgmt/brands.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
 
-authentik does not include a default flow for this use case, so it is necessary to create a new one with the **Designation** of **Stage Configuration**.
+authentik does not include a default flow for this use case, so it is necessary to create a new one with the **Designation** of `Stage Configuration`.
 
 ### Steps
 
