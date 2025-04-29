@@ -84,7 +84,7 @@ To assign the `Can view Admin interface` permission to a user (follow the same s
 6. In the **Assign permission to user** box, click the plus sign (**+**), enter `admin` in the Search field and click the search icon.
 7. Select the returned permission, click **Add**, and then click **Assign** to save your changes and close the box.
 
-Be aware that any rights beyond viewing will need to be assigned as well; for example, if you want a non-Admin user to be able to create flows in the Admin interface, you need to grant those object permissions.
+Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.
 
 ### Assign or remove object permissions on a group
 
