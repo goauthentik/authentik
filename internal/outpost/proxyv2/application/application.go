@@ -118,8 +118,8 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server, old
 	mux := mux.NewRouter()
 
 	// Save cookie name, based on hashed client ID
-	h := sha256.New()
-	bs := string(h.Sum([]byte(*p.ClientId)))
+	h := sha256.Sum256([]byte(*p.ClientId))
+	bs := string(h[:])
 	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
 
 	// When HOST_BROWSER is set, use that as Host header for token requests to make the issuer match
