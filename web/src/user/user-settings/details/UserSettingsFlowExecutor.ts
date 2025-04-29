@@ -173,7 +173,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+                return html`<ak-empty-state loading header=${msg("Loading")}>
                 </ak-empty-state>`;
             default:
                 console.debug(
@@ -195,7 +195,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            return html`<ak-empty-state loading header=${msg("Loading")}>
             </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;

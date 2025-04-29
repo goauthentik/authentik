@@ -24,7 +24,7 @@ export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            return html`<ak-empty-state loading header=${msg("Loading")}>
             </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
