@@ -5,13 +5,11 @@ authentik_version: "2025.4.0"
 authentik_preview: true
 ---
 
-Initial Permissions automatically assigns [object-level permissions](./permissions.md#object-permissions) between a newly created object and its creator.
+Initial permissions automatically assigns [object-level permissions](./permissions.md#object-permissions) between a newly created object and its creator.
 
 The purpose of initial permissions is to assign a specific user (or role) a set of pre-selected permissions that are required for them to accomplish their tasks.
 
-An authentik Admin creates an initial permissions object (a set of selected permissions) and then associates it with either:
-    1. An individual user.
-    2. A role - in which case everyone in a group with that role will have the same initial permissions.
+An authentik Admin creates an initial permissions object (a set of selected permissions) and then associates it with either: 1. An individual user. 2. A role - in which case everyone in a group with that role will have the same initial permissions.
 
 ## Common use cases
 

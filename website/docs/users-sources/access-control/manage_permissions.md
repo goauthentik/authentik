@@ -3,7 +3,7 @@ title: "Manage permissions"
 description: "Learn how to use global and object permissions in authentik."
 ---
 
-Refer to the following topics for instructions to view and manage permissions. To learn more about the concepts and fundamentals of authentik permissions, refer to [About Permissions](./permissions.md).
+For instructions on viewing and managing permissions, see the following topics.To learn more about the concepts and fundamentals of authentik permissions, refer to [About Permissions](./permissions.md).
 
 To learn about using Initial Permissions, a pre-defined set of permissions, refer to our [documentation](./initial_permissions.mdx).
 
@@ -70,7 +70,7 @@ To assign or remove _global_ permissions for a user:
 6. In the **Assign permission to user** box, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. To remove permissions, deselect the checkbox.
 7. Click **Add**, and then click **Assign** to save your changes and close the box.
 
-### Assign 'Can view Admin interface` permissions'
+### Assign `Can view Admin interface` permissions
 
 You can grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have full access to the Admin interface.
 
