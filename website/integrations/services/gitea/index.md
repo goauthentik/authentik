@@ -83,7 +83,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
 7. Repeat steps 5 and 6 for the two additional groups.
 
-:::Note
+:::note
 Users can be added to the groups at any point
 :::
 
