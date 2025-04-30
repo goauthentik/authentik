@@ -77,7 +77,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
-3. Set the name of the group as `gituser` and click **Create**.
+3. Set the group name to `gituser` and click **Create**.
 4. Repeat steps 2 and 3 to create two additional groups named `gitadmin` and `gitrestricted`.
 5. Click the name of a newly created group and navigate to the **Users** tab.
 6. Click **Add existing user**, select the user/s that need Gitea access and click **Add**.
