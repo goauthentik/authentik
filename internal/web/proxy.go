@@ -14,6 +14,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
+	"goauthentik.io/internal/utils/web"
 )
 
 var (
@@ -33,10 +34,14 @@ func (ws *WebServer) configureProxy() {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
 		}
+		if !web.IsRequestFromTrustedProxy(req) {
+			// If the request isn't coming from a trusted proxy, delete MTLS headers
+			req.Header.Del("SSL-Client-Cert")             // nginx-ingress
+			req.Header.Del("X-Forwarded-TLS-Client-Cert") // traefik
+			req.Header.Del("X-Forwarded-Client-Cert")     // envoy
+		}
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
-			// Always set default empty value to prevent upstream from setting it
-			req.Header.Set("X-Forwarded-Client-Cert", "")
 			if len(req.TLS.PeerCertificates) > 0 {
 				pems := make([]string, len(req.TLS.PeerCertificates))
 				for i, crt := range req.TLS.PeerCertificates {
