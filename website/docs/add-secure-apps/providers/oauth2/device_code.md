@@ -50,7 +50,7 @@ If the user has not opened the link above yet, or has not finished the authentic
 
 If the user _has_ finished the authentication and authorization, the response will be similar to any other generic OAuth2 Token request, containing `access_token` and `id_token`.
 
-### Creating and applying a device code flow
+### Create and apply a device code flow
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Flows and Stages** > **Flows** and click **Create**.
