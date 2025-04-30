@@ -84,7 +84,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 7. Repeat steps 5 and 6 for the two additional groups.
 
 :::note
-Users can be added to the groups at any point
+Users can be added to the groups at any point.
 :::
 
 #### Create custom property mapping
