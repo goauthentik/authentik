@@ -64,7 +64,7 @@ When using an OAuth 2.0 provider in authentik, the OP must validate the provided
 
 When you create a new OAuth 2.0 provider and app in authentik and you leave the **Redirect URI** field empty, then the first time a user opens that app, authentik uses that URL as the saved redirect URL.
 
-For advanced use cases, an authentik admin can use regular expressions (regex) instead of a redirect URL. For example, if you want to list ten different applications, instead of listing them all individually, you can create an expression with wildcards. When using regex, be aware that authentik uses a dot as a separator in the URL, but in regex a dot means "one of any character," a wildcard. You should therefore escape the dot with `\.` to prevent its interpration as a wildcard.
+For advanced use cases, an authentik admin can use regular expressions (regex) instead of a redirect URL. For example, if you want to list ten different applications, instead of listing them all individually, you can create an expression with wildcards. When using regex, be aware that authentik uses a dot as a separator in the URL, but in regex a dot means "one of any character", a wildcard. You should therefore escape the dot with `\.` to prevent its interpretation as a wildcard.
 
 ## OAuth 2.0 flows and grant types
 
