@@ -32,7 +32,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively, you can create only an application, without a provider, by clicking **Create**.)
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
@@ -49,7 +49,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 1. From the **Gravity administrative interface**, navigate to **Cluster** > **Roles** and click **API**.
 2. Under the **OIDC** sub-section, configure the following values:
 
-- **Issuer**: <kbd>https://<em>authentik.company</em>application/o/<em>application-slug</em>/</kbd>
+- **Issuer**: <kbd>https://<em>authentik.company</em>/application/o/<em>application-slug</em>/</kbd>
 - **Client ID**: Your Client ID from authentik
 - **Client Secret**: Your Client Secret from authentik
 - **Redirect URL**: <kbd>https://<em>gravity.company</em>/auth/oidc/callback</kbd>

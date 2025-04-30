@@ -8,7 +8,7 @@ This feature is in alpha. Use at your own risk.
 ::::
 
 ::::info
-This feature is available from 2024.2 and is not to be confused with [brands](../customize/brands.md), which were previously called tenants.
+This feature is available from 2024.2 and is not to be confused with [brands](../sys-mgmt/brands.md), which were previously called tenants.
 ::::
 
 ## About tenants

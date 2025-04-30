@@ -2,13 +2,14 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
+    "releases/2025/v2025.4",
     "releases/2025/v2025.2",
     "releases/2024/v2024.12",
-    "releases/2024/v2024.10",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.10",
             "releases/2024/v2024.8",
             "releases/2024/v2024.6",
             "releases/2024/v2024.4",
@@ -368,6 +369,10 @@ export default {
             type: "category",
             label: "Customize your instance",
             collapsed: true,
+            link: {
+                type: "doc",
+                id: "customize/index",
+            },
             items: [
                 {
                     type: "category",
@@ -392,6 +397,7 @@ export default {
                                 "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
+                        "customize/policies/unique_password",
                     ],
                 },
                 {
@@ -438,7 +444,7 @@ export default {
                         },
                     ],
                 },
-                "customize/brands",
+                "customize/branding",
             ],
         },
         {
@@ -490,6 +496,7 @@ export default {
                     items: [
                         "users-sources/access-control/permissions",
                         "users-sources/access-control/manage_permissions",
+                        "users-sources/access-control/initial_permissions",
                     ],
                 },
                 {
@@ -582,6 +589,7 @@ export default {
             label: "System Management",
             collapsed: true,
             items: [
+                "sys-mgmt/brands",
                 {
                     type: "category",
                     label: "Operations",
@@ -608,6 +616,7 @@ export default {
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
+                "sys-mgmt/service-accounts",
             ],
         },
         {
@@ -706,6 +715,11 @@ export default {
                     items: [
                         {
                             type: "category",
+                            label: "2025",
+                            items: ["security/cves/CVE-2025-29928"],
+                        },
+                        {
+                            type: "category",
                             label: "2024",
                             items: [
                                 "security/cves/CVE-2024-52307",
@@ -776,6 +790,7 @@ export default {
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",
+                "troubleshooting/logs",
                 "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",

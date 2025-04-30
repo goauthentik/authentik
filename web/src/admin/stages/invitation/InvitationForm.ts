@@ -1,6 +1,7 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal, first } from "@goauthentik/common/utils";
+import { dateTimeLocal } from "@goauthentik/common/temporal";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";

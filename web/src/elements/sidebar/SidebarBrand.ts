@@ -1,10 +1,11 @@
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -22,6 +23,7 @@ export const DefaultBrand: CurrentBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
+    brandingCustomCss: "",
     uiFooterLinks: [],
     uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
@@ -69,7 +71,10 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
     }
 
     render(): TemplateResult {
-        return html` ${window.innerWidth <= MIN_WIDTH
+        const logoUrl =
+            globalAK().brand.brandingLogo || this.brand?.brandingLogo || DefaultBrand.brandingLogo;
+
+        return html`${window.innerWidth <= MIN_WIDTH
                 ? html`
                       <button
                           class="sidebar-trigger pf-c-button"
@@ -85,14 +90,10 @@ export class SidebarBrand extends WithBrandConfig(AKElement) {
                           <i class="fas fa-bars"></i>
                       </button>
                   `
-                : html``}
+                : nothing}
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
-                    <img
-                        src=${themeImage(this.brand?.brandingLogo ?? DefaultBrand.brandingLogo)}
-                        alt="${msg("authentik Logo")}"
-                        loading="lazy"
-                    />
+                    <img src=${themeImage(logoUrl)} alt="${msg("authentik Logo")}" loading="lazy" />
                 </div>
             </a>`;
     }

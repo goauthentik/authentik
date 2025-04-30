@@ -1,9 +1,9 @@
 [project]
 name = "authentik"
-version = "2025.2.2"
+version = "2025.2.4"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
-requires-python = "~=3.12"
+requires-python = "==3.12.*"
 dependencies = [
     "argon2-cffi",
     "celery",
@@ -24,7 +24,7 @@ dependencies = [
     "django-redis",
     "django-storages[s3]",
     "django-tenants",
-    "djangorestframework ==3.14.0",
+    "djangorestframework",
     "djangorestframework-guardian",
     "docker",
     "drf-orjson-renderer",
@@ -44,15 +44,15 @@ dependencies = [
     "ldap3",
     "lxml",
     "msgraph-sdk",
-    "opencontainers[reggie]",
+    "opencontainers",
     "packaging",
     "paramiko",
-    "psycopg[c]",
+    "psycopg[c, pool]",
     "pydantic",
     "pydantic-scim",
     "pyjwt",
     "pyrad",
-    "python-kadmin-rs ==0.5.3",
+    "python-kadmin-rs ==0.6.0",
     "pyyaml",
     "requests-oauthlib",
     "scim2-filter-parser",
@@ -70,7 +70,7 @@ dependencies = [
     "watchdog",
     "webauthn",
     "wsproto",
-    "xmlsec",
+    "xmlsec <= 1.3.14",
     "zxcvbn",
 ]
 
@@ -103,7 +103,8 @@ dev = [
 
 [tool.uv.sources]
 django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
-opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "20d69d9cc50a0fef31605b46f06da0c94f1ec3cf" }
+opencontainers = { git = "https://github.com/BeryJu/oci-python", rev = "c791b19056769cd67957322806809ab70f5bead8" }
+djangorestframework = { git = "https://github.com/authentik-community/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"
@@ -129,6 +130,7 @@ skip = [
     "**/web/src/locales",
     "**/web/xliff",
     "./web/storybook-static",
+    "./web/custom-elements.json",
     "./website/build",
     "./gen-ts-api",
     "./gen-py-api",

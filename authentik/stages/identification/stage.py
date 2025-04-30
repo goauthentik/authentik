@@ -85,6 +85,7 @@ class IdentificationChallenge(Challenge):
     primary_action = CharField()
     sources = LoginSourceSerializer(many=True, required=False)
     show_source_labels = BooleanField()
+    enable_remember_me = BooleanField(required=False, default=True)
 
     component = CharField(default="ak-stage-identification")
 
@@ -142,35 +143,38 @@ class IdentificationChallengeResponse(ChallengeResponse):
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
 
-        # Password check
-        if current_stage.password_stage:
-            password = attrs.get("password", None)
-            if not password:
-                self.stage.logger.warning("Password not set for ident+auth attempt")
-            try:
-                with start_span(
-                    op="authentik.stages.identification.authenticate",
-                    name="User authenticate call (combo stage)",
-                ):
-                    user = authenticate(
-                        self.stage.request,
-                        current_stage.password_stage.backends,
-                        current_stage,
-                        username=self.pre_user.username,
-                        password=password,
-                    )
-                if not user:
-                    raise ValidationError("Failed to authenticate.")
-                self.pre_user = user
-            except PermissionDenied as exc:
-                raise ValidationError(str(exc)) from exc
-
         # Captcha check
         if captcha_stage := current_stage.captcha_stage:
             captcha_token = attrs.get("captcha_token", None)
             if not captcha_token:
                 self.stage.logger.warning("Token not set for captcha attempt")
             verify_captcha_token(captcha_stage, captcha_token, client_ip)
+
+        # Password check
+        if not current_stage.password_stage:
+            # No password stage select, don't validate the password
+            return attrs
+
+        password = attrs.get("password", None)
+        if not password:
+            self.stage.logger.warning("Password not set for ident+auth attempt")
+        try:
+            with start_span(
+                op="authentik.stages.identification.authenticate",
+                name="User authenticate call (combo stage)",
+            ):
+                user = authenticate(
+                    self.stage.request,
+                    current_stage.password_stage.backends,
+                    current_stage,
+                    username=self.pre_user.username,
+                    password=password,
+                )
+            if not user:
+                raise ValidationError("Failed to authenticate.")
+            self.pre_user = user
+        except PermissionDenied as exc:
+            raise ValidationError(str(exc)) from exc
         return attrs
 
 
@@ -232,6 +236,7 @@ class IdentificationStageView(ChallengeStageView):
                 and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
+                "enable_remember_me": current_stage.enable_remember_me,
             }
         )
         # If the user has been redirected to us whilst trying to access an

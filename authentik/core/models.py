@@ -1,6 +1,7 @@
 """authentik core models"""
 
 from datetime import datetime
+from enum import StrEnum
 from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
@@ -9,6 +10,7 @@ from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
+from django.contrib.sessions.base_session import AbstractBaseSession
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.db.models.constants import LOOKUP_SEP
@@ -646,19 +648,30 @@ class SourceUserMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning users"""
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
-    EMAIL_LINK = "email_link", _(
-        "Link to a user with identical email address. Can have security implications "
-        "when a source doesn't validate email addresses."
+    EMAIL_LINK = (
+        "email_link",
+        _(
+            "Link to a user with identical email address. Can have security implications "
+            "when a source doesn't validate email addresses."
+        ),
     )
-    EMAIL_DENY = "email_deny", _(
-        "Use the user's email address, but deny enrollment when the email address already exists."
+    EMAIL_DENY = (
+        "email_deny",
+        _(
+            "Use the user's email address, but deny enrollment when the email address already "
+            "exists."
+        ),
     )
-    USERNAME_LINK = "username_link", _(
-        "Link to a user with identical username. Can have security implications "
-        "when a username is used with another source."
+    USERNAME_LINK = (
+        "username_link",
+        _(
+            "Link to a user with identical username. Can have security implications "
+            "when a username is used with another source."
+        ),
     )
-    USERNAME_DENY = "username_deny", _(
-        "Use the user's username, but deny enrollment when the username already exists."
+    USERNAME_DENY = (
+        "username_deny",
+        _("Use the user's username, but deny enrollment when the username already exists."),
     )
 
 
@@ -666,12 +679,16 @@ class SourceGroupMatchingModes(models.TextChoices):
     """Different modes a source can handle new/returning groups"""
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
-    NAME_LINK = "name_link", _(
-        "Link to a group with identical name. Can have security implications "
-        "when a group name is used with another source."
+    NAME_LINK = (
+        "name_link",
+        _(
+            "Link to a group with identical name. Can have security implications "
+            "when a group name is used with another source."
+        ),
     )
-    NAME_DENY = "name_deny", _(
-        "Use the group name, but deny enrollment when the name already exists."
+    NAME_DENY = (
+        "name_deny",
+        _("Use the group name, but deny enrollment when the name already exists."),
     )
 
 
@@ -730,8 +747,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         choices=SourceGroupMatchingModes.choices,
         default=SourceGroupMatchingModes.IDENTIFIER,
         help_text=_(
-            "How the source determines if an existing group should be used or "
-            "a new group created."
+            "How the source determines if an existing group should be used or a new group created."
         ),
     )
 
@@ -761,11 +777,17 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     @property
     def component(self) -> str:
         """Return component used to edit this object"""
+        if self.managed == self.MANAGED_INBUILT:
+            return ""
         raise NotImplementedError
 
     @property
     def property_mapping_type(self) -> "type[PropertyMapping]":
         """Return property mapping type used by this object"""
+        if self.managed == self.MANAGED_INBUILT:
+            from authentik.core.models import PropertyMapping
+
+            return PropertyMapping
         raise NotImplementedError
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
@@ -780,10 +802,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
 
     def get_base_user_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a user to build final properties upon."""
+        if self.managed == self.MANAGED_INBUILT:
+            return {}
         raise NotImplementedError
 
     def get_base_group_properties(self, **kwargs) -> dict[str, Any | dict[str, Any]]:
         """Get base properties for a group to build final properties upon."""
+        if self.managed == self.MANAGED_INBUILT:
+            return {}
         raise NotImplementedError
 
     def __str__(self):
@@ -814,6 +840,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
+    identifier = models.TextField()
 
     objects = InheritanceManager()
 
@@ -827,6 +854,10 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
 
     class Meta:
         unique_together = (("user", "source"),)
+        indexes = (
+            models.Index(fields=("identifier",)),
+            models.Index(fields=("source", "identifier")),
+        )
 
 
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
@@ -997,45 +1028,75 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
-class AuthenticatedSession(ExpiringModel):
-    """Additional session class for authenticated users. Augments the standard django session
-    to achieve the following:
-        - Make it queryable by user
-        - Have a direct connection to user objects
-        - Allow users to view their own sessions and terminate them
-        - Save structured and well-defined information.
-    """
+class Session(ExpiringModel, AbstractBaseSession):
+    """User session with extra fields for fast access"""
 
-    uuid = models.UUIDField(default=uuid4, primary_key=True)
+    # Remove upstream field because we're using our own ExpiringModel
+    expire_date = None
+    session_data = models.BinaryField(_("session data"))
 
-    session_key = models.CharField(max_length=40)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-    last_ip = models.TextField()
+    # Keep in sync with Session.Keys
+    last_ip = models.GenericIPAddressField()
     last_user_agent = models.TextField(blank=True)
     last_used = models.DateTimeField(auto_now=True)
 
     class Meta:
+        verbose_name = _("Session")
+        verbose_name_plural = _("Sessions")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["expires", "session_key"]),
+        ]
+        default_permissions = []
+
+    def __str__(self):
+        return self.session_key
+
+    class Keys(StrEnum):
+        """
+        Keys to be set with the session interface for the fields above to be updated.
+
+        If a field is added here that needs to be initialized when the session is initialized,
+        it must also be reflected in authentik.root.middleware.SessionMiddleware.process_request
+        and in authentik.core.sessions.SessionStore.__init__
+        """
+
+        LAST_IP = "last_ip"
+        LAST_USER_AGENT = "last_user_agent"
+        LAST_USED = "last_used"
+
+    @classmethod
+    def get_session_store_class(cls):
+        from authentik.core.sessions import SessionStore
+
+        return SessionStore
+
+    def get_decoded(self):
+        raise NotImplementedError
+
+
+class AuthenticatedSession(SerializerModel):
+    session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True)
+    # We use the session as primary key, but we need the API to be able to reference
+    # this object uniquely without exposing the session key
+    uuid = models.UUIDField(default=uuid4, unique=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")
-        indexes = ExpiringModel.Meta.indexes + [
-            models.Index(fields=["session_key"]),
-        ]
 
     def __str__(self) -> str:
-        return f"Authenticated Session {self.session_key[:10]}"
+        return f"Authenticated Session {str(self.pk)[:10]}"
 
     @staticmethod
     def from_request(request: HttpRequest, user: User) -> Optional["AuthenticatedSession"]:
         """Create a new session from a http request"""
-        from authentik.root.middleware import ClientIPMiddleware
-
-        if not hasattr(request, "session") or not request.session.session_key:
+        if not hasattr(request, "session") or not request.session.exists(
+            request.session.session_key
+        ):
             return None
         return AuthenticatedSession(
-            session_key=request.session.session_key,
+            session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
-            last_ip=ClientIPMiddleware.get_client_ip(request),
-            last_user_agent=request.META.get("HTTP_USER_AGENT", ""),
-            expires=request.session.get_expiry_date(),
         )
