@@ -10,9 +10,9 @@ This device flow is only possible if the active [brand](../../../sys-mgmt/brands
 
 authentik does not include a default flow for this use case, so it is necessary to create a new one with the **Designation** of `Stage Configuration`.
 
-### Device-side
+### Device flow initiation
 
-The flow is initiated by sending a POST request to the device authorization endpoint, `/application/o/device/` with the following contents:
+The flow is initiated by sending a POST request to the device authorization endpoint, `/application/o/device/`, with the following contents:
 
 ```http
 POST /application/o/device/ HTTP/1.1
@@ -31,8 +31,6 @@ The response contains the following fields:
 - `user_code`: The raw code for the enduser to input
 - `expires_in`: The total seconds after which this token will expire
 - `interval`: The interval in seconds for how often the device should check the token status
-
----
 
 With this response, the device can start checking the status of the token by sending requests to the token endpoint like this:
 
