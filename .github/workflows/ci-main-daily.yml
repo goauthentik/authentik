@@ -9,6 +9,7 @@ on:
 
 jobs:
   test-container:
+    name: Test Container ${{ matrix.version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -19,6 +20,7 @@ jobs:
           - version-2024-12
     steps:
       - uses: actions/checkout@v4
+        name: ${{ matrix.version }} Setup
       - run: |
           current="$(pwd)"
           dir="/tmp/authentik/${{ matrix.version }}"
