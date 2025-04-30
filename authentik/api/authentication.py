@@ -132,7 +132,7 @@ class IPCUser(AnonymousUser):
 def token_ipc(value: str) -> User | None:
     """Check if the token is the secret key
     and return the service account for the managed outpost"""
-    if ipc_key and not compare_digest(value, ipc_key):
+    if not ipc_key or not compare_digest(value, ipc_key):
         return None
     return IPCUser()
 
