@@ -20,8 +20,11 @@ from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 
 LOGGER = get_logger()
 _tmp = Path(gettempdir())
-with open(_tmp / "authentik-core-ipc.key") as _f:
-    ipc_key = _f.read()
+try:
+    with open(_tmp / "authentik-core-ipc.key") as _f:
+        ipc_key = _f.read()
+except OSError:
+    ipc_key = None
 
 
 def validate_auth(header: bytes) -> str | None:
@@ -129,7 +132,7 @@ class IPCUser(AnonymousUser):
 def token_ipc(value: str) -> User | None:
     """Check if the token is the secret key
     and return the service account for the managed outpost"""
-    if not compare_digest(value, ipc_key):
+    if ipc_key and not compare_digest(value, ipc_key):
         return None
     return IPCUser()
 
