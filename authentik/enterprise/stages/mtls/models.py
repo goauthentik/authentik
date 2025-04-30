@@ -2,6 +2,7 @@ from django.db import models
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Stage
+from authentik.flows.stage import StageView
 
 
 class TLSMode(models.TextChoices):
@@ -35,3 +36,9 @@ class MutualTLSStage(Stage):
 
     cert_attribute = models.TextField(choices=CertAttributes.choices)
     user_attribute = models.TextField(choices=UserAttributes.choices)
+
+    @property
+    def view(self) -> type[StageView]:
+        from authentik.enterprise.stages.mtls.stage import MTLSStageView
+
+        return MTLSStageView
