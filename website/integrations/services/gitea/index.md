@@ -142,7 +142,7 @@ For this to function, the Gitea `ENABLE_AUTO_REGISTRATION: true` variable must b
 
 :::note
 Users who are not part of any defined group will be denied login access.
-In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access
+In contrast, members of the `gitadmin` group will have full administrative privileges, while those in the `gitrestricted` group will have limited access.
 :::
 
 ### Helm Chart Configuration
