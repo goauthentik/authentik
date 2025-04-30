@@ -7,7 +7,11 @@ from django.db.models import Q
 from ldap3 import SUBTREE
 
 from authentik.core.models import Group, User
-from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
+from authentik.sources.ldap.models import (
+    LDAP_DISTINGUISHED_NAME,
+    LDAP_UNIQUENESS,
+    LDAPSource,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 
@@ -28,17 +32,15 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return iter(())
-
-        # If we are looking up groups from users, we don't need to fetch the group membership field
-        attributes = [self._source.object_uniqueness_field, LDAP_DISTINGUISHED_NAME]
-        if not self._source.lookup_groups_from_user:
-            attributes.append(self._source.group_membership_field)
-
         return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
-            attributes=attributes,
+            attributes=[
+                self._source.group_membership_field,
+                self._source.object_uniqueness_field,
+                LDAP_DISTINGUISHED_NAME,
+            ],
             **kwargs,
         )
 
@@ -49,24 +51,11 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         membership_count = 0
         for group in page_data:
-            if self._source.lookup_groups_from_user:
-                group_dn = group.get("dn", {})
-                group_filter = f"({self._source.group_membership_field}={group_dn})"
-                group_members = self._source.connection().extend.standard.paged_search(
-                    search_base=self.base_dn_users,
-                    search_filter=group_filter,
-                    search_scope=SUBTREE,
-                    attributes=[self._source.object_uniqueness_field],
-                )
-                members = []
-                for group_member in group_members:
-                    group_member_dn = group_member.get("dn", {})
-                    members.append(group_member_dn)
-            else:
-                if "attributes" not in group:
-                    continue
-                members = group.get("attributes", {}).get(self._source.group_membership_field, [])
-
+            if "attributes" not in group:
+                continue
+            members = group.get("attributes", {}).get(
+                self._source.group_membership_field, []
+            )
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
@@ -75,18 +64,17 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             if self._source.group_membership_field == "memberUid":
                 # If memberships are based on the posixGroup's 'memberUid'
                 # attribute we use the RDN instead of the FDN to lookup members.
-                membership_mapping_attribute = "uid"
+                membership_mapping_attribute = "username"
 
-            if membership_mapping_attribute == "uid":
-                uid_users = User.objects.filter(attributes__distinguishedName__startswith="uid=")
-                matched_uids = []
-                for u in uid_users:
-                    dn = u.attributes.get("distinguishedName", "")
-                    uid = dn.split(",")[0].split("=")[1]
-                    if uid in members:
-                        matched_uids.append(u.pk)
+            if membership_mapping_attribute == "username":
                 users = User.objects.filter(
-                    Q(pk__in=matched_uids) | Q(ak_groups=ak_group)
+                    Q(**{f"{membership_mapping_attribute}__in": members})
+                    | Q(
+                        **{
+                            f"{membership_mapping_attribute}__isnull": True,
+                            "ak_groups__in": [ak_group],
+                        }
+                    )
                 ).distinct()
             else:
                 users = User.objects.filter(
@@ -98,17 +86,21 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                         }
                     )
                 ).distinct()
-            membership_count += 1
-            membership_count += users.count()
+
             ak_group.users.set(users)
             ak_group.save()
+
+            membership_count += 1
+            membership_count += users.count()
         self._logger.debug("Successfully updated group membership")
         return membership_count
 
     def get_group(self, group_dict: dict[str, Any]) -> Group | None:
         """Check if we fetched the group already, and if not cache it for later"""
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
-        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
+        group_uniq = group_dict.get("attributes", {}).get(
+            self._source.object_uniqueness_field, []
+        )
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:
@@ -119,7 +111,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 return None
             group_uniq = group_uniq[0]
         if group_uniq not in self.group_cache:
-            groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
+            groups = Group.objects.filter(
+                **{f"attributes__{LDAP_UNIQUENESS}": group_uniq}
+            )
             if not groups.exists():
                 if self._source.sync_groups:
                     self.message(
