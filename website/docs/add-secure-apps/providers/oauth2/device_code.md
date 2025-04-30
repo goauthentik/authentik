@@ -1,30 +1,14 @@
 # Device code flow
 
-(Also known as device flow, Device Authorization Grant flow, and [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628))
+The device code flow is also known as device flow or device authorization grant flow. This type of authentication flow is useful for devices with limited input capabilities and/or devices without browsers. The Request for Comments (RFC) 8628) abstract for this flow states:
 
-This type of authentication flow is useful for devices with limited input capabilities and/or devices without browsers.
-
-> The OAuth 2.0 device authorization grant is designed for Internet-connected
-> devices that either lack a browser to perform a user-agent-based
-> authorization or are input constrained to the extent that
-> requiring the user to input text in order to authenticate during the
-> authorization flow is impractical. It enables OAuth clients on such
-> devices (like smart TVs, media consoles, digital picture frames, and
-> printers) to obtain user authorization to access protected resources
-> by using a user agent on a separate device.
+> The OAuth 2.0 device authorization grant is designed for Internet-connected devices that either lack a browser to perform a user-agent-based authorization or are input constrained to the extent that requiring the user to input text in order to authenticate during the authorization flow is impractical. It enables OAuth clients on such devices (like smart TVs, media consoles, digital picture frames, and printers) to obtain user authorization to access protected resources by using a user agent on a separate device.
 
 ### Requirements
 
 This device flow is only possible if the active [brand](../../../sys-mgmt/brands.md) has a device code flow configured. This flow is run _after_ the user logs in, and before the user authenticates.
 
 authentik does not include a default flow for this use case, so it is necessary to create a new one with the **Designation** of `Stage Configuration`.
-
-### Steps
-
-1. From the authentik Admin interface, navigate to **Flows and Stages** > **Flows**.
-2. Create a new Flow by clicking **Create**, and fill out the form ensuring **Designation** is set to `Stage Configuration`.
-3. Under **System** > **Brands**, select your brand and click the edit icon in **Actions** column.
-4. Under **Default flows**, select, under **Device code flow** the flow created in step 2.
 
 ### Device-side
 
