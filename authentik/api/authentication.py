@@ -4,9 +4,9 @@ from hmac import compare_digest
 from pathlib import Path
 from tempfile import gettempdir
 from typing import Any
-from django.contrib.auth.models import AnonymousUser
 
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from drf_spectacular.extensions import OpenApiAuthenticationExtension
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework.exceptions import AuthenticationFailed

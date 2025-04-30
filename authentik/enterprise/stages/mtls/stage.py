@@ -1,11 +1,27 @@
 from urllib.parse import unquote
 
-from cryptography.x509 import Certificate, load_pem_x509_certificate
+from cryptography.exceptions import InvalidSignature
+from cryptography.x509 import Certificate, NameOID, load_pem_x509_certificate
+from django.utils.translation import gettext_lazy as _
 
+from authentik.brands.models import Brand
+from authentik.core.models import User
+from authentik.crypto.models import CertificateKeyPair
+from authentik.enterprise.stages.mtls.models import (
+    CertAttributes,
+    MutualTLSStage,
+    TLSMode,
+    UserAttributes,
+)
+from authentik.flows.challenge import AccessDeniedChallenge
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 HEADER_PROXY_FORWARDED = "HTTP_X_FORWARDED_CLIENT_CERT"
 HEADER_NGINX_FORWARDED = "HTTP_SSL_CLIENT_CERT"
+HEADER_TRAEFIK_FORWARDED = "HTTP_X_FORWARDED_TLS_CLIENT_CERT"
 
 
 class MTLSStageView(ChallengeStageView):
@@ -40,8 +56,110 @@ class MTLSStageView(ChallengeStageView):
         except ValueError:
             return []
 
+    def _parse_cert_traefik(self) -> list[Certificate]:
+        """Parse certificates in the format traefik gives to us"""
+        ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
+        if not ftcc_raw:
+            return []
+        try:
+            cert = load_pem_x509_certificate(unquote(ftcc_raw))
+            return [cert]
+        except ValueError:
+            return []
+
+    def get_ca(self) -> CertificateKeyPair | None:
+        stage: MutualTLSStage = self.executor.current_stage
+        if stage.certificate_authority:
+            return stage.certificate_authority
+        brand: Brand = self.request.brand
+        if brand.client_certificate:
+            return brand.client_certificate
+        return None
+
+    def validate_cert(self, ca: Certificate, certs: list[Certificate]):
+        for _cert in certs:
+            try:
+                _cert.verify_directly_issued_by(ca)
+                # PolicyBuilder().store()
+                return _cert
+            except (InvalidSignature, TypeError, ValueError):
+                continue
+
+    def check_if_user(self, cert: Certificate):
+        stage: MutualTLSStage = self.executor.current_stage
+        cert_attr = None
+        user_attr = None
+        match stage.cert_attribute:
+            case CertAttributes.SUBJECT:
+                cert_attr = cert.subject.rfc4514_string()
+            case CertAttributes.COMMON_NAME:
+                cert_attr = str(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value)
+            case CertAttributes.EMAIL:
+                cert_attr = str(cert.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value)
+        match stage.user_attribute:
+            case UserAttributes.USERNAME:
+                user_attr = "username"
+            case UserAttributes.EMAIL:
+                user_attr = "email"
+        if not user_attr or not cert_attr:
+            return None
+        return User.objects.filter(**{user_attr: cert_attr}).first()
+
+    def auth_user(self, user: User, cert: Certificate):
+        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "mtls")
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+        self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
+            {
+                "certificate": {
+                    "serial_number": cert.serial_number
+                    # TODO: Other attributes
+                }
+            }
+        )
+
+    def enroll_prepare_user(self, cert: Certificate):
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})
+        self.executor.plan.context[PLAN_CONTEXT_PROMPT].update(
+            {
+                "email": str(cert.subject.get_attributes_for_oid(NameOID.EMAIL_ADDRESS)[0].value),
+                "name": str(cert.subject.get_attributes_for_oid(NameOID.COMMON_NAME)[0].value),
+            }
+        )
+
     def dispatch(self, request, *args, **kwargs):
-        certs = [
-            *self._parse_cert_xfcc(),
-            *self._parse_cert_nginx()
-        ]
+        stage: MutualTLSStage = self.executor.current_stage
+        certs = [*self._parse_cert_xfcc(), *self._parse_cert_nginx(), *self._parse_cert_traefik()]
+        if stage.mode != TLSMode.OPTIONAL and len(certs) < 1:
+            self.logger.warning("Client certificate required but no certificates given")
+            return super().dispatch(
+                request,
+                *args,
+                error_message=_("Certificate required but no certificate was given."),
+                **kwargs,
+            )
+        ca = self.get_ca()
+        if not ca and stage.mode != TLSMode.OPTIONAL:
+            self.logger.warning("No Certificate authority found")
+            return super().dispatch(request, *args, **kwargs)
+        cert = self.validate_cert(ca, certs)
+        if not cert and stage.mode == TLSMode.OPTIONAL:
+            self.logger.info("No certificate given, continuing")
+            return self.executor.stage_ok()
+        existing_user = self.check_if_user(cert)
+        if existing_user and stage.mode in [TLSMode.REQUIRED_ANY, TLSMode.REQUIRED_AUTH]:
+            self.auth_user(existing_user, cert)
+        elif not existing_user and stage.mode in [TLSMode.REQUIRED_ANY, TLSMode.REQUIRED_ENROLL]:
+            self.enroll_prepare_user(cert)
+        else:
+            self.logger.warning("Invalid configuration")
+            return super().dispatch(request, *args, **kwargs)
+        return self.executor.stage_ok()
+
+    def get_challenge(self, *args, error_message: str | None = None, **kwargs):
+        return AccessDeniedChallenge(
+            data={
+                "component": "ak-stage-access-denied",
+                "error_message": str(error_message or "Unknown error"),
+            }
+        )
