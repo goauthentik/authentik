@@ -63,4 +63,3 @@ If the user _has_ finished the authentication and authorization, the response wi
 4. Click **Create**.
 5. Navigate to **System** > **Brands** and click the **Edit** icon on the default brand.
 6. Set **Default code flow** to the newly created device code flow and click **Update**.
-
