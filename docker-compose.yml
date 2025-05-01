@@ -2,7 +2,7 @@
 
 services:
   postgresql:
-    image: docker.io/library/postgres:16-alpine
+    image: docker.io/library/postgres:16-alpine3.21@sha256:3b057e1c2c6dfee60a30950096f3fab33be141dbb0fdd7af3d477083de94166c
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
