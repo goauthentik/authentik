@@ -53,9 +53,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         for group in page_data:
             if "attributes" not in group:
                 continue
-            members = group.get("attributes", {}).get(
-                self._source.group_membership_field, []
-            )
+            members = group.get("attributes", {}).get(self._source.group_membership_field, [])
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
@@ -98,9 +96,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
     def get_group(self, group_dict: dict[str, Any]) -> Group | None:
         """Check if we fetched the group already, and if not cache it for later"""
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
-        group_uniq = group_dict.get("attributes", {}).get(
-            self._source.object_uniqueness_field, []
-        )
+        group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:
@@ -111,9 +107,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 return None
             group_uniq = group_uniq[0]
         if group_uniq not in self.group_cache:
-            groups = Group.objects.filter(
-                **{f"attributes__{LDAP_UNIQUENESS}": group_uniq}
-            )
+            groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
             if not groups.exists():
                 if self._source.sync_groups:
                     self.message(
