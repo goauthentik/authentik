@@ -34,7 +34,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://gitea.company/user/oauth2/authentik/callback`.
+    - Set a `Strict` redirect URI to `https://<gitea.company>/user/oauth2/authentik/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -84,7 +84,7 @@ Users who are in none of these groups will not be able to log in to gitea.
 7. Repeat steps 5 and 6 for the two additional groups.
 
 :::note
-Users can be added to the groups at any point.
+You can add users to the groups at any point.
 :::
 
 #### Create custom property mapping
