@@ -50,7 +50,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 
 ## YouTrack configuration
 
-1. To integrate YouTrack with authentik, log in, as a _Low-level Admin or higher_, click the **Administration** cog near the bottom of the page, hover over **Access Management**, and click **Auth Modules**.
+1. To integrate YouTrack with authentik, log in as a _Low-level Admin or higher_, click the **Administration** cog near the bottom of the page, hover over **Access Management**, and then select **Auth Modules**.
 2. Click **New module**, then select **SAML 2.0**.
 3. Fill out the form with the following information:
     - **Name**: Set an appropriate name (e.g. `authentik`)
