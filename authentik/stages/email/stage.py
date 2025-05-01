@@ -1,6 +1,8 @@
 """authentik multi-stage authentication engine"""
 
+from base64 import b64encode
 from datetime import timedelta
+from pickle import dumps
 from uuid import uuid4
 
 from django.contrib import messages
@@ -17,18 +19,28 @@ from rest_framework.serializers import ValidationError
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import StageInvalidException
-from authentik.flows.models import FlowDesignation, FlowToken
-from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
+from authentik.flows.models import FlowDesignation, FlowToken, in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_HEADER, ConsentStageView
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
+
+def pickle_flow_token_for_email(plan: FlowPlan):
+    """Insert a consent stage into the flow plan and pickle it for a FlowToken,
+    to be sent via Email. This is to prevent automated email scanners, which sometimes
+    open links in emails in a full browser from breaking the link."""
+    plan.insert_stage(in_memory_stage(ConsentStageView), index=0)
+    plan.context[PLAN_CONTEXT_CONSENT_HEADER] = _("")
+    data = dumps(plan)
+    return b64encode(data).decode()
 
 
 class EmailChallenge(Challenge):
@@ -86,7 +98,7 @@ class EmailStageView(ChallengeStageView):
                 user=pending_user,
                 identifier=identifier,
                 flow=self.executor.flow,
-                _plan=FlowToken.pickle(self.executor.plan),
+                _plan=pickle_flow_token_for_email(self.executor.plan),
             )
         token = tokens.first()
         # Check if token is expired and rotate key if so
