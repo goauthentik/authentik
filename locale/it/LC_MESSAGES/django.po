@@ -12,8 +12,8 @@
 # tmassimi, 2024
 # Marc Schmitt, 2024
 # albanobattistella <albanobattistella@gmail.com>, 2024
-# Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025
 # Matteo Piccina <altermatte@gmail.com>, 2025
+# Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
-"Last-Translator: Matteo Piccina <altermatte@gmail.com>, 2025\n"
+"Last-Translator: Kowalski Dragon (kowalski7cc) <kowalski.7cc@gmail.com>, 2025\n"
 "Language-Team: Italian (https://app.transifex.com/authentik/teams/119923/it/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -383,7 +383,7 @@ msgstr "Mappatura delle proprietà"
 
 #: authentik/core/models.py
 msgid "session data"
-msgstr ""
+msgstr "dati sessione"
 
 #: authentik/core/models.py
 msgid "Session"
@@ -509,7 +509,7 @@ msgstr ""
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Number of passwords to check against."
-msgstr ""
+msgstr "Numero di password da verificare."
 
 #: authentik/enterprise/policies/unique_password/models.py
 #: authentik/policies/password/models.py
@@ -519,18 +519,19 @@ msgstr "Password non impostata nel contesto"
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "This password has been used previously. Please choose a different one."
 msgstr ""
+"Questa password è già stata utilizzata in precedenza. Scegline una diversa."
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policy"
-msgstr ""
+msgstr "Politica di unicità della password"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "Password Uniqueness Policies"
-msgstr ""
+msgstr "Criteri di unicità delle password"
 
 #: authentik/enterprise/policies/unique_password/models.py
 msgid "User Password History"
-msgstr ""
+msgstr "Cronologia password utente"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -2203,7 +2204,7 @@ msgstr "Ruoli"
 
 #: authentik/rbac/models.py
 msgid "Initial Permissions"
-msgstr ""
+msgstr "Permessi Iniziali"
 
 #: authentik/rbac/models.py
 msgid "System permission"
@@ -2458,6 +2459,9 @@ msgid ""
 "attribute. This allows nested group resolution on systems like FreeIPA and "
 "Active Directory"
 msgstr ""
+"Cerca l'appartenenza al gruppo in base a un attributo utente anziché a un "
+"attributo di gruppo. Questo consente la risoluzione di gruppi nidificati su "
+"sistemi come FreeIPA e Active Directory."
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
@@ -2477,19 +2481,19 @@ msgstr "Mappature delle proprietà della sorgente LDAP"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
-msgstr ""
+msgstr "Connessione Sorgente LDAP Utente"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connections"
-msgstr ""
+msgstr "Connessioni Sorgente LDAP Utente"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connection"
-msgstr ""
+msgstr "Connessione Sorgente LDAP Gruppo"
 
 #: authentik/sources/ldap/models.py
 msgid "Group LDAP Source Connections"
-msgstr ""
+msgstr "Connessioni Sorgente LDAP Gruppo"
 
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
@@ -2501,11 +2505,11 @@ msgstr "Nessun token ricevuto."
 
 #: authentik/sources/oauth/models.py
 msgid "HTTP Basic Authentication"
-msgstr ""
+msgstr "HTTP Basic Authentication"
 
 #: authentik/sources/oauth/models.py
 msgid "Include the client ID and secret as request parameters"
-msgstr ""
+msgstr "Includi il client ID e il segreto come parametri di richiesta"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2552,6 +2556,8 @@ msgid ""
 "How to perform authentication during an authorization_code token request "
 "flow"
 msgstr ""
+"Come eseguire l'autenticazione durante un flusso di richiesta del token "
+"authorization_code"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3484,6 +3490,9 @@ msgid ""
 "Show the user the 'Remember me on this device' toggle, allowing repeat users"
 " to skip straight to entering their password."
 msgstr ""
+"Mostra all'utente il pulsante \"Ricordami su questo dispositivo\", "
+"consentendo agli utenti abituali di passare direttamente all'inserimento "
+"della password."
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
@@ -3873,11 +3882,11 @@ msgstr ""
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot decrease lower than this value. Zero or negative."
-msgstr ""
+msgstr "La reputazione non può scendere sotto questo valore. Zero o negativo."
 
 #: authentik/tenants/models.py
 msgid "Reputation cannot increase higher than this value. Zero or positive."
-msgstr ""
+msgstr "La reputazione non può superare questo valore. Zero o positivo."
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."
