@@ -158,6 +158,7 @@ module.exports = {
                         "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
+                        "services/youtrack/index",
                         "services/zipline/index",
                     ],
                 },
