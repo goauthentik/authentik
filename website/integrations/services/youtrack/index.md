@@ -62,7 +62,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 ### Update the authentik provider
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** > **_Application Name_**, then click **Edit**.
+2. Navigate to **Applications** > **Providers** > **_application name_**, then click **Edit**.
 3. Replace the placeholder value for the **ACS URL** with the value copied from the previous section.
 
 ## Resources
