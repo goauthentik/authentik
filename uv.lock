@@ -2798,14 +2798,14 @@ wheels = [
 
 [[package]]
 name = "s3transfer"
-version = "0.11.4"
+version = "0.11.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "botocore" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/ec/aa1a215e5c126fe5decbee2e107468f51d9ce190b9763cb649f76bb45938/s3transfer-0.11.4.tar.gz", hash = "sha256:559f161658e1cf0a911f45940552c696735f5c74e64362e515f333ebed87d679", size = 148419 }
+sdist = { url = "https://files.pythonhosted.org/packages/c4/2b/5c9562795c2eb2b5f63536961754760c25bf0f34af93d36aa28dea2fb303/s3transfer-0.11.5.tar.gz", hash = "sha256:8c8aad92784779ab8688a61aefff3e28e9ebdce43142808eaa3f0b0f402f68b7", size = 149107 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/86/62/8d3fc3ec6640161a5649b2cddbbf2b9fa39c92541225b33f117c37c5a2eb/s3transfer-0.11.4-py3-none-any.whl", hash = "sha256:ac265fa68318763a03bf2dc4f39d5cbd6a9e178d81cc9483ad27da33637e320d", size = 84412 },
+    { url = "https://files.pythonhosted.org/packages/45/39/13402e323666d17850eca87e4cd6ecfcf9fd7809cac9efdcce10272fc29d/s3transfer-0.11.5-py3-none-any.whl", hash = "sha256:757af0f2ac150d3c75bc4177a32355c3862a98d20447b69a0161812992fe0bd4", size = 84782 },
 ]
 
 [[package]]
