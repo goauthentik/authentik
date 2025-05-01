@@ -2,7 +2,7 @@
 
 from base64 import b64encode
 from datetime import timedelta
-from pickle import dumps
+from pickle import dumps  # nosec
 from uuid import uuid4
 
 from django.contrib import messages
@@ -33,12 +33,13 @@ from authentik.stages.email.utils import TemplateEmailMessage
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
+
 def pickle_flow_token_for_email(plan: FlowPlan):
     """Insert a consent stage into the flow plan and pickle it for a FlowToken,
     to be sent via Email. This is to prevent automated email scanners, which sometimes
     open links in emails in a full browser from breaking the link."""
     plan.insert_stage(in_memory_stage(ConsentStageView), index=0)
-    plan.context[PLAN_CONTEXT_CONSENT_HEADER] = _("")
+    plan.context[PLAN_CONTEXT_CONSENT_HEADER] = _("Continue to confirm this email address.")
     data = dumps(plan)
     return b64encode(data).decode()
 

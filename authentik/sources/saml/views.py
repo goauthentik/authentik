@@ -9,6 +9,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
@@ -128,7 +129,9 @@ class InitiateView(View):
         # otherwise we default to POST_AUTO, with direct redirect
         if source.binding_type == SAMLBindingTypes.POST:
             injected_stages.append(in_memory_stage(ConsentStageView))
-            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = f"Continue to {source.name}"
+            plan_kwargs[PLAN_CONTEXT_CONSENT_HEADER] = _(
+                "Continue to {source_name}".format(source_name=source.name)
+            )
         injected_stages.append(in_memory_stage(AutosubmitStageView))
         return self.handle_login_flow(
             source,

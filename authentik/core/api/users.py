@@ -452,7 +452,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email = False) -> tuple[str, Token]:
+    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand
