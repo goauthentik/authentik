@@ -1,5 +1,3 @@
-import { kebabCase } from "change-case";
-
 import { CSSResult, css } from "lit";
 
 export function getCookie(name: string): string {
@@ -16,14 +14,6 @@ export function getCookie(name: string): string {
         }
     }
     return cookieValue;
-}
-
-export function convertToSlug(text: string): string {
-    return kebabCase(text);
-}
-
-export function isSlug(input: string): boolean {
-    return kebabCase(input) === input;
 }
 
 /**
