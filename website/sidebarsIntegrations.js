@@ -1,4 +1,8 @@
-module.exports = {
+/**
+ * @file Sidebar configuration for the authentik integrations.
+ */
+
+const sidebarsIntegrations = {
     integrations: [
         {
             type: "doc",
@@ -206,3 +210,5 @@ module.exports = {
         },
     ],
 };
+
+export default sidebarsIntegrations;
