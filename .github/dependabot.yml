@@ -120,8 +120,8 @@ updates:
       - dependencies
   - package-ecosystem: docker-compose
     directories:
-      # - scripts/docker-compose.yml # Maybe
-      - tests/e2e/docker-compose.yml
+      # - /scripts # Maybe
+      - /tests/e2e
     schedule:
       interval: daily
       time: "04:00"
