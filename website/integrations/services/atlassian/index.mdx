@@ -40,7 +40,7 @@ To support the integration of Atlassian with authentik, you need to create an ap
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - Note the application slug, it will be required in the `Identity provider SSO URL` in the Atlassian configuration section.
+    - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Temporarily Set the **ACS URL** and **Issuer** to `https://temp.temp`
