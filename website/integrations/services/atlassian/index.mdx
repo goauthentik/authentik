@@ -10,23 +10,23 @@ support_level: community
 >
 > -- https://www.atlassian.com/
 
-## Important information
-
+:::important
 This guide offers instructions for setting up authentik as a SAML provider specifically for Atlassian Cloud. It is applicable to all Atlassian Cloud applications, including Jira, Confluence, Bitbucket, Trello, and others.
 
-Atlassian Cloud has two types of users; internal and external.
+SAML SSO for Atlassian Cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription and a [verified domain](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Further information on requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
+
+Atlassian Cloud has two types of users; **internal** and **external**.
 
 Internal users are defined by their email domain which needs to be a [verified domain in Atlassian Cloud](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Internal users are able to utilise SSO without Atlassian Cloud credentials.
 
 [External users](https://support.atlassian.com/security-and-access-policies/docs/who-are-external-users/) are required to log into Atlassian Cloud using Atlassian Cloud credentials. They are then prompted for authentik credentials when accessing specific Atlassian Cloud apps like Jira.
+:::
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-
-SAML SSO for Atlassian Cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription and a [verified domain](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Further information on requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
