@@ -89,19 +89,24 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.modelPermissions?.results.map((perm) => {
-                return html` <ak-form-element-horizontal name="permissions.${perm.codename}">
-                    <label class="pf-c-switch">
-                        <input class="pf-c-switch__input" type="checkbox" />
-                        <span class="pf-c-switch__toggle">
-                            <span class="pf-c-switch__toggle-icon">
-                                <i class="fas fa-check" aria-hidden="true"></i>
+            ${this.modelPermissions?.results
+                .filter((perm) => {
+                    const [_app, model] = this.model?.split(".") || "";
+                    return perm.codename !== `add_${model}`;
+                })
+                .map((perm) => {
+                    return html` <ak-form-element-horizontal name="permissions.${perm.codename}">
+                        <label class="pf-c-switch">
+                            <input class="pf-c-switch__input" type="checkbox" />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
                             </span>
-                        </span>
-                        <span class="pf-c-switch__label">${perm.name}</span>
-                    </label>
-                </ak-form-element-horizontal>`;
-            })}
+                            <span class="pf-c-switch__label">${perm.name}</span>
+                        </label>
+                    </ak-form-element-horizontal>`;
+                })}
         </form>`;
     }
 }
