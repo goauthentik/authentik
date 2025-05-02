@@ -4,7 +4,7 @@ import {
     IRedirectURIInput,
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -161,7 +161,7 @@ export function renderForm(
                 <ak-text-input
                     name="clientId"
                     label=${msg("Client ID")}
-                    value="${first(provider?.clientId, randomString(40, ascii_letters + digits))}"
+                    value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
                     inputHint="code"
                 >
@@ -169,10 +169,7 @@ export function renderForm(
                 <ak-text-input
                     name="clientSecret"
                     label=${msg("Client Secret")}
-                    value="${first(
-                        provider?.clientSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}"
+                    value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     inputHint="code"
                     ?hidden=${!showClientSecret}
                 >
@@ -257,7 +254,7 @@ export function renderForm(
                     label=${msg("Access code validity")}
                     inputHint="code"
                     required
-                    value="${first(provider?.accessCodeValidity, "minutes=1")}"
+                    value="${provider?.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
                             ${msg("Configure how long access codes are valid for.")}
                         </p>
@@ -267,7 +264,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
-                    value="${first(provider?.accessTokenValidity, "minutes=5")}"
+                    value="${provider?.accessTokenValidity ?? "minutes=5"}"
                     inputHint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
@@ -280,7 +277,7 @@ export function renderForm(
                 <ak-text-input
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
-                    value="${first(provider?.refreshTokenValidity, "days=30")}"
+                    value="${provider?.refreshTokenValidity ?? "days=30"}"
                     inputHint="code"
                     ?required=${true}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
@@ -317,7 +314,7 @@ export function renderForm(
                 <ak-switch-input
                     name="includeClaimsInIdToken"
                     label=${msg("Include claims in id_token")}
-                    ?checked=${first(provider?.includeClaimsInIdToken, true)}
+                    ?checked=${provider?.includeClaimsInIdToken ?? true}
                     help=${msg(
                         "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                     )}
