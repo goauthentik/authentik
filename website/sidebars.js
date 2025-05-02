@@ -2,13 +2,14 @@ import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
 
 const releases = [
+    "releases/2025/v2025.4",
     "releases/2025/v2025.2",
     "releases/2024/v2024.12",
-    "releases/2024/v2024.10",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.10",
             "releases/2024/v2024.8",
             "releases/2024/v2024.6",
             "releases/2024/v2024.4",
@@ -199,6 +200,7 @@ export default {
                                 "add-secure-apps/providers/oauth2/client_credentials",
                                 "add-secure-apps/providers/oauth2/device_code",
                                 "add-secure-apps/providers/oauth2/github-compatibility",
+                                "add-secure-apps/providers/oauth2/webfinger_support",
                             ],
                         },
                         {
@@ -396,6 +398,7 @@ export default {
                                 "customize/policies/expression/managing_flow_context_keys",
                             ],
                         },
+                        "customize/policies/unique_password",
                     ],
                 },
                 {
@@ -494,6 +497,7 @@ export default {
                     items: [
                         "users-sources/access-control/permissions",
                         "users-sources/access-control/manage_permissions",
+                        "users-sources/access-control/initial_permissions",
                     ],
                 },
                 {
