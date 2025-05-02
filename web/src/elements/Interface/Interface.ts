@@ -1,107 +1,85 @@
-import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import {
+    appendStyleSheet,
+    createStyleSheetUnsafe,
+    resolveStyleSheetParent,
+} from "@goauthentik/common/stylesheets";
+import { ThemedElement } from "@goauthentik/common/theme";
+import { UIConfig } from "@goauthentik/common/ui/config";
+import { AKElement, AKElementInit } from "@goauthentik/elements/Base";
 import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
-import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
 
 import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
-import { UiThemeEnum } from "@goauthentik/api";
 
-import { AKElement, rootInterface } from "../Base";
 import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
-
-export type AkInterface = HTMLElement & {
-    getTheme: () => Promise<UiThemeEnum>;
-    brand?: CurrentBrand;
-    uiConfig?: UIConfig;
-    config?: Config;
-};
 
 const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
-export class Interface extends AKElement implements AkInterface {
-    [brandContext]!: BrandContextController;
+export abstract class Interface extends AKElement implements ThemedElement {
+    protected static readonly PFBaseStyleSheet = createStyleSheetUnsafe(PFBase);
 
-    [configContext]!: ConfigContextController;
+    [brandContext]: BrandContextController;
 
-    [modalController]!: ModalOrchestrationController;
+    [configContext]: ConfigContextController;
 
-    @state()
-    uiConfig?: UIConfig;
-
-    @state()
-    config?: Config;
+    [modalController]: ModalOrchestrationController;
 
     @state()
-    brand?: CurrentBrand;
+    public config?: Config;
 
-    constructor() {
-        super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
-        this._initContexts();
-        this.dataset.akInterfaceRoot = "true";
-    }
+    @state()
+    public brand?: CurrentBrand;
 
-    _initContexts() {
+    constructor({ styleParents = [], ...init }: AKElementInit = {}) {
+        const styleParent = resolveStyleSheetParent(document);
+
+        super({
+            ...init,
+            styleParents: [styleParent, ...styleParents],
+        });
+
+        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+
+        appendStyleSheet(Interface.PFBaseStyleSheet, styleParent);
+
         this[brandContext] = new BrandContextController(this);
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
     }
-
-    _activateTheme(theme: UiThemeEnum, ...roots: DocumentOrShadowRoot[]): void {
-        if (theme === this._activeTheme) {
-            return;
-        }
-        console.debug(
-            `authentik/interface[${rootInterface()?.tagName.toLowerCase()}]: Enabling theme ${theme}`,
-        );
-        // Special case for root interfaces, as they need to modify the global document CSS too
-        // Instead of calling ._activateTheme() twice, we insert the root document in the call
-        // since multiple calls to ._activateTheme() would not do anything after the first call
-        // as the theme is already enabled.
-        roots.unshift(document as unknown as DocumentOrShadowRoot);
-        super._activateTheme(theme, ...roots);
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        if (!this.uiConfig) {
-            this.uiConfig = await uiConfig();
-        }
-        return this.uiConfig.theme?.base || UiThemeEnum.Automatic;
-    }
 }
 
-export type AkAuthenticatedInterface = AkInterface & {
+export interface AkAuthenticatedInterface extends ThemedElement {
     licenseSummary?: LicenseSummary;
     version?: Version;
-};
+}
 
 const enterpriseContext = Symbol("enterpriseContext");
 
-export class AuthenticatedInterface extends Interface {
+export class AuthenticatedInterface extends Interface implements AkAuthenticatedInterface {
     [enterpriseContext]!: EnterpriseContextController;
     [versionContext]!: VersionContextController;
 
     @state()
-    licenseSummary?: LicenseSummary;
+    public uiConfig?: UIConfig;
 
     @state()
-    version?: Version;
+    public licenseSummary?: LicenseSummary;
 
-    constructor() {
-        super();
-    }
+    @state()
+    public version?: Version;
 
-    _initContexts(): void {
-        super._initContexts();
+    constructor(init?: AKElementInit) {
+        super(init);
+
         this[enterpriseContext] = new EnterpriseContextController(this);
         this[versionContext] = new VersionContextController(this);
     }

@@ -6,12 +6,12 @@ import {
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
+import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/components/ak-brand-footer";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
@@ -46,7 +46,6 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
-    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
@@ -198,10 +197,6 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
