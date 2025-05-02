@@ -11,29 +11,37 @@ The following placeholders are used in this guide:
 
 ## Entra ID setup
 
-1. Navigate to [portal.azure.com](https://portal.azure.com), and open the _App registration_ service
-2. Register a new application
+1. Log in to [Entra ID](https://entra.microsoft.com) as an administrator.
+2. Navigate to **Applications** > **App registrations**.
+3. Click **New registration** and select the following required configruations:
 
-    Under _Supported account types_, select whichever account type applies to your use-case.
+    - **Name**: provide a descriptive name (e.g. `authentik`).
+    - Under **Supported account types**: select the account type that applies to your use-case (e.g. `Accounts in this organizational directory only (Default Directory only - Single tenant)`).
+    - Under **Redirect URI**:
+        - **Platform**: `Web`
+        - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
 
-    ![](./aad_01.png)
+4. Click **Register**.
+5. The overview tab of the newly created authentik app registration will open. Take note of the **Application (client) ID**. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the **Directory (tenant) ID**. These values will be required in authentik.
+6. In the sidebar, navigate to **Certificates & secrets**.
+7. Select the **Client secrets** tab and click **New Secret**. Provide the following required configurations:
+    - **Description**: provide a description for the secret (e.g. `authentik secret`.
+    - **Expires**: select an expiry duration. Currently the secret in authentik has to be rotated manually or via API, so it is recommended to choose at least 12 months.
+8. Copy the secret's value from the **Value** column.
 
-3. Take note of the _Application (client) ID_ value.
-
-    If you selected _Single tenant_ in the _Supported account types_ prompt, also note the _Directory (tenant) ID_ value.
-
-4. Navigate to _Certificates & secrets_ in the sidebar, and to the _Client secrets_ tab.
-5. Add a new secret, with an identifier of your choice, and select any expiration. Currently the secret in authentik has to be rotated manually or via API, so it is recommended to choose at least 12 months.
-6. Note the secret's value in the _Value_ column.
+:::note
+The secret value must be copied immediately after its creation. It is not possible to view the secret value after this time.
+:::
 
 ## authentik Setup
 
+{old
 In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
 
 Use the following settings:
 
-- Name: `Azure AD`
-- Slug: `azure-ad` (this must match the URL being used above)
+- Name: `Entra ID`
+- Slug: `entra-id` (this must match the slug used in the Entra ID `Redirect URI`)
 - Consumer key: `*Application (client) ID* value from above`
 - Consumer secret: `*Value* of the secret from above`
 
@@ -47,7 +55,7 @@ Save, and you now have Azure AD as a source.
 
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
-:::
+:::}
 
 ### Automatic user enrollment and attribute mapping
 
