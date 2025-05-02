@@ -30,7 +30,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "token",
             "compatibility_mode",
             "exclude_users_service_account",
-            "filter_group",
+            "filter_groups",
             "dry_run",
         ]
         extra_kwargs = {}
@@ -41,7 +41,7 @@ class SCIMProviderViewSet(OutgoingSyncProviderStatusMixin, UsedByMixin, ModelVie
 
     queryset = SCIMProvider.objects.all()
     serializer_class = SCIMProviderSerializer
-    filterset_fields = ["name", "exclude_users_service_account", "url", "filter_group"]
+    filterset_fields = ["name", "exclude_users_service_account", "url"]
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
     sync_single_task = scim_sync
