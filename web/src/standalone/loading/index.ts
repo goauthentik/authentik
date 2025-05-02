@@ -1,4 +1,3 @@
-import { globalAK } from "@goauthentik/common/global";
 import { Interface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
@@ -9,8 +8,6 @@ import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-sta
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-loading")
 export class Loading extends Interface {
@@ -28,7 +25,7 @@ export class Loading extends Interface {
         ];
     }
 
-    _initContexts(): void {
+    registerContexts(): void {
         // Stub function to avoid making API requests for things we don't need. The `Interface` base class loads
         // a bunch of data that is used globally by various things, however this is an interface that is shown
         // very briefly and we don't need any of that data.
@@ -36,10 +33,6 @@ export class Loading extends Interface {
 
     async _initCustomCSS(): Promise<void> {
         // Stub function to avoid fetching custom CSS.
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     render(): TemplateResult {

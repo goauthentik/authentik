@@ -1,7 +1,19 @@
-import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
+import { isUserRoute } from "@goauthentik/elements/router/utils";
 
 import { UiThemeEnum, UserSelf } from "@goauthentik/api";
+import { CurrentBrand } from "@goauthentik/api";
+
+export const DefaultBrand = {
+    brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",
+    brandingFavicon: "/static/dist/assets/icons/icon.png",
+    brandingTitle: "authentik",
+    brandingCustomCss: "",
+    uiFooterLinks: [],
+    uiTheme: UiThemeEnum.Automatic,
+    matchedDomain: "",
+    defaultLocale: "",
+} as const satisfies CurrentBrand;
 
 export enum UserDisplay {
     username = "username",
@@ -77,9 +89,7 @@ export class DefaultUIConfig implements UIConfig {
     };
 
     constructor() {
-        if (currentInterface() === "user") {
-            this.enabledFeatures.apiDrawer = false;
-        }
+        this.enabledFeatures.apiDrawer = !isUserRoute();
     }
 }
 
