@@ -5,7 +5,7 @@ import {
 } from "@goauthentik/common/stylesheets";
 import { ThemedElement } from "@goauthentik/common/theme";
 import { UIConfig } from "@goauthentik/common/ui/config";
-import { AKElement, AKElementInit } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
@@ -19,15 +19,12 @@ import { BrandContextController } from "./BrandContextController";
 import { ConfigContextController } from "./ConfigContextController";
 import { EnterpriseContextController } from "./EnterpriseContextController";
 
-const brandContext = Symbol("brandContext");
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
 export abstract class Interface extends AKElement implements ThemedElement {
     protected static readonly PFBaseStyleSheet = createStyleSheetUnsafe(PFBase);
-
-    [brandContext]: BrandContextController;
 
     [configContext]: ConfigContextController;
 
@@ -39,19 +36,15 @@ export abstract class Interface extends AKElement implements ThemedElement {
     @state()
     public brand?: CurrentBrand;
 
-    constructor({ styleParents = [], ...init }: AKElementInit = {}) {
+    constructor() {
+        super();
         const styleParent = resolveStyleSheetParent(document);
-
-        super({
-            ...init,
-            styleParents: [styleParent, ...styleParents],
-        });
 
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
 
-        appendStyleSheet(Interface.PFBaseStyleSheet, styleParent);
+        appendStyleSheet(styleParent, Interface.PFBaseStyleSheet);
 
-        this[brandContext] = new BrandContextController(this);
+        this.addController(new BrandContextController(this));
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
     }
@@ -77,8 +70,8 @@ export class AuthenticatedInterface extends Interface implements AkAuthenticated
     @state()
     public version?: Version;
 
-    constructor(init?: AKElementInit) {
-        super(init);
+    constructor() {
+        super();
 
         this[enterpriseContext] = new EnterpriseContextController(this);
         this[versionContext] = new VersionContextController(this);

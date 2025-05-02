@@ -7,7 +7,14 @@ import {
     removeStyleSheet,
     resolveStyleSheetParent,
 } from "@goauthentik/common/stylesheets";
-import { ResolvedUITheme, createUIThemeEffect, resolveUITheme } from "@goauthentik/common/theme";
+import {
+    CSSColorSchemeValue,
+    ResolvedUITheme,
+    UIThemeListener,
+    createUIThemeEffect,
+    formatColorScheme,
+    resolveUITheme,
+} from "@goauthentik/common/theme";
 import { type ThemedElement } from "@goauthentik/common/theme";
 
 import { localized } from "@lit/localize";
@@ -18,18 +25,15 @@ import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import OneDark from "@goauthentik/common/styles/one-dark.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
-import { CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+import { UiThemeEnum } from "@goauthentik/api";
 
 // Re-export the theme helpers
 export { rootInterface } from "@goauthentik/common/theme";
 
-export interface AKElementInit {
-    brand?: Partial<CurrentBrand>;
-    styleParents?: StyleSheetParent[];
-}
-
 @localized()
 export class AKElement extends LitElement implements ThemedElement {
+    //#region Properties
+
     /**
      * The resolved theme of the current element.
      *
@@ -45,7 +49,19 @@ export class AKElement extends LitElement implements ThemedElement {
     })
     public activeTheme: ResolvedUITheme;
 
-    protected static readonly DarkColorSchemeStyleSheet = createStyleSheetUnsafe(ThemeDark);
+    //#endregion
+
+    //#region Private Properties
+
+    readonly #preferredColorScheme: CSSColorSchemeValue;
+
+    #customCSSStyleSheet: CSSStyleSheet | null;
+    #darkThemeStyleSheet: CSSStyleSheet | null = null;
+    #themeAbortController: AbortController | null = null;
+
+    //#endregion
+
+    //#region Lifecycle
 
     protected static finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
         // Ensure all style sheets being passed are really style sheets.
@@ -63,63 +79,62 @@ export class AKElement extends LitElement implements ThemedElement {
         return [styles, ...baseStyles].map(createStyleSheetUnsafe);
     }
 
-    constructor(init?: AKElementInit) {
+    constructor() {
         super();
 
-        const config = globalAK();
-        const { brand = config.brand, styleParents = [] } = init || {};
+        const { brand } = globalAK();
 
+        this.#preferredColorScheme = formatColorScheme(brand.uiTheme);
         this.activeTheme = resolveUITheme(brand?.uiTheme);
-        this.#styleParents = styleParents;
 
         this.#customCSSStyleSheet = brand?.brandingCustomCss
             ? createStyleSheetUnsafe(brand.brandingCustomCss)
             : null;
     }
 
-    #styleParents: StyleSheetParent[] = [];
-    #customCSSStyleSheet: CSSStyleSheet | null;
-
-    #themeAbortController: AbortController | null = null;
-
     public disconnectedCallback(): void {
         super.disconnectedCallback();
         this.#themeAbortController?.abort();
     }
 
+    #styleRoot?: StyleSheetParent;
+
+    #dispatchTheme: UIThemeListener = (nextUITheme) => {
+        if (!this.#styleRoot) return;
+
+        if (nextUITheme === UiThemeEnum.Dark) {
+            this.#darkThemeStyleSheet ||= createStyleSheetUnsafe(ThemeDark);
+            appendStyleSheet(this.#styleRoot, this.#darkThemeStyleSheet);
+            this.activeTheme = UiThemeEnum.Dark;
+        } else if (this.#darkThemeStyleSheet) {
+            removeStyleSheet(this.#styleRoot, this.#darkThemeStyleSheet);
+            this.#darkThemeStyleSheet = null;
+            this.activeTheme = UiThemeEnum.Light;
+        }
+    };
+
     protected createRenderRoot(): HTMLElement | DocumentFragment {
         const renderRoot = super.createRenderRoot();
-
-        const styleRoot = resolveStyleSheetParent(renderRoot);
-        const styleParents = Array.from(
-            new Set<StyleSheetParent>([styleRoot, ...this.#styleParents]),
-        );
+        this.#styleRoot = resolveStyleSheetParent(renderRoot);
 
         if (this.#customCSSStyleSheet) {
             console.debug(`authentik/element[${this.tagName.toLowerCase()}]: Adding custom CSS`);
 
-            styleRoot.adoptedStyleSheets = [
-                ...styleRoot.adoptedStyleSheets,
-                this.#customCSSStyleSheet,
-            ];
+            appendStyleSheet(this.#styleRoot, this.#customCSSStyleSheet);
         }
 
         this.#themeAbortController = new AbortController();
 
-        createUIThemeEffect(
-            (currentUITheme) => {
-                if (currentUITheme === UiThemeEnum.Dark) {
-                    appendStyleSheet(AKElement.DarkColorSchemeStyleSheet, ...styleParents);
-                } else {
-                    removeStyleSheet(AKElement.DarkColorSchemeStyleSheet, ...styleParents);
-                }
-                this.activeTheme = currentUITheme;
-            },
-            {
+        if (this.#preferredColorScheme === "dark") {
+            this.#dispatchTheme(UiThemeEnum.Dark);
+        } else if (this.#preferredColorScheme === "auto") {
+            createUIThemeEffect(this.#dispatchTheme, {
                 signal: this.#themeAbortController.signal,
-            },
-        );
+            });
+        }
 
         return renderRoot;
     }
+
+    //#endregion
 }

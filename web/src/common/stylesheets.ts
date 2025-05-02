@@ -92,6 +92,9 @@ export function normalizeCSSSource(input: StyleSheetInit): CSSResultOrNative {
     return input;
 }
 
+/**
+ * Create a `CSSStyleSheet` from the given input.
+ */
 export function createStyleSheetUnsafe(input: StyleSheetInit): CSSStyleSheet {
     const result = normalizeCSSSource(input);
     if (result instanceof CSSStyleSheet) return result;
@@ -110,38 +113,38 @@ export function createStyleSheetUnsafe(input: StyleSheetInit): CSSStyleSheet {
 
 /**
  * Append stylesheet(s) to the given roots.
+ *
+ * @see {@linkcode removeStyleSheet} to remove a stylesheet from a given roots.
  */
 export function appendStyleSheet(
-    insertions: CSSStyleSheet | Iterable<CSSStyleSheet>,
-    ...styleParents: StyleSheetParent[]
+    styleParent: StyleSheetParent,
+    ...insertions: CSSStyleSheet[]
 ): void {
     insertions = Array.isArray(insertions) ? insertions : [insertions];
 
-    for (const nextStyleSheet of insertions) {
-        for (const styleParent of styleParents) {
-            if (styleParent.adoptedStyleSheets.includes(nextStyleSheet)) return;
+    for (const styleSheetInsertion of insertions) {
+        if (styleParent.adoptedStyleSheets.includes(styleSheetInsertion)) return;
 
-            styleParent.adoptedStyleSheets = [...styleParent.adoptedStyleSheets, nextStyleSheet];
-        }
+        styleParent.adoptedStyleSheets = [...styleParent.adoptedStyleSheets, styleSheetInsertion];
     }
 }
 
 /**
  * Remove a stylesheet from the given roots, matching by referential equality.
+ *
+ * @see {@linkcode appendStyleSheet} to append a stylesheet to a given roots.
  */
 export function removeStyleSheet(
-    currentStyleSheet: CSSStyleSheet,
-    ...styleParents: StyleSheetParent[]
+    styleParent: StyleSheetParent,
+    ...removals: CSSStyleSheet[]
 ): void {
-    for (const styleParent of styleParents) {
-        const nextAdoptedStyleSheets = styleParent.adoptedStyleSheets.filter(
-            (styleSheet) => styleSheet !== currentStyleSheet,
-        );
+    const nextAdoptedStyleSheets = styleParent.adoptedStyleSheets.filter(
+        (styleSheet) => !removals.includes(styleSheet),
+    );
 
-        if (nextAdoptedStyleSheets.length === styleParent.adoptedStyleSheets.length) return;
+    if (nextAdoptedStyleSheets.length === styleParent.adoptedStyleSheets.length) return;
 
-        styleParent.adoptedStyleSheets = nextAdoptedStyleSheets;
-    }
+    styleParent.adoptedStyleSheets = nextAdoptedStyleSheets;
 }
 
 /**
