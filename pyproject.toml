@@ -52,7 +52,7 @@ dependencies = [
     "pydantic-scim",
     "pyjwt",
     "pyrad",
-    "python-kadmin-rs ==0.6.0",
+    "python-kadmin-rs",
     "pyyaml",
     "requests-oauthlib",
     "scim2-filter-parser",
@@ -70,7 +70,7 @@ dependencies = [
     "watchdog",
     "webauthn",
     "wsproto",
-    "xmlsec <= 1.3.14",
+    "xmlsec",
     "zxcvbn",
 ]
 
@@ -99,6 +99,18 @@ dev = [
     "requests-mock",
     "ruff",
     "selenium",
+]
+
+[tool.uv]
+no-binary-package = [
+    # This differs from the no-binary packages in the Dockerfile. This is due to the fact
+    # that these packages are built from source for different reasons than cryptography and kadmin.
+    # These packages are built from source to link against the libxml2 on the system which is
+    # required for functionality and to stay up-to-date on both libraries.
+    # The other packages specified in the dockerfile are compiled from source to link against the
+    # correct FIPS OpenSSL libraries
+    "lxml",
+    "xmlsec",
 ]
 
 [tool.uv.sources]
