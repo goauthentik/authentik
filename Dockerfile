@@ -96,7 +96,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 # Stage 5: Download uv
 FROM ghcr.io/astral-sh/uv:0.7.2 AS uv
 # Stage 6: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.12.10-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.13.2-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
