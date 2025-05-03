@@ -1,6 +1,5 @@
 import "@goauthentik/admin/users/GroupSelectModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -159,7 +158,7 @@ export class UserForm extends ModelForm<User, number> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.isActive, true)}
+                        ?checked=${this.instance?.isActive ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -177,7 +176,7 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
                 <input
                     type="text"
-                    value="${first(this.instance?.path, this.defaultPath)}"
+                    value="${this.instance?.path ?? this.defaultPath}"
                     class="pf-c-form-control"
                     required
                 />
@@ -190,7 +189,7 @@ export class UserForm extends ModelForm<User, number> {
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
-                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
+                        this.instance?.attributes ?? UserForm.defaultUserAttributes,
                     )}"
                 >
                 </ak-codemirror>

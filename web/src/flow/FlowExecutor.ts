@@ -7,7 +7,6 @@ import {
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
@@ -521,11 +520,9 @@ export class FlowExecutor extends Interface implements StageHost {
                                             >
                                                 <img
                                                     src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
+                                                        this.brand?.brandingLogo ??
+                                                            globalAK()?.brand.brandingLogo ??
                                                             DefaultBrand.brandingLogo,
-                                                        ),
                                                     )}"
                                                     alt="${msg("authentik Logo")}"
                                                 />

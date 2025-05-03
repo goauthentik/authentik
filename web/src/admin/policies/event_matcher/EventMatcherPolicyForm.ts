@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -63,7 +62,7 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

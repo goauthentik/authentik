@@ -1,5 +1,3 @@
-import { SentryIgnoredError } from "@goauthentik/common/sentry";
-
 import { CSSResult, css } from "lit";
 
 export function getCookie(name: string): string {
@@ -16,19 +14,6 @@ export function getCookie(name: string): string {
         }
     }
     return cookieValue;
-}
-
-export function convertToSlug(text: string): string {
-    return text
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-}
-
-export function isSlug(text: string): boolean {
-    const lowered = text.toLowerCase();
-    const forbidden = /([^\w-]|\s)/.test(lowered);
-    return lowered === text && !forbidden;
 }
 
 /**
@@ -74,16 +59,6 @@ export function groupBy<T>(objects: T[], callback: (obj: T) => string): Array<[s
     return Array.from(m).sort();
 }
 
-export function first<T>(...args: Array<T | undefined | null>): T {
-    for (let index = 0; index < args.length; index++) {
-        const element = args[index];
-        if (element !== undefined && element !== null) {
-            return element;
-        }
-    }
-    throw new SentryIgnoredError(`No compatible arg given: ${args}`);
-}
-
 // Taken from python's string module
 export const ascii_lowercase = "abcdefghijklmnopqrstuvwxyz";
 export const ascii_uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -96,7 +71,9 @@ export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 export function randomString(len: number, charset: string): string {
     const chars = [];
     const array = new Uint8Array(len);
-    self.crypto.getRandomValues(array);
+
+    crypto.getRandomValues(array);
+
     for (let index = 0; index < len; index++) {
         chars.push(charset[Math.floor(charset.length * (array[index] / Math.pow(2, 8)))]);
     }

@@ -3,7 +3,7 @@ import {
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -274,7 +274,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -289,7 +289,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.negate, false)}
+                        ?checked=${this.instance?.negate ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -305,7 +305,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
             <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <input
                     type="number"
-                    value="${first(this.instance?.order, this.defaultOrder)}"
+                    value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
                     required
                 />
@@ -313,7 +313,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
             <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
                 <input
                     type="number"
-                    value="${first(this.instance?.timeout, 30)}"
+                    value="${this.instance?.timeout ?? 30}"
                     class="pf-c-form-control"
                     required
                 />

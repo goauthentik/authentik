@@ -2,7 +2,6 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
@@ -54,7 +53,7 @@ export class BrandForm extends ModelForm<Brand, string> {
         return html` <ak-form-element-horizontal label=${msg("Domain")} required name="domain">
                 <input
                     type="text"
-                    value="${first(this.instance?.domain, window.location.host)}"
+                    value="${this.instance?.domain ?? window.location.host}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
@@ -72,7 +71,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?._default, false)}
+                        ?checked=${this.instance?._default ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -92,10 +91,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     <ak-form-element-horizontal label=${msg("Title")} required name="brandingTitle">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.brandingTitle,
-                                DefaultBrand.brandingTitle,
-                            )}"
+                            value="${this.instance?.brandingTitle ?? DefaultBrand.brandingTitle}"
                             class="pf-c-form-control"
                             required
                         />
@@ -106,7 +102,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     <ak-form-element-horizontal label=${msg("Logo")} required name="brandingLogo">
                         <input
                             type="text"
-                            value="${first(this.instance?.brandingLogo, DefaultBrand.brandingLogo)}"
+                            value="${this.instance?.brandingLogo ?? DefaultBrand.brandingLogo}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -123,10 +119,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.brandingFavicon,
-                                DefaultBrand.brandingFavicon,
-                            )}"
+                            value="${this.instance?.brandingFavicon ??
+                            DefaultBrand.brandingFavicon}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -143,10 +137,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.brandingDefaultFlowBackground,
-                                "/static/dist/assets/images/flow_background.jpg",
-                            )}"
+                            value="${this.instance?.brandingDefaultFlowBackground ??
+                            "/static/dist/assets/images/flow_background.jpg"}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -165,10 +157,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     >
                         <ak-codemirror
                             mode=${CodeMirrorMode.CSS}
-                            value="${first(
-                                this.instance?.brandingCustomCss,
-                                DefaultBrand.brandingCustomCss,
-                            )}"
+                            value="${this.instance?.brandingCustomCss ??
+                            DefaultBrand.brandingCustomCss}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
@@ -317,7 +307,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}
-                            value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                            value="${YAML.stringify(this.instance?.attributes ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">

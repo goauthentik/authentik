@@ -1,6 +1,5 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -51,10 +50,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.continueFlowWithoutInvitation,
-                                    false,
-                                )}
+                                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
