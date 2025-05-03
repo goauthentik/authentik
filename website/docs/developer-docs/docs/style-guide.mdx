@@ -15,6 +15,9 @@ We appreciate all contributions to our documentation — whether it's fixing a t
 - [Error Message Formatting and Troubleshooting](#error-message-formatting-and-troubleshooting)
 - [Accessibility Best Practices](#accessibility-best-practices)
 - [Notes and Warnings](#notes-and-warnings)
+- [Inclusive Language](#inclusive-language)
+- [Images and Media](#images-and-media)
+- [Document Structure and Metadata](#document-structure-and-metadata)
 
 ---
 
@@ -32,7 +35,7 @@ Use headings (sub-titles) to break up large blocks of text, making it easier for
 
 ### Look and feel of the docs
 
-In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large call0outs or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
+In general, the visual, aesthetics of the technical documentation is intended to be lean and clean. Both the content (shorter sentences, concise instructions, etc) and the layout strive to have a clean, uncluttered look, with restrained use of colors and large callouts or announcements. Relatedly, the colors used for our Info and Warning callouts, light blue and light yellow respectively, are reserved for those purposes only.
 
 ### Cross-references
 
@@ -50,13 +53,15 @@ The standard file type for documentation is `.md`. Use `.mdx` only if React comp
 
 Try to write procedural (How To) docs generically enough that it does not endorse or force a specific operating system. If it is necessary to specify a specific OS be sure to label it clearly. Consider using tabs (with MDX) to show the different OSes.
 
+---
+
 ## Terminology
 
 ### authentik product name and terms
 
-- The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence. This consistent style should be followed throughout the documentation.
+- The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence.
 
-- The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security**.
+- The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security** or **authentik**.
 
 - When referring to the authentik Admin interface, capitalize "Admin" like it is in the UI, but do not bold the phrase "Admin interface" unless in a sentence that explicitly says "Click on **Admin interface**". However, if you are referring to a user or role that is an administrator, or has administrative rights, then do not capitalize it and spell out the full word "administrator" or "administrative".
 
@@ -65,6 +70,14 @@ Try to write procedural (How To) docs generically enough that it does not endors
 - When referring to external tools or industry terms, always use the exact capitalization and naming conventions that the product or company uses. Refer to their website or official documentation for the proper formatting. For example, use "OAuth", "SAML", or "Docker" as per the official conventions.
 - Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
 - If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)". In some cases the acronym can come first, followed by the full term in parentheses.
+
+### Trademarks and Legal Terms
+
+- Respect third-party trademarks. Use the correct symbols (™, ®) where applicable (e.g., "GitHub®", "Okta™").
+- When mentioning third-party products, follow their branding guidelines (e.g., "GitHub", not "Github").
+- Include required legal disclaimers when referencing external services or integrations.
+
+---
 
 ## Writing style
 
@@ -92,17 +105,19 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 ### Punctuation
 
-For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
+For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the [Serial comma](https://en.wikipedia.org/wiki/Serial_comma).
 
 ### Capitalization
 
 #### Titles and headers
 
-Titles and headers (H1, H2, H3, etc.) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.For more information, see [below](#titles-and-headers)
+Titles and headers (H1, H2, H3, etc.) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names. For more information, see [below](#titles-and-headers).
 
 #### Following a colon
 
 Whether to capitalize after a colon depends on the context. Typically, we do not capitalize the first word after a colon _unless_ it's a proper noun or if it is the start of a complete sentence. If the colon introduces a list, do not capitalize the first word unless it's a proper noun. In headings and titles, capitalize the first word after the colon.
+
+---
 
 ## Word choices
 
@@ -130,11 +145,11 @@ It's important to use "that" as a conjunction to introduce a dependent clause, o
 
 ### "which" vs "that"
 
-Th easiest way to remember when to use "which" versus "that" is:
+The easiest way to remember when to use "which" versus "that" is:
 
-- if the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, then you should use "which".
+- If the second part (clause) of the sentence is required to understand the first part, use "that." If the second clause is only additional info, use "which".
 
-For more information, see https://www.grammarly.com/blog/which-vs-that/.
+For more information, see [this guide](https://www.grammarly.com/blog/which-vs-that/).
 
 ### “since” (time-based) vs “because” (causal)
 
@@ -143,6 +158,8 @@ When writing about a status or anything that is causal ("this happened because o
 ### Avoid using “once” (numeric) to mean “after” (time-based).
 
 When writing out steps in a procedural topic, avoid starting with "Once...". Instead, you can say "After you have created the scope mapping...".
+
+---
 
 ## Formatting guidelines
 
@@ -163,7 +180,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 - Use `code formatting` for:
 
-    - Commands (e.g., `docker run`).
+    - Commands (e.g., `kubectl get nodes`).
     - File paths, file names, and directory names (e.g., `/usr/local/bin/`).
     - Inline code snippets (e.g., `.env`).
 
@@ -191,21 +208,21 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
 
-    **Example**:
+**Example**:
 
-    This expression policy uses an expression based on the user's name:
-        ```
-        if request.context["pending_user"].username == "marie":
-            return True
-            return False
-        ```
+This expression policy uses an expression based on the user's name:
+```python
+if request.context["pending_user"].username == "marie":
+    return True
+return False
+```
 
-## Code blocks
+### Code blocks
 
 When you want to show sections of code use **Code blocks** to provide syntax highlighting, a copy button, line numbering and line highlighting:
 
-```text
-` ` ` yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+````text
+```yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
 all_access:
 reserved: true
 hidden: false
@@ -216,8 +233,8 @@ hosts: []
 users: []
 and_backend_roles: []
 description: "Maps admin to all_access"
-` ` `
 ```
+````
 
 Which is rendered as:
 
@@ -234,25 +251,49 @@ and_backend_roles: []
 description: "Maps admin to all_access"
 ```
 
-- `` ` ` ` yaml `` defines the language used for syntax highlighting. Other languages can be used such as; `jsx`, `python`, `bash` and `text`.
+- ` ```yaml ` defines the language used for syntax highlighting. Other languages can be used such as `jsx`, `python`, `bash`, and `text`.
 
 Optional configurations:
 
-- `showLineNumbers`: enables the line numbering on the left-hand side of the code block.
-- `title=" "`: defines the title displayed at the top of the code block. This is useful for defining filenames and paths.
-- `{5}`: defines the line number that will be highlighted. Ranges and lists can also be used (e.g. `{5, 7, 9-11}`).
-- `// highlight-next-line`: is used within a code block to highlight the next line.
-- `// highlight-start` and `// highlight-end`: are used within a code block to highlight one or more lines.
+- `showLineNumbers`: Enables line numbering.
+- `title=" "`: Defines the title displayed at the top (e.g., filenames).
+- `{5}`: Highlights specific lines. Ranges and lists are allowed (e.g., `{5, 7, 9-11}`).
+- `// highlight-next-line`: Highlights the next line within a code block.
+- `// highlight-start` and `// highlight-end`: Highlight multiple lines.
 
-More information on codeblocks can be found in the [Docusaurus code block documentation](https://docusaurus.io/docs/markdown-features/code-blocks).
+For more details, see the [Docusaurus code block documentation](https://docusaurus.io/docs/markdown-features/code-blocks).
+
+### Tables
+
+Use tables to compare options, list parameters, or summarize information. Ensure tables are concise and avoid nesting complex content.
+
+**Example**:
+
+| x   | x | x |
+|-----|--|----|
+| `x` | x | `x` |
+| `x` | x | `x` |
+
+### Lists
+
+- Use bullet points for unordered lists.
+- Use numbered lists for sequential steps.
+- Keep list items parallel in structure.
+
+**Example**:
+
+x:
+1. x
+2. y
+3. z
+
+---
 
 ## Component-based formatting
 
-This section covers the usage of React components within our documentation. Files that use component-based formatting must use the `.mdx` extension.
-
 ### Tabs for multiple configurations
 
-Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. Insert the following lines wherever you want the code block to appear:
+Use **Tabs** to display different configurations (e.g., OIDC vs. SAML). Default to the most common option:
 
 ```jsx
 import TabItem from "@theme/TabItem";
@@ -270,60 +311,93 @@ import Tabs from "@theme/Tabs";
 </Tabs>;
 ```
 
-Tabs improve readability when presenting different configurations or setup options.
+---
 
 ## Error message formatting and troubleshooting
 
-When documenting error messages:
+When documenting errors, follow this structure:
 
-- Display the error message
-- Explain possible causes
-- Offer solutions
+1. **Error Message**: Display the error in a code block.
+2. **Possible Causes**: List common reasons for the error.
+3. **Solutions**: Provide step-by-step fixes.
 
-Example:
+**Example**:
 
-- **Error message:**
-
+- **Error message**:
     ```sh
     Error: Authentication failed. Invalid credentials.
     ```
 
-- **Possible causes:**
+- **Possible causes**:
+    - Incorrect username or password.
+    - Account locked due to multiple failed attempts.
 
-    - Incorrect username or password
-    - Account is locked due to too many failed login attempts
+- **Solutions**:
+    1. Verify your credentials.
+    2. Reset your password using the **Forgot Password** link.
+    3. Contact your administrator if the account is locked.
 
-- **Solution:**
-
-    - Verify your username and password
-    - Reset your password if necessary
-    - Contact an administrator if your account is locked
+---
 
 ## Accessibility best practices
 
-- Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
-- Provide **descriptive link text**. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
-    - **DON'T:** "Click here."
-    - **DO:** "See the [Authentication Settings](/) for more details."
+- **Alt text for images**: Describe the purpose of the image, not just its appearance. For example, use "Screenshot of the login form" instead of "Image of a form."
+- **Heading hierarchy**: Use headings in order (H1 → H2 → H3) to support screen readers.
+
+---
 
 ## Notes and warnings
 
-For notes and important information:
+Use the following components to highlight important information:
 
-**Notes** are formatted using:
-
-```
+**Info notes**:
+```md
 :::info
-Write your note here.
+This is a tip or general note.
 :::
 ```
 
-**Warnings** are formatted using:
-
-```
+**Warnings**:
+```md
 :::warning
-Write your warning here.
+This action cannot be undone.
 :::
 ```
 
-Use these conventions to ensure that the reader's attention is drawn to crucial information.
+**Critical warnings** (for irreversible actions):
+```md
+:::danger
+Deleting this resource will permanently remove all associated data.
+:::
+```
+
+---
+
+## Inclusive Language
+
+- Use **gender-neutral pronouns** like "they/them" instead of "he/she" (e.g., "The user should check their settings").
+- Avoid **ableist terms** such as "dumb" or "lame"; use "non-functional" or "unavailable" instead.
+- **Avoid idioms** that may not translate well (e.g., "hit a home run" → "achieve success").
+
+---
+
+## Images and Media
+
+- **Screenshots**:
+    - Update screenshots with UI changes.
+    - Crop to focus on relevant elements.
+    - Add descriptive alt text (e.g., "Screenshot of the Provider configuration page").
+- **Diagrams**: Use tools like [Draw.io](https://draw.io) for clarity. Ensure high contrast and text descriptions. todo(dominic): mention mermaid, might be too complicated for some? if even possible here
+
+---
+
+## Document Structure and Metadata
+
+- **Front matter**: Include a title and optional summary:
+    ```md
+    ---
+    title: Getting Started
+    description: Install and configure authentik in 5 minutes.
+    ---
+    ```
+- **SEO**: Use keywords in titles and headings to improve searchability. todo(dominic): say how. talk about that tag thing teffen uses
