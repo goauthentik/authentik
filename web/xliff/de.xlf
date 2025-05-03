@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
         <target>Willkommen,
         <x id="0" equiv-text="${name}"/>.</target>
         
@@ -9171,6 +9171,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
+</trans-unit>
+<trans-unit id="sdd66c5a2e706fb81">
+  <source>Toggle sidebar</source>
 </trans-unit>
     </body>
   </file>
