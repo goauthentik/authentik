@@ -3,7 +3,7 @@ name = "authentik"
 version = "2025.4.0"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
-requires-python = "==3.12.*"
+requires-python = "==3.13.*"
 dependencies = [
     "argon2-cffi",
     "celery",
@@ -155,12 +155,12 @@ ignore-words = ".github/codespell-words.txt"
 
 [tool.black]
 line-length = 100
-target-version = ['py312']
+target-version = ['py313']
 exclude = 'node_modules'
 
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py313"
 exclude = ["**/migrations/**", "**/node_modules/**"]
 
 [tool.ruff.lint]
