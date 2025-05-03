@@ -23,6 +23,7 @@ export const DefaultIgnorePatterns = [
     "**/out",
     "**/dist",
     "**/.wireit",
+    "**/.venv",
     "website/build/**",
     "website/.docusaurus/**",
     "**/node_modules",
@@ -65,9 +66,50 @@ export function createESLintPackageConfig({ ignorePatterns = DefaultIgnorePatter
             files: [
                 // ---
                 "**/scripts/**/*",
+                "**/esbuild-plugin-live-reload/**/*",
                 "**/test/**/*",
                 "**/tests/**/*",
             ],
         },
+
+        //#region TODO Incomplete Rules
+        {
+            // The following rules are disabled because the changes needed to satisfy them are
+            // are large enough to warrant several follow-up PRs.
+            rules: {
+                // TODO: High priority, common and easy to fix.
+                "eqeqeq": "off",
+                // TODO: High priority, common and easy to fix.
+                "no-sparse-arrays": "off",
+                // TODO: High priority, common and easy to fix.
+                "no-lonely-if": "off",
+                // TODO: Reconsider this rule.
+                "dot-notation": "off",
+                // TODO: Reconsider this rule.
+                "no-implicit-coercion": "off",
+                // TODO: Reconsider this rule.
+                "prefer-template": "off",
+                "@typescript-eslint/ban-ts-comment": "off",
+                "@typescript-eslint/no-unused-vars": "off",
+                "@typescript-eslint/no-use-before-define": "off",
+                "array-callback-return": "off",
+                "block-scoped-var": "off",
+                "consistent-return": "off",
+                "func-names": "off",
+                "guard-for-in": "off",
+                "no-bitwise": "off",
+                "no-div-regex": "off",
+                "no-else-return": "off",
+                "no-empty-function": "off",
+                "no-param-reassign": "off",
+                "no-throw-literal": "off",
+                "no-var": "off",
+                "prefer-arrow-callback": "off",
+                "react/jsx-no-leaked-render": "off",
+                "vars-on-top": "off",
+            },
+        },
+
+        //#endregion
     );
 }
