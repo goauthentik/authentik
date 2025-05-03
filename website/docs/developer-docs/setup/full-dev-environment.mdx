@@ -17,7 +17,7 @@ import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
 
 - [Python](https://www.python.org/) (3.13 or later)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/), (Latest stable release)
-- [Go](https://go.dev/) (1.23 or later)
+- [Go](https://go.dev/) (1.24 or later)
 - [Node.js](https://nodejs.org/en) (22 or later)
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
 - [Redis](https://redis.io/) (7 or later)
@@ -54,9 +54,8 @@ values={[
     To install the native dependencies on macOS, run:
 
     ```sh
-    $ pip install uv
     $ brew install libxmlsec1 libpq krb5   # Required development libraries,
-    $ brew install postgresql redis node@22 golangci-lint   # Required CLI tools
+    $ brew install uv postgresql redis node@22 golangci-lint   # Required CLI tools
     ```
 
 </TabItem>
@@ -66,14 +65,13 @@ To install native dependencies on Debian or Ubuntu, run:
 
 ```sh
 $ pip install uv
-$ sudo apt-get install  libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
+$ sudo apt-get install libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
 $ sudo apt-get install postresql redis
 ```
 
 Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
 
-Install golangci-lint locally [from the site
-instructions](https://golangci-lint.run/welcome/install/#other-ci).
+Install golangci-lint locally [from the site instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
   </TabItem>
 
