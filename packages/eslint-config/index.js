@@ -59,19 +59,6 @@ export function createESLintPackageConfig({ ignorePatterns = DefaultIgnorePatter
 
         ...reactConfig,
 
-        {
-            rules: {
-                "no-console": "off",
-            },
-            files: [
-                // ---
-                "**/scripts/**/*",
-                "**/esbuild-plugin-live-reload/**/*",
-                "**/test/**/*",
-                "**/tests/**/*",
-            ],
-        },
-
         //#region TODO Incomplete Rules
         {
             // The following rules are disabled because the changes needed to satisfy them are
@@ -103,7 +90,7 @@ export function createESLintPackageConfig({ ignorePatterns = DefaultIgnorePatter
                 "no-empty-function": "off",
                 "no-param-reassign": "off",
                 "no-throw-literal": "off",
-                "no-var": "off",
+                "no-var": "error",
                 "prefer-arrow-callback": "off",
                 "react/jsx-no-leaked-render": "off",
                 "vars-on-top": "off",
