@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="it" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -596,9 +596,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
-        <target>La URL &quot;
-        <x id="0" equiv-text="${this.url}"/>&quot; non è stata trovata.</target>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
+        <target>La URL "
+        <x id="0" equiv-text="${this.url}"/>" non è stata trovata.</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
         <target>Benvenuto,
         <x id="0" equiv-text="${name}"/>.</target>
         
@@ -1106,7 +1106,7 @@
       </trans-unit>
       <trans-unit id="sde949d0ef44572eb">
         <source>Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.</source>
-        <target>Richiede che l'utente abbia un attributo &quot;upn&quot; impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
+        <target>Richiede che l'utente abbia un attributo "upn" impostato e ricorre all'ID utente con hash. Utilizza questa modalità solo se disponi di domini UPN e di posta diversi.</target>
         
       </trans-unit>
       <trans-unit id="s9f23ed1799b4d49a">
@@ -1266,7 +1266,7 @@
       </trans-unit>
       <trans-unit id="s211b75e868072162">
         <source>Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.</source>
-        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su &quot;domain.tld&quot;.</target>
+        <target>Impostalo sul dominio per il quale desideri che l'autenticazione sia valida. Deve essere un dominio principale dell'URL riportato sopra. Se esegui applicazioni come app1.domain.tld, app2.domain.tld, impostalo su "domain.tld".</target>
         
       </trans-unit>
       <trans-unit id="s2345170f7e272668">
@@ -1715,8 +1715,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
-        <target>Inserisci un URL completo, un percorso relativo oppure utilizza &quot;fa://fa-test&quot; per utilizzare l'icona &quot;fa-test&quot; di Font Awesome.</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
+        <target>Inserisci un URL completo, un percorso relativo oppure utilizza "fa://fa-test" per utilizzare l'icona "fa-test" di Font Awesome.</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3155,7 +3155,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s3198c384c2f68b08">
         <source>Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.</source>
-        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID &quot;Transient&quot; e l'utente non si disconnette manualmente.</target>
+        <target>Tempo da attendere quando gli utenti temporanei devono essere eliminati. Questo vale solo se l'IDP utilizza il formato NameID "Transient" e l'utente non si disconnette manualmente.</target>
         
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
@@ -3297,7 +3297,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s9f8aac89fe318acc">
         <source>Optionally set the 'FriendlyName' value of the Assertion attribute.</source>
-        <target>Opzionale: imposta il valore &quot;friendlyname&quot; dell'attributo di asserzione.</target>
+        <target>Opzionale: imposta il valore "friendlyname" dell'attributo di asserzione.</target>
         
       </trans-unit>
       <trans-unit id="s851c108679653d2a">
@@ -3778,10 +3778,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Sei sicuro di voler aggiornare
-        <x id="0" equiv-text="${this.objectLabel}"/>&quot;
-        <x id="1" equiv-text="${this.obj?.name}"/>&quot;?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>"
+        <x id="1" equiv-text="${this.obj?.name}"/>"?</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -4154,7 +4154,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s7520286c8419a266">
         <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
-        <target>Dati facoltativi che vengono caricati nella variabile di contesto &quot;prompt_data&quot; del flusso. YAML o JSON.</target>
+        <target>Dati facoltativi che vengono caricati nella variabile di contesto "prompt_data" del flusso. YAML o JSON.</target>
         
       </trans-unit>
       <trans-unit id="sb8795b799c70776a">
@@ -4847,8 +4847,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
-        <target>Un autenticatore &quot;roaming&quot;, come un YubiKey</target>
+        <source>A "roaming" authenticator, like a YubiKey</source>
+        <target>Un autenticatore "roaming", come un YubiKey</target>
         
       </trans-unit>
       <trans-unit id="sfffba7b23d8fb40c">
@@ -5153,7 +5153,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s5170f9ef331949c0">
         <source>Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.</source>
-        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile &quot;prompt_data&quot;.</target>
+        <target>Mostra campi di input arbitrari all'utente, ad esempio durante l'iscrizione. I dati vengono salvati nel contesto di flusso nell'ambito della variabile "prompt_data".</target>
         
       </trans-unit>
       <trans-unit id="s36cb242ac90353bc">
@@ -5202,12 +5202,12 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2512334108f06a5a">
         <source>Stay signed in offset</source>
-        <target>Rimani connesso in tempo</target>
+        <target>Resta firmato in composizione</target>
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
-        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di &quot;rimanere firmato&quot;, che estenderà la sessione entro il momento specificato qui.</target>
+        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <target>Se impostato su una durata superiore a 0, l'utente avrà la possibilità di scegliere di "rimanere firmato", che estenderà la sessione entro il momento specificato qui.</target>
         
       </trans-unit>
       <trans-unit id="s542a71bb8f41e057">
@@ -5228,7 +5228,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s927398c400970760">
         <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.</source>
-        <target>Scrivi qualsiasi dati dal contesto del flusso &quot;prompt_data&quot; all'utente attualmente in sospeso. Se nessun utente
+        <target>Scrivi qualsiasi dati dal contesto del flusso "prompt_data" all'utente attualmente in sospeso. Se nessun utente
  è in sospeso, viene creato un nuovo utente e vengono scritti dati.</target>
       </trans-unit>
       <trans-unit id="sb379d861cbed0b47">
@@ -6236,7 +6236,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sddb3b0176f437721">
         <source>Open API Browser</source>
-        <target>Apri navigatore API</target>
+        <target>Aprire il browser API</target>
         
       </trans-unit>
       <trans-unit id="s5be3c6d61cd9182f">
@@ -7024,7 +7024,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s364c4f177a2f8322">
   <source>Open API drawer</source>
-  <target>Apri riquadro OpenAPI</target>
+  <target>Cassetto API aperto</target>
 </trans-unit>
 <trans-unit id="s9ba989e69344ff29">
   <source>Open Notification drawer</source>
@@ -7377,7 +7377,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
-  <target>Un suggerimento, &quot;New Application Wizard&quot;, è attualmente nascosto</target>
+  <target>Un suggerimento, "New Application Wizard", è attualmente nascosto</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
@@ -7492,7 +7492,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Utente creato con successo e aggiunto al gruppo <x id="0" equiv-text="${this.group.name}"/></target>
 </trans-unit>
 <trans-unit id="s824e0943a7104668">
-  <source>This user will be added to the group &quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&quot;.</source>
+  <source>This user will be added to the group "<x id="0" equiv-text="${this.targetGroup.name}"/>".</source>
   <target>Questo utente sarà aggiunto al gruppo &amp;quot;<x id="0" equiv-text="${this.targetGroup.name}"/>&amp;quot;.</target>
 </trans-unit>
 <trans-unit id="s62e7f6ed7d9cb3ca">
@@ -8643,7 +8643,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s9dda0789d278f5c5">
   <source>Provide users with a 'show password' button.</source>
-  <target>Fornisci agli utenti un pulsante &quot;Mostra password&quot;.</target>
+  <target>Fornisci agli utenti un pulsante "Mostra password".</target>
 </trans-unit>
 <trans-unit id="s2f7f35f6a5b733f5">
   <source>Show password</source>
@@ -8778,7 +8778,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Gruppo di sincronizzazione</target>
 </trans-unit>
 <trans-unit id="s2d5f69929bb7221d">
-  <source><x id="0" equiv-text="${p.name}"/> (&quot;<x id="1" equiv-text="${p.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${p.type}"/>)</source>
+  <source><x id="0" equiv-text="${p.name}"/> ("<x id="1" equiv-text="${p.fieldKey}"/>", of type <x id="2" equiv-text="${p.type}"/>)</source>
   <target><x id="0" equiv-text="${p.name}"/> (&amp;quot;<x id="1" equiv-text="${p.fieldKey}"/>&amp;quot;, del tipo <x id="2" equiv-text="${p.type}"/>)</target>
 </trans-unit>
 <trans-unit id="s25bacc19d98b444e">
@@ -9026,8 +9026,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>URI di reindirizzamento validi dopo un flusso di autorizzazione riuscito. Specificare anche eventuali origini per i flussi impliciti.</target>
 </trans-unit>
 <trans-unit id="s4c49d27de60a532b">
-  <source>To allow any redirect URI, set the mode to Regex and the value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
-  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su &quot;.*&quot;. Tieni presente le possibili implicazioni per la sicurezza.</target>
+  <source>To allow any redirect URI, set the mode to Regex and the value to ".*". Be aware of the possible security implications this can have.</source>
+  <target>Per consentire qualsiasi URI di reindirizzamento, imposta la modalità su Regex e il valore su ".*". Tieni presente le possibili implicazioni per la sicurezza.</target>
 </trans-unit>
 <trans-unit id="sa52bf79fe1ccb13e">
   <source>Federated OIDC Sources</source>
@@ -9696,8 +9696,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Impossibile visualizzare l'anteprima del prompt</target>
 </trans-unit>
 <trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-  <target>Campo che contiene i membri di un gruppo. Si noti che se si utilizza il campo &quot;memberUid&quot;, si presume che il valore contenga un nome relativo distinto. Ad esempio, &quot;memberUid=some-user&quot; invece di &quot;memberUid=cn=some-user,ou=groups,...&quot;. Quando si seleziona &quot;Cerca utilizzando un attributo utente&quot;, questo dovrebbe essere un attributo utente, altrimenti un attributo di gruppo.</target>
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
 </trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
@@ -9705,107 +9704,84 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s17359123e1f24504">
   <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
-  <target>Campo che contiene i ND dei gruppi di cui l'utente è membro. Questo campo viene utilizzato per cercare i gruppi degli utenti, ad esempio &quot;memberOf&quot;. Per cercare gruppi nidificati in un ambiente Active Directory, utilizzare &quot;memberOf:1.2.840.113556.1.4.1941:&quot;.</target>
 </trans-unit>
 <trans-unit id="s891cd64acabf23bf">
   <source>Initial Permissions</source>
-  <target>Permessi Iniziali</target>
 </trans-unit>
 <trans-unit id="sedb57bf4b42a8e40">
   <source>Unknown Initial Permissions mode</source>
-  <target>Modalità di autorizzazioni iniziali sconosciute</target>
 </trans-unit>
 <trans-unit id="s6ea6a64acb45dfdf">
   <source>Successfully updated initial permissions.</source>
-  <target>Permessi iniziali aggiornati correttamente.</target>
 </trans-unit>
 <trans-unit id="sfddf7896ab5938b6">
   <source>Successfully created initial permissions.</source>
-  <target>Permessi iniziali creati correttamente.</target>
 </trans-unit>
 <trans-unit id="s5c5f240cbb6d0bae">
   <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
-  <target>Quando un utente con il ruolo selezionato crea un oggetto, le autorizzazioni iniziali verranno applicate a tale oggetto.</target>
 </trans-unit>
 <trans-unit id="sbf27294eef56ac81">
   <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
-  <target>Le autorizzazioni iniziali possono essere assegnate all'utente che crea l'oggetto oppure al ruolo selezionato nel campo precedente.</target>
 </trans-unit>
 <trans-unit id="s93f04537efda1b24">
   <source>Available Permissions</source>
-  <target>Permessi Disponibili</target>
 </trans-unit>
 <trans-unit id="s297bc57f9e494470">
   <source>Selected Permissions</source>
-  <target>Permessi Selezionati</target>
 </trans-unit>
 <trans-unit id="s0ea71d53764d781c">
   <source>Permissions to grant when a new object is created.</source>
-  <target>Autorizzazioni da concedere quando viene creato un nuovo oggetto.</target>
 </trans-unit>
 <trans-unit id="s06fc21a40f5d7de1">
   <source>Set initial permissions for newly created objects.</source>
-  <target>Imposta le autorizzazioni iniziali per gli oggetti appena creati.</target>
 </trans-unit>
 <trans-unit id="sc7104a4d0fc35c7c">
   <source>Update Initial Permissions</source>
-  <target>Aggiorna Permessi Iniziali</target>
 </trans-unit>
 <trans-unit id="s83fa005829a65be9">
   <source>Create Initial Permissions</source>
-  <target>Crea Permessi Iniziali</target>
 </trans-unit>
 <trans-unit id="se37ac6cf9c72f21a">
   <source>Reputation: lower limit</source>
-  <target>Reputazione: limite inferiore</target>
 </trans-unit>
 <trans-unit id="sa634ffa797037aac">
   <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
-  <target>La reputazione non può scendere sotto questo valore. Zero o negativo.</target>
 </trans-unit>
 <trans-unit id="s862986ce8e70edd7">
   <source>Reputation: upper limit</source>
-  <target>Reputazione: limite superiore</target>
 </trans-unit>
 <trans-unit id="sdd04913b3b46cf30">
   <source>Reputation cannot increase higher than this value. Zero or positive.</source>
-  <target>La reputazione non può superare questo valore. Zero o positivo.</target>
 </trans-unit>
 <trans-unit id="s4d5cb134999b50df">
   <source>HTTP Basic Auth</source>
-  <target>HTTP Basic Auth</target>
 </trans-unit>
 <trans-unit id="s6927635d1c339cfc">
   <source>Include the client ID and secret as request parameters</source>
-  <target>Includi il client ID e il segreto come parametri di richiesta</target>
 </trans-unit>
 <trans-unit id="s4fca384c634e1a92">
   <source>Authorization code authentication method</source>
-  <target>Metodo di autenticazione del codice di autorizzazione</target>
 </trans-unit>
 <trans-unit id="sdc02c276ed429008">
   <source>How to perform authentication during an authorization_code token request flow</source>
-  <target>Come eseguire l'autenticazione durante un flusso di richiesta del token authorization_code</target>
 </trans-unit>
 <trans-unit id="s844baf19a6c4a9b4">
-  <source>Enable &quot;Remember me on this device&quot;</source>
-  <target>Abilita &quot;Ricordami su questo dispositivo&quot;</target>
+  <source>Enable "Remember me on this device"</source>
 </trans-unit>
 <trans-unit id="sfa72bca733f40692">
   <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
-  <target>Se abilitata, l'utente può salvare il proprio nome utente in un cookie, così da poter inserire direttamente la password.</target>
 </trans-unit>
 <trans-unit id="s1c336c2d6cef77b3">
   <source>Remember me on this device</source>
-  <target>Ricordami su questo dispositivo</target>
 </trans-unit>
 <trans-unit id="s86cf007b861152ca">
   <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
-  <target>Assicurati che la nuova password dell'utente sia diversa dalle password precedenti. Il numero di password precedenti da verificare è configurabile.</target>
 </trans-unit>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
-  <target>Numero di password precedenti da controllare</target>
+</trans-unit>
+<trans-unit id="sdd66c5a2e706fb81">
+  <source>Toggle sidebar</source>
 </trans-unit>
     </body>
   </file>
