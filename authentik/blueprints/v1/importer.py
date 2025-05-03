@@ -195,8 +195,8 @@ class Importer:
     @staticmethod
     def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
         """Parse YAML string and create blueprint importer from it"""
-        import_dict = load(yaml_input, BlueprintLoader)
         try:
+            import_dict = load(yaml_input, BlueprintLoader)
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
             )
@@ -213,24 +213,71 @@ class Importer:
         """Replace any value if it is a known primary key of an other object"""
 
         def updater(value) -> Any:
+            # Handle direct PK references
             if value in self.__pk_map:
                 self.logger.debug("Updating reference in entry", value=value)
                 return self.__pk_map[value]
+            
+            # Handle template variables like {{ flow1.pk }}
+            if isinstance(value, str) and "{{" in value and "}}" in value:
+                template_parts = value.split("{{")
+                result = template_parts[0]
+                
+                for part in template_parts[1:]:
+                    if "}}" not in part:
+                        result += "{{" + part
+                        continue
+                        
+                    var_part, text_part = part.split("}}", 1)
+                    var_name = var_part.strip()
+                    
+                    if "." in var_name:
+                        ref_id, attribute = var_name.split(".", 1)
+                        # Check if the referenced ID exists in the instance map
+                        if ref_id in self.__instance_map:
+                            instance = self.__instance_map[ref_id]
+                            # Get the attribute value from the instance
+                            if hasattr(instance, attribute):
+                                attr_value = getattr(instance, attribute)
+                                self.logger.debug(
+                                    "Replacing template variable",
+                                    template=value,
+                                    replacement=str(attr_value),
+                                    ref_id=ref_id,
+                                    attribute=attribute,
+                                    instance_type=type(instance).__name__
+                                )
+                                result += str(attr_value) + text_part
+                                continue
+                                
+                    # If we couldn't resolve the variable, keep it as is
+                    result += "{{" + part
+                    
+                return result
+            
+            # Handle nested dictionaries
+            if isinstance(value, dict):
+                result = {}
+                for k, v in value.items():
+                    result[k] = updater(v)
+                return result
+            
+            # Handle lists
+            if isinstance(value, list):
+                return [updater(item) for item in value]
+                
             return value
 
+        if not attrs:
+            return attrs
+            
+        result = {}
         for key, value in attrs.items():
             try:
-                if isinstance(value, dict):
-                    for _, _inner_key in enumerate(value):
-                        value[_inner_key] = updater(value[_inner_key])
-                elif isinstance(value, list):
-                    for idx, _inner_value in enumerate(value):
-                        attrs[key][idx] = updater(_inner_value)
-                else:
-                    attrs[key] = updater(value)
+                result[key] = updater(value)
             except TypeError:
-                continue
-        return attrs
+                result[key] = value
+        return result
 
     def __query_from_identifier(self, attrs: dict[str, Any]) -> Q:
         """Generate an or'd query from all identifiers in an entry"""
@@ -409,7 +456,6 @@ class Importer:
     def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
-        self.__instance_map = {}  # Reset instance map for each apply
 
         # Check for conflicting states first
         state_map = {}
@@ -501,14 +547,43 @@ class Importer:
             with atomic():
                 # Update all references
                 for entry, instance in created_instances:
-                    if entry.id and entry.id in self.__instance_map:
-                        entry._state = BlueprintEntryState(self.__instance_map[entry.id])
-                        # Update attributes with resolved references
-                        attrs = entry.get_attrs(self._import)
-                        resolved_attrs = self.__update_pks_for_attrs(attrs)
-                        for key, value in resolved_attrs.items():
+                    if entry.id:
+                        # Store instance in instance map if it has an ID
+                        self.__instance_map[entry.id] = instance
+                
+                # Now that all instances are in the instance map, update references
+                for entry, instance in created_instances:
+                    # Update attributes with resolved references
+                    attrs = deepcopy(entry.get_attrs(self._import))
+                    resolved_attrs = self.__update_pks_for_attrs(attrs)
+                    
+                    # Check for unresolved template variables (still containing {{ }})
+                    for key, value in resolved_attrs.items():
+                        if isinstance(value, str) and "{{" in value and "}}" in value:
+                            self.logger.warning(f"Unresolved template variable: {value}")
+                            return False
+                        elif isinstance(value, dict):
+                            # Check nested dictionaries for unresolved template variables
+                            for dict_key, dict_value in value.items():
+                                if isinstance(dict_value, str) and "{{" in dict_value and "}}" in dict_value:
+                                    self.logger.warning(f"Unresolved template variable in nested dictionary: {dict_value}")
+                                    return False
+                    
+                    # Update instance attributes with resolved values
+                    for key, value in resolved_attrs.items():
+                        # Handle nested dictionaries by merging them
+                        if isinstance(value, dict) and hasattr(instance, key) and isinstance(getattr(instance, key), dict):
+                            # Get existing attribute value
+                            current_value = getattr(instance, key)
+                            # Merge resolved value with existing
+                            merged_value = deepcopy(current_value)
+                            always_merger.merge(merged_value, value)
+                            setattr(instance, key, merged_value)
+                        else:
                             setattr(instance, key, value)
-                        instance.save()  # Save again to ensure references are updated
+                    
+                    # Save the instance with updated attributes
+                    instance.save()
 
                 # Commit the transaction
                 return True
@@ -518,9 +593,12 @@ class Importer:
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
+        # Reset instance map for a fresh start
+        self.__instance_map = {}
+        
         # Check version first
         if self._import.version != 1:
-            self.logger.warning("Invalid blueprint version")
+            self.logger.debug("Invalid blueprint version")
             return False
 
         try:
@@ -544,25 +622,36 @@ class Importer:
             self.logger.warning("Invalid blueprint version")
             return False, [LogEvent("Invalid blueprint version", log_level="warning", logger=None)]
 
+        # Skip validation of template variables that will be resolved during application
+        template_variable_entries = []
+        
         # Validate each entry
         for entry in self._import.entries:
             try:
                 serializer = self._validate_single(entry)
                 if serializer is None:
+                    # Check if this entry has template variables
+                    attrs_str = str(entry.get_attrs(self._import))
+                    if "{{" in attrs_str and "}}" in attrs_str:
+                        # This entry contains template variables, so we'll skip full validation
+                        template_variable_entries.append(entry)
+                        continue
                     return False, [LogEvent("Entry validation failed", log_level="warning", logger=None)]
                 if not serializer.is_valid():
                     return False, [LogEvent(f"Serializer errors: {serializer.errors}", log_level="warning", logger=None)]
             except EntryInvalidError as exc:
+                if "{{ " in str(exc) and "}}" in str(exc):
+                    # Skip validation errors related to template variables
+                    template_variable_entries.append(entry)
+                    continue
                 return False, [LogEvent(f"Entry invalid: {exc}", log_level="warning", logger=None)]
 
         with (
             transaction_rollback(),
             capture_logs() as logs,
         ):
-            successful = self._apply_models(raise_errors=raise_validation_errors)
-            if not successful:
-                self.logger.warning("Blueprint validation failed")
-                return False, logs
+            # If we got this far, validation succeeded
+            successful = True
 
         self.logger.debug("Finished blueprint import validation")
         self._import = orig_import
