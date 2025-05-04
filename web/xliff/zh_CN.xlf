@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
         <target>欢迎，
         <x id="0" equiv-text="${name}"/>。</target>
         
@@ -9806,6 +9806,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
   <target>检查历史密码数量</target>
+</trans-unit>
+<trans-unit id="sdd66c5a2e706fb81">
+  <source>Toggle sidebar</source>
+  <target>切换侧边栏</target>
 </trans-unit>
     </body>
   </file>
