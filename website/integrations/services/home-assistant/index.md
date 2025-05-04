@@ -47,7 +47,7 @@ This documentation lists only the settings that you need to change from their de
     - **Slug**: homeassistant
     - **Provider**: Home Assistant (the provider you created in step 1)
 
-3. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/index.md). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
+3. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
 
 ## Home Assistant configuration
 
