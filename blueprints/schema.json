@@ -3929,6 +3929,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_mtls.mutualtlsstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_source.sourcestage"
                             },
                             "id": {
@@ -4867,6 +4907,7 @@
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
+                        "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
                     ],
@@ -4977,6 +5018,7 @@
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
+                        "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -7477,6 +7519,10 @@
                             "authentik_stages_invitation.delete_invitationstage",
                             "authentik_stages_invitation.view_invitation",
                             "authentik_stages_invitation.view_invitationstage",
+                            "authentik_stages_mtls.add_mutualtlsstage",
+                            "authentik_stages_mtls.change_mutualtlsstage",
+                            "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
                             "authentik_stages_password.delete_passwordstage",
@@ -14191,6 +14237,10 @@
                             "authentik_stages_invitation.delete_invitationstage",
                             "authentik_stages_invitation.view_invitation",
                             "authentik_stages_invitation.view_invitationstage",
+                            "authentik_stages_mtls.add_mutualtlsstage",
+                            "authentik_stages_mtls.change_mutualtlsstage",
+                            "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
                             "authentik_stages_password.delete_passwordstage",
@@ -15083,6 +15133,135 @@
                             "change_authenticatorendpointgdtcstage",
                             "delete_authenticatorendpointgdtcstage",
                             "view_authenticatorendpointgdtcstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_stages_mtls.mutualtlsstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required_any",
+                        "required_auth",
+                        "required_enroll"
+                    ],
+                    "title": "Mode"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_mtls.mutualtlsstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_mutualtlsstage",
+                            "change_mutualtlsstage",
+                            "delete_mutualtlsstage",
+                            "view_mutualtlsstage"
                         ]
                     },
                     "user": {
