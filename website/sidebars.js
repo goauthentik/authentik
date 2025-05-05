@@ -148,7 +148,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/property-mappings/index",
                             },
-                            items: ["add-secure-apps/providers/property-mappings/expression", ,],
+                            items: ["add-secure-apps/providers/property-mappings/expression"],
                         },
                         {
                             type: "category",
