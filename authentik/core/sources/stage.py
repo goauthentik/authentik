@@ -1,5 +1,6 @@
 """Source flow manager stages"""
 
+from django.db.utils import IntegrityError
 from django.http import HttpRequest, HttpResponse
 
 from authentik.core.models import User, UserSourceConnection
@@ -22,7 +23,27 @@ class PostSourceStage(StageView):
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         connection.user = user
         linked = connection.pk is None
-        connection.save()
+
+        try:
+            connection.save()
+        except IntegrityError:
+            # If we hit a unique constraint violation, it means a connection already exists
+            # for this user and source. Find the existing connection and use that instead.
+            existing_connection = UserSourceConnection.objects.filter(
+                user=user, source=connection.source
+            ).first()
+            if existing_connection:
+                # We found an existing connection, so we'll update its identifier
+                # if needed
+                if existing_connection.identifier != connection.identifier:
+                    existing_connection.identifier = connection.identifier
+                    existing_connection.save()
+                # Use the existing connection instead
+                linked = False
+            else:
+                # If for some reason we can't find the existing connection, re-raise the error
+                raise
+
         if linked:
             Event.new(
                 EventAction.SOURCE_LINKED,
