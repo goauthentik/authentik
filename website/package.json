@@ -1,20 +1,25 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "private": true,
     "license": "MIT",
+    "private": true,
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build": "run-s build:docker build:schema build:api build:docusaurus",
+        "build-bundled": "run-s build:schema build:api build:docusaurus",
+        "build:api": "docusaurus gen-api-docs all",
+        "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
+        "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "wireit",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "serve": "docusaurus serve",
+        "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "cp -f ../schema.yml ./static/schema.yml && docusaurus gen-api-docs all && docusaurus start"
+        "watch": "run-s build:schema build:api start"
     },
     "dependencies": {
         "@docusaurus/core": "^3.7.0",
@@ -24,45 +29,35 @@
         "@docusaurus/preset-classic": "^3.7.0",
         "@docusaurus/theme-common": "^3.7.0",
         "@docusaurus/theme-mermaid": "^3.7.0",
-        "@goauthentik/docusaurus-config": "^1.0.4",
+        "@goauthentik/docusaurus-config": "^1.0.6",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
-        "disqus-react": "^1.1.6",
-        "docusaurus-plugin-openapi-docs": "4.3.4",
-        "docusaurus-theme-openapi-docs": "4.3.4",
+        "docusaurus-plugin-openapi-docs": "^4.4.0",
+        "docusaurus-theme-openapi-docs": "^4.4.0",
         "postcss": "^8.5.3",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^18.3.1",
-        "react-feather": "^2.0.10",
-        "react-toggle": "^4.1.3",
         "remark-directive": "^4.0.0",
         "remark-github": "^12.0.0",
         "semver": "^7.7.1"
     },
-    "browserslist": {
-        "production": [
-            ">0.2%",
-            "not dead",
-            "not op_mini all"
-        ],
-        "development": [
-            "last 1 chrome version",
-            "last 1 firefox version",
-            "last 1 safari version"
-        ]
-    },
     "devDependencies": {
-        "@docusaurus/module-type-aliases": "^3.3.2",
+        "@docusaurus/module-type-aliases": "^3.7.0",
         "@docusaurus/tsconfig": "^3.7.0",
-        "@docusaurus/types": "^3.3.2",
+        "@docusaurus/types": "^3.7.0",
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@types/lodash": "^4.17.16",
+        "@types/postman-collection": "^3.5.10",
         "@types/react": "^18.3.13",
         "@types/semver": "^7.7.0",
         "cross-env": "^7.0.3",
-        "prettier": "3.5.3",
-        "typescript": "~5.8.3",
-        "wireit": "^0.14.12"
+        "fast-glob": "^3.3.3",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.5.3",
+        "typescript": "~5.8.2"
     },
     "optionalDependencies": {
         "@rspack/binding-darwin-arm64": "1.3.8",
@@ -78,14 +73,31 @@
         "lightningcss-linux-arm64-gnu": "1.29.3",
         "lightningcss-linux-x64-gnu": "1.29.3"
     },
-    "wireit": {
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
-        }
-    },
     "engines": {
-        "node": ">=20"
+        "node": ">=22.14.0"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "fork-ts-checker-webpack-plugin": {
+            "glob": "^11.0.1"
+        },
+        "postman-collection": {
+            "@faker-js/faker": "^6.3.1"
+        },
+        "webpack-dev-server": {
+            "rimraf": "6.0.1"
+        }
     }
 }

@@ -1,5 +1,5 @@
-import { generateVersionDropdown } from "./src/utils.js";
 import apiReference from "./docs/developer-docs/api/reference/sidebar";
+import { generateVersionDropdown } from "./src/utils.js";
 
 const releases = [
     "releases/2025/v2025.4",
@@ -148,10 +148,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/property-mappings/index",
                             },
-                            items: [
-                                "add-secure-apps/providers/property-mappings/expression",
-                                ,
-                            ],
+                            items: ["add-secure-apps/providers/property-mappings/expression"],
                         },
                         {
                             type: "category",
@@ -172,9 +169,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ldap/index",
                             },
-                            items: [
-                                "add-secure-apps/providers/ldap/generic_setup",
-                            ],
+                            items: ["add-secure-apps/providers/ldap/generic_setup"],
                         },
                         {
                             type: "category",
@@ -248,9 +243,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/providers/ssf/index",
                             },
-                            items: [
-                                "add-secure-apps/providers/ssf/create-ssf-provider",
-                            ],
+                            items: ["add-secure-apps/providers/ssf/create-ssf-provider"],
                         },
                     ],
                 },
@@ -328,9 +321,7 @@ export default {
                                 type: "doc",
                                 id: "add-secure-apps/flows-stages/bindings/index",
                             },
-                            items: [
-                                "add-secure-apps/flows-stages/bindings/work_with_bindings",
-                            ],
+                            items: ["add-secure-apps/flows-stages/bindings/work_with_bindings"],
                         },
                     ],
                 },
@@ -473,10 +464,7 @@ export default {
                         type: "doc",
                         id: "users-sources/groups/index",
                     },
-                    items: [
-                        "users-sources/groups/manage_groups",
-                        "users-sources/groups/group_ref",
-                    ],
+                    items: ["users-sources/groups/manage_groups", "users-sources/groups/group_ref"],
                 },
                 {
                     type: "category",
@@ -521,9 +509,7 @@ export default {
                                         type: "doc",
                                         id: "users-sources/sources/protocols/kerberos/index",
                                     },
-                                    items: [
-                                        "users-sources/sources/protocols/kerberos/browser",
-                                    ],
+                                    items: ["users-sources/sources/protocols/kerberos/browser"],
                                 },
                                 "users-sources/sources/protocols/ldap/index",
                                 "users-sources/sources/protocols/oauth/index",
@@ -538,9 +524,7 @@ export default {
                                 type: "doc",
                                 id: "users-sources/sources/property-mappings/index",
                             },
-                            items: [
-                                "users-sources/sources/property-mappings/expressions",
-                            ],
+                            items: ["users-sources/sources/property-mappings/expressions"],
                         },
                         {
                             type: "category",
@@ -610,10 +594,7 @@ export default {
                         type: "doc",
                         id: "sys-mgmt/events/index",
                     },
-                    items: [
-                        "sys-mgmt/events/notifications",
-                        "sys-mgmt/events/transports",
-                    ],
+                    items: ["sys-mgmt/events/notifications", "sys-mgmt/events/transports"],
                 },
                 "sys-mgmt/certificates",
                 "sys-mgmt/settings",
