@@ -10,9 +10,7 @@ class TLSMode(models.TextChoices):
     """Modes the TLS Stage can operate in"""
 
     OPTIONAL = "optional"
-    REQUIRED_ANY = "required_any"
-    REQUIRED_AUTH = "required_auth"
-    REQUIRED_ENROLL = "required_enroll"
+    REQUIRED = "required"
 
 
 class CertAttributes(models.TextChoices):
