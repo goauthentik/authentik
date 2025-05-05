@@ -23,6 +23,7 @@ from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
 from selenium import webdriver
+from selenium.webdriver.remote.command import Command
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -197,7 +198,12 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         super().tearDown()
         if IS_CI:
             print("::group::Browser logs")
-        for line in self.driver.get_log("browser"):
+        # Very verbose way to get browser logs
+        # https://github.com/SeleniumHQ/selenium/pull/15641
+        # for some reason this removes the `get_log` API from Remote Webdriver
+        # and only keeps it on the local Chrome web driver, even when using
+        # a remote chrome driver...? (nvm the fact this was released as a minor version)
+        for line in self.driver.execute(Command.GET_LOG, {"type": "browser"})["value"]:
             print(line["message"])
         if IS_CI:
             print("::endgroup::")
