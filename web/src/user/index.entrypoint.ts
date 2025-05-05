@@ -6,7 +6,8 @@ import {
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, getConfigForUser } from "@goauthentik/common/ui/config";
+import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import "@goauthentik/components/ak-nav-buttons";
@@ -21,7 +22,6 @@ import "@goauthentik/elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import { ROUTES } from "@goauthentik/user/Routes";
@@ -292,6 +292,7 @@ export class UserInterface extends AuthenticatedInterface {
 
     async connectedCallback() {
         super.connectedCallback();
+
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.addEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.addEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
@@ -301,6 +302,7 @@ export class UserInterface extends AuthenticatedInterface {
         window.removeEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, this.toggleNotificationDrawer);
         window.removeEventListener(EVENT_API_DRAWER_TOGGLE, this.toggleApiDrawer);
         window.removeEventListener(EVENT_WS_MESSAGE, this.fetchConfigurationDetails);
+
         super.disconnectedCallback();
     }
 
@@ -319,8 +321,10 @@ export class UserInterface extends AuthenticatedInterface {
     }
 
     fetchConfigurationDetails() {
-        me().then((me: SessionUser) => {
-            this.me = me;
+        me().then((session: SessionUser) => {
+            this.me = session;
+            this.uiConfig = getConfigForUser(session.user);
+
             new EventsApi(DEFAULT_CONFIG)
                 .eventsNotificationsList({
                     seen: false,
@@ -334,12 +338,16 @@ export class UserInterface extends AuthenticatedInterface {
         });
     }
 
-    get isFullyConfigured() {
-        return Boolean(this.uiConfig && this.me);
-    }
-
     render() {
-        if (!this.isFullyConfigured) {
+        if (!this.me) {
+            console.debug(`authentik/user/UserInterface: waiting for user session to be available`);
+
+            return nothing;
+        }
+
+        if (!this.uiConfig) {
+            console.debug(`authentik/user/UserInterface: waiting for UI config to be available`);
+
             return nothing;
         }
 

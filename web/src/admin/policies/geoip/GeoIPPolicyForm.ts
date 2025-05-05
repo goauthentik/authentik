@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select";
 import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
@@ -112,7 +111,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.historyMaxDistanceKm, 100)}"
+                            value="${this.instance?.historyMaxDistanceKm ?? 100}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -128,7 +127,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.distanceToleranceKm, 50)}"
+                            value="${this.instance?.distanceToleranceKm ?? 50}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -142,7 +141,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.historyLoginCount, 5)}"
+                            value="${this.instance?.historyLoginCount ?? 5}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -178,7 +177,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.impossibleToleranceKm, 50)}"
+                            value="${this.instance?.impossibleToleranceKm ?? 50}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">

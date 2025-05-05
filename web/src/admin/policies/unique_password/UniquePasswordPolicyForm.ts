@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -51,7 +50,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -88,7 +87,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
             >
                 <input
                     type="number"
-                    value="${first(this.instance?.numHistoricalPasswords, 1)}"
+                    value="${this.instance?.numHistoricalPasswords ?? 1}"
                     class="pf-c-form-control"
                     required
                 />

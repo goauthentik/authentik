@@ -21,13 +21,13 @@ require (
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
 	github.com/pires/go-proxyproto v0.8.0
 	github.com/prometheus/client_golang v1.22.0
-	github.com/redis/go-redis/v9 v9.7.3
-	github.com/sethvargo/go-envconfig v1.2.0
+	github.com/redis/go-redis/v9 v9.8.0
+	github.com/sethvargo/go-envconfig v1.3.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	github.com/wwt/guac v1.3.2
-	goauthentik.io/api/v3 v3.2025024.9
+	goauthentik.io/api/v3 v3.2025040.1
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.29.0
 	golang.org/x/sync v0.13.0
