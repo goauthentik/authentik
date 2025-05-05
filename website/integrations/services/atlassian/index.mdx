@@ -1,0 +1,117 @@
+---
+title: Integrate with Atlassian Cloud
+sidebar_label: Atlassian Cloud
+support_level: community
+---
+
+## What is Atlassian Cloud
+
+> Atlassian is a proprietary software company that specializes in collaboration tools designed primarily for software development and project management. Atlassian Cloud is their cloud platform and provides access to their popular apps; Jira, Confluence, Bitbucket, Trello and others.
+>
+> -- https://www.atlassian.com/
+
+:::important
+This guide offers instructions for setting up authentik as a SAML provider specifically for Atlassian Cloud. It is applicable to all Atlassian Cloud applications, including Jira, Confluence, Bitbucket, Trello, and others.
+
+Atlassian Cloud has two types of users; **internal** and **external**.
+
+Internal users are defined by their email domain which needs to be a [verified domain in Atlassian Cloud](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Internal users are able to utilise SSO without Atlassian Cloud credentials.
+
+[External users](https://support.atlassian.com/security-and-access-policies/docs/who-are-external-users/) are required to log into Atlassian Cloud using Atlassian Cloud credentials. They are then prompted for authentik credentials when accessing specific Atlassian Cloud apps like Jira.
+:::
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+SAML SSO for Atlassian Cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription and a [verified domain](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Further information on requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Atlassian Cloud with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**, set an available signing certificate.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Download the signing certificate
+
+1. Log into authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the newly created Atlassian Cloud provider.
+3. Under **Download signing certificate** click the **Download** button. The contents of this certificate will be required in the next section.
+
+## Atlassian Cloud configuration
+
+1. Log in to the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization administrator.
+2. Navigate to **Security** > **Identity providers**.
+3. Under **Choose an identity provider** select **Other provider**.
+4. Provide a **Directory name** e.g authentik and click **Add**.
+5. Click **Set up SAML single sign-on** and then **Next**.
+6. Set the following required configurations:
+    - **Identity provider Entity ID**: `authentik`
+    - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/`
+    - **Public x509 certificate**: enter the contents of the certificate that was downloaded in the previous section.
+7. Click **Add**.
+8. You will be shown a **Service provider entity URL** and **Service provider assertion consumer service URL**. Copy both, they will be required in authentik.
+9. Click **Next**.
+10. Under **Link domain** select a verified domain.
+11. Click **Stop and save SAML**
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Atlassian Cloud provider.
+3. Under **Protocol settgins**, set the following required configurations:
+    - **ACS URL**: set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
+    - **Audience**: set the audience to the copied **Service provider entity URL** (e.g. https://auth.atlassian.com/saml/example).
+4. Click **Update**
+
+## Enabling SSO in Atlassian Cloud
+
+### Internal users
+
+1. Log into the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization admin.
+2. Navigate to **Security** > **Authentication policies**.
+3. Click **Add policy** at the top right.
+4. Select the `authentik` directory and provide a name for the policy.
+5. Edit the new policy and check `Enforce single sign-on`.
+6. Click **Update**.
+
+### External users
+
+1. Log in to the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization admin.
+2. Navigate to **Security** > **External users**.
+3. Click on **External user policy**.
+4. Under **Authorization method** check **Single sign-on**.
+5. Under **Identity provider** select `authentik`.
+6. Click **Update**.
+
+## Configuration verification
+
+### Internal users
+
+To verify that authentik is correctly integrated with Atlassian Cloud, first log out of your account. Then, log back in using your credentials for an internal user. You should be redirected to your authentik instance and after successfully logging in, you should be redirected to the selected Atlassian Cloud app.
+
+### External users
+
+To verify that authentik is correctly integrated with Atlassian Cloud, first log out of your account. Then, log back in using your credentials for an external user.
+
+From the Atlassian Cloud dashboard, select an app such as Jira. You will be prompted to verify your identity and redirected to your authentik instance. After successfully logging in to authentik you should be logged into the selected Atlassian Cloud app.

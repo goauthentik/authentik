@@ -1,12 +1,12 @@
 services:
   chrome:
-    image: docker.io/selenium/standalone-chrome:122.0
+    image: docker.io/selenium/standalone-chrome:135.0
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
     restart: always
   mailpit:
-    image: docker.io/axllent/mailpit:v1.6.5
+    image: docker.io/axllent/mailpit:v1.24.2
     ports:
       - 1025:1025
       - 8025:8025

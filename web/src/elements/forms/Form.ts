@@ -2,11 +2,12 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
+import { camelToSnake } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -218,11 +219,11 @@ export abstract class Form<T> extends AKElement {
                 // Only attach handler if the slug is already equal to the name
                 // if not, they are probably completely different and shouldn't update
                 // each other
-                if (convertToSlug(input.value) !== slugField.value) {
+                if (formatSlug(input.value) !== slugField.value) {
                     return;
                 }
                 nameInput.addEventListener("input", () => {
-                    slugField.value = convertToSlug(input.value);
+                    slugField.value = formatSlug(input.value);
                 });
             });
     }

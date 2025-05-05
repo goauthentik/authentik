@@ -1,6 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -78,17 +78,14 @@ export function renderForm(
                     name="sharedSecret"
                     label=${msg("Shared secret")}
                     .errorMessages=${errors?.sharedSecret ?? []}
-                    value=${first(
-                        provider?.sharedSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}
+                    value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
                     inputHint="code"
                 ></ak-text-input>
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
-                    value=${first(provider?.clientNetworks, "0.0.0.0/0, ::/0")}
+                    value=${provider?.clientNetworks ?? "0.0.0.0/0, ::/0"}
                     .errorMessages=${errors?.clientNetworks ?? []}
                     required
                     help=${clientNetworksHelp}

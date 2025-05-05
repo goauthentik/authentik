@@ -1,6 +1,5 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -38,7 +37,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -53,7 +52,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.sessionDuration, "seconds=0")}"
+                            value="${this.instance?.sessionDuration ?? "seconds=0"}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -84,7 +83,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.rememberMeOffset, "seconds=0")}"
+                            value="${this.instance?.rememberMeOffset ?? "seconds=0"}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"
@@ -170,7 +169,7 @@ export class UserLoginStageForm extends BaseStageForm<UserLoginStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.terminateOtherSessions, false)}
+                                ?checked=${this.instance?.terminateOtherSessions ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

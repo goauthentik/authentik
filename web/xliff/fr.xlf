@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
         <target>Bienvenue,
         <x id="0" equiv-text="${name}"/>.</target>
         
@@ -9805,6 +9805,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s79b3fcd40dd63921">
   <source>Number of previous passwords to check</source>
   <target>Nombre d'anciens mots de passe à vérifier</target>
+</trans-unit>
+<trans-unit id="sdd66c5a2e706fb81">
+  <source>Toggle sidebar</source>
 </trans-unit>
     </body>
   </file>

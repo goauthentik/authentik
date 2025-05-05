@@ -1,9 +1,14 @@
-import { AKElement } from "@goauthentik/elements/Base";
-
 import { type LitElement, type ReactiveControllerHost, type TemplateResult, nothing } from "lit";
 import "lit";
 
-export type ReactiveElementHost<T = AKElement> = Partial<ReactiveControllerHost> & T;
+/**
+ * A custom element which may be used as a host for a ReactiveController.
+ *
+ * @remarks
+ *
+ * This type is derived from an internal type in Lit.
+ */
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & T> & HTMLElement;
 
 export type AbstractLitElementConstructor = abstract new (...args: never[]) => LitElement;
 
