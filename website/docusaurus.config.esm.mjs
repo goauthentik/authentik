@@ -10,6 +10,7 @@ import { createRequire } from "node:module";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
+import remarkEnterpriseDirective from "./remark/enterprise-directive.mjs";
 import remarkPreviewDirective from "./remark/preview-directive.mjs";
 import remarkSupportDirective from "./remark/support-directive.mjs";
 import remarkVersionDirective from "./remark/version-directive.mjs";
@@ -101,6 +102,7 @@ const config = createDocusaurusConfig({
                     beforeDefaultRemarkPlugins: [
                         remarkDirective,
                         remarkVersionDirective,
+                        remarkEnterpriseDirective,
                         remarkPreviewDirective,
                         remarkSupportDirective,
                     ],
