@@ -13,8 +13,6 @@ support_level: community
 :::important
 This guide offers instructions for setting up authentik as a SAML provider specifically for Atlassian Cloud. It is applicable to all Atlassian Cloud applications, including Jira, Confluence, Bitbucket, Trello, and others.
 
-SAML SSO for Atlassian Cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription and a [verified domain](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Further information on requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
-
 Atlassian Cloud has two types of users; **internal** and **external**.
 
 Internal users are defined by their email domain which needs to be a [verified domain in Atlassian Cloud](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Internal users are able to utilise SSO without Atlassian Cloud credentials.
@@ -27,6 +25,8 @@ Internal users are defined by their email domain which needs to be a [verified d
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
+
+SAML SSO for Atlassian Cloud apps requires an [Atlassian Guard](https://support.atlassian.com/security-and-access-policies/docs/understand-atlassian-guard/) subscription and a [verified domain](https://support.atlassian.com/user-management/docs/verify-a-domain-to-manage-accounts/). Further information on requirements for SSO can be found in the [Atlassian SSO documentation](https://support.atlassian.com/security-and-access-policies/docs/configure-saml-single-sign-on-with-an-identity-provider/).
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -41,14 +41,14 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-    - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
-    - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, set an available signing certificate.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+        - Note the application slug, it will be required when filling out the **Identity provider SSO URL** later on.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**, set an available signing certificate.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
