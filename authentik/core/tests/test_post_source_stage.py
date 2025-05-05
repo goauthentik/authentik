@@ -12,7 +12,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.lib.generators import generate_id
 
 
-class ProxySource(Source):
+class PostSourceProxySource(Source):
     """source"""
 
     class Meta:
@@ -26,7 +26,7 @@ class TestPostSourceStage(TestCase):
         self.user = User.objects.create(username=generate_id())
         # Create a real source instance
         source_slug = generate_id()
-        self.source = ProxySource.objects.create(name="Test Source", slug=source_slug, enabled=True)
+        self.source = PostSourceProxySource.objects.create(name="Test Source", slug=source_slug, enabled=True)
 
         # Create real request
         self.request = HttpRequest()
