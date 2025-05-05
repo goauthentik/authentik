@@ -23,10 +23,10 @@ from docker.errors import DockerException
 from docker.models.containers import Container
 from docker.models.networks import Network
 from selenium import webdriver
-from selenium.webdriver.remote.command import Command
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.remote.command import Command
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support.wait import WebDriverWait
