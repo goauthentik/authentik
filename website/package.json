@@ -4,19 +4,19 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
-        "build:schema": "cp -f ../schema.yml ./static/schema.yml",
-        "build:api": "docusaurus gen-api-docs all",
-        "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "run-s build:schema build:api build:docusaurus",
         "build": "run-s build:docker build:schema build:api build:docusaurus",
+        "build-bundled": "run-s build:schema build:api build:docusaurus",
+        "build:api": "docusaurus gen-api-docs all",
+        "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
+        "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
         "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
-        "start": "docusaurus start",
         "serve": "docusaurus serve",
+        "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
         "watch": "run-s build:schema build:api start"
@@ -90,14 +90,14 @@
     },
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
+        "fork-ts-checker-webpack-plugin": {
+            "glob": "^11.0.1"
+        },
         "postman-collection": {
             "@faker-js/faker": "^6.3.1"
         },
         "webpack-dev-server": {
             "rimraf": "6.0.1"
-        },
-        "fork-ts-checker-webpack-plugin": {
-            "glob": "^11.0.1"
         }
     }
 }

@@ -1,8 +1,5 @@
+import { SupportLevelToLabel, isSupportLevel } from "@site/remark/support-directive";
 import React from "react";
-import {
-    isSupportLevel,
-    SupportLevelToLabel,
-} from "@site/remark/support-directive";
 
 export interface SupportBadgeProps {
     level: string;

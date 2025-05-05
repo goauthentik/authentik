@@ -1,10 +1,9 @@
-import "mdast-util-to-hast";
-import "mdast-util-directive";
-
 import { h } from "hastscript";
 import { Root } from "mdast";
-import { visit, SKIP } from "unist-util-visit";
+import "mdast-util-directive";
+import "mdast-util-to-hast";
 import { coerce } from "semver";
+import { SKIP, visit } from "unist-util-visit";
 
 /**
  * Support levels for authentik.
@@ -52,10 +51,10 @@ function remarkSupportDirective() {
 
             const hast = h("span", {
                 ...node.attributes,
-                className: `badge badge--support-${level}`,
-                title: `This feature is supported at the ${label} level.`,
+                "className": `badge badge--support-${level}`,
+                "title": `This feature is supported at the ${label} level.`,
                 "aria-description": "Support level badge",
-                role: "img",
+                "role": "img",
             });
 
             data.hName = hast.tagName;
