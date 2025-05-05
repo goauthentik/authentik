@@ -1,7 +1,9 @@
+/**
+ * @file Remark plugin to transform `ak-version` directives into version badges.
+ *
+ * @import { Root } from "mdast";
+ */
 import { h } from "hastscript";
-import { Root } from "mdast";
-import "mdast-util-directive";
-import "mdast-util-to-hast";
 import { coerce } from "semver";
 import { SKIP, visit } from "unist-util-visit";
 
@@ -21,7 +23,10 @@ import { SKIP, visit } from "unist-util-visit";
  * ```
  */
 function remarkVersionDirective() {
-    return function (tree: Root) {
+    /**
+     * @param {Root} tree The MDAST tree to transform.
+     */
+    return function (tree) {
         visit(tree, "textDirective", function (node) {
             if (node.name !== "ak-version") return SKIP;
 

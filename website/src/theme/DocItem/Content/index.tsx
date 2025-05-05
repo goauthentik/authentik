@@ -1,3 +1,4 @@
+/// <reference types="@docusaurus/plugin-content-docs" />
 /**
  * @file Swizzled DocItemContent component.
  *

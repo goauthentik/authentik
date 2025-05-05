@@ -1,28 +1,48 @@
+/**
+ * @file Test suite for the sidebar configuration of the authentik integrations.
+ *
+ * @todo Enforce types.
+ */
 import FastGlob from "fast-glob";
 import assert from "node:assert";
 import test from "node:test";
 
-import sidebar from "../sidebarsIntegrations.js";
+import sidebar from "./integrations.mjs";
 
 const getSidebarItems = () => {
+    /**
+     * @type {any[]}
+     */
     const allItems = [];
+    /**
+     *
+     * @param {any} category
+     */
     const mapper = (category) => {
         if (!category.items) {
             return;
         }
-        category.items.forEach((item) => {
-            if (item.constructor === String) {
-                allItems.push(item);
-            } else {
-                mapper(item);
-            }
-        });
+
+        category.items.forEach(
+            /**
+             *
+             * @param {any} item
+             */
+            (item) => {
+                if (typeof item === "string") {
+                    allItems.push(item);
+                } else {
+                    mapper(item);
+                }
+            },
+        );
     };
+
     sidebar.integrations.forEach(mapper);
     return allItems.sort();
 };
 
-test("ensure all services have a sidebar entry", (t) => {
+test("ensure all services have a sidebar entry", (_t) => {
     // All services in the sidebar
     const services = getSidebarItems()
         .filter((entry) => entry.startsWith("services/"))
@@ -39,7 +59,7 @@ test("ensure all services have a sidebar entry", (t) => {
     });
 });
 
-test("ensure all sources have a sidebar entry", (t) => {
+test("ensure all sources have a sidebar entry", (_t) => {
     // All sources in the sidebar
     const sources = getSidebarItems()
         .filter((entry) => entry.startsWith("sources/"))
@@ -51,6 +71,7 @@ test("ensure all sources have a sidebar entry", (t) => {
         .map((entry) => entry.replace(/\/index\.mdx?/, ""))
         .map((entry) => entry.replace(".md", ""))
         .sort();
+
     sourceFiles.forEach((file, idx) => {
         assert.strictEqual(file, sources[idx]);
     });
