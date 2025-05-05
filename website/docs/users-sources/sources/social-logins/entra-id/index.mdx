@@ -11,7 +11,7 @@ The following placeholders are used in this guide:
 
 ## Entra ID setup
 
-1. Log in to [Entra ID](https://entra.microsoft.com) as an administrator.
+1. Log in to [Entra ID](https://entra.microsoft.com) using a global administrator account.
 2. Navigate to **Applications** > **App registrations**.
 3. Click **New registration** and select the following required configruations:
 
@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
         - **URI**: `https://authentik.company/source/oauth/callback/entra-id/
 
 4. Click **Register**.
-5. The overview tab of the newly created authentik app registration will open. Take note of the **Application (client) ID**. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the **Directory (tenant) ID**. These values will be required in authentik.
+5. The overview tab of the newly created authentik app registration will open. Take note of the `Application (client) ID`. If you selected `Accounts in this organizational directory only (Default Directory only - Single tenant)` as the **Supported account types**, also note the `Directory (tenant) ID`. These values will be required in authentik.
 6. In the sidebar, navigate to **Certificates & secrets**.
 7. Select the **Client secrets** tab and click **New Secret**. Provide the following required configurations:
     - **Description**: provide a description for the secret (e.g. `authentik secret`.
@@ -33,9 +33,37 @@ The following placeholders are used in this guide:
 The secret value must be copied immediately after its creation. It is not possible to view the secret value after this time.
 :::
 
+9. In the sidebar, navigate to **API Permissions**.
+10. Click **Add a permission** and select **Microsoft Graph** as the API.
+11. Select **Delegated permissions** as the permission type and assign the following permissions:
+    - Under **OpenID Permissions**: select `email` and `profile`. -Does it need `openid`? Check with Jens-
+    - Under **Group Member** _(optional)_: if you need authentik to read group membership information from Entra ID, select the `GroupMember.Read.All` permission.
+12. Click **Add permissions**.
+
 ## authentik Setup
 
-{old
+### Create OAuth source property mappings
+
+### Create Entra ID OAuth source
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Federation and Social login** and click **Create**.
+
+    - **Select type**: select **Entra ID OAuth Source** as the source type.
+    - **Create Entra ID OAuth Source**: provide a name, a slug which must match the slug used in the Entra ID `Redirect URI`, and the following required configurations.
+        - Under **Protocol Settings**:
+            - **Consumer key**: `Application (client) ID` from Entra ID.
+            - **Consumer secret**: secret value from Entra ID.
+        - Under **URL Settings**:
+            - Blank the OIDC if it causes issues - profile URL should be `https://graph.microsoft.com/v1.0/me` - more information explaining the issue with oauth overwriting the link and breaking property mapping
+            - **OIDC Well-known URL**: If the default `Single tenant` account type was selected in Entra ID, then you must change this URL to `https://login.microsoftonline.com/<Directory (tenant) ID>/v2.0/.well-known/openid-configuration`
+        - Under **OAuth Attribute Mapping**:
+            - **User Property Mappings**: select the `Entra ID User Property Mapping` created in the previous section.
+            - **Group Property Mappings**_(optional)_: if you need authentik to read group membership information from Entra ID, select the `Entra ID Group Property Mapping` created in the previous section.
+
+3. Click **Save**.
+
+##old
 In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
 
 Use the following settings:
@@ -55,7 +83,9 @@ Save, and you now have Azure AD as a source.
 
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
-:::}
+:::
+
+## old
 
 ### Automatic user enrollment and attribute mapping
 
