@@ -26,7 +26,11 @@ class TestPostSourceStage(TestCase):
         self.user = User.objects.create(username=generate_id())
         # Create a real source instance
         source_slug = generate_id()
-        self.source = PostSourceProxySource.objects.create(name="Test Source", slug=source_slug, enabled=True)
+        self.source = PostSourceProxySource.objects.create(
+            name="Test Source",
+            slug=source_slug,
+            enabled=True,
+        )
 
         # Create real request
         self.request = HttpRequest()
