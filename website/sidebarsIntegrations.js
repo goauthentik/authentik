@@ -147,6 +147,7 @@ module.exports = {
                         "services/home-assistant/index",
                         "services/immich/index",
                         "services/jellyfin/index",
+                        "services/emby/index",
                         "services/komga/index",
                         "services/mealie/index",
                         "services/miniflux/index",
