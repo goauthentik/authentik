@@ -1,7 +1,11 @@
 # Ignore artifacts:
 build
+out
 coverage
 .docusaurus
 node_modules
 help
 static
+# TODO: Enable after monorepo formatting is cleaned up.
+**/*.md
+**/*.mdx
