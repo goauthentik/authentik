@@ -26,6 +26,8 @@ Global permissions define who can do what on a global level across the entire sy
 
 You can assign _global permissions_ to individual [users](../user/index.mdx) or to [roles](../roles/index.md). The most common and best practice is to assign permissions to roles.
 
+An example of a global permission is []`Can view admin panel`](./manage_permissions.md), which an administrator can assign to a non-administrator user or role to provide view access to the Admin interface.
+
 ### Object permissions
 
 Object permissions have two categories:
