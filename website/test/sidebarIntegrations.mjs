@@ -1,7 +1,8 @@
-import test from "node:test";
+import FastGlob from "fast-glob";
 import assert from "node:assert";
+import test from "node:test";
+
 import sidebar from "../sidebarsIntegrations.js";
-import glob from "glob";
 
 const getSidebarItems = () => {
     const allItems = [];
@@ -27,8 +28,7 @@ test("ensure all services have a sidebar entry", (t) => {
         .filter((entry) => entry.startsWith("services/"))
         .map((entry) => entry.replace("/index", ""))
         .map((entry) => entry.replace("services/", ""));
-    const servicesFiles = glob
-        .sync("integrations/**/*.+(md|mdx)")
+    const servicesFiles = FastGlob.sync("integrations/**/*.+(md|mdx)")
         .filter((entry) => entry.startsWith("integrations/services/"))
         .map((entry) => entry.replace("integrations/services/", ""))
         .map((entry) => entry.replace(/\/index\.mdx?/, ""))
@@ -45,8 +45,7 @@ test("ensure all sources have a sidebar entry", (t) => {
         .filter((entry) => entry.startsWith("sources/"))
         .map((entry) => entry.replace("/index", ""))
         .map((entry) => entry.replace("sources/", ""));
-    const sourceFiles = glob
-        .sync("integrations/**/*.+(md|mdx)")
+    const sourceFiles = FastGlob.sync("integrations/**/*.+(md|mdx)")
         .filter((entry) => entry.startsWith("integrations/sources/"))
         .map((entry) => entry.replace("integrations/sources/", ""))
         .map((entry) => entry.replace(/\/index\.mdx?/, ""))
