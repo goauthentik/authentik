@@ -6,7 +6,7 @@ import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
-import { UserInterface } from "@goauthentik/user/UserInterface";
+import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";

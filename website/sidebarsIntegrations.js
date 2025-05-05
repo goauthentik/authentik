@@ -158,6 +158,7 @@ module.exports = {
                         "services/tandoor/index",
                         "services/tautulli/index",
                         "services/weblate/index",
+                        "services/youtrack/index",
                         "services/zipline/index",
                     ],
                 },
@@ -183,6 +184,7 @@ module.exports = {
                     type: "category",
                     label: "Platforms",
                     items: [
+                        "services/atlassian/index",
                         "services/budibase/index",
                         "services/drupal/index",
                         "services/pocketbase/index",

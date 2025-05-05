@@ -199,7 +199,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             chunk_size = len(ops)
         if len(ops) < 1:
             return
-        for chunk in batched(ops, chunk_size):
+        for chunk in batched(ops, chunk_size, strict=False):
             req = PatchRequest(Operations=list(chunk))
             self._request(
                 "PATCH",

@@ -48,7 +48,7 @@ Add the following environment variables to your Homarr configuration. Make sure 
 AUTH_PROVIDERS="oidc,credentials"
 AUTH_OIDC_CLIENT_ID=<Client ID from authentik>
 AUTH_OIDC_CLIENT_SECRET=<Client secret from authentik>
-AUTH_OIDC_ISSUER=https://authentik.company/application/o/<slug from authentik>/ #Trailing slash is required
+AUTH_OIDC_ISSUER=https://authentik.company/application/o/<slug from authentik>/
 AUTH_OIDC_URI=https://authentik.company/application/o/authorize
 AUTH_OIDC_CLIENT_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true

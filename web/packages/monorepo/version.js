@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 
-import PackageJSON from "../../package.json" with { type: "json" };
+import PackageJSON from "../../../package.json" with { type: "json" };
 import { MonoRepoRoot } from "./paths.js";
 
 /**

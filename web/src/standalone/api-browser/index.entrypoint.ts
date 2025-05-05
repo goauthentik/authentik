@@ -3,11 +3,10 @@ import "rapidoc";
 
 import { CSRFHeaderName } from "@goauthentik/common/api/config";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { first, getCookie } from "@goauthentik/common/utils";
+import { getCookie } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
+import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { themeImage } from "@goauthentik/elements/utils/images";
 
 import { msg } from "@lit/localize";
@@ -62,10 +61,6 @@ export class APIBrowser extends Interface {
         );
     }
 
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
-    }
-
     render(): TemplateResult {
         return html`
             <ak-locale-context>
@@ -108,7 +103,7 @@ export class APIBrowser extends Interface {
                             alt="${msg("authentik Logo")}"
                             class="logo"
                             src="${themeImage(
-                                first(this.brand?.brandingLogo, DefaultBrand.brandingLogo),
+                                this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
                             )}"
                         />
                     </div>
