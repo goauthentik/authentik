@@ -85,7 +85,6 @@ export abstract class AKChart<T> extends AKElement {
                 .container {
                     height: 100%;
                     width: 100%;
-                    aspect-ratio: 1 / 1;
 
                     display: flex;
                     justify-content: center;

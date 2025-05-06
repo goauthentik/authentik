@@ -42,7 +42,7 @@ To support the integration of MinIO with authentik, you need to create an applic
     }
     ```
 
-    If you wish to create a more franular mapping based on the user's groups in authentik, you can use an expression similar to:
+    If you wish to create a more granular mapping based on the user's groups in authentik, you can use an expression similar to:
 
     ```python
     if ak_is_group_member(request.user, name="Minio admins"):

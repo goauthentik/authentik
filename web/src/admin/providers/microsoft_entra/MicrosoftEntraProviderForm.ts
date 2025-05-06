@@ -4,7 +4,6 @@ import {
     propertyMappingsSelector,
 } from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -66,7 +65,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, "")}"
+                            value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -81,7 +80,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientSecret, "")}"
+                            value="${this.instance?.clientSecret ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -96,7 +95,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tenantId, "")}"
+                            value="${this.instance?.tenantId ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             required
                         />
@@ -155,7 +154,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.dryRun, false)}
+                                ?checked=${this.instance?.dryRun ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -180,7 +179,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.excludeUsersServiceAccount, true)}
+                                ?checked=${this.instance?.excludeUsersServiceAccount ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

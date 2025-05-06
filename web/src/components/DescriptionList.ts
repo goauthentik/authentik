@@ -1,5 +1,3 @@
-import { first } from "@goauthentik/common/utils";
-
 import { TemplateResult, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
@@ -80,10 +78,10 @@ export function renderDescriptionList(
 ) {
     const checkedTerms = alignTermType(terms);
     const classes = classMap({
-        "pf-m-horizontal": first(config.horizontal, false),
-        "pf-m-compact": first(config.compact, false),
-        "pf-m-2-col-on-lg": first(config.twocolumn, false),
-        "pf-m-3-col-on-lg": first(config.threecolumn, false),
+        "pf-m-horizontal": config.horizontal ?? false,
+        "pf-m-compact": config.compact ?? false,
+        "pf-m-2-col-on-lg": config.twocolumn ?? false,
+        "pf-m-3-col-on-lg": config.threecolumn ?? false,
     });
 
     return html`

@@ -3,7 +3,6 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToSlug } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import MDCaddyStandalone from "@goauthentik/docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
@@ -22,6 +21,7 @@ import type { Replacer } from "@goauthentik/elements/ak-mdx";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
@@ -183,7 +183,7 @@ export class ProxyProviderViewPage extends AKElement {
         return html`<ak-tabs pageIdentifier="proxy-setup">
             ${servers.map((server) => {
                 return html`<section
-                    slot="page-${convertToSlug(server.label)}"
+                    slot="page-${formatSlug(server.label)}"
                     data-tab-title="${server.label}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile ak-markdown-section"
                 >

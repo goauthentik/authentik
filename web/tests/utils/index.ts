@@ -25,10 +25,3 @@ export function randomId() {
         return (c == "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
 }
-
-export function convertToSlug(text: string) {
-    return text
-        .toLowerCase()
-        .replace(/ /g, "-")
-        .replace(/[^\w-]+/g, "");
-}

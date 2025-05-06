@@ -40,7 +40,7 @@ Always include cross-references to related content. If a concept is referenced e
 
 ### Relative vs. absolute paths
 
-Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between our Integration Guides and our regular technical docs, then use an absolute path.
+Use relative paths when linking to other documentation files. This will ensure links are automatically updated if file paths change in the future. If you are linking between another authentik resource that is not in the same repository and our regular technical docs, then use an absolute path.
 
 ### Markdown file type
 
@@ -52,16 +52,19 @@ Try to write procedural (How To) docs generically enough that it does not endors
 
 ## Terminology
 
-### authentik product naming conventions
+### authentik product name and terms
 
 - The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence. This consistent style should be followed throughout the documentation.
+
 - The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security**.
+
+- When referring to the authentik Admin interface, capitalize "Admin" like it is in the UI, but do not bold the phrase "Admin interface" unless in a sentence that explicitly says "Click on **Admin interface**". However, if you are referring to a user or role that is an administrator, or has administrative rights, then do not capitalize it and spell out the full word "administrator" or "administrative".
 
 ### Industry terms and technology names
 
 - When referring to external tools or industry terms, always use the exact capitalization and naming conventions that the product or company uses. Refer to their website or official documentation for the proper formatting. For example, use "OAuth", "SAML", or "Docker" as per the official conventions.
 - Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
-- If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)".
+- If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)". In some cases the acronym can come first, followed by the full term in parentheses.
 
 ## Writing style
 
@@ -72,10 +75,6 @@ The tone of the authentik documentation should be friendly but professional. It 
 ### Language
 
 The documentation uses **American English** spelling conventions (e.g., "customize" instead of "customise").
-
-### Punctuation
-
-For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
 
 ### Voice
 
@@ -90,6 +89,20 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 - **DON'T:** "Never modify the default file."
 - **DO:** "We recommend that you do not modify the default file, as doing so may result in unexpected issues."
+
+### Punctuation
+
+For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
+
+### Capitalization
+
+#### Titles and headers
+
+Titles and headers (H1, H2, H3, etc.) should follow **sentence case capitalization**, meaning only the first word is capitalized, except for proper nouns or product names.For more information, see [below](#titles-and-headers)
+
+#### Following a colon
+
+Whether to capitalize after a colon depends on the context. Typically, we do not capitalize the first word after a colon _unless_ it's a proper noun or if it is the start of a complete sentence. If the colon introduces a list, do not capitalize the first word unless it's a proper noun. In headings and titles, capitalize the first word after the colon.
 
 ## Word choices
 
@@ -135,7 +148,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 ### Fonts and font styling
 
-- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting. Link to the relevant documentation when possible.
+- When referring to internal components in authentik, like the policy engine, or blueprints, do not use any special formatting, and do not capitalize. Link to the relevant documentation when possible.
 
 - When referring to authentik functionality and features, such as flows, stages, sources, or policies, do not capitalize and do not use bold or italic text. When possible link to the corresponding documentation.
 
@@ -172,7 +185,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 - Ensure titles and headers are descriptive and clearly convey the purpose of the section. Avoid vague titles like "Overview." Instead, opt for something more specific, like "About authentik policies."
 
-- Use the **imperative verb form** in procedural topics. For example, use "Configure your instance" instead of "Configuring your instance."
+- Use the **imperative verb form** in procedural topics, not gerunds. For example, use "Configure your instance" instead of "Configuring your instance."
 
 ### Examples
 
@@ -242,8 +255,8 @@ This section covers the usage of React components within our documentation. File
 Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. Insert the following lines wherever you want the code block to appear:
 
 ```jsx
-import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 <Tabs
     defaultValue="oidc"
