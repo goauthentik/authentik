@@ -614,10 +614,10 @@ export default {
                     type: "category",
                     label: "Development environment",
                     items: [
-                        "developer-docs/setup/full-dev-environment",
-                        "developer-docs/setup/frontend-dev-environment",
-                        "developer-docs/setup/website-dev-environment",
-                        "developer-docs/setup/debugging",
+                        "developer-docs/setup/envs/full",
+                        "developer-docs/setup/envs/frontend",
+                        "developer-docs/setup/envs/website",
+                        "developer-docs/setup/debugging/index",
                     ],
                 },
                 {
@@ -647,7 +647,7 @@ export default {
                         id: "developer-docs/docs/writing-documentation",
                     },
                     items: [
-                        "developer-docs/docs/style-guide",
+                        "developer-docs/index",
                         {
                             type: "category",
                             label: "Templates",
