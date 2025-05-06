@@ -19,7 +19,9 @@
 }
 
 html[data-theme='light'] .card {
-  border: 1px solid var(--ifm-color-emphasis-300);
+  border: 2px solid var(--ifm-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background-color: #ffffff;
 }
 
 .card:hover {
