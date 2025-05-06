@@ -1,0 +1,55 @@
+---
+title: Developer documentation
+---
+
+import Link from '@docusaurus/Link';
+import { Card, CardGrid } from '@site/src/components/DevDocIndex/Card';
+
+<p className="lead" style={{ 
+  fontSize: '1.1rem', 
+  marginBottom: '2rem'
+}}>
+  Welcome! We're excited to have you here. This is where you'll find everything you need to hack on authentik, understand how it works, and build cool things with it.
+</p>
+
+<CardGrid>
+  <Card title="Getting Started" icon="🚀">
+    <ul>
+      <li><Link to="./setup/index.md">Setting up your development environment</Link></li>
+      <li><Link to="./contributing.md">Contributing to authentik</Link></li>
+      <li><Link to="./architecture.md">Architecture overview</Link></li>
+    </ul>
+  </Card>
+
+  <Card title="Code Contributions" icon="💻">
+    <ul>
+      <li><Link to="./architecture.md#authentik-server-structure">Code structure</Link></li>
+      <li><Link to="./development/workflow.md">Development workflow</Link></li>
+      <li><Link to="./style-guides/index.md">Style guides</Link></li>
+    </ul>
+  </Card>
+
+  <Card title="Documentation Contributions" icon="📝">
+    <ul>
+      <li><Link to="./style-guides/documentation.md">Documentation style guide</Link></li>
+      <li><Link to="./docs/writing-documentation.md">Writing documentation</Link></li>
+      <li><Link to="./docs/templates/index.md">Documentation templates</Link></li>
+    </ul>
+  </Card>
+
+  <Card title="API Resources" icon="🔌">
+    <ul>
+      <li><Link to="./api/api.md">API documentation</Link></li>
+    </ul>
+  </Card>
+
+  <Card title="Getting Help" icon="🤝">
+    <p>If you're stuck, have questions, or want to discuss development topics:</p>
+    <ul>
+      <li><a href="https://goauthentik.io/discord?utm_source=docs&utm_campaign=a7k_dev_home" target="_blank">Join our Discord server</a></li>
+      <li><a href="https://github.com/goauthentik/authentik/issues/new" target="_blank">Open a GitHub issue</a></li>
+    </ul>
+  </Card>
+</CardGrid>
+
+We welcome contributions of all kinds, from code to documentation to translations. See our [contribution guide](./contributing.md) for more information on how to get involved.
