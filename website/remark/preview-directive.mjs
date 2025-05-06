@@ -1,14 +1,19 @@
+/**
+ * @file Remark plugin to transform `ak-preview` directives into preview badges.
+ *
+ * @import { Root } from "mdast";
+ */
 import { h } from "hastscript";
-import { Root } from "mdast";
-import "mdast-util-directive";
-import "mdast-util-to-hast";
 import { SKIP, visit } from "unist-util-visit";
 
 /**
  * MDAST plugin to transform `ak-preview` directives into preview badges.
  */
 function remarkPreviewDirective() {
-    return function (tree: Root) {
+    /**
+     * @param {Root} tree The MDAST tree to transform.
+     */
+    return function (tree) {
         visit(tree, "textDirective", function (node) {
             if (node.name !== "ak-preview") return SKIP;
 

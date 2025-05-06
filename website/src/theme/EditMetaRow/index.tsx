@@ -1,11 +1,10 @@
 import Translate from "@docusaurus/Translate";
 import Admonition from "@theme/Admonition";
-import IconNote from "@theme/Admonition/Icon/Note";
 import type { Props } from "@theme/EditMetaRow";
 import EditThisPage from "@theme/EditThisPage";
 import LastUpdated from "@theme/LastUpdated";
 import clsx from "clsx";
-import React, { type ReactNode } from "react";
+import React from "react";
 
 import styles from "./styles.module.css";
 
@@ -49,11 +48,11 @@ const EditMetaRow: React.FC<Props> = ({
                 <div className="row">
                     <div className="col col--12">
                         <ul>
-                            {editUrl && (
+                            {editUrl ? (
                                 <li>
                                     <EditThisPage editUrl={editUrl} />
                                 </li>
-                            )}
+                            ) : null}
 
                             <li>
                                 <a
@@ -106,9 +105,9 @@ const EditMetaRow: React.FC<Props> = ({
 
             <div className="row">
                 <div className={clsx("col", styles.lastUpdated)}>
-                    {(lastUpdatedAt || lastUpdatedBy) && (
+                    {lastUpdatedAt || lastUpdatedBy ? (
                         <LastUpdated lastUpdatedAt={lastUpdatedAt} lastUpdatedBy={lastUpdatedBy} />
-                    )}
+                    ) : null}
                 </div>
             </div>
         </>
