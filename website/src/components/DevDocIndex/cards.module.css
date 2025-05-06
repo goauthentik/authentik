@@ -18,6 +18,10 @@
   border: 1px solid var(--ifm-color-emphasis-200);
 }
 
+html[data-theme='light'] .card {
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
@@ -33,7 +37,8 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: white;
+  color: var(--ifm-color-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .cardIcon {
@@ -44,6 +49,7 @@
 .cardBody {
   padding: 1rem;
   flex: 1;
+  background: var(--ifm-background-color);
 }
 
 .cardBody ul {
@@ -53,7 +59,7 @@
 
 .cardBody a {
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .cardBody a:hover {
