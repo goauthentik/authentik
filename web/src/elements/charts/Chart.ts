@@ -230,9 +230,7 @@ export abstract class AKChart<T> extends AKElement {
                               <p slot="body">${pluckErrorDetail(this.error)}</p>
                           </ak-empty-state>
                       `
-                    : html`${this.chart
-                          ? html``
-                          : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}`}
+                    : html`${this.chart ? html`` : html`<ak-empty-state loading></ak-empty-state>`}`}
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>
