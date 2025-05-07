@@ -129,7 +129,7 @@ environment:
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
     # Optionally map user groups to Grafana roles
     GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH: "contains(groups, 'Grafana Admins') && 'Admin' || contains(groups, 'Grafana Editors') && 'Editor' || 'Viewer'"
-    # If Grafana is running behind a reverse proxy, you will also need (https://github.com/goauthentik/authentik/issues/8673):
+    # Required if Grafana is running behind a reverse proxy
     GF_SERVER_ROOT_URL: "https://grafana.company"
 ```
 
