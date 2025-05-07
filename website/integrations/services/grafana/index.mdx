@@ -196,7 +196,7 @@ For more information on group/role mappings, see [Grafana's docs](https://grafan
 
 ### Grafana Configuration Considerations
 
-Make sure in your configuration that `root_url` is set correctly (as shown in the Docker config above), otherwise your redirect url might get processed incorrectly. For example, if your grafana instance is running on the default configuration and is accessible behind a reverse proxy at `https://grafana.company`, your redirect url will end up looking like this, `https://grafana.company/login/generic_oauth`.
+To ensure redirects work correctly in Grafana, make sure the `root_url` in your configuration accurately reflects how users access Grafana through your reverse proxy. For example, if your Grafana instance is behind a proxy and accessed at `https://grafana.company`, set `root_url` to `https://grafana.company`. This ensures that OAuth and other redirects use the correct URL, such as `https://grafana.company/login/generic_oauth`, instead of defaulting to something like `localhost:3000`.
 
 If you get `user does not belong to org` error when trying to log into grafana for the first time via OAuth, check if you have an organization with the ID of `1`, if not, then you have to add the following to your grafana config:
 
