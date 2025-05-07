@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Coder
 
-> Coder is an open-source platform that provides browser-based cloud development environments, enabling developers and teams to securely write, edit, and manage code remotely without the need for local setup
+> Coder is an open-source platform that provides browser-based cloud development environments, enabling developers and teams to securely write, edit, and manage code remotely without the need for local setup.
 >
 > -- https://coder.com
 
