@@ -61,7 +61,7 @@ Try to write procedural (How To) docs generically enough that it does not endors
 
 - The product name **authentik** should always be written with a lowercase "a" and a "k" at the end, even if it begins a sentence.
 
-- The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security** or **authentik**.
+- The company name is **Authentik Security, Inc.**, but for non-legal documentation, you may shorten it to **Authentik Security**.
 
 - When referring to the authentik Admin interface, capitalize "Admin" like it is in the UI, but do not bold the phrase "Admin interface" unless in a sentence that explicitly says "Click on **Admin interface**". However, if you are referring to a user or role that is an administrator, or has administrative rights, then do not capitalize it and spell out the full word "administrator" or "administrative".
 
@@ -69,7 +69,7 @@ Try to write procedural (How To) docs generically enough that it does not endors
 
 - When referring to external tools or industry terms, always use the exact capitalization and naming conventions that the product or company uses. Refer to their website or official documentation for the proper formatting. For example, use "OAuth", "SAML", or "Docker" as per the official conventions.
 - Avoid abbreviations unless they are well-known and widely recognized (e.g., SSO, MFA, RBAC).
-- If an acronym is used less frequently, spell out its full meaning when first mentioned, followed by the acronym in parentheses. For instance, "Security Assertion Markup Language (SAML)". In some cases the acronym can come first, followed by the full term in parentheses.
+- If an acronym is used less frequently, spell out its full meaning when first mentioned on the page, followed by the acronym in parentheses. In some cases the acronym can come first, followed by the full term in parentheses.
 
 ### Trademarks and Legal Terms
 
@@ -151,11 +151,11 @@ The easiest way to remember when to use "which" versus "that" is:
 
 For more information, see [this guide](https://www.grammarly.com/blog/which-vs-that/).
 
-### “since” (time-based) vs “because” (causal)
+### "since" (time-based) vs "because" (causal)
 
 When writing about a status or anything that is causal ("this happened because of that"), use the word "because". Use the word "since" for time-based topics (this will be rare in technical writing).
 
-### Avoid using “once” (numeric) to mean “after” (time-based).
+### Avoid using "once" (numeric) to mean "after" (time-based).
 
 When writing out steps in a procedural topic, avoid starting with "Once...". Instead, you can say "After you have created the scope mapping...".
 
@@ -210,19 +210,19 @@ When you want to show an example (say, a code snippet), start on a new line, use
 
 **Example**:
 
-This expression policy uses an expression based on the user's name:
-```python
-if request.context["pending_user"].username == "marie":
-    return True
-return False
-```
+    This expression policy uses an expression based on the user's name:
+    ```python
+    if request.context["pending_user"].username == "marie":
+        return True
+    return False
+    ```
 
 ### Code blocks
 
 When you want to show sections of code use **Code blocks** to provide syntax highlighting, a copy button, line numbering and line highlighting:
 
-````text
-` ` `yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
+```text
+` ` ` yaml showLineNumbers {5} title="/etc/wazuh-indexer/opensearch-security/roles_mapping.yml"
 all_access:
 reserved: true
 hidden: false
@@ -234,7 +234,7 @@ users: []
 and_backend_roles: []
 description: "Maps admin to all_access"
 ` ` `
-````
+```
 
 Which is rendered as:
 
@@ -255,11 +255,11 @@ description: "Maps admin to all_access"
 
 Optional configurations:
 
-- `showLineNumbers`: Enables line numbering.
-- `title=" "`: Defines the title displayed at the top (e.g., filenames).
-- `{5}`: Highlights specific lines. Ranges and lists are allowed (e.g., `{5, 7, 9-11}`).
-- `// highlight-next-line`: Highlights the next line within a code block.
-- `// highlight-start` and `// highlight-end`: Highlight multiple lines.
+- `showLineNumbers`: enables line numbering.
+- `title=" "`: defines the title displayed at the top (e.g., filenames).
+- `{5}`: highlights specific lines. Ranges and lists are allowed (e.g., `{5, 7, 9-11}`).
+- `// highlight-next-line`: highlights the next line within a code block.
+- `// highlight-start` and `// highlight-end`: highlight multiple lines.
 
 For more details, see the [Docusaurus code block documentation](https://docusaurus.io/docs/markdown-features/code-blocks).
 
