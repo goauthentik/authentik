@@ -18,7 +18,7 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
     """SCIM client for users"""
 
     connection_type = SCIMProviderUser
-    connection_type_query = "user"
+    connection_attr = "scimprovideruser_set"
     mapper: PropertyMappingManager
 
     def __init__(self, provider: SCIMProvider):
