@@ -46,7 +46,7 @@ Next, you need to add property mappings for each remote machine you want to acce
             - **Username**: the username for the remote machine
             - **Password**: the password for the remote machine
         - **RDP settings**:
-            - **Ignore server certificate: select **Enabled\*\* (Depending on the setup of your RDP Server, it might be required to enable this setting.)
+            - **Ignore server certificate**: select **Enabled** (Depending on the setup of your RDP Server, it might be required to enable this setting.)
             - **Enable wallpaper**: optional
             - **Enable font smoothing**: optional
             - **Enable full window dragging**: optional
