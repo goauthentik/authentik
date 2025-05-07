@@ -237,7 +237,10 @@ const items = [
                             type: "doc",
                             id: "add-secure-apps/providers/rac/index",
                         },
-                        items: ["add-secure-apps/providers/rac/how-to-rac"],
+                        items: [
+                            "add-secure-apps/providers/rac/how-to-rac",
+                            "add-secure-apps/providers/rac/rac-public-key",
+                        ],
                     },
                     "add-secure-apps/providers/radius/index",
                     "add-secure-apps/providers/saml/index",
