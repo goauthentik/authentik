@@ -1,10 +1,10 @@
 ---
-title: RAC SSH Public Key Authentication
+title: RAC Public Key Authentication
 ---
 
-## About RAC SSH public key authentication
+## About RAC public key authentication
 
-The RAC provider supports SSH public key authentication. This allows for secure connections to SSH endpoints without the use of username and passwords.
+The RAC provider supports public key authentication. This allows for secure connections to endpoints without the use of username and passwords.
 
 ## Current limitations
 
