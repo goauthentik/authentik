@@ -78,4 +78,4 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 
 To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application. authentik connects you to a secure shell on the remote machine, in your web browser.
 
-If you defined multiple endpoints, they are each displayed; click the endpoint for the remote machine that you want to access.
+If you defined multiple endpoints, click the endpoint for the remote machine that you want to access.
