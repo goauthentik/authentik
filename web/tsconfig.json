@@ -61,5 +61,5 @@
         {
             "path": "./packages/esbuild-plugin-live-reload"
         }
-    ],
+    ]
 }

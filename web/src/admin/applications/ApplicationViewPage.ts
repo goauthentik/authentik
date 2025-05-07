@@ -113,8 +113,7 @@ export class ApplicationViewPage extends AKElement {
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost

@@ -83,13 +83,10 @@ export class AdminSettingsPage extends AKElement {
     }
 
     render() {
-        if (!this.settings) {
-            return nothing;
-        }
+        if (!this.settings) return nothing;
+
         return html`
-            <ak-page-header icon="fa fa-cog" header="" description="">
-                <span slot="header"> ${msg("System settings")} </span>
-            </ak-page-header>
+            <ak-page-header icon="fa fa-cog" header="${msg("System settings")}"> </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">

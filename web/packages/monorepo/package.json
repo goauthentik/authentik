@@ -1,0 +1,28 @@
+{
+    "name": "@goauthentik/monorepo",
+    "version": "1.0.0",
+    "description": "Utilities for the authentik monorepo.",
+    "license": "MIT",
+    "private": true,
+    "main": "index.js",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
+        }
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@types/node": "^22.14.1",
+        "prettier": "^3.3.3",
+        "typescript": "^5.6.2"
+    },
+    "engines": {
+        "node": ">=20.11"
+    },
+    "types": "./out/index.d.ts",
+    "prettier": "@goauthentik/prettier-config"
+}

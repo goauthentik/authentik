@@ -1,7 +1,6 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
@@ -194,7 +193,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"
-                        ?checked=${first(this.instance?.openInNewTab, false)}
+                        ?checked=${this.instance?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
                             "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
@@ -221,7 +220,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         : html` <ak-text-input
                               label=${msg("Icon")}
                               name="metaIcon"
-                              value=${first(this.instance?.metaIcon, "")}
+                              value=${this.instance?.metaIcon ?? ""}
                               help=${iconHelperText}
                           >
                           </ak-text-input>`}
