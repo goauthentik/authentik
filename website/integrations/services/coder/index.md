@@ -42,9 +42,9 @@ To support the integration of Coder with authentik, you need to create an applic
 
 ## Coder configuration
 
-To support the integration of Coder with authentik, update your `.env` file to include the following variables:
+To support the integration of Coder with authentik, add the following environment variables to your Coder deployment:
 
-```yaml showLineNumbers title=".env"
+```yaml showLineNumbers
 CODER_OIDC_ISSUER_URL=https://authentik.company/application/o/<application slug>/
 CODER_OIDC_EMAIL_DOMAIN=acme.company,acme-corp.company
 CODER_OIDC_CLIENT_ID=<Client ID from authentik>
