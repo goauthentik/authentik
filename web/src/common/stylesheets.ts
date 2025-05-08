@@ -1,17 +1,27 @@
 /**
  * @file Stylesheet utilities.
  */
-import { CSSResult, CSSResultOrNative, ReactiveElement, css } from "lit";
+import { CSSResultOrNative, ReactiveElement, adoptStyles as adoptStyleSheetsShim, css } from "lit";
 
 /**
- * Elements containing adoptable stylesheets.
+ * Element-like objects containing adoptable stylesheets.
+ *
+ * Note that while these all possess the `adoptedStyleSheets` property,
+ * browser differences and polyfills may make them not actually adoptable.
+ *
+ * This type exists to normalize the different ways of accessing the property.
  */
-export type StyleSheetParent = Pick<DocumentOrShadowRoot, "adoptedStyleSheets">;
+export type StyleRoot =
+    | Document
+    | ShadowRoot
+    | DocumentFragment
+    | HTMLElement
+    | DocumentOrShadowRoot;
 
 /**
  * Type-predicate to determine if a given object has adoptable stylesheets.
  */
-export function isAdoptableStyleSheetParent(input: unknown): input is StyleSheetParent {
+export function isStyleRoot(input: StyleRoot): input is ShadowRoot {
     // Sanity check - Does the input have the right shape?
 
     if (!input || typeof input !== "object") return false;
@@ -25,39 +35,12 @@ export function isAdoptableStyleSheetParent(input: unknown): input is StyleSheet
     // All we care about is that it's shaped like an array.
     if (!("length" in input.adoptedStyleSheets)) return false;
 
-    if (typeof input.adoptedStyleSheets.length !== "number") return false;
-
-    // Finally is the array mutable?
-    return "push" in input.adoptedStyleSheets;
+    return typeof input.adoptedStyleSheets.length === "number";
 }
 
 /**
- * Assert that the given input can adopt stylesheets.
- */
-export function assertAdoptableStyleSheetParent<T>(
-    input: T,
-): asserts input is T & StyleSheetParent {
-    if (isAdoptableStyleSheetParent(input)) return;
-
-    console.debug("Given input missing `adoptedStyleSheets`", input);
-
-    throw new TypeError("Assertion failed: `adoptedStyleSheets` missing in given input");
-}
-
-export function resolveStyleSheetParent<T extends HTMLElement | DocumentFragment | Document>(
-    renderRoot: T,
-) {
-    const styleRoot = "ShadyDOM" in window ? document : renderRoot;
-
-    assertAdoptableStyleSheetParent(styleRoot);
-
-    return styleRoot;
-}
-
-export type StyleSheetInit = string | CSSResult | CSSStyleSheet;
-
-/**
- * Given a source of CSS, create a `CSSStyleSheet`.
+ * Create a lazy-loaded `CSSResult` compatible with Lit's
+ * element lifecycle.
  *
  * @throw {@linkcode TypeError} if the input cannot be converted to a `CSSStyleSheet`
  *
@@ -68,8 +51,12 @@ export type StyleSheetInit = string | CSSResult | CSSStyleSheet;
  *
  * It works well when Storybook is running in `dev`, but in `build` it fails.
  * Storied components will have to map their textual CSS imports.
+ *
+ * @see {@linkcode createStyleSheetUnsafe} to create a `CSSStyleSheet` from the given input.
  */
-export function createStyleSheet(input: string): CSSResult {
+export function createCSSResult(input: string | CSSModule | CSSResultOrNative): CSSResultOrNative {
+    if (typeof input !== "string") return input;
+
     const inputTemplate = [input] as unknown as TemplateStringsArray;
 
     const result = css(inputTemplate, []);
@@ -78,74 +65,77 @@ export function createStyleSheet(input: string): CSSResult {
 }
 
 /**
- * Given a source of CSS, create a `CSSStyleSheet`.
+ * Create a `CSSStyleSheet` from the given input, if it is not already a `CSSStyleSheet`.
  *
- * @see {@linkcode createStyleSheet}
+ * @throw {@linkcode TypeError} if the input cannot be converted to a `CSSStyleSheet`
+ *
+ * @see {@linkcode createCSSResult} for the lazy-loaded `CSSResult` normalization.
  */
-export function normalizeCSSSource(css: string): CSSStyleSheet;
-export function normalizeCSSSource(styleSheet: CSSStyleSheet): CSSStyleSheet;
-export function normalizeCSSSource(cssResult: CSSResult): CSSResult;
-export function normalizeCSSSource(input: StyleSheetInit): CSSResultOrNative;
-export function normalizeCSSSource(input: StyleSheetInit): CSSResultOrNative {
-    if (typeof input === "string") return createStyleSheet(input);
+export function createStyleSheetUnsafe(
+    input: string | CSSModule | CSSResultOrNative,
+): CSSStyleSheet {
+    const result = typeof input === "string" ? createCSSResult(input) : input;
 
-    return input;
-}
-
-/**
- * Create a `CSSStyleSheet` from the given input.
- */
-export function createStyleSheetUnsafe(input: StyleSheetInit): CSSStyleSheet {
-    const result = normalizeCSSSource(input);
     if (result instanceof CSSStyleSheet) return result;
 
-    if (!result.styleSheet) {
-        console.debug(
-            "authentik/common/stylesheets: CSSResult missing styleSheet, returning empty",
-            { result, input },
-        );
+    if (result.styleSheet) return result.styleSheet;
 
-        throw new TypeError("Expected a CSSStyleSheet");
-    }
+    const styleSheet = new CSSStyleSheet();
 
-    return result.styleSheet;
+    styleSheet.replaceSync(result.cssText);
+
+    return styleSheet;
 }
+
+export type StyleSheetsAction =
+    | Iterable<CSSStyleSheet>
+    | ((currentStyleSheets: CSSStyleSheet[]) => Iterable<CSSStyleSheet>);
 
 /**
- * Append stylesheet(s) to the given roots.
+ * Set the adopted stylesheets of a given style parent.
  *
- * @see {@linkcode removeStyleSheet} to remove a stylesheet from a given roots.
+ * ```ts
+ * setAdoptedStyleSheets(document.body, (currentStyleSheets) => [
+ *     ...currentStyleSheets,
+ *     myStyleSheet,
+ * ]);
+ * ```
  */
-export function appendStyleSheet(
-    styleParent: StyleSheetParent,
-    ...insertions: CSSStyleSheet[]
-): void {
-    insertions = Array.isArray(insertions) ? insertions : [insertions];
+export function setAdoptedStyleSheets(styleRoot: StyleRoot, styleSheets: StyleSheetsAction): void {
+    let changed = false;
 
-    for (const styleSheetInsertion of insertions) {
-        if (styleParent.adoptedStyleSheets.includes(styleSheetInsertion)) return;
+    const currentAdoptedStyleSheets = isStyleRoot(styleRoot)
+        ? [...styleRoot.adoptedStyleSheets]
+        : [];
 
-        styleParent.adoptedStyleSheets = [...styleParent.adoptedStyleSheets, styleSheetInsertion];
+    const result =
+        typeof styleSheets === "function" ? styleSheets(currentAdoptedStyleSheets) : styleSheets;
+
+    const nextAdoptedStyleSheets: CSSStyleSheet[] = [];
+
+    for (const [idx, styleSheet] of Array.from(result).entries()) {
+        const previousStyleSheet = currentAdoptedStyleSheets[idx];
+
+        changed ||= previousStyleSheet !== styleSheet;
+
+        if (nextAdoptedStyleSheets.includes(styleSheet)) continue;
+
+        nextAdoptedStyleSheets.push(styleSheet);
     }
+
+    changed ||= nextAdoptedStyleSheets.length !== currentAdoptedStyleSheets.length;
+
+    if (!changed) return;
+
+    if (styleRoot === document) {
+        document.adoptedStyleSheets = nextAdoptedStyleSheets;
+        return;
+    }
+
+    adoptStyleSheetsShim(styleRoot as unknown as ShadowRoot, nextAdoptedStyleSheets);
 }
 
-/**
- * Remove a stylesheet from the given roots, matching by referential equality.
- *
- * @see {@linkcode appendStyleSheet} to append a stylesheet to a given roots.
- */
-export function removeStyleSheet(
-    styleParent: StyleSheetParent,
-    ...removals: CSSStyleSheet[]
-): void {
-    const nextAdoptedStyleSheets = styleParent.adoptedStyleSheets.filter(
-        (styleSheet) => !removals.includes(styleSheet),
-    );
-
-    if (nextAdoptedStyleSheets.length === styleParent.adoptedStyleSheets.length) return;
-
-    styleParent.adoptedStyleSheets = nextAdoptedStyleSheets;
-}
+//#region Debugging
 
 /**
  * Serialize a stylesheet to a string.
@@ -159,8 +149,8 @@ export function serializeStyleSheet(stylesheet: CSSStyleSheet): string {
 /**
  * Inspect the adopted stylesheets of a given style parent, serializing them to strings.
  */
-export function inspectStyleSheets(styleParent: StyleSheetParent): string[] {
-    return styleParent.adoptedStyleSheets.map((styleSheet) => serializeStyleSheet(styleSheet));
+export function inspectStyleSheets(styleRoot: ShadowRoot): string[] {
+    return styleRoot.adoptedStyleSheets.map((styleSheet) => serializeStyleSheet(styleSheet));
 }
 
 interface InspectedStyleSheetEntry {
@@ -174,8 +164,11 @@ interface InspectedStyleSheetEntry {
  * Recursively inspect the adopted stylesheets of a given style parent, serializing them to strings.
  */
 export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleSheetEntry {
-    const styleParent = resolveStyleSheetParent(element.renderRoot);
-    const styles = inspectStyleSheets(styleParent);
+    if (!isStyleRoot(element.renderRoot)) {
+        throw new TypeError("Cannot inspect a render root that doesn't have adoptable stylesheets");
+    }
+
+    const styles = inspectStyleSheets(element.renderRoot);
     const tagName = element.tagName.toLowerCase();
 
     const treewalker = document.createTreeWalker(element.renderRoot, NodeFilter.SHOW_ELEMENT, {
@@ -186,12 +179,14 @@ export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleS
             return NodeFilter.FILTER_SKIP;
         },
     });
+
     const children: InspectedStyleSheetEntry[] = [];
     let currentNode: Node | null = treewalker.nextNode();
+
     while (currentNode) {
         const childElement = currentNode as ReactiveElement;
 
-        if (!isAdoptableStyleSheetParent(childElement.renderRoot)) {
+        if (!isStyleRoot(childElement.renderRoot)) {
             currentNode = treewalker.nextNode();
             continue;
         }
@@ -221,3 +216,5 @@ if (process.env.NODE_ENV === "development") {
         inspectStyleSheets,
     });
 }
+
+//#endregion

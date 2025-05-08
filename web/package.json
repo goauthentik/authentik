@@ -36,7 +36,14 @@
     "exports": {
         "./package.json": "./package.json",
         "./paths": "./paths.js",
-        "./scripts/*": "./scripts/*.mjs"
+        "./scripts/*": "./scripts/*.mjs",
+        "./elements/*": "./src/elements/*",
+        "./common/*": "./src/common/*",
+        "./components/*": "./src/components/*",
+        "./flow/*": "./src/flow/*",
+        "./locales/*": "./src/locales/*",
+        "./user/*": "./src/user/*",
+        "./admin/*": "./src/admin/*"
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",

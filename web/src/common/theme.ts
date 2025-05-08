@@ -1,9 +1,46 @@
 /**
  * @file Theme utilities.
  */
-import { UIConfig } from "@goauthentik/common/ui/config";
+import {
+    type StyleRoot,
+    createStyleSheetUnsafe,
+    setAdoptedStyleSheets,
+} from "@goauthentik/web/common/stylesheets.js";
+import { UIConfig } from "@goauthentik/web/common/ui/config.js";
+
+import AKBase from "@goauthentik/web/common/styles/authentik.css";
+import AKBaseDark from "@goauthentik/web/common/styles/theme-dark.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+
+//#region Stylesheet Exports
+
+/**
+ * A global style sheet for the Patternfly base styles.
+ *
+ * @remarks
+ *
+ * While a component *may* import its own instance of the PFBase style sheet,
+ * this instance ensures referential identity.
+ */
+export const $PFBase = createStyleSheetUnsafe(PFBase);
+
+/**
+ * A global style sheet for the authentik base styles.
+ *
+ * @see {@linkcode $PFBase} for details.
+ */
+export const $AKBase = createStyleSheetUnsafe(AKBase);
+
+/**
+ * A global style sheet for the authentik dark theme.
+ *
+ * @see {@linkcode $PFBase} for details.
+ */
+export const $AKBaseDark = createStyleSheetUnsafe(AKBaseDark);
+
+//#endregion
 
 //#region Scheme Types
 
@@ -134,15 +171,21 @@ export function resolveUITheme(
  * Effect listener invoked when the color scheme changes.
  */
 export type UIThemeListener = (currentUITheme: ResolvedUITheme) => void;
+
 /**
- * Create an effect that runs
+ * Effect destructor invoked when cleanup is required.
+ */
+export type UIThemeDestructor = () => void;
+
+/**
+ * Create an effect that runs UI theme changes.
  *
  * @returns A cleanup function that removes the effect.
  */
 export function createUIThemeEffect(
     effect: UIThemeListener,
     listenerOptions?: AddEventListenerOptions,
-): () => void {
+): UIThemeDestructor {
     const colorSchemeTarget = resolveUITheme();
     const invertedColorSchemeTarget = UIThemeInversion[colorSchemeTarget];
 
@@ -174,12 +217,27 @@ export function createUIThemeEffect(
         mediaQueryList.removeEventListener("change", changeListener);
     };
 
+    listenerOptions?.signal?.addEventListener("abort", cleanup);
+
     return cleanup;
 }
 
 //#endregion
 
 //#region Theme Element
+
+export function applyUITheme(
+    styleRoot: StyleRoot,
+    currentUITheme: ResolvedUITheme = resolveUITheme(),
+): void {
+    setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
+        if (currentUITheme === UiThemeEnum.Dark) {
+            return [...currentStyleSheets, $AKBaseDark];
+        }
+
+        return [...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark)];
+    });
+}
 
 /**
  * An element that can be themed.

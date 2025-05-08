@@ -1,18 +1,13 @@
+import { SentryMiddleware } from "@goauthentik/common/sentry";
 import {
-    CSRFHeaderName,
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { SentryMiddleware } from "@goauthentik/common/sentry";
+} from "@goauthentik/web/common/api/middleware.js";
+import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/web/common/constants.js";
+import { globalAK } from "@goauthentik/web/common/global.js";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
-
-// HACK: Workaround for ESBuild not being able to hoist import statement across entrypoints.
-// This can be removed after ESBuild uses a single build context for all entrypoints.
-export { CSRFHeaderName };
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
