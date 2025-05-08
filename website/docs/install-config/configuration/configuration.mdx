@@ -354,10 +354,6 @@ Configure how long reputation scores should be saved for in seconds. Note that t
 
 Defaults to `86400`.
 
-### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
-
-Configure if the sessions are stored in the cache or the database. Defaults to `db`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
-
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
 Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
