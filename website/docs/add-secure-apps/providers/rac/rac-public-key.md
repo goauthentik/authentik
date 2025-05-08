@@ -59,11 +59,11 @@ SSH private keys can be configured via several methods:
 1.  Log in to authentik as an admin, and open the authentik Admin interface.
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**, then create a **RAC Provider Property Mapping** with the following settings:
 
-        - **Name**: Choose a descriptive name
-        - Under **Advanced Settings**:
-          **Expression**:
-          `python
+    - **Name**: Choose a descriptive name
+    - Under **Advanced Settings**:
+        - **Expression**:
 
+    ```python
     return {
     "private-key": "-----BEGIN SSH PRIVATE KEY-----
     SAMPLEgIBAAJBAKj34GkxFhD90vcNLYLInFEX6Ppy1tPf9Cnzj4p4WGeKLs1Pt8Qu
@@ -75,7 +75,7 @@ SSH private keys can be configured via several methods:
     /5OiPgoTdSy7bcF9IGpSE8ZgGKzgYQVZeN97YE00
     -----END SSH PRIVATE KEY-----",
     }
-    `
+    ```
 
 3.  Click **Finish**.
 4.  Navigate to **Applications** > **Providers**.
@@ -88,15 +88,14 @@ SSH private keys can be configured via several methods:
 1.  Log in to authentik as an admin, and open the authentik Admin interface.
 2.  Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **RAC Provider Property Mapping** with the following settings:
 
-        - **Name**: Choose a descriptive name
-        - Under **Advanced Settings**:
-          **Expression**:
-          `python
-
-    return {
-    "private-key": request.user.attributes.get("<private-key-attribute-name>", "default"),
-    }
-    `
+    - **Name**: Choose a descriptive name
+    - Under **Advanced Settings**:
+        - **Expression**:
+        ```python
+        return {
+        "private-key": request.user.attributes.get("<private-key-attribute-name>", "default"),
+        }
+        ```
 
 3.  Click **Finish**.
 4.  Navigate to **Applications** > **Providers**.

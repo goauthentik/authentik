@@ -38,11 +38,11 @@ Configuration details such as credentials can be specified through _settings_, w
 
 1. Provider settings
 2. Endpoint settings
-3. Connection settings (see [Connections](#connections))
+3. Connection settings
 4. Provider property mapping settings
 5. Endpoint property mapping settings
 
-### About RAC connection settings
+### Connection settings
 
 Each connection is authorized through authentik Policy objects that are bound to the application and the endpoint. Additional verification can be done with the authorization flow.
 
