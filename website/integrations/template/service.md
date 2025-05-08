@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Service-Name
 
-> Insert a quick overview of what <service-name> is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
+> Insert a quick overview of what `<service-name>` is and what it does. Simply describe the product and what it is, how it is used, and do not include marketing or sales-oriented content.
 >
 > -- https://service.xyz
 
@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `service.company` is the FQDN of the <service-name> installation. (Remove this for SaaS)
+- `service.company` is the FQDN of the `<service-name>` installation. (Remove this for SaaS)
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -23,7 +23,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of <service-name> with authentik, you need to create an application/provider pair in authentik.
+To support the integration of `<service-name>` with authentik, you need to create an application/provider pair in authentik.
 
 _Any specific info about this integration can go here._
 
@@ -51,6 +51,6 @@ Insert Service configuration
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with <service -name>, log out and log back in via authentik."
+Template sentence that you can typically use here: "To confirm that authentik is properly configured with `<service name>`, log out and log back in via authentik."
 
 If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
