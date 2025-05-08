@@ -18,7 +18,7 @@ import {
 import { type ThemedElement } from "@goauthentik/common/theme";
 
 import { localized } from "@lit/localize";
-import { CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
+import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -31,6 +31,7 @@ export { rootInterface } from "@goauthentik/common/theme";
 
 @localized()
 export class AKElement extends LitElement implements ThemedElement {
+    static styles?: Array<CSSResult | CSSModule>;
     //#region Properties
 
     /**
