@@ -8,14 +8,12 @@ The RAC provider utilises [Apache Guacamole](https://guacamole.apache.org/) for 
 
 For a full list of possible configurations, see the [Apache Guacamole connection configuration documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#configuring-connections).
 
+RAC connection settings can be set via several methods:
+    1. The settings of the RAC provider.
+    2. RAC endpoint settings.
+    3. RAC property mappings.
+    4. Fetched from user or group attributes via RAC property mappings.
+
 ## How to apply an RAC connection setting
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers**.
-3. Click the **Edit** icon on the RAC provider that requires an Apache Guacamole connection configuration.
-4. In the **Settings** codebox enter the name and value of the desired Apache Guacamole connection configuration.
-5. Click **Update**.
-
-## Example
-
-Utilizing RAC connection settings to enable [SSH public key authentication](./rac-public-key.md).
+The [RAC SSH public key authentication](./rac-public-key.md) page has examples on how RAC connection settings can be applied.
