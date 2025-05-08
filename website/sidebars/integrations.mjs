@@ -80,6 +80,7 @@ const items = [
             "services/argocd/index",
             "services/awx-tower/index",
             "services/cloudflare-access/index",
+            "services/coder/index",
             "services/globalprotect/index",
             "services/harbor/index",
             "services/hashicorp-vault/index",
