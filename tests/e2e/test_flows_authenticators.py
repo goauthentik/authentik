@@ -1,16 +1,11 @@
 """test flow with otp stages"""
 
 from base64 import b32decode
-from contextlib import contextmanager
-from pathlib import Path
 from time import sleep
-from unittest.mock import PropertyMock, patch
 from urllib.parse import parse_qs, urlparse
 
-from requests import RequestException, head
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.virtual_authenticator import Transport, VirtualAuthenticatorOptions
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
@@ -23,7 +18,6 @@ from authentik.stages.authenticator_static.models import (
     StaticToken,
 )
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
-from authentik.stages.authenticator_webauthn.models import AuthenticatorWebAuthnStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -140,96 +134,3 @@ class TestFlowsAuthenticator(SeleniumTestCase):
         self.assertTrue(StaticDevice.objects.filter(user=self.user, confirmed=True).exists())
         device = StaticDevice.objects.filter(user=self.user, confirmed=True).first()
         self.assertTrue(StaticToken.objects.filter(token=token, device=device).exists())
-
-    @contextmanager
-    def withHTTPS(self):
-        local_config_path = Path(__file__).parent / "https_proxy" / "traefik.yaml"
-        local_config_dir = Path(__file__).parent / "https_proxy" / "config"
-        traefik = self.run_container(
-            image="docker.io/library/traefik:3.1",
-            ports={
-                "80": "80",
-                "443": "443",
-            },
-            environment={"HOST": self.host, "PORT": self.server_thread.port},
-            volumes={
-                local_config_path: {
-                    "bind": "/etc/traefik/traefik.yml",
-                },
-                local_config_dir: {
-                    "bind": "/etc/traefik/config",
-                },
-            },
-        )
-        self.port = 443
-        server_url = self.live_server_url.replace("http://", "https://").replace(
-            f":{self.server_thread.port}", f":{self.port}"
-        )
-        try:
-            with patch.object(
-                self, "live_server_url", new_callable=PropertyMock(return_value=server_url)
-            ):
-                # Wait until we can reach authentik through the proxy
-                while True:
-                    try:
-                        res = head(server_url, verify=False)  # nosec
-                        res.raise_for_status()
-                    except RequestException:
-                        sleep(1)
-                    break
-                # # For some reason traefik might still return 502 when fetching JS
-                # sleep(10)
-                yield
-        finally:
-            traefik.remove(force=True)
-            pass
-
-    @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @apply_blueprint("default/flow-default-authenticator-webauthn-setup.yaml")
-    def test_webauthn_setup(self):
-        """Test WebAuthn setup"""
-        options = VirtualAuthenticatorOptions(
-            transport=Transport.INTERNAL,
-            has_resident_key=True,
-            has_user_verification=True,
-        )
-        self.driver.add_virtual_authenticator(options)
-
-        with self.withHTTPS():
-            self.driver.get(
-                self.url("authentik_core:if-flow", flow_slug="default-authentication-flow")
-            )
-            self.login()
-
-            self.wait_for_url(self.if_user_url("/library"))
-            self.assert_user(self.user)
-
-            self.driver.get(
-                self.url(
-                    "authentik_flows:configure",
-                    stage_uuid=AuthenticatorWebAuthnStage.objects.first().stage_uuid,
-                )
-            )
-
-            sleep(5000)
-
-            # Remember the current URL as we should end up back here
-            # destination_url = self.driver.current_url
-
-            # flow_executor = self.get_shadow_root("ak-flow-executor")
-            # authenticator_stage = self.get_shadow_root("ak-stage-authenticator-static",
-            # flow_executor)
-            # token = authenticator_stage.find_element(By.CSS_SELECTOR, "ul li:nth-child(1)").text
-
-            # authenticator_stage.find_element(By.CSS_SELECTOR, "button[type=submit]").click()
-
-            # self.wait_for_url(destination_url)
-            # sleep(1)
-
-            # self.assertTrue(StaticDevice.objects.filter(user=self.user, confirmed=True).exists())
-            # device = StaticDevice.objects.filter(user=self.user, confirmed=True).first()
-            # self.assertTrue(StaticToken.objects.filter(token=token, device=device).exists())
