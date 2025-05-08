@@ -95,6 +95,7 @@ const items = [
             "services/plesk/index",
             "services/powerdns-admin/index",
             "services/proftpd/index",
+            "services/push-security/index",
             "services/qnap-nas/index",
             "services/rustdesk-pro/index",
             "services/semgrep/index",
