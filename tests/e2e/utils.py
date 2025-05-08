@@ -176,6 +176,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         count = 0
         opts = webdriver.ChromeOptions()
+        opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
@@ -187,6 +188,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         )
         while count < RETRIES:
             try:
+                opts = webdriver.ChromeOptions()
+                opts.accept_insecure_certs = True
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
                     options=opts,

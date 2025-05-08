@@ -1,0 +1,26 @@
+# yaml-language-server: $schema=https://json.schemastore.org/traefik-v3.json
+api:
+  insecure: true
+  debug: true
+
+log:
+  level: debug
+accessLog:
+  filePath: /dev/stdout
+
+## Static configuration
+serversTransport:
+  maxIdleConnsPerHost: -1
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+    http:
+      tls: {}
+
+providers:
+  file:
+    directory: /etc/traefik/config
+    watch: true
