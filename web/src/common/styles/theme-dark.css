@@ -1,3 +1,12 @@
+/**
+ * @file authentik dark UI theme.
+ */
+
+/* Defined to better identify the dark theme when debugging constructed stylesheets. */
+.__AK_UI_DARK__ {
+    --__AK_UI_DARK__: 1;
+}
+
 /* #region Global */
 
 :root {
