@@ -14,9 +14,6 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
-    --ak-mermaid-message-text: var(--ak-dark-foreground) !important;
-    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter) !important;
-    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
 }
 
 body {

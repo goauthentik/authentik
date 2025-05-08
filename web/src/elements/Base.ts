@@ -22,7 +22,6 @@ import { CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
 import { property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
-import OneDark from "@goauthentik/common/styles/one-dark.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
@@ -65,7 +64,7 @@ export class AKElement extends LitElement implements ThemedElement {
 
     protected static finalizeStyles(styles?: CSSResultGroup): CSSResultOrNative[] {
         // Ensure all style sheets being passed are really style sheets.
-        const baseStyles: StyleSheetInit[] = [AKGlobal, OneDark];
+        const baseStyles: StyleSheetInit[] = [AKGlobal];
 
         if (!styles) return baseStyles.map(createStyleSheetUnsafe);
 
