@@ -232,7 +232,8 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_expiry_expired(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
+        License.objects.all().delete()
+        License.objects.create(key=generate_id(), expiry=expiry_expired)
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.EXPIRED)
 
     @patch(
