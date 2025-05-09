@@ -36,12 +36,19 @@ coverage
 *.mdx
 *.md
 
-## Import order matters
-poly.ts
-src/locale-codes.ts
-src/locales/
-
 # Storybook
 storybook-static/
 .storybook/css-import-maps*
 
+# JSON Schemas
+schemas/**/*.json
+blueprints/**/*.json
+authentik/**/*.json
+lifecycle/**/*.json
+
+# Locales
+web/src/locale-codes.ts
+web/src/locales/
+
+# Wireit's cache
+.wireit

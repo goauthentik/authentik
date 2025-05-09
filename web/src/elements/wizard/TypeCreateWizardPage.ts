@@ -105,7 +105,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"} ${this.selectedType == type
+                        : "pf-m-selectable-raised"} ${this.selectedType === type
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}

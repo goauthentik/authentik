@@ -160,7 +160,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         const disabled = this.selectedElements.length < 1;
         const currentUser = rootInterface<AdminInterface>()?.user;
         const shouldShowWarning = this.selectedElements.find((el) => {
-            return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
+            return el.pk === currentUser?.user.pk || el.pk === currentUser?.original?.pk;
         });
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("User(s)")}
