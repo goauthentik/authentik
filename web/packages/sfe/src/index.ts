@@ -47,7 +47,16 @@ class SimpleFlowExecutor {
         return `${ak().api.base}api/v3/flows/executor/${this.flowSlug}/?query=${encodeURIComponent(window.location.search.substring(1))}`;
     }
 
+    loading() {
+        this.container.innerHTML = `<div class="d-flex justify-content-center">
+            <div class="spinner-border spinner-border-md" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>`;
+    }
+
     start() {
+        this.loading();
         $.ajax({
             type: "GET",
             url: this.apiURL,
