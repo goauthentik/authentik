@@ -41,7 +41,7 @@ class License(SerializerModel):
 
     @property
     def is_valid(self) -> bool:
-        return self.expiry <= now()
+        return self.expiry >= now()
 
     @property
     def serializer(self) -> type[BaseSerializer]:
