@@ -7,6 +7,7 @@ from ua_parser.user_agent_parser import Parse
 
 from authentik.core.views.interface import InterfaceView
 from authentik.flows.models import Flow
+from authentik.flows.views.executor import QS_EXEC_ID
 
 
 class FlowInterfaceView(InterfaceView):
@@ -15,6 +16,7 @@ class FlowInterfaceView(InterfaceView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         kwargs["flow"] = get_object_or_404(Flow, slug=self.kwargs.get("flow_slug"))
         kwargs["inspector"] = "inspector" in self.request.GET
+        kwargs["xid"] = self.request.GET.get(QS_EXEC_ID)
         return super().get_context_data(**kwargs)
 
     def compat_needs_sfe(self) -> bool:
