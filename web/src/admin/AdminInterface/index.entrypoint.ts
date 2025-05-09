@@ -6,7 +6,8 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
+import { setSentryPII, tryInitializeSentry } from "@goauthentik/common/sentry";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
@@ -170,8 +171,10 @@ export class AdminInterface extends WithCapabilitiesConfig(
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry(true);
+        tryInitializeSentry(ServerContext.config);
         this.user = await me();
+
+        setSentryPII(this.user.user);
 
         const canAccessAdmin =
             this.user.user.isSuperuser ||
@@ -179,6 +182,10 @@ export class AdminInterface extends WithCapabilitiesConfig(
             this.user.user.systemPermissions.includes("access_admin_interface");
 
         if (!canAccessAdmin && this.user.user.pk > 0) {
+            console.debug(
+                "authentik/admin: User does not have access to admin interface. Redirecting...",
+            );
+
             window.location.assign("/if/user/");
         }
     }

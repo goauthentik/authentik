@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
@@ -51,7 +51,7 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.host.brand?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
-                              href="${globalAK().api.base}if/flow/${this.host.brand
+                              href="${ServerContext.baseURL}if/flow/${this.host.brand
                                   .flowUnenrollment}/"
                           >
                               ${msg("Delete account")}

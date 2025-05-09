@@ -1,4 +1,4 @@
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import {
     StyleSheetInit,
     StyleSheetParent,
@@ -82,7 +82,7 @@ export class AKElement extends LitElement implements ThemedElement {
     constructor() {
         super();
 
-        const { brand } = globalAK();
+        const { brand } = ServerContext;
 
         this.#preferredColorScheme = formatColorScheme(brand.uiTheme);
         this.activeTheme = resolveUITheme(brand?.uiTheme);

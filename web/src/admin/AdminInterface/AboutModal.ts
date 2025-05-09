@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/EmptyState";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
@@ -33,7 +33,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         const version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         let build: string | TemplateResult = msg("Release");
-        if (globalAK().config.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+        if (ServerContext.config.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             build = msg("Development");
         } else if (version.buildHash !== "") {
             build = html`<a
@@ -58,10 +58,12 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
     }
 
     renderModal() {
-        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+        let product = ServerContext.brand.brandingTitle || DefaultBrand.brandingTitle;
+
         if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
+
         return html`<div
             class="pf-c-backdrop"
             @click=${(e: PointerEvent) => {

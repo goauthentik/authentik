@@ -3,9 +3,10 @@ import {
     EVENT_WS_MESSAGE,
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
+import { ServerContext } from "@goauthentik/common/server-context";
+import { getConfigForUser } from "@goauthentik/common/ui/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
+import { UIConfig, UserDisplay } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-nav-buttons";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -404,7 +405,7 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
                         <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
                             <a
                                 class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                                href="${globalAK().api.base}if/user/"
+                                href="${ServerContext.baseURL}if/user/"
                                 slot="extra"
                             >
                                 ${msg("User interface")}

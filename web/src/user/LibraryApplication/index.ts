@@ -1,5 +1,5 @@
 import { PFSize } from "@goauthentik/common/enums.js";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/elements/AppIcon";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -82,8 +82,7 @@ export class LibraryApplication extends AKElement {
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
-                          href="${globalAK().api
-                              .base}if/admin/#/core/applications/${application?.slug}"
+                          href="${ServerContext.baseURL}if/admin/#/core/applications/${application?.slug}"
                       >
                           <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
                       </a>

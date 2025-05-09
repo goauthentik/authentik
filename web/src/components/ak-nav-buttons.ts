@@ -3,7 +3,7 @@ import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
 } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { ServerContext } from "@goauthentik/common/server-context";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -146,7 +146,7 @@ export class NavigationButtons extends AKElement {
             <a
                 class="pf-c-button pf-m-plain"
                 type="button"
-                href="${globalAK().api.base}if/user/#/settings"
+                href="${ServerContext.baseURL}if/user/#/settings"
             >
                 <pf-tooltip position="top" content=${msg("Settings")}>
                     <i class="fas fa-cog" aria-hidden="true"></i>
@@ -200,7 +200,7 @@ export class NavigationButtons extends AKElement {
                 ${this.renderSettings()}
                 <div class="pf-c-page__header-tools-item">
                     <a
-                        href="${globalAK().api.base}flows/-/default/invalidation/"
+                        href="${ServerContext.baseURL}flows/-/default/invalidation/"
                         class="pf-c-button pf-m-plain"
                     >
                         <pf-tooltip position="top" content=${msg("Sign out")}>

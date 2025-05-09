@@ -1,5 +1,3 @@
-import { globalAK } from "@goauthentik/common/global";
-
 import { LOCALES as RAW_LOCALES, enLocale } from "./definitions";
 import { AkLocale } from "./types";
 
@@ -51,7 +49,7 @@ export function autoDetectLanguage(userReq = TOMBSTONE, brandReq = TOMBSTONE): s
         userReq,
         window.navigator?.language ?? TOMBSTONE,
         brandReq,
-        globalAK()?.locale ?? TOMBSTONE,
+        document.documentElement.getAttribute("lang") ?? TOMBSTONE,
         DEFAULT_LOCALE,
     ].filter(isLocaleCandidate);
 
