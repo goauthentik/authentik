@@ -22,18 +22,50 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Push Security with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Push Security with authentik, you need to create a property mapping, and an application/provider pair in authentik.
+
+### Create a property mapping
+
+Push Security requires a first and last name for each user. By default authentik only provides a full name, as a single string value. Therefore you need to create a property mapping to provide first and last names to Push Security.
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**.
+
+    - **Select type**: select **Scope Mapping** as the property mapping type.
+    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Push Security Profile Scope`), and an optional description.
+
+        - **Scope name**: `profile`
+        - **Expression**:
+
+        ```python showLineNumbers
+        return {
+            "name": request.user.name,
+            "preferred_username": request.user.username,
+            "nickname": request.user.username,
+            "groups": [group.name for group in request.user.ak_groups.all()],
+            "last_name": request.user.name.rsplit(" ", 1)[-1],
+            "first_name": request.user.name.rsplit(" ", 1)[0],
+        }
+        ```
+
+3. Click **Finish** to save the property mapping.
 
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **SAML Provider** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
-    - Under **Advanced protocol settings**, set an available signing certificate.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **SAML Provider** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Temporarily set the **ACS URL** and **Audience** to `https://temp.temp`
+        - Set the **Service Provider Binding** to `Post`.
+        - Under **Advanced protocol settings**:
+            - Set an available signing certificate.
+            - **Scopes**:
+                - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
+                - Add the scope that you created in the previous section (e.g. `Push Security Profile Scope`) to **Selected Scopes**.
+
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -49,11 +81,15 @@ To support the integration of Push Security with authentik, you need to create a
 
 1. Log in to the Push Security admin console.
 2. Navigate to **Settings** > **Organization**.
-3. Under **SAML configuration** click **Setup** and select **Custom SAML**.
-4. Copy the displayed `Single Sign-On URL` and `Service Provider Entity URL`. They will be required in the next section.
-5. TEMP
-6. TEMP
-7. TEMP
+3. Under **SAML configuration** click **Setup** and
+4. Click **Setup** or go to the provider URL.
+5. Click **Get Started**, select **Custom SAML**, and click **Next**.
+6. Copy the displayed `Single Sign-On URL` and `Service Provider Entity URL`. They will be required in the next section.
+7. Click **Next**.
+8. Select **Manual** and set the **Single Sign-On Login URL** to `https://authentik.company/application/saml/<application slug>/sso/binding/init/`
+9. Click **Upload signing certificate** and select the certificate downloaded from authentik.
+10. _Optional_ under **Advanced Settings**, enable **Sign request**, and download the certificate.
+11. Click **Next**.
 
 ## Reconfigure authentik provider
 
@@ -62,6 +98,7 @@ To support the integration of Push Security with authentik, you need to create a
 3. Under **Protocol settgins**, set the following required configurations:
     - **ACS URL**: set the acs url to the copied `Single Sign-On URL` (e.g. https:).
     - **Audience**: set the audience to the copied `Service Provider Entity URL` (e.g. https:).
+    - _Optional_ add verification certificate
 4. Click **Update**
 
 ## Resources
