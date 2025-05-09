@@ -185,7 +185,7 @@ class BaseEvaluator:
         if "request" in self._context:
             req = self._context["request"]
         req.context.update(kwargs)
-        proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
+        proc = PolicyProcess(PolicyBinding(policy=policy), request=req, result_queue=None)
         return proc.profiling_wrapper()
 
     def expr_create_jwt(

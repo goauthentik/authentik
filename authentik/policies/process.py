@@ -1,7 +1,7 @@
 """authentik policy task"""
 
 from multiprocessing import get_context
-from multiprocessing.connection import Connection
+from multiprocessing.queues import Queue
 
 from django.core.cache import cache
 from sentry_sdk import start_span
@@ -37,23 +37,25 @@ def cache_key(binding: PolicyBinding, request: PolicyRequest) -> str:
 class PolicyProcess(PROCESS_CLASS):
     """Evaluate a single policy within a separate process"""
 
-    connection: Connection
     binding: PolicyBinding
     request: PolicyRequest
+    result_queue: Queue[tuple[str, PolicyResult]] | None
+    task_id: str | None
 
     def __init__(
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Connection | None,
+        task_id: str | None = None,
+        result_queue: Queue | None = None,
     ):
         super().__init__()
         self.binding = binding
         self.request = request
         if not isinstance(self.request, PolicyRequest):
             raise ValueError(f"{self.request} is not a Policy Request.")
-        if connection:
-            self.connection = connection
+        self.result_queue = result_queue
+        self.task_id = task_id
 
     def create_event(self, action: str, message: str, **kwargs):
         """Create event with common values from `self.request` and `self.binding`."""
@@ -140,8 +142,13 @@ class PolicyProcess(PROCESS_CLASS):
 
     def run(self):  # pragma: no cover
         """Task wrapper to run policy checking"""
+        if self.result_queue is None:
+            raise RuntimeError("PolicyProcess.run() should be called with a result queue set.")
+        if self.task_id is None:
+            raise RuntimeError("PolicyProcess.run() should be called with a task id set.")
+
         try:
-            self.connection.send(self.profiling_wrapper())
+            self.result_queue.put_nowait((self.task_id, self.profiling_wrapper()))
         except Exception as exc:
             LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
-            self.connection.send(PolicyResult(False, str(exc)))
+            self.result_queue.put_nowait((self.task_id, PolicyResult(False, str(exc))))
