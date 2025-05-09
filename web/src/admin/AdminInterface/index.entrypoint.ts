@@ -10,6 +10,7 @@ import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
+import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -35,7 +36,7 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import {
     AdminSidebarEnterpriseEntries,
@@ -48,7 +49,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
+export class AdminInterface extends WithCapabilitiesConfig(
+    WithLicenseSummary(AuthenticatedInterface),
+) {
     //#region Properties
 
     @property({ type: Boolean })
@@ -204,7 +207,7 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
                 <ak-sidebar class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                    ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
                         : nothing}
                 </ak-sidebar>
