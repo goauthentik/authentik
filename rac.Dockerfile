@@ -56,6 +56,7 @@ HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/rac", "healthch
 
 USER 1000
 
-ENV GOFIPS=1
+ENV TMPDIR=/dev/shm/ \
+    GOFIPS=1
 
 ENTRYPOINT ["/rac"]
