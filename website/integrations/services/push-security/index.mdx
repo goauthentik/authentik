@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Push Security with authentik, you need to create two property mappings, and an application/provider pair in authentik.
+To support the integration of Push Security with authentik, you need to create property mappings, and an application/provider pair in authentik.
 
 ### Create property mappings
 
@@ -38,9 +38,9 @@ Push Security requires a first and last name for each user. By default authentik
         - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`
         - **Expression**:
 
-        ```python
-        return request.user.name.rsplit(" ", 1)[0]
-        ```
+            ```python
+            return request.user.name.rsplit(" ", 1)[0]
+            ```
 
 3. Click **Finish** to save the property mapping.
 4. Click **Create**.
@@ -52,9 +52,9 @@ Push Security requires a first and last name for each user. By default authentik
         - **SAML Attribute Name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`
         - **Expression**:
 
-        ```python
-        return request.user.name.rsplit(" ", 1)[-1]
-        ```
+            ```python
+            return request.user.name.rsplit(" ", 1)[-1]
+            ```
 
 5. Click **Finish** to save the property mapping.
 
@@ -72,7 +72,7 @@ Push Security requires a first and last name for each user. By default authentik
         - Under **Advanced protocol settings**:
             - Set an available signing certificate.
             - **Property mappings**:
-                - Add the `givenname` and `familyname` property mappings that you created in the previous section to **Selected Scopes**.
+                - Add the `givenname` and `familyname` property mappings that you created in the previous section to **Selected User Property Mappings**.
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -105,8 +105,8 @@ Push Security requires a first and last name for each user. By default authentik
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
 3. Under **Protocol settgins**, set the following required configurations:
-    - **ACS URL**: set the acs url to the copied `Single Sign-On URL` (e.g. `https://login.pushsecurity.com/login/callback?connection=saml-aaaaaaaa`).
-    - **Audience**: set the audience to the copied `Service Provider Entity URL` (e.g. `urn:auth0:production-pushsecurity:saml-aaaaaaaa`).
+    - **ACS URL**: set the acs url to the copied `Single Sign-On URL` (e.g. `https://login.pushsecurity.com/login/callback?connection=saml-aaa...`).
+    - **Audience**: set the audience to the copied `Service Provider Entity URL` (e.g. `urn:auth0:production-pushsecurity:saml-aaa...`).
     - _Optional_ add the verification certificate downloaded from Push Security by following t in the previous section
 4. Click **Update**
 
@@ -116,6 +116,7 @@ Push Security requires a first and last name for each user. By default authentik
 2. Click **Test Connection** and you should be redirected to the authentik login screen.
 3. Enter your authentik credentials and login.
 4. If successful you will be redirected to Push Security and see a **Testing complete!** message.
+5. On the **Test SSO** page, click **Enable Connection**.
 
 ## Resources
 
@@ -124,7 +125,3 @@ Push Security requires a first and last name for each user. By default authentik
 ## Configuration verification
 
 To confirm that authentik is properly configured with Push Security, navigate to the authentik dashboard, and click on the Push Security application. You should be redirected to the Push Security admin console.
-
-:::note
-To enable users to enter their email on the Push Security login screen and be redirected to authentik, you will need to contact Push Security to enable the feature. This can be done from the Push Security admin console via **Settings** > **Organization** > **SAML Configuration**.
-:::
