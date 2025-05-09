@@ -31,22 +31,22 @@ Ironclad requires a first and last name for each user. By default authentik only
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
 
-- **Select type**: select **Scope Mapping** as the property mapping type.
-- **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Ironclad Profile Scope`), and an optional description.
+    - **Select type**: select **Scope Mapping** as the property mapping type.
+    - **Configure the Scope Mapping**: Provide a descriptive name (e.g. `Ironclad Profile Scope`), and an optional description.
 
-    - **Scope name**: `profile`
-    - **Expression**:
+        - **Scope name**: `profile`
+        - **Expression**:
 
-    ```python showLineNumbers
-    return {
-        "name": request.user.name,
-        "preferred_username": request.user.username,
-        "nickname": request.user.username,
-        "groups": [group.name for group in request.user.ak_groups.all()],
-        "last_name": request.user.name.rsplit(" ", 1)[-1],
-        "first_name": request.user.name.rsplit(" ", 1)[0],
-    }
-    ```
+        ```python showLineNumbers
+        return {
+            "name": request.user.name,
+            "preferred_username": request.user.username,
+            "nickname": request.user.username,
+            "groups": [group.name for group in request.user.ak_groups.all()],
+            "last_name": request.user.name.rsplit(" ", 1)[-1],
+            "first_name": request.user.name.rsplit(" ", 1)[0],
+        }
+        ```
 
 3. Click **Finish** to save the property mapping.
 
@@ -58,9 +58,15 @@ Ironclad requires a first and last name for each user. By default authentik only
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+
         - Temporarily set the **ACS URL** to `https://temp.temp`
         - Set the **Audience** to `https://ironcladapp.com`
-        - Under **Advanced protocol settings**, set an available signing certificate, and select
+        - Under **Advanced protocol settings**:
+            - Set an available signing certificate.
+            - **Scopes**:
+                - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
+                - Add the scope that you created in the previous section (e.g. `Ironclad Profile Scope`) to **Selected Scopes**.
+
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
