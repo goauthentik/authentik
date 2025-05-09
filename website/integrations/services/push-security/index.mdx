@@ -103,7 +103,7 @@ Push Security requires a first and last name for each user. However, authentik p
 ## Reconfigure authentik provider
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Push Security provider.
+2. Navigate to **Applications** > **Providers**, then find the newly created Push Security provider and click its **Edit** icon.
 3. Under **Protocol settgins**, set the following required configurations:
     - **ACS URL**: set the acs url to the copied `Single Sign-On URL` (e.g. `https://login.pushsecurity.com/login/callback?connection=saml-aaa...`).
     - **Audience**: set the audience to the copied `Service Provider Entity URL` (e.g. `urn:auth0:production-pushsecurity:saml-aaa...`).
