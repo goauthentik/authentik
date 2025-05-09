@@ -71,9 +71,9 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_valid_multiple(self):
         """Check license verification"""
-        lic = License.objects.create(key=generate_id())
+        lic = License.objects.create(key=generate_id(), expiry=expiry_valid)
         self.assertTrue(lic.status.status().is_valid)
-        lic2 = License.objects.create(key=generate_id())
+        lic2 = License.objects.create(key=generate_id(), expiry=expiry_valid)
         self.assertTrue(lic2.status.status().is_valid)
         total = LicenseKey.get_total()
         self.assertEqual(total.internal_users, 200)
