@@ -15,6 +15,7 @@
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/sfe/bootstrap.min.css' %}">
         <meta name="sentry-trace" content="{{ sentry_trace }}" />
+        <link rel="prefetch" href="{{ flow_background_url }}" />
         {% include "base/header_js.html" %}
         <style>
           html,
@@ -22,7 +23,7 @@
             height: 100%;
           }
           body {
-            background-image: url("{{ flow.background_url }}");
+            background-image: url("{{ flow_background_url }}");
             background-repeat: no-repeat;
             background-size: cover;
           }
