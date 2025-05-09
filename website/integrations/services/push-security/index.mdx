@@ -43,7 +43,7 @@ Push Security requires a first and last name for each user. However, authentik p
             ```
 
 3. Click **Finish**.
-4. Click **Create**.
+4. Click **Create** to begin creating the second property mapping.
 
     - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
     - **Configure the SAML Provider Property Mapping**:
@@ -87,18 +87,16 @@ Push Security requires a first and last name for each user. However, authentik p
 ## Push Security configuration
 
 1. Log in to the Push Security admin console.
-2. Navigate to **Settings** > **Organization**.
-3. Under **SAML configuration** click **Setup**.
-4. Click **Setup** or open the provided URL.
-5. Click **Get Started**, select **Custom SAML**, and click **Next**.
-6. Copy the **Single Sign-On URL** and **Service Provider Entity URL**. These values will be required in the next section.
-7. Click **Next**.
-8. Select **Manual** and set the **Single Sign-On Login URL** to `https://authentik.company/application/saml/<application-slug>/sso/binding/post/`
-9. Click **Upload signing certificate**, then select the certificate that was downloaded from authentik.
-10. _Optional_ under **Advanced Settings**, enable **Sign request**, and download the verification certificate. You will need to import the certificate into authentik, see the [authentik certificate documentation](../../../docs/sys-mgmt/certificates#external-certificates)
-11. Click **Next**.
-12. On the **Attribute Mapping** page, click **Next**.
-13. Keep the Push Security **Test SSO** page open. You will need to return to this page after the next section.
+2. Navigate to **Settings** > **Organization**, then under **SAML configuration**, click **Setup**.
+3. Click **Get Started**, select **Custom SAML**, and click **Next**.
+4. Copy the **Single Sign-On URL** and **Service Provider Entity URL**. These values will be required in the next section.
+5. Click **Next**.
+6. Select **Manual** and set the **Single Sign-On Login URL** to `https://authentik.company/application/saml/<application-slug>/sso/binding/post/`
+7. Click **Upload signing certificate**, then select the certificate that was downloaded from authentik.
+8. _Optional_ under **Advanced Settings**, enable **Sign request**, and download the verification certificate. You will need to import the certificate into authentik, see the [authentik certificate documentation](../../../docs/sys-mgmt/certificates#external-certificates)
+9. Click **Next**.
+10. On the **Attribute Mapping** page, click **Next**.
+11. Keep the Push Security **Test SSO** page open. You will need to return to this page after the next section.
 
 ## Reconfigure authentik provider
 
@@ -117,6 +115,10 @@ Push Security requires a first and last name for each user. However, authentik p
 3. Enter your authentik credentials and login.
 4. If successful you will be redirected to Push Security and see a **Testing complete!** message.
 5. On the **Test SSO** page, click **Enable Connection**.
+
+:::note
+To enable users to enter their email on the Push Security login screen and be redirected to authentik, you will need to contact Push Security to enable the feature. This can be done from the Push Security admin console via **Settings** > **Organization** > **SAML Configuration**.
+:::
 
 ## Resources
 
