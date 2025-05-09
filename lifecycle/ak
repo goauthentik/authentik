@@ -97,6 +97,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
+    shift
     exec python -m authentik.lib.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
