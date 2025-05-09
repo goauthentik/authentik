@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.utils.timezone import now
 from rest_framework.exceptions import ValidationError
 
+from authentik.core.models import User
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import (
     THRESHOLD_READ_ONLY_WEEKS,
@@ -232,7 +233,9 @@ class TestEnterpriseLicense(TestCase):
     )
     def test_expiry_expired(self):
         """Check license verification"""
-        License.objects.create(key=generate_id())
+        User.objects.all().delete()
+        License.objects.all().delete()
+        License.objects.create(key=generate_id(), expiry=expiry_expired)
         self.assertEqual(LicenseKey.get_total().summary().status, LicenseUsageStatus.EXPIRED)
 
     @patch(
