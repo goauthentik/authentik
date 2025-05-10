@@ -110,14 +110,14 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     attemptedIconOperation = true;
                     // Clear the icon
                     iconResponse = await removeApplicationIcon(app.slug);
-                    if (!iconResponse.error) {
+                    if (iconResponse && !iconResponse.error) {
                         showMessage({
                             level: MessageLevel.success,
                             message: msg("Application icon cleared successfully"),
                         });
                     } else {
                         // Let the base form handle error display
-                        throw new Error(iconResponse.error);
+                        throw new Error(iconResponse?.error || "Unknown error clearing icon");
                     }
                 } else if (icon) {
                     attemptedIconOperation = true;
@@ -158,6 +158,11 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 }
             } catch (e: unknown) {
                 // Let the base form handle error display
+                // Clear the file input after an error
+                const fileInput = this.shadowRoot?.querySelector('ak-file-input[name="metaIcon"] input[type="file"]') as HTMLInputElement;
+                if (fileInput) {
+                    fileInput.value = "";
+                }
                 throw e;
             }
         }

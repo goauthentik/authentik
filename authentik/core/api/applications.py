@@ -357,7 +357,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         field_obj.name = url
         app.save()
         message = "Icon successfully created" if is_post else "Icon successfully updated"
-        return Response({"meta_icon": url, "message": message})
+        return Response({"meta_icon": app.get_meta_icon, "message": message})
 
     def _handle_icon_file(self, app: Application, file, is_post: bool):
         """Helper to handle file-based icon update"""
@@ -391,14 +391,8 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 status=500,
             )
 
-        icon_url = None
-        try:
-            icon_url = app.meta_icon.url if hasattr(app.meta_icon, "url") else None
-        except Exception:
-            pass
-
         message = "Icon successfully created" if is_post else "Icon successfully updated"
-        return Response({"meta_icon": icon_url, "message": message})
+        return Response({"meta_icon": app.get_meta_icon, "message": message})
 
     @action(
         detail=True,
