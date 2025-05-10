@@ -3,73 +3,20 @@
  *
  * @import { SidebarItemConfig } from "@docusaurus/plugin-content-docs-types"
  */
-import apiReference from "../docs/developer-docs/api/reference/sidebar";
-import { generateVersionDropdown } from "../src/utils.js";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 
-/**
- * @type {SidebarItemConfig[]}
- */
-const releases = [
-    "releases/2025/v2025.4",
-    "releases/2025/v2025.2",
-    "releases/2024/v2024.12",
-    {
-        type: "category",
-        label: "Previous versions",
-        items: [
-            "releases/2024/v2024.10",
-            "releases/2024/v2024.8",
-            "releases/2024/v2024.6",
-            "releases/2024/v2024.4",
-            "releases/2024/v2024.2",
-            "releases/2023/v2023.10",
-            "releases/2023/v2023.8",
-            "releases/2023/v2023.6",
-            "releases/2023/v2023.5",
-            "releases/2023/v2023.4",
-            "releases/2023/v2023.3",
-            "releases/2023/v2023.2",
-            "releases/2023/v2023.1",
-            "releases/2022/v2022.12",
-            "releases/2022/v2022.11",
-            "releases/2022/v2022.10",
-            "releases/2022/v2022.9",
-            "releases/2022/v2022.8",
-            "releases/2022/v2022.7",
-            "releases/2022/v2022.6",
-            "releases/2022/v2022.5",
-            "releases/2022/v2022.4",
-            "releases/2022/v2022.2",
-            "releases/2022/v2022.1",
-            "releases/2021/v2021.12",
-            "releases/2021/v2021.10",
-            "releases/2021/v2021.9",
-            "releases/2021/v2021.8",
-            "releases/2021/v2021.7",
-            "releases/2021/v2021.6",
-            "releases/2021/v2021.5",
-            "releases/2021/v2021.4",
-            "releases/2021/v2021.3",
-            "releases/2021/v2021.2",
-            "releases/2021/v2021.1",
-            "releases/old/v0.14",
-            "releases/old/v0.13",
-            "releases/old/v0.12",
-            "releases/old/v0.11",
-            "releases/old/v0.10",
-            "releases/old/v0.9",
-        ],
-    },
-];
+import apiReference from "../docs/developer-docs/api/reference/sidebar";
+import { collectReleaseFiles, createReleaseSidebarEntries } from "../releases/utils.mjs";
+
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+const releases = collectReleaseFiles(path.join(__dirname, "..", "docs"));
 
 /**
  * @type {SidebarItemConfig[]}
  */
 const items = [
-    {
-        type: "html",
-        value: generateVersionDropdown(releases),
-    },
     {
         type: "doc",
         id: "index",
@@ -796,7 +743,7 @@ const items = [
             slug: "releases",
             description: "Release Notes for recent authentik versions",
         },
-        items: releases,
+        items: createReleaseSidebarEntries(releases),
     },
 ];
 
