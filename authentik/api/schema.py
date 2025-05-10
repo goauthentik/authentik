@@ -54,11 +54,7 @@ def create_component(generator: SchemaGenerator, name, schema, type_=ResolvedCom
     return component
 
 
-<<<<<<< HEAD
-def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
-=======
 def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):  # noqa: ARG001
->>>>>>> c3e96c557 (core: improve storage mgmt. squash for my sake + need to fix not using fetch in frontend)
     """Workaround to set a default response for endpoints.
     Workaround suggested at
     <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>

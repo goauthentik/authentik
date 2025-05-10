@@ -15204,8 +15204,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-<<<<<<< HEAD
-          description: ''
+          description: Permission denied
   /policies/unique_password/:
     get:
       operationId: policies_unique_password_list
@@ -15282,13 +15281,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
     post:
       operationId: policies_unique_password_create
       description: Password Uniqueness Policy Viewset
@@ -15297,6 +15296,9 @@ paths:
       requestBody:
         content:
           application/json:
+            schema:
+              $ref: '#/components/schemas/UniquePasswordPolicyRequest'
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UniquePasswordPolicyRequest'
         required: true
@@ -15314,13 +15316,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
   /policies/unique_password/{policy_uuid}/:
     get:
       operationId: policies_unique_password_retrieve
@@ -15349,13 +15351,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
     put:
       operationId: policies_unique_password_update
       description: Password Uniqueness Policy Viewset
@@ -15374,6 +15376,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UniquePasswordPolicyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UniquePasswordPolicyRequest'
         required: true
       security:
       - authentik: []
@@ -15389,13 +15394,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
     patch:
       operationId: policies_unique_password_partial_update
       description: Password Uniqueness Policy Viewset
@@ -15414,6 +15419,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/PatchedUniquePasswordPolicyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUniquePasswordPolicyRequest'
       security:
       - authentik: []
       responses:
@@ -15428,13 +15436,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
     delete:
       operationId: policies_unique_password_destroy
       description: Password Uniqueness Policy Viewset
@@ -15458,13 +15466,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
+          description: Permission denied
   /policies/unique_password/{policy_uuid}/used_by/:
     get:
       operationId: policies_unique_password_used_by_list
@@ -15495,16 +15503,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ValidationError'
-          description: ''
+          description: Bad request
         '403':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GenericError'
-          description: ''
-=======
           description: Permission denied
->>>>>>> c3e96c557 (core: improve storage mgmt. squash for my sake + need to fix not using fetch in frontend)
   /propertymappings/all/:
     get:
       operationId: propertymappings_all_list
