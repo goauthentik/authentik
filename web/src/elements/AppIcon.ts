@@ -74,22 +74,69 @@ export class AppIcon extends AKElement implements IAppIcon {
         ];
     }
 
+    // Validate if icon URL might be valid
+    isValidIcon(icon: string): boolean {
+        if (!icon) return false;
+        if (icon.startsWith("fa://")) return true;
+
+        try {
+            // Simple check for URL format
+            new URL(icon);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    // Render fallback icon when no valid icon or name is available
+    renderFallbackIcon(): TemplateResult {
+        return html`<div><i class="icon fas fa-question-circle"></i></div>`;
+    }
+
+    // Render icon based on first letter of name
+    renderLetterIcon(name: string): TemplateResult {
+        if (!name || name.length === 0) {
+            return this.renderFallbackIcon();
+        }
+        return html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`;
+    }
+
     render(): TemplateResult {
         // prettier-ignore
         return match([this.name, this.icon])
-            .with([undefined, undefined],
-                () => html`<div><i class="icon fas fa-question-circle"></i></div>`)
+            .with([undefined, undefined], () => this.renderFallbackIcon())
             .with([P._, P.string.startsWith("fa://")],
                 ([_name, icon]) => html`<div><i class="icon fas ${icon.replaceAll("fa://", "")}"></i></div>`)
             .with([P._, P.string],
-                ([_name, icon]) => html`<img class="icon pf-c-avatar" src="${icon}" alt="${msg("Application Icon")}" />`)
+                ([name, icon]) => {
+                    if (!this.isValidIcon(icon)) {
+                        // If icon is not valid, fall back to letter or question mark
+                        return name ? this.renderLetterIcon(name) : this.renderFallbackIcon();
+                    }
+                    
+                    return html`<img 
+                        class="icon pf-c-avatar" 
+                        src="${icon}" 
+                        alt="${msg("Application Icon")}" 
+                        @error=${(e: Event) => {
+                            const img = e.target as HTMLImageElement;
+                            img.style.display = 'none';
+                            const div = img.parentElement;
+                            if (div) {
+                                // If image fails to load, try to display first letter or fallback
+                                const fallback = name ? 
+                                    `<span class="icon">${name.charAt(0).toUpperCase()}</span>` : 
+                                    '<i class="icon fas fa-question-circle"></i>';
+                                div.innerHTML = fallback;
+                            }
+                        }} 
+                    />`;
+                })
             .with([P.string, undefined],
-                ([name]) => html`<span class="icon">${name.charAt(0).toUpperCase()}</span>`)
+                ([name]) => this.renderLetterIcon(name))
             .exhaustive();
     }
 }
-
-export default AppIcon;
 
 declare global {
     interface HTMLElementTagNameMap {

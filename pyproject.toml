@@ -47,6 +47,7 @@ dependencies = [
     "opencontainers",
     "packaging",
     "paramiko",
+    "pillow>=11.2.1",
     "psycopg[c, pool]",
     "pydantic",
     "pydantic-scim",
