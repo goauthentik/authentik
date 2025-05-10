@@ -6,11 +6,8 @@ import {
     setApplicationIconUrl,
 } from "@goauthentik/common/api/applications";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-<<<<<<< HEAD
-=======
 import { MessageLevel } from "@goauthentik/common/messages";
 import { first } from "@goauthentik/common/utils";
->>>>>>> c3e96c557 (core: improve storage mgmt. squash for my sake + need to fix not using fetch in frontend)
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
