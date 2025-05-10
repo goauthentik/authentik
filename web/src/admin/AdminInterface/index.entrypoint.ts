@@ -6,6 +6,7 @@ import {
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
     EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -198,6 +199,8 @@ export class AdminInterface extends WithCapabilitiesConfig(
             "pf-m-collapsed": !drawerOpen,
         };
 
+        const isEnterprise = globalAK().config?.capabilities?.includes(CapabilitiesEnum.IsEnterprise);
+
         return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-page-navbar>
@@ -207,9 +210,7 @@ export class AdminInterface extends WithCapabilitiesConfig(
 
                 <ak-sidebar class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.can(CapabilitiesEnum.IsEnterprise)
-                        ? renderSidebarItems(AdminSidebarEnterpriseEntries)
-                        : nothing}
+                    ${isEnterprise ? renderSidebarItems(AdminSidebarEnterpriseEntries) : nothing}
                 </ak-sidebar>
 
                 <div class="pf-c-page__drawer">
