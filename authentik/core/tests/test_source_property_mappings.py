@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from authentik.core.models import Group, PropertyMapping, Source, User
 from authentik.core.sources.mapper import SourceMapper
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class ProxySource(Source):

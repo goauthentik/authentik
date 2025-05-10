@@ -8,8 +8,8 @@ from django.utils.timezone import now
 from freezegun import freeze_time
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.common.utils.reflection import all_subclasses
 from authentik.core.models import Provider, Source, Token
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class TestModels(TestCase):

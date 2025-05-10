@@ -3,13 +3,13 @@
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.stages.source.models import SourceStage
 from authentik.enterprise.stages.source.stage import SourceStageFinal
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id
 from authentik.sources.saml.models import SAMLSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT

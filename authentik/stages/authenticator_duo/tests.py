@@ -7,9 +7,9 @@ from django.test.client import RequestFactory
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
 from authentik.stages.identification.models import IdentificationStage, UserFields

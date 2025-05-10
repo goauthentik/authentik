@@ -7,8 +7,8 @@ from django.test import TestCase
 from kubernetes.client import AppsV1Api
 from kubernetes.client.exceptions import OpenApiException
 
+from authentik.common.config import CONFIG
 from authentik.core.tests.utils import create_test_flow
-from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate

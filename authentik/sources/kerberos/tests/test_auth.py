@@ -3,7 +3,7 @@
 from django.contrib.auth.hashers import is_password_usable
 
 from authentik.core.models import User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.kerberos.auth import KerberosBackend
 from authentik.sources.kerberos.models import KerberosSource, UserKerberosSourceConnection
 from authentik.sources.kerberos.tests.utils import KerberosTestCase

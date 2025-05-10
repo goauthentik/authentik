@@ -5,7 +5,7 @@ import uuid
 import django.db.models.deletion
 from django.db import migrations, models
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -104,7 +104,7 @@ class Migration(migrations.Migration):
                     "Events will be deleted after this duration.(Format:"
                     " weeks=3;days=2;hours=3,seconds=2)."
                 ),
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
         migrations.AddField(

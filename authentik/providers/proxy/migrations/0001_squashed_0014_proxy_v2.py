@@ -6,7 +6,7 @@ from django.core.exceptions import FieldError
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.models
+import authentik.common.models
 import authentik.providers.proxy.models
 
 
@@ -80,7 +80,9 @@ class Migration(migrations.Migration):
                     models.TextField(
                         blank=True,
                         validators=[
-                            authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))
+                            authentik.common.models.DomainlessURLValidator(
+                                schemes=("http", "https")
+                            )
                         ],
                     ),
                 ),
@@ -88,7 +90,9 @@ class Migration(migrations.Migration):
                     "external_host",
                     models.TextField(
                         validators=[
-                            authentik.lib.models.DomainlessURLValidator(schemes=("http", "https"))
+                            authentik.common.models.DomainlessURLValidator(
+                                schemes=("http", "https")
+                            )
                         ]
                     ),
                 ),

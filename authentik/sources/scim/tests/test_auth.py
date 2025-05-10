@@ -5,7 +5,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.scim.models import SCIMSource
 
 

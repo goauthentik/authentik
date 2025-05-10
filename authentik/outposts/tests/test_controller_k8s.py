@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.blueprints.tests import reconcile_app
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.kubernetes import KubernetesController

@@ -9,9 +9,9 @@ from rest_framework.serializers import BaseSerializer, Serializer
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
+from authentik.common.models import SerializerModel, internal_model
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 
 UNKNOWN_DEVICE_TYPE_AAGUID = "00000000-0000-0000-0000-000000000000"
@@ -162,6 +162,7 @@ class WebAuthnDevice(SerializerModel, Device):
         verbose_name_plural = _("WebAuthn Devices")
 
 
+@internal_model
 class WebAuthnDeviceType(SerializerModel):
     """WebAuthn device type, used to restrict which device types are allowed"""
 

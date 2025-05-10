@@ -23,6 +23,8 @@ from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
+from authentik.common.saml.api import SAMLMetadataSerializer
+from authentik.common.saml.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
@@ -34,7 +36,6 @@ from authentik.providers.saml.processors.authn_request_parser import AuthNReques
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.rbac.decorators import permission_required
-from authentik.sources.saml.processors.constants import SAML_BINDING_POST, SAML_BINDING_REDIRECT
 
 LOGGER = get_logger()
 
@@ -198,13 +199,6 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_redirect",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
-
-
-class SAMLMetadataSerializer(PassiveSerializer):
-    """SAML Provider Metadata serializer"""
-
-    metadata = CharField(read_only=True)
-    download_url = CharField(read_only=True, required=False)
 
 
 class SAMLProviderImportSerializer(PassiveSerializer):

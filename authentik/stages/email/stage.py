@@ -14,6 +14,8 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import CharField
 from rest_framework.serializers import ValidationError
 
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.time import timedelta_from_string
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.exceptions import StageInvalidException
@@ -21,8 +23,6 @@ from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage

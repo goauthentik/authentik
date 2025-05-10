@@ -6,7 +6,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.kerberos.models import (
     KerberosSource,
     Krb5ConfContext,

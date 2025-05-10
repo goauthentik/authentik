@@ -15,8 +15,8 @@ from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.brands.api import CurrentBrandSerializer
 from authentik.brands.models import Brand
+from authentik.common.config import CONFIG
 from authentik.core.models import UserTypes
-from authentik.lib.config import CONFIG
 from authentik.policies.denied import AccessDeniedResponse
 
 

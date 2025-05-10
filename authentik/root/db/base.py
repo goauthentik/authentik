@@ -2,7 +2,7 @@
 
 from django_tenants.postgresql_backend.base import DatabaseWrapper as BaseDatabaseWrapper
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 
 class DatabaseWrapper(BaseDatabaseWrapper):

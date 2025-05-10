@@ -5,9 +5,9 @@ from json import dumps
 from requests import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.common.utils.http import get_http_session
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 from authentik.sources.oauth.models import OAuthSource
 

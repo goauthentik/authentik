@@ -8,13 +8,13 @@ from freezegun import freeze_time
 from authentik.core.models import Application
 from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.challenge import PermissionDict
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_PERMISSIONS,

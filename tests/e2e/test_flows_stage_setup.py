@@ -5,8 +5,8 @@ from selenium.webdriver.common.keys import Keys
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.crypto.generators import generate_key
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.lib.generators import generate_key
 from authentik.stages.password.models import PasswordStage
 from tests.e2e.utils import SeleniumTestCase, retry
 

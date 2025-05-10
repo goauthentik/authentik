@@ -48,7 +48,7 @@ runs:
     - name: Generate config
       shell: uv run python {0}
       run: |
-        from authentik.lib.generators import generate_id
+        from authentik.crypto.generators import generate_id
         from yaml import safe_dump
 
         with open("local.env.yml", "w") as _config:

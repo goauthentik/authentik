@@ -9,6 +9,7 @@ from requests_mock import Mocker
 
 from authentik import get_full_version
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import (
     Event,
     Notification,
@@ -17,7 +18,6 @@ from authentik.events.models import (
     NotificationWebhookMapping,
     TransportMode,
 )
-from authentik.lib.generators import generate_id
 
 
 class TestEventTransports(TestCase):

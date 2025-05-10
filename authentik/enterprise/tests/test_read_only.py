@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import (
     THRESHOLD_READ_ONLY_WEEKS,
@@ -20,7 +21,6 @@ from authentik.flows.models import (
     FlowStageBinding,
 )
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage

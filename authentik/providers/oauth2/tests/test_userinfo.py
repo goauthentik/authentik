@@ -9,8 +9,8 @@ from django.utils import timezone
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
     IDToken,

@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                     "If any of the user's device has been used within this threshold, this stage"
                     " will be skipped"
                 ),
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
     ]

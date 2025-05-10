@@ -5,7 +5,7 @@ from typing import TextIO
 from daphne.management.commands.runserver import Command as RunServer
 from daphne.server import Server
 
-from authentik.lib.debug import start_debug_server
+from authentik.root.debug import start_debug_server
 from authentik.root.signals import post_startup, pre_startup, startup
 
 

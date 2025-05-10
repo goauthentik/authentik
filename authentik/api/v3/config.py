@@ -19,9 +19,9 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.common.config import CONFIG
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.context_processors.base import get_context_processors
-from authentik.lib.config import CONFIG
 
 capabilities = Signal()
 

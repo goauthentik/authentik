@@ -15,12 +15,12 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 
-	"goauthentik.io/authentik/lib"
+	"goauthentik.io/authentik/common/config"
 )
 
 var cfg *Config
 
-const defaultConfigPath = "./authentik/lib/default.yml"
+const defaultConfigPath = "./authentik/common/config/default.yml"
 
 func getConfigPaths() []string {
 	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
@@ -70,7 +70,7 @@ func Get() *Config {
 
 func (c *Config) Setup(paths ...string) {
 	// initially try to load the default config which is compiled in
-	err := c.LoadConfig(lib.DefaultConfig())
+	err := c.LoadConfig(config.DefaultConfig())
 	// this should never fail
 	if err != nil {
 		panic(fmt.Errorf("failed to load inbuilt config: %v", err))

@@ -7,8 +7,8 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowDesignation, FlowStageBinding, InvalidResponseAction
-from authentik.lib.generators import generate_id
 from authentik.stages.dummy.models import DummyStage
 from authentik.stages.identification.models import IdentificationStage, UserFields
 

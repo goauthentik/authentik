@@ -14,12 +14,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import get_build_hash
+from authentik.common.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
 from authentik.enterprise.license import LicenseKey
-from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (

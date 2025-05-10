@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.blueprints.api import ManagedSerializer
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.api.object_types import TypesMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -33,7 +34,6 @@ from authentik.core.expression.evaluator import PropertyMappingEvaluator
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group, PropertyMapping, User
 from authentik.events.utils import sanitize_item
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestSerializer
 from authentik.rbac.decorators import permission_required
 

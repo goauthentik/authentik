@@ -14,6 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.api import ManagedSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
@@ -27,7 +28,6 @@ from authentik.core.models import (
 )
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import model_to_dict
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.rbac.decorators import permission_required
 
 

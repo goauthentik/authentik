@@ -1,11 +1,12 @@
 """authentik core celery"""
 
 import os
-from collections.abc import Callable
+from collections.abc import Callable, Generator
 from contextvars import ContextVar
 from logging.config import dictConfig
 from pathlib import Path
 from tempfile import gettempdir
+from typing import Any
 
 from celery import bootsteps
 from celery.apps.worker import Worker
@@ -19,6 +20,7 @@ from celery.signals import (
     worker_ready,
 )
 from celery.worker.control import inspect_command
+from django.apps import apps
 from django.conf import settings
 from django.db import ProgrammingError
 from django_tenants.utils import get_public_schema_name
@@ -27,8 +29,8 @@ from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik import get_full_version
-from authentik.lib.sentry import before_send
-from authentik.lib.utils.errors import exception_to_string
+from authentik.common.utils.errors import exception_to_string
+from authentik.root.sentry import should_ignore_exception
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
@@ -81,7 +83,7 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
 
     LOGGER.warning("Task failure", task_id=task_id.replace("-", ""), exc=exception)
     CTX_TASK_ID.set(...)
-    if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+    if not should_ignore_exception(exception):
         Event.new(
             EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
         ).save()
@@ -96,15 +98,16 @@ def _get_startup_tasks_default_tenant() -> list[Callable]:
     ]
 
 
-def _get_startup_tasks_all_tenants() -> list[Callable]:
+def _get_startup_tasks_all_tenants() -> Generator[Callable, Any, Any]:
     """Get all tasks to be run on startup for all tenants"""
     from authentik.admin.tasks import clear_update_notifications
-    from authentik.providers.proxy.tasks import proxy_set_defaults
 
-    return [
-        clear_update_notifications,
-        proxy_set_defaults,
-    ]
+    yield clear_update_notifications
+
+    if apps.is_installed("authentik.providers.proxy"):
+        from authentik.providers.proxy.tasks import proxy_set_defaults
+
+        yield proxy_set_defaults
 
 
 @worker_ready.connect

@@ -9,8 +9,8 @@ from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, User
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
 from tests.e2e.utils import SeleniumTestCase, retry

@@ -7,9 +7,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
 
+from authentik.common.models import SerializerModel
 from authentik.core.models import ExpiringModel, User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
 
 
 class InvitationStage(Stage):

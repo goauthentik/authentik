@@ -5,10 +5,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer, Serializer
 
+from authentik.common.models import SerializerModel
+from authentik.common.utils.time import timedelta_string_validator
 from authentik.core.models import Application, ExpiringModel, User
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator
 
 
 class ConsentMode(models.TextChoices):

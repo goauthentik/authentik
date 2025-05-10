@@ -1,0 +1,178 @@
+# authentik configuration
+#
+# https://docs.goauthentik.io/docs/install-config/configuration/
+#
+# To override the settings in this file, run the following command from the repository root:
+#
+# ```shell
+# make gen-dev-config
+# ```
+#
+# You may edit the generated file to override the configuration below.
+#
+# When making modifying the default configuration file,
+# ensure that the corresponding documentation is updated to match.
+#
+# @see {@link ../../../website/docs/install-config/configuration/configuration.mdx Configuration documentation} for more information.
+
+postgresql:
+  host: localhost
+  name: authentik
+  user: authentik
+  port: 5432
+  password: "env://POSTGRES_PASSWORD"
+  use_pool: False
+  test:
+    name: test_authentik
+  default_schema: public
+  read_replicas: {}
+  # For example
+  # 0:
+  #   host: replica1.example.com
+
+listen:
+  listen_http: 0.0.0.0:9000
+  listen_https: 0.0.0.0:9443
+  listen_ldap: 0.0.0.0:3389
+  listen_ldaps: 0.0.0.0:6636
+  listen_radius: 0.0.0.0:1812
+  listen_metrics: 0.0.0.0:9300
+  listen_debug: 0.0.0.0:9900
+  listen_debug_py: 0.0.0.0:9901
+  trusted_proxy_cidrs:
+    - 127.0.0.0/8
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - fe80::/10
+    - ::1/128
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  username: ""
+  password: ""
+  tls: false
+  tls_reqs: "none"
+  tls_ca_cert: null
+
+# broker:
+#   url: ""
+#   transport_options: ""
+
+http_timeout: 30
+
+cache:
+  # url: ""
+  timeout: 300
+  timeout_flows: 300
+  timeout_policies: 300
+
+# channel:
+#   url: ""
+
+# result_backend:
+#   url: ""
+#   transport_options: ""
+
+debug: false
+debugger: false
+
+log_level: info
+
+session_storage: cache
+sessions:
+  unauthenticated_age: days=1
+
+error_reporting:
+  enabled: false
+  sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@authentik.error-reporting.a7k.io/4504163677503489
+  environment: customer
+  send_pii: false
+  sample_rate: 0.1
+
+# Global email settings
+email:
+  host: localhost
+  port: 25
+  username: ""
+  password: ""
+  use_tls: false
+  use_ssl: false
+  timeout: 10
+  from: authentik@localhost
+  template_dir: /templates
+
+throttle:
+  providers:
+    oauth2:
+      device: 20/hour
+  default: 1000/second
+
+outposts:
+  # Placeholders:
+  # %(type)s: Outpost type; proxy, ldap, etc
+  # %(version)s: Current version; 2021.4.1
+  # %(build_hash)s: Build hash if you're running a beta version
+  container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
+  discover: true
+  disable_embedded_outpost: false
+
+ldap:
+  task_timeout_hours: 2
+  page_size: 50
+  tls:
+    ciphers: null
+
+sources:
+  kerberos:
+    task_timeout_hours: 2
+
+reputation:
+  expiry: 86400
+
+cookie_domain: null
+disable_update_check: false
+disable_startup_analytics: false
+events:
+  context_processors:
+    geoip: "/geoip/GeoLite2-City.mmdb"
+    asn: "/geoip/GeoLite2-ASN.mmdb"
+compliance:
+  fips:
+    enabled: false
+
+cert_discovery_dir: /certs
+
+tenants:
+  enabled: false
+  api_key: ""
+
+blueprints_dir: /blueprints
+
+web:
+  # No default here as it's set dynamically
+  # workers: 2
+  threads: 4
+  path: /
+
+worker:
+  concurrency: 2
+
+storage:
+  media:
+    backend: file # or s3
+    file:
+      path: ./media
+    s3:
+      # How to talk to s3
+      # region: "us-east-1"
+      # use_ssl: True
+      # endpoint: "https://s3.us-east-1.amazonaws.com"
+      # access_key: ""
+      # secret_key: ""
+      # bucket_name: "authentik-media"
+      # How to render file URLs
+      # custom_domain: null
+      secure_urls: True

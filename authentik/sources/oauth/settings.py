@@ -2,7 +2,7 @@
 
 from celery.schedules import crontab
 
-from authentik.lib.utils.time import fqdn_rand
+from authentik.common.utils.time import fqdn_rand
 
 CELERY_BEAT_SCHEDULE = {
     "update_oauth_source_oidc_well_known": {

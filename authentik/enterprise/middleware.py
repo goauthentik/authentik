@@ -6,12 +6,12 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.urls import resolve
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.utils.reflection import class_to_path
 from authentik.core.api.users import UserViewSet
 from authentik.enterprise.api import LicenseViewSet
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import LicenseUsageStatus
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.utils.reflection import class_to_path
 
 
 class EnterpriseMiddleware:

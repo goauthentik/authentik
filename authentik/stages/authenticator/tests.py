@@ -11,7 +11,7 @@ from django.utils import timezone
 from freezegun import freeze_time
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.stages.authenticator import match_token, user_has_device, verify_token
 from authentik.stages.authenticator.models import Device, VerifyNotAllowed
 

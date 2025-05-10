@@ -3,7 +3,7 @@
 from django.db import connection
 from django_tenants.utils import get_public_schema_name
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from authentik.root.install_id import get_install_id
 from authentik.tenants.models import Tenant
 

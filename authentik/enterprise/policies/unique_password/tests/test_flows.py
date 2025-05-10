@@ -4,13 +4,13 @@ from django.contrib.auth.hashers import make_password
 from django.urls.base import reverse
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_id
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
 

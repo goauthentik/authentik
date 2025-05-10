@@ -7,8 +7,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from authentik.common.utils.reflection import get_apps
 from authentik.core.api.utils import PassiveSerializer
-from authentik.lib.utils.reflection import get_apps
 from authentik.policies.event_matcher.models import model_choices
 
 

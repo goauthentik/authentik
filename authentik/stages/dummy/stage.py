@@ -3,9 +3,9 @@
 from django.http.response import HttpResponse
 from rest_framework.fields import CharField
 
+from authentik.common.exceptions import NotReportedException
 from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.sentry import SentryIgnoredException
 
 
 class DummyChallenge(Challenge):
@@ -31,7 +31,7 @@ class DummyStageView(ChallengeStageView):
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         if self.executor.current_stage.throw_error:
-            raise SentryIgnoredException("Test error")
+            raise NotReportedException("Test error")
         return DummyChallenge(
             data={
                 "title": self.executor.current_stage.name,

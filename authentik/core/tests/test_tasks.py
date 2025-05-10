@@ -18,7 +18,7 @@ from authentik.core.tasks import (
     clean_temporary_users,
 )
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class TestTasks(APITestCase):

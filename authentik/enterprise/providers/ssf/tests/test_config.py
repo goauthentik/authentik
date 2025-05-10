@@ -5,10 +5,10 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.providers.ssf.models import (
     SSFProvider,
 )
-from authentik.lib.generators import generate_id
 
 
 class TestConfiguration(APITestCase):

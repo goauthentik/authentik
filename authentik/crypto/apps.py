@@ -3,7 +3,7 @@
 from datetime import UTC, datetime
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 MANAGED_KEY = "goauthentik.io/crypto/jwt-managed"
 

@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
+from authentik.crypto.generators import generate_id
 from authentik.events.models import (
     Event,
     EventAction,
@@ -16,7 +17,6 @@ from authentik.events.models import (
     NotificationWebhookMapping,
     TransportMode,
 )
-from authentik.lib.generators import generate_id
 from authentik.policies.event_matcher.models import EventMatcherPolicy
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding

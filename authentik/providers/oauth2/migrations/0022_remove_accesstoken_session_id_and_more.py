@@ -5,7 +5,7 @@ import django.db.models.deletion
 from django.db import migrations, models
 from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
-from authentik.lib.migrations import progress_bar
+from authentik.common.migrations import progress_bar
 
 
 def migrate_session(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):

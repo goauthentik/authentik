@@ -8,6 +8,7 @@ from django.test import TestCase
 from django.utils.timezone import now
 from rest_framework.exceptions import ValidationError
 
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.license import LicenseKey
 from authentik.enterprise.models import (
     THRESHOLD_READ_ONLY_WEEKS,
@@ -17,7 +18,6 @@ from authentik.enterprise.models import (
     LicenseUsage,
     LicenseUsageStatus,
 )
-from authentik.lib.generators import generate_id
 
 # Valid license expiry
 expiry_valid = int(mktime((now() + timedelta(days=3000)).timetuple()))

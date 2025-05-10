@@ -2,11 +2,11 @@
 
 from django.test import TestCase
 
+from authentik.common.tests import get_request
 from authentik.core.auth import TokenBackend
 from authentik.core.models import Token, TokenIntents, User
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.tests.utils import get_request
 
 
 class TestTokenAuth(TestCase):

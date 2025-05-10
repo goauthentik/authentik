@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import (
     SESSION_KEY_OAUTH_PKCE,
     UserprofileHeaderAuthClient,

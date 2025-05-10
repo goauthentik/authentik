@@ -4,8 +4,8 @@ from django.test.client import RequestFactory
 from django_tenants.utils import get_public_schema_name
 from rest_framework.test import APITestCase
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.tenants.models import Tenant
 
 

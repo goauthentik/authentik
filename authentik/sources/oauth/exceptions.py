@@ -1,7 +1,7 @@
 """OAuth Source Exception"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class OAuthSourceException(SentryIgnoredException):
+class OAuthSourceException(NotReportedException):
     """General Error during OAuth Flow occurred"""

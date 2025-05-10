@@ -6,7 +6,7 @@ from django.apps import apps
 from django.test import TestCase
 
 from authentik.blueprints.v1.importer import is_model_allowed
-from authentik.lib.models import SerializerModel
+from authentik.common.models import SerializerModel
 from authentik.providers.oauth2.models import RefreshToken
 
 

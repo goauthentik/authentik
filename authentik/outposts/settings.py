@@ -2,7 +2,7 @@
 
 from celery.schedules import crontab
 
-from authentik.lib.utils.time import fqdn_rand
+from authentik.common.utils.time import fqdn_rand
 
 CELERY_BEAT_SCHEDULE = {
     "outposts_controller": {
@@ -25,4 +25,12 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=fqdn_rand("outpost_connection_discovery"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
+}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "authentik.outposts.authentication.OutpostTokenAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ),
 }

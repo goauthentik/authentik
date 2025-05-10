@@ -9,6 +9,7 @@ from django.urls import reverse
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.flows.markers import ReevaluateMarker, StageMarker
 from authentik.flows.models import (
     FlowDeniedAction,
@@ -25,7 +26,6 @@ from authentik.flows.views.executor import (
     SESSION_KEY_PLAN,
     FlowExecutorView,
 )
-from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.policies.reputation.models import ReputationPolicy

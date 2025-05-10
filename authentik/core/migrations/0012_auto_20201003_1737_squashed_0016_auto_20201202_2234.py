@@ -5,7 +5,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.core.models
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 def set_default_token_key(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
