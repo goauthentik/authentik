@@ -1,0 +1,36 @@
+services:
+  ssh-server-1:
+    image: linuxserver/openssh-server
+    container_name: ssh-server-1
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - USER_NAME=testuser
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=testpass
+    ports:
+      - "2222:2222"
+    restart: unless-stopped
+
+  ssh-server-2:
+    image: linuxserver/openssh-server
+    container_name: ssh-server-2
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - USER_NAME=testuser
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=testpass
+    ports:
+      - "2223:2222"
+    restart: unless-stopped
+
+  rac:
+    container_name: rac
+    image: ghcr.io/goauthentik/rac:2025.2.4@sha256:9b095d81cf12d758a65add05f1ea4b1a1feac8c52c66e28d73c31c0120ea41dd
+    restart: unless-stopped
+    environment:
+      - AUTHENTIK_HOST=http://localhost:9000
+      - AUTHENTIK_INSECURE=true
+      - AUTHENTIK_TOKEN=e
+
