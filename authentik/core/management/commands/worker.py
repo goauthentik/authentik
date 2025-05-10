@@ -9,8 +9,8 @@ from django.db import close_old_connections
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
-from authentik.lib.debug import start_debug_server
 from authentik.root.celery import CELERY_APP
+from authentik.root.debug import start_debug_server
 
 LOGGER = get_logger()
 

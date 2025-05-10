@@ -13,11 +13,11 @@ from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
-from authentik.lib.debug import start_debug_server
-from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
+from authentik.root.debug import start_debug_server
 from authentik.root.install_id import get_install_id_raw
+from authentik.root.logging import get_logger_config
 from lifecycle.migrate import run_migrations
 from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
