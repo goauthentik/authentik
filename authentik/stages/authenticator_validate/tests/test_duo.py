@@ -10,13 +10,13 @@ from rest_framework.exceptions import ValidationError
 from authentik.brands.utils import get_brand_for_request
 from authentik.core.middleware import RESPONSE_HEADER_ID
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
-from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.tests.utils import dummy_get_response
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.challenge import validate_challenge_duo

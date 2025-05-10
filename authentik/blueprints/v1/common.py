@@ -19,8 +19,8 @@ from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
+from authentik.common.exceptions import NotReportedException
 from authentik.lib.models import SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.models import PolicyBindingModel
 
 
@@ -661,7 +661,7 @@ class BlueprintLoader(SafeLoader):
         self.add_constructor("!AtIndex", AtIndex)
 
 
-class EntryInvalidError(SentryIgnoredException):
+class EntryInvalidError(NotReportedException):
     """Error raised when an entry is invalid"""
 
     entry_model: str | None

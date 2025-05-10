@@ -12,10 +12,10 @@ from xmlsec import enable_debug_trace
 
 from authentik import __version__
 from authentik.lib.config import CONFIG, django_db_config, redis_url
-from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.logging import get_logger_config, structlog_configure
+from authentik.root.sentry import sentry_init
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent

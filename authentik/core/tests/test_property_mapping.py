@@ -9,8 +9,8 @@ from authentik.core.expression.exceptions import (
 )
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 
 

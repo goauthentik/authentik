@@ -8,6 +8,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.providers.google_workspace.clients.test_http import MockHTTP
 from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProvider,
@@ -16,7 +17,6 @@ from authentik.enterprise.providers.google_workspace.models import (
 )
 from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.tenants.models import Tenant
 

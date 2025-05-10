@@ -16,8 +16,8 @@ from authentik.common.oauth.constants import (
 from authentik.common.oauth.errors import TokenError
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,

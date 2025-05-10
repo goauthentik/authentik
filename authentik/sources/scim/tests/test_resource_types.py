@@ -3,7 +3,7 @@
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.scim.models import SCIMSource
 
 

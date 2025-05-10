@@ -9,8 +9,8 @@ from selenium.webdriver.common.by import By
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry

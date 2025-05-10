@@ -15,8 +15,8 @@ from authentik.common.oauth.constants import (
 )
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import (

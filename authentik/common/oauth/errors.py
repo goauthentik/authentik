@@ -4,13 +4,13 @@ from urllib.parse import quote, urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
+from authentik.common.exceptions import NotReportedException
 from authentik.events.models import Event, EventAction
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantTypes, RedirectURI
 
 
-class OAuth2Error(SentryIgnoredException):
+class OAuth2Error(NotReportedException):
     """Base class for all OAuth2 Errors"""
 
     error: str

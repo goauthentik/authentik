@@ -29,8 +29,8 @@ from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik import get_full_version
-from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
+from authentik.root.sentry import before_send
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")

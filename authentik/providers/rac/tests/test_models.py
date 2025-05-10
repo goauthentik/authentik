@@ -4,7 +4,7 @@ from django.test import TransactionTestCase
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.providers.rac.models import (
     ConnectionToken,
     Endpoint,

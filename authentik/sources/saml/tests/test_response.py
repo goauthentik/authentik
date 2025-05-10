@@ -7,8 +7,8 @@ from django.test import RequestFactory, TestCase
 
 from authentik.common.saml.exceptions import InvalidEncryption
 from authentik.core.tests.utils import create_test_cert, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import dummy_get_response, load_fixture
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.response import ResponseProcessor

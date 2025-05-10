@@ -5,7 +5,7 @@ from time import sleep
 
 from docker.types import Healthcheck
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.scim.models import SCIMSource
 from tests.e2e.utils import SeleniumTestCase, retry

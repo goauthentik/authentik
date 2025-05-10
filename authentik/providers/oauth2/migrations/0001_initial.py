@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 import authentik.core.models
-import authentik.lib.generators
+import authentik.crypto.generators
 import authentik.lib.utils.time
 
 
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 (
                     "client_id",
                     models.CharField(
-                        default=authentik.lib.generators.generate_id,
+                        default=authentik.crypto.generators.generate_id,
                         max_length=255,
                         unique=True,
                         verbose_name="Client ID",
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                     "client_secret",
                     models.CharField(
                         blank=True,
-                        default=authentik.lib.generators.generate_key,
+                        default=authentik.crypto.generators.generate_key,
                         max_length=255,
                         verbose_name="Client Secret",
                     ),

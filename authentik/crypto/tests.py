@@ -14,10 +14,10 @@ from authentik.core.api.used_by import DeleteAction
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.api import CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.crypto.models import CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
-from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 
 

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 import authentik.core.models
-import authentik.lib.generators
+import authentik.crypto.generators
 
 
 class Migration(migrations.Migration):
@@ -29,10 +29,12 @@ class Migration(migrations.Migration):
                     models.DateTimeField(default=authentik.core.models.default_token_duration),
                 ),
                 ("expiring", models.BooleanField(default=True)),
-                ("device_code", models.TextField(default=authentik.lib.generators.generate_key)),
+                ("device_code", models.TextField(default=authentik.crypto.generators.generate_key)),
                 (
                     "user_code",
-                    models.TextField(default=authentik.lib.generators.generate_code_fixed_length),
+                    models.TextField(
+                        default=authentik.crypto.generators.generate_code_fixed_length
+                    ),
                 ),
                 ("_scope", models.TextField(default="", verbose_name="Scopes")),
                 (

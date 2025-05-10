@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
-from authentik.lib.generators import generate_key
+from authentik.crypto.generators import generate_key
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer

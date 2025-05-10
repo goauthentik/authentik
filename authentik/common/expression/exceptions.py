@@ -1,6 +1,6 @@
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class ControlFlowException(SentryIgnoredException):
+class ControlFlowException(NotReportedException):
     """Exceptions used to control the flow from exceptions, not reported as a warning/
     error in logs"""

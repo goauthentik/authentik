@@ -12,8 +12,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry

@@ -22,6 +22,7 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
+from authentik.common.exceptions import NotReportedException
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
     Provider,
@@ -38,7 +39,6 @@ from authentik.lib.models import (
     SerializerModel,
     internal_model,
 )
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
@@ -49,7 +49,7 @@ LOGGER = get_logger()
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
-class ServiceConnectionInvalid(SentryIgnoredException):
+class ServiceConnectionInvalid(NotReportedException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 

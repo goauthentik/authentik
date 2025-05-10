@@ -29,8 +29,8 @@ from authentik.blueprints.models import ManagedModel
 from authentik.common.expression.exceptions import ControlFlowException
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.generators import generate_id
 from authentik.lib.avatars import get_avatar
-from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.lib.models import (
     CreatedUpdatedModel,

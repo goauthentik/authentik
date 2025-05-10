@@ -10,13 +10,13 @@ from django.urls import reverse
 from django.utils.http import urlencode
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
 from authentik.lib.config import CONFIG
-from authentik.lib.generators import generate_id
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 

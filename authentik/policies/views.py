@@ -10,9 +10,9 @@ from django.utils.translation import gettext as _
 from django.views.generic.base import View
 from structlog.stdlib import get_logger
 
+from authentik.common.exceptions import NotReportedException
 from authentik.core.models import Application, Provider, User
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_POST
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -20,7 +20,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 
-class RequestValidationError(SentryIgnoredException):
+class RequestValidationError(NotReportedException):
     """Error raised in pre_permission_check, when a request is invalid."""
 
     response: HttpResponse | None

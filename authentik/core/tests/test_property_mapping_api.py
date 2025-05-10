@@ -9,7 +9,7 @@ from rest_framework.test import APITestCase
 from authentik.core.api.property_mappings import PropertyMappingSerializer
 from authentik.core.models import Group, PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class TestPropertyMappingAPI(APITestCase):

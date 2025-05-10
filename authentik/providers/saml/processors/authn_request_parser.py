@@ -20,7 +20,7 @@ from authentik.common.saml.constants import (
     SAML_NAME_ID_FORMAT_UNSPECIFIED,
 )
 from authentik.common.saml.encoding import decode_base64_and_inflate
-from authentik.lib.xml import lxml_from_string
+from authentik.common.saml.xml import lxml_from_string
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLProvider
 

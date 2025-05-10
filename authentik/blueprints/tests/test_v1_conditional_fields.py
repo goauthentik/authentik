@@ -5,8 +5,8 @@ from django.test import TransactionTestCase
 from authentik.blueprints.v1.importer import Importer
 from authentik.core.models import Application, Token, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.oauth.models import OAuthSource
 

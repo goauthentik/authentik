@@ -27,6 +27,7 @@ from structlog.stdlib import get_logger
 from authentik import get_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
+from authentik.common.exceptions import NotReportedException
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -46,7 +47,6 @@ from authentik.lib.models import (
     SerializerModel,
     internal_model,
 )
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
@@ -81,7 +81,7 @@ def django_app_names() -> list[str]:
     return [x.name for x in apps.app_configs.values()]
 
 
-class NotificationTransportError(SentryIgnoredException):
+class NotificationTransportError(NotReportedException):
     """Error raised when a notification fails to be delivered"""
 
 

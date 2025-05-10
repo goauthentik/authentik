@@ -6,7 +6,7 @@ from rest_framework.serializers import ValidationError
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.expression.api import ExpressionPolicySerializer
 from authentik.policies.expression.evaluator import PolicyEvaluator

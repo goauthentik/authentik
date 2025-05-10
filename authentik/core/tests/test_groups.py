@@ -3,7 +3,7 @@
 from django.test.testcases import TestCase
 
 from authentik.core.models import Group, User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class TestGroups(TestCase):

@@ -6,9 +6,9 @@ from django.test.client import RequestFactory
 from django.urls.base import reverse
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_sms.models import AuthenticatorSMSStage, SMSDevice, SMSProviders
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import COOKIE_NAME_MFA

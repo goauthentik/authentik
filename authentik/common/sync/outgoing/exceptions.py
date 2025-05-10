@@ -1,7 +1,7 @@
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class BaseSyncException(SentryIgnoredException):
+class BaseSyncException(NotReportedException):
     """Base class for all sync exceptions"""
 
 

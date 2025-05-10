@@ -19,8 +19,8 @@ from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.utils import model_to_dict
 from authentik.lib.models import excluded_models
-from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
+from authentik.root.sentry import should_ignore_exception
 from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = tuple(
@@ -173,7 +173,7 @@ class AuditMiddleware:
                 message=exception_to_string(exception),
             )
             thread.run()
-        elif before_send({}, {"exc_info": (None, exception, None)}) is not None:
+        elif not should_ignore_exception(exception):
             thread = EventNewThread(
                 EventAction.SYSTEM_EXCEPTION,
                 request,

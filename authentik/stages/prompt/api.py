@@ -11,11 +11,11 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.crypto.generators import generate_id
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import HttpChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.generators import generate_id
 from authentik.lib.utils.errors import exception_to_string
 from authentik.stages.prompt.models import Prompt, PromptStage
 from authentik.stages.prompt.stage import PromptChallenge, PromptStageView

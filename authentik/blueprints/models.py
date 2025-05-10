@@ -10,14 +10,14 @@ from rest_framework.serializers import Serializer
 from structlog import get_logger
 
 from authentik.blueprints.v1.oci import OCI_PREFIX, BlueprintOCIClient, OCIException
+from authentik.common.exceptions import NotReportedException
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
 
 LOGGER = get_logger()
 
 
-class BlueprintRetrievalFailed(SentryIgnoredException):
+class BlueprintRetrievalFailed(NotReportedException):
     """Error raised when we are unable to fetch the blueprint contents, whether it be HTTP files
     not being accessible or local files not being readable"""
 

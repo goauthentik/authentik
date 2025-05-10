@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 import authentik.core.models
-import authentik.lib.generators
+import authentik.crypto.generators
 import authentik.lib.utils.time
 
 
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="refreshtoken",
             name="token",
-            field=models.TextField(default=authentik.lib.generators.generate_key),
+            field=models.TextField(default=authentik.crypto.generators.generate_key),
         ),
         migrations.AlterField(
             model_name="oauth2provider",

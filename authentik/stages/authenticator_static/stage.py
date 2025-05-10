@@ -3,9 +3,9 @@
 from django.http import HttpRequest, HttpResponse
 from rest_framework.fields import CharField, ListField
 
+from authentik.crypto.generators import generate_id
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.generators import generate_id
 from authentik.stages.authenticator_static.models import (
     AuthenticatorStaticStage,
     StaticDevice,

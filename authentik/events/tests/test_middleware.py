@@ -5,9 +5,9 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application, Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.middleware import audit_ignore, audit_overwrite_user
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 
 
 class TestEventsMiddleware(APITestCase):

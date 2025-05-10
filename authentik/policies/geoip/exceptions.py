@@ -1,5 +1,5 @@
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class GeoIPNotFoundException(SentryIgnoredException):
+class GeoIPNotFoundException(NotReportedException):
     """Exception raised when an IP is not found in a GeoIP database"""

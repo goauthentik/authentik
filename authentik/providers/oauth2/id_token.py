@@ -16,8 +16,8 @@ from authentik.common.oauth.constants import (
     AMR_WEBAUTHN,
 )
 from authentik.core.models import default_token_duration
+from authentik.crypto.generators import generate_id
 from authentik.events.signals import get_login_event
-from authentik.lib.generators import generate_id
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:

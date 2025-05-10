@@ -10,8 +10,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id, generate_key
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback

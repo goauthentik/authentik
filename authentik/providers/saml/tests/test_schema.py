@@ -6,9 +6,9 @@ from django.test import TestCase
 from lxml import etree  # nosec
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.saml.xml import lxml_from_string
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.tests.utils import get_request
-from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser

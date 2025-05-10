@@ -5,7 +5,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync_all

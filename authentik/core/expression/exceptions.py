@@ -1,10 +1,10 @@
 """authentik core exceptions"""
 
+from authentik.common.exceptions import NotReportedException
 from authentik.common.expression.exceptions import ControlFlowException
-from authentik.lib.sentry import SentryIgnoredException
 
 
-class PropertyMappingExpressionException(SentryIgnoredException):
+class PropertyMappingExpressionException(NotReportedException):
     """Error when a PropertyMapping Exception expression could not be parsed or evaluated."""
 
     def __init__(self, exc: Exception, mapping) -> None:

@@ -1,9 +1,9 @@
 """authentik saml source exceptions"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class SAMLException(SentryIgnoredException):
+class SAMLException(NotReportedException):
     """Base SAML Exception"""
 
 

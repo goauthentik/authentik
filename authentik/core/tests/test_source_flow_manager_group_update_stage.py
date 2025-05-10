@@ -5,11 +5,11 @@ from django.test import RequestFactory
 from authentik.core.models import Group, SourceGroupMatchingModes
 from authentik.core.sources.flow_manager import PLAN_CONTEXT_SOURCE_GROUPS, GroupUpdateStage
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import GroupOAuthSourceConnection, OAuthSource
 
 

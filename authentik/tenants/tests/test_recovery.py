@@ -6,8 +6,8 @@ from django.urls import reverse
 from django_tenants.utils import get_public_schema_name
 
 from authentik.core.models import Token, TokenIntents, User
+from authentik.crypto.generators import generate_id
 from authentik.lib.config import CONFIG
-from authentik.lib.generators import generate_id
 from authentik.tenants.models import Tenant
 from authentik.tenants.tests.utils import TenantAPITestCase
 

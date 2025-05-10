@@ -5,9 +5,9 @@ from dataclasses import dataclass
 from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
+from authentik.common.exceptions import NotReportedException
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.lib.config import CONFIG
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import (
     Outpost,
     OutpostServiceConnection,
@@ -17,7 +17,7 @@ from authentik.outposts.models import (
 FIELD_MANAGER = "goauthentik.io"
 
 
-class ControllerException(SentryIgnoredException):
+class ControllerException(NotReportedException):
     """Exception raised when anything fails during controller run"""
 
 

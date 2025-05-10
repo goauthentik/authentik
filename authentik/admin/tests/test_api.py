@@ -8,7 +8,7 @@ from django.urls import reverse
 from authentik import __version__
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class TestAdminAPI(TestCase):

@@ -6,9 +6,9 @@ from django.urls.base import reverse
 from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowAuthenticationRequirement, FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.stages.dummy.models import DummyStage

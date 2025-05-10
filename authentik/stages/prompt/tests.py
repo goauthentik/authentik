@@ -7,12 +7,12 @@ from django.urls import reverse
 from rest_framework.exceptions import ErrorDetail, ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
-from authentik.lib.generators import generate_id
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.stages.prompt.models import FieldTypes, InlineFileField, Prompt, PromptStage
 from authentik.stages.prompt.stage import (

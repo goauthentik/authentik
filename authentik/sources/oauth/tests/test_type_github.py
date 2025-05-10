@@ -5,7 +5,7 @@ from copy import copy
 from django.test import RequestFactory, TestCase
 from requests_mock import Mocker
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.github import (
     GitHubOAuth2Callback,

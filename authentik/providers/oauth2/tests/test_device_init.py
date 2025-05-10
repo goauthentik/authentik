@@ -7,7 +7,7 @@ from rest_framework.test import APIClient
 
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand, create_test_flow
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.tests.utils import OAuthTestCase

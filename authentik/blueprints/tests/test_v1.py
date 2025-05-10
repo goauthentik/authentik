@@ -7,8 +7,8 @@ from django.test import TransactionTestCase
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
-from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding

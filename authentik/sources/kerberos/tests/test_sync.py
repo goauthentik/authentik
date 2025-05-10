@@ -2,7 +2,7 @@
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.kerberos.models import KerberosSource, KerberosSourcePropertyMapping
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.sources.kerberos.tasks import kerberos_sync_all

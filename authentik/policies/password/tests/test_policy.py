@@ -3,7 +3,7 @@
 from django.test import TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.lib.generators import generate_key
+from authentik.crypto.generators import generate_key
 from authentik.policies.password.models import PasswordPolicy
 from authentik.policies.types import PolicyRequest, PolicyResult
 

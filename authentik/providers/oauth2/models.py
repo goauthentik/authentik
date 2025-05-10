@@ -40,8 +40,8 @@ from authentik.core.models import (
     Provider,
     User,
 )
+from authentik.crypto.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel, internal_model
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.id_token import IDToken, SubModes

@@ -16,14 +16,14 @@ from requests.exceptions import RequestException
 from structlog import get_logger
 from structlog.stdlib import BoundLogger
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 from authentik.lib.utils.http import authentik_user_agent
 
 OCI_MEDIA_TYPE = "application/vnd.goauthentik.blueprint.v1+yaml"
 OCI_PREFIX = "oci://"
 
 
-class OCIException(SentryIgnoredException):
+class OCIException(NotReportedException):
     """OCI-related errors"""
 
 

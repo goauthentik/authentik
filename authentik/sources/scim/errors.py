@@ -1,8 +1,8 @@
 """SCIM Errors"""
 
-from authentik.lib.sentry import SentryIgnoredException
+from authentik.common.exceptions import NotReportedException
 
 
-class PatchError(SentryIgnoredException):
+class PatchError(NotReportedException):
     """Error raised within an atomic block when an error happened
     so nothing is saved"""

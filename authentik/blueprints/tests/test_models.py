@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintRetrievalFailed
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 class TestModels(TestCase):

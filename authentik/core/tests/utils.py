@@ -5,9 +5,9 @@ from django.utils.text import slugify
 from authentik.brands.models import Brand
 from authentik.core.models import Group, User
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
+from authentik.crypto.generators import generate_id
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow, FlowDesignation
-from authentik.lib.generators import generate_id
 
 
 def create_test_flow(

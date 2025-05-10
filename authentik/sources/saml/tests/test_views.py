@@ -6,9 +6,9 @@ from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.planner import PLAN_CONTEXT_REDIRECT, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.sources.saml.models import SAMLSource
 

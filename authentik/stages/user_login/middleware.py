@@ -6,9 +6,9 @@ from django.contrib.auth.views import redirect_to_login
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.common.exceptions import NotReportedException
 from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
 from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
-from authentik.lib.sentry import SentryIgnoredException
 from authentik.root.middleware import ClientIPMiddleware, SessionMiddleware
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding
 
@@ -17,7 +17,7 @@ SESSION_KEY_BINDING_GEO = "authentik/stages/user_login/binding/geo"
 LOGGER = get_logger()
 
 
-class SessionBindingBroken(SentryIgnoredException):
+class SessionBindingBroken(NotReportedException):
     """Session binding was broken due to specified `reason`"""
 
     def __init__(  # noqa: PLR0913

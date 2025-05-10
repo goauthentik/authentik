@@ -8,7 +8,7 @@ from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 
 
