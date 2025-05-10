@@ -5,11 +5,10 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
-from sentry_sdk import get_current_scope
-from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
+from authentik.lib.sentry import get_http_meta
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
@@ -36,9 +35,6 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     return {
         "brand": brand,
         "footer_links": tenant.footer_links,
-        "html_meta": {
-            SENTRY_TRACE_HEADER_NAME: get_current_scope().get_traceparent() or "",
-            BAGGAGE_HEADER_NAME: get_current_scope().get_baggage().serialize(),
-        },
+        "html_meta": {**get_http_meta()},
         "version": get_full_version(),
     }

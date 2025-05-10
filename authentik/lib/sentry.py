@@ -17,7 +17,7 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
-from sentry_sdk import HttpTransport
+from sentry_sdk import HttpTransport, get_current_scope
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
@@ -27,6 +27,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
+from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
@@ -169,3 +170,14 @@ def before_send(event: dict, hint: dict) -> dict | None:
     if settings.DEBUG:
         return None
     return event
+
+
+def get_http_meta():
+    """Get sentry-related meta key-values"""
+    scope = get_current_scope()
+    meta = {
+        SENTRY_TRACE_HEADER_NAME: scope.get_traceparent() or "",
+    }
+    if bag := scope.get_baggage():
+        meta[BAGGAGE_HEADER_NAME] = bag.serialize()
+    return meta
