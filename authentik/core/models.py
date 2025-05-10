@@ -757,6 +757,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
+    def serializer(self) -> type[Serializer]:
+        if self.managed == self.MANAGED_INBUILT:
+            from authentik.core.api.sources import SourceSerializer
+
+            return SourceSerializer
+        return super().serializer
+
+    @property
     def icon_url(self) -> str | None:
         """Get the URL to the Icon. If the name is /static or
         starts with http it is returned as-is"""
