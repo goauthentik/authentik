@@ -92,12 +92,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 });
             }
         } catch (error: any) {
-            showMessage({
-                level: MessageLevel.error,
-                message:
-                    error.response?.data?.error || error.message || "Failed to save application",
-            });
-            return;
+            // Let the base form handle error display
+            throw error;
         }
 
         // Create mutable copy of the app for modifications
@@ -105,11 +101,13 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
 
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["metaIcon"];
-
+            let attemptedIconOperation = false;
             try {
                 let iconResponse;
+                let iconSuccess = true;
 
                 if (this.clearIcon) {
+                    attemptedIconOperation = true;
                     // Clear the icon
                     iconResponse = await removeApplicationIcon(app.slug);
                     if (!iconResponse.error) {
@@ -117,8 +115,12 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                             level: MessageLevel.success,
                             message: msg("Application icon cleared successfully"),
                         });
+                    } else {
+                        // Let the base form handle error display
+                        throw new Error(iconResponse.error);
                     }
                 } else if (icon) {
+                    attemptedIconOperation = true;
                     // Upload new icon file
                     iconResponse = await setApplicationIcon(app.slug, icon);
                     if (!iconResponse.error && iconResponse.meta_icon) {
@@ -127,11 +129,15 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                             level: MessageLevel.success,
                             message: msg("Application icon updated successfully"),
                         });
+                    } else {
+                        // Let the base form handle error display
+                        throw new Error(iconResponse.error);
                     }
                 } else if (
                     data.metaIcon &&
                     (!this.instance || data.metaIcon !== this.instance.metaIcon)
                 ) {
+                    attemptedIconOperation = true;
                     // Set icon URL
                     iconResponse = await setApplicationIconUrl(app.slug, data.metaIcon);
                     if (!iconResponse.error && iconResponse.meta_icon) {
@@ -140,27 +146,23 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                             level: MessageLevel.success,
                             message: msg("Application icon URL updated successfully"),
                         });
+                    } else {
+                        // Let the base form handle error display
+                        throw new Error(iconResponse.error);
                     }
                 }
 
-                // Handle any error response
-                if (iconResponse?.error) {
-                    this.iconError = iconResponse.error;
-                    showMessage({
-                        level: MessageLevel.error,
-                        message: iconResponse.error,
-                    });
+                // If any icon operation was attempted and failed, do not return the app
+                if (attemptedIconOperation && !iconSuccess) {
+                    return;
                 }
             } catch (e: unknown) {
-                const error = e as Error;
-                this.iconError = error.message || msg("Failed to update application icon");
-                showMessage({
-                    level: MessageLevel.error,
-                    message: error.message || msg("Failed to update application icon"),
-                });
+                // Let the base form handle error display
+                throw e;
             }
         }
 
+        // Only return the app if all operations succeeded
         return mutableApp;
     }
 

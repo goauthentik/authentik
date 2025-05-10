@@ -593,6 +593,14 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
                 LOGGER.warning("Image validation failed", name=name, error=str(e))
                 raise
 
+        # For application icons, always validate
+        if name.startswith(STORAGE_DIR_APPLICATION_ICONS):
+            try:
+                validate_image_file(content)
+            except FileValidationError as e:
+                LOGGER.warning("Application icon validation failed", name=name, error=str(e))
+                raise
+
         # Preserve the original directory structure
         original_dir = os.path.dirname(name)
         base_name, ext = os.path.splitext(os.path.basename(name))
