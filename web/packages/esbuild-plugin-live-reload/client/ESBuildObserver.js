@@ -6,7 +6,7 @@
  * @import { Message as ESBuildMessage } from "esbuild";
  */
 
-const logPrefix = "👷 [ESBuild]";
+const logPrefix = "authentik/dev/web: ";
 const log = console.debug.bind(console, logPrefix);
 
 /**
