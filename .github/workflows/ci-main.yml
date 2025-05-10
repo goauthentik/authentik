@@ -70,7 +70,7 @@ jobs:
       - name: checkout stable
         run: |
           # Copy current, latest config to local
-          cp authentik/lib/default.yml local.env.yml
+          cp authentik/common/config/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
           git checkout $(git tag --sort=version:refname | grep '^version/' | grep -vE -- '-rc[0-9]+$' | tail -n1)
