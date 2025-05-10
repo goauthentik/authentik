@@ -106,19 +106,20 @@
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
-        "@storybook/addon-essentials": "^8.3.4",
-        "@storybook/addon-links": "^8.3.4",
+        "@storybook/addon-essentials": "^8.6.12",
+        "@storybook/addon-links": "^8.6.12",
         "@storybook/api": "^7.6.17",
-        "@storybook/blocks": "^8.3.4",
-        "@storybook/builder-vite": "^8.3.4",
-        "@storybook/manager-api": "^8.3.4",
-        "@storybook/web-components": "^8.3.4",
-        "@storybook/web-components-vite": "^8.3.4",
+        "@storybook/blocks": "^8.6.12",
+        "@storybook/builder-vite": "^8.6.12",
+        "@storybook/manager-api": "^8.6.12",
+        "@storybook/web-components": "^8.6.12",
+        "@storybook/web-components-vite": "^8.6.12",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
         "@types/eslint__js": "^8.42.3",
+        "@types/events": "^3.0.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.2",
         "@types/mocha": "^10.0.8",
@@ -127,10 +128,11 @@
         "@types/react-dom": "^18.3.0",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
-        "@wdio/browser-runner": "9.4",
-        "@wdio/cli": "9.4",
-        "@wdio/spec-reporter": "^9.1.2",
-        "chromedriver": "^131.0.1",
+        "@wdio/browser-runner": "^9.12.7",
+        "@wdio/cli": "^9.12.7",
+        "@wdio/spec-reporter": "^9.12.6",
+        "@web/test-runner": "^0.20.1",
+        "chromedriver": "^135.0.4",
         "esbuild": "^0.25.0",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
@@ -143,17 +145,18 @@
         "knip": "^5.30.6",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
+        "p-iteration": "^1.1.8",
         "prettier": "^3.3.3",
         "pseudolocale": "^2.1.0",
         "rollup-plugin-modify": "^3.0.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
-        "storybook": "^8.3.4",
+        "storybook": "^8.6.12",
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.6.2",
         "typescript-eslint": "^8.8.0",
-        "vite-plugin-lit-css": "^2.0.0",
-        "vite-tsconfig-paths": "^5.0.1",
+        "vite-plugin-lit-css": "^2.1.0",
+        "vite-tsconfig-paths": "^5.1.4",
         "wireit": "^0.14.9"
     },
     "optionalDependencies": {
@@ -346,7 +349,7 @@
             ],
             "env": {
                 "CI": "true",
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e:watch": {
@@ -355,7 +358,7 @@
                 "build"
             ],
             "env": {
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:watch": {

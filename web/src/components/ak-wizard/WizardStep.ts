@@ -54,7 +54,7 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  * @fires WizardCloseEvent - request parent container (Wizard) to close the wizard
  */
 
-export class WizardStep extends AKElement {
+export abstract class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
     static get styles() {

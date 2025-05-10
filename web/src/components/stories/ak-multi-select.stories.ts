@@ -59,7 +59,7 @@ export const RadioInput = () => {
             </ul>
             <p>Results from component:</p>
             <ul style="list-style-type: disc">
-                ${component!.json().map((v: string) => html`<li>${v}</li>`)}
+                ${component!.toJSON().map((v: string) => html`<li>${v}</li>`)}
             </ul>
         `;
 

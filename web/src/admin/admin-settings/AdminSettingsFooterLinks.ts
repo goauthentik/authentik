@@ -1,4 +1,7 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
+import {
+    AkControlElement,
+    formatFormElementAsJSON,
+} from "@goauthentik/elements/AkControlElement.js";
 import { type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
@@ -43,17 +46,18 @@ export class FooterLinkInput extends AkControlElement<FooterLink> {
         href: "",
     };
 
+    @property({ type: String })
+    name: string | null | undefined;
+
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
-        return Object.fromEntries(
-            Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
-        ) as unknown as FooterLink;
+    toJSON() {
+        return formatFormElementAsJSON<FooterLink>(this.controls);
     }
 
     get isValid() {
-        const href = this.json()?.href ?? "";
+        const href = this.toJSON()?.href ?? "";
         return hasLegalScheme(href) && URL.canParse(href);
     }
 

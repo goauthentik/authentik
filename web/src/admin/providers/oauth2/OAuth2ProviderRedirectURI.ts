@@ -1,5 +1,8 @@
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
+import {
+    AkControlElement,
+    formatFormElementAsJSON,
+} from "@goauthentik/elements/AkControlElement.js";
 import { type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
@@ -42,10 +45,8 @@ export class OAuth2ProviderRedirectURI extends AkControlElement<RedirectURI> {
     @queryAll(".ak-form-control")
     controls?: HTMLInputElement[];
 
-    json() {
-        return Object.fromEntries(
-            Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
-        ) as unknown as RedirectURI;
+    toJSON() {
+        return formatFormElementAsJSON<RedirectURI>(this.controls);
     }
 
     get isValid() {

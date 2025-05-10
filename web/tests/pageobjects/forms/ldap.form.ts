@@ -1,8 +1,8 @@
-import Page from "../page.js";
+import { searchSelect } from "../../utils/controls.js";
 
-export class LdapForm extends Page {
-    async setBindFlow() {
-        await this.searchSelect(
+export abstract class LDAPForm {
+    public static setBindFlow() {
+        return searchSelect(
             '>>>ak-search-select-view[name="authorizationFlow"]',
             "authorizationFlow",
             "default-authentication-flow",
@@ -10,4 +10,4 @@ export class LdapForm extends Page {
     }
 }
 
-export default new LdapForm();
+export default LDAPForm;

@@ -50,12 +50,7 @@
     "exclude": [
         // ---
         "./out/**/*",
-        "./dist/**/*",
-        "src/**/*.test.ts",
-        "./tests",
-
-        // TODO: Remove after monorepo cleanup.
-        "src/**/*.comp.ts"
+        "./dist/**/*"
     ],
     "references": [
         {

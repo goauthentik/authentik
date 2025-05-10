@@ -179,7 +179,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderBody() {
         // prettier-ignore
-        return this.content.kind === 'flat' 
+        return this.content.kind === 'flat'
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }

@@ -1,12 +1,18 @@
-import replace from "@rollup/plugin-replace";
+/**
+ * @file Storybook configuration.
+ */
 import type { StorybookConfig } from "@storybook/web-components-vite";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
 import { cwd } from "process";
 import modify from "rollup-plugin-modify";
 import postcssLit from "rollup-plugin-postcss-lit";
+import type { InlineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export const isProdBuild = process.env.NODE_ENV === "production";
-export const apiBasePath = process.env.AK_API_BASE_PATH || "";
+const require = createRequire(import.meta.url);
+
+const NODE_ENV = process.env.NODE_ENV || "development";
 
 const importInlinePatterns = [
     'import AKGlobal from "(\\.\\./)*common/styles/authentik\\.css',
@@ -19,7 +25,10 @@ const importInlinePatterns = [
 
 const importInlineRegexp = new RegExp(importInlinePatterns.map((a) => `(${a})`).join("|"));
 
-const config: StorybookConfig = {
+const patternflyPackageJSONPath = require.resolve("@patternfly/patternfly/package.json");
+const patternflyPackagePath = dirname(patternflyPackageJSONPath);
+
+const config = {
     stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|ts|tsx)"],
     addons: [
         "@storybook/addon-controls",
@@ -29,7 +38,7 @@ const config: StorybookConfig = {
     ],
     staticDirs: [
         {
-            from: "../node_modules/@patternfly/patternfly/patternfly-base.css",
+            from: join(patternflyPackagePath, "patternfly-base.css"),
             to: "@patternfly/patternfly/patternfly-base.css",
         },
         {
@@ -52,9 +61,14 @@ const config: StorybookConfig = {
     docs: {
         autodocs: "tag",
     },
-    async viteFinal(config) {
-        return {
+    viteFinal({ plugins = [], ...config }) {
+        const mergedConfig: InlineConfig = {
             ...config,
+            define: {
+                "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
+                "process.env.CWD": JSON.stringify(cwd()),
+                "process.env.AK_API_BASE_PATH": JSON.stringify(process.env.AK_API_BASE_PATH || ""),
+            },
             plugins: [
                 modify({
                     find: importInlineRegexp,
@@ -62,20 +76,14 @@ const config: StorybookConfig = {
                         return `${match}?inline`;
                     },
                 }),
-                replace({
-                    "process.env.NODE_ENV": JSON.stringify(
-                        isProdBuild ? "production" : "development",
-                    ),
-                    "process.env.CWD": JSON.stringify(cwd()),
-                    "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                    "preventAssignment": true,
-                }),
-                ...config.plugins,
+                ...plugins,
                 postcssLit(),
                 tsconfigPaths(),
             ],
         };
+
+        return mergedConfig;
     },
-};
+} satisfies StorybookConfig;
 
 export default config;

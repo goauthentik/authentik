@@ -166,18 +166,21 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
         this.#sidebarMatcher.removeEventListener("change", this.#sidebarListener);
     }
 
-    async firstUpdated(): Promise<void> {
+    public firstUpdated(): void {
         configureSentry(true);
-        this.user = await me();
 
-        const canAccessAdmin =
-            this.user.user.isSuperuser ||
-            // TODO: somehow add `access_admin_interface` to the API schema
-            this.user.user.systemPermissions.includes("access_admin_interface");
+        me().then((session) => {
+            this.user = session;
 
-        if (!canAccessAdmin && this.user.user.pk > 0) {
-            window.location.assign("/if/user/");
-        }
+            const canAccessAdmin =
+                this.user.user.isSuperuser ||
+                // TODO: somehow add `access_admin_interface` to the API schema
+                this.user.user.systemPermissions.includes("access_admin_interface");
+
+            if (!canAccessAdmin && this.user.user.pk > 0) {
+                window.location.assign("/if/user/");
+            }
+        });
     }
 
     render(): TemplateResult {
