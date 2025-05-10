@@ -7,9 +7,9 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
 from authentik.events.utils import sanitize_item
-from authentik.lib.generators import generate_id
 
 
 class TestEnterpriseAudit(APITestCase):

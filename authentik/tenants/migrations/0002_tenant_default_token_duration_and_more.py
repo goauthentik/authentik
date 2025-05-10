@@ -3,8 +3,8 @@
 import django.core.validators
 from django.db import migrations, models
 
-import authentik.lib.utils.time
-from authentik.lib.config import CONFIG
+import authentik.common.utils.time
+from authentik.common.config import CONFIG
 
 
 class Migration(migrations.Migration):
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 default=CONFIG.get("default_token_duration", "minutes=30"),
                 help_text="Default token duration",
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
         migrations.AddField(

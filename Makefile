@@ -12,9 +12,9 @@ GEN_API_TS = "gen-ts-api"
 GEN_API_PY = "gen-py-api"
 GEN_API_GO = "gen-go-api"
 
-pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
-pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
-pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
+pg_user := $(shell uv run python -m authentik.common.config postgresql.user 2>/dev/null)
+pg_host := $(shell uv run python -m authentik.common.config postgresql.host 2>/dev/null)
+pg_name := $(shell uv run python -m authentik.common.config postgresql.name 2>/dev/null)
 
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 

@@ -5,7 +5,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 scope_uid_map = {
     "openid": "goauthentik.io/providers/oauth2/scope-openid",
@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
                     "Access codes not valid on or after current time + this value (Format:"
                     " hours=1;minutes=2;seconds=3)."
                 ),
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
         migrations.AlterField(
@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
                     "Tokens not valid on or after current time + this value (Format:"
                     " hours=1;minutes=2;seconds=3)."
                 ),
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
     ]

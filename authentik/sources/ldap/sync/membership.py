@@ -6,8 +6,9 @@ from typing import Any
 from django.db.models import Q
 from ldap3 import SUBTREE
 
+from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
 from authentik.core.models import Group, User
-from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAP_UNIQUENESS, LDAPSource
+from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 

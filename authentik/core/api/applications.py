@@ -23,18 +23,18 @@ from structlog.stdlib import get_logger
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
+from authentik.common.utils.file import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    set_file,
+    set_file_url,
+)
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.events.models import EventAction
-from authentik.lib.utils.file import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    set_file,
-    set_file_url,
-)
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import CACHE_PREFIX, PolicyResult

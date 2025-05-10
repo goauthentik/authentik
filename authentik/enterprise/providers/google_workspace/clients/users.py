@@ -1,5 +1,11 @@
 from django.db import transaction
 
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.exceptions import (
+    ObjectExistsSyncException,
+    TransientSyncException,
+)
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.core.models import User
 from authentik.enterprise.providers.google_workspace.clients.base import GoogleWorkspaceSyncClient
 from authentik.enterprise.providers.google_workspace.models import (
@@ -7,12 +13,6 @@ from authentik.enterprise.providers.google_workspace.models import (
     GoogleWorkspaceProviderMapping,
     GoogleWorkspaceProviderUser,
 )
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import (
-    ObjectExistsSyncException,
-    TransientSyncException,
-)
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.policies.utils import delete_none_values
 
 

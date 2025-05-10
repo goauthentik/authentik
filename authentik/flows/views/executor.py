@@ -23,6 +23,10 @@ from sentry_sdk.api import set_tag
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
+from authentik.common.exceptions import NotReportedException
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.reflection import all_subclasses, class_to_path
+from authentik.common.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
@@ -55,10 +59,6 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.reflection import all_subclasses, class_to_path
-from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 
 LOGGER = get_logger()
@@ -78,7 +78,7 @@ def challenge_types():
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
     for cls in all_subclasses(Challenge):
-        if cls == WithUserInfoChallenge:
+        if cls in [WithUserInfoChallenge]:
             continue
         mapping[cls().fields["component"].default] = cls
     return mapping
@@ -93,7 +93,7 @@ def challenge_response_types():
     return mapping
 
 
-class InvalidStageError(SentryIgnoredException):
+class InvalidStageError(NotReportedException):
     """Error raised when a challenge from a stage is not valid"""
 
 

@@ -1,7 +1,7 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.oidc import OpenIDConnectClient

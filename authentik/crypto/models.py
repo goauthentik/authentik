@@ -15,7 +15,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.lib.models import CreatedUpdatedModel, SerializerModel
+from authentik.common.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()
 

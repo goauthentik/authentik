@@ -8,6 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, CharField, IntegerField
 
+from authentik.common.utils.email import mask_email
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.time import timedelta_from_string
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
     Challenge,
@@ -16,9 +19,6 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.email import mask_email
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator_email.models import (
     AuthenticatorEmailStage,
     EmailDevice,

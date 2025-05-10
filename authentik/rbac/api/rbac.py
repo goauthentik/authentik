@@ -18,9 +18,9 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from authentik.common.api.validators import RequiredTogetherValidator
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
-from authentik.lib.validators import RequiredTogetherValidator
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.models import Role
 

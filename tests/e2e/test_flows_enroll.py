@@ -7,9 +7,9 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.common.config import CONFIG
 from authentik.core.models import User
 from authentik.flows.models import Flow
-from authentik.lib.config import CONFIG
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
 

@@ -5,7 +5,7 @@ import django.utils.timezone
 from django.conf import settings
 from django.db import migrations, models
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="minutes=30",
                         help_text="Time the token sent is valid (Format: hours=3,minutes=17,seconds=300).",
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 ("subject", models.TextField(default="authentik Sign-in code")),

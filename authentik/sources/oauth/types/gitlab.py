@@ -7,6 +7,7 @@ and https://docs.gitlab.com/ee/integration/openid_connect_provider.html
 
 from typing import Any
 
+from authentik.common.oauth.constants import SCOPE_OPENID, SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -17,7 +18,7 @@ class GitLabOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source: OAuthSource):
         return {
-            "scope": ["read_user", "openid", "profile", "email"],
+            "scope": ["read_user", SCOPE_OPENID, SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL],
         }
 
 

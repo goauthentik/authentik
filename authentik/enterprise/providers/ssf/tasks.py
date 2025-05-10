@@ -5,6 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.common.utils.http import get_http_session
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import User
 from authentik.enterprise.providers.ssf.models import (
     DeliveryMethods,
@@ -16,8 +18,6 @@ from authentik.enterprise.providers.ssf.models import (
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.utils.http import get_http_session
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.root.celery import CELERY_APP
 

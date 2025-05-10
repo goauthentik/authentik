@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 from django.test import TestCase
 
 from authentik.core.models import User
-from authentik.lib.generators import generate_key
+from authentik.crypto.generators import generate_key
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection

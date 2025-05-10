@@ -2,9 +2,9 @@
 
 from requests import RequestException
 
+from authentik.common.utils.errors import exception_to_string
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth

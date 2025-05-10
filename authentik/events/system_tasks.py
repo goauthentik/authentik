@@ -9,11 +9,11 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import BoundLogger, get_logger
 from tenant_schemas_celery.task import TenantTask
 
+from authentik.common.utils.errors import exception_to_string
 from authentik.events.logs import LogEvent
 from authentik.events.models import Event, EventAction, TaskStatus
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.utils import sanitize_item
-from authentik.lib.utils.errors import exception_to_string
 
 
 class SystemTask(TenantTask):

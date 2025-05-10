@@ -3,7 +3,7 @@
 
 from yaml import safe_dump
 
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 
 def generate_local_config():

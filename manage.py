@@ -4,7 +4,7 @@ import os
 import sys
 import warnings
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from django.utils.autoreload import DJANGO_AUTORELOAD_ENV

@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.providers.oauth2.models import (
     AccessToken,
     ClientTypes,

@@ -6,7 +6,7 @@ from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
 
-from deepmerge import always_merger
+from deepmerge import Merger, always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -26,18 +26,18 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.lib.avatars import get_avatar
-from authentik.lib.expression.exceptions import ControlFlowException
-from authentik.lib.generators import generate_id
-from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import (
+from authentik.common.expression.exceptions import ControlFlowException
+from authentik.common.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
+    internal_model,
 )
-from authentik.lib.utils.time import timedelta_from_string
+from authentik.common.utils.time import timedelta_from_string
+from authentik.core.avatars import get_avatar
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.generators import generate_id
 from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
@@ -63,6 +63,10 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 GROUP_RECURSION_LIMIT = 20
+
+MERGE_LIST_UNIQUE = Merger(
+    [(list, ["append_unique"]), (dict, ["merge"]), (set, ["union"])], ["override"], ["override"]
+)
 
 
 def default_token_duration() -> datetime:
@@ -408,6 +412,7 @@ class User(SerializerModel, GuardianUserMixin, AttributesMixin, AbstractUser):
         return get_avatar(self)
 
 
+@internal_model
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
@@ -692,6 +697,7 @@ class SourceGroupMatchingModes(models.TextChoices):
     )
 
 
+@internal_model
 class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     """Base Authentication source, i.e. an OAuth Provider, SAML Remote or LDAP Server"""
 
@@ -752,6 +758,14 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     )
 
     objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        if self.managed == self.MANAGED_INBUILT:
+            from authentik.core.api.sources import SourceSerializer
+
+            return SourceSerializer
+        return super().serializer
 
     @property
     def icon_url(self) -> str | None:
@@ -835,6 +849,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         ]
 
 
+@internal_model
 class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between User and Source."""
 
@@ -860,6 +875,7 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         )
 
 
+@internal_model
 class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
     """Connection between Group and Source."""
 
@@ -989,6 +1005,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         ).save()
 
 
+@internal_model
 class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
@@ -1028,6 +1045,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         verbose_name_plural = _("Property Mappings")
 
 
+@internal_model
 class Session(ExpiringModel, AbstractBaseSession):
     """User session with extra fields for fast access"""
 
@@ -1074,6 +1092,7 @@ class Session(ExpiringModel, AbstractBaseSession):
         raise NotImplementedError
 
 
+@internal_model
 class AuthenticatedSession(SerializerModel):
     session = models.OneToOneField(Session, on_delete=models.CASCADE, primary_key=True)
     # We use the session as primary key, but we need the API to be able to reference

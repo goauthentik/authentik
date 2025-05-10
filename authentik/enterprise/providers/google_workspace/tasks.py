@@ -1,9 +1,9 @@
 """Google Provider tasks"""
 
+from authentik.common.sync.outgoing.exceptions import TransientSyncException
+from authentik.common.sync.outgoing.tasks import SyncTasks
 from authentik.enterprise.providers.google_workspace.models import GoogleWorkspaceProvider
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.sync.outgoing.exceptions import TransientSyncException
-from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.root.celery import CELERY_APP
 
 sync_tasks = SyncTasks(GoogleWorkspaceProvider)

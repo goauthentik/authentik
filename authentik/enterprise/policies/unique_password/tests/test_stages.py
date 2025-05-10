@@ -2,6 +2,7 @@ from django.urls import reverse
 
 from authentik.core.models import Group, Source, User
 from authentik.core.tests.utils import create_test_flow, create_test_user
+from authentik.crypto.generators import generate_key
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
@@ -11,7 +12,6 @@ from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_key
 from authentik.policies.models import PolicyBinding, PolicyBindingModel
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 from authentik.stages.user_write.models import UserWriteStage

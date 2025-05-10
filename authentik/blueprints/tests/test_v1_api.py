@@ -7,8 +7,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 from yaml import dump
 
+from authentik.common.config import CONFIG
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.config import CONFIG
 
 TMP = mkdtemp("authentik-blueprints")
 

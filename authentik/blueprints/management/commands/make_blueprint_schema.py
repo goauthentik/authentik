@@ -15,7 +15,7 @@ from authentik import __version__
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
-from authentik.lib.models import SerializerModel
+from authentik.common.models import SerializerModel
 
 LOGGER = get_logger()
 

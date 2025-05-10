@@ -5,7 +5,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.models
+import authentik.common.models
 from authentik.flows.models import FlowDesignation
 
 
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="flowstagebinding",
             name="stage",
-            field=authentik.lib.models.InheritanceForeignKey(
+            field=authentik.common.models.InheritanceForeignKey(
                 on_delete=django.db.models.deletion.CASCADE, to="authentik_flows.stage"
             ),
         ),

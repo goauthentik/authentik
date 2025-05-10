@@ -5,6 +5,7 @@ from typing import Any
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
+from authentik.common.oauth.constants import SCOPE_OPENID_PROFILE
 from authentik.sources.oauth.clients.oauth2 import OAuth2Client
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -19,7 +20,7 @@ class MailcowOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": ["profile"],
+            "scope": [SCOPE_OPENID_PROFILE],
         }
 
 

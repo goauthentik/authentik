@@ -8,7 +8,7 @@ from django.core.exceptions import FieldError
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.models
+import authentik.common.models
 import authentik.outposts.models
 
 
@@ -246,7 +246,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="outpost",
             name="service_connection",
-            field=authentik.lib.models.InheritanceForeignKey(
+            field=authentik.common.models.InheritanceForeignKey(
                 blank=True,
                 default=None,
                 help_text=(

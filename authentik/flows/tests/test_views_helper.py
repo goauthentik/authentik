@@ -5,10 +5,10 @@ from django.urls import reverse
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_flow
+from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
 

@@ -9,10 +9,10 @@ from cryptography.x509.base import load_pem_x509_certificate
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
-from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()

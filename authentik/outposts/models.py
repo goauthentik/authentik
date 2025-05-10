@@ -22,6 +22,14 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
+from authentik.common.config import CONFIG
+from authentik.common.exceptions import NotReportedException
+from authentik.common.models import (
+    InheritanceForeignKey,
+    SerializerModel,
+    internal_model,
+)
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
     Provider,
@@ -32,10 +40,6 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
-from authentik.lib.models import InheritanceForeignKey, SerializerModel
-from authentik.lib.sentry import SentryIgnoredException
-from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
 OUR_VERSION = parse(__version__)
@@ -45,7 +49,7 @@ LOGGER = get_logger()
 USER_PATH_OUTPOSTS = USER_PATH_SYSTEM_PREFIX + "/outposts"
 
 
-class ServiceConnectionInvalid(SentryIgnoredException):
+class ServiceConnectionInvalid(NotReportedException):
     """Exception raised when a Service Connection has invalid parameters"""
 
 
@@ -115,6 +119,7 @@ class OutpostServiceConnectionState:
     healthy: bool
 
 
+@internal_model
 class OutpostServiceConnection(models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 

@@ -7,7 +7,7 @@ from authentik.brands.api import Themes
 from authentik.brands.models import Brand
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_brand
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 from authentik.providers.saml.models import SAMLProvider
 

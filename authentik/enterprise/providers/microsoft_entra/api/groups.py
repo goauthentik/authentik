@@ -3,11 +3,11 @@
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.common.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserGroupSerializer
 from authentik.core.api.utils import ModelSerializer
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProviderGroup
-from authentik.lib.sync.outgoing.api import OutgoingSyncConnectionCreateMixin
 
 
 class MicrosoftEntraProviderGroupSerializer(ModelSerializer):

@@ -11,8 +11,8 @@ from jwt import PyJWKSet
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.crypto.builder import PrivateKeyAlg
+from authentik.crypto.generators import generate_id
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 

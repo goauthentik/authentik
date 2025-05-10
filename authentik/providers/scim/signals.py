@@ -1,6 +1,6 @@
 """SCIM provider signals"""
 
-from authentik.lib.sync.outgoing.signals import register_signals
+from authentik.common.sync.outgoing.signals import register_signals
 from authentik.providers.scim.models import SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, scim_sync_direct, scim_sync_m2m
 

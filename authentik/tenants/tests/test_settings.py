@@ -3,7 +3,7 @@
 from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.tenants.models import Domain, Tenant
 from authentik.tenants.tests.utils import TenantAPITestCase
 

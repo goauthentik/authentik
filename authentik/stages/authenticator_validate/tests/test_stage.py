@@ -7,11 +7,11 @@ from django.urls.base import reverse
 from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDigits

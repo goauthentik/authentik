@@ -3,7 +3,7 @@
 import django.db.models.deletion
 from django.db import migrations, models
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
                             "Assertion valid not before current time + this value (Format:"
                             " hours=-1;minutes=-2;seconds=-3)."
                         ),
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
@@ -83,7 +83,7 @@ class Migration(migrations.Migration):
                             "Assertion not valid on or after current time + this value (Format:"
                             " hours=1;minutes=2;seconds=3)."
                         ),
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
@@ -94,7 +94,7 @@ class Migration(migrations.Migration):
                             "Session not valid on or after current time + this value (Format:"
                             " hours=1;minutes=2;seconds=3)."
                         ),
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (

@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
+from authentik.common.views import bad_request_message
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
@@ -36,7 +37,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET
-from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_values
 from authentik.stages.password import BACKEND_INBUILT

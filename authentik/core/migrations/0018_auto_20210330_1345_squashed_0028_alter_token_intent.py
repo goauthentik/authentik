@@ -10,7 +10,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from django.db.models import Count
 
 import authentik.core.models
-import authentik.lib.models
+import authentik.common.models
 
 
 def migrate_sessions(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -160,7 +160,7 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 blank=True,
                 default="",
-                validators=[authentik.lib.models.DomainlessFormattedURLValidator()],
+                validators=[authentik.common.models.DomainlessFormattedURLValidator()],
             ),
         ),
         migrations.RunPython(

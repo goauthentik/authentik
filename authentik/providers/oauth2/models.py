@@ -33,6 +33,8 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import WebfingerProvider
+from authentik.common.models import SerializerModel, internal_model
+from authentik.common.utils.time import timedelta_string_validator
 from authentik.core.models import (
     AuthenticatedSession,
     ExpiringModel,
@@ -40,10 +42,8 @@ from authentik.core.models import (
     Provider,
     User,
 )
+from authentik.crypto.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
 
@@ -428,6 +428,7 @@ class BaseGrantModel(models.Model):
         self._scope = " ".join(value)
 
 
+@internal_model
 class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Authorization Code"""
 
@@ -463,6 +464,7 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         )
 
 
+@internal_model
 class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
@@ -509,6 +511,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
+@internal_model
 class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
@@ -547,6 +550,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         return TokenModelSerializer
 
 
+@internal_model
 class DeviceToken(ExpiringModel):
     """Temporary device token for OAuth device flow"""
 

@@ -8,8 +8,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from authentik.common.models import CreatedUpdatedModel
 from authentik.core.models import User
-from authentik.lib.models import CreatedUpdatedModel
 from authentik.stages.authenticator.util import random_number_token
 
 

@@ -10,7 +10,7 @@ from typing import Any
 from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 LOGGER = get_logger()
 ADV_LOCK_UID = 1000

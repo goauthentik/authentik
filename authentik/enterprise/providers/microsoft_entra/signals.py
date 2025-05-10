@@ -1,12 +1,12 @@
 """Microsoft provider signals"""
 
+from authentik.common.sync.outgoing.signals import register_signals
 from authentik.enterprise.providers.microsoft_entra.models import MicrosoftEntraProvider
 from authentik.enterprise.providers.microsoft_entra.tasks import (
     microsoft_entra_sync,
     microsoft_entra_sync_direct,
     microsoft_entra_sync_m2m,
 )
-from authentik.lib.sync.outgoing.signals import register_signals
 
 register_signals(
     MicrosoftEntraProvider,

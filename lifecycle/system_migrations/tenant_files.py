@@ -1,7 +1,7 @@
 # flake8: noqa
 from pathlib import Path
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
 MEDIA_ROOT = Path(__file__).parent.parent.parent / "media"

@@ -11,9 +11,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.common.models import SerializerModel
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
 from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator.util import hex_validator, random_hex

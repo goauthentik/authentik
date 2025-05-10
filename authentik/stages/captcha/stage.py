@@ -7,13 +7,13 @@ from rest_framework.fields import BooleanField, CharField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 
+from authentik.common.utils.http import get_http_session
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.http import get_http_session
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.captcha.models import CaptchaStage
 

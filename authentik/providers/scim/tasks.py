@@ -1,8 +1,8 @@
 """SCIM Provider tasks"""
 
+from authentik.common.sync.outgoing.exceptions import TransientSyncException
+from authentik.common.sync.outgoing.tasks import SyncTasks
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.sync.outgoing.exceptions import TransientSyncException
-from authentik.lib.sync.outgoing.tasks import SyncTasks
 from authentik.providers.scim.models import SCIMProvider
 from authentik.root.celery import CELERY_APP
 

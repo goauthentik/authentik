@@ -13,28 +13,7 @@ from django.utils.timezone import now
 from lxml import etree  # nosec
 from structlog.stdlib import get_logger
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
-    USER_ATTRIBUTE_EXPIRES,
-    USER_ATTRIBUTE_GENERATED,
-    USER_ATTRIBUTE_SOURCES,
-    User,
-)
-from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.utils.time import timedelta_from_string
-from authentik.sources.saml.exceptions import (
-    InvalidEncryption,
-    InvalidSignature,
-    MismatchedRequestID,
-    MissingSAMLResponse,
-    UnsupportedNameIDFormat,
-)
-from authentik.sources.saml.models import (
-    GroupSAMLSourceConnection,
-    SAMLSource,
-    UserSAMLSourceConnection,
-)
-from authentik.sources.saml.processors.constants import (
+from authentik.common.saml.constants import (
     NS_MAP,
     NS_SAML_ASSERTION,
     NS_SAML_PROTOCOL,
@@ -43,6 +22,27 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_TRANSIENT,
     SAML_NAME_ID_FORMAT_WINDOWS,
     SAML_NAME_ID_FORMAT_X509,
+)
+from authentik.common.saml.exceptions import (
+    InvalidEncryption,
+    InvalidSignature,
+    MismatchedRequestID,
+    MissingSAMLResponse,
+    UnsupportedNameIDFormat,
+)
+from authentik.common.utils.time import timedelta_from_string
+from authentik.core.models import (
+    USER_ATTRIBUTE_DELETE_ON_LOGOUT,
+    USER_ATTRIBUTE_EXPIRES,
+    USER_ATTRIBUTE_GENERATED,
+    USER_ATTRIBUTE_SOURCES,
+    User,
+)
+from authentik.core.sources.flow_manager import SourceFlowManager
+from authentik.sources.saml.models import (
+    GroupSAMLSourceConnection,
+    SAMLSource,
+    UserSAMLSourceConnection,
 )
 from authentik.sources.saml.processors.request import SESSION_KEY_REQUEST_ID
 

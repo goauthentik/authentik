@@ -8,12 +8,12 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from rest_framework.fields import BooleanField, CharField
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND

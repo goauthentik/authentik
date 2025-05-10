@@ -3,7 +3,7 @@
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Token, User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.sources.scim.models import SCIMSource
 
 

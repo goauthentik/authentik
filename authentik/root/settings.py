@@ -11,11 +11,11 @@ from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
 from authentik import __version__
-from authentik.lib.config import CONFIG, django_db_config, redis_url
-from authentik.lib.logging import get_logger_config, structlog_configure
-from authentik.lib.sentry import sentry_init
-from authentik.lib.utils.reflection import get_env
-from authentik.lib.utils.time import timedelta_from_string
+from authentik.common.config import CONFIG, django_db_config, redis_url
+from authentik.common.utils.reflection import get_env
+from authentik.common.utils.time import timedelta_from_string
+from authentik.root.logging import get_logger_config, structlog_configure
+from authentik.root.sentry import sentry_init
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
@@ -165,7 +165,9 @@ SPECTACULAR_SETTINGS = {
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
-        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "OutgoingSyncDeleteAction": (
+            "authentik.common.sync.outgoing.models.OutgoingSyncDeleteAction"
+        ),
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
@@ -446,6 +448,7 @@ _DISALLOWED_ITEMS = [
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -468,6 +471,7 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:

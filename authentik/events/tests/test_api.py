@@ -6,6 +6,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import (
     Event,
     EventAction,
@@ -14,7 +15,6 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.events.utils import model_to_dict
-from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
 

@@ -9,8 +9,8 @@ from authentik.admin.tasks import (
     clear_update_notifications,
     update_latest_version,
 )
+from authentik.common.config import CONFIG
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
 
 RESPONSE_VALID = {
     "$schema": "https://version.goauthentik.io/schema.json",

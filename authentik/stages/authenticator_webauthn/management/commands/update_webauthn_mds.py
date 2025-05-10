@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from fido2.mds3 import parse_blob
 from structlog.stdlib import get_logger
 
-from authentik.lib.utils.http import get_http_session
+from authentik.common.utils.http import get_http_session
 from authentik.stages.authenticator_webauthn.tasks import AAGUID_BLOB_PATH, MDS_BLOB_PATH, mds_ca
 
 MDS3_URL = "https://mds3.fidoalliance.org/"

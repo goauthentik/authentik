@@ -3,6 +3,13 @@ from django.db import transaction
 from msgraph.generated.models.user import User as MSUser
 from msgraph.generated.users.users_request_builder import UsersRequestBuilder
 
+from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.sync.outgoing.exceptions import (
+    ObjectExistsSyncException,
+    StopSync,
+    TransientSyncException,
+)
+from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.core.models import User
 from authentik.enterprise.providers.microsoft_entra.clients.base import MicrosoftEntraSyncClient
 from authentik.enterprise.providers.microsoft_entra.models import (
@@ -10,13 +17,6 @@ from authentik.enterprise.providers.microsoft_entra.models import (
     MicrosoftEntraProviderMapping,
     MicrosoftEntraProviderUser,
 )
-from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.lib.sync.outgoing.exceptions import (
-    ObjectExistsSyncException,
-    StopSync,
-    TransientSyncException,
-)
-from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction
 from authentik.policies.utils import delete_none_values
 
 

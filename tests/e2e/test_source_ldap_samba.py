@@ -5,7 +5,7 @@ from ldap3.core.exceptions import LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
-from authentik.lib.generators import generate_id, generate_key
+from authentik.crypto.generators import generate_id, generate_key
 from authentik.sources.ldap.auth import LDAPBackend
 from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer

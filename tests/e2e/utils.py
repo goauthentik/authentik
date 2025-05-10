@@ -35,7 +35,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 
 RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ

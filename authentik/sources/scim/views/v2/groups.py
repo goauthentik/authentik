@@ -12,9 +12,9 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from authentik.common.scim.schema import SCIM_USER_SCHEMA
+from authentik.common.scim.schema import Group as SCIMGroupModel
 from authentik.core.models import Group, User
-from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
-from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 

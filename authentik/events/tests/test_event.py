@@ -9,9 +9,9 @@ from guardian.shortcuts import get_anonymous_user
 
 from authentik.brands.models import Brand
 from authentik.core.models import Group
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event
 from authentik.flows.views.executor import QS_QUERY
-from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 
 

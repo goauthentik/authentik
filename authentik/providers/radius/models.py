@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
 

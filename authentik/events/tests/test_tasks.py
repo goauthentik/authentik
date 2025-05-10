@@ -7,10 +7,10 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tasks import clean_expired_models
 from authentik.core.tests.utils import create_test_admin_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.generators import generate_id
 from authentik.root.celery import CELERY_APP
 
 

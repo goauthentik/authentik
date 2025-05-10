@@ -9,8 +9,8 @@ from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
 
+from authentik.common.utils.http import get_http_session
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 
 

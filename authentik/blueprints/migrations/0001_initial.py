@@ -11,7 +11,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from yaml import load
 
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_SYSTEM
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 
 def check_blueprint_v1_file(BlueprintInstance: type, db_alias, path: Path):

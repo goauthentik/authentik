@@ -8,8 +8,8 @@ from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Application, Group, User
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding

@@ -10,9 +10,9 @@ from ldap3.core.exceptions import LDAPInvalidCredentialsResult
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application, User
 from authentik.core.tests.utils import create_test_user
+from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
-from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider

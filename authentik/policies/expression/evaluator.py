@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Optional
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
+from authentik.common.expression.evaluator import BaseEvaluator
 from authentik.flows.planner import PLAN_CONTEXT_SSO
-from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.root.middleware import ClientIPMiddleware

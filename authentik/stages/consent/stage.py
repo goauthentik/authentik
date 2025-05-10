@@ -6,6 +6,7 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
@@ -14,7 +15,6 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
 PLAN_CONTEXT_CONSENT = "consent"

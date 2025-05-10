@@ -4,9 +4,9 @@ from defusedxml import ElementTree
 from django.test import RequestFactory, TestCase
 from lxml import etree  # nosec
 
+from authentik.common.saml.xml import lxml_from_string
 from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.lib.generators import generate_id
-from authentik.lib.xml import lxml_from_string
+from authentik.crypto.generators import generate_id
 from authentik.sources.saml.models import SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 

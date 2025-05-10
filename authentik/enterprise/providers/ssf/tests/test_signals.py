@@ -8,6 +8,7 @@ from authentik.core.tests.utils import (
     create_test_cert,
     create_test_user,
 )
+from authentik.crypto.generators import generate_id
 from authentik.enterprise.providers.ssf.models import (
     EventTypes,
     SSFEventStatus,
@@ -15,7 +16,6 @@ from authentik.enterprise.providers.ssf.models import (
     Stream,
     StreamEvent,
 )
-from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.stages.authenticator_webauthn.models import WebAuthnDevice
 

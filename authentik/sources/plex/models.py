@@ -17,8 +17,8 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.generators import generate_id
 from authentik.flows.challenge import Challenge, ChallengeResponse
-from authentik.lib.generators import generate_id
 from authentik.stages.identification.stage import LoginChallengeMixin
 
 

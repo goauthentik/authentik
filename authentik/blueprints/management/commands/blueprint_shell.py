@@ -12,8 +12,8 @@ from structlog.stdlib import get_logger
 from yaml import load
 
 from authentik.blueprints.v1.common import BlueprintLoader, EntryInvalidError
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.management.commands.shell import get_banner_text
-from authentik.lib.utils.errors import exception_to_string
 
 LOGGER = get_logger()
 

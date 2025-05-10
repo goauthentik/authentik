@@ -9,10 +9,10 @@ from rest_framework.fields import CharField, ListField, ReadOnlyField, Serialize
 from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.api.providers import RedirectURISerializer
 from authentik.providers.oauth2.models import ScopeMapping
 from authentik.providers.oauth2.views.provider import ProviderInfoView

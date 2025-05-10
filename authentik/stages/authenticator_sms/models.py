@@ -14,13 +14,13 @@ from structlog.stdlib import get_logger
 from twilio.base.exceptions import TwilioRestException
 from twilio.rest import Client
 
+from authentik.common.models import SerializerModel
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.http import get_http_session
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction, NotificationWebhookMapping
 from authentik.events.utils import sanitize_item
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.http import get_http_session
 from authentik.stages.authenticator.models import SideChannelDevice
 
 LOGGER = get_logger()

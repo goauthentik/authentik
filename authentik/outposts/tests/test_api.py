@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostType, default_outpost_config

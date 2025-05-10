@@ -4,7 +4,7 @@ from django.core.cache import cache
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.exceptions import PolicyEngineException

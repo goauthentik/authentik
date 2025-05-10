@@ -6,7 +6,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.stages.authenticator.tests import TestCase, ThrottlingTestMixin
 from authentik.stages.authenticator_static.models import StaticDevice
 

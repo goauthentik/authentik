@@ -3,7 +3,7 @@
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.utils.reflection import all_subclasses
+from authentik.common.utils.reflection import all_subclasses
 
 GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",

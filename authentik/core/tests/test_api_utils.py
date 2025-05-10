@@ -9,9 +9,9 @@ from rest_framework.serializers import (
 )
 from rest_framework.test import APITestCase
 
+from authentik.common.utils.reflection import all_subclasses
 from authentik.core.api.utils import ModelSerializer as CustomModelSerializer
 from authentik.core.api.utils import is_dict
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class TestAPIUtils(APITestCase):

@@ -2,6 +2,7 @@
 
 from typing import Any
 
+from authentik.common.oauth.constants import SCOPE_OPENID_EMAIL, SCOPE_OPENID_PROFILE
 from authentik.sources.oauth.models import AuthorizationCodeAuthMethod
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -12,7 +13,7 @@ class GoogleOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": ["email", "profile"],
+            "scope": [SCOPE_OPENID_PROFILE, SCOPE_OPENID_EMAIL],
         }
 
 

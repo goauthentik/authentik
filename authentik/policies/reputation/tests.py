@@ -3,7 +3,7 @@
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
-from authentik.lib.generators import generate_id
+from authentik.crypto.generators import generate_id
 from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import Reputation, ReputationPolicy
 from authentik.policies.reputation.signals import update_score

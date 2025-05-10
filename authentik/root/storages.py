@@ -10,7 +10,7 @@ from django.db import connection
 from storages.backends.s3 import S3Storage as BaseS3Storage
 from storages.utils import clean_name, safe_join
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 
 class FileStorage(FileSystemStorage):
