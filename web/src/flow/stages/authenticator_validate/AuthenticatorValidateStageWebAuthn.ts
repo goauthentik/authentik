@@ -1,8 +1,4 @@
-import {
-    checkWebAuthnSupport,
-    transformAssertionForServer,
-    transformCredentialRequestOptions,
-} from "@goauthentik/common/helpers/webauthn";
+import { checkWebAuthnSupport } from "@goauthentik/common/helpers/webauthn";
 import "@goauthentik/elements/EmptyState";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
@@ -38,12 +34,13 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
     async authenticate(): Promise<void> {
         // request the authenticator to create an assertion signature using the
         // credential private key
-        let assertion;
+        let assertion: PublicKeyCredential;
         checkWebAuthnSupport();
         try {
-            assertion = await navigator.credentials.get({
+            assertion = (await navigator.credentials.get({
                 publicKey: this.transformedCredentialRequestOptions,
-            });
+                // mediation: "conditional",
+            })) as PublicKeyCredential;
             if (!assertion) {
                 throw new Error("Assertions is empty");
             }
@@ -51,17 +48,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
             throw new Error(`Error when creating credential: ${err}`);
         }
 
-        // we now have an authentication assertion! encode the byte arrays contained
-        // in the assertion data as strings for posting to the server
-        const transformedAssertionForServer = transformAssertionForServer(
-            assertion as PublicKeyCredential,
-        );
-
         // post the assertion to the server for verification.
         try {
             await this.host?.submit(
                 {
-                    webauthn: transformedAssertionForServer,
+                    webauthn: assertion.toJSON(),
                 },
                 {
                     invisible: true,
@@ -74,12 +65,10 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
 
     updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("challenge") && this.challenge !== undefined) {
-            // convert certain members of the PublicKeyCredentialRequestOptions into
-            // byte arrays as expected by the spec.
             const credentialRequestOptions = this.deviceChallenge
-                ?.challenge as PublicKeyCredentialRequestOptions;
+                ?.challenge as unknown as PublicKeyCredentialRequestOptionsJSON;
             this.transformedCredentialRequestOptions =
-                transformCredentialRequestOptions(credentialRequestOptions);
+                PublicKeyCredential.parseRequestOptionsFromJSON(credentialRequestOptions);
             this.authenticateWrapper();
         }
     }
