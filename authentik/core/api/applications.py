@@ -15,7 +15,7 @@ from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_sche
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField, FileField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -27,7 +27,7 @@ from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import ModelSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.events.models import EventAction
@@ -99,6 +99,23 @@ class ApplicationSerializer(ModelSerializer):
         }
 
 
+class IconResponseSerializer(PassiveSerializer):
+    """Serializer for icon operations"""
+    meta_icon = CharField(required=False)
+    message = CharField(required=False)
+    error = CharField(required=False)
+
+class IconRequestSerializer(PassiveSerializer):
+    """Serializer for icon operations"""
+    file = FileField(required=False)
+    url = CharField(required=False)
+
+    def validate(self, attrs):
+        if not attrs.get("file") and not attrs.get("url"):
+            raise ValidationError("Either file or url must be provided")
+        return attrs
+
+
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
@@ -131,7 +148,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def get_serializer_class(self):
         """Return serializer based on action"""
         if self.action == "icon":
-            return FileUploadSerializer
+            return IconRequestSerializer
         return super().get_serializer_class()
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
@@ -389,55 +406,65 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["POST", "PATCH", "DELETE"],
         parser_classes=(MultiPartParser,),
+        url_path="icon",
+        url_name="icon",
     )
     @permission_required("authentik_core.change_application")
     @extend_schema(
         methods=["POST"],
         request={
-            "multipart/form-data": FileUploadSerializer,
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                    "url": {"type": "string"},
+                },
+            },
+            "application/json": IconRequestSerializer,
         },
         responses={
-            200: OpenApiResponse(
-                description="Success", response={"meta_icon": str, "message": str}
-            ),
+            200: IconResponseSerializer,
             400: OpenApiResponse(description="Bad request", response={"error": str}),
             403: OpenApiResponse(description="Permission denied", response={"error": str}),
             415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
             500: OpenApiResponse(description="Internal server error", response={"error": str}),
         },
-        operation_id="core_applications_icon_create",
+        operation_id="coreApplicationsIconCreate",
         parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
         tags=["core"],
     )
     @extend_schema(
         methods=["PATCH"],
         request={
-            "multipart/form-data": FileUploadSerializer,
+            "multipart/form-data": {
+                "type": "object",
+                "properties": {
+                    "file": {"type": "string", "format": "binary"},
+                    "url": {"type": "string"},
+                },
+            },
+            "application/json": IconRequestSerializer,
         },
         responses={
-            200: OpenApiResponse(
-                description="Success", response={"meta_icon": str, "message": str}
-            ),
+            200: IconResponseSerializer,
             400: OpenApiResponse(description="Bad request", response={"error": str}),
             403: OpenApiResponse(description="Permission denied", response={"error": str}),
             404: OpenApiResponse(description="No icon exists", response={"error": str}),
             415: OpenApiResponse(description="Unsupported Media Type", response={"error": str}),
             500: OpenApiResponse(description="Internal server error", response={"error": str}),
         },
-        operation_id="core_applications_icon_update",
+        operation_id="coreApplicationsIconUpdate",
         parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
         tags=["core"],
     )
     @extend_schema(
         methods=["DELETE"],
         responses={
-            200: OpenApiResponse(
-                description="Success", response={"meta_icon": None, "message": str}
-            ),
+            200: IconResponseSerializer,
             404: OpenApiResponse(description="No icon exists", response={"error": str}),
             500: OpenApiResponse(description="Internal server error", response={"error": str}),
         },
-        operation_id="core_applications_icon_delete",
+        operation_id="coreApplicationsIconDelete",
         parameters=[{"name": "slug", "in": "path", "required": True, "schema": {"type": "string"}}],
         tags=["core"],
     )

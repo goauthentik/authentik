@@ -55,34 +55,15 @@ export async function setApplicationIcon(
 ): Promise<IconResponse> {
     const api = new CoreApi(DEFAULT_CONFIG);
 
-    // Create form data for file upload
-    const formData = new FormData();
-    formData.append("file", file);
-    
     try {
-        // Set up request options with the query parameter
-        const options = {
-            method: 'POST',
-            body: formData,
-            headers: DEFAULT_CONFIG.headers,
-        };
-        
-        // Manually construct URL with query parameter
-        const url = `${DEFAULT_CONFIG.basePath}/core/applications/${slug}/icon/?operation=set`;
-        
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || `Server returned ${response.status}` };
-        }
-        
-        const result = await response.json();
-        
-        if (!result.meta_icon && response.ok) {
-            return { message: result.message, operation: result.operation, meta_icon: undefined };
-        }
-        
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const result = await api.coreApplicationsIconCreate({
+            slug: slug,
+            file: file,
+        }) as unknown as IconResponse;
+
         if (!result.meta_icon) {
             return { error: "Server did not return a valid icon URL" };
         }
@@ -113,29 +94,11 @@ export async function modifyApplicationIcon(
 ): Promise<IconResponse> {
     const api = new CoreApi(DEFAULT_CONFIG);
 
-    // Create form data for file upload
-    const formData = new FormData();
-    formData.append("file", file);
-    
     try {
-        // Set up request options with the query parameter
-        const options = {
-            method: 'POST',
-            body: formData,
-            headers: DEFAULT_CONFIG.headers,
-        };
-        
-        // Manually construct URL with query parameter
-        const url = `${DEFAULT_CONFIG.basePath}/core/applications/${slug}/icon/?operation=modify`;
-        
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || `Server returned ${response.status}` };
-        }
-        
-        const result = await response.json();
+        const result = await api.coreApplicationsIconPartialUpdate({
+            slug: slug,
+            file: file,
+        }) as unknown as IconResponse;
         return result;
     } catch (error: unknown) {
         // Handle network errors with retry
@@ -158,23 +121,9 @@ export async function removeApplicationIcon(slug: string, retryCount = 1): Promi
     const api = new CoreApi(DEFAULT_CONFIG);
 
     try {
-        // Set up request options with the query parameter
-        const options = {
-            method: 'POST',
-            headers: DEFAULT_CONFIG.headers,
-        };
-        
-        // Manually construct URL with query parameter
-        const url = `${DEFAULT_CONFIG.basePath}/core/applications/${slug}/icon/?operation=remove`;
-        
-        const response = await fetch(url, options);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || `Server returned ${response.status}` };
-        }
-        
-        const result = await response.json();
+        const result = await api.coreApplicationsIconDestroy({
+            slug: slug,
+        }) as unknown as IconResponse;
         return result;
     } catch (error: unknown) {
         // Handle network errors with retry
@@ -209,28 +158,10 @@ export async function setApplicationIconUrl(
             return { error: "Invalid URL format" };
         }
 
-        // Create form data with URL
-        const formData = new FormData();
-        formData.append("url", url);
-
-        // Set up request options with the query parameter
-        const options = {
-            method: 'POST',
-            body: formData,
-            headers: DEFAULT_CONFIG.headers,
-        };
-        
-        // Manually construct URL with query parameter
-        const url_endpoint = `${DEFAULT_CONFIG.basePath}/core/applications/${slug}/icon/?operation=set`;
-        
-        const response = await fetch(url_endpoint, options);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || `Server returned ${response.status}` };
-        }
-        
-        const result = await response.json();
+        const result = await api.coreApplicationsIconPartialUpdate({
+            slug: slug,
+            url: url,
+        }) as unknown as IconResponse;
 
         if (!result.meta_icon) {
             return { error: "Server did not return a valid icon URL" };
@@ -270,28 +201,10 @@ export async function modifyApplicationIconUrl(
             return { error: "Invalid URL format" };
         }
 
-        // Create form data with URL
-        const formData = new FormData();
-        formData.append("url", url);
-
-        // Set up request options with the query parameter
-        const options = {
-            method: 'POST',
-            body: formData,
-            headers: DEFAULT_CONFIG.headers,
-        };
-        
-        // Manually construct URL with query parameter
-        const url_endpoint = `${DEFAULT_CONFIG.basePath}/core/applications/${slug}/icon/?operation=modify`;
-        
-        const response = await fetch(url_endpoint, options);
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            return { error: errorData.error || `Server returned ${response.status}` };
-        }
-        
-        const result = await response.json();
+        const result = await api.coreApplicationsIconPartialUpdate({
+            slug: slug,
+            url: url,
+        }) as unknown as IconResponse;
         return result;
     } catch (error: unknown) {
         // Handle network errors with retry

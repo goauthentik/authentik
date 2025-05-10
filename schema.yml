@@ -4276,7 +4276,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/FileUploadRequest'
+              $ref: '#/components/schemas/IconRequestRequest'
       security:
       - authentik: []
       responses:
@@ -4284,7 +4284,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileUpload'
+                $ref: '#/components/schemas/IconRequest'
           description: ''
         '400':
           content:
@@ -4314,7 +4314,7 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedFileUploadRequest'
+              $ref: '#/components/schemas/PatchedIconRequestRequest'
       security:
       - authentik: []
       responses:
@@ -4322,7 +4322,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileUpload'
+                $ref: '#/components/schemas/IconRequest'
           description: ''
         '400':
           content:
@@ -46175,19 +46175,6 @@ components:
           default: update
       required:
       - url
-    FileUpload:
-      type: object
-      description: Serializer to upload file
-      properties:
-        file:
-          type: string
-          format: uri
-        clear:
-          type: boolean
-          default: false
-        action:
-          type: string
-          default: update
     FileUploadRequest:
       type: object
       description: Serializer to upload file
@@ -47628,6 +47615,25 @@ components:
       - group
       - identifier
       - source
+    IconRequest:
+      type: object
+      description: Serializer for icon operations
+      properties:
+        file:
+          type: string
+          format: uri
+        url:
+          type: string
+    IconRequestRequest:
+      type: object
+      description: Serializer for icon operations
+      properties:
+        file:
+          type: string
+          format: binary
+        url:
+          type: string
+          minLength: 1
     IdentificationChallenge:
       type: object
       description: Identification challenges with all UI elements
@@ -53594,20 +53600,6 @@ components:
         object_pk:
           type: string
           minLength: 1
-    PatchedFileUploadRequest:
-      type: object
-      description: Serializer to upload file
-      properties:
-        file:
-          type: string
-          format: binary
-        clear:
-          type: boolean
-          default: false
-        action:
-          type: string
-          minLength: 1
-          default: update
     PatchedFlowRequest:
       type: object
       description: Flow Serializer
@@ -53885,6 +53877,16 @@ components:
           type: string
           format: uuid
         identifier:
+          type: string
+          minLength: 1
+    PatchedIconRequestRequest:
+      type: object
+      description: Serializer for icon operations
+      properties:
+        file:
+          type: string
+          format: binary
+        url:
           type: string
           minLength: 1
     PatchedIdentificationStageRequest:

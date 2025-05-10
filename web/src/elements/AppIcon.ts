@@ -78,7 +78,7 @@ export class AppIcon extends AKElement implements IAppIcon {
     isValidIcon(icon: string): boolean {
         if (!icon) return false;
         if (icon.startsWith("fa://")) return true;
-        
+
         try {
             // Simple check for URL format
             new URL(icon);
