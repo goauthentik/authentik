@@ -83,7 +83,7 @@ class UserLoginStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             message = _("No Pending user to login.")
             messages.error(request, message)
-            self.logger.debug(message)
+            self.logger.warning(message)
             return self.executor.stage_invalid()
         backend = self.executor.plan.context.get(
             PLAN_CONTEXT_AUTHENTICATION_BACKEND, BACKEND_INBUILT
