@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.common.saml.encoding import deflate_and_base64_encode, nice64
 from authentik.common.saml.exceptions import SAMLException
+from authentik.common.views import bad_request_message
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -21,7 +22,6 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.views import bad_request_message
 from authentik.policies.utils import delete_none_values
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor

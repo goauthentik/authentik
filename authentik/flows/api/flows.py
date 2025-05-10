@@ -16,6 +16,7 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
+from authentik.common.views import bad_request_message
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
     CacheSerializer,
@@ -35,7 +36,6 @@ from authentik.lib.utils.file import (
     set_file,
     set_file_url,
 )
-from authentik.lib.views import bad_request_message
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 

@@ -5,8 +5,8 @@ from urllib.parse import quote, urlparse
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 
 from authentik.common.exceptions import NotReportedException
+from authentik.common.views import bad_request_message
 from authentik.events.models import Event, EventAction
-from authentik.lib.views import bad_request_message
 from authentik.providers.oauth2.models import GrantTypes, RedirectURI
 
 

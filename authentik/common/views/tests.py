@@ -2,8 +2,8 @@
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.views import bad_request_message
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.lib.views import bad_request_message
 
 
 class TestViews(TestCase):
