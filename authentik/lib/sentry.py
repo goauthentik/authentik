@@ -95,6 +95,8 @@ def traces_sampler(sampling_context: dict) -> float:
         return 0
     if _type == "websocket":
         return 0
+    if CONFIG.get_bool("debug"):
+        return 1
     return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
