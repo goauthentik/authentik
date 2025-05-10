@@ -11,7 +11,7 @@ from django.utils.translation import gettext as _
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.core.models import Session, User
+from authentik.core.models import AuthenticatedSession, Session, User
 from authentik.events.middleware import audit_ignore
 from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
@@ -121,6 +121,9 @@ class UserLoginStageView(ChallengeStageView):
 
     def is_known_device(self, user: User):
         """Returns `True` if the login happened on a "known" device, by the same user."""
+        client_ip = ClientIPMiddleware.get_client_ip(self.request)
+        if AuthenticatedSession.objects.filter(session__last_ip=client_ip).exists():
+            return True
         if COOKIE_NAME_KNOWN_DEVICE not in self.request.COOKIES:
             return False
         try:
@@ -153,9 +156,9 @@ class UserLoginStageView(ChallengeStageView):
         self.set_session_ip()
         # Check if the login request is coming from a known device
         self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
-        self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS][
-            "known_device" : self.is_known_device(user),
-        ]
+        self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["known_device"] = self.is_known_device(
+            user
+        )
         # the `user_logged_in` signal will update the user to write the `last_login` field
         # which we don't want to log as we already have a dedicated login event
         with audit_ignore():
@@ -175,6 +178,6 @@ class UserLoginStageView(ChallengeStageView):
             Session.objects.filter(
                 authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
-        if remember is not None:
+        if remember is None:
             return self.set_known_device_cookie(user)
         return self.executor.stage_ok()
