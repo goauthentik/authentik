@@ -23,11 +23,14 @@ The brand settings define the visual identity of the brand, including:
 
 - **Branding title**: Displayed in the browser tab (document title) and throughout the UI;
 - **Logo**: Appears in the sidebar/header;
-- **Favicon**: Shown on the browser tab.
 
-:::info
-Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
-:::
+    :::info
+    Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
+    :::
+
+- **Favicon**: Shown on the browser tab.
+- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor, can be overridden per flow, see [Flow configuration options](../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
+- **Custom CSS** :ak-version[2025.4]: Add custom CSS to further customize the look of authentik. Creating such a file is outside the scope of this document.
 
 ### External user settings
 
