@@ -1,4 +1,3 @@
-import { fromByteArray } from "base64-js";
 import "formdata-polyfill";
 import $ from "jquery";
 import "weakmap-polyfill";
@@ -257,46 +256,8 @@ class AutosubmitStage extends Stage<AutosubmitChallenge> {
     }
 }
 
-export interface Assertion {
-    id: string;
-    rawId: string;
-    type: string;
-    registrationClientExtensions: string;
-    response: {
-        clientDataJSON: string;
-        attestationObject: string;
-    };
-}
-
-export interface AuthAssertion {
-    id: string;
-    rawId: string;
-    type: string;
-    assertionClientExtensions: string;
-    response: {
-        clientDataJSON: string;
-        authenticatorData: string;
-        signature: string;
-        userHandle: string | null;
-    };
-}
-
 class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge> {
     deviceChallenge?: DeviceChallenge;
-
-    b64enc(buf: Uint8Array): string {
-        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
-    }
-
-    b64RawEnc(buf: Uint8Array): string {
-        return fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_");
-    }
-
-    u8arr(input: string): Uint8Array {
-        return Uint8Array.from(atob(input.replace(/_/g, "/").replace(/-/g, "+")), (c) =>
-            c.charCodeAt(0),
-        );
-    }
 
     checkWebAuthnSupport(): boolean {
         if ("credentials" in navigator) {
@@ -308,98 +269,6 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         }
         console.warn("WebAuthn not supported by browser.");
         return false;
-    }
-
-    /**
-     * Transforms items in the credentialCreateOptions generated on the server
-     * into byte arrays expected by the navigator.credentials.create() call
-     */
-    transformCredentialCreateOptions(
-        credentialCreateOptions: PublicKeyCredentialCreationOptions,
-        userId: string,
-    ): PublicKeyCredentialCreationOptions {
-        const user = credentialCreateOptions.user;
-        // Because json can't contain raw bytes, the server base64-encodes the User ID
-        // So to get the base64 encoded byte array, we first need to convert it to a regular
-        // string, then a byte array, re-encode it and wrap that in an array.
-        const stringId = decodeURIComponent(window.atob(userId));
-        user.id = this.u8arr(this.b64enc(this.u8arr(stringId)));
-        const challenge = this.u8arr(credentialCreateOptions.challenge.toString());
-
-        return Object.assign({}, credentialCreateOptions, {
-            challenge,
-            user,
-        });
-    }
-
-    /**
-     * Transforms the binary data in the credential into base64 strings
-     * for posting to the server.
-     * @param {PublicKeyCredential} newAssertion
-     */
-    transformNewAssertionForServer(newAssertion: PublicKeyCredential): Assertion {
-        const attObj = new Uint8Array(
-            (newAssertion.response as AuthenticatorAttestationResponse).attestationObject,
-        );
-        const clientDataJSON = new Uint8Array(newAssertion.response.clientDataJSON);
-        const rawId = new Uint8Array(newAssertion.rawId);
-
-        const registrationClientExtensions = newAssertion.getClientExtensionResults();
-        return {
-            id: newAssertion.id,
-            rawId: this.b64enc(rawId),
-            type: newAssertion.type,
-            registrationClientExtensions: JSON.stringify(registrationClientExtensions),
-            response: {
-                clientDataJSON: this.b64enc(clientDataJSON),
-                attestationObject: this.b64enc(attObj),
-            },
-        };
-    }
-
-    transformCredentialRequestOptions(
-        credentialRequestOptions: PublicKeyCredentialRequestOptions,
-    ): PublicKeyCredentialRequestOptions {
-        const challenge = this.u8arr(credentialRequestOptions.challenge.toString());
-
-        const allowCredentials = (credentialRequestOptions.allowCredentials || []).map(
-            (credentialDescriptor) => {
-                const id = this.u8arr(credentialDescriptor.id.toString());
-                return Object.assign({}, credentialDescriptor, { id });
-            },
-        );
-
-        return Object.assign({}, credentialRequestOptions, {
-            challenge,
-            allowCredentials,
-        });
-    }
-
-    /**
-     * Encodes the binary data in the assertion into strings for posting to the server.
-     * @param {PublicKeyCredential} newAssertion
-     */
-    transformAssertionForServer(newAssertion: PublicKeyCredential): AuthAssertion {
-        const response = newAssertion.response as AuthenticatorAssertionResponse;
-        const authData = new Uint8Array(response.authenticatorData);
-        const clientDataJSON = new Uint8Array(response.clientDataJSON);
-        const rawId = new Uint8Array(newAssertion.rawId);
-        const sig = new Uint8Array(response.signature);
-        const assertionClientExtensions = newAssertion.getClientExtensionResults();
-
-        return {
-            id: newAssertion.id,
-            rawId: this.b64enc(rawId),
-            type: newAssertion.type,
-            assertionClientExtensions: JSON.stringify(assertionClientExtensions),
-
-            response: {
-                clientDataJSON: this.b64RawEnc(clientDataJSON),
-                signature: this.b64RawEnc(sig),
-                authenticatorData: this.b64RawEnc(authData),
-                userHandle: null,
-            },
-        };
     }
 
     render() {
@@ -505,8 +374,8 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
             `);
         navigator.credentials
             .get({
-                publicKey: this.transformCredentialRequestOptions(
-                    this.deviceChallenge?.challenge as PublicKeyCredentialRequestOptions,
+                publicKey: PublicKeyCredential.parseRequestOptionsFromJSON(
+                    this.deviceChallenge?.challenge as PublicKeyCredentialRequestOptionsJSON,
                 ),
             })
             .then((assertion) => {
@@ -514,15 +383,9 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
                     throw new Error("No assertion");
                 }
                 try {
-                    // we now have an authentication assertion! encode the byte arrays contained
-                    // in the assertion data as strings for posting to the server
-                    const transformedAssertionForServer = this.transformAssertionForServer(
-                        assertion as PublicKeyCredential,
-                    );
-
                     // post the assertion to the server for verification.
                     this.executor.submit({
-                        webauthn: transformedAssertionForServer,
+                        webauthn: (assertion as PublicKeyCredential).toJSON(),
                     });
                 } catch (err) {
                     throw new Error(`Error when validating assertion on server: ${err}`);

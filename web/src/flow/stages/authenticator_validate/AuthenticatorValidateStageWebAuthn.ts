@@ -39,7 +39,6 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         try {
             assertion = (await navigator.credentials.get({
                 publicKey: this.transformedCredentialRequestOptions,
-                // mediation: "conditional",
             })) as PublicKeyCredential;
             if (!assertion) {
                 throw new Error("Assertions is empty");
