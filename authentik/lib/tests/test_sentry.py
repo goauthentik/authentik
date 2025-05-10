@@ -2,7 +2,8 @@
 
 from django.test import TestCase
 
-from authentik.common.exceptions import NotReportedException, before_send
+from authentik.common.exceptions import NotReportedException
+from authentik.root.sentry import before_send
 
 
 class TestSentry(TestCase):

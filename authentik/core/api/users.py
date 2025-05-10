@@ -62,6 +62,7 @@ from authentik.core.api.utils import (
     ModelSerializer,
     PassiveSerializer,
 )
+from authentik.core.avatars import get_avatar
 from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_ORIGINAL_USER,
     SESSION_KEY_IMPERSONATE_USER,
@@ -81,7 +82,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
-from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
 from authentik.stages.email.models import EmailStage

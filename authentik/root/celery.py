@@ -30,7 +30,7 @@ from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik import get_full_version
 from authentik.lib.utils.errors import exception_to_string
-from authentik.root.sentry import before_send
+from authentik.root.sentry import should_ignore_exception
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
@@ -83,7 +83,7 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
 
     LOGGER.warning("Task failure", task_id=task_id.replace("-", ""), exc=exception)
     CTX_TASK_ID.set(...)
-    if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+    if not should_ignore_exception(exception):
         Event.new(
             EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
         ).save()
