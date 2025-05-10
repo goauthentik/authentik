@@ -5,7 +5,8 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
-from sentry_sdk import get_current_span
+from sentry_sdk import get_current_scope
+from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
@@ -32,13 +33,12 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
     brand = getattr(request, "brand", DEFAULT_BRAND)
     tenant = getattr(request, "tenant", Tenant())
-    trace = ""
-    span = get_current_span()
-    if span:
-        trace = span.to_traceparent()
     return {
         "brand": brand,
         "footer_links": tenant.footer_links,
-        "sentry_trace": trace,
+        "html_meta": {
+            SENTRY_TRACE_HEADER_NAME: get_current_scope().get_traceparent() or "",
+            BAGGAGE_HEADER_NAME: get_current_scope().get_baggage().serialize(),
+        },
         "version": get_full_version(),
     }

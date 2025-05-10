@@ -21,7 +21,9 @@
         <script src="{% versioned_script 'dist/standalone/loading/index-%v.js' %}" type="module"></script>
         {% block head %}
         {% endblock %}
-        <meta name="sentry-trace" content="{{ sentry_trace }}" />
+        {% for key, value in html_meta.items %}
+        <meta name="{{key}}" content="{{ value }}" />
+        {% endfor %}
     </head>
     <body>
         {% block body %}
