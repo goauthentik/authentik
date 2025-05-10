@@ -32,6 +32,8 @@ from authentik.tenants.utils import get_unique_identifier
 
 COOKIE_NAME_KNOWN_DEVICE = "authentik_device"
 
+PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE = "known_device"
+
 
 class UserLoginChallenge(WithUserInfoChallenge):
     """Empty challenge"""
@@ -97,11 +99,7 @@ class UserLoginStageView(ChallengeStageView):
     def set_known_device_cookie(self, user: User):
         """Set a cookie, valid longer than the session, which denotes that this user
         has logged in on this device before."""
-        # stage: AuthenticatorValidateStage = self.executor.current_stage
-        # delta = timedelta_from_string(stage.last_auth_threshold)
-        # if delta.total_seconds() < 1:
-        #     self.logger.info("Not setting MFA cookie since threshold is not set.")
-        #     return self.executor.stage_ok()
+        # TODO: Don't hardcode cookie duration
         expiry = datetime.now() + timedelta(days=30)
         cookie_payload = {
             "sub": user.uid,
@@ -156,8 +154,8 @@ class UserLoginStageView(ChallengeStageView):
         self.set_session_ip()
         # Check if the login request is coming from a known device
         self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
-        self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS]["known_device"] = self.is_known_device(
-            user
+        self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].setdefault(
+            PLAN_CONTEXT_METHOD_ARGS_KNOWN_DEVICE, self.is_known_device(user)
         )
         # the `user_logged_in` signal will update the user to write the `last_login` field
         # which we don't want to log as we already have a dedicated login event

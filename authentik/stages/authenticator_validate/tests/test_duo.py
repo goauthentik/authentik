@@ -181,7 +181,7 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
                             "name": "",
                             "pk": duo_device.pk,
                         }
-                    ]
+                    ],
                 },
                 "http_request": {
                     "args": {},
