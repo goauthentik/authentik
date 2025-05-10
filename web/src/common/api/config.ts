@@ -3,9 +3,9 @@ import {
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+} from "@goauthentik/web/common/api/middleware.js";
+import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/web/common/constants.js";
+import { globalAK } from "@goauthentik/web/common/global.js";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 

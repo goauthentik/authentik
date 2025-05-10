@@ -1,5 +1,9 @@
 /* #region Global */
 
+.__AK_BASE_STYLES__ {
+    --__AK_BASE_STYLES__: 1;
+}
+
 :root {
     --ak-accent: #fd4b2d;
 

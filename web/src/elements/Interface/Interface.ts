@@ -1,34 +1,41 @@
+import { setAdoptedStyleSheets } from "@goauthentik/web/common/stylesheets.js";
 import {
-    appendStyleSheet,
-    createStyleSheetUnsafe,
-    resolveStyleSheetParent,
-} from "@goauthentik/common/stylesheets";
-import { ThemedElement } from "@goauthentik/common/theme";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
-import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
+    $AKBase,
+    $PFBase,
+    ThemedElement,
+    applyUITheme,
+    createUIThemeEffect,
+} from "@goauthentik/web/common/theme.js";
+import { UIConfig } from "@goauthentik/web/common/ui/config.js";
+import { AKElement } from "@goauthentik/web/elements/Base.js";
+import { VersionContextController } from "@goauthentik/web/elements/Interface/VersionContextController.js";
+import { ModalOrchestrationController } from "@goauthentik/web/elements/controllers/ModalOrchestrationController.js";
 
 import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
+import {
+    type Config,
+    type CurrentBrand,
+    type LicenseSummary,
+    UiThemeEnum,
+    type Version,
+} from "@goauthentik/api";
 
-import { BrandContextController } from "./BrandContextController";
-import { ConfigContextController } from "./ConfigContextController";
-import { EnterpriseContextController } from "./EnterpriseContextController";
+import { BrandContextController } from "./BrandContextController.js";
+import { ConfigContextController } from "./ConfigContextController.js";
+import { EnterpriseContextController } from "./EnterpriseContextController.js";
 
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
 export abstract class Interface extends AKElement implements ThemedElement {
-    protected static readonly PFBaseStyleSheet = createStyleSheetUnsafe(PFBase);
+    static styles = [PFBase];
+    protected [configContext]: ConfigContextController;
 
-    [configContext]: ConfigContextController;
-
-    [modalController]: ModalOrchestrationController;
+    protected [modalController]: ModalOrchestrationController;
 
     @state()
     public config?: Config;
@@ -38,15 +45,22 @@ export abstract class Interface extends AKElement implements ThemedElement {
 
     constructor() {
         super();
-        const styleParent = resolveStyleSheetParent(document);
 
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
-
-        appendStyleSheet(styleParent, Interface.PFBaseStyleSheet);
 
         this.addController(new BrandContextController(this));
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);
+
+        setAdoptedStyleSheets(document, (currentStyleSheets) => {
+            return [...currentStyleSheets, $PFBase, $AKBase];
+        });
+
+        if (this.preferredColorScheme === "dark") {
+            applyUITheme(document, UiThemeEnum.Dark);
+        } else if (this.preferredColorScheme === "auto") {
+            createUIThemeEffect((nextUITheme) => applyUITheme(document, nextUITheme));
+        }
     }
 }
 
