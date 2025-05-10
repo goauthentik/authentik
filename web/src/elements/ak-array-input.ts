@@ -90,7 +90,7 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
     @queryAll("div.ak-input-group")
     inputGroups?: HTMLDivElement[];
 
-    json() {
+    toJSON() {
         if (!this.inputGroups) {
             throw new Error("Could not find input group collection in ak-array-input");
         }
@@ -112,8 +112,9 @@ export class ArrayInput<T> extends AkControlElement<T[]> implements IArrayInput<
         return Array.from(this.inputGroups ?? [])
             .map(
                 (group) =>
-                    group.querySelector<HTMLInputElement & AkControlElement<T>>("[name]")?.json() ??
-                    null,
+                    group
+                        .querySelector<HTMLInputElement & AkControlElement<T>>("[name]")
+                        ?.toJSON() ?? null,
             )
             .filter((i) => i !== null);
     }

@@ -24,14 +24,18 @@ export class ModalForm extends ModalButton {
     cancelText = msg("Cancel");
 
     async confirm(): Promise<void> {
-        const form = this.querySelector<Form<unknown>>("[slot=form]");
+        const form = this.querySelector<Form>("[slot=form]");
+
         if (!form) {
-            return Promise.reject(msg("No form found"));
+            throw new Error(msg("No form found"));
         }
+
         const formPromise = form.submit(new Event("submit"));
+
         if (!formPromise) {
-            return Promise.reject(msg("Form didn't return a promise for submitting"));
+            throw new Error(msg("Form didn't return a promise for submitting"));
         }
+
         return formPromise
             .then(() => {
                 if (this.closeAfterSuccessfulSubmit) {

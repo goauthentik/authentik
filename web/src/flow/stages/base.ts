@@ -1,5 +1,4 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -22,12 +21,12 @@ export interface StageHost {
 }
 
 export function readFileAsync(file: Blob) {
-    return new Promise((resolve, reject) => {
+    return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = () => {
-            resolve(reader.result);
-        };
+
         reader.onerror = reject;
+        reader.onload = () => resolve(reader.result);
+
         reader.readAsDataURL(file);
     });
 }
@@ -60,22 +59,25 @@ export class BaseStage<
 
     async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
         e.preventDefault();
-        const object: KeyUnknown = defaults || {};
+        const payload: Record<string, unknown> = defaults || {};
+
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);
 
         for await (const [key, value] of form.entries()) {
             if (value instanceof Blob) {
-                object[key] = await readFileAsync(value);
+                payload[key] = await readFileAsync(value);
             } else {
-                object[key] = value;
+                payload[key] = value;
             }
         }
-        return this.host?.submit(object as unknown as Tout).then((successful) => {
+
+        return this.host?.submit(payload as unknown as Tout).then((successful) => {
             if (successful) {
                 this.onSubmitSuccess();
             } else {
                 this.onSubmitFailure();
             }
+
             return successful;
         });
     }

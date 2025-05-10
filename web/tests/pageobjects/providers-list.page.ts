@@ -1,48 +1,45 @@
-import { $, browser } from "@wdio/globals";
+/// <reference types="@wdio/globals/types" />
+import { navigateBrowser } from "tests/utils/navigation";
 import { Key } from "webdriverio";
 
 import AdminPage from "./admin.page.js";
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-class ApplicationsListPage extends AdminPage {
-    /**
-     * define selectors using getter methods
-     */
+export abstract class ApplicationsListPage extends AdminPage {
+    //#region Selectors
 
-    get startWizardButton() {
+    public static get $startWizardButton() {
         return $('>>>ak-wizard button[slot="trigger"]');
     }
 
-    get searchInput() {
+    public static get $searchInput() {
         return $('>>>ak-table-search input[name="search"]');
     }
 
-    searchButton() {
+    public static get $searchButton() {
         return $('>>>ak-table-search button[type="submit"]');
     }
 
-    // Sufficiently esoteric to justify having its own method
-    async clickSearchButton() {
-        await browser.execute(
-            function (searchButton: unknown) {
-                (searchButton as HTMLButtonElement).focus();
-            },
-            await $('>>>ak-table-search button[type="submit"]'),
-        );
+    //#endregion
 
-        return await browser.action("key").down(Key.Enter).up(Key.Enter).perform();
+    //#region Specific interactions
+
+    // Sufficiently esoteric to justify having its own method
+    public static async clickSearchButton() {
+        $('>>>ak-table-search button[type="submit"]').focus();
+
+        return browser.action("key").down(Key.Enter).up(Key.Enter).perform();
     }
 
     // Only use after a very precise search.  :-)
-    async findProviderRow() {
-        return await $(">>>ak-provider-list td a");
+    public static async findProviderRow() {
+        return $(">>>ak-provider-list td a");
     }
 
-    async open() {
-        return await super.open("if/admin/#/core/providers");
+    public static navigate() {
+        return navigateBrowser("/if/admin/#/core/providers");
     }
+
+    //#endregion
 }
 
-export default new ApplicationsListPage();
+export default ApplicationsListPage;

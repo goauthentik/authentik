@@ -110,7 +110,7 @@ export class SearchSelectBase<T> extends AkControlElement<string> implements ISe
         return this.value(this.selectedObject) || "";
     }
 
-    public json() {
+    public toJSON() {
         return this.toForm();
     }
 

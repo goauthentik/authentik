@@ -5,7 +5,8 @@ import {
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement";
+import { serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -37,14 +38,13 @@ export class ApplicationWizardStep extends WizardStep {
     @query("form")
     form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
+    get formValues(): Record<string, unknown> {
         const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
+            ...this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll<AkControlElement>("[data-ak-control]"),
         ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+
+        return serializeForm(elements);
     }
 
     protected removeErrors(

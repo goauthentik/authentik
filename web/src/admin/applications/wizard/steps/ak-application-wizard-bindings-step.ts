@@ -90,7 +90,7 @@ export class ApplicationWizardBindingsStep extends ApplicationWizardStep {
 
     onDeleteBindings() {
         const toDelete = this.selectTable
-            .json()
+            .toJSON()
             .map((i) => (typeof i === "string" ? parseInt(i, 10) : i));
         const bindings = this.wizard.bindings.filter((binding, index) => !toDelete.includes(index));
         this.handleUpdate({ bindings }, "bindings");

@@ -82,13 +82,17 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
 
     constructor() {
         super();
-        setTimeout(() => this.fetch(1), 0);
         this.onNav = this.onNav.bind(this);
         this.onChange = this.onChange.bind(this);
         this.onSearch = this.onSearch.bind(this);
         this.addCustomListener("ak-pagination-nav-to", this.onNav);
         this.addCustomListener("ak-dual-select-change", this.onChange);
         this.addCustomListener("ak-dual-select-search", this.onSearch);
+    }
+
+    public connectedCallback(): void {
+        super.connectedCallback();
+        this.fetch(1);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
@@ -153,7 +157,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
         return this.dualSelector.value!.selected.map(([k, _]) => k);
     }
 
-    json() {
+    toJSON() {
         return this.value;
     }
 

@@ -117,7 +117,7 @@ export class ListSelect extends AKElement implements IListSelect {
     @query("#ak-list-select-list")
     ul!: HTMLUListElement;
 
-    get json(): string {
+    get toJSON(): string {
         return this.value ?? "";
     }
 

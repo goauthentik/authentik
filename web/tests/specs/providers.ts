@@ -1,9 +1,10 @@
-import { expect } from "@wdio/globals";
+/// <reference types="@wdio/globals/types" />
+import { waitFor } from "tests/utils/timers";
 
-import { type TestProvider, type TestSequence } from "../pageobjects/controls";
 import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
 import ProvidersListPage from "../pageobjects/providers-list.page.js";
-import { login } from "../utils/login.js";
+import SessionPage from "../pageobjects/session.page.js";
+import { type TestAction, type TestSequence, runTestSequence } from "../utils/controls";
 import {
     completeForwardAuthDomainProxyProviderForm,
     completeForwardAuthProxyProviderForm,
@@ -23,54 +24,59 @@ import {
     simpleSCIMProviderForm,
 } from "./provider-shared-sequences.js";
 
-async function reachTheProvider() {
-    await ProvidersListPage.logout();
-    await login();
-    await ProvidersListPage.open();
-    await expect(await ProvidersListPage.pageHeader()).toHaveText("Providers");
-    await expect(await containedMessages()).not.toContain("Successfully created provider.");
-
-    await ProvidersListPage.startWizardButton.click();
-    await ProviderWizardView.wizardTitle.waitForDisplayed();
-    await expect(await ProviderWizardView.wizardTitle).toHaveText("New provider");
+/**
+ * Get all the messages in the message container.
+ */
+async function containedMessages(): Promise<string[]> {
+    return $("ak-message-container")
+        .$$("ak-message")
+        .map((alert) => {
+            return alert.$("p.pf-c-alert__title").getText();
+        });
 }
 
-const containedMessages = async () =>
-    await (async () => {
-        const messages = [];
-        for await (const alert of $("ak-message-container").$$("ak-message")) {
-            messages.push(await alert.$("p.pf-c-alert__title").getText());
-        }
-        return messages;
-    })();
+async function reachTheProvider() {
+    await SessionPage.logout();
+    await SessionPage.login();
 
-const hasProviderSuccessMessage = async () =>
-    await browser.waitUntil(
-        async () => (await containedMessages()).includes("Successfully created provider."),
+    await ProvidersListPage.navigate();
+
+    await expect(ProvidersListPage.$pageHeader).resolves.toHaveText("Providers");
+
+    await expect(containedMessages()).resolves.not.toContain("Successfully created provider.");
+
+    await ProvidersListPage.$startWizardButton.click();
+    await ProviderWizardView.$wizardTitle.waitForDisplayed();
+    await expect(ProviderWizardView.$wizardTitle).resolves.toHaveText("New provider");
+}
+
+/**
+ * Wait for the provider success message to appear.
+ */
+async function providerSuccessMessagePresent(): Promise<true> {
+    return browser.waitUntil(
+        async () => {
+            const messages = await containedMessages();
+            return messages.includes("Successfully created provider.");
+        },
         { timeout: 1000, timeoutMsg: "Expected to see provider success message." },
     );
-
-async function fillOutFields(fields: TestSequence) {
-    for (const field of fields) {
-        const thefunc = field[0];
-        const args = field.slice(1);
-        // @ts-expect-error "This is a pretty alien call, so I'm not surprised Typescript doesn't like it."
-        await thefunc.apply($, args);
-    }
 }
 
-async function itShouldConfigureASimpleProvider(name: string, provider: TestSequence) {
+async function itShouldConfigureASimpleProvider(name: string, provider: TestAction[]) {
     it(`Should successfully configure a ${name} provider`, async () => {
         await reachTheProvider();
         await $("ak-wizard-page-type-create").waitForDisplayed();
-        await fillOutFields(provider);
-        await ProviderWizardView.pause();
-        await ProviderWizardView.nextButton.click();
-        await hasProviderSuccessMessage();
+
+        await runTestSequence(provider);
+
+        await waitFor();
+        await ProviderWizardView.$nextButton.click();
+        await providerSuccessMessagePresent();
     });
 }
 
-type ProviderTest = [string, TestProvider];
+type ProviderTest = [string, TestSequence];
 
 describe("Configuring Providers", () => {
     const providers: ProviderTest[] = [

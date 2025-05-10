@@ -39,7 +39,7 @@ export default [
                 sourceType: "module",
             },
         },
-        files: ["src/**"],
+        files: ["src/**", "tests/**"],
         rules: {
             "lit/attribute-names": "off",
             // "lit/attribute-names": "error",
@@ -47,7 +47,22 @@ export default [
             // "lit/prefer-nothing": "warn",
             "lit/no-template-bind": "error",
             "no-unused-vars": "off",
-            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
+            "no-console": [
+                "error",
+                {
+                    allow: [
+                        "debug",
+                        "warn",
+                        "error",
+                        "time",
+                        "timeEnd",
+                        "timeLog",
+                        "timeStamp",
+                        "profile",
+                        "profileEnd",
+                    ],
+                },
+            ],
             "@typescript-eslint/ban-ts-comment": "off",
             "@typescript-eslint/no-unused-vars": [
                 "error",

@@ -15,6 +15,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  *
  * Mostly visual effects, with a single interaction for opening/closing the view.
  *
+ * @todo Can we use `<details>` element to make this more a11y friendly?
  * @todo Listen for custom events from its children about 'invalidation' events, and
  * trigger the `expanded` property as needed.
  */
@@ -83,7 +84,10 @@ export class FormGroup extends AKElement {
         });
     };
 
-    toggleExpanded = (): void => {
+    /**
+     * Toggle the open state of the form group.
+     */
+    public toggle = (): void => {
         cancelAnimationFrame(this.scrollAnimationFrame);
 
         this.expanded = !this.expanded;
@@ -103,7 +107,7 @@ export class FormGroup extends AKElement {
                             type="button"
                             aria-expanded="${this.expanded}"
                             aria-label=${this.ariaLabel}
-                            @click=${this.toggleExpanded}
+                            @click=${this.toggle}
                         >
                             <span class="pf-c-form__field-group-toggle-icon">
                                 <i class="fas fa-angle-right" aria-hidden="true"></i>
@@ -113,7 +117,7 @@ export class FormGroup extends AKElement {
                 </div>
                 <div
                     class="pf-c-form__field-group-header pf-m-pressable"
-                    @click=${this.toggleExpanded}
+                    @click=${this.toggle}
                     aria-expanded=${this.expanded}
                     aria-role="button"
                 >
