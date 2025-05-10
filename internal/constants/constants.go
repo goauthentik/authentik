@@ -21,8 +21,12 @@ func FullVersion() string {
 	return ver
 }
 
-func OutpostUserAgent() string {
+func UserAgentOutpost() string {
 	return fmt.Sprintf("goauthentik.io/outpost/%s", FullVersion())
+}
+
+func UserAgentIPC() string {
+	return fmt.Sprintf("goauthentik.io/ipc/%s", FullVersion())
 }
 
 func UserAgent() string {
