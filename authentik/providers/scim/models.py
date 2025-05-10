@@ -13,6 +13,7 @@ from authentik.core.models import BackchannelProvider, Group, PropertyMapping, U
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.tasks.schedules.models import ScheduledModel
 
 
 class SCIMProviderUser(SerializerModel):
@@ -67,7 +68,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     SLACK = "slack", _("Slack")
 
 
-class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -98,6 +99,10 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     @property
     def icon_url(self) -> str | None:
         return static("authentik/sources/scim.png")
+
+    @property
+    def sync_task(self) -> str:
+        return "authentik.providers.scim.tasks.scim_sync"
 
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]

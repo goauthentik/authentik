@@ -1,6 +1,7 @@
 """Event notification tasks"""
 
 from django.db.models.query_utils import Q
+from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
@@ -12,24 +13,23 @@ from authentik.events.models import (
     NotificationRule,
     NotificationTransport,
     NotificationTransportError,
-    TaskStatus,
 )
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
+@actor
 def event_notification_handler(event_uuid: str):
     """Start task for each trigger definition"""
     for trigger in NotificationRule.objects.all():
-        event_trigger_handler.apply_async(args=[event_uuid, trigger.name], queue="authentik_events")
+        event_trigger_handler.send(event_uuid, trigger.name)
 
 
-@CELERY_APP.task()
+@actor
 def event_trigger_handler(event_uuid: str, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
@@ -77,30 +77,22 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     for transport in trigger.transports.all():
         for user in trigger.group.users.all():
             LOGGER.debug("created notification")
-            notification_transport.apply_async(
-                args=[
-                    transport.pk,
-                    str(event.pk),
-                    user.pk,
-                    str(trigger.pk),
-                ],
-                queue="authentik_events",
+            notification_transport.send(
+                transport.pk,
+                event.pk,
+                user.pk,
+                trigger.pk,
             )
             if transport.send_once:
                 break
 
 
-@CELERY_APP.task(
-    bind=True,
-    autoretry_for=(NotificationTransportError,),
-    retry_backoff=True,
-    base=SystemTask,
-)
-def notification_transport(
-    self: SystemTask, transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str
-):
+@actor
+def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
-    self.save_on_success = False
+    self: Task = CurrentTask.get_task()
+    # TODO: fixme
+    # self.save_on_success = False
     try:
         event = Event.objects.filter(pk=event_pk).first()
         if not event:
@@ -124,7 +116,7 @@ def notification_transport(
         raise exc
 
 
-@CELERY_APP.task()
+@actor
 def gdpr_cleanup(user_pk: int):
     """cleanup events from gdpr_compliance"""
     events = Event.objects.filter(user__pk=user_pk)
@@ -132,10 +124,10 @@ def gdpr_cleanup(user_pk: int):
     events.delete()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def notification_cleanup(self: SystemTask):
+@actor
+def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
+    self: Task = CurrentTask.get_task()
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     notifications.delete()

@@ -26,7 +26,7 @@ def pre_save_license(sender: type[License], instance: License, **_):
 def post_save_license(sender: type[License], instance: License, **_):
     """Trigger license usage calculation when license is saved"""
     cache.delete(CACHE_KEY_ENTERPRISE_LICENSE)
-    enterprise_update_usage.delay()
+    enterprise_update_usage.send()
 
 
 @receiver(post_delete, sender=License)

@@ -1,22 +1,24 @@
 from django.db.models.aggregates import Count
+from dramatiq.actor import actor
 from structlog import get_logger
 
 from authentik.enterprise.policies.unique_password.models import (
     UniquePasswordPolicy,
     UserPasswordHistory,
 )
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def check_and_purge_password_history(self: SystemTask):
+@actor
+def check_and_purge_password_history():
     """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
     This is run on a schedule instead of being triggered by policy binding deletion.
     """
+    self: Task = CurrentTask.get_task()
+
     if not UniquePasswordPolicy.objects.exists():
         UserPasswordHistory.objects.all().delete()
         LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")
@@ -28,8 +30,10 @@ def check_and_purge_password_history(self: SystemTask):
     )
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-def trim_password_histories(self: SystemTask):
+@actor
+def trim_password_histories():
+    self: Task = CurrentTask.get_task()
+
     """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.
 

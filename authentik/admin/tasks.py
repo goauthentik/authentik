@@ -3,6 +3,7 @@
 from django.core.cache import cache
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
+from dramatiq import actor
 from packaging.version import parse
 from requests import RequestException
 from structlog.stdlib import get_logger
@@ -10,10 +11,10 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction, Notification
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
@@ -33,9 +34,7 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
+@actor(queue_name="startup", throws=(DatabaseError, ProgrammingError, InternalError))
 def clear_update_notifications():
     """Clear update notifications on startup if the notification was for the version
     we're running now."""
@@ -47,10 +46,10 @@ def clear_update_notifications():
             notification.delete()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def update_latest_version(self: SystemTask):
+@actor
+def update_latest_version():
     """Update latest version info"""
+    self: Task = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
         self.set_status(TaskStatus.WARNING, "Version check disabled.")

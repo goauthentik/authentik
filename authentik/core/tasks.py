@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
+from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -11,16 +12,16 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_expired_models(self: SystemTask):
+@actor
+def clean_expired_models():
     """Remove expired objects"""
+    self: Task = CurrentTask.get_task()
     messages = []
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
@@ -35,10 +36,10 @@ def clean_expired_models(self: SystemTask):
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_temporary_users(self: SystemTask):
+@actor
+def clean_temporary_users():
     """Remove temporary users created by SAML Sources"""
+    self: Task = CurrentTask.get_task()
     _now = datetime.now()
     messages = []
     deleted_users = 0
