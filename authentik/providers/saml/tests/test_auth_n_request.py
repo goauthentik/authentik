@@ -16,11 +16,11 @@ from authentik.common.saml.constants import (
 )
 from authentik.common.saml.exceptions import MismatchedRequestID
 from authentik.common.saml.xml import lxml_from_string
+from authentik.common.tests import get_request
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.generators import generate_id
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.lib.tests.utils import get_request
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser

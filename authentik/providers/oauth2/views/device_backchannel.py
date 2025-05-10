@@ -12,8 +12,8 @@ from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import Application
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 

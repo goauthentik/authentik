@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 import authentik.core.models
 import authentik.crypto.generators
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
                             "Tokens not valid on or after current time + this value (Format:"
                             " hours=1;minutes=2;seconds=3)."
                         ),
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (

@@ -20,7 +20,7 @@ from rest_framework.serializers import Serializer
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
 
 from authentik.common.exceptions import NotReportedException
-from authentik.lib.models import SerializerModel
+from authentik.common.models import SerializerModel
 from authentik.policies.models import PolicyBindingModel
 
 

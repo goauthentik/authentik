@@ -3,9 +3,9 @@
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.importer import Importer
+from authentik.common.tests import load_fixture
 from authentik.crypto.generators import generate_id
 from authentik.flows.models import Flow
-from authentik.lib.tests.utils import load_fixture
 
 
 class TestBlueprintsV1State(TransactionTestCase):

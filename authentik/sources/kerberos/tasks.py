@@ -5,10 +5,10 @@ from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
 from authentik.common.sync.outgoing.exceptions import StopSync
+from authentik.common.utils.errors import exception_to_string
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.utils.errors import exception_to_string
 from authentik.root.celery import CELERY_APP
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync

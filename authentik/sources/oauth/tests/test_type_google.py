@@ -4,7 +4,7 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import TestCase
 from django.test.client import RequestFactory
 
-from authentik.lib.tests.utils import dummy_get_response
+from authentik.common.tests import dummy_get_response
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.google import (
     GoogleOAuthRedirect,

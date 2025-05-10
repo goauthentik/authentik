@@ -17,7 +17,7 @@ from structlog import get_logger
 from structlog.stdlib import BoundLogger
 
 from authentik.common.exceptions import NotReportedException
-from authentik.lib.utils.http import authentik_user_agent
+from authentik.common.utils.http import authentik_user_agent
 
 OCI_MEDIA_TYPE = "application/vnd.goauthentik.blueprint.v1+yaml"
 OCI_PREFIX = "oci://"

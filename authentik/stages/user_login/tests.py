@@ -6,6 +6,7 @@ from unittest.mock import patch
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.generators import generate_id
@@ -15,7 +16,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.user_login.models import UserLoginStage
 

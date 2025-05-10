@@ -9,11 +9,11 @@ from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
 from authentik.common.sync.outgoing.exceptions import StopSync
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.reflection import class_to_path, path_to_class
 from authentik.events.models import SystemTask as DBSystemTask
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer

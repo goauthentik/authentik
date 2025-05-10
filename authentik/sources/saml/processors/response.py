@@ -30,6 +30,7 @@ from authentik.common.saml.exceptions import (
     MissingSAMLResponse,
     UnsupportedNameIDFormat,
 )
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import (
     USER_ATTRIBUTE_DELETE_ON_LOGOUT,
     USER_ATTRIBUTE_EXPIRES,
@@ -38,7 +39,6 @@ from authentik.core.models import (
     User,
 )
 from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.sources.saml.models import (
     GroupSAMLSourceConnection,
     SAMLSource,

@@ -20,10 +20,10 @@ from authentik.blueprints.v1.common import (
     KeyOf,
 )
 from authentik.blueprints.v1.importer import Importer
+from authentik.common.utils.reflection import all_subclasses
 from authentik.core.api.applications import ApplicationSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Application, Provider
-from authentik.lib.utils.reflection import all_subclasses
 from authentik.policies.api.bindings import PolicyBindingSerializer
 
 

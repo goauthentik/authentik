@@ -32,6 +32,7 @@ from authentik.common.oauth.errors import (
     OAuth2Error,
     RedirectUriError,
 )
+from authentik.common.utils.time import timedelta_from_string
 from authentik.common.views import bad_request_message
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
@@ -45,7 +46,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.id_token import IDToken

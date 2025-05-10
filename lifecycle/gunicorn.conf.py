@@ -13,8 +13,8 @@ from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.common.config import CONFIG
-from authentik.lib.utils.http import get_http_session
-from authentik.lib.utils.reflection import get_env
+from authentik.common.utils.http import get_http_session
+from authentik.common.utils.reflection import get_env
 from authentik.root.debug import start_debug_server
 from authentik.root.install_id import get_install_id_raw
 from authentik.root.logging import get_logger_config

@@ -13,6 +13,7 @@ from rest_framework.fields import BooleanField, CharField
 from sentry_sdk import start_span
 from structlog.stdlib import get_logger
 
+from authentik.common.utils.reflection import path_to_class
 from authentik.core.models import User
 from authentik.core.signals import login_failed
 from authentik.flows.challenge import (
@@ -24,7 +25,6 @@ from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import Flow, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.reflection import path_to_class
 from authentik.stages.password.models import PasswordStage
 
 LOGGER = get_logger()

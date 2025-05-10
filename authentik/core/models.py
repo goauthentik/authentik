@@ -6,7 +6,7 @@ from hashlib import sha256
 from typing import Any, Optional, Self
 from uuid import uuid4
 
-from deepmerge import always_merger
+from deepmerge import Merger, always_merger
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -27,18 +27,17 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
 from authentik.common.expression.exceptions import ControlFlowException
-from authentik.core.avatars import get_avatar
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
-from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.crypto.generators import generate_id
-from authentik.lib.merge import MERGE_LIST_UNIQUE
-from authentik.lib.models import (
+from authentik.common.models import (
     CreatedUpdatedModel,
     DomainlessFormattedURLValidator,
     SerializerModel,
     internal_model,
 )
-from authentik.lib.utils.time import timedelta_from_string
+from authentik.common.utils.time import timedelta_from_string
+from authentik.core.avatars import get_avatar
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
+from authentik.core.types import UILoginButton, UserSettingSerializer
+from authentik.crypto.generators import generate_id
 from authentik.policies.models import PolicyBindingModel
 from authentik.tenants.models import DEFAULT_TOKEN_DURATION, DEFAULT_TOKEN_LENGTH
 from authentik.tenants.utils import get_current_tenant, get_unique_identifier
@@ -64,6 +63,10 @@ options.DEFAULT_NAMES = options.DEFAULT_NAMES + (
 )
 
 GROUP_RECURSION_LIMIT = 20
+
+MERGE_LIST_UNIQUE = Merger(
+    [(list, ["append_unique"]), (dict, ["merge"]), (set, ["union"])], ["override"], ["override"]
+)
 
 
 def default_token_duration() -> datetime:

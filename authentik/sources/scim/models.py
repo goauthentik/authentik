@@ -7,8 +7,8 @@ from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import BaseSerializer, Serializer
 
+from authentik.common.models import SerializerModel, internal_model
 from authentik.core.models import Group, PropertyMapping, Source, Token, User
-from authentik.lib.models import SerializerModel, internal_model
 
 
 class SCIMSource(Source):

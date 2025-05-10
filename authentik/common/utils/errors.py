@@ -2,7 +2,7 @@
 
 from traceback import extract_tb
 
-from authentik.lib.utils.reflection import class_to_path
+from authentik.common.utils.reflection import class_to_path
 
 TRACEBACK_HEADER = "Traceback (most recent call last):"
 

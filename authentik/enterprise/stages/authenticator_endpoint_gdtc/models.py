@@ -8,10 +8,10 @@ from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import BaseSerializer, Serializer
 
+from authentik.common.models import SerializerModel, internal_model
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.flows.stage import StageView
-from authentik.lib.models import SerializerModel, internal_model
 from authentik.stages.authenticator.models import Device
 
 

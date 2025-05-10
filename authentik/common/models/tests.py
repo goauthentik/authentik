@@ -5,9 +5,9 @@ from collections.abc import Callable
 from django.test import TestCase
 from rest_framework.serializers import BaseSerializer
 
+from authentik.common.models import SerializerModel
+from authentik.common.utils.reflection import all_subclasses
 from authentik.flows.models import Stage
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class TestModels(TestCase):

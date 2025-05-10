@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import Source, User
 from authentik.core.sources.flow_manager import (
     SESSION_KEY_OVERRIDE_FLOW_TOKEN,
@@ -20,7 +21,6 @@ from authentik.flows.challenge import Challenge, ChallengeResponse
 from authentik.flows.models import FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_REDIRECTED, PLAN_CONTEXT_IS_RESTORED
 from authentik.flows.stage import ChallengeStageView, StageView
-from authentik.lib.utils.time import timedelta_from_string
 
 PLAN_CONTEXT_RESUME_TOKEN = "resume_token"  # nosec
 

@@ -34,6 +34,7 @@ from authentik.common.oauth.constants import (
     TOKEN_TYPE,
 )
 from authentik.common.oauth.errors import DeviceCodeError, TokenError, UserAuthError
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
@@ -49,7 +50,6 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (

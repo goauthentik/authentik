@@ -7,7 +7,7 @@ from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 
-from authentik.lib.models import (
+from authentik.common.models import (
     CreatedUpdatedModel,
     InheritanceAutoManager,
     InheritanceForeignKey,

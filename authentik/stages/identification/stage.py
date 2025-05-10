@@ -14,6 +14,8 @@ from rest_framework.fields import BooleanField, CharField, ChoiceField, DictFiel
 from rest_framework.serializers import ValidationError
 from sentry_sdk import start_span
 
+from authentik.common.utils.reflection import all_subclasses
+from authentik.common.utils.urls import reverse_with_qs
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.avatars import DEFAULT_AVATAR
 from authentik.core.models import Application, Source, User
@@ -27,8 +29,6 @@ from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
-from authentik.lib.utils.reflection import all_subclasses
-from authentik.lib.utils.urls import reverse_with_qs
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.captcha.stage import CaptchaChallenge, verify_captcha_token
 from authentik.stages.identification.models import IdentificationStage

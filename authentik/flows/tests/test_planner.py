@@ -12,6 +12,7 @@ from django.urls import reverse
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.blueprints.tests import reconcile_app
+from authentik.common.tests import dummy_get_response
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.generators import generate_id
@@ -30,7 +31,6 @@ from authentik.flows.planner import (
     cache_key,
 )
 from authentik.flows.stage import StageView
-from authentik.lib.tests.utils import dummy_get_response
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
 from authentik.policies.dummy.models import DummyPolicy

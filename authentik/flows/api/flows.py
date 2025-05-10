@@ -16,6 +16,12 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
+from authentik.common.utils.file import (
+    FilePathSerializer,
+    FileUploadSerializer,
+    set_file,
+    set_file_url,
+)
 from authentik.common.views import bad_request_message
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import (
@@ -30,12 +36,6 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import CACHE_PREFIX, PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
-from authentik.lib.utils.file import (
-    FilePathSerializer,
-    FileUploadSerializer,
-    set_file,
-    set_file_url,
-)
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 

@@ -9,11 +9,11 @@ from django.utils.timezone import now
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.oauth.constants import TOKEN_TYPE
 from authentik.common.oauth.errors import AuthorizeError, ClientIdError, RedirectUriError
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.generators import generate_id
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,

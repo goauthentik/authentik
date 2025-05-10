@@ -5,8 +5,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from rest_framework.serializers import BaseSerializer
 
+from authentik.common.utils.time import timedelta_string_validator
 from authentik.flows.models import Stage
-from authentik.lib.utils.time import timedelta_string_validator
 
 
 class NetworkBinding(models.TextChoices):

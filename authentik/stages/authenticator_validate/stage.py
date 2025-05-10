@@ -11,6 +11,7 @@ from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
 
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import User
 from authentik.events.middleware import audit_ignore
@@ -20,7 +21,6 @@ from authentik.flows.exceptions import FlowSkipStageException, StageInvalidExcep
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.authenticator import devices_for_user
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_email.models import EmailDevice

@@ -7,9 +7,9 @@ from django.contrib.sessions.middleware import SessionMiddleware
 from django.test import RequestFactory, TestCase
 
 from authentik.common.saml.constants import NS_SAML_ASSERTION
+from authentik.common.tests import dummy_get_response, load_fixture
 from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.generators import generate_id
-from authentik.lib.tests.utils import dummy_get_response, load_fixture
 from authentik.sources.saml.models import SAMLSource, SAMLSourcePropertyMapping
 from authentik.sources.saml.processors.response import ResponseProcessor
 

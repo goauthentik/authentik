@@ -17,6 +17,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.common.config import CONFIG
 from authentik.common.ldap.constants import LDAP_DISTINGUISHED_NAME
+from authentik.common.models import DomainlessURLValidator, internal_model
 from authentik.core.models import (
     Group,
     GroupSourceConnection,
@@ -25,7 +26,6 @@ from authentik.core.models import (
     UserSourceConnection,
 )
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import DomainlessURLValidator, internal_model
 
 LDAP_TIMEOUT = 15
 LDAP_UNIQUENESS = "ldap_uniq"

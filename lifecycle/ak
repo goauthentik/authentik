@@ -68,7 +68,7 @@ function prepare_debug {
     chown authentik:authentik /unittest.xml
 }
 
-if [[ "$(python -m authentik.lib.config debugger 2>/dev/null)" == "True" ]]; then
+if [[ "$(python -m authentik.common.config debugger 2>/dev/null)" == "True" ]]; then
     prepare_debug
 fi
 
@@ -98,7 +98,7 @@ elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
     shift
-    exec python -m authentik.lib.config $@
+    exec python -m authentik.common.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity
 else

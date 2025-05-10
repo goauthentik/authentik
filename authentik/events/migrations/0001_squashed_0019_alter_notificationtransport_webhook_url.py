@@ -10,7 +10,7 @@ from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.events.models
-import authentik.lib.models
+import authentik.common.models
 from authentik.common.migrations import progress_bar
 
 
@@ -377,7 +377,7 @@ class Migration(migrations.Migration):
             model_name="notificationtransport",
             name="webhook_url",
             field=models.TextField(
-                blank=True, validators=[authentik.lib.models.DomainlessURLValidator()]
+                blank=True, validators=[authentik.common.models.DomainlessURLValidator()]
             ),
         ),
     ]

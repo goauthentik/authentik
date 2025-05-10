@@ -6,7 +6,7 @@ import django.db.models.deletion
 import django_tenants.postgresql_backend.base
 from django.db import migrations, models
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 import authentik.tenants.models
 from authentik.common.config import CONFIG
 
@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="days=365",
                         help_text="Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).",
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (

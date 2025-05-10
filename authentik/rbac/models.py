@@ -10,8 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import assign_perm
 from rest_framework.serializers import BaseSerializer
 
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.reflection import get_apps
+from authentik.common.models import SerializerModel
+from authentik.common.utils.reflection import get_apps
 
 
 def get_permission_choices():

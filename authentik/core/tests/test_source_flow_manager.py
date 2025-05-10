@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from guardian.utils import get_anonymous_user
 
+from authentik.common.tests import get_request
 from authentik.core.models import SourceUserMatchingModes, User
 from authentik.core.sources.flow_manager import Action
 from authentik.core.sources.stage import PostSourceStage
@@ -12,7 +13,6 @@ from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.generators import generate_id
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.lib.tests.utils import get_request
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding

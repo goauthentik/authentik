@@ -8,6 +8,7 @@ from rest_framework.serializers import CharField
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
@@ -16,7 +17,6 @@ from authentik.flows.api.stages import StageSerializer
 from authentik.flows.challenge import HttpChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.utils.errors import exception_to_string
 from authentik.stages.prompt.models import Prompt, PromptStage
 from authentik.stages.prompt.stage import PromptChallenge, PromptStageView
 

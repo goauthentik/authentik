@@ -22,7 +22,7 @@ def migrate_ldap_property_mappings_object_field(apps, schema_editor):
 def get_field():
     {textwrap.indent(mapping.expression, prefix='    ')}
 
-from authentik.lib.utils.dict import set_path_in_dict
+from authentik.common.utils.dict import set_path_in_dict
 
 field = "{mapping.object_field}"
 result = {{"attributes": {{}}}}

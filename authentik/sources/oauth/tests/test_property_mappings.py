@@ -5,8 +5,8 @@ from copy import deepcopy
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
+from authentik.common.tests import get_request
 from authentik.crypto.generators import generate_id
-from authentik.lib.tests.utils import get_request
 from authentik.sources.oauth.models import OAuthSource, OAuthSourcePropertyMapping
 from authentik.sources.oauth.views.callback import OAuthSourceFlowManager
 

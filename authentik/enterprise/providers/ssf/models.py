@@ -12,10 +12,10 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 
+from authentik.common.models import CreatedUpdatedModel, internal_model
+from authentik.common.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.core.models import BackchannelProvider, ExpiringModel, Token
 from authentik.crypto.models import CertificateKeyPair
-from authentik.lib.models import CreatedUpdatedModel, internal_model
-from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider
 
 

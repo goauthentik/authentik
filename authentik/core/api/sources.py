@@ -14,17 +14,17 @@ from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
-from authentik.core.api.object_types import TypesMixin
-from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
-from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
-from authentik.core.types import UserSettingSerializer
-from authentik.lib.utils.file import (
+from authentik.common.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
     set_file,
     set_file_url,
 )
+from authentik.core.api.object_types import TypesMixin
+from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import MetaNameSerializer, ModelSerializer
+from authentik.core.models import GroupSourceConnection, Source, UserSourceConnection
+from authentik.core.types import UserSettingSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.rbac.decorators import permission_required
 

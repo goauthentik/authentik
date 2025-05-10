@@ -31,10 +31,10 @@ from authentik.common.saml.exceptions import (
 )
 from authentik.common.saml.id import get_random_id
 from authentik.common.saml.time import get_time_string
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS

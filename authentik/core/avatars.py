@@ -13,8 +13,8 @@ from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
 from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
-from authentik.lib.utils.dict import get_path_from_dict
-from authentik.lib.utils.http import get_http_session
+from authentik.common.utils.dict import get_path_from_dict
+from authentik.common.utils.http import get_http_session
 from authentik.tenants.utils import get_current_tenant
 
 if TYPE_CHECKING:

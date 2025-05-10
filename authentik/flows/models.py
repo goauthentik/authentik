@@ -13,15 +13,15 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
-from authentik.core.models import Token
-from authentik.core.types import UserSettingSerializer
-from authentik.flows.challenge import FlowLayout
-from authentik.lib.models import (
+from authentik.common.models import (
     InheritanceForeignKey,
     SerializerModel,
     internal_model,
 )
-from authentik.lib.utils.reflection import class_to_path
+from authentik.common.utils.reflection import class_to_path
+from authentik.core.models import Token
+from authentik.core.types import UserSettingSerializer
+from authentik.flows.challenge import FlowLayout
 from authentik.policies.models import PolicyBindingModel
 
 if TYPE_CHECKING:

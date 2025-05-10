@@ -24,6 +24,12 @@ from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
 from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
+from authentik.common.models import (
+    InheritanceForeignKey,
+    SerializerModel,
+    internal_model,
+)
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
     Provider,
@@ -34,12 +40,6 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.lib.models import (
-    InheritanceForeignKey,
-    SerializerModel,
-    internal_model,
-)
-from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
 OUR_VERSION = parse(__version__)

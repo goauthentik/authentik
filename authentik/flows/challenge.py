@@ -11,8 +11,8 @@ from django.http import JsonResponse
 from rest_framework.fields import BooleanField, CharField, ChoiceField, DictField
 from rest_framework.request import Request
 
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.api.utils import PassiveSerializer
-from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from authentik.flows.stage import StageView

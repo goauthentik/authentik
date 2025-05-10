@@ -19,13 +19,13 @@ from authentik.common.sync.outgoing.exceptions import (
     TransientSyncException,
 )
 from authentik.common.sync.outgoing.models import OutgoingSyncProvider
+from authentik.common.utils.reflection import class_to_path, path_to_class
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask
 from authentik.events.utils import sanitize_item
-from authentik.lib.utils.reflection import class_to_path, path_to_class
 
 
 class SyncTasks:

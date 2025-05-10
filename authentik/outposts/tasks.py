@@ -19,9 +19,9 @@ from structlog.stdlib import get_logger
 from yaml import safe_load
 
 from authentik.common.config import CONFIG
+from authentik.common.utils.reflection import path_to_class
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
-from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient

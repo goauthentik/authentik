@@ -4,9 +4,9 @@ from collections.abc import Callable
 
 from django.test import RequestFactory, TestCase
 
+from authentik.common.utils.reflection import all_subclasses
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class TestViews(TestCase):

@@ -5,7 +5,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 from authentik.common.saml import constants
 
 
@@ -132,7 +132,7 @@ class Migration(migrations.Migration):
                             " if your IDP uses the NameID Format 'transient', and the user doesn't"
                             " log out manually. (Format: hours=1;minutes=2;seconds=3)."
                         ),
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                         verbose_name="Delete temporary users after",
                     ),
                 ),

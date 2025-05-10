@@ -17,13 +17,13 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.common.expression.exceptions import ControlFlowException
 from authentik.common.sync.mapper import PropertyMappingManager
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult

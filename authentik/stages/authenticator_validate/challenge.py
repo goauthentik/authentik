@@ -19,6 +19,8 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
 from webauthn.helpers.structs import UserVerificationRequirement
 
+from authentik.common.utils.email import mask_email
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
@@ -26,8 +28,6 @@ from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
-from authentik.lib.utils.email import mask_email
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device

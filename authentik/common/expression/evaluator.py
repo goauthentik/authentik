@@ -19,10 +19,10 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.common.expression.exceptions import ControlFlowException
+from authentik.common.utils.http import get_http_session
+from authentik.common.utils.time import timedelta_from_string
 from authentik.core.models import User
 from authentik.events.models import Event
-from authentik.lib.utils.http import get_http_session
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -234,7 +234,7 @@ class BaseEvaluator:
         """Parse and evaluate expression. If the syntax is incorrect, a SyntaxError is raised.
         If any exception is raised during execution, it is raised.
         The result is returned without any type-checking."""
-        with start_span(op="authentik.lib.evaluator.evaluate") as span:
+        with start_span(op="authentik.common.evaluator.evaluate") as span:
             span: Span
             span.description = self._filename
             span.set_data("expression", expression_source)

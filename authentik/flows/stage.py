@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from sentry_sdk import start_span
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.utils.reflection import class_to_path
 from authentik.core.avatars import DEFAULT_AVATAR, get_avatar
 from authentik.core.models import Application, User
 from authentik.flows.challenge import (
@@ -29,7 +30,6 @@ from authentik.flows.challenge import (
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
-from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView

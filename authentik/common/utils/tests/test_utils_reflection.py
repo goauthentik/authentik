@@ -4,7 +4,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from authentik.lib.utils.reflection import path_to_class
+from authentik.common.utils.reflection import path_to_class
 
 
 class TestReflectionUtils(TestCase):

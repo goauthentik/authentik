@@ -34,8 +34,8 @@ from websockets.exceptions import WebSocketException
 from authentik import __version__, get_build_hash
 from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
-from authentik.lib.utils.http import authentik_user_agent
-from authentik.lib.utils.reflection import get_env
+from authentik.common.utils.http import authentik_user_agent
+from authentik.common.utils.reflection import get_env
 
 LOGGER = get_logger()
 _root_path = CONFIG.get("web.path", "/")

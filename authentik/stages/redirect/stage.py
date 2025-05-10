@@ -5,6 +5,7 @@ from urllib.parse import urlsplit
 from django.http.response import HttpResponse
 from rest_framework.fields import CharField
 
+from authentik.common.utils.urls import reverse_with_qs
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -21,7 +22,6 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_GET, SESSION_KEY_PLAN, InvalidStageError
-from authentik.lib.utils.urls import reverse_with_qs
 from authentik.stages.redirect.models import RedirectMode, RedirectStage
 
 URL_SCHEME_FLOW = "ak-flow"

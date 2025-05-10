@@ -7,8 +7,8 @@ from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
 from authentik import __version__
+from authentik.common.utils.http import get_http_session
 from authentik.core.sources.flow_manager import SourceFlowManager
-from authentik.lib.utils.http import get_http_session
 from authentik.sources.plex.models import PlexSource, UserPlexSourceConnection
 
 LOGGER = get_logger()

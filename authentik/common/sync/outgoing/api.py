@@ -8,11 +8,11 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.common.sync.outgoing.models import OutgoingSyncProvider
+from authentik.common.utils.reflection import class_to_path
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import Group, User
 from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.events.logs import LogEvent, LogEventSerializer
-from authentik.lib.utils.reflection import class_to_path
 from authentik.rbac.filters import ObjectFilter
 
 

@@ -9,9 +9,9 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.reflection import class_to_path
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding

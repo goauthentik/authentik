@@ -24,6 +24,9 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.brands.models import Brand
 from authentik.common.exceptions import NotReportedException
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.reflection import all_subclasses, class_to_path
+from authentik.common.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
@@ -56,9 +59,6 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedStage, StageView
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.reflection import all_subclasses, class_to_path
-from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
 
 LOGGER = get_logger()

@@ -29,12 +29,12 @@ from authentik.blueprints.v1.common import (
 )
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.common.exceptions import NotReportedException
+from authentik.common.models import SerializerModel, excluded_models
+from authentik.common.utils.reflection import get_apps
 from authentik.core.models import User
 from authentik.enterprise.license import LicenseKey
 from authentik.events.logs import LogEvent, capture_logs
 from authentik.events.utils import cleanse_dict
-from authentik.lib.models import SerializerModel, excluded_models
-from authentik.lib.utils.reflection import get_apps
 from authentik.rbac.models import Role
 
 # Context set when the serializer is created in a blueprint context

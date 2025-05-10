@@ -3,8 +3,8 @@
 from django.test import RequestFactory, TestCase
 from guardian.shortcuts import get_anonymous_user
 
+from authentik.common.tests import dummy_get_response
 from authentik.crypto.generators import generate_id
-from authentik.lib.tests.utils import dummy_get_response
 from authentik.root.middleware import SessionMiddleware
 from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import registry

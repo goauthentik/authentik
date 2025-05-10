@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.models
+import authentik.common.models
 
 
 def migrate_from_groupmembership(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="policybinding",
             name="policy",
-            field=authentik.lib.models.InheritanceForeignKey(
+            field=authentik.common.models.InheritanceForeignKey(
                 blank=True,
                 default=None,
                 null=True,

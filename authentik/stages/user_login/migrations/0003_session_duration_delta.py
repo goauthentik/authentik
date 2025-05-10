@@ -4,7 +4,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 def update_duration(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                     "Determines how long a session lasts. Default of 0 means that the sessions"
                     " lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
                 ),
-                validators=[authentik.lib.utils.time.timedelta_string_validator],
+                validators=[authentik.common.utils.time.timedelta_string_validator],
             ),
         ),
         migrations.RunPython(update_duration),

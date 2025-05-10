@@ -5,9 +5,9 @@ from collections.abc import Callable
 from django.db.models import Model
 from django.test import TestCase
 
+from authentik.common.utils.reflection import get_apps
 from authentik.core.models import default_token_key
 from authentik.events.models import default_event_duration
-from authentik.lib.utils.reflection import get_apps
 
 
 class TestModels(TestCase):

@@ -6,6 +6,7 @@ from django.test import TestCase
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction
+from authentik.common.tests import load_fixture
 from authentik.core.models import Application, Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.crypto.generators import generate_id
@@ -17,7 +18,6 @@ from authentik.enterprise.providers.google_workspace.models import (
 )
 from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
 from authentik.events.models import Event, EventAction
-from authentik.lib.tests.utils import load_fixture
 from authentik.tenants.models import Tenant
 
 domains_list_v1_mock = load_fixture("fixtures/domains_list_v1.json")

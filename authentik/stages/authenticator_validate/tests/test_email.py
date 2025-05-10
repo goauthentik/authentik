@@ -3,11 +3,11 @@
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 
+from authentik.common.utils.email import mask_email
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator_email.models import AuthenticatorEmailStage, EmailDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.identification.models import IdentificationStage, UserFields

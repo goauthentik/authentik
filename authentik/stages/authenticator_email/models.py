@@ -8,13 +8,13 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.common.config import CONFIG
+from authentik.common.models import SerializerModel
+from authentik.common.utils.errors import exception_to_string
+from authentik.common.utils.time import timedelta_string_validator
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
-from authentik.lib.models import SerializerModel
-from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.time import timedelta_string_validator
 from authentik.stages.authenticator.models import SideChannelDevice
 from authentik.stages.email.utils import TemplateEmailMessage
 

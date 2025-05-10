@@ -20,7 +20,7 @@ from authentik.common.sync.outgoing.exceptions import (
     ObjectExistsSyncException,
     TransientSyncException,
 )
-from authentik.lib.utils.http import get_http_session
+from authentik.common.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.models import SCIMCompatibilityMode, SCIMProvider
 

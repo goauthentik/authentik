@@ -7,7 +7,7 @@ from django.urls import path
 from structlog.stdlib import get_logger
 
 from authentik.common.config import CONFIG
-from authentik.lib.utils.reflection import get_apps
+from authentik.common.utils.reflection import get_apps
 
 LOGGER = get_logger()
 

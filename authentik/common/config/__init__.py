@@ -20,7 +20,7 @@ from urllib.parse import quote_plus, urlparse
 import yaml
 from django.core.exceptions import ImproperlyConfigured
 
-from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
+from authentik.common.utils.dict import get_path_from_dict, set_path_in_dict
 
 SEARCH_PATHS = ["authentik/common/config/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True

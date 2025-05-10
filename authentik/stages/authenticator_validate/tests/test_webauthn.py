@@ -8,6 +8,7 @@ from rest_framework.serializers import ValidationError
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 
+from authentik.common.tests import get_request
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.crypto.generators import generate_id
 from authentik.flows.models import FlowStageBinding, NotConfiguredAction
@@ -15,7 +16,6 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
-from authentik.lib.tests.utils import get_request
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     get_webauthn_challenge_without_user,

@@ -9,7 +9,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 from zxcvbn import zxcvbn
 
-from authentik.lib.utils.http import get_http_session
+from authentik.common.utils.http import get_http_session
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT

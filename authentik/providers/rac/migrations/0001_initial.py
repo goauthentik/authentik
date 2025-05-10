@@ -6,7 +6,7 @@ import django.db.models.deletion
 from django.db import migrations, models
 
 import authentik.core.models
-import authentik.lib.utils.time
+import authentik.common.utils.time
 
 
 class Migration(migrations.Migration):
@@ -66,7 +66,7 @@ class Migration(migrations.Migration):
                     models.TextField(
                         default="hours=8",
                         help_text="Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)",
-                        validators=[authentik.lib.utils.time.timedelta_string_validator],
+                        validators=[authentik.common.utils.time.timedelta_string_validator],
                     ),
                 ),
             ],

@@ -10,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
+from authentik.common.models import SerializerModel, internal_model
 from authentik.common.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.common.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
 from authentik.core.models import (
@@ -19,7 +20,6 @@ from authentik.core.models import (
     User,
     UserTypes,
 )
-from authentik.lib.models import SerializerModel, internal_model
 
 
 def default_scopes() -> list[str]:

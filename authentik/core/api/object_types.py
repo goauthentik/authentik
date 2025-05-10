@@ -9,9 +9,9 @@ from rest_framework.fields import (
 from rest_framework.request import Request
 from rest_framework.response import Response
 
+from authentik.common.utils.reflection import all_subclasses
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.apps import EnterpriseConfig
-from authentik.lib.utils.reflection import all_subclasses
 
 
 class TypeCreateSerializer(PassiveSerializer):

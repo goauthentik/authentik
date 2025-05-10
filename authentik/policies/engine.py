@@ -11,8 +11,8 @@ from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.utils.reflection import class_to_path
 from authentik.core.models import User
-from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode

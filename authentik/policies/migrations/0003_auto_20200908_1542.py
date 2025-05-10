@@ -3,7 +3,7 @@
 import django.db.models.deletion
 from django.db import migrations
 
-import authentik.lib.models
+import authentik.common.models
 
 
 class Migration(migrations.Migration):
@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="policybinding",
             name="target",
-            field=authentik.lib.models.InheritanceForeignKey(
+            field=authentik.common.models.InheritanceForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
                 related_name="+",
                 to="authentik_policies.policybindingmodel",

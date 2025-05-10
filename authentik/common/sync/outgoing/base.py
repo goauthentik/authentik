@@ -10,11 +10,11 @@ from structlog.stdlib import get_logger
 from authentik.common.expression.exceptions import ControlFlowException
 from authentik.common.sync.mapper import PropertyMappingManager
 from authentik.common.sync.outgoing.exceptions import NotFoundSyncException, StopSync
+from authentik.common.utils.errors import exception_to_string
 from authentik.core.expression.exceptions import (
     PropertyMappingExpressionException,
 )
 from authentik.events.models import Event, EventAction
-from authentik.lib.utils.errors import exception_to_string
 
 if TYPE_CHECKING:
     from django.db.models import Model
