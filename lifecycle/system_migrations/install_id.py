@@ -1,7 +1,7 @@
 # flake8: noqa
 from uuid import uuid4
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """BEGIN TRANSACTION;

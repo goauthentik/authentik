@@ -1,6 +1,6 @@
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 LOGGER = get_logger()
 

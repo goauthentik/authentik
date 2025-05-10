@@ -4,8 +4,8 @@ from json import loads
 
 from django.urls import reverse
 
+from authentik.common.config import CONFIG
 from authentik.crypto.generators import generate_id
-from authentik.lib.config import CONFIG
 from authentik.tenants.models import Domain, Tenant
 from authentik.tenants.tests.utils import TenantAPITestCase
 

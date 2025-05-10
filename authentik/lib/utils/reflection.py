@@ -7,7 +7,7 @@ from tempfile import gettempdir
 
 from django.conf import settings
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 SERVICE_HOST_ENV_NAME = "KUBERNETES_SERVICE_HOST"
 

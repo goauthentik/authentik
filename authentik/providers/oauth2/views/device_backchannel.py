@@ -11,8 +11,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.core.models import Application
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
 from authentik.providers.oauth2.views.device_init import QS_KEY_CODE

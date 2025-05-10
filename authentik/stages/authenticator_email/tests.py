@@ -10,10 +10,10 @@ from django.template.exceptions import TemplateDoesNotExist
 from django.urls import reverse
 from django.utils.timezone import now
 
+from authentik.common.config import CONFIG
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_user
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.tests import FlowTestCase
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.email import mask_email
 from authentik.stages.authenticator_email.api import (
     AuthenticatorEmailStageSerializer,

@@ -12,10 +12,10 @@ from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.core.models import Token
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.challenge import FlowLayout
-from authentik.lib.config import CONFIG
 from authentik.lib.models import (
     InheritanceForeignKey,
     SerializerModel,

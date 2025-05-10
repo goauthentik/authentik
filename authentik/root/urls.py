@@ -3,8 +3,8 @@
 from django.urls import include, path
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.core.views import error
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_apps
 from authentik.root.monitoring import LiveView, MetricsView, ReadyView
 

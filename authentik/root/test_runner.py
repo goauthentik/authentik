@@ -8,7 +8,7 @@ import pytest
 from django.conf import settings
 from django.test.runner import DiscoverRunner
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from authentik.root.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
 from tests.e2e.utils import get_docker_tag

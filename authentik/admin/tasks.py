@@ -9,9 +9,9 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
+from authentik.common.config import CONFIG
 from authentik.events.models import Event, EventAction, Notification
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.root.celery import CELERY_APP
 

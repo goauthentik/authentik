@@ -10,8 +10,8 @@ from rest_framework.serializers import Serializer
 from structlog import get_logger
 
 from authentik.blueprints.v1.oci import OCI_PREFIX, BlueprintOCIClient, OCIException
+from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
-from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 
 LOGGER = get_logger()

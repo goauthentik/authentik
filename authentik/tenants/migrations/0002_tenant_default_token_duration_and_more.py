@@ -4,7 +4,7 @@ import django.core.validators
 from django.db import migrations, models
 
 import authentik.lib.utils.time
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 
 class Migration(migrations.Migration):

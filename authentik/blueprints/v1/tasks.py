@@ -30,11 +30,11 @@ from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, E
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
+from authentik.common.config import CONFIG
 from authentik.events.logs import capture_logs
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.events.utils import sanitize_dict
-from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 from authentik.tenants.models import Tenant
 

@@ -6,10 +6,10 @@ from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 from unittest import mock
 
-from django.conf import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 
-from authentik.lib.config import (
+from authentik.common.config import (
     ENV_PREFIX,
     UNSET,
     Attr,

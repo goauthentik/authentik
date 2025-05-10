@@ -12,8 +12,8 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.flows.models import Stage
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_string_validator
 
 LOGGER = get_logger()

@@ -18,9 +18,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from authentik import get_full_version
+from authentik.common.config import CONFIG
 from authentik.core.api.utils import PassiveSerializer
 from authentik.enterprise.license import LicenseKey
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import get_env
 from authentik.rbac.permissions import HasPermission
 

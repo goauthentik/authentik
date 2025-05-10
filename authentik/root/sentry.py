@@ -32,8 +32,8 @@ from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
 from authentik import __version__, get_build_hash
+from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
 

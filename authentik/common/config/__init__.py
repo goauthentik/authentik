@@ -18,11 +18,11 @@ from typing import Any
 from urllib.parse import quote_plus, urlparse
 
 import yaml
-from django.conf import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured
 
 from authentik.lib.utils.dict import get_path_from_dict, set_path_in_dict
 
-SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
+SEARCH_PATHS = ["authentik/common/config/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
 )
 ENV_PREFIX = "AUTHENTIK"
@@ -100,7 +100,7 @@ class ConfigLoader:
     def __init__(self, **kwargs):
         super().__init__()
         self.__config = {}
-        base_dir = Path(__file__).parent.joinpath(Path("../..")).resolve()
+        base_dir = Path(__file__).parent.joinpath(Path("../../..")).resolve()
         for _path in SEARCH_PATHS:
             path = Path(_path)
             # Check if path is relative, and if so join with base_dir

@@ -22,6 +22,7 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
+from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
 from authentik.core.models import (
     USER_PATH_SYSTEM_PREFIX,
@@ -33,7 +34,6 @@ from authentik.core.models import (
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
 from authentik.lib.models import (
     InheritanceForeignKey,
     SerializerModel,

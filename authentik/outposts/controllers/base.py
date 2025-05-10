@@ -5,9 +5,9 @@ from dataclasses import dataclass
 from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
+from authentik.common.config import CONFIG
 from authentik.common.exceptions import NotReportedException
 from authentik.events.logs import LogEvent, capture_logs
-from authentik.lib.config import CONFIG
 from authentik.outposts.models import (
     Outpost,
     OutpostServiceConnection,

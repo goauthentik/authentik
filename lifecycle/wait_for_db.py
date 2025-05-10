@@ -8,7 +8,7 @@ from psycopg import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
 
-from authentik.lib.config import CONFIG, redis_url
+from authentik.common.config import CONFIG, redis_url
 
 CHECK_THRESHOLD = 30
 

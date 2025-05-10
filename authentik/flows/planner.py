@@ -9,6 +9,7 @@ from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.common.config import CONFIG
 from authentik.core.models import User
 from authentik.events.models import cleanse_dict
 from authentik.flows.apps import HIST_FLOWS_PLAN_TIME
@@ -22,7 +23,6 @@ from authentik.flows.models import (
     Stage,
     in_memory_stage,
 )
-from authentik.lib.config import CONFIG
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.outposts.models import Outpost
 from authentik.policies.engine import PolicyEngine

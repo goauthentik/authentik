@@ -8,9 +8,9 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.common.config import CONFIG
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
-from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()

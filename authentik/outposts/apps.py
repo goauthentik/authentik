@@ -4,7 +4,7 @@ from prometheus_client import Gauge
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 LOGGER = get_logger()
 

@@ -20,9 +20,9 @@ from rest_framework.views import View
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.authentication import validate_auth
+from authentik.common.config import CONFIG
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
-from authentik.lib.config import CONFIG
 from authentik.recovery.lib import create_admin_group, create_recovery_token
 from authentik.tenants.models import Tenant
 

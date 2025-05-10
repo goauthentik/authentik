@@ -12,7 +12,7 @@ from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.debug import start_debug_server

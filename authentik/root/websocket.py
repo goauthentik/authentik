@@ -6,7 +6,7 @@ from channels.routing import URLRouter
 from django.urls import path
 from structlog.stdlib import get_logger
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from authentik.lib.utils.reflection import get_apps
 
 LOGGER = get_logger()

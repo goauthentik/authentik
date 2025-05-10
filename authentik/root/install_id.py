@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from psycopg import connect
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 # We need to string format the query as tables and schemas can't be set by parameters
 # not a security issue as the config value is set by the person installing authentik

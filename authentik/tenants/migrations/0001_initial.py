@@ -8,7 +8,7 @@ from django.db import migrations, models
 
 import authentik.lib.utils.time
 import authentik.tenants.models
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 
 def create_default_tenant(apps, schema_editor):

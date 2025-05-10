@@ -4,7 +4,7 @@ from celery.schedules import crontab
 from prometheus_client import Gauge, Histogram
 
 from authentik.blueprints.apps import ManagedAppConfig
-from authentik.lib.config import CONFIG, ENV_PREFIX
+from authentik.common.config import CONFIG, ENV_PREFIX
 from authentik.lib.utils.reflection import path_to_class
 from authentik.root.celery import CELERY_APP
 

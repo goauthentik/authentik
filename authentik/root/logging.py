@@ -7,7 +7,7 @@ from os import getpid
 import structlog
 from django.db import connection
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 
 LOG_PRE_CHAIN = [
     # Add the log level and a timestamp to the event_dict if the log entry

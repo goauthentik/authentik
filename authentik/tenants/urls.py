@@ -3,7 +3,7 @@
 from django.conf import settings
 from django.urls import path
 
-from authentik.lib.config import CONFIG
+from authentik.common.config import CONFIG
 from authentik.tenants.api.domains import DomainViewSet
 from authentik.tenants.api.settings import SettingsView
 from authentik.tenants.api.tenants import TenantViewSet

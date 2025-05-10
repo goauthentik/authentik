@@ -8,8 +8,8 @@ from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discovery, blueprints_find
+from authentik.common.config import CONFIG
 from authentik.crypto.generators import generate_id
-from authentik.lib.config import CONFIG
 
 TMP = mkdtemp("authentik-blueprints")
 
