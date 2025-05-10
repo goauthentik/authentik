@@ -11,7 +11,7 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.events.models
 import authentik.lib.models
-from authentik.lib.migrations import progress_bar
+from authentik.common.migrations import progress_bar
 
 
 def convert_user_to_json(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):

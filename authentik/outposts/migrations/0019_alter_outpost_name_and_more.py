@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from authentik.lib.migrations import fallback_names
+from authentik.common.migrations import fallback_names
 
 
 class Migration(migrations.Migration):

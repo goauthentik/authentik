@@ -9,7 +9,7 @@ import django.db.models.deletion
 from django.conf import settings
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.utils.timezone import now, timedelta
-from authentik.lib.migrations import progress_bar
+from authentik.common.migrations import progress_bar
 from authentik.root.middleware import ClientIPMiddleware
 
 
