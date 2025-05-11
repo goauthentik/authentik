@@ -354,6 +354,14 @@ Configure how long reputation scores should be saved for in seconds. Note that t
 
 Defaults to `86400`.
 
+### `AUTHENTIK_SESSION_STORAGE`:ak-version[2024.4]
+
+:::info Deprecated
+This setting is deprecated as of version 2025.4. Sessions are now exclusively stored in the database. See our [2025.4 release notes](https://version-2025-4.goauthentik.io/docs/releases/2025.4#sessions-are-now-stored-in-the-database) for more information.
+:::
+
+Configure if the sessions are stored in the cache or the database. Defaults to `cache`. Allowed values are `cache` and `db`. Note that changing this value will invalidate all previous sessions.
+
 ### `AUTHENTIK_SESSIONS__UNAUTHENTICATED_AGE`:ak-version[2025.4]
 
 Configure how long unauthenticated sessions last for. Does not impact how long authenticated sessions are valid for. See [../../add-secure-apps/flows-stages/stages/user_login/index.md](the User login stage) for session validity.
