@@ -293,7 +293,7 @@ x:
 
 ### Tabs for multiple configurations
 
-Use **Tabs** to display different configurations (e.g., OIDC vs. SAML). Default to the most common option:
+Use **Tabs** to display different configurations (e.g., setting up authentication with OIDC vs. SAML) to help users navigate between options. Default to the easier or more common option. For example:
 
 ```jsx
 import TabItem from "@theme/TabItem";
@@ -343,6 +343,10 @@ When documenting errors, follow this structure:
 
 - **Alt text for images**: Describe the purpose of the image, not just its appearance. For example, use "Screenshot of the login form" instead of "Image of a form."
 - **Heading hierarchy**: Use headings in order (H1 → H2 → H3) to support screen readers.
+- **Color usage**: Avoid using color as the sole method of conveying information (e.g., "Click the red button"). Instead, use descriptive labels to ensure accessibility.
+- **Descriptive link text**: Provide descriptive link text. Avoid using generic terms like "Click here". Be specific about where the link will take the user.
+    - **DON'T:** "Click here."
+    - **DO:** "See the [Authentication Settings](/) for more details."
 
 ---
 
@@ -387,17 +391,38 @@ This level is for extremely serious situations, such as an action permanently re
     - Use screenshots very sparingly, only for very complex UIs. If there are screenshots, update any existing ones if the UI changes.
     - Crop to focus on relevant elements, use red arrows or circles to call out the important element.
     - Add descriptive alt text (e.g., "Screenshot of the Provider configuration page").
-- **Diagrams**: Use tools like [Draw.io](https://draw.io) for clarity. Ensure high contrast and text descriptions. todo(dominic): mention mermaid, might be too complicated for some? if even possible here
+- **Diagrams**: 
+    - Use [Mermaid](https://mermaid.js.org/) for creating diagrams directly in markdown. Mermaid is our preferred tool for documentation diagrams as it allows for version control and easy updates.
+    - For more complex diagrams, you can use tools like [Draw.io](https://draw.io). Ensure high contrast and text descriptions.
 
 ---
 
 ## Document Structure and Metadata
 
-- **Front matter**: Include a title and optional summary:
+- **Front matter**: Include a title and optional summary. You can also add badge metadata in the front matter:
     ```md
     ---
     title: Getting Started
     description: Install and configure authentik in 5 minutes.
+    authentik_version: "2025.4"  # Semantic version when feature was introduced (Optional)
+    authentik_preview: true      # For preview features (Optional)
+    authentik_enterprise: true   # For enterprise features (Optional)
+    support_level: "authentik"   # For integrations: Support level: "authentik" (tested by team) or "community" (community maintained)
     ---
     ```
-- **SEO**: Use keywords in titles and headings to improve searchability. todo(dominic): say how. talk about that tag thing teffen uses
+
+    Note: Badges should be defined in the front matter, not in the markdown content. The system will automatically display the appropriate badges based on the front matter metadata.
+
+- **Directives**: You can also use directives in your markdown content to add badges inline:
+    - `:ak-version[2025.4]` - Shows when a feature was introduced (requires semantic version)
+    - `:ak-preview` - Indicates preview features
+    - `:ak-enterprise` - Indicates features in our Enterprise offering
+
+    Example usage in a heading:
+    ```md
+    # New Feature :ak-version[2025.4] :ak-preview
+    ```
+
+    Note: When using directives, they should be placed at the end of the heading or paragraph where they apply.
+
+- **SEO**: Use keywords in titles and headings to improve searchability. Include relevant terms that users might search for, but avoid keyword stuffing. Focus on natural, descriptive language that accurately represents the content.
