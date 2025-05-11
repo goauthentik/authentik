@@ -111,9 +111,8 @@ export class RouterOutlet extends AKElement {
         this.routes.some((route) => {
             const match = route.url.exec(activeUrl);
             if (match !== null) {
-                matchedRoute = new RouteMatch(route);
+                matchedRoute = new RouteMatch(route, activeUrl);
                 matchedRoute.arguments = match.groups || {};
-                matchedRoute.fullUrl = activeUrl;
                 console.debug("authentik/router: found match ", matchedRoute);
                 return true;
             }
@@ -126,9 +125,8 @@ export class RouterOutlet extends AKElement {
                     <ak-router-404 url=${activeUrl}></ak-router-404>
                 </div>`;
             });
-            matchedRoute = new RouteMatch(route);
+            matchedRoute = new RouteMatch(route, activeUrl);
             matchedRoute.arguments = route.url.exec(activeUrl)?.groups || {};
-            matchedRoute.fullUrl = activeUrl;
         }
         this.current = matchedRoute;
     }
@@ -138,13 +136,13 @@ export class RouterOutlet extends AKElement {
         if (!this.sentryClient) return;
         // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
         if (this.pageLoadSpan) {
-            this.pageLoadSpan.updateName(this.current.route.url.toString());
+            this.pageLoadSpan.updateName(this.current.sanitizedURL());
             this.pageLoadSpan.setAttribute(SEMANTIC_ATTRIBUTE_SENTRY_SOURCE, "route");
             this.pageLoadSpan = undefined;
         } else {
             startBrowserTracingNavigationSpan(this.sentryClient, {
                 op: "navigation",
-                name: this.current.route.url.toString(),
+                name: this.current.sanitizedURL(),
                 attributes: {
                     [SEMANTIC_ATTRIBUTE_SENTRY_SOURCE]: "route",
                 },
