@@ -54,7 +54,7 @@ def create_component(generator: SchemaGenerator, name, schema, type_=ResolvedCom
     return component
 
 
-def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
+def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):  # noqa: ARG001
     """Workaround to set a default response for endpoints.
     Workaround suggested at
     <https://github.com/tfranzel/drf-spectacular/issues/119#issuecomment-656970357>
@@ -67,6 +67,15 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
     generic_error = create_component(generator, "GenericError", GENERIC_ERROR)
     validation_error = create_component(generator, "ValidationError", VALIDATION_ERROR)
 
+    # Create a standard error object for responses
+    standard_error_schema = {
+        "schema": {
+            "type": "object",
+            "properties": {"error": {"type": "string"}},
+            "required": ["error"],
+        }
+    }
+
     for path in result["paths"].values():
         for method in path.values():
             method["responses"].setdefault(
@@ -77,7 +86,7 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
                             "schema": validation_error.ref,
                         }
                     },
-                    "description": "",
+                    "description": "Bad request",
                 },
             )
             method["responses"].setdefault(
@@ -88,9 +97,22 @@ def postprocess_schema_responses(result, generator: SchemaGenerator, **kwargs):
                             "schema": generic_error.ref,
                         }
                     },
-                    "description": "",
+                    "description": "Permission denied",
                 },
             )
+            # Ensure all error responses with schema: {'error': <class 'str'>}
+            # are properly formatted
+            for status_code in ["400", "403", "415", "500"]:
+                if status_code in method["responses"]:
+                    response = method["responses"][status_code]
+                    if "content" in response and "application/json" in response["content"]:
+                        content = response["content"]["application/json"]
+                        if "schema" in content and isinstance(content["schema"], dict):
+                            if "error" in content["schema"] and isinstance(
+                                content["schema"]["error"], type
+                            ):
+                                # Replace the Python class with a proper schema definition
+                                content["schema"] = standard_error_schema["schema"]
 
     result["components"] = generator.registry.build(spectacular_settings.APPEND_COMPONENTS)
 
