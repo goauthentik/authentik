@@ -171,6 +171,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     constructor() {
+        configureSentry();
         super();
         this.ws = new WebsocketClient();
         const inspector = new URL(window.location.toString()).searchParams.get("inspector");
@@ -237,7 +238,6 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry();
         if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
