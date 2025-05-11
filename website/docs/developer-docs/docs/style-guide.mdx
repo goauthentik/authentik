@@ -251,7 +251,7 @@ and_backend_roles: []
 description: "Maps admin to all_access"
 ```
 
-- ` ` ` `yaml ` defines the language used for syntax highlighting. Other languages can be used such as `jsx`, `python`, `bash`, and `text`.
+- ` ` ` `yaml `defines the language used for syntax highlighting. Other languages can be used such as`jsx`, `python`, `bash`, and `text`.
 
 Optional configurations:
 
@@ -269,10 +269,10 @@ Use tables to compare options, list parameters, or summarize information. Ensure
 
 **Example**:
 
-| x   | x | x |
-|-----|--|----|
-| `x` | x | `x` |
-| `x` | x | `x` |
+| x   | x   | x   |
+| --- | --- | --- |
+| `x` | x   | `x` |
+| `x` | x   | `x` |
 
 ### Lists
 
@@ -283,6 +283,7 @@ Use tables to compare options, list parameters, or summarize information. Ensure
 **Example**:
 
 x:
+
 1. x
 2. y
 3. z
@@ -324,11 +325,13 @@ When documenting errors, follow this structure:
 **Example**:
 
 - **Error message**:
+
     ```sh
     Error: Authentication failed. Invalid credentials.
     ```
 
 - **Possible causes**:
+
     - Incorrect username or password.
     - Account locked due to multiple failed attempts.
 
@@ -355,6 +358,7 @@ When documenting errors, follow this structure:
 Use the following components to highlight important information:
 
 **Info notes**:
+
 ```md
 :::info
 This is a tip or general note.
@@ -362,6 +366,7 @@ This is a tip or general note.
 ```
 
 **Warnings**:
+
 ```md
 :::warning
 This level is for more serious situations: an action cannot be undone, a process might be canceled, etc..
@@ -369,6 +374,7 @@ This level is for more serious situations: an action cannot be undone, a process
 ```
 
 **Critical warnings** (for irreversible actions):
+
 ```md
 :::danger
 This level is for extremely serious situations, such as an action permanently removing data.
@@ -391,7 +397,7 @@ This level is for extremely serious situations, such as an action permanently re
     - Use screenshots very sparingly, only for very complex UIs. If there are screenshots, update any existing ones if the UI changes.
     - Crop to focus on relevant elements, use red arrows or circles to call out the important element.
     - Add descriptive alt text (e.g., "Screenshot of the Provider configuration page").
-- **Diagrams**: 
+- **Diagrams**:
     - Use [Mermaid](https://mermaid.js.org/) for creating diagrams directly in markdown. Mermaid is our preferred tool for documentation diagrams as it allows for version control and easy updates.
     - For more complex diagrams, you can use tools like [Draw.io](https://draw.io). Ensure high contrast and text descriptions.
 
@@ -400,25 +406,28 @@ This level is for extremely serious situations, such as an action permanently re
 ## Document Structure and Metadata
 
 - **Front matter**: Include a title and optional summary. You can also add badge metadata in the front matter:
+
     ```md
     ---
     title: Getting Started
     description: Install and configure authentik in 5 minutes.
-    authentik_version: "2025.4"  # Semantic version when feature was introduced (Optional)
-    authentik_preview: true      # For preview features (Optional)
-    authentik_enterprise: true   # For enterprise features (Optional)
-    support_level: "authentik"   # For integrations: Support level: "authentik" (tested by team) or "community" (community maintained)
+    authentik_version: "2025.4" # Semantic version when feature was introduced (Optional)
+    authentik_preview: true # For preview features (Optional)
+    authentik_enterprise: true # For enterprise features (Optional)
+    support_level: "authentik" # For integrations: Support level: "authentik" (tested by team) or "community" (community maintained)
     ---
     ```
 
     Note: Badges should be defined in the front matter, not in the markdown content. The system will automatically display the appropriate badges based on the front matter metadata.
 
 - **Directives**: You can also use directives in your markdown content to add badges inline:
+
     - `:ak-version[2025.4]` - Shows when a feature was introduced (requires semantic version)
     - `:ak-preview` - Indicates preview features
     - `:ak-enterprise` - Indicates features in our Enterprise offering
 
     Example usage in a heading:
+
     ```md
     # New Feature :ak-version[2025.4] :ak-preview
     ```
