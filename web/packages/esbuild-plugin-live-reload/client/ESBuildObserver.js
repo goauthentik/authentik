@@ -76,7 +76,7 @@ export class ESBuildObserver extends EventSource {
      */
     #startListener = () => {
         this.#trackActivity();
-        log("⏰  Build started...");
+        log("⏰ Build started...");
     };
 
     #internalErrorListener = () => {
@@ -86,7 +86,7 @@ export class ESBuildObserver extends EventSource {
             clearTimeout(this.#keepAliveInterval);
 
             this.close();
-            log("⛔️  Closing connection");
+            log("⛔️ Closing connection");
         }
     };
 
@@ -126,13 +126,13 @@ export class ESBuildObserver extends EventSource {
         this.#trackActivity();
 
         if (!this.online) {
-            log("🚫  Build finished while offline.");
+            log("🚫 Build finished while offline.");
             this.deferredReload = true;
 
             return;
         }
 
-        log("🛎️  Build completed! Reloading...");
+        log("🛎️ Build completed! Reloading...");
 
         // We use an animation frame to keep the reload from happening before the
         // event loop has a chance to process the message.
@@ -189,13 +189,13 @@ export class ESBuildObserver extends EventSource {
 
             if (!this.deferredReload) return;
 
-            log("🛎️  Reloading after offline build...");
+            log("🛎️ Reloading after offline build...");
             this.deferredReload = false;
 
             window.location.reload();
         });
 
-        log("🛎️  Listening for build changes...");
+        log("🛎️ Listening for build changes...");
 
         this.#keepAliveInterval = setInterval(() => {
             const now = Date.now();
@@ -203,7 +203,7 @@ export class ESBuildObserver extends EventSource {
             if (now - this.lastUpdatedAt < 10_000) return;
 
             this.alive = false;
-            log("👋  Waiting for build to start...");
+            log("👋 Waiting for build to start...");
         }, 15_000);
     }
 
