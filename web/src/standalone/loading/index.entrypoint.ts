@@ -1,4 +1,4 @@
-import { Interface } from "@goauthentik/elements/Interface";
+import { LightInterface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,7 +10,7 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
-export class Loading extends Interface {
+export class Loading extends LightInterface {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -23,16 +23,6 @@ export class Loading extends Interface {
                 }
             `,
         ];
-    }
-
-    registerContexts(): void {
-        // Stub function to avoid making API requests for things we don't need. The `Interface` base class loads
-        // a bunch of data that is used globally by various things, however this is an interface that is shown
-        // very briefly and we don't need any of that data.
-    }
-
-    async _initCustomCSS(): Promise<void> {
-        // Stub function to avoid fetching custom CSS.
     }
 
     render(): TemplateResult {
