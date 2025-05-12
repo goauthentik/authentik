@@ -96,8 +96,6 @@ export class SAMLProviderViewPage extends AKElement {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            // When a refresh event occurs, directly fetch the provider
-            // to ensure certificates are updated even if the ID hasn't changed
             this.fetchProvider(this.provider.pk);
         });
     }
