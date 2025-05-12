@@ -1,8 +1,4 @@
-import {
-    EVENT_SIDEBAR_TOGGLE,
-    EVENT_WS_MESSAGE,
-    TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
+import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
@@ -29,6 +25,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
+//#region Events
+
+export interface SidebarToggleEventDetail {
+    open?: boolean;
+}
+
+//#endregion
+
 //#region Page Navbar
 
 export interface PageNavbarDetails {
@@ -45,7 +49,10 @@ export interface PageNavbarDetails {
  * dispatched by the `ak-page-header` component.
  */
 @customElement("ak-page-navbar")
-export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavbarDetails {
+export class AKPageNavbar
+    extends WithBrandConfig(AKElement)
+    implements PageNavbarDetails, SidebarToggleEventDetail
+{
     //#region Static Properties
 
     private static elementRef: AKPageNavbar | null = null;
@@ -260,29 +267,31 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
 
     //#region Properties
 
-    @property({ type: String })
+    @state()
     icon?: string;
 
-    @property({ type: Boolean })
+    @state()
     iconImage = false;
 
-    @property({ type: String })
+    @state()
     header?: string;
 
-    @property({ type: String })
+    @state()
     description?: string;
 
-    @property({ type: Boolean })
+    @state()
     hasIcon = true;
 
-    @property({ type: Boolean })
-    open = true;
+    @property({
+        type: Boolean,
+    })
+    public open?: boolean;
 
     @state()
-    session?: SessionUser;
+    protected session?: SessionUser;
 
     @state()
-    uiConfig!: UIConfig;
+    protected uiConfig!: UIConfig;
 
     //#endregion
 
@@ -305,9 +314,10 @@ export class AKPageNavbar extends WithBrandConfig(AKElement) implements PageNavb
         this.open = !this.open;
 
         this.dispatchEvent(
-            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+            new CustomEvent<SidebarToggleEventDetail>("sidebar-toggle", {
                 bubbles: true,
                 composed: true,
+                detail: { open: this.open },
             }),
         );
     }
