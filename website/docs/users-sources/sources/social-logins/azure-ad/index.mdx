@@ -111,6 +111,23 @@ return True
 
 Try to login with a **_new_** user. You should see no prompts and the user should have the correct information.
 
+### Azure AD source on login screen
+
+By default, after creating an Azure AD OAuth Source in Authentik, it is not automatically available on the login screen.
+
+You must explicitly add the Azure AD source to the authentication flow:
+
+* Go to the Authentik admin interface.
+* Navigate to Flows and Stages > Flows.
+* Select default-authentication-flow.
+* Click on Stage-Bindings.
+* Edit default-authentication-identification.
+* Expand source settings section.
+* Move **Microsoft Entra ID** from available sources to selected sources
+* Click Update to save changes.
+
+After this, the Azure AD login button should appear on the login screen, allowing users to authenticate via Azure AD.
+
 ### Machine-to-machine authentication:ak-version[2024.12]
 
 If using [Machine-to-Machine](../../../../add-secure-apps/providers/oauth2/client_credentials.mdx#jwt-authentication) authentication, some specific steps need to be considered.
