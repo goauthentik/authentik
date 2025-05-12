@@ -69,9 +69,9 @@
         "@swc/html-darwin-arm64": "1.11.24",
         "@swc/html-linux-arm64-gnu": "1.11.24",
         "@swc/html-linux-x64-gnu": "1.11.24",
-        "lightningcss-darwin-arm64": "1.29.3",
-        "lightningcss-linux-arm64-gnu": "1.29.3",
-        "lightningcss-linux-x64-gnu": "1.29.3"
+        "lightningcss-darwin-arm64": "1.30.0",
+        "lightningcss-linux-arm64-gnu": "1.30.0",
+        "lightningcss-linux-x64-gnu": "1.30.0"
     },
     "engines": {
         "node": ">=22.14.0"
