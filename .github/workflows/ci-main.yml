@@ -207,7 +207,7 @@ jobs:
         run: |
           npm ci
           make -C .. gen-client-ts
-          npm run build
+          npm run build build:sfe
       - name: run e2e
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}
