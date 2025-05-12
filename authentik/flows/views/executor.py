@@ -1,6 +1,7 @@
 """authentik multi-stage authentication engine"""
 
 from copy import deepcopy
+from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -64,6 +65,7 @@ from authentik.policies.engine import PolicyEngine
 LOGGER = get_logger()
 # Argument used to redirect user after login
 NEXT_ARG_NAME = "next"
+SESSION_KEY_PLAN_CONTAINER = "authentik/flows/plan_container/%s"
 SESSION_KEY_PLAN = "authentik/flows/plan"
 SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
@@ -71,6 +73,7 @@ SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
+QS_EXEC_ID = "xid"
 
 
 def challenge_types():
@@ -97,6 +100,88 @@ class InvalidStageError(SentryIgnoredException):
     """Error raised when a challenge from a stage is not valid"""
 
 
+class FlowContainer:
+    """Allow for multiple concurrent flow executions in the same session"""
+
+    def __init__(self, request: HttpRequest, exec_id: str | None = None) -> None:
+        self.request = request
+        self.exec_id = exec_id
+
+    @staticmethod
+    def new(request: HttpRequest):
+        exec_id = str(uuid4())
+        request.session[SESSION_KEY_PLAN_CONTAINER % exec_id] = {}
+        return FlowContainer(request, exec_id)
+
+    def exists(self) -> bool:
+        """Check if flow exists in container/session"""
+        return SESSION_KEY_PLAN in self.session
+
+    def save(self):
+        self.request.session.modified = True
+
+    @property
+    def session(self):
+        # Backwards compatibility: store session plan/etc directly in session
+        if not self.exec_id:
+            return self.request.session
+        self.request.session.setdefault(SESSION_KEY_PLAN_CONTAINER % self.exec_id, {})
+        return self.request.session.get(SESSION_KEY_PLAN_CONTAINER % self.exec_id, {})
+
+    @property
+    def plan(self) -> FlowPlan:
+        return self.session.get(SESSION_KEY_PLAN)
+
+    def to_redirect(
+        self,
+        request: HttpRequest,
+        flow: Flow,
+        allowed_silent_types: list[StageView] | None = None,
+        **get_params,
+    ) -> HttpResponse:
+        get_params[QS_EXEC_ID] = self.exec_id
+        return self.plan.to_redirect(
+            request, flow, allowed_silent_types=allowed_silent_types, **get_params
+        )
+
+    @plan.setter
+    def plan(self, value: FlowPlan):
+        self.session[SESSION_KEY_PLAN] = value
+        self.request.session.modified = True
+        self.save()
+
+    @property
+    def application_pre(self):
+        return self.session.get(SESSION_KEY_APPLICATION_PRE)
+
+    @property
+    def get(self) -> QueryDict:
+        return self.session.get(SESSION_KEY_GET)
+
+    @get.setter
+    def get(self, value: QueryDict):
+        self.session[SESSION_KEY_GET] = value
+        self.save()
+
+    @property
+    def post(self) -> QueryDict:
+        return self.session.get(SESSION_KEY_POST)
+
+    @post.setter
+    def post(self, value: QueryDict):
+        self.session[SESSION_KEY_POST] = value
+        self.save()
+
+    @property
+    def history(self) -> list[FlowPlan]:
+        return self.session.get(SESSION_KEY_HISTORY)
+
+    @history.setter
+    def history(self, value: list[FlowPlan]):
+        self.session[SESSION_KEY_HISTORY] = value
+        self.save()
+
+
 @method_decorator(xframe_options_sameorigin, name="dispatch")
 class FlowExecutorView(APIView):
     """Flow executor, passing requests to Stage Views"""
@@ -104,8 +189,9 @@ class FlowExecutorView(APIView):
     permission_classes = [AllowAny]
 
     flow: Flow = None
-
     plan: FlowPlan | None = None
+    container: FlowContainer
+
     current_binding: FlowStageBinding | None = None
     current_stage: Stage
     current_stage_view: View
@@ -160,10 +246,12 @@ class FlowExecutorView(APIView):
             if QS_KEY_TOKEN in get_params:
                 plan = self._check_flow_token(get_params[QS_KEY_TOKEN])
                 if plan:
-                    self.request.session[SESSION_KEY_PLAN] = plan
+                    container = FlowContainer.new(request)
+                    container.plan = plan
             # Early check if there's an active Plan for the current session
-            if SESSION_KEY_PLAN in self.request.session:
-                self.plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
+            self.container = FlowContainer(request, request.GET.get(QS_EXEC_ID))
+            if self.container.exists():
+                self.plan: FlowPlan = self.container.plan
                 if self.plan.flow_pk != self.flow.pk.hex:
                     self._logger.warning(
                         "f(exec): Found existing plan for other flow, deleting plan",
@@ -176,13 +264,14 @@ class FlowExecutorView(APIView):
                     self._logger.debug("f(exec): Continuing existing plan")
 
             # Initial flow request, check if we have an upstream query string passed in
-            request.session[SESSION_KEY_GET] = get_params
+            self.container.get = get_params
             # Don't check session again as we've either already loaded the plan or we need to plan
             if not self.plan:
-                request.session[SESSION_KEY_HISTORY] = []
+                self.container.history = []
                 self._logger.debug("f(exec): No active Plan found, initiating planner")
                 try:
                     self.plan = self._initiate_plan()
+                    self.container.plan = self.plan
                 except FlowNonApplicableException as exc:
                     self._logger.warning("f(exec): Flow not applicable to current user", exc=exc)
                     return self.handle_invalid_flow(exc)
@@ -254,12 +343,19 @@ class FlowExecutorView(APIView):
         request=OpenApiTypes.NONE,
         parameters=[
             OpenApiParameter(
-                name="query",
+                name=QS_QUERY,
                 location=OpenApiParameter.QUERY,
                 required=True,
                 description="Querystring as received",
                 type=OpenApiTypes.STR,
-            )
+            ),
+            OpenApiParameter(
+                name=QS_EXEC_ID,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                description="Flow execution ID",
+                type=OpenApiTypes.STR,
+            ),
         ],
         operation_id="flows_executor_get",
     )
@@ -286,7 +382,7 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
-                return to_stage_response(request, stage_response)
+                return to_stage_response(request, stage_response, self.container.exec_id)
         except Exception as exc:
             return self.handle_exception(exc)
 
@@ -305,12 +401,19 @@ class FlowExecutorView(APIView):
         ),
         parameters=[
             OpenApiParameter(
-                name="query",
+                name=QS_QUERY,
                 location=OpenApiParameter.QUERY,
                 required=True,
                 description="Querystring as received",
                 type=OpenApiTypes.STR,
-            )
+            ),
+            OpenApiParameter(
+                name=QS_EXEC_ID,
+                location=OpenApiParameter.QUERY,
+                required=True,
+                description="Flow execution ID",
+                type=OpenApiTypes.STR,
+            ),
         ],
         operation_id="flows_executor_solve",
     )
@@ -337,14 +440,15 @@ class FlowExecutorView(APIView):
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
-                return to_stage_response(request, stage_response)
+                return to_stage_response(request, stage_response, self.container.exec_id)
         except Exception as exc:
             return self.handle_exception(exc)
 
     def _initiate_plan(self) -> FlowPlan:
         planner = FlowPlanner(self.flow)
         plan = planner.plan(self.request)
-        self.request.session[SESSION_KEY_PLAN] = plan
+        container = FlowContainer.new(self.request)
+        container.plan = plan
         try:
             # Call the has_stages getter to check that
             # there are no issues with the class we might've gotten
@@ -368,7 +472,7 @@ class FlowExecutorView(APIView):
         except FlowNonApplicableException as exc:
             self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
             return self.handle_invalid_flow(exc)
-        self.request.session[SESSION_KEY_PLAN] = plan
+        self.container.plan = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
         return redirect_with_qs("authentik_api:flow-executor", self.request.GET, **kwargs)
@@ -390,9 +494,13 @@ class FlowExecutorView(APIView):
         )
         self.cancel()
         if next_param and not is_url_absolute(next_param):
-            return to_stage_response(self.request, redirect_with_qs(next_param))
+            return to_stage_response(
+                self.request, redirect_with_qs(next_param), self.container.exec_id
+            )
         return to_stage_response(
-            self.request, self.stage_invalid(error_message=_("Invalid next URL"))
+            self.request,
+            self.stage_invalid(error_message=_("Invalid next URL")),
+            self.container.exec_id,
         )
 
     def stage_ok(self) -> HttpResponse:
@@ -406,7 +514,7 @@ class FlowExecutorView(APIView):
             self.current_stage_view.cleanup()
         self.request.session.get(SESSION_KEY_HISTORY, []).append(deepcopy(self.plan))
         self.plan.pop()
-        self.request.session[SESSION_KEY_PLAN] = self.plan
+        self.container.plan = self.plan
         if self.plan.bindings:
             self._logger.debug(
                 "f(exec): Continuing with next stage",
@@ -449,6 +557,7 @@ class FlowExecutorView(APIView):
 
     def cancel(self):
         """Cancel current flow execution"""
+        # TODO: Clean up container
         keys_to_delete = [
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
@@ -471,8 +580,8 @@ class CancelView(View):
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """View which canels the currently active plan"""
-        if SESSION_KEY_PLAN in request.session:
-            del request.session[SESSION_KEY_PLAN]
+        if FlowContainer(request, request.GET.get(QS_EXEC_ID)).exists():
+            del request.session[SESSION_KEY_PLAN_CONTAINER % request.GET.get(QS_EXEC_ID)]
             LOGGER.debug("Canceled current plan")
         return redirect("authentik_flows:default-invalidation")
 
@@ -520,19 +629,12 @@ class ToDefaultFlow(View):
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         flow = self.get_flow()
-        # If user already has a pending plan, clear it so we don't have to later.
-        if SESSION_KEY_PLAN in self.request.session:
-            plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
-            if plan.flow_pk != flow.pk.hex:
-                LOGGER.warning(
-                    "f(def): Found existing plan for other flow, deleting plan",
-                    flow_slug=flow.slug,
-                )
-                del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        get_qs = request.GET.copy()
+        get_qs[QS_EXEC_ID] = str(uuid4())
+        return redirect_with_qs("authentik_core:if-flow", get_qs, flow_slug=flow.slug)
 
 
-def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
+def to_stage_response(request: HttpRequest, source: HttpResponse, xid: str) -> HttpResponse:
     """Convert normal HttpResponse into JSON Response"""
     if (
         isinstance(source, HttpResponseRedirect)
@@ -551,6 +653,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             RedirectChallenge(
                 {
                     "to": str(redirect_url),
+                    "xid": xid,
                 }
             )
         )
@@ -559,6 +662,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             ShellChallenge(
                 {
                     "body": source.render().content.decode("utf-8"),
+                    "xid": xid,
                 }
             )
         )
@@ -568,6 +672,7 @@ def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpRespons
             ShellChallenge(
                 {
                     "body": source.content.decode("utf-8"),
+                    "xid": xid,
                 }
             )
         )
@@ -599,4 +704,6 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
         except FlowNonApplicableException:
             LOGGER.warning("Flow not applicable to user")
             raise Http404 from None
-        return plan.to_redirect(request, stage.configure_flow)
+        container = FlowContainer.new(request)
+        container.plan = plan
+        return container.to_redirect(request, stage.configure_flow)
