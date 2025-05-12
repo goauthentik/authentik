@@ -96,7 +96,9 @@ export class SAMLProviderViewPage extends AKElement {
         super();
         this.addEventListener(EVENT_REFRESH, () => {
             if (!this.provider?.pk) return;
-            this.providerID = this.provider?.pk;
+            // When a refresh event occurs, directly fetch the provider
+            // to ensure certificates are updated even if the ID hasn't changed
+            this.fetchProvider(this.provider.pk);
         });
     }
 
@@ -116,20 +118,32 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     fetchSigningCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.signer = kp;
+            this.requestUpdate("signer");
+        });
     }
 
     fetchVerificationCertificate(kpUuid: string) {
-        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+        this.fetchCertificate(kpUuid).then((kp) => {
+            this.verifier = kp;
+            this.requestUpdate("verifier");
+        });
     }
 
     fetchProvider(id: number) {
         new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
             this.provider = prov;
-            if (this.provider.signingKp) {
+            // Clear existing signing certificate if the provider has none
+            if (!this.provider.signingKp) {
+                this.signer = undefined;
+            } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
-            if (this.provider.verificationKp) {
+            // Clear existing verification certificate if the provider has none
+            if (!this.provider.verificationKp) {
+                this.verifier = undefined;
+            } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
         });
