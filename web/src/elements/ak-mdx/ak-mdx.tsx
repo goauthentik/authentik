@@ -136,6 +136,10 @@ export class AKMDX extends AKElement {
                 padding: var(--pf-global--spacer--md);
             }
 
+            pre {
+                overflow-x: auto;
+            }
+
             pre:has(.hljs) {
                 padding: var(--pf-global--spacer--md);
             }
