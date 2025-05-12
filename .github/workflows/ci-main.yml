@@ -200,7 +200,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**') }}
+          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}
       - name: prepare web ui
         if: steps.cache-web.outputs.cache-hit != 'true'
         working-directory: web
