@@ -100,6 +100,20 @@ export type StyleSheetsAction =
  *     myStyleSheet,
  * ]);
  * ```
+ *
+ * @remarks
+ * Replacing `adoptedStyleSheets` more than once in the same frame may result in
+ * the `currentStyleSheets` parameter being out of sync with the actual sheets.
+ *
+ * A style root's `adoptedStyleSheets` is a proxy object that only updates when
+ * DOM is repainted. We can't easily cache the previous entries since the style root
+ * may polyfilled via ShadyDOM.
+ *
+ * Short of using {@linkcode requestAnimationFrame} to sequence the adoption,
+ * and a visibility toggle to avoid a flash of styles between renders,
+ * we can't reliably cache the previous entries.
+ *
+ * In the meantime, we should try to apply all the sheets in a single frame.
  */
 export function setAdoptedStyleSheets(styleRoot: StyleRoot, styleSheets: StyleSheetsAction): void {
     let changed = false;

@@ -226,29 +226,96 @@ export function createUIThemeEffect(
 
 //#region Theme Element
 
+/**
+ * Applies the current UI theme to the given style root.
+ *
+ * @param styleRoot The style root to apply the theme to.
+ * @param currentUITheme The current UI theme to apply.
+ * @param additionalStyleSheets Additional style sheets to apply, in addition to the theme's base sheets.
+ * @category CSS
+ *
+ * @see {@linkcode setAdoptedStyleSheets} for caveats.
+ */
 export function applyUITheme(
     styleRoot: StyleRoot,
     currentUITheme: ResolvedUITheme = resolveUITheme(),
+    ...additionalStyleSheets: Array<CSSStyleSheet | undefined | null>
 ): void {
     setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
+        const appendedSheets = additionalStyleSheets.filter(Boolean) as CSSStyleSheet[];
+
         if (currentUITheme === UiThemeEnum.Dark) {
-            return [...currentStyleSheets, $AKBaseDark];
+            return [...currentStyleSheets, $AKBaseDark, ...appendedSheets];
         }
 
-        return [...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark)];
+        return [
+            ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
+            ...appendedSheets,
+        ];
     });
+}
+
+/**
+ * Applies the given theme to the document, i.e. the `<html>` element.
+ *
+ * @param hint The color scheme hint to use.
+ */
+export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "auto"): void {
+    const preferredColorScheme = formatColorScheme(hint);
+
+    const applyStyleSheets: UIThemeListener = (currentUITheme) => {
+        console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+
+        setAdoptedStyleSheets(document, (currentStyleSheets) => {
+            if (currentUITheme === "dark") {
+                return [...currentStyleSheets, $PFBase, $AKBase, $AKBaseDark];
+            }
+
+            return [
+                ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
+                $PFBase,
+                $AKBase,
+            ];
+        });
+
+        document.documentElement.dataset.theme = currentUITheme;
+    };
+
+    if (preferredColorScheme === "auto") {
+        createUIThemeEffect(applyStyleSheets);
+        return;
+    }
+
+    applyStyleSheets(preferredColorScheme);
 }
 
 /**
  * An element that can be themed.
  */
 export interface ThemedElement extends HTMLElement {
-    brand?: CurrentBrand;
-    uiConfig?: UIConfig;
-    config?: Config;
+    /**
+     * The brand information for the current theme.
+     */
+    readonly brand?: CurrentBrand;
+    /**
+     * The UI configuration for the current theme,
+     * typically injected through a Lit Mixin.
+     *
+     * @see {@linkcode UIConfig} for details.
+     */
+    readonly uiConfig?: UIConfig;
+    /**
+     * An authentik configuration initially provided by the server.
+     */
+    readonly config?: Config;
     activeTheme: ResolvedUITheme;
 }
 
+/**
+ * Returns the root interface element of the page.
+ *
+ * @todo Can this be handled with a Lit Mixin?
+ */
 export function rootInterface<T extends ThemedElement = ThemedElement>(): T | null {
     const element = document.body.querySelector<T>("[data-ak-interface-root]");
 

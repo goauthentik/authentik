@@ -4,21 +4,9 @@
  *
  * @import { Preview } from "@storybook/web-components";
  */
-import { UiThemeEnum } from "@goauthentik/api/dist/models/UiThemeEnum";
-import { setAdoptedStyleSheets } from "@goauthentik/web/common/stylesheets.ts";
-import { $AKBase, $AKBaseDark, $PFBase, resolveUITheme } from "@goauthentik/web/common/theme.ts";
+import { applyDocumentTheme } from "@goauthentik/web/common/theme.ts";
 
-setAdoptedStyleSheets(document, (currentStyleSheets) => {
-    const uiTheme = resolveUITheme();
-
-    return [
-        // ---
-        ...currentStyleSheets,
-        $PFBase,
-        $AKBase,
-        ...(uiTheme === UiThemeEnum.Dark ? [$AKBaseDark] : []),
-    ];
-});
+applyDocumentTheme();
 
 /**
  * @satisfies {Preview}

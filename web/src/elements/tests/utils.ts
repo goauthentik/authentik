@@ -1,6 +1,4 @@
-import { UiThemeEnum } from "@goauthentik/api/dist/models/UiThemeEnum";
-import { setAdoptedStyleSheets } from "@goauthentik/web/common/stylesheets.js";
-import { $AKBase, $AKBaseDark, $PFBase, resolveUITheme } from "@goauthentik/web/common/theme.js";
+import { applyDocumentTheme } from "@goauthentik/web/common/theme.js";
 
 import { TemplateResult, render as litRender } from "lit";
 
@@ -12,17 +10,7 @@ import { TemplateResult, render as litRender } from "lit";
  * - CSS-based checks for visibility will return correct values.
  */
 export const render = (body: TemplateResult) => {
-    setAdoptedStyleSheets(document, (currentStyleSheets) => {
-        const uiTheme = resolveUITheme();
-
-        return [
-            // ---
-            ...currentStyleSheets,
-            $PFBase,
-            $AKBase,
-            ...(uiTheme === UiThemeEnum.Dark ? [$AKBaseDark] : []),
-        ];
-    });
+    applyDocumentTheme();
 
     return litRender(body, document.body);
 };

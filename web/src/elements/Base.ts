@@ -3,7 +3,6 @@ import {
     StyleRoot,
     createCSSResult,
     createStyleSheetUnsafe,
-    setAdoptedStyleSheets,
 } from "@goauthentik/web/common/stylesheets.js";
 import {
     $AKBase,
@@ -126,22 +125,23 @@ export class AKElement extends LitElement implements ThemedElement {
 
         if (!nextStyleRoot) return;
 
-        if (this.#customCSSStyleSheet) {
-            setAdoptedStyleSheets(nextStyleRoot, (currentStyleSheets) => {
-                return [...currentStyleSheets, this.#customCSSStyleSheet!];
-            });
-        }
-
         this.#themeAbortController = new AbortController();
 
         if (this.preferredColorScheme === "dark") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Dark);
+            applyUITheme(nextStyleRoot, UiThemeEnum.Dark, this.#customCSSStyleSheet);
 
             this.activeTheme = UiThemeEnum.Dark;
         } else if (this.preferredColorScheme === "auto") {
-            createUIThemeEffect((nextUITheme) => applyUITheme(nextStyleRoot, nextUITheme), {
-                signal: this.#themeAbortController.signal,
-            });
+            createUIThemeEffect(
+                (nextUITheme) => {
+                    applyUITheme(nextStyleRoot, nextUITheme, this.#customCSSStyleSheet);
+
+                    this.activeTheme = nextUITheme;
+                },
+                {
+                    signal: this.#themeAbortController.signal,
+                },
+            );
         }
     }
 

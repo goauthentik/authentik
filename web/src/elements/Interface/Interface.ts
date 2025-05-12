@@ -1,11 +1,5 @@
-import { setAdoptedStyleSheets } from "@goauthentik/web/common/stylesheets.js";
-import {
-    $AKBase,
-    $PFBase,
-    ThemedElement,
-    applyUITheme,
-    createUIThemeEffect,
-} from "@goauthentik/web/common/theme.js";
+import { globalAK } from "@goauthentik/web/common/global.js";
+import { ThemedElement, applyDocumentTheme } from "@goauthentik/web/common/theme.js";
 import { UIConfig } from "@goauthentik/web/common/ui/config.js";
 import { AKElement } from "@goauthentik/web/elements/Base.js";
 import { VersionContextController } from "@goauthentik/web/elements/Interface/VersionContextController.js";
@@ -19,7 +13,6 @@ import {
     type Config,
     type CurrentBrand,
     type LicenseSummary,
-    UiThemeEnum,
     type Version,
 } from "@goauthentik/api";
 
@@ -36,14 +29,8 @@ export abstract class LightInterface extends AKElement implements ThemedElement 
         super();
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
 
-        setAdoptedStyleSheets(document, (currentStyleSheets) => {
-            return [...currentStyleSheets, $PFBase, $AKBase];
-        });
-
-        if (this.preferredColorScheme === "dark") {
-            applyUITheme(document, UiThemeEnum.Dark);
-        } else if (this.preferredColorScheme === "auto") {
-            createUIThemeEffect((nextUITheme) => applyUITheme(document, nextUITheme));
+        if (!document.documentElement.dataset.theme) {
+            applyDocumentTheme(globalAK().brand.uiTheme);
         }
     }
 }
@@ -62,8 +49,6 @@ export abstract class Interface extends LightInterface implements ThemedElement 
 
     constructor() {
         super();
-
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
 
         this.addController(new BrandContextController(this));
         this[configContext] = new ConfigContextController(this);
