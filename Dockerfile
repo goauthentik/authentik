@@ -40,7 +40,7 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
-RUN npm run build
+RUN npm run build build:sfe
 
 # Stage 3: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
