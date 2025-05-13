@@ -135,49 +135,117 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         return [
             ...super.styles,
             css`
-                .section-label {
-                    font-weight: 600;
-                    margin-top: 2em;
-                    margin-bottom: 0.5em;
-                    color: var(--pf-global--Color--100, #fff);
-                    font-size: 1.05em;
-                    letter-spacing: 0.01em;
+                .form-description {
+                    display: block;
+                    margin-bottom: 1rem;
+                    font-size: 0.95rem;
+                    line-height: 1.4;
                 }
                 ak-form-group {
-                    margin-bottom: 2.5rem;
+                    margin-bottom: 0.75rem;
+                    min-height: unset;
+                    border-radius: 3px;
+                    overflow: hidden;
+                }
+                ak-form-group::part(header) {
+                    padding: 0.5rem 0.75rem;
+                    font-size: 0.875rem;
+                    font-weight: 500;
+                    background-color: var(--pf-global--BackgroundColor--200);
+                    border: none;
+                }
+                ak-form-group::part(body) {
+                    padding: 0.5rem 0.75rem;
+                    background-color: var(--pf-global--BackgroundColor--100);
                 }
                 ak-form-element-horizontal {
-                    margin-bottom: 2rem;
-                    padding-top: 0.5rem;
-                    padding-bottom: 0.5rem;
+                    margin-bottom: 0.75rem;
+                    --ak-form-element-label-font-size: 0.875rem;
                 }
-                .form-control-container {
-                    width: 100%;
+                ak-form-element-horizontal:last-child {
+                    margin-bottom: 0;
+                }
+                ak-form-element-horizontal::part(label) {
+                    padding-top: 0.375rem;
+                    margin-bottom: 0.5rem;
+                }
+                .form-row {
+                    display: flex;
+                    margin-bottom: 0.75rem;
+                }
+                .form-row ak-form-group {
+                    flex: 1;
+                    margin-bottom: 0;
+                }
+                .threshold-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                }
+                .options-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 1rem;
+                }
+                .pf-c-form-group-body {
+                    padding: 0;
                 }
                 input, select {
-                    padding: 0.75rem 1rem;
-                    min-height: 3rem;
+                    padding: 0.375rem 0.75rem;
+                    min-height: 2rem;
+                    font-size: 0.875rem;
+                    line-height: 1.5;
+                }
+                input[type="url"], input[type="text"] {
+                    height: 2.25rem;
+                    box-sizing: border-box;
+                }
+                .pf-c-form-control {
+                    width: 100%;
                 }
                 .pf-c-form__helper-text {
-                    margin-top: 0.75rem;
-                    font-size: 0.9rem;
+                    margin-top: 0.25rem;
+                    font-size: 0.75rem;
+                    line-height: 1.3;
+                    color: var(--pf-global--Color--200);
+                }
+                ak-number-input {
+                    margin-bottom: 0.75rem;
+                    display: block;
+                    --ak-number-input-label-font-size: 0.875rem;
+                }
+                ak-number-input:last-child {
+                    margin-bottom: 0;
+                }
+                .threshold-grid ak-number-input {
+                    margin-bottom: 0;
+                }
+                ak-switch-input {
+                    margin-bottom: 0.75rem;
+                    display: block;
+                    --ak-switch-input-label-font-size: 0.875rem;
+                }
+                ak-switch-input:last-child {
+                    margin-bottom: 0;
+                }
+                .options-grid ak-switch-input {
+                    margin-bottom: 0;
                 }
                 .pf-c-switch {
-                    margin-bottom: 0.75rem;
                     display: flex;
                     align-items: center;
                 }
                 .pf-c-switch__label {
-                    font-size: 1rem;
-                    margin-left: 1rem;
+                    font-size: 0.875rem;
+                    margin-left: 0.75rem;
                 }
                 .switch-container {
-                    margin-bottom: 1.5rem;
+                    margin-bottom: 0.75rem;
                 }
                 .switch-helper-text {
-                    margin-left: 3.5rem;
-                    margin-top: 0.5rem;
-                    font-size: 0.9rem;
+                    margin-left: 2.5rem;
+                    margin-top: 0.25rem;
+                    font-size: 0.75rem;
                     color: var(--pf-global--Color--200);
                 }
             `
@@ -190,21 +258,22 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
         }
 
         return html`
-            <span>
+            <span class="form-description">
                 ${msg("This stage verifies user interactions using a CAPTCHA service.")}
             </span>
 
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name || "")}" 
+                    class="pf-c-form-control"
+                    required
+                />
+            </ak-form-element-horizontal>
+            
             <ak-form-group .expanded=${true}>
                 <span slot="header">${msg("Provider Settings")}</span>
-                <div slot="body">
-                    <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                        <input
-                            type="text"
-                            value="${ifDefined(this.instance?.name || "")}" 
-                            class="pf-c-form-control"
-                            required
-                        />
-                    </ak-form-element-horizontal>
+                <div slot="body" class="pf-c-form-group-body">
                     <ak-form-element-horizontal label=${msg("Provider")} ?required=${true} name="provider">
                         <select
                             class="pf-c-form-control"
@@ -251,17 +320,17 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             @change=${this.handleUrlChange}
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("URL used to validate captcha response. This will be automatically set based on your provider selection.")}
+                            ${msg("URL to validate captcha response. This will be automatically set based on your provider selection.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
 
-            <ak-form-group .expanded=${true}>
-                <span slot="header">${msg("Keys")}</span>
-                <div slot="body">
-                    <ak-form-element-horizontal label=${msg("Public Key")} ?required=${true} name="publicKey">
-                        <div class="form-control-container">
+            <div class="form-row">
+                <ak-form-group .expanded=${true}>
+                    <span slot="header">${msg("Keys")}</span>
+                    <div slot="body" class="pf-c-form-group-body">
+                        <ak-form-element-horizontal label=${msg("Public Key")} ?required=${true} name="publicKey">
                             <input
                                 type="text"
                                 value="${ifDefined(this.instance?.publicKey || "")}" 
@@ -273,10 +342,13 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             <p class="pf-c-form__helper-text">
                                 ${msg("CAPTCHA service public identifier")}
                             </p>
-                        </div>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Private Key")} ?required=${true} name="privateKey">
-                        <div class="form-control-container">
+                        </ak-form-element-horizontal>
+                        <ak-form-element-horizontal 
+                            label=${msg("Private Key")} 
+                            ?required=${true} 
+                            ?writeOnly=${this.instance !== undefined}
+                            name="privateKey"
+                        >
                             <input
                                 type="text"
                                 value=""
@@ -288,91 +360,48 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             <p class="pf-c-form__helper-text">
                                 ${msg("CAPTCHA service secret key")}
                             </p>
-                        </div>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
+                        </ak-form-element-horizontal>
+                    </div>
+                </ak-form-group>
+            </div>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header">${msg("Score Thresholds")}</span>
-                <div slot="body">
-                    <ak-form-element-horizontal label=${msg("Minimum Score Threshold")} name="scoreMinThreshold">
-                        <div class="form-control-container">
-                            <input
-                                type="number"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value="${ifDefined(this.instance?.scoreMinThreshold || 0.5)}"
-                                class="pf-c-form-control"
-                                required
-                            />
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Minimum verification score (0.0-1.0)")}
-                            </p>
-                        </div>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Maximum Score Threshold")} name="scoreMaxThreshold">
-                        <div class="form-control-container">
-                            <input
-                                type="number"
-                                min="0"
-                                max="1"
-                                step="0.01"
-                                value="${ifDefined(this.instance?.scoreMaxThreshold || 1)}"
-                                class="pf-c-form-control"
-                                required
-                            />
-                            <p class="pf-c-form__helper-text">
-                                ${msg("Maximum verification score (0.0-1.0)")}
-                            </p>
-                        </div>
-                    </ak-form-element-horizontal>
+                <div slot="body" class="pf-c-form-group-body">
+                    <ak-number-input
+                        label=${msg("Minimum Score Threshold")}
+                        required
+                        name="scoreMinThreshold"
+                        value="${ifDefined(this.instance?.scoreMinThreshold || 0.5)}"
+                        help=${msg("Minimum verification score (0.0-1.0)")}
+                    ></ak-number-input>
+                    <ak-number-input
+                        label=${msg("Maximum Score Threshold")}
+                        required
+                        name="scoreMaxThreshold"
+                        value="${ifDefined(this.instance?.scoreMaxThreshold || 1)}"
+                        help=${msg("Maximum verification score (0.0-1.0)")}
+                    ></ak-number-input>
                 </div>
             </ak-form-group>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header">${msg("Options")}</span>
-                <div slot="body">
-                    <div class="switch-container">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                name="interactive"
-                                ?checked=${this.instance?.interactive ?? false}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Interactive Mode")}</span>
-                        </label>
-                        <div class="switch-helper-text">
-                            ${msg("Requires direct user interaction with the CAPTCHA")}
-                        </div>
-                    </div>
-                    
-                    <div class="switch-container">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                name="errorOnInvalidScore"
-                                ?checked=${this.instance?.errorOnInvalidScore ?? true}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Enforce Score Validation")}</span>
-                        </label>
-                        <div class="switch-helper-text">
-                            ${msg("Block requests that fail score validation")}
-                        </div>
-                    </div>
+                <div slot="body" class="pf-c-form-group-body">
+                    <ak-switch-input
+                        name="interactive"
+                        label=${msg("Interactive Mode")}
+                        ?checked="${this.instance?.interactive}"
+                        help=${msg("Requires direct user interaction with the CAPTCHA")}
+                    >
+                    </ak-switch-input>
+                    <ak-switch-input
+                        name="errorOnInvalidScore"
+                        label=${msg("Enforce Score Validation")}
+                        ?checked=${this.instance?.errorOnInvalidScore ?? true}
+                        help=${msg("Block requests that fail score validation")}
+                    >
+                    </ak-switch-input>
                 </div>
             </ak-form-group>
         `;
