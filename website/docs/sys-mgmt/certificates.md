@@ -32,7 +32,7 @@ To download a certificate for SAML configuration:
 
 ## External certificates
 
-To use externally managed certificates (e.g., from certbot or HashiCorp Vault), you can use the discovery feature.
+To use externally managed certificates (e.g., from Certbot or HashiCorp Vault), you can use the discovery feature.
 
 ### Certificate discovery
 
