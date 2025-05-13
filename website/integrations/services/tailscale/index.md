@@ -16,6 +16,26 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::info
+Tailscale requires a properly configured WebFinger endpoint at `.well-known/webfinger` on the domain used for your email. Set this up according to your web server or application specifications.
+
+Use this JSON template for your WebFinger response:
+
+```json
+{
+    "links": [
+        {
+            "href": "https://authentik.company",
+            "rel": "http://openid.net/specs/connect/1.0/issuer"
+        }
+    ],
+    "subject": "acct:your@email.com"
+}
+```
+
+**Important:** The domain in the email address must match both the domain where the WebFinger endpoint is served and the domain you will use for Tailscale. This email must match exactly in both the WebFinger configuration and during Tailscale setup.
+:::
+
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -40,26 +60,6 @@ To support the integration of Tailscale with authentik, you need to create an ap
 3. Click **Submit** to save the new application and provider.
 
 ## Tailscale configuration
-
-:::info
-Tailscale requires a properly configured WebFinger endpoint at `.well-known/webfinger` on the domain used for your email. Set this up according to your web server or application specifications.
-
-Use this JSON template for your WebFinger response:
-
-```json
-{
-    "links": [
-        {
-            "href": "https://authentik.company",
-            "rel": "http://openid.net/specs/connect/1.0/issuer"
-        }
-    ],
-    "subject": "acct:your@email.com"
-}
-```
-
-**Important:** Replace `your@email.com` with the administrator email you'll use when creating your Tailnet. This email must match exactly in both the WebFinger configuration and during Tailscale setup.
-:::
 
 1. Visit the [Tailscale sign up page](https://login.tailscale.com/start) and click **Sign up with OIDC**.
 2. Enter the administrator email, select `authentik` as the identity provider type, and click **Get OIDC Issuer**.
