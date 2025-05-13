@@ -43,6 +43,30 @@ authentik can automatically discover and import certificates from a designated d
 - **Docker Compose**: A `certs` directory is mapped to `/certs` within the container
 - **Kubernetes**: You can map custom secrets/volumes under `/certs`
 
+authentik checks for new or changed files every 5 minutes and automatically triggers an outpost refresh when changes are detected.
+
+### Manual imports
+
+Since authentik 2022.9, you can import certificates with any folder structure directly. Run commands within the worker container to import certificates in different ways:
+
+#### Import certificate with private key
+
+Use this option when you need to import a complete certificate keypair that authentik can use for signing or encryption:
+
+```shell
+ak import_certificate --certificate /certs/mycert.pem --private-key /certs/private.pem --name mycert
+```
+
+#### Import certificate for trust only
+
+Use this option when you only need to establish trust with an external system and don't need the private key:
+
+```shell
+ak import_certificate --certificate /certs/othercert.pem --name othercert
+```
+
+These commands import certificates under the specified names. They are safe to run as cron jobs, as authentik only re-imports certificates when they change.
+
 #### Naming conventions
 
 authentik uses the following rules to import certificates:
@@ -75,30 +99,6 @@ certs/
 └── foo.pem
 ```
 
-authentik checks for new or changed files every 5 minutes and automatically triggers an outpost refresh when changes are detected.
-
-### Manual imports
-
-Since authentik 2022.9, you can import certificates with any folder structure directly. Run commands within the worker container to import certificates in different ways:
-
-#### Import certificate with private key
-
-Use this option when you need to import a complete certificate keypair that authentik can use for signing or encryption:
-
-```shell
-ak import_certificate --certificate /certs/mycert.pem --private-key /certs/private.pem --name mycert
-```
-
-#### Import certificate for trust only
-
-Use this option when you only need to establish trust with an external system and don't need the private key:
-
-```shell
-ak import_certificate --certificate /certs/othercert.pem --name othercert
-```
-
-These commands import certificates under the specified names. They are safe to run as cron jobs, as authentik only re-imports certificates when they change.
-
 ## Web certificates
 
 Since authentik 2021.12.4, you can configure the certificate used by authentik's core webserver. While most deployments use reverse proxies, this feature enables compact and self-contained authentik installations.
@@ -110,7 +110,7 @@ For Docker Compose installations, to use Let's Encrypt certificates with Certbot
 ```yaml
 services:
     certbot:
-        image: certbot/dns-route53:v1.22.0
+        image: certbot/dns-route53:v4.0.0
         volumes:
             - ./certs/:/etc/letsencrypt
         # Variables depending on DNS Plugin
@@ -120,7 +120,9 @@ services:
             - certonly
             - --non-interactive
             - --agree-tos
-            - -m your.email@company
+            # Replace your@email.com with the email you wish to use
+            - -m your@email.com
+            # Replace authentik.company with your actual domain
             - -d authentik.company
             # Again, match with your provider
             - --dns-route53
@@ -130,12 +132,12 @@ services:
 For other DNS providers and detailed setup instructions, see the official [Certbot Docker documentation](https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker). Certbot provides Docker images for many popular DNS providers.
 :::
 
+:::info
+The Certbot container only runs once. You'll need to set up a separate mechanism for regular certificate renewals.
+:::
+
 Run `docker compose up -d` to create and start the Certbot container and generate your certificate. The certificate should appear in authentik within minutes. If it doesn't, restart the worker container (this can happen due to permission issues set by Certbot).
 
 For Kubernetes or AWS deployments, you can use similar approaches with appropriate certificate management tools for your platform.
 
 Navigate to **System** > **Brands**, edit any brand, and select your preferred certificate.
-
-:::info
-The Certbot container only runs once. You'll need to set up a separate mechanism for regular certificate renewals.
-:::
