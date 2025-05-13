@@ -86,7 +86,7 @@ Since authentik 2022.9, you can import certificates with any folder structure di
 Use this option when you need to import a complete certificate keypair that authentik can use for signing or encryption:
 
 ```shell
-ak import_certificate --certificate /certs/mycert.pem --private-key /certs/something.pem --name test
+ak import_certificate --certificate /certs/mycert.pem --private-key /certs/private.pem --name mycert
 ```
 
 #### Import certificate for trust only
@@ -94,7 +94,7 @@ ak import_certificate --certificate /certs/mycert.pem --private-key /certs/somet
 Use this option when you only need to establish trust with an external system and don't need the private key:
 
 ```shell
-ak import_certificate --certificate /certs/othercert.pem --name test2
+ak import_certificate --certificate /certs/othercert.pem --name othercert
 ```
 
 These commands import certificates under the specified names. They are safe to run as cron jobs, as authentik only re-imports certificates when they change.
@@ -105,7 +105,7 @@ Since authentik 2021.12.4, you can configure the certificate used by authentik's
 
 ### Let's Encrypt integration
 
-For Docker Compose installations, to use Let's Encrypt certificates with certbot, create or edit `docker-compose.override.yml` in the same folder as your authentik docker-compose file. The example below uses the AWS Route 53 DNS plugin:
+For Docker Compose installations, to use Let's Encrypt certificates with Certbot, create or edit `docker-compose.override.yml` in the same folder as your authentik docker-compose file. The example below uses the AWS Route 53 DNS plugin:
 
 ```yaml
 services:
@@ -127,15 +127,15 @@ services:
 ```
 
 :::info
-For other DNS provider types and detailed setup instructions, see the official [Certbot Docker documentation](https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker). Certbot provides Docker images for many popular DNS providers.
+For other DNS providers and detailed setup instructions, see the official [Certbot Docker documentation](https://eff-certbot.readthedocs.io/en/latest/install.html#alternative-1-docker). Certbot provides Docker images for many popular DNS providers.
 :::
 
-Run `docker compose up -d` to start certbot and generate your certificate. The certificate should appear in authentik within minutes. If it doesn't, restart the worker container (this can happen due to permission issues set by certbot).
+Run `docker compose up -d` to create and start the Certbot container and generate your certificate. The certificate should appear in authentik within minutes. If it doesn't, restart the worker container (this can happen due to permission issues set by Certbot).
 
 For Kubernetes or AWS deployments, you can use similar approaches with appropriate certificate management tools for your platform.
 
 Navigate to **System** > **Brands**, edit any brand, and select your preferred certificate.
 
 :::info
-The certbot container only runs once. You'll need to set up a separate mechanism for regular certificate renewals.
+The Certbot container only runs once. You'll need to set up a separate mechanism for regular certificate renewals.
 :::
