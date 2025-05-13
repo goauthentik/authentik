@@ -15238,11 +15238,32 @@
                     "type": "string",
                     "enum": [
                         "optional",
-                        "required_any",
-                        "required_auth",
-                        "required_enroll"
+                        "required"
                     ],
                     "title": "Mode"
+                },
+                "certificate_authority": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Certificate authority",
+                    "description": "Configure a certificate authority to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
+                },
+                "cert_attribute": {
+                    "type": "string",
+                    "enum": [
+                        "subject",
+                        "common_name",
+                        "email"
+                    ],
+                    "title": "Cert attribute"
+                },
+                "user_attribute": {
+                    "type": "string",
+                    "enum": [
+                        "username",
+                        "email"
+                    ],
+                    "title": "User attribute"
                 }
             },
             "required": []
