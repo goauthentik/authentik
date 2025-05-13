@@ -6,6 +6,7 @@ from json import loads
 from sys import platform
 from time import sleep
 from unittest.case import skip, skipUnless
+from unittest.mock import patch
 
 from channels.testing import ChannelsLiveServerTestCase
 from jwt import decode
@@ -17,10 +18,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
+from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
+@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TestProviderProxy(SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
