@@ -132,13 +132,14 @@ class LicenseKey:
         """Get a summarized version of all (not expired) licenses"""
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in License.objects.all():
-            total.internal_users += lic.internal_users
-            total.external_users += lic.external_users
+            if lic.is_valid:
+                total.internal_users += lic.internal_users
+                total.external_users += lic.external_users
+                total.license_flags.extend(lic.status.license_flags)
             exp_ts = int(mktime(lic.expiry.timetuple()))
             if total.exp == 0:
                 total.exp = exp_ts
             total.exp = max(total.exp, exp_ts)
-            total.license_flags.extend(lic.status.license_flags)
         return total
 
     @staticmethod
