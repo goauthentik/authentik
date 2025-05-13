@@ -6,7 +6,7 @@ support_level: community
 
 ## What is Headscale
 
-> Tailscale is a mesh VPN service that creates secure, encrypted, peer-to-peer connections between devices across different networks using the WireGuard protocol.
+> Headscale is an open-source, self-hosted server that acts as a Tailscale control server.
 >
 > -- https://headscale.net
 
@@ -40,9 +40,55 @@ To support the integration of Headscale with authentik, you need to create an ap
 
 3. Click **Submit** to save the new application and provider.
 
-## Headscale configuration 
+## Headscale configuration
 
 To support the integration of Headscale with authentik, you'll need to update your `config.yaml`:
+
+```yaml showLineNumbers title="/etc/headscale/config.yaml"
+oidc:
+    # Do not start Headscale until it can fetch authentik's OIDC configuration
+    only_start_if_oidc_is_available: true
+    issuer: "https://authentik.company/application/o/<headscale-slug>/"
+    client_id: "<Client ID from authentik>"
+    # There are three ways to configure the client secret (choose one):
+    #
+    # 1. Directly in the config file (not recommended for production):
+    client_secret: "<Client secret from authentik>"
+    #
+    # 2. From a file path (supports environment variables, works with systemd's LoadCredential):
+    # client_secret_path: "${CREDENTIALS_DIRECTORY}/oidc_client_secret"
+    #
+    # 3. From an environment variable:
+    # The HEADSCALE_OIDC_CLIENT_SECRET environment variable will be used automatically if set
+
+    # OIDC scopes to request (defaults: "openid", "profile", "email")
+    # Additional scopes can be added to request extra user information
+    scope: ["openid", "profile", "email", "custom"]
+    # Passed on to the browser login request – used to tweak behaviour for the OIDC provider (optional)
+    extra_params:
+        domain_hint: acmecorp.net
+
+    # Reject authentication if user doesn't match these criteria (optional)
+    allowed_domains:
+        - acmecorp.net
+
+    # Group-based access control (optional)
+    allowed_groups:
+        - /headscale
+
+    # Specific user allowlist (optional)
+    allowed_users:
+        - dominic@acmecorp.net
+
+    pkce:
+        enabled: true
+        method: S256
+
+    # Email Domain Handling:
+    # When strip_email_domain is true: "user@acmecorp.net" becomes username "user"
+    # When strip_email_domain is false: "user@acmecorp.net" becomes username "user.acmecorp.net"
+    strip_email_domain: true
+```
 
 ## Resources
 
@@ -50,4 +96,4 @@ To support the integration of Headscale with authentik, you'll need to update yo
 
 ## Configuration verification
 
-To verify the integration with Tailscale, log out and attempt to log back in. When you enter an email address from your configured SSO domain, you should be redirected to authentik.
+To verify the integration with Headscale, log out and attempt to log back in using OIDC.
