@@ -41,8 +41,10 @@ To support the integration of Tailscale with authentik, you need to create an ap
 
 ## Tailscale configuration
 
-:::warning WebFinger must be configured
-Tailscale requires a WebFinger endpoint to be present at `.well-known/webfinger`. COnfiguration to do so depends on your web server or application hosted at root. You can use this example as the webfinger, replacing `your@email.com` with the admin email you'll use to create your Tailnet.
+:::info
+Tailscale requires a properly configured WebFinger endpoint at `.well-known/webfinger` on the domain used for your email. Set this up according to your web server or application specifications.
+
+Use this JSON template for your WebFinger response:
 ```json
 {
     "links": [
@@ -55,12 +57,16 @@ Tailscale requires a WebFinger endpoint to be present at `.well-known/webfinger`
 }
 ```
 
+**Important:** Replace `your@email.com` with the administrator email you'll use when creating your Tailnet. This email must match exactly in both the WebFinger configuration and during Tailscale setup.
+:::
+
 1. Visit the [Tailscale sign up page](https://login.tailscale.com/start) and click **Sign up with OIDC**.
-2. Fill out the required information by setting the administrator email (must match the value set on the webfinger endpoint), then setting the identity provider type to `authentik`, and click **Get OIDC Issuer**.
-3. Fill out the form:
-    - Under **Client ID**, set the Client ID which was copied from authentik.
-    - Under **Client secret**, set the Client secret which was copied from authentik.
-    - Leave the **Prompts** section to it's default value, `consent`.
+2. Enter the administrator email, select `authentik` as the identity provider type, and click **Get OIDC Issuer**.
+3. Fill the form:
+    - Enter the Client ID copied from authentik in the **Client ID** field.
+    - Enter the Client secret copied from authentik in the **Client secret** field.
+    - Keep the default value `consent` in the **Prompts** section.
+4. Click **Sign up with OIDC** and follow the prompts to complete the Tailscale-specific configuration.
 
 ## Resources
 
@@ -68,4 +74,4 @@ Tailscale requires a WebFinger endpoint to be present at `.well-known/webfinger`
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Tailscale, log out and attempt to log back in. Entering an email address under your SSO domain should redirect you to authentik.
+To verify the integration with Tailscale, log out and attempt to log back in. When you enter an email address from your configured SSO domain, you should be redirected to authentik.
