@@ -63,10 +63,10 @@ Use this JSON template for your WebFinger response:
 
 1. Visit the [Tailscale sign up page](https://login.tailscale.com/start) and click **Sign up with OIDC**.
 2. Enter the administrator email, select `authentik` as the identity provider type, and click **Get OIDC Issuer**.
-3. Fill the form:
-    - Enter the Client ID copied from authentik in the **Client ID** field.
-    - Enter the Client secret copied from authentik in the **Client secret** field.
-    - Keep the default value `consent` in the **Prompts** section.
+3. Set the following configurations:
+    - **Client ID**: enter the Client ID copied from authentik.
+    - **Client secret**: enter the Client secret copied from authentik.
+    - **Prompts**: keep the default value `consent`.
 4. Click **Sign up with OIDC** and follow the prompts to complete the Tailscale-specific configuration.
 
 ## Resources
