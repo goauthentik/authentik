@@ -42,7 +42,7 @@
         "react-dom": "^18.3.1",
         "remark-directive": "^4.0.0",
         "remark-github": "^12.0.0",
-        "semver": "^7.7.1"
+        "semver": "^7.7.2"
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.7.0",
