@@ -105,7 +105,7 @@ def token_secret_key(value: str) -> User | None:
 
 
 class IPCUser(AnonymousUser):
-    """'Virtual' user for IPC communication between authentik and the go-router"""
+    """'Virtual' user for IPC communication between authentik core and the authentik router"""
 
     username = "authentik:system"
     is_active = True

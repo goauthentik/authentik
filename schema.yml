@@ -37749,9 +37749,7 @@ paths:
           type: string
           enum:
           - optional
-          - required_any
-          - required_auth
-          - required_enroll
+          - required
       - in: query
         name: name
         schema:
@@ -43163,6 +43161,12 @@ components:
       - name
       - private_key
       - public_key
+    CertAttributeEnum:
+      enum:
+      - subject
+      - common_name
+      - email
+      type: string
     CertificateData:
       type: object
       description: Get CertificateKeyPair's data
@@ -48730,20 +48734,31 @@ components:
             $ref: '#/components/schemas/FlowSet'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authority:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure a certificate authority to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
       required:
+      - cert_attribute
       - component
       - meta_model_name
       - mode
       - name
       - pk
+      - user_attribute
       - verbose_name
       - verbose_name_plural
     MutualTLSStageModeEnum:
       enum:
       - optional
-      - required_any
-      - required_auth
-      - required_enroll
+      - required
       type: string
     MutualTLSStageRequest:
       type: object
@@ -48758,9 +48773,22 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authority:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure a certificate authority to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
       required:
+      - cert_attribute
       - mode
       - name
+      - user_attribute
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -53495,6 +53523,17 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authority:
+          type: string
+          format: uuid
+          nullable: true
+          description: Configure a certificate authority to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -60209,6 +60248,11 @@ components:
       - pk
       - uid
       - username
+    UserAttributeEnum:
+      enum:
+      - username
+      - email
+      type: string
     UserConsent:
       type: object
       description: UserConsent Serializer

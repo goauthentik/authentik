@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.crypto.models import CertificateKeyPair
@@ -34,7 +35,14 @@ class MutualTLSStage(Stage):
     mode = models.TextField(choices=TLSMode.choices)
 
     certificate_authority = models.ForeignKey(
-        CertificateKeyPair, on_delete=models.SET_DEFAULT, default=None, null=True
+        CertificateKeyPair,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        help_text=_(
+            "Configure a certificate authority to validate the certificate against. "
+            "This option has a higher priority than the `client_certificate` option on `Brand`."
+        ),
     )
 
     cert_attribute = models.TextField(choices=CertAttributes.choices)
