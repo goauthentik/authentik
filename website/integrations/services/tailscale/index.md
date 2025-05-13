@@ -45,6 +45,7 @@ To support the integration of Tailscale with authentik, you need to create an ap
 Tailscale requires a properly configured WebFinger endpoint at `.well-known/webfinger` on the domain used for your email. Set this up according to your web server or application specifications.
 
 Use this JSON template for your WebFinger response:
+
 ```json
 {
     "links": [
