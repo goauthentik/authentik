@@ -241,7 +241,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         return element
 
     def login(self):
-        """Do entire login flow and check user afterwards"""
+        """Do entire login flow"""
         flow_executor = self.get_shadow_root("ak-flow-executor")
         identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
 
