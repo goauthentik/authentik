@@ -26,7 +26,7 @@ To support the integration of Push Security, you need to create property mapping
 
 ### Create property mappings
 
-Push Security requires a first and last name for each user. However, authentik provides the full name as a single string value. To address this, you need to create property mappings that can separate the full name into first and last names.
+Push Security requires separate first and last names for each user, but authentik provides the full name as a single string. To address this, create property mappings that split the full name into first and last names.
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**.
