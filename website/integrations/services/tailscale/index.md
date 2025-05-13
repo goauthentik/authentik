@@ -33,7 +33,7 @@ Use this JSON template for your WebFinger response:
 }
 ```
 
-**Important:** The domain in the email address must match both the domain where the WebFinger endpoint is served and the domain you will use for Tailscale. This email must match exactly in both the WebFinger configuration and during Tailscale setup.
+**Important:** Replace `your@email.com` with the administrator email you'll use when creating your Tailnet. The domain in the email address must match both the domain where the WebFinger endpoint is served and the domain you will use for Tailscale. This email must match exactly in both the WebFinger configuration and during Tailscale setup.
 :::
 
 :::note
