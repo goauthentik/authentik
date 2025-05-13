@@ -277,7 +277,7 @@ requires-dist = [
     { name = "django-countries", specifier = "==7.6.1" },
     { name = "django-cte", specifier = "==1.3.3" },
     { name = "django-filter", specifier = "==25.1" },
-    { name = "django-guardian", specifier = "<3.0.0" },
+    { name = "django-guardian", specifier = "==3.0.0" },
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-pglock", specifier = "==1.7.2" },
     { name = "django-prometheus", specifier = "==2.3.1" },
