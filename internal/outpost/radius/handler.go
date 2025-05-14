@@ -60,6 +60,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		"code":    r.Code.String(),
 		"request": rid,
 		"ip":      host,
+		"id":      r.Identifier,
 	})
 	selectedApp := ""
 	defer func() {

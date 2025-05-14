@@ -20,6 +20,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 	st := stm.GetEAPState(rst)
 	if st == nil {
+		log.Debug("EAP: blank state")
 		st = BlankState(stm.GetEAPSettings())
 	}
 	if len(st.ChallengesToOffer) < 1 {
