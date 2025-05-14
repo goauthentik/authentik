@@ -15,13 +15,12 @@ class Command(BaseCommand):
     @no_translations
     def handle(self, *args, **options):
         """Check permissions for all apps"""
-
-        # Remove potential lingering old permissions
-        # See https://code.djangoproject.com/ticket/28417
-        call_command("remove_stale_contenttypes", "--no-input")
-
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
+                # See https://code.djangoproject.com/ticket/28417
+                # Remove potential lingering old permissions
+                call_command("remove_stale_contenttypes", "--no-input")
+
                 for app in apps.get_app_configs():
                     self.stdout.write(f"Checking app {app.name} ({app.label})\n")
                     create_permissions(app, verbosity=0)
