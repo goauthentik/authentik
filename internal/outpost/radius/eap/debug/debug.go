@@ -1,6 +1,8 @@
 package debug
 
 import (
+	"fmt"
+
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	log "github.com/sirupsen/logrus"
@@ -18,4 +20,8 @@ func DebugPacket(p *radius.Packet) {
 		return
 	}
 	log.Debug(layer.(*layers.RADIUS))
+}
+
+func FormatBytes(d []byte) string {
+	return fmt.Sprintf("% x", d)
 }

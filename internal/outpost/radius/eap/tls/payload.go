@@ -4,8 +4,10 @@ import (
 	"crypto/tls"
 	"encoding/binary"
 	"errors"
-	"fmt"
 	"slices"
+
+	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/radius/eap/debug"
 )
 
 type Payload struct {
@@ -64,7 +66,7 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 		stt = NewState()
 	}
 	st := stt.(State)
-	fmt.Printf("Got TLS packet % x\n", p.Flags)
+	log.WithField("flags", p.Flags).Debug("Got TLS Packet")
 	if !st.HasStarted {
 		st.HasStarted = true
 		return &Payload{
@@ -75,20 +77,21 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 		return p.sendNextChunk(st)
 	}
 
-	fmt.Printf("decode tls raw '% x\n", p.Data)
+	log.WithField("raw", debug.FormatBytes(p.Data)).Debug("TLS: Decode raw")
 
 	tc := NewTLSConnection(p.Data)
 	if st.TLS == nil {
-		fmt.Printf("no TLS connection in state yet, starting connection")
+		log.Debug("no TLS connection in state yet, starting connection")
 		st.TLS = tls.Server(tc, &tls.Config{
 			GetConfigForClient: func(argHello *tls.ClientHelloInfo) (*tls.Config, error) {
-				fmt.Printf("%+v\n", argHello)
+				log.Debugf("%+v\n", argHello)
 				return nil, nil
 			},
 			ClientAuth:   tls.RequireAnyClientCert,
 			Certificates: certs,
 		})
-		st.TLS.Handshake()
+		err := st.TLS.Handshake()
+		log.WithError(err).Debug("TLS: Handshake error")
 	}
 	return p.sendDataChunked(tc.TLSData(), st)
 }
@@ -99,7 +102,7 @@ func (p *Payload) sendDataChunked(data []byte, st State) (*Payload, State) {
 	flags := FlagLengthIncluded
 	var dataToSend []byte
 	if len(data) > maxChunkSize {
-		fmt.Printf("Data needs to be chunked: %d\n", len(data))
+		log.WithField("length", len(data)).Debug("Data needs to be chunked")
 		flags += FlagMoreFragments
 		dataToSend = data[:maxChunkSize]
 		remainingData := data[maxChunkSize:]
@@ -116,15 +119,15 @@ func (p *Payload) sendDataChunked(data []byte, st State) (*Payload, State) {
 }
 
 func (p *Payload) sendNextChunk(st State) (*Payload, State) {
-	fmt.Printf("Sending next chunk\n")
+	log.Debug("Sending next chunk")
 	nextChunk := st.RemainingChunks[0]
 	st.RemainingChunks = st.RemainingChunks[1:]
 	flags := FlagLengthIncluded
 	if st.HasMore() {
-		fmt.Printf("More chunks left: %d\n", len(st.RemainingChunks))
+		log.WithField("chunks", len(st.RemainingChunks)).Debug("More chunks left")
 		flags += FlagMoreFragments
 	}
-	fmt.Printf("Reporting size: %d\n", uint32((len(st.RemainingChunks)*maxChunkSize)+5))
+	log.WithField("length", st.TotalPayloadSize).Debug("Total payload size")
 	return &Payload{
 		Flags:  flags,
 		Length: uint32((len(st.RemainingChunks) * maxChunkSize) + 5),
