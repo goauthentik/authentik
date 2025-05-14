@@ -3,9 +3,10 @@ package tls
 import "crypto/tls"
 
 type State struct {
-	HasStarted      bool
-	RemainingChunks [][]byte
-	TLS             *tls.Conn
+	HasStarted       bool
+	RemainingChunks  [][]byte
+	TotalPayloadSize int
+	TLS              *tls.Conn
 }
 
 func NewState() State {
