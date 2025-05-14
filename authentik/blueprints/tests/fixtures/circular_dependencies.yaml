@@ -1,0 +1,20 @@
+version: 1
+entries:
+  - identifiers:
+      slug: "{{ flow1.slug }}"
+    attrs:
+      name: Flow 1
+      slug: "{{ flow1.slug }}"
+      designation: authentication
+      title: Flow 1
+    model: authentik_flows.Flow
+    state: must_created
+  - identifiers:
+      slug: "{{ flow2.slug }}"
+    attrs:
+      name: Flow 2
+      slug: "{{ flow2.slug }}"
+      designation: authentication
+      title: Flow 2
+    model: authentik_flows.Flow
+    state: must_created 
