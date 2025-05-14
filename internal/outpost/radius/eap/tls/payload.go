@@ -103,7 +103,7 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 	if st.HasMore() {
 		return p.sendNextChunk(st)
 	}
-	return p.startChunkedTransfer(st.Conn.TLSData(), st)
+	return p.startChunkedTransfer(st.Conn.GetData(), st)
 }
 
 const maxChunkSize = 1000
@@ -114,10 +114,10 @@ func (p *Payload) startChunkedTransfer(data []byte, st State) (*Payload, State) 
 	if len(data) > maxChunkSize {
 		log.WithField("length", len(data)).Debug("TLS: Data needs to be chunked")
 		flags += FlagMoreFragments
-		dataToSend = data[:maxChunkSize]
-		remainingData := data[maxChunkSize:]
-		// Chunk remaining data into correct chunks and add them to the list
-		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(remainingData, maxChunkSize))...)
+		// Chunk data into correct chunks and add them to the list
+		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(data, maxChunkSize))...)
+		dataToSend = st.RemainingChunks[0]
+		st.RemainingChunks = st.RemainingChunks[1:]
 		st.TotalPayloadSize = len(data)
 	} else {
 		dataToSend = data

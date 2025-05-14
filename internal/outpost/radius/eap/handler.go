@@ -29,13 +29,13 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	res, newState := p.GetChallengeForType(st, nextChallengeToOffer)
 	stm.SetEAPState(rst, newState)
 
-	log.Debug("EAP: encapsulating challenge")
 	rres := r.Response(radius.CodeAccessChallenge)
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
 	if err != nil {
 		panic(err)
 	}
+	log.WithField("length", len(eapEncoded)).Debug("EAP: encapsulating challenge")
 	rfc2869.EAPMessage_Set(rres, eapEncoded)
 	p.setMessageAuthenticator(rres)
 	err = w.Write(rres)
@@ -54,9 +54,11 @@ func (p *Packet) GetChallengeForType(st *State, t Type) (*Packet, *State) {
 	var tst any
 	switch t {
 	case TypeTLS:
-		cp := tls.Payload{}
-		cp.Decode(p.rawPayload)
-		payload, tst = cp.Handle(st.TypeState[t])
+		if _, ok := p.Payload.(*tls.Payload); !ok {
+			p.Payload = &tls.Payload{}
+			p.Payload.Decode(p.rawPayload)
+		}
+		payload, tst = p.Payload.(*tls.Payload).Handle(st.TypeState[t])
 	}
 	st.TypeState[t] = tst
 	res.Payload = payload.(Payload)

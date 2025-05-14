@@ -21,8 +21,16 @@ func NewTLSConnection(initialData []byte) TLSConnection {
 	return c
 }
 
-func (conn TLSConnection) TLSData() []byte {
-	return conn.writer.Bytes()
+func (conn TLSConnection) GetData() []byte {
+	for {
+		b := conn.writer.Bytes()
+		if len(b) < 1 {
+			log.Debug("TLS(buffer): Attempted retrieve from empty buffer, stalling...")
+			time.Sleep(1 * time.Second)
+			continue
+		}
+		return b
+	}
 }
 
 func (conn TLSConnection) UpdateData(data []byte) {
