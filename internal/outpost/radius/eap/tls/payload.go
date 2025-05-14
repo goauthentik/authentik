@@ -110,6 +110,7 @@ func (p *Payload) sendDataChunked(data []byte, st State) (*Payload, State) {
 		remainingData := data[maxChunkSize:]
 		// Chunk remaining data into correct chunks and add them to the list
 		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(remainingData, maxChunkSize))...)
+		st.TotalPayloadSize = len(st.RemainingChunks) * maxChunkSize
 	} else {
 		dataToSend = data
 	}
@@ -132,7 +133,7 @@ func (p *Payload) sendNextChunk(st State) (*Payload, State) {
 	log.WithField("length", st.TotalPayloadSize).Debug("Total payload size")
 	return &Payload{
 		Flags:  flags,
-		Length: uint32((len(st.RemainingChunks) * maxChunkSize) + 5),
+		Length: uint32(st.TotalPayloadSize),
 		Data:   nextChunk,
 	}, st
 }
