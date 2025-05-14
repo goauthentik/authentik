@@ -29,7 +29,7 @@ export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventTy
                 padding-left: var(--pf-c-dual-list-selector__controls--PaddingLeft);
             }
             .pf-c-dual-list-selector {
-                max-width: 4rem;
+                max-width: calc(var(--pf-global--spacer-md, 1rem) * 4);
             }
             .ak-dual-list-selector__controls {
                 display: grid;
