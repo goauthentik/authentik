@@ -14,7 +14,7 @@ Certificates in authentik are used for:
 
 ## Default certificate
 
-Every authentik installation generates a self-signed certificate on first startup. The certificate is named _authentik Self-signed Certificate_ and is valid for 1 year.
+Every authentik installation generates a self-signed certificate on first startup. The certificate is named `authentik Self-signed Certificate` and is valid for 1 year.
 
 This certificate serves as the default for all OAuth2/OIDC providers, as these don't require certificate configuration on both sides (JWT signatures are validated using the [JWKS](https://auth0.com/docs/security/tokens/json-web-tokens/json-web-key-sets) URL).
 
