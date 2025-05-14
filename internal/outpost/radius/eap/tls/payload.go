@@ -105,16 +105,18 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 		}()
 	} else if len(p.Data) > 0 {
 		log.Debug("TLS: Updating buffer with new TLS data from packet")
-		if p.Flags&FlagLengthMore != 0 && st.Conn.bufferIncomingBytesCount == 0 {
+		if p.Flags&FlagLengthIncluded != 0 && st.Conn.expectedWriterByteCount == 0 {
 			log.Debugf("TLS: Expecting %d total bytes, will buffer", p.Length)
-			st.Conn.bufferIncomingBytesCount = p.Length
+			st.Conn.expectedWriterByteCount = int(p.Length)
+		} else if p.Flags&FlagLengthIncluded != 0 {
+			log.Debug("TLS: No length included, not buffering")
+			st.Conn.expectedWriterByteCount = 0
 		}
 		st.Conn.UpdateData(p.Data)
-		return &Payload{
-			Flags:  FlagNone,
-			Length: 0,
-			Data:   []byte{},
-		}, st
+		if !st.Conn.NeedsMoreData() {
+			// Wait for outbound data to be available
+			st.Conn.OutboundData()
+		}
 	}
 	// If we need more data, send the client the go-ahead
 	if st.Conn.NeedsMoreData() {
@@ -166,7 +168,7 @@ func (p *Payload) sendNextChunk(st *State) (*Payload, *State) {
 		// Last chunk, reset the connection buffers and pending payload size
 		defer func() {
 			log.Debug("TLS: Sent last chunk")
-			st.Conn.reader.Reset()
+			st.Conn.writer.Reset()
 			st.TotalPayloadSize = 0
 		}()
 	}
