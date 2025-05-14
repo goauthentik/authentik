@@ -24,6 +24,8 @@ func (p *Payload) Decode(raw []byte) error {
 		}
 		p.Length = binary.BigEndian.Uint32(raw)
 		p.Data = raw[5:]
+	} else {
+		p.Data = raw[1:]
 	}
 	return nil
 }
