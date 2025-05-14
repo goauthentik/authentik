@@ -307,7 +307,7 @@ requires-dist = [
     { name = "opencontainers", git = "https://github.com/BeryJu/oci-python?rev=c791b19056769cd67957322806809ab70f5bead8" },
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==3.5.1" },
-    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.2.8" },
+    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.2.9" },
     { name = "pydantic", specifier = "==2.11.4" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
@@ -2396,14 +2396,14 @@ wheels = [
 
 [[package]]
 name = "psycopg"
-version = "3.2.8"
+version = "3.2.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/62/2d36820f3bef9e3737f5c899c8bba6c6de6af513ed977150607e8a86b26d/psycopg-3.2.8.tar.gz", hash = "sha256:cc995d836841e400c4f615d8dea351dc39697ad29df84d428f9c38c8040222f8", size = 158089, upload-time = "2025-05-11T17:20:56.47Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/4a/93a6ab570a8d1a4ad171a1f4256e205ce48d828781312c0bbaff36380ecb/psycopg-3.2.9.tar.gz", hash = "sha256:2fbb46fcd17bc81f993f28c47f1ebea38d66ae97cc2dbc3cad73b37cefbff700", size = 158122, upload-time = "2025-05-13T16:11:15.533Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/3f/eda96f7010c7d6bc4e10fdbcaa66d3d0d38f1619591fb1abe0f822dea2ec/psycopg-3.2.8-py3-none-any.whl", hash = "sha256:0e960f1977d77de7f1ace4b54590f686b52c2f9ab1f61fff4141887fc711d9e7", size = 202705, upload-time = "2025-05-11T17:15:45.071Z" },
+    { url = "https://files.pythonhosted.org/packages/44/b0/a73c195a56eb6b92e937a5ca58521a5c3346fb233345adc80fd3e2f542e2/psycopg-3.2.9-py3-none-any.whl", hash = "sha256:01a8dadccdaac2123c916208c96e06631641c0566b22005493f09663c7a8d3b6", size = 202705, upload-time = "2025-05-13T16:06:26.584Z" },
 ]
 
 [package.optional-dependencies]
@@ -2416,9 +2416,9 @@ pool = [
 
 [[package]]
 name = "psycopg-c"
-version = "3.2.8"
+version = "3.2.9"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c2/af/a8decaae8268130f3037d6d224409bc2aa88d05cbfcaff92c92ef2bd332b/psycopg_c-3.2.8.tar.gz", hash = "sha256:e71439011e72c53e603d8a4e4ac8d7f7f9c46978ec5c78102198e8423adc5751", size = 609525, upload-time = "2025-05-11T17:20:57.946Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/7f/6147cb842081b0b32692bf5a0fdf58e9ac95418ebac1184d4431ec44b85f/psycopg_c-3.2.9.tar.gz", hash = "sha256:8c9f654f20c6c56bddc4543a3caab236741ee94b6732ab7090b95605502210e2", size = 609538, upload-time = "2025-05-13T16:11:19.856Z" }
 
 [[package]]
 name = "psycopg-pool"
