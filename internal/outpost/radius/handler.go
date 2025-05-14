@@ -2,6 +2,7 @@ package radius
 
 import (
 	"crypto/sha512"
+	"net"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -34,12 +35,31 @@ func (r *RadiusRequest) ID() string {
 	return r.id
 }
 
+type LogWriter struct {
+	w radius.ResponseWriter
+	l *log.Entry
+}
+
+func (lw LogWriter) Write(packet *radius.Packet) error {
+	lw.l.WithField("code", packet.Code.String()).Info("Radius Response")
+	return lw.w.Write(packet)
+}
+
 func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) {
 	span := sentry.StartSpan(r.Context(), "authentik.providers.radius.connect",
 		sentry.WithTransactionName("authentik.providers.radius.connect"))
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
-	rl := rs.log.WithField("code", r.Code.String()).WithField("request", rid)
+	host, _, err := net.SplitHostPort(r.RemoteAddr.String())
+	if err != nil {
+		rs.log.WithError(err).Warning("Failed to get remote IP")
+		return
+	}
+	rl := rs.log.WithFields(log.Fields{
+		"code":    r.Code.String(),
+		"request": rid,
+		"ip":      host,
+	})
 	selectedApp := ""
 	defer func() {
 		span.Finish()
@@ -57,6 +77,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 	}
 
 	rl.Info("Radius Request")
+	ww := LogWriter{w, rl}
 
 	// Lookup provider by shared secret
 	var pi *ProviderInstance
@@ -69,12 +90,12 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 	}
 	if pi == nil {
 		nr.Log().WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
-		_ = w.Write(r.Response(radius.CodeAccessReject))
+		_ = ww.Write(r.Response(radius.CodeAccessReject))
 		return
 	}
 	nr.pi = pi
 
 	if nr.Code == radius.CodeAccessRequest {
-		rs.Handle_AccessRequest(w, nr)
+		rs.Handle_AccessRequest(ww, nr)
 	}
 }

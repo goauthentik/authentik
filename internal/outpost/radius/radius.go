@@ -87,7 +87,7 @@ func (rs *RadiusServer) RADIUSSecret(ctx context.Context, remoteAddr net.Addr) (
 		return bi < bj
 	})
 	candidate := matchedPrefixes[0]
-	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).Debug("Matched CIDR")
+	rs.log.WithField("ip", ip.String()).WithField("cidr", candidate.c.String()).WithField("instance", candidate.p.appSlug).Debug("Matched CIDR")
 	return candidate.p.SharedSecret, nil
 }
 
