@@ -256,8 +256,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--ak-dark-background-lighter);
 }
 
-.pf-c-button.pf-m-plain:hover {
-    color: var(--ak-dark-foreground);
+.pf-c-button.pf-m-plain {
+    --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
+    --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+
+    &:focus:hover {
+        color: var(--pf-c-button--m-plain--hover--Color);
+    }
 }
 
 .pf-c-button.pf-m-control {

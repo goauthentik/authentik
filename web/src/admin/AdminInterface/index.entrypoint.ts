@@ -4,7 +4,6 @@ import { ROUTES } from "@goauthentik/admin/Routes";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
@@ -26,7 +25,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -37,6 +36,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
+import { SidebarToggleEventDetail } from "../../elements/PageHeader.js";
 import {
     AdminSidebarEnterpriseEntries,
     AdminSidebarEntries,
@@ -52,28 +52,33 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     //#region Properties
 
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @property({ type: Boolean })
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    ws: WebsocketClient;
+    protected readonly ws: WebsocketClient;
 
-    @state()
-    user?: SessionUser;
+    @property({
+        type: Object,
+        attribute: false,
+        reflect: false,
+    })
+    public user?: SessionUser;
 
     @query("ak-about-modal")
-    aboutModal?: AboutModal;
+    public aboutModal?: AboutModal;
 
     @property({ type: Boolean, reflect: true })
     public sidebarOpen: boolean;
 
-    #toggleSidebar = () => {
-        this.sidebarOpen = !this.sidebarOpen;
-    };
+    @eventOptions({ passive: true })
+    protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {
+        this.sidebarOpen = !!event.detail.open;
+    }
 
     #sidebarMatcher: MediaQueryList;
-    #sidebarListener = (event: MediaQueryListEvent) => {
+    #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
         this.sidebarOpen = event.matches;
     };
 
@@ -141,8 +146,6 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     public connectedCallback() {
         super.connectedCallback();
 
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
-
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
@@ -157,13 +160,14 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
             });
         });
 
-        this.#sidebarMatcher.addEventListener("change", this.#sidebarListener);
+        this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
+            passive: true,
+        });
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
-        this.#sidebarMatcher.removeEventListener("change", this.#sidebarListener);
+        this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
     }
 
     async firstUpdated(): Promise<void> {
@@ -196,7 +200,7 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
-                <ak-page-navbar>
+                <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
