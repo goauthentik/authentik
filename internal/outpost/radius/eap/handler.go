@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 
 	"github.com/gorilla/securecookie"
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
@@ -28,6 +29,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	res, newState := p.GetChallengeForType(st, nextChallengeToOffer)
 	stm.SetEAPState(rst, newState)
 
+	log.Debug("EAP: encapsulating challenge")
 	rres := r.Response(radius.CodeAccessChallenge)
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
@@ -36,7 +38,6 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 	rfc2869.EAPMessage_Set(rres, eapEncoded)
 	p.setMessageAuthenticator(rres)
-	// debug.DebugPacket(rres)
 	err = w.Write(rres)
 	if err != nil {
 		panic(err)
