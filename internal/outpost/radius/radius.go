@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/radius/eap"
 	"goauthentik.io/internal/outpost/radius/metrics"
 
 	"layeh.com/radius"
@@ -24,6 +25,7 @@ type ProviderInstance struct {
 	providerId int32
 	s          *RadiusServer
 	log        *log.Entry
+	eapState   map[string]*eap.State
 }
 
 type RadiusServer struct {

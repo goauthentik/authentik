@@ -1,0 +1,80 @@
+package eap
+
+import (
+	"crypto/hmac"
+	"crypto/md5"
+	"encoding/base64"
+
+	"github.com/gorilla/securecookie"
+	"goauthentik.io/internal/outpost/radius/eap/tls"
+	"layeh.com/radius"
+	"layeh.com/radius/rfc2865"
+	"layeh.com/radius/rfc2869"
+)
+
+func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Packet) {
+	rst := rfc2865.State_GetString(r)
+	if rst == "" {
+		rst = base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(12))
+	}
+	st := stm.GetEAPState(rst)
+	if st == nil {
+		st = BlankState(stm.GetEAPSettings())
+	}
+	if len(st.ChallengesToOffer) < 1 {
+		panic("No more challenges")
+	}
+	nextChallengeToOffer := st.ChallengesToOffer[0]
+	res, newState := p.GetChallengeForType(st, nextChallengeToOffer)
+	stm.SetEAPState(rst, newState)
+
+	rres := r.Response(radius.CodeAccessChallenge)
+	rfc2865.State_SetString(rres, rst)
+	eapEncoded, err := res.Encode()
+	if err != nil {
+		panic(err)
+	}
+	rfc2869.EAPMessage_Set(rres, eapEncoded)
+	p.setMessageAuthenticator(rres)
+	// debug.DebugPacket(rres)
+	err = w.Write(rres)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (p *Packet) GetChallengeForType(st *State, t Type) (*Packet, *State) {
+	res := &Packet{
+		code:    CodeRequest,
+		id:      p.id + 1,
+		msgType: t,
+	}
+	var payload any
+	var tst any
+	switch t {
+	case TypeTLS:
+		cp := tls.Payload{}
+		cp.Decode(p.rawPayload)
+		payload, tst = cp.Handle(st.TypeState[t])
+	}
+	st.TypeState[t] = tst
+	res.Payload = payload.(Payload)
+	return res, st
+}
+
+func (p *Packet) setMessageAuthenticator(rp *radius.Packet) {
+	err := rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
+	if err != nil {
+		panic(err)
+	}
+	hash := hmac.New(md5.New, rp.Secret)
+	encode, err := rp.MarshalBinary()
+	if err != nil {
+		panic(err)
+	}
+	hash.Write(encode)
+	err = rfc2869.MessageAuthenticator_Set(rp, hash.Sum(nil))
+	if err != nil {
+		panic(err)
+	}
+}

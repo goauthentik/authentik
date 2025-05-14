@@ -6,12 +6,25 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
+	"goauthentik.io/internal/outpost/radius/eap"
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
+	"layeh.com/radius/rfc2869"
 )
 
 func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusRequest) {
+	eap := rfc2869.EAPMessage_Get(r.Packet)
+	if len(eap) > 0 {
+		rs.log.Trace("EAP request")
+		rs.Handle_AccessRequest_EAP(w, r)
+	} else {
+		rs.log.Trace("PAP request")
+		rs.Handle_AccessRequest_PAP(w, r)
+	}
+}
+
+func (rs *RadiusServer) Handle_AccessRequest_PAP(w radius.ResponseWriter, r *RadiusRequest) {
 	username := rfc2865.UserName_GetString(r.Packet)
 
 	fe := flow.NewFlowExecutor(r.Context(), r.pi.flowSlug, r.pi.s.ac.Client.GetConfig(), log.Fields{
@@ -85,5 +98,31 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 	}
 	for _, attr := range p.Attributes {
 		res.Add(attr.Type, attr.Attribute)
+	}
+}
+
+func (rs *RadiusServer) Handle_AccessRequest_EAP(w radius.ResponseWriter, r *RadiusRequest) {
+	er := rfc2869.EAPMessage_Get(r.Packet)
+	ep, err := eap.Decode(er)
+	if err != nil {
+		rs.log.WithError(err).Warning("failed to parse EAP packet")
+		return
+	}
+	ep.Handle(r.pi, w, r.Packet)
+}
+
+// -----------
+
+func (pi *ProviderInstance) GetEAPState(key string) *eap.State {
+	return pi.eapState[key]
+}
+
+func (pi *ProviderInstance) SetEAPState(key string, state *eap.State) {
+	pi.eapState[key] = state
+}
+
+func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
+	return eap.Settings{
+		ChallengesToOffer: []eap.Type{eap.TypeTLS},
 	}
 }

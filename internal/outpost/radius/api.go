@@ -9,6 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/radius/eap"
 )
 
 func parseCIDRs(raw string) []*net.IPNet {
@@ -53,6 +54,7 @@ func (rs *RadiusServer) Refresh() error {
 			providerId:     provider.Pk,
 			s:              rs,
 			log:            logger,
+			eapState:       map[string]*eap.State{},
 		}
 	}
 	rs.providers = providers
