@@ -2,6 +2,7 @@
 
 from django.apps import apps
 from django.contrib.auth.management import create_permissions
+from django.core.management import call_command
 from django.core.management.base import BaseCommand, no_translations
 from guardian.management import create_anonymous_user
 
@@ -14,6 +15,11 @@ class Command(BaseCommand):
     @no_translations
     def handle(self, *args, **options):
         """Check permissions for all apps"""
+
+        # Remove potential lingering old permissions
+        # See https://code.djangoproject.com/ticket/28417
+        call_command("remove_stale_contenttypes", "--no-input")
+
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
                 for app in apps.get_app_configs():
