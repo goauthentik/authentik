@@ -19,7 +19,6 @@
         "lint:precommit": "wireit",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
-        "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
         "prettier": "wireit",
         "prettier-check": "wireit",

@@ -131,9 +131,9 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     //#region Lifecycle
 
     constructor() {
+        configureSentry(true);
         super();
         this.ws = new WebsocketClient();
-
         this.#sidebarMatcher = window.matchMedia("(min-width: 1200px)");
         this.sidebarOpen = this.#sidebarMatcher.matches;
     }
@@ -167,7 +167,6 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry(true);
         this.user = await me();
 
         const canAccessAdmin =

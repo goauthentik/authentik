@@ -1,11 +1,8 @@
 ---
 title: Integrate with PocketBase
 sidebar_label: PocketBase
+support_level: community
 ---
-
-# Integrate With PocketBase
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is PocketBase
 

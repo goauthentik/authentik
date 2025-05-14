@@ -121,7 +121,7 @@ export class SyncStatusCard extends AKElement {
 
     renderSyncStatus(): TemplateResult {
         if (this.loading) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         if (!this.syncState) {
             return html`${msg("No sync status.")}`;

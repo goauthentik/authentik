@@ -3,8 +3,6 @@ title: Service Accounts
 sidebar_label: Service Accounts
 ---
 
-# Service Accounts
-
 Service accounts are specialized user accounts designed for machine-to-machine authentication and automation purposes rather than interactive human use. They're ideal for integrating authentik with external systems, APIs, and services.
 
 ## Types of Service Accounts

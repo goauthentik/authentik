@@ -5,7 +5,7 @@
 
 {% block head_before %}
 {{ block.super }}
-<link rel="prefetch" href="{{ flow.background_url }}" />
+<link rel="prefetch" href="{{ flow_background_url }}" />
 {% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}
@@ -21,7 +21,7 @@ window.authentik.flow = {
 <script src="{% versioned_script 'dist/flow/FlowInterface-%v.js' %}" type="module"></script>
 <style>
 :root {
-    --ak-flow-background: url("{{ flow.background_url }}");
+    --ak-flow-background: url("{{ flow_background_url }}");
 }
 </style>
 {% endblock %}

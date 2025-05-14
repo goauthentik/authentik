@@ -23,9 +23,20 @@ const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
-export abstract class Interface extends AKElement implements ThemedElement {
+export abstract class LightInterface extends AKElement implements ThemedElement {
     protected static readonly PFBaseStyleSheet = createStyleSheetUnsafe(PFBase);
 
+    constructor() {
+        super();
+        const styleParent = resolveStyleSheetParent(document);
+
+        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+
+        appendStyleSheet(styleParent, Interface.PFBaseStyleSheet);
+    }
+}
+
+export abstract class Interface extends LightInterface implements ThemedElement {
     [configContext]: ConfigContextController;
 
     [modalController]: ModalOrchestrationController;
@@ -38,12 +49,6 @@ export abstract class Interface extends AKElement implements ThemedElement {
 
     constructor() {
         super();
-        const styleParent = resolveStyleSheetParent(document);
-
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
-
-        appendStyleSheet(styleParent, Interface.PFBaseStyleSheet);
-
         this.addController(new BrandContextController(this));
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);

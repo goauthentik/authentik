@@ -6,6 +6,7 @@ import {
 } from "@goauthentik/common/api/middleware";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { SentryMiddleware } from "@goauthentik/common/sentry";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
@@ -66,21 +67,13 @@ export function brand(): Promise<CurrentBrand> {
     return globalBrandPromise;
 }
 
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
-}
-
 export const DEFAULT_CONFIG = new Configuration({
     basePath: `${globalAK().api.base}api/v3`,
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
         new LoggingMiddleware(globalAK().brand),
+        new SentryMiddleware(),
     ],
 });
 

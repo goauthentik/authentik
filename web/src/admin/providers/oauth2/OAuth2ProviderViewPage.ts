@@ -432,7 +432,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                 <div class="pf-c-card__body">
                     ${this.preview
                         ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
-                        : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
+                        : html` <ak-empty-state loading></ak-empty-state> `}
                 </div>
             </div>
         </div>`;

@@ -1,11 +1,8 @@
 ---
 title: Integrate with Plesk
 sidebar_label: Plesk
+support_level: community
 ---
-
-# Integrate with Plesk
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Plesk
 

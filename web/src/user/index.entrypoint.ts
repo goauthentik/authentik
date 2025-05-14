@@ -281,10 +281,10 @@ export class UserInterface extends AuthenticatedInterface {
     me?: SessionUser;
 
     constructor() {
+        configureSentry(true);
         super();
         this.ws = new WebsocketClient();
         this.fetchConfigurationDetails();
-        configureSentry(true);
         this.toggleNotificationDrawer = this.toggleNotificationDrawer.bind(this);
         this.toggleApiDrawer = this.toggleApiDrawer.bind(this);
         this.fetchConfigurationDetails = this.fetchConfigurationDetails.bind(this);
