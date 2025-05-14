@@ -10,12 +10,12 @@ type State struct {
 	RemainingChunks  [][]byte
 	TotalPayloadSize int
 	TLS              *tls.Conn
-	Conn             TLSConnection
+	Conn             *TLSConnection
 	Context          context.Context
 }
 
-func NewState() State {
-	return State{
+func NewState() *State {
+	return &State{
 		RemainingChunks: make([][]byte, 0),
 	}
 }

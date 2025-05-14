@@ -12,6 +12,8 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 )
 
+const maxChunkSize = 1000
+
 type Payload struct {
 	Flags  Flag
 	Length uint32
@@ -20,16 +22,17 @@ type Payload struct {
 
 func (p *Payload) Decode(raw []byte) error {
 	p.Flags = Flag(raw[0])
+	raw = raw[1:]
 	if p.Flags&FlagLengthIncluded != 0 {
 		if len(raw) < 4 {
 			return errors.New("invalid size")
 		}
 		p.Length = binary.BigEndian.Uint32(raw)
-		p.Data = raw[5:]
+		p.Data = raw[4:]
 	} else {
-		p.Data = raw[1:]
+		p.Data = raw[0:]
 	}
-	log.WithField("raw", debug.FormatBytes(p.Data)).WithField("flags", p.Flags).Debug("TLS: decode raw")
+	log.WithField("raw", debug.FormatBytes(p.Data)).WithField("size", len(p.Data)).WithField("flags", p.Flags).Debug("TLS: decode raw")
 	return nil
 }
 
@@ -66,12 +69,14 @@ func init() {
 	certs = append(certs, cert)
 }
 
-func (p *Payload) Handle(stt any) (*Payload, State) {
+func (p *Payload) Handle(stt any) (*Payload, *State) {
 	if stt == nil {
+		log.Debug("TLS: new state")
 		stt = NewState()
 	}
-	st := stt.(State)
+	st := stt.(*State)
 	if !st.HasStarted {
+		log.Debug("TLS: handshake starting")
 		st.HasStarted = true
 		return &Payload{
 			Flags: FlagTLSStart,
@@ -89,8 +94,10 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 			ClientAuth:   tls.RequireAnyClientCert,
 			Certificates: certs,
 		})
-		st.Context, _ = context.WithTimeout(context.Background(), 30*time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		st.Context = ctx
 		go func() {
+			defer cancel()
 			err := st.TLS.HandshakeContext(st.Context)
 			if err != nil {
 				log.WithError(err).Debug("TLS: Handshake error")
@@ -98,17 +105,35 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 		}()
 	} else if len(p.Data) > 0 {
 		log.Debug("TLS: Updating buffer with new TLS data from packet")
+		if p.Flags&FlagLengthMore != 0 && st.Conn.bufferIncomingBytesCount == 0 {
+			log.Debugf("TLS: Expecting %d total bytes, will buffer", p.Length)
+			st.Conn.bufferIncomingBytesCount = p.Length
+		}
 		st.Conn.UpdateData(p.Data)
+		return &Payload{
+			Flags:  FlagNone,
+			Length: 0,
+			Data:   []byte{},
+		}, st
+	}
+	// If we need more data, send the client the go-ahead
+	if st.Conn.NeedsMoreData() {
+		return &Payload{
+			Flags:  FlagNone,
+			Length: 0,
+			Data:   []byte{},
+		}, st
 	}
 	if st.HasMore() {
 		return p.sendNextChunk(st)
 	}
-	return p.startChunkedTransfer(st.Conn.GetData(), st)
+	if len(st.Conn.OutboundData()) > 0 {
+		return p.startChunkedTransfer(st.Conn.OutboundData(), st)
+	}
+	panic("we shouldn't get here")
 }
 
-const maxChunkSize = 1000
-
-func (p *Payload) startChunkedTransfer(data []byte, st State) (*Payload, State) {
+func (p *Payload) startChunkedTransfer(data []byte, st *State) (*Payload, *State) {
 	flags := FlagLengthIncluded
 	var dataToSend []byte
 	if len(data) > maxChunkSize {
@@ -129,14 +154,21 @@ func (p *Payload) startChunkedTransfer(data []byte, st State) (*Payload, State) 
 	}, st
 }
 
-func (p *Payload) sendNextChunk(st State) (*Payload, State) {
-	log.Debug("TLS: Sending next chunk")
+func (p *Payload) sendNextChunk(st *State) (*Payload, *State) {
 	nextChunk := st.RemainingChunks[0]
+	log.WithField("raw", debug.FormatBytes(nextChunk)).Debug("TLS: Sending next chunk")
 	st.RemainingChunks = st.RemainingChunks[1:]
 	flags := FlagLengthIncluded
 	if st.HasMore() {
 		log.WithField("chunks", len(st.RemainingChunks)).Debug("TLS: More chunks left")
 		flags += FlagMoreFragments
+	} else {
+		// Last chunk, reset the connection buffers and pending payload size
+		defer func() {
+			log.Debug("TLS: Sent last chunk")
+			st.Conn.reader.Reset()
+			st.TotalPayloadSize = 0
+		}()
 	}
 	log.WithField("length", st.TotalPayloadSize).Debug("TLS: Total payload size")
 	return &Payload{
