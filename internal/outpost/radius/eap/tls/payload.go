@@ -101,7 +101,9 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 			err := st.TLS.HandshakeContext(st.Context)
 			if err != nil {
 				log.WithError(err).Debug("TLS: Handshake error")
+				return
 			}
+			st.HandshakeDone = true
 		}()
 	} else if len(p.Data) > 0 {
 		log.Debug("TLS: Updating buffer with new TLS data from packet")
@@ -129,6 +131,9 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 	if st.HasMore() {
 		return p.sendNextChunk(st)
 	}
+	if st.HandshakeDone {
+		// return
+	}
 	if len(st.Conn.OutboundData()) > 0 {
 		return p.startChunkedTransfer(st.Conn.OutboundData(), st)
 	}
@@ -136,11 +141,11 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 }
 
 func (p *Payload) startChunkedTransfer(data []byte, st *State) (*Payload, *State) {
-	flags := FlagLengthIncluded
+	flags := FlagNone
 	var dataToSend []byte
 	if len(data) > maxChunkSize {
 		log.WithField("length", len(data)).Debug("TLS: Data needs to be chunked")
-		flags += FlagMoreFragments
+		flags += FlagMoreFragments + FlagLengthIncluded
 		// Chunk data into correct chunks and add them to the list
 		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(data, maxChunkSize))...)
 		dataToSend = st.RemainingChunks[0]

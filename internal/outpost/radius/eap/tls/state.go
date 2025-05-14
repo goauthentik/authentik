@@ -8,6 +8,7 @@ import (
 type State struct {
 	HasStarted       bool
 	RemainingChunks  [][]byte
+	HandshakeDone    bool
 	TotalPayloadSize int
 	TLS              *tls.Conn
 	Conn             *TLSConnection
