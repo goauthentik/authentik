@@ -1,12 +1,17 @@
 package tls
 
-import "crypto/tls"
+import (
+	"context"
+	"crypto/tls"
+)
 
 type State struct {
 	HasStarted       bool
 	RemainingChunks  [][]byte
 	TotalPayloadSize int
 	TLS              *tls.Conn
+	Conn             TLSConnection
+	Context          context.Context
 }
 
 func NewState() State {

@@ -1,10 +1,12 @@
 package tls
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/binary"
 	"errors"
 	"slices"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
@@ -27,6 +29,7 @@ func (p *Payload) Decode(raw []byte) error {
 	} else {
 		p.Data = raw[1:]
 	}
+	log.WithField("raw", debug.FormatBytes(p.Data)).WithField("flags", p.Flags).Debug("TLS: decode raw")
 	return nil
 }
 
@@ -68,69 +71,74 @@ func (p *Payload) Handle(stt any) (*Payload, State) {
 		stt = NewState()
 	}
 	st := stt.(State)
-	log.WithField("flags", p.Flags).Debug("Got TLS Packet")
 	if !st.HasStarted {
 		st.HasStarted = true
 		return &Payload{
 			Flags: FlagTLSStart,
 		}, st
 	}
-	if st.HasMore() {
-		return p.sendNextChunk(st)
-	}
 
-	log.WithField("raw", debug.FormatBytes(p.Data)).Debug("TLS: Decode raw")
-
-	tc := NewTLSConnection(p.Data)
 	if st.TLS == nil {
-		log.Debug("no TLS connection in state yet, starting connection")
-		st.TLS = tls.Server(tc, &tls.Config{
+		log.Debug("TLS: no TLS connection in state yet, starting connection")
+		st.Conn = NewTLSConnection(p.Data)
+		st.TLS = tls.Server(st.Conn, &tls.Config{
 			GetConfigForClient: func(argHello *tls.ClientHelloInfo) (*tls.Config, error) {
-				log.Debugf("%+v\n", argHello)
+				log.Debugf("TLS: ClientHello: %+v\n", argHello)
 				return nil, nil
 			},
 			ClientAuth:   tls.RequireAnyClientCert,
 			Certificates: certs,
 		})
-		err := st.TLS.Handshake()
-		log.WithError(err).Debug("TLS: Handshake error")
+		st.Context, _ = context.WithTimeout(context.Background(), 30*time.Second)
+		go func() {
+			err := st.TLS.HandshakeContext(st.Context)
+			if err != nil {
+				log.WithError(err).Debug("TLS: Handshake error")
+			}
+		}()
+	} else if len(p.Data) > 0 {
+		log.Debug("TLS: Updating buffer with new TLS data from packet")
+		st.Conn.UpdateData(p.Data)
 	}
-	return p.sendDataChunked(tc.TLSData(), st)
+	if st.HasMore() {
+		return p.sendNextChunk(st)
+	}
+	return p.startChunkedTransfer(st.Conn.TLSData(), st)
 }
 
 const maxChunkSize = 1000
 
-func (p *Payload) sendDataChunked(data []byte, st State) (*Payload, State) {
+func (p *Payload) startChunkedTransfer(data []byte, st State) (*Payload, State) {
 	flags := FlagLengthIncluded
 	var dataToSend []byte
 	if len(data) > maxChunkSize {
-		log.WithField("length", len(data)).Debug("Data needs to be chunked")
+		log.WithField("length", len(data)).Debug("TLS: Data needs to be chunked")
 		flags += FlagMoreFragments
 		dataToSend = data[:maxChunkSize]
 		remainingData := data[maxChunkSize:]
 		// Chunk remaining data into correct chunks and add them to the list
 		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(remainingData, maxChunkSize))...)
-		st.TotalPayloadSize = len(st.RemainingChunks) * maxChunkSize
+		st.TotalPayloadSize = len(data)
 	} else {
 		dataToSend = data
 	}
 	return &Payload{
 		Flags:  flags,
-		Length: uint32(len(data) + 5),
+		Length: uint32(st.TotalPayloadSize),
 		Data:   dataToSend,
 	}, st
 }
 
 func (p *Payload) sendNextChunk(st State) (*Payload, State) {
-	log.Debug("Sending next chunk")
+	log.Debug("TLS: Sending next chunk")
 	nextChunk := st.RemainingChunks[0]
 	st.RemainingChunks = st.RemainingChunks[1:]
 	flags := FlagLengthIncluded
 	if st.HasMore() {
-		log.WithField("chunks", len(st.RemainingChunks)).Debug("More chunks left")
+		log.WithField("chunks", len(st.RemainingChunks)).Debug("TLS: More chunks left")
 		flags += FlagMoreFragments
 	}
-	log.WithField("length", st.TotalPayloadSize).Debug("Total payload size")
+	log.WithField("length", st.TotalPayloadSize).Debug("TLS: Total payload size")
 	return &Payload{
 		Flags:  flags,
 		Length: uint32(st.TotalPayloadSize),

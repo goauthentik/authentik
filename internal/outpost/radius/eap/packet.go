@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"errors"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 )
@@ -63,7 +63,7 @@ func Decode(raw []byte) (*Packet, error) {
 	}
 	packet.Payload = emptyPayload(packet.msgType)
 	packet.rawPayload = raw[5:]
-	logrus.WithField("raw", debug.FormatBytes(raw[5:])).Debug("EAP decode raw")
+	log.WithField("raw", debug.FormatBytes(raw)).Debug("EAP: decode raw")
 	err := packet.Payload.Decode(raw[5:])
 	if err != nil {
 		return nil, err
