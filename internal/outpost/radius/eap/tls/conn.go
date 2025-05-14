@@ -12,7 +12,8 @@ type TLSConnection struct {
 	reader *bytes.Buffer
 	writer *bytes.Buffer
 
-	bufferIncomingBytesCount uint32
+	expectedWriterByteCount int
+	writtenByteCount        int
 }
 
 func NewTLSConnection(initialData []byte) *TLSConnection {
@@ -35,36 +36,18 @@ func (conn TLSConnection) OutboundData() []byte {
 	}
 }
 
-func (conn TLSConnection) UpdateData(data []byte) {
+func (conn *TLSConnection) UpdateData(data []byte) {
 	conn.reader.Write(data)
-	if conn.bufferIncomingBytesCount > 0 && conn.reader.Len() == int(conn.bufferIncomingBytesCount) {
-		conn.bufferIncomingBytesCount = 0
-	}
-	log.Debugf("TLS(buffer): Appending new data %d (total %d, expecting %d)", len(data), conn.reader.Len(), conn.bufferIncomingBytesCount)
+	conn.writtenByteCount += len(data)
+	log.Debugf("TLS(buffer): Appending new data %d (total %d, expecting %d)", len(data), conn.writtenByteCount, conn.expectedWriterByteCount)
 }
 
-// func (conn TLSConnection) Reset() {
-// 	log.Debug("TLS(buffer): reset")
-// 	conn.reader.Reset()
-// 	conn.writer.Reset()
-// }
-
 func (conn TLSConnection) NeedsMoreData() bool {
-	if conn.bufferIncomingBytesCount > 0 {
-		return conn.reader.Len() < int(conn.bufferIncomingBytesCount)
+	if conn.expectedWriterByteCount > 0 {
+		return conn.reader.Len() < int(conn.expectedWriterByteCount)
 	}
 	return false
 }
-
-// func (conn TLSConnection) WaitForAttemptedRead() int {
-// 	for {
-// 		// log.Debug("TLS(buffer): waiting for attempted read")
-// 		if conn.missingBytes == 0 {
-// 			continue
-// 		}
-// 		return conn.missingBytes
-// 	}
-// }
 
 func (conn *TLSConnection) Read(p []byte) (int, error) {
 	for {
@@ -74,10 +57,16 @@ func (conn *TLSConnection) Read(p []byte) (int, error) {
 			time.Sleep(500 * time.Millisecond)
 			continue
 		}
-		if conn.reader.Len() < int(conn.bufferIncomingBytesCount) {
-			log.Debugf("TLS(buffer): Attempted read %d while waiting for bytes %d, stalling...", len(p), conn.reader.Len()-int(conn.bufferIncomingBytesCount))
+		if conn.expectedWriterByteCount > 0 && conn.writtenByteCount < int(conn.expectedWriterByteCount) {
+			log.Debugf("TLS(buffer): Attempted read %d while waiting for bytes %d, stalling...", len(p), conn.expectedWriterByteCount-conn.reader.Len())
 			time.Sleep(500 * time.Millisecond)
 			continue
+		}
+		if conn.expectedWriterByteCount > 0 && conn.writtenByteCount == int(conn.expectedWriterByteCount) {
+			conn.expectedWriterByteCount = 0
+		}
+		if conn.reader.Len() == 0 {
+			conn.writtenByteCount = 0
 		}
 		log.Debugf("TLS(buffer): Read: %d from %d", len(p), n)
 		return n, err
