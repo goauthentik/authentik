@@ -12,6 +12,7 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"layeh.com/radius"
+	"layeh.com/radius/rfc2865"
 	"layeh.com/radius/vendors/microsoft"
 )
 
@@ -100,6 +101,12 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 			},
 			ClientAuth:   tls.RequireAnyClientCert,
 			Certificates: certs,
+			CipherSuites: []uint16{
+				tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+				tls.TLS_RSA_WITH_RC4_128_SHA,
+				tls.TLS_RSA_WITH_AES_128_CBC_SHA,
+				// tls.TLS_RSA_WITH_RC4_128_MD5,
+			},
 		})
 		go func() {
 			defer cancel()
@@ -142,6 +149,9 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 			ModifyPacket: func(p *radius.Packet) *radius.Packet {
 				p.Code = radius.CodeAccessAccept
 				microsoft.MSMPPERecvKey_Set(p, st.MPPEKey[:32])
+				microsoft.MSMPPESendKey_Set(p, st.MPPEKey[64:64+32])
+				rfc2865.UserName_SetString(p, "foo")
+				rfc2865.FramedMTU_Set(p, rfc2865.FramedMTU(1400))
 				return p
 			},
 		}, st
