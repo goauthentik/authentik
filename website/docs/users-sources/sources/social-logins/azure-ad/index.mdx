@@ -28,18 +28,19 @@ The following placeholders are used in this guide:
 
 ## authentik Setup
 
-In authentik, create a new _Azure AD OAuth Source_ in Resources -> Sources.
+In authentik, create a new _Azure AD OAuth Source_ in Directory -> Federation and Social login -> Create -> Azure AD OAuth Source.
 
 Use the following settings:
 
 - Name: `Azure AD`
 - Slug: `azure-ad` (this must match the URL being used above)
 - Consumer key: `*Application (client) ID* value from above`
-- Consumer secret: `*Value* of the secret from above`
+- Consumer secret: `*Value* of the secret from above. NOT the secret ID.`
 
 If you kept the default _Supported account types_ selection of _Single tenant_, then you must change the URL below as well:
 
 - OIDC Well-known URL: `https://login.microsoftonline.com/*Directory (tenant) ID* from above/v2.0/.well-known/openid-configuration`
+- Profile URL: `https://graph.microsoft.com/v1.0/me`
 
 ![](./authentik_01.png)
 
