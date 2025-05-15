@@ -69,7 +69,7 @@ func Decode(raw []byte) (*Packet, error) {
 }
 
 func (p *Packet) Encode() ([]byte, error) {
-	buff := make([]byte, 5)
+	buff := make([]byte, 4)
 	buff[0] = uint8(p.code)
 	buff[1] = uint8(p.id)
 
@@ -77,10 +77,10 @@ func (p *Packet) Encode() ([]byte, error) {
 	if err != nil {
 		return buff, err
 	}
-	binary.BigEndian.PutUint16(buff[2:], uint16(len(payloadBuffer)+5))
 	if p.code == CodeRequest || p.code == CodeResponse {
-		buff[4] = uint8(p.msgType)
+		buff = append(buff, uint8(p.msgType))
 	}
 	buff = append(buff, payloadBuffer...)
+	binary.BigEndian.PutUint16(buff[2:], uint16(len(buff)))
 	return buff, nil
 }
