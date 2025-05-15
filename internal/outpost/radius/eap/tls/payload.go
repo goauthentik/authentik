@@ -11,6 +11,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"layeh.com/radius"
+	"layeh.com/radius/vendors/microsoft"
 )
 
 const maxChunkSize = 1000
@@ -106,7 +108,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 				return
 			}
 			log.Debug("TLS: handshake done")
-			st.HandshakeDone = true
+			p.handshakeFinished(st)
 		}()
 	} else if len(p.Data) > 0 {
 		log.Debug("TLS: Updating buffer with new TLS data from packet")
@@ -135,12 +137,37 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 		return p.sendNextChunk(st)
 	}
 	if st.Conn.writer.Len() == 0 && st.HandshakeDone {
-		return protocol.EmptyPayload{}, st
+		return protocol.EmptyPayload{
+			ModifyPacket: func(p *radius.Packet) *radius.Packet {
+				p.Code = radius.CodeAccessAccept
+				microsoft.MSMPPERecvKey_Set(p, st.MPPEKey[:32])
+				return p
+			},
+		}, st
 	}
-	if len(st.Conn.OutboundData()) > 0 {
-		return p.startChunkedTransfer(st.Conn.OutboundData(), st)
+	return p.startChunkedTransfer(st.Conn.OutboundData(), st)
+}
+
+func (p *Payload) handshakeFinished(st *State) {
+	cs := st.TLS.ConnectionState()
+	label := "client EAP encryption"
+	var context []byte
+	switch cs.Version {
+	case tls.VersionTLS10:
+		log.Debugf("TLS: Version %d (1.0)", cs.Version)
+	case tls.VersionTLS11:
+		log.Debugf("TLS: Version %d (1.1)", cs.Version)
+	case tls.VersionTLS12:
+		log.Debugf("TLS: Version %d (1.2)", cs.Version)
+	case tls.VersionTLS13:
+		log.Debugf("TLS: Version %d (1.3)", cs.Version)
+		label = "EXPORTER_EAP_TLS_Key_Material"
+		context = []byte{13}
 	}
-	panic("we shouldn't get here")
+	ksm, err := cs.ExportKeyingMaterial(label, context, 64+64)
+	log.Debugf("TLS: ksm % x %v", ksm, err)
+	st.MPPEKey = ksm
+	st.HandshakeDone = true
 }
 
 func (p *Payload) startChunkedTransfer(data []byte, st *State) (*Payload, *State) {
