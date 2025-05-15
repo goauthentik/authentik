@@ -1,9 +1,9 @@
-import { globalAK } from "@goauthentik/web/common/global.js";
+import { globalAK } from "@goauthentik/common/global.js";
 import {
     StyleRoot,
     createCSSResult,
     createStyleSheetUnsafe,
-} from "@goauthentik/web/common/stylesheets.js";
+} from "@goauthentik/common/stylesheets.js";
 import {
     $AKBase,
     CSSColorSchemeValue,
@@ -13,7 +13,7 @@ import {
     createUIThemeEffect,
     formatColorScheme,
     resolveUITheme,
-} from "@goauthentik/web/common/theme.js";
+} from "@goauthentik/common/theme.js";
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";

@@ -1,9 +1,9 @@
-import { globalAK } from "@goauthentik/web/common/global.js";
-import { ThemedElement, applyDocumentTheme } from "@goauthentik/web/common/theme.js";
-import { UIConfig } from "@goauthentik/web/common/ui/config.js";
-import { AKElement } from "@goauthentik/web/elements/Base.js";
-import { VersionContextController } from "@goauthentik/web/elements/Interface/VersionContextController.js";
-import { ModalOrchestrationController } from "@goauthentik/web/elements/controllers/ModalOrchestrationController.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { ThemedElement, applyDocumentTheme } from "@goauthentik/common/theme.js";
+import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController.js";
+import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 import { state } from "lit/decorators.js";
 
