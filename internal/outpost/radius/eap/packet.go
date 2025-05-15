@@ -6,6 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 )
 
@@ -31,17 +32,12 @@ type Packet struct {
 	length     uint16
 	msgType    Type
 	rawPayload []byte
-	Payload    Payload
-}
-
-type Payload interface {
-	Decode(raw []byte) error
-	Encode() ([]byte, error)
+	Payload    protocol.Payload
 }
 
 type PayloadWriter struct{}
 
-func emptyPayload(t Type) Payload {
+func emptyPayload(t Type) protocol.Payload {
 	switch t {
 	case TypeIdentity:
 		return &IdentityPayload{}
@@ -77,17 +73,14 @@ func (p *Packet) Encode() ([]byte, error) {
 	buff[0] = uint8(p.code)
 	buff[1] = uint8(p.id)
 
-	log.Debugf("%+v", p.code)
-	if p.code != CodeSuccess {
-		payloadBuffer, err := p.Payload.Encode()
-		if err != nil {
-			return buff, err
-		}
-		binary.BigEndian.PutUint16(buff[2:], uint16(len(payloadBuffer)+5))
-		if p.code == CodeRequest || p.code == CodeResponse {
-			buff[4] = uint8(p.msgType)
-		}
-		buff = append(buff, payloadBuffer...)
+	payloadBuffer, err := p.Payload.Encode()
+	if err != nil {
+		return buff, err
 	}
+	binary.BigEndian.PutUint16(buff[2:], uint16(len(payloadBuffer)+5))
+	if p.code == CodeRequest || p.code == CodeResponse {
+		buff[4] = uint8(p.msgType)
+	}
+	buff = append(buff, payloadBuffer...)
 	return buff, nil
 }

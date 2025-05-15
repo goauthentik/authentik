@@ -7,6 +7,7 @@ import (
 
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
@@ -31,8 +32,12 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	stm.SetEAPState(rst, newState)
 
 	rres := r.Response(radius.CodeAccessChallenge)
-	if res.code == CodeSuccess {
+	if _, ok := res.Payload.(protocol.EmptyPayload); ok {
+		res.code = CodeSuccess
 		rres.Code = radius.CodeAccessAccept
+		res.id -= 1
+		rfc2865.UserName_SetString(rres, "foo")
+		rfc2865.FramedMTU_Set(rres, rfc2865.FramedMTU(1400))
 	}
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
@@ -65,7 +70,7 @@ func (p *Packet) GetChallengeForType(st *State, t Type) (*Packet, *State) {
 		payload, tst = p.Payload.(*tls.Payload).Handle(st.TypeState[t])
 	}
 	st.TypeState[t] = tst
-	res.Payload = payload.(Payload)
+	res.Payload = payload.(protocol.Payload)
 	return res, st
 }
 
