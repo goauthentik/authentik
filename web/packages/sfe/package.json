@@ -29,10 +29,9 @@
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.4.0",
         "@swc/core": "^1.7.28",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.10",
+        "prettier-plugin-packagejson": "^2.5.13",
         "rollup": "^4.40.2",
         "rollup-plugin-copy": "^3.5.0",
         "typescript": "^5.8.3"
