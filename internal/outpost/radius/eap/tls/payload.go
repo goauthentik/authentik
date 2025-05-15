@@ -172,23 +172,17 @@ func (p *Payload) handshakeFinished(st *State) {
 }
 
 func (p *Payload) startChunkedTransfer(data []byte, st *State) (*Payload, *State) {
-	flags := FlagLengthIncluded
-	var dataToSend []byte
 	if len(data) > maxChunkSize {
 		log.WithField("length", len(data)).Debug("TLS: Data needs to be chunked")
-		flags += FlagMoreFragments
-		// Chunk data into correct chunks and add them to the list
 		st.RemainingChunks = append(st.RemainingChunks, slices.Collect(slices.Chunk(data, maxChunkSize))...)
-		dataToSend = st.RemainingChunks[0]
-		st.RemainingChunks = st.RemainingChunks[1:]
 		st.TotalPayloadSize = len(data)
-	} else {
-		dataToSend = data
+		return p.sendNextChunk(st)
 	}
+	log.WithField("length", len(data)).Debug("TLS: Sending data un-chunked")
 	return &Payload{
-		Flags:  flags,
-		Length: uint32(st.TotalPayloadSize),
-		Data:   dataToSend,
+		Flags:  FlagLengthIncluded,
+		Length: uint32(len(data)),
+		Data:   data,
 	}, st
 }
 
