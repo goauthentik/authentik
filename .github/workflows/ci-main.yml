@@ -207,7 +207,7 @@ jobs:
           npm ci
           make gen-client-ts
           npm run build -w @goauthentik/web
-          npm run build:sfe -w @goauthentik/web
+          npm run build -w @goauthentik/sfe
       - name: Run E2E
         run: |
           uv run coverage run manage.py test ${{ matrix.job.glob }}

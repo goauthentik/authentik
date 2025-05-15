@@ -8,7 +8,6 @@
         "build-locales": "wireit",
         "build-locales:build": "wireit",
         "build-proxy": "wireit",
-        "build:sfe": "wireit",
         "esbuild:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "wireit",
         "lint": "wireit",
@@ -198,14 +197,6 @@
                     "default": "node"
                 }
             }
-        },
-        "build:sfe": {
-            "dependencies": [
-                "./packages/sfe:build"
-            ],
-            "files": [
-                "./packages/sfe/**/*.ts"
-            ]
         },
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
