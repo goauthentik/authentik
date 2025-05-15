@@ -12,7 +12,8 @@ export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & T> & HTMLE
 
 export type AbstractLitElementConstructor = abstract new (...args: never[]) => LitElement;
 
-export type LitElementConstructor = new (...args: never[]) => LitElement;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LitElementConstructor = new (...args: any[]) => LitElement;
 
 /**
  * A constructor that has been extended with a mixin.

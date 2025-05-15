@@ -10,6 +10,7 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
+import { SidebarToggleEventDetail } from "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -36,7 +37,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { SidebarToggleEventDetail } from "../../elements/PageHeader.js";
 import {
     AdminSidebarEnterpriseEntries,
     AdminSidebarEntries,
