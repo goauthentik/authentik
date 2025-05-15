@@ -18,6 +18,7 @@
         "lint:nightmare": "wireit",
         "lint:precommit": "wireit",
         "lint:types": "wireit",
+        "lint:types:tests": "wireit",
         "lit-analyse": "wireit",
         "precommit": "wireit",
         "prettier": "wireit",
