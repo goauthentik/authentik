@@ -179,6 +179,7 @@ func (p *Payload) startChunkedTransfer(data []byte, st *State) (*Payload, *State
 		return p.sendNextChunk(st)
 	}
 	log.WithField("length", len(data)).Debug("TLS: Sending data un-chunked")
+	st.Conn.writer.Reset()
 	return &Payload{
 		Flags:  FlagLengthIncluded,
 		Length: uint32(len(data)),
