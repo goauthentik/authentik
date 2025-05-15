@@ -32,12 +32,11 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	stm.SetEAPState(rst, newState)
 
 	rres := r.Response(radius.CodeAccessChallenge)
-	if _, ok := res.Payload.(protocol.EmptyPayload); ok {
+	if p, ok := res.Payload.(protocol.EmptyPayload); ok {
+		// This is a bit hacky here
 		res.code = CodeSuccess
-		rres.Code = radius.CodeAccessAccept
 		res.id -= 1
-		rfc2865.UserName_SetString(rres, "foo")
-		rfc2865.FramedMTU_Set(rres, rfc2865.FramedMTU(1400))
+		rres = p.ModifyPacket(rres)
 	}
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()

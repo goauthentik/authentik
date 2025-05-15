@@ -10,6 +10,7 @@ type State struct {
 	RemainingChunks  [][]byte
 	HandshakeDone    bool
 	ClientHello      *tls.ClientHelloInfo
+	MPPEKey          []byte
 	TotalPayloadSize int
 	TLS              *tls.Conn
 	Conn             *TLSConnection
