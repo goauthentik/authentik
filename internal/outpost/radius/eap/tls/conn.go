@@ -2,6 +2,7 @@ package tls
 
 import (
 	"bytes"
+	"context"
 	"net"
 	"time"
 
@@ -12,20 +13,24 @@ type TLSConnection struct {
 	reader *bytes.Buffer
 	writer *bytes.Buffer
 
+	ctx context.Context
+
 	expectedWriterByteCount int
 	writtenByteCount        int
 }
 
-func NewTLSConnection(initialData []byte) *TLSConnection {
+func NewTLSConnection(initialData []byte, ctx context.Context) *TLSConnection {
 	c := &TLSConnection{
 		reader: bytes.NewBuffer(initialData),
 		writer: bytes.NewBuffer([]byte{}),
+		ctx:    ctx,
 	}
 	return c
 }
 
 func (conn TLSConnection) OutboundData() []byte {
 	for {
+		// TODO cancel with conn.ctx
 		b := conn.writer.Bytes()
 		if len(b) < 1 {
 			log.Debug("TLS(buffer): Attempted retrieve from empty buffer, stalling...")
@@ -51,6 +56,7 @@ func (conn TLSConnection) NeedsMoreData() bool {
 
 func (conn *TLSConnection) Read(p []byte) (int, error) {
 	for {
+		// TODO cancel with conn.ctx
 		n, err := conn.reader.Read(p)
 		if n == 0 {
 			log.Debugf("TLS(buffer): Attempted read %d from empty buffer, stalling...", len(p))
