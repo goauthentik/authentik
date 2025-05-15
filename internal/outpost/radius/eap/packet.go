@@ -14,6 +14,7 @@ type Code uint8
 const (
 	CodeRequest  Code = 1
 	CodeResponse Code = 2
+	CodeSuccess  Code = 3
 )
 
 type Type uint8
@@ -76,15 +77,17 @@ func (p *Packet) Encode() ([]byte, error) {
 	buff[0] = uint8(p.code)
 	buff[1] = uint8(p.id)
 
-	payloadBuffer, err := p.Payload.Encode()
-	if err != nil {
-		return buff, err
+	log.Debugf("%+v", p.code)
+	if p.code != CodeSuccess {
+		payloadBuffer, err := p.Payload.Encode()
+		if err != nil {
+			return buff, err
+		}
+		binary.BigEndian.PutUint16(buff[2:], uint16(len(payloadBuffer)+5))
+		if p.code == CodeRequest || p.code == CodeResponse {
+			buff[4] = uint8(p.msgType)
+		}
+		buff = append(buff, payloadBuffer...)
 	}
-	binary.BigEndian.PutUint16(buff[2:], uint16(len(payloadBuffer)+5))
-
-	if p.code == CodeRequest || p.code == CodeResponse {
-		buff[4] = uint8(p.msgType)
-	}
-	buff = append(buff, payloadBuffer...)
 	return buff, nil
 }

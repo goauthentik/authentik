@@ -87,8 +87,9 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 		log.Debug("TLS: no TLS connection in state yet, starting connection")
 		st.Conn = NewTLSConnection(p.Data)
 		st.TLS = tls.Server(st.Conn, &tls.Config{
-			GetConfigForClient: func(argHello *tls.ClientHelloInfo) (*tls.Config, error) {
-				log.Debugf("TLS: ClientHello: %+v\n", argHello)
+			GetConfigForClient: func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
+				log.Debugf("TLS: ClientHello: %+v\n", ch)
+				st.ClientHello = ch
 				return nil, nil
 			},
 			ClientAuth:   tls.RequireAnyClientCert,
@@ -103,6 +104,7 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 				log.WithError(err).Debug("TLS: Handshake error")
 				return
 			}
+			log.Debug("TLS: handshake done")
 			st.HandshakeDone = true
 		}()
 	} else if len(p.Data) > 0 {
@@ -132,7 +134,7 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 		return p.sendNextChunk(st)
 	}
 	if st.HandshakeDone {
-		// return
+		return nil, st
 	}
 	if len(st.Conn.OutboundData()) > 0 {
 		return p.startChunkedTransfer(st.Conn.OutboundData(), st)
