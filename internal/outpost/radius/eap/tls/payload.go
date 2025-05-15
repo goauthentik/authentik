@@ -10,6 +10,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
 const maxChunkSize = 1000
@@ -69,7 +70,7 @@ func init() {
 	certs = append(certs, cert)
 }
 
-func (p *Payload) Handle(stt any) (*Payload, *State) {
+func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 	if stt == nil {
 		log.Debug("TLS: new state")
 		stt = NewState()
@@ -134,7 +135,7 @@ func (p *Payload) Handle(stt any) (*Payload, *State) {
 		return p.sendNextChunk(st)
 	}
 	if st.HandshakeDone {
-		return nil, st
+		return protocol.EmptyPayload{}, st
 	}
 	if len(st.Conn.OutboundData()) > 0 {
 		return p.startChunkedTransfer(st.Conn.OutboundData(), st)
