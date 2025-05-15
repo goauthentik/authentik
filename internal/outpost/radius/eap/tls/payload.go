@@ -134,7 +134,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 	if st.HasMore() {
 		return p.sendNextChunk(st)
 	}
-	if st.HandshakeDone {
+	if st.Conn.writer.Len() == 0 && st.HandshakeDone {
 		return protocol.EmptyPayload{}, st
 	}
 	if len(st.Conn.OutboundData()) > 0 {
