@@ -39,10 +39,8 @@ jobs:
       - name: Generate TypeScript API
         run: make gen-client-ts
       - name: Lint Project
-        # TODO: Remove separate type check on tests once the WebDriverIO tests pass.
         run: |
           npm run build-locales -w @goauthentik/web
-          npm run lint:types:tests -w @goauthentik/web
           npm run lint:types
       - name: Lint Web
         run: npm run ${{ matrix.command }} -w @goauthentik/web

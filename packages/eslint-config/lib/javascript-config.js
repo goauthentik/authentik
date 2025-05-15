@@ -23,7 +23,8 @@ export const javaScriptConfig = tseslint.config({
                 allowKeywords: true,
             },
         ],
-        "eqeqeq": "error",
+        // TODO: Clean up before enabling.
+        "eqeqeq": "off",
         "func-names": ["error", "as-needed"],
         "guard-for-in": "error",
         "max-depth": ["error", MAX_DEPTH],

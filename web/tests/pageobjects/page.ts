@@ -61,7 +61,7 @@ export default class Page {
                 const control = await $(`ak-search-select[name="${name}"]`);
                 await control.waitForExist({ timeout: 500 });
                 return control;
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (_e: any) {
                 const control = await $(`ak-search-selects-ez[name="${name}"]`);
                 return control;

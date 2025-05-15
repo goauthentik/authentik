@@ -15,12 +15,7 @@
         "lint": "wireit",
         "lint:imports": "wireit",
         "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:precommit": "wireit",
-        "lint:types": "wireit",
-        "lint:types:tests": "wireit",
         "lit-analyse": "wireit",
-        "precommit": "wireit",
         "prettier": "wireit",
         "prettier-check": "wireit",
         "pseudolocalize": "wireit",
@@ -106,7 +101,6 @@
         "yaml": "^2.5.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.11.1",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
         "@goauthentik/monorepo": "^1.0.0",
         "@goauthentik/prettier-config": "^1.0.4",
@@ -126,15 +120,12 @@
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
-        "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.2",
         "@types/mocha": "^10.0.8",
         "@types/node": "^22.7.4",
         "@types/react": "^18.3.13",
         "@types/react-dom": "^18.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.8.0",
-        "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "9.4",
         "@wdio/cli": "9.4",
         "@wdio/spec-reporter": "^9.1.2",
@@ -143,9 +134,6 @@
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
-        "eslint": "^9.11.1",
-        "eslint-plugin-lit": "^1.15.0",
-        "eslint-plugin-wc": "^2.1.1",
         "github-slugger": "^2.0.0",
         "globals": "^15.10.0",
         "knip": "^5.30.6",
@@ -157,8 +145,7 @@
         "storybook": "^8.6.12",
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
-        "typescript": "^5.6.2",
-        "typescript-eslint": "^8.8.0",
+        "typescript": "^5.8.3",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.9"
@@ -254,27 +241,11 @@
                 "./packages/sfe:prettier"
             ]
         },
-        "lint": {
-            "command": "eslint --max-warnings 0 --fix",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=65536"
-            }
-        },
         "lint:components": {
             "command": "lit-analyzer src"
         },
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
-        },
-        "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
-        },
-        "lint:types": {
-            "command": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
-            "dependencies": [
-                "build-locales",
-                "lint:types:tests"
-            ]
         },
         "lint:lockfile": {
             "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
@@ -286,39 +257,19 @@
                 "./packages/sfe:lint:lockfile"
             ]
         },
-        "lint:nightmare": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
         "lint:spelling": {
             "command": "node scripts/check-spelling.mjs"
         },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
-        "precommit": {
+        "lint": {
             "command": "prettier --write .",
             "dependencies": [
-                "lint:types",
                 "lint:components",
                 "lint:spelling",
                 "lint:lockfile",
                 "lint:lockfiles",
-                "lint:precommit",
                 "format:packages"
             ]
         },
@@ -373,11 +324,6 @@
             "env": {
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
-        },
-        "tsc": {
-            "dependencies": [
-                "lint:types"
-            ]
         }
     },
     "engines": {

@@ -4,7 +4,7 @@
     "private": true,
     "scripts": {
         "lint:types": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
-        "lint-check": "eslint .",
+        "lint-check": "eslint --max-warnings 0 .",
         "lint": "eslint --fix .",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u ."
@@ -22,7 +22,7 @@
         "prettier": "^3.5.3",
         "prettier-plugin-organize-imports": "^4.1.0",
         "prettier-plugin-packagejson": "^2.5.10",
-        "typescript": "^5.8.2",
+        "typescript": "^5.8.3",
         "typescript-eslint": "^8.29.0"
     },
     "workspaces": [

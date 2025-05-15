@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
+// @ts-nocheck See below:
 // ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
 // via `defineProperties` is how we installed the OUID finders for the various
 // wizard types.

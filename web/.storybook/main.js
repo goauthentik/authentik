@@ -9,7 +9,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 
-const CSSImportPattern = /import [\w\$]+ from .+\.(css)/g;
+const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
 
 /**
