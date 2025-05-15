@@ -32,6 +32,13 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          registry-url: "https://registry.npmjs.org"
+      - name: Prepare Dependencies
+        run: |
+          npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: run extract

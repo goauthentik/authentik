@@ -13,43 +13,50 @@ on:
 
 jobs:
   lint:
-    name: Lint
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        command:
+          - lint
+          - lint:lockfile
+          - prettier-check
+        project:
+          - web
+        include:
+          - command: lit-analyse
+            project: web
     steps:
       - uses: actions/checkout@v4
-      - id: cache-web
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
-      - name: Run ESLint
-        run: |
-          npm run lint -w @goauthentik/web
-      - name: Check Lockfile
-        run: |
-          npm run lint:lockfile -w @goauthentik/web
-      - name: Check Types
-        run: |
-          npm run lint:types
-  build:
-    name: Build Web UI
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - id: cache-web
-        uses: actions/cache@v4
-        with:
-          path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          node-version-file: package.json
+          cache: "npm"
+          cache-dependency-path: package-lock.json
       - name: Prepare Dependencies
-        if: steps.cache-web.outputs.cache-hit != 'true'
         run: |
           npm ci
-          make gen-client-ts
-      - name: Run ESBuild
-        run: |
-          npm run build -w @goauthentik/web
-          npm run build:sfe -w @goauthentik/web
+      - name: Generate TypeScript API
+        run: make gen-client-ts
+      - name: Lint Project
+        run: npm run lint:types
+      - name: Lint Web
+        run: npm run ${{ matrix.command }} -w @goauthentik/web
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+      - name: Prepare Dependencies
+        run: npm ci
+      - name: Generate TypeScript API
+        run: make gen-client-ts
+      - name: build
+        run: npm run build -w @goauthentik/web
   ci-web-mark:
     if: always()
     needs:
@@ -61,22 +68,19 @@ jobs:
         with:
           jobs: ${{ toJSON(needs) }}
   test:
-    name: Test Web UI
     needs:
       - ci-web-mark
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - id: cache-web
-        uses: actions/cache@v4
+      - uses: actions/setup-node@v4
         with:
-          path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          node-version-file: package.json
+          cache: "npm"
+          cache-dependency-path: package-lock.json
       - name: Prepare Dependencies
-        if: steps.cache-web.outputs.cache-hit != 'true'
-        run: |
-          npm ci
-          make gen-client-ts
-      - name: Run Tests
-        run: |
-          npm run test -w @goauthentik/web || exit 0
+        run: npm ci
+      - name: Generate TypeScript API
+        run: make gen-client-ts
+      - name: test
+        run: npm run test -w @goauthentik/web || exit 0

@@ -183,37 +183,37 @@ gen: gen-build gen-client-ts
 #########################
 
 web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
+	npm run build -w @goauthentik/web
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
+	npm ci
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run test -w @goauthentik/web
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/
 	mkdir web/dist/
 	touch web/dist/.gitkeep
-	cd web && npm run watch
+	npm run watch -w @goauthentik/web
 
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run storybook -w @goauthentik/web
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run prettier -w @goauthentik/web
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
+	npm run lint -w @goauthentik/web
+	npm run lit-analyse -w @goauthentik/web
 
 web-check-compile:
-	cd web && npm run tsc
+	npm run lint:types
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run extract-locales -w @goauthentik/web
 
 #########################
 ## Website
