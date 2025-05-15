@@ -207,7 +207,6 @@ web-lint-fix:
 
 web-lint:
 	npm run lint -w @goauthentik/web
-	npm run lit-analyse -w @goauthentik/web
 
 web-check-compile:
 	npm run lint:types
@@ -222,16 +221,16 @@ web-i18n-extract:
 website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
 website-install:
-	cd website && npm ci
+	npm ci --prefix website
 
 website-lint-fix: lint-codespell
-	cd website && npm run prettier
+	npm run prettier --prefix website
 
 website-build:
-	cd website && npm run build
+	npm run build --prefix website
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+	npm run watch --prefix website
 
 #########################
 ## Docker
