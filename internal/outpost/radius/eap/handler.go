@@ -31,6 +31,9 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	stm.SetEAPState(rst, newState)
 
 	rres := r.Response(radius.CodeAccessChallenge)
+	if res.code == CodeSuccess {
+		rres.Code = radius.CodeAccessAccept
+	}
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
 	if err != nil {
