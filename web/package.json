@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/web",
-    "version": "0.0.0",
+    "version": "1.0.0",
     "license": "MIT",
     "private": true,
     "scripts": {
@@ -11,13 +11,11 @@
         "build:sfe": "wireit",
         "esbuild:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "wireit",
-        "format": "wireit",
         "lint": "wireit",
         "lint:imports": "wireit",
-        "lint:lockfile": "wireit",
         "lit-analyse": "wireit",
-        "prettier": "wireit",
-        "prettier-check": "wireit",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
         "pseudolocalize": "wireit",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
@@ -233,53 +231,16 @@
         "extract-locales": {
             "command": "lit-localize extract"
         },
-        "format": {
-            "command": "prettier --write ."
-        },
-        "format:packages": {
-            "dependencies": [
-                "./packages/sfe:prettier"
-            ]
-        },
-        "lint:components": {
-            "command": "lit-analyzer src"
-        },
         "lint:imports": {
             "command": "knip --config scripts/knip.config.ts"
-        },
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
-        },
-        "lint:lockfiles": {
-            "dependencies": [
-                "./packages/sfe:lint:lockfile"
-            ]
-        },
-        "lint:spelling": {
-            "command": "node scripts/check-spelling.mjs"
         },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
         "lint": {
-            "command": "prettier --write .",
             "dependencies": [
-                "lint:components",
-                "lint:spelling",
-                "lint:lockfile",
-                "lint:lockfiles",
-                "format:packages"
+                "lit-analyse"
             ]
-        },
-        "prettier": {
-            "dependencies": [
-                "format"
-            ]
-        },
-        "prettier-check": {
-            "command": "prettier --check ."
         },
         "pseudolocalize": {
             "command": "node scripts/pseudolocalize.mjs"

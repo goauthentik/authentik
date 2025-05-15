@@ -1,12 +1,25 @@
+/**
+ * @file Rollup configuration for the SFE package.
+ *
+ * @import { RollupOptions } from "rollup";
+ */
+import { resolvePackage } from "@goauthentik/monorepo";
+import { DistDirectory } from "@goauthentik/web/paths";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import swc from "@rollup/plugin-swc";
+import { resolve as resolvePath } from "node:path";
 import copy from "rollup-plugin-copy";
 
-export default {
+const distDirectory = resolvePath(DistDirectory, "sfe");
+
+/**
+ * @type {RollupOptions}
+ */
+const config = {
     input: "src/index.ts",
     output: {
-        dir: "./dist/sfe",
+        dir: distDirectory,
         format: "cjs",
     },
     context: "window",
@@ -14,8 +27,8 @@ export default {
         copy({
             targets: [
                 {
-                    src: "../../node_modules/bootstrap/dist/css/bootstrap.min.css",
-                    dest: "./dist/sfe",
+                    src: resolvePackage("bootstrap", "dist", "css", "bootstrap.min.css"),
+                    dest: distDirectory,
                 },
             ],
         }),
@@ -41,3 +54,5 @@ export default {
         }),
     ],
 };
+
+export default config;

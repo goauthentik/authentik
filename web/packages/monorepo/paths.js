@@ -21,11 +21,12 @@ const require = createRequire(import.meta.url);
 /**
  * Resolve a package name to its location in the monorepo to the single node_modules directory.
  * @param {string} packageName
+ * @param {...string} pathSegments
  *
  * @returns {string} The resolved path to the package.
  * @throws {Error} If the package cannot be resolved.
  */
-export function resolvePackage(packageName) {
+export function resolvePackage(packageName, ...pathSegments) {
     const relativePackageJSONPath = join(packageName, "package.json");
 
     /** @type {string} */
@@ -41,5 +42,5 @@ export function resolvePackage(packageName) {
         throw error;
     }
 
-    return dirname(absolutePackageJSONPath);
+    return join(dirname(absolutePackageJSONPath), ...pathSegments);
 }

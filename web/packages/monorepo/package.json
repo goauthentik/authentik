@@ -6,13 +6,7 @@
     "private": true,
     "main": "index.js",
     "type": "module",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "types": "./out/index.d.ts",
-            "import": "./index.js"
-        }
-    },
+    "exports": "./index.js",
     "devDependencies": {
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
