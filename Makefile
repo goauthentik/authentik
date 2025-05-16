@@ -16,6 +16,14 @@ pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
 
+define wget_github
+	@if [ -n "$(GITHUB_TOKEN)" ]; then \
+		wget --header="authorization: Bearer $(GITHUB_TOKEN)" $(1) -O $(2); \
+	else \
+		wget $(1) -O $(2); \
+	fi
+endef
+
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
@@ -159,10 +167,15 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml,./${GEN_API_GO}/config.yaml)
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache,./${GEN_API_GO}/templates/README.mustache)
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache,./${GEN_API_GO}/templates/go.mod.mustache)
+
 	cp schema.yml ./${GEN_API_GO}/
+
 	docker run \
 		--rm -v ${PWD}/${GEN_API_GO}:/local \
 		--user ${UID}:${GID} \
@@ -171,7 +184,9 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 		-g go \
 		-o /local/ \
 		-c /local/config.yaml
+
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
+
 	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
