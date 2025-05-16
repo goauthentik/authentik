@@ -23,5 +23,9 @@ func DebugPacket(p *radius.Packet) {
 }
 
 func FormatBytes(d []byte) string {
-	return fmt.Sprintf("% x", d)
+	b := d
+	if len(b) > 32 {
+		b = b[:32]
+	}
+	return fmt.Sprintf("% x", b)
 }

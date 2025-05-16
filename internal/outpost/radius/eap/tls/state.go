@@ -13,7 +13,7 @@ type State struct {
 	MPPEKey          []byte
 	TotalPayloadSize int
 	TLS              *tls.Conn
-	Conn             *TLSConnection
+	Conn             *BuffConn
 	Context          context.Context
 }
 
