@@ -21,6 +21,7 @@ const items = [
             "services/dokuwiki/index",
             "services/espocrm/index",
             "services/hedgedoc/index",
+            "services/kanboard/index",
             "services/kimai/index",
             "services/mailcow/index",
             "services/mastodon/index",
