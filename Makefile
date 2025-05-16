@@ -72,7 +72,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: npm-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -183,12 +183,12 @@ gen: gen-build gen-client-ts
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
+web-build: npm-install  ## Build the Authentik UI
 	npm run build -w @goauthentik/web
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
-web-install:  ## Install the necessary libraries to build the Authentik UI
+npm-install:  ## Install the necessary libraries to build the Authentik UI
 	npm ci
 
 web-test: ## Run tests for the Authentik UI
@@ -220,9 +220,6 @@ web-i18n-extract:
 #########################
 
 website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
-
-website-install:
-	npm ci --prefix website
 
 website-lint-fix: lint-codespell
 	npm run prettier --prefix website
