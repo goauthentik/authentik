@@ -2,19 +2,27 @@ package web
 
 import (
 	"encoding/json"
+	"encoding/pem"
 	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
+	"net/url"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils/sentry"
+	"goauthentik.io/internal/utils/web"
 )
 
 var (
 	ErrAuthentikStarting = errors.New("authentik starting")
+)
+
+const (
+	maxBodyBytes = 32 * 1024 * 1024
 )
 
 func (ws *WebServer) configureProxy() {
@@ -26,8 +34,25 @@ func (ws *WebServer) configureProxy() {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
 		}
+		if !web.IsRequestFromTrustedProxy(req) {
+			// If the request isn't coming from a trusted proxy, delete MTLS headers
+			req.Header.Del("SSL-Client-Cert")             // nginx-ingress
+			req.Header.Del("X-Forwarded-TLS-Client-Cert") // traefik
+			req.Header.Del("X-Forwarded-Client-Cert")     // envoy
+		}
 		if req.TLS != nil {
 			req.Header.Set("X-Forwarded-Proto", "https")
+			if len(req.TLS.PeerCertificates) > 0 {
+				pems := make([]string, len(req.TLS.PeerCertificates))
+				for i, crt := range req.TLS.PeerCertificates {
+					pem := pem.EncodeToMemory(&pem.Block{
+						Type:  "CERTIFICATE",
+						Bytes: crt.Raw,
+					})
+					pems[i] = "Cert=" + url.QueryEscape(string(pem))
+				}
+				req.Header.Set("X-Forwarded-Client-Cert", strings.Join(pems, ","))
+			}
 		}
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
@@ -57,7 +82,7 @@ func (ws *WebServer) configureProxy() {
 		Requests.With(prometheus.Labels{
 			"dest": "core",
 		}).Observe(float64(elapsed) / float64(time.Second))
-		r.Body = http.MaxBytesReader(rw, r.Body, 32*1024*1024)
+		r.Body = http.MaxBytesReader(rw, r.Body, maxBodyBytes)
 		rp.ServeHTTP(rw, r)
 	}))
 }

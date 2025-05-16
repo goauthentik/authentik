@@ -73,6 +73,15 @@ class Brand(SerializerModel):
         default=None,
         on_delete=models.SET_DEFAULT,
         help_text=_("Web Certificate used by the authentik Core webserver."),
+        related_name="+",
+    )
+    client_certificate = models.ForeignKey(
+        CertificateKeyPair,
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
+        help_text=_("Certificate used for client authentication."),
+        related_name="+",
     )
     attributes = models.JSONField(default=dict, blank=True)
 
