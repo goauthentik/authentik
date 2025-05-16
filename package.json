@@ -3,9 +3,9 @@
     "version": "2025.4.1",
     "private": true,
     "scripts": {
-        "lint:types": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
-        "lint-check": "eslint --max-warnings 0 .",
         "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:types": "NODE_OPTIONS=\"--max-old-space-size=3000\" tsc -b .",
         "prettier": "prettier --cache --write -u .",
         "prettier-check": "prettier --cache --check -u ."
     },
