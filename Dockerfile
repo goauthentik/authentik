@@ -5,7 +5,6 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/node:23-slim AS node-packages
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
-ENV NODE_ENV=production
 
 WORKDIR /work
 
@@ -22,18 +21,19 @@ COPY ./website /work/website/
 COPY ./gen-ts-api /work/gen-ts-api/
 
 RUN --mount=type=cache,id=npm-node,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+    npm ci
 
-RUN --mount=type=cache,id=npm-node,sharing=shared,target=/root/.npm \
-    cd ./gen-ts-api \
-    && npm link \
-    && npm link @goauthentik/api -w @goauthentik/web
+RUN cd ./gen-ts-api && npm link
+
+RUN npm link @goauthentik/api -w @goauthentik/web
+
+ENV NODE_ENV=production
 
 RUN npm run build -w @goauthentik/web
-
 RUN npm run build -w @goauthentik/sfe
 
-RUN npm run build -w @goauthentik/docs
+RUN npm run build:api -w @goauthentik/docs
+RUN npm run build:docusaurus -w @goauthentik/docs
 
 # Stage 2: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder

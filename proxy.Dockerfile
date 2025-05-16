@@ -3,7 +3,6 @@
 # Stage 1: Build web
 FROM --platform=${BUILDPLATFORM} docker.io/library/node:23-slim AS web-builder
 
-ENV NODE_ENV=production
 WORKDIR /work
 
 COPY ./package.json /work
@@ -13,7 +12,9 @@ COPY ./packages/ /work/packages/
 COPY ./web /work/web/
 
 RUN --mount=type=cache,id=npm-node,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
+    npm ci
+
+ENV NODE_ENV=production
 
 RUN npm run build-proxy -w @goauthentik/web
 
