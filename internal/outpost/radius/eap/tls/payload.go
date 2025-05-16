@@ -92,7 +92,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 		log.Debug("TLS: no TLS connection in state yet, starting connection")
 		ctx, cancel := context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 		st.Context = ctx
-		st.Conn = NewTLSConnection(p.Data, st.Context)
+		st.Conn = NewBuffConn(p.Data, st.Context)
 		st.TLS = tls.Server(st.Conn, &tls.Config{
 			GetConfigForClient: func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
 				log.Debugf("TLS: ClientHello: %+v\n", ch)
