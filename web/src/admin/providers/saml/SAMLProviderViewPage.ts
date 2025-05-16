@@ -68,10 +68,10 @@ export class SAMLProviderViewPage extends AKElement {
     metadata?: SAMLMetadata;
 
     @state()
-    signer: CertificateKeyPair | null;
+    signer: CertificateKeyPair | null = null;
 
     @state()
-    verifier: CertificateKeyPair | null;
+    verifier: CertificateKeyPair | null = null;
 
     @state()
     previewUser?: User;
