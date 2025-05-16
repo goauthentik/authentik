@@ -44,10 +44,13 @@ jobs:
       - name: Run extract
         run: |
           uv run make i18n-extract
-      - name: Run compile
+      - name: Run UV compile
         run: |
           uv run ak compilemessages
-          make web-check-compile
+      - name: Lint Project
+        run: |
+          npm run build-locales -w @goauthentik/web
+          npm run lint:types
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7
