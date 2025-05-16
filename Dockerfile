@@ -9,7 +9,7 @@ ENV NODE_ENV=production
 
 WORKDIR /work
 
-COPY ./SECURITY.md /work/website/
+COPY ./SECURITY.md /work
 COPY ./schema.yml /work
 COPY ./docker-compose.yml /work
 COPY ./blueprints /work/blueprints/
