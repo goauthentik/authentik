@@ -19,10 +19,15 @@ COPY ./tsconfig.json /work
 COPY ./packages/ /work/packages/
 COPY ./web /work/web/
 COPY ./website /work/website/
-COPY ./gen-ts-api /work/node_modules/@goauthentik/api/
+COPY ./gen-ts-api /work/gen-ts-api/
 
 RUN --mount=type=cache,id=npm-node,sharing=shared,target=/root/.npm \
     npm ci --include=dev
+
+RUN --mount=type=cache,id=npm-node,sharing=shared,target=/root/.npm \
+    cd ./gen-ts-api \
+    && npm link \
+    && npm link @goauthentik/api -w @goauthentik/web
 
 RUN npm run build -w @goauthentik/web
 
