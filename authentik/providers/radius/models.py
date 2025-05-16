@@ -1,5 +1,6 @@
 """Radius Provider"""
 
+from collections.abc import Iterable
 from django.db import models
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
@@ -64,6 +65,12 @@ class RadiusProvider(OutpostModel, Provider):
         from authentik.providers.radius.api.providers import RadiusProviderSerializer
 
         return RadiusProviderSerializer
+
+    def get_required_objects(self) -> Iterable[models.Model | str]:
+        required_models = [self]
+        if self.certificate is not None:
+            required_models.append(self.certificate)
+        return required_models
 
     def __str__(self):
         return f"Radius Provider {self.name}"
