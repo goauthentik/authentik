@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/config"
@@ -100,26 +101,27 @@ func (ac *APIController) reconnectWS() {
 		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
 	}
 	attempt := 1
-	for {
-		q := u.Query()
-		q.Set("attempt", strconv.Itoa(attempt))
-		u.RawQuery = q.Encode()
-		err := ac.initWS(u, ac.Outpost.Pk)
-		attempt += 1
-		if err != nil {
-			ac.logger.Infof("waiting %d seconds to reconnect", ac.wsBackoffMultiplier)
-			time.Sleep(time.Duration(ac.wsBackoffMultiplier) * time.Second)
-			ac.wsBackoffMultiplier = ac.wsBackoffMultiplier * 2
-			// Limit to 300 seconds (5m)
-			if ac.wsBackoffMultiplier >= 300 {
-				ac.wsBackoffMultiplier = 300
+	_ = retry.Do(
+		func() error {
+			q := u.Query()
+			q.Set("attempt", strconv.Itoa(attempt))
+			u.RawQuery = q.Encode()
+			err := ac.initWS(u, ac.Outpost.Pk)
+			attempt += 1
+			if err != nil {
+				return err
 			}
-		} else {
 			ac.wsIsReconnecting = false
-			ac.wsBackoffMultiplier = 1
-			return
-		}
-	}
+			return nil
+		},
+		retry.Delay(1*time.Second),
+		retry.MaxDelay(5*time.Minute),
+		retry.DelayType(retry.BackOffDelay),
+		retry.Attempts(0),
+		retry.OnRetry(func(attempt uint, err error) {
+			ac.logger.Infof("waiting %d seconds to reconnect", attempt)
+		}),
+	)
 }
 
 func (ac *APIController) startWSHandler() {

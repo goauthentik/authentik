@@ -13,6 +13,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -41,12 +42,11 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	wsConn              *websocket.Conn
-	lastWsReconnect     time.Time
-	wsIsReconnecting    bool
-	wsBackoffMultiplier int
-	wsHandlers          []WSHandler
-	refreshHandlers     []func()
+	wsConn           *websocket.Conn
+	lastWsReconnect  time.Time
+	wsIsReconnecting bool
+	wsHandlers       []WSHandler
+	refreshHandlers  []func()
 
 	instanceUUID uuid.UUID
 }
@@ -81,20 +81,19 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	var outposts *api.PaginatedOutpostList
-	var err error
-	for {
-		outposts, _, err = apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-
-		if err == nil {
-			break
-		}
-
-		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
-		time.Sleep(time.Second * 3)
-	}
+	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
+		func() (*api.PaginatedOutpostList, error) {
+			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+			return outposts, err
+		},
+		retry.Attempts(0),
+		retry.Delay(time.Second*3),
+		retry.OnRetry(func(attempt uint, err error) {
+			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		}),
+	)
 	if len(outposts.Results) < 1 {
-		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		log.Panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
 	}
 	outpost := outposts.Results[0]
 
@@ -117,12 +116,11 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:        uuid.New(),
-		Outpost:             outpost,
-		wsHandlers:          []WSHandler{},
-		wsBackoffMultiplier: 1,
-		refreshHandlers:     make([]func(), 0),
+		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:    uuid.New(),
+		Outpost:         outpost,
+		wsHandlers:      []WSHandler{},
+		refreshHandlers: make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
 	err = ac.initWS(akURL, outpost.Pk)
