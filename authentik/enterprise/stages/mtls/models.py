@@ -59,3 +59,11 @@ class MutualTLSStage(Stage):
         from authentik.enterprise.stages.mtls.api import MutualTLSStageSerializer
 
         return MutualTLSStageSerializer
+
+    @property
+    def component(self) -> str:
+        return "ak-stage-mtls-form"
+
+    class Meta:
+        verbose_name = _("MTLS Stage")
+        verbose_name_plural = _("MTLS Stages")

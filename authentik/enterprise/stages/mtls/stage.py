@@ -1,4 +1,4 @@
-from urllib.parse import unquote
+from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, NameOID, ObjectIdentifier, load_pem_x509_certificate
@@ -42,7 +42,7 @@ class MTLSStageView(ChallengeStageView):
             if "Cert" not in raw_cert:
                 continue
             try:
-                cert = load_pem_x509_certificate(unquote(raw_cert["Cert"]).encode())
+                cert = load_pem_x509_certificate(unquote_plus(raw_cert["Cert"]).encode())
                 certs.append(cert)
             except ValueError:
                 continue
@@ -54,7 +54,7 @@ class MTLSStageView(ChallengeStageView):
         if not sslcc_raw:
             return []
         try:
-            cert = load_pem_x509_certificate(unquote(sslcc_raw).encode())
+            cert = load_pem_x509_certificate(unquote_plus(sslcc_raw).encode())
             return [cert]
         except ValueError:
             return []
@@ -65,7 +65,7 @@ class MTLSStageView(ChallengeStageView):
         if not ftcc_raw:
             return []
         try:
-            cert = load_pem_x509_certificate(unquote(ftcc_raw).encode())
+            cert = load_pem_x509_certificate(unquote_plus(ftcc_raw).encode())
             return [cert]
         except ValueError:
             return []
@@ -145,7 +145,11 @@ class MTLSStageView(ChallengeStageView):
 
     def dispatch(self, request, *args, **kwargs):
         stage: MutualTLSStage = self.executor.current_stage
-        certs = [*self._parse_cert_xfcc(), *self._parse_cert_nginx(), *self._parse_cert_traefik()]
+        certs = [
+            *self._parse_cert_xfcc(),
+            *self._parse_cert_nginx(),
+            *self._parse_cert_traefik(),
+        ]
         ca = self.get_ca()
         if not ca and stage.mode != TLSMode.OPTIONAL:
             self.logger.warning("No Certificate authority found")
