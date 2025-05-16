@@ -3,8 +3,8 @@ package eap
 import "slices"
 
 type Settings struct {
-	ChallengesToOffer []Type
-	ChallengeSettings map[Type]interface{}
+	ProtocolsToOffer []Type
+	ProtocolSettings map[Type]interface{}
 }
 
 type StateManager interface {
@@ -20,7 +20,7 @@ type State struct {
 
 func BlankState(settings Settings) *State {
 	return &State{
-		ChallengesToOffer: slices.Clone(settings.ChallengesToOffer),
+		ChallengesToOffer: slices.Clone(settings.ProtocolsToOffer),
 		TypeState:         map[Type]any{},
 	}
 }

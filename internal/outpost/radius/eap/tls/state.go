@@ -18,7 +18,8 @@ type State struct {
 	ContextCancel    context.CancelFunc
 }
 
-func NewState() *State {
+func NewState(c tctx) *State {
+	c.Log().Debug("TLS: new state")
 	return &State{
 		RemainingChunks: make([][]byte, 0),
 	}
