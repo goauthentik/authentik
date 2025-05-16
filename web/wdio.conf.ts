@@ -1,4 +1,3 @@
-import replace from "@rollup/plugin-replace";
 import { browser } from "@wdio/globals";
 import type { Options } from "@wdio/types";
 import path from "path";
@@ -72,36 +71,33 @@ export const config: Options.Testrunner = {
     runner: [
         "browser",
         {
-            viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
-                ...userConfig,
-                plugins: [
-                    litCss(),
-                    replace({
+            viteConfig: (userConfig: UserConfig = { plugins: [] }) => {
+                return {
+                    ...userConfig,
+                    define: {
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
                         ),
                         "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                        "preventAssignment": true,
-                    }),
-                    ...(userConfig?.plugins ?? []),
-                    tsconfigPaths(),
-                ],
-                resolve: {
-                    alias: {
-                        "@goauthentik/admin": path.resolve(__dirname, "src/admin"),
-                        "@goauthentik/common": path.resolve(__dirname, "src/common"),
-                        "@goauthentik/components": path.resolve(__dirname, "src/components"),
-                        "@goauthentik/docs": path.resolve(__dirname, "../website/docs"),
-                        "@goauthentik/elements": path.resolve(__dirname, "src/elements"),
-                        "@goauthentik/flow": path.resolve(__dirname, "src/flow"),
-                        "@goauthentik/locales": path.resolve(__dirname, "src/locales"),
-                        "@goauthentik/polyfill": path.resolve(__dirname, "src/polyfill"),
-                        "@goauthentik/standalone": path.resolve(__dirname, "src/standalone"),
-                        "@goauthentik/user": path.resolve(__dirname, "src/user"),
                     },
-                },
-            }),
+                    plugins: [litCss(), ...(userConfig?.plugins ?? []), tsconfigPaths()],
+                    resolve: {
+                        alias: {
+                            "@goauthentik/admin": path.resolve(__dirname, "src/admin"),
+                            "@goauthentik/common": path.resolve(__dirname, "src/common"),
+                            "@goauthentik/components": path.resolve(__dirname, "src/components"),
+                            "@goauthentik/docs": path.resolve(__dirname, "../website/docs"),
+                            "@goauthentik/elements": path.resolve(__dirname, "src/elements"),
+                            "@goauthentik/flow": path.resolve(__dirname, "src/flow"),
+                            "@goauthentik/locales": path.resolve(__dirname, "src/locales"),
+                            "@goauthentik/polyfill": path.resolve(__dirname, "src/polyfill"),
+                            "@goauthentik/standalone": path.resolve(__dirname, "src/standalone"),
+                            "@goauthentik/user": path.resolve(__dirname, "src/user"),
+                        },
+                    },
+                } satisfies UserConfig;
+            },
         },
     ],
 

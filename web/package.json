@@ -104,7 +104,6 @@
         "@goauthentik/tsconfig": "^1.0.5",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
-        "@rollup/plugin-replace": "^6.0.1",
         "@storybook/addon-essentials": "^8.6.12",
         "@storybook/addon-links": "^8.6.12",
         "@storybook/blocks": "^8.6.12",
@@ -127,7 +126,7 @@
         "@wdio/cli": "9.4",
         "@wdio/spec-reporter": "^9.1.2",
         "chromedriver": "^131.0.1",
-        "esbuild": "^0.25.0",
+        "esbuild": "^0.25.4",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
@@ -139,7 +138,7 @@
         "prettier": "^3.5.3",
         "prettier-plugin-packagejson": "^2.5.13",
         "pseudolocale": "^2.1.0",
-        "rollup-plugin-postcss-lit": "^2.1.0",
+        "rollup-plugin-postcss-lit": "^2.2.0",
         "storybook": "^8.6.12",
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
@@ -149,9 +148,9 @@
         "wireit": "^0.14.9"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.24.0",
-        "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.24.0",
+        "@esbuild/darwin-arm64": "^0.25.4",
+        "@esbuild/linux-amd64": "^0.25.4",
+        "@esbuild/linux-arm64": "^0.25.4",
         "@rollup/rollup-darwin-arm64": "4.23.0",
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"
