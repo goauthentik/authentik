@@ -1,4 +1,4 @@
-from urllib.parse import quote
+from urllib.parse import quote_plus
 
 from django.urls import reverse
 
@@ -47,7 +47,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-Client-Cert": f"Cert={quote(self.client_cert)}"},
+                headers={"X-Forwarded-Client-Cert": f"Cert={quote_plus(self.client_cert)}"},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -58,7 +58,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"SSL-Client-Cert": quote(self.client_cert)},
+                headers={"SSL-Client-Cert": quote_plus(self.client_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
@@ -69,7 +69,7 @@ class MTLSStageTests(FlowTestCase):
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
-                headers={"X-Forwarded-TLS-Client-Cert": quote(self.client_cert)},
+                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(self.client_cert)},
             )
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
