@@ -32,7 +32,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## authentik configuration
 
-To support the integration of Omada Controller with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Omada Controller with authentik, you need to create an application/provider pair, and an application entitlement in authentik.
 
 ### Create an application and provider in authentik
 
@@ -45,13 +45,21 @@ To support the integration of Omada Controller with authentik, you need to creat
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - For Cloud Controller, set the **ACS URL** to `https://aps1-omada-account.tplinkcloud.com/sso/saml/login/`. For Software and Hardware Controllers, set the **ACS URL** as the IP Address and port of your controller followed by `/sso/saml/login` (e.g `https://192.168.10.11:8043/sso/saml/login`).
         - For Cloud Controller, temporarily set the **Audience** to `https://omada.tplinkcloud.com/`. For Software and Hardware Controllers, set the **Audience** as the IP Address and port of your Controller (e.g `https://192.168.10.11:8043`).
-        - Set the **Service Provider Binding** to `Post`. TEMP needs testing
+        - Set the **Service Provider Binding** to `Post`. TEMP-needs testing
         - Under **Advanced protocol settings**, set an available signing certificate.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### App role TEMP
+### Create an application entitlement
+
+An application entitlement is used to control privileged access to the Omada Controller.
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications**, and click on the **Application entitlements** tab.
+3. Click **Create entitlement**, and provide the following required configurations:
+    - **Name**: provide a suitable name for the application entitlement.
+    - **Attributes**: TEMP
 
 ### Download the metadata file
 
@@ -69,14 +77,15 @@ To support the integration of Omada Controller with authentik, you need to creat
 6. In the **Actions** column, click on the **Details** button.
 7. Take note of the **Entity ID**, **Omada ID**, **Resource ID**, and click **OK**. These values will be required in the next section.
 8. At the top right of the page, click **Go To SAML Role**, followed by **Add New SAML Role**.
-9. Set the desired **SAML Role Name**, **Role**, and **Privileges** for the new SAML role. Click TEMP
+9. Set the desired **SAML Role Name**, **Role**, and **Privileges** for the new SAML role. The **SAML Role Name** must match the name of the previously created authentik application entitlement.
+10. Click TEMP
 
 ## Decoding default relay state
 
 The default relay state is derived by decoding a combination of the **Resource ID** and **Omada ID** with a Base64 encryption tool. This section provides an example of how to do this.
 
-1. Go to https://www.base64decode.org/
-2. In the **Decode from Base64 format** section, enter: `<Resouce ID>_<Omada ID>`.
+1. Go to https://www.base64decode.org/ or another Base64 decoding service/application.
+2. In the **Decode from Base64 format** section, enter: `<Resource ID>_<Omada ID>`.
 3. Click **Decode**.
 4. Click the **Copy to clipboard**. This is the **Default relay state** value that will be required in the next section
 
@@ -85,8 +94,12 @@ The default relay state is derived by decoding a combination of the **Resource I
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Omada Controller provider.
 3. Under **Protocol settings**, set **Audience** to the copied **Entity ID** (e.g. `https://aps1-omada-cloud.tplinkcloud.com/<Omada ID>`).
-4. Under **Advanced protocol settings**, set **Default relay state** to the decoded value from the previous section. TEMP
+4. Under **Advanced protocol settings**, set **Default relay state** to the decoded value from the previous section.
 5. Click **Update**
+
+## Resources
+
+- [Omada Networks Azure SSO Documentation](https://www.omadanetworks.com/de/support/faq/4406/#_Toc193896083)
 
 ## Configuration verification
 
