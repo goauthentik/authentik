@@ -135,6 +135,7 @@ func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.WebsocketMe
 	}
 	ls.connectionsSync.Lock()
 	defer ls.connectionsSync.Unlock()
+	ls.log.Info("Disconnecting session due to session end event")
 	conn, ok := ls.connections[mmsg.SessionID]
 	if !ok {
 		return nil

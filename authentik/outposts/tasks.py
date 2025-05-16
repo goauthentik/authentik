@@ -303,17 +303,7 @@ def proxy_on_logout(session_id: str):
     layer = get_channel_layer()
     hashed_session_id = hash_session_key(session_id)
     for outpost in Outpost.objects.all():
-        # Backwards compat for proxy
-        if outpost.type == OutpostType.PROXY:
-            group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
-            async_to_sync(layer.group_send)(
-                group,
-                {
-                    "type": "event.provider.specific",
-                    "sub_type": "logout",
-                    "session_id": hashed_session_id,
-                },
-            )
+        LOGGER.info("Sending session end signal to outpost", outpost=outpost)
         group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
         async_to_sync(layer.group_send)(
             group,
