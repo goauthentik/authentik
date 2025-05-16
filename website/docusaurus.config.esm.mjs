@@ -4,9 +4,12 @@
  * @import * as Preset from "@docusaurus/preset-classic";
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
+ * @import { ReleasesPluginOptions } from "./releases/plugin.mjs"
  */
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import { createRequire } from "node:module";
+import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -15,6 +18,7 @@ import remarkPreviewDirective from "./remark/preview-directive.mjs";
 import remarkSupportDirective from "./remark/support-directive.mjs";
 import remarkVersionDirective from "./remark/version-directive.mjs";
 
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const require = createRequire(import.meta.url);
 
 /**
@@ -131,6 +135,12 @@ const config = createDocusaurusConfig({
         ],
     ],
     plugins: [
+        [
+            "./releases/plugin.mjs",
+            /** @type {ReleasesPluginOptions} */ ({
+                docsDirectory: path.join(__dirname, "docs"),
+            }),
+        ],
         [
             "@docusaurus/plugin-content-docs",
             {
