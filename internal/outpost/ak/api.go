@@ -25,8 +25,6 @@ import (
 	"goauthentik.io/internal/utils/web"
 )
 
-type WSHandler func(ctx context.Context, args map[string]interface{})
-
 const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws

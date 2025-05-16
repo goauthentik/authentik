@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/mitchellh/mapstructure"
 	log "github.com/sirupsen/logrus"
 	"github.com/wwt/guac"
 
@@ -52,12 +51,14 @@ func parseIntOrZero(input string) int {
 	return x
 }
 
-func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{}) {
+func (rs *RACServer) wsHandler(ctx context.Context, msg ak.WebsocketMessage) error {
+	if msg.Instruction != ak.WebsocketInstructionProviderSpecific {
+		return nil
+	}
 	wsm := WSMessage{}
-	err := mapstructure.Decode(args, &wsm)
+	err := msg.ArgsAs(&wsm)
 	if err != nil {
-		rs.log.WithError(err).Warning("invalid ws message")
-		return
+		return err
 	}
 	config := guac.NewGuacamoleConfiguration()
 	config.Protocol = wsm.Protocol
@@ -71,8 +72,7 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	}
 	cc, err := connection.NewConnection(rs.ac, wsm.DestChannelID, config)
 	if err != nil {
-		rs.log.WithError(err).Warning("failed to setup connection")
-		return
+		return err
 	}
 	cc.OnError = func(err error) {
 		rs.connm.Lock()
@@ -88,6 +88,7 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 		"active_connections": len(rs.conns),
 	})
 	rs.connm.Unlock()
+	return nil
 }
 
 func (rs *RACServer) Start() error {

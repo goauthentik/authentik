@@ -59,7 +59,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 
 	ac.wsConn = ws
 	// Send hello message with our version
-	msg := websocketMessage{
+	msg := WebsocketMessage{
 		Instruction: WebsocketInstructionHello,
 		Args:        ac.getWebsocketPingArgs(),
 	}
@@ -125,7 +125,7 @@ func (ac *APIController) reconnectWS() {
 func (ac *APIController) startWSHandler() {
 	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
-		var wsMsg websocketMessage
+		var wsMsg WebsocketMessage
 		if ac.wsConn == nil {
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
@@ -149,6 +149,7 @@ func (ac *APIController) startWSHandler() {
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
 		switch wsMsg.Instruction {
+		case WebsocketInstructionAck:
 		case WebsocketInstructionTriggerUpdate:
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
@@ -164,9 +165,12 @@ func (ac *APIController) startWSHandler() {
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
-		case WebsocketInstructionProviderSpecific:
+		default:
 			for _, h := range ac.wsHandlers {
-				h(context.Background(), wsMsg.Args)
+				err := h(context.Background(), wsMsg)
+				if err != nil {
+					ac.logger.WithError(err).Warning("failed to run ws handler")
+				}
 			}
 		}
 	}
@@ -239,7 +243,7 @@ func (a *APIController) SendWSHello(args map[string]interface{}) error {
 	for key, value := range args {
 		allArgs[key] = value
 	}
-	aliveMsg := websocketMessage{
+	aliveMsg := WebsocketMessage{
 		Instruction: WebsocketInstructionHello,
 		Args:        allArgs,
 	}
