@@ -305,7 +305,7 @@ class FlowToken(Token):
     _plan = models.TextField()
 
     @staticmethod
-    def pickle(plan) -> str:
+    def pickle(plan: "FlowPlan") -> str:
         """Pickle into string"""
         data = dumps(plan)
         return b64encode(data).decode()
