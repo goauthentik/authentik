@@ -9181,10 +9181,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Create a Policy/User/Group Binding</source>
   <target>Crea una associazione Policy/User/Group</target>
 </trans-unit>
-<trans-unit id="s10ba15343fe64890">
-  <source>Choose A Provider</source>
-  <target>Scegli un provider</target>
-</trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
   <target>Selezionare un tipo di provider prima di procedere.</target>
@@ -9782,6 +9778,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdd66c5a2e706fb81">
   <source>Toggle sidebar</source>
+</trans-unit>
+<trans-unit id="s7d4ec232535a36f0">
+  <source>Choose a Provider</source>
 </trans-unit>
     </body>
   </file>
