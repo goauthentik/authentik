@@ -279,7 +279,7 @@ requires-dist = [
     { name = "django-filter", specifier = "==25.1" },
     { name = "django-guardian", specifier = "<3.0.0" },
     { name = "django-model-utils", specifier = "==5.0.0" },
-    { name = "django-pglock", specifier = "==1.7.1" },
+    { name = "django-pglock", specifier = "==1.7.2" },
     { name = "django-prometheus", specifier = "==2.3.1" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
@@ -1063,15 +1063,15 @@ wheels = [
 
 [[package]]
 name = "django-pglock"
-version = "1.7.1"
+version = "1.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-pgactivity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/9f/3b4b2f7021b626b3981646254f04fcc2db681d7ba7b24be563552368be70/django_pglock-1.7.1.tar.gz", hash = "sha256:69050bdb522fd34585d49bb8a4798dbfbab9ec4754dd1927b1b9eef2ec0edadf", size = 16907, upload-time = "2024-12-16T01:53:47.29Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/1a/6c552b75d0a6b380215c919a667072e4949a3123f275506c6e6ff82f6b76/django_pglock-1.7.2.tar.gz", hash = "sha256:d1d8521b382a5819e8d14978d0e8e63ab2763cb784f5a6bfdbe5de807da4a61a", size = 17287, upload-time = "2025-05-15T22:07:23.744Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/bf/6fc72033801279b4ae2003c5b93cc22dfe0814ca1f56432f7cd06975381d/django_pglock-1.7.1-py3-none-any.whl", hash = "sha256:15db418fb56bee37fc8707038495b5085af9b8c203ebfa300202572127bdb3f0", size = 17343, upload-time = "2024-12-16T01:53:45.243Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/d2/21f19531945f03021460d40654bc2fc3b0c474b57b279d5f5a1c34be7f1b/django_pglock-1.7.2-py3-none-any.whl", hash = "sha256:2f9335527779445fe86507b37e26cfde485a32b91d982a8f80039d3bcd25d596", size = 17674, upload-time = "2025-05-15T22:07:22.618Z" },
 ]
 
 [[package]]
