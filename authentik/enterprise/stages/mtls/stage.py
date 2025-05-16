@@ -121,7 +121,7 @@ class MTLSStageView(ChallengeStageView):
         self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
             {
                 "certificate": {
-                    "serial_number": cert.serial_number,
+                    "serial_number": str(cert.serial_number),
                     "subject": cert.subject.rfc4514_string(),
                     # TODO: Other attributes
                 }
