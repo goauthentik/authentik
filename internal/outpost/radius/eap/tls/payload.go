@@ -89,33 +89,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 	}
 
 	if st.TLS == nil {
-		log.Debug("TLS: no TLS connection in state yet, starting connection")
-		st.Context, st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
-		st.Conn = NewBuffConn(p.Data, st.Context)
-		st.TLS = tls.Server(st.Conn, &tls.Config{
-			GetConfigForClient: func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
-				log.Debugf("TLS: ClientHello: %+v\n", ch)
-				st.ClientHello = ch
-				return nil, nil
-			},
-			ClientAuth:   tls.RequireAnyClientCert,
-			Certificates: certs,
-			CipherSuites: []uint16{
-				tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-				tls.TLS_RSA_WITH_RC4_128_SHA,
-				tls.TLS_RSA_WITH_AES_128_CBC_SHA,
-				// tls.TLS_RSA_WITH_RC4_128_MD5,
-			},
-		})
-		go func() {
-			err := st.TLS.HandshakeContext(st.Context)
-			if err != nil {
-				log.WithError(err).Debug("TLS: Handshake error")
-				return
-			}
-			log.Debug("TLS: handshake done")
-			p.handshakeFinished(st)
-		}()
+		st = p.tlsInit(st)
 	} else if len(p.Data) > 0 {
 		log.Debug("TLS: Updating buffer with new TLS data from packet")
 		if p.Flags&FlagLengthIncluded != 0 && st.Conn.expectedWriterByteCount == 0 {
@@ -158,7 +132,33 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 	return p.startChunkedTransfer(st.Conn.OutboundData(), st)
 }
 
-func (p *Payload) handshakeFinished(st *State) {
+func (p *Payload) tlsInit(st *State) *State {
+	log.Debug("TLS: no TLS connection in state yet, starting connection")
+	st.Context, st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
+	st.Conn = NewBuffConn(p.Data, st.Context)
+	st.TLS = tls.Server(st.Conn, &tls.Config{
+		GetConfigForClient: func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
+			log.Debugf("TLS: ClientHello: %+v\n", ch)
+			st.ClientHello = ch
+			return nil, nil
+		},
+		ClientAuth:   tls.RequireAnyClientCert,
+		Certificates: certs,
+	})
+	go func() {
+		err := st.TLS.HandshakeContext(st.Context)
+		if err != nil {
+			log.WithError(err).Debug("TLS: Handshake error")
+			// TODO: Send a NAK to the client
+			return
+		}
+		log.Debug("TLS: handshake done")
+		p.tlsHandshakeFinished(st)
+	}()
+	return st
+}
+
+func (p *Payload) tlsHandshakeFinished(st *State) {
 	cs := st.TLS.ConnectionState()
 	label := "client EAP encryption"
 	var context []byte

@@ -74,22 +74,26 @@ func (conn BuffConn) NeedsMoreData() bool {
 func (conn *BuffConn) Read(p []byte) (int, error) {
 	d, err := retry.DoWithData(
 		func() (int, error) {
-			n, err := conn.reader.Read(p)
-			if n == 0 {
+			if conn.reader.Len() == 0 {
 				log.Debugf("TLS(buffcon): Attempted read %d from empty buffer, stalling...", len(p))
 				return 0, errStall
 			}
-			if conn.expectedWriterByteCount > 0 && conn.writtenByteCount < int(conn.expectedWriterByteCount) {
-				log.Debugf("TLS(buffcon): Attempted read %d while waiting for bytes %d, stalling...", len(p), conn.expectedWriterByteCount-conn.reader.Len())
-				return 0, errStall
-			}
-			if conn.expectedWriterByteCount > 0 && conn.writtenByteCount == int(conn.expectedWriterByteCount) {
-				conn.expectedWriterByteCount = 0
+			if conn.expectedWriterByteCount > 0 {
+				// If we're waiting for more data, we need to stall
+				if conn.writtenByteCount < int(conn.expectedWriterByteCount) {
+					log.Debugf("TLS(buffcon): Attempted read %d while waiting for bytes %d, stalling...", len(p), conn.expectedWriterByteCount-conn.reader.Len())
+					return 0, errStall
+				}
+				// If we have all the data, reset how much we're expecting to still get
+				if conn.writtenByteCount == int(conn.expectedWriterByteCount) {
+					conn.expectedWriterByteCount = 0
+				}
 			}
 			if conn.reader.Len() == 0 {
 				conn.writtenByteCount = 0
 			}
-			log.Debugf("TLS(buffcon): Read: %d from %d", len(p), n)
+			n, err := conn.reader.Read(p)
+			log.Debugf("TLS(buffcon): Read: %d into %d (total %d)", n, len(p), conn.reader.Len())
 			return n, err
 		},
 		conn.retryOptions...,

@@ -33,7 +33,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 
 	rres := r.Response(radius.CodeAccessChallenge)
 	if p, ok := res.Payload.(protocol.EmptyPayload); ok {
-		// This is a bit hacky here
+		// TODO: This is a bit hacky here
 		res.code = CodeSuccess
 		res.id -= 1
 		rres = p.ModifyPacket(rres)
