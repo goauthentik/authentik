@@ -159,6 +159,7 @@ func (p *Payload) tlsHandshakeFinished(ctx protocol.Context) {
 	ctx.Log().Debugf("TLS: ksm % x %v", ksm, err)
 	p.st.MPPEKey = ksm
 	p.st.HandshakeDone = true
+	ctx.ProtocolSettings().(Settings).HandshakeSuccessful(ctx, cs.PeerCertificates)
 }
 
 func (p *Payload) startChunkedTransfer(data []byte) *Payload {
