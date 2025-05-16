@@ -35,14 +35,14 @@ type RadiusServer struct {
 	ac          *ak.APIController
 	cryptoStore *ak.CryptoStore
 
-	providers []*ProviderInstance
+	providers map[int32]*ProviderInstance
 }
 
 func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
 		log:         log.WithField("logger", "authentik.outpost.radius"),
 		ac:          ac,
-		providers:   []*ProviderInstance{},
+		providers:   map[int32]*ProviderInstance{},
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 	}
 	rs.s = radius.PacketServer{
@@ -103,7 +103,8 @@ func (rs *RadiusServer) Start() error {
 	}()
 	go func() {
 		defer wg.Done()
-		err := rs.StartRadiusServer()
+		rs.log.WithField("listen", rs.s.Addr).Info("Starting radius server")
+		err := rs.s.ListenAndServe()
 		if err != nil {
 			panic(err)
 		}
