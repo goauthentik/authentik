@@ -82,12 +82,10 @@ func (p *Packet) GetChallengeForType(ctx *context, t protocol.Type) *Packet {
 	var payload any
 	switch t {
 	case tls.TypeTLS:
-		// TODO: rewrite this
 		if _, ok := p.Payload.(*tls.Payload); !ok {
 			p.Payload = &tls.Payload{}
 			p.Payload.Decode(p.rawPayload)
 		}
-		// this
 		payload = p.Payload.(*tls.Payload).Handle(ctx)
 	}
 	if payload != nil {
@@ -97,18 +95,12 @@ func (p *Packet) GetChallengeForType(ctx *context, t protocol.Type) *Packet {
 }
 
 func (p *Packet) setMessageAuthenticator(rp *radius.Packet) {
-	err := rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
-	if err != nil {
-		panic(err)
-	}
+	_ = rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
 	hash := hmac.New(md5.New, rp.Secret)
 	encode, err := rp.MarshalBinary()
 	if err != nil {
 		panic(err)
 	}
 	hash.Write(encode)
-	err = rfc2869.MessageAuthenticator_Set(rp, hash.Sum(nil))
-	if err != nil {
-		panic(err)
-	}
+	_ = rfc2869.MessageAuthenticator_Set(rp, hash.Sum(nil))
 }

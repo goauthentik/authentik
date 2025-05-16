@@ -67,7 +67,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	p.st = ctx.GetProtocolState(NewState).(*State)
 	defer ctx.SetProtocolState(p.st)
 	if !p.st.HasStarted {
-		log.Debug("TLS: handshake starting")
+		ctx.Log().Debug("TLS: handshake starting")
 		p.st.HasStarted = true
 		return &Payload{
 			Flags: FlagTLSStart,
@@ -77,12 +77,12 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	if p.st.TLS == nil {
 		p.tlsInit(ctx)
 	} else if len(p.Data) > 0 {
-		log.Debug("TLS: Updating buffer with new TLS data from packet")
+		ctx.Log().Debug("TLS: Updating buffer with new TLS data from packet")
 		if p.Flags&FlagLengthIncluded != 0 && p.st.Conn.expectedWriterByteCount == 0 {
-			log.Debugf("TLS: Expecting %d total bytes, will buffer", p.Length)
+			ctx.Log().Debugf("TLS: Expecting %d total bytes, will buffer", p.Length)
 			p.st.Conn.expectedWriterByteCount = int(p.Length)
 		} else if p.Flags&FlagLengthIncluded != 0 {
-			log.Debug("TLS: No length included, not buffering")
+			ctx.Log().Debug("TLS: No length included, not buffering")
 			p.st.Conn.expectedWriterByteCount = 0
 		}
 		p.st.Conn.UpdateData(p.Data)
@@ -115,12 +115,12 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 }
 
 func (p *Payload) tlsInit(ctx protocol.Context) {
-	log.Debug("TLS: no TLS connection in state yet, starting connection")
+	ctx.Log().Debug("TLS: no TLS connection in state yet, starting connection")
 	p.st.Context, p.st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 	p.st.Conn = NewBuffConn(p.Data, p.st.Context)
 	cfg := ctx.ProtocolSettings().(Settings).Config.Clone()
 	cfg.GetConfigForClient = func(chi *tls.ClientHelloInfo) (*tls.Config, error) {
-		log.Debugf("TLS: ClientHello: %+v\n", chi)
+		ctx.Log().Debugf("TLS: ClientHello: %+v\n", chi)
 		p.st.ClientHello = chi
 		return nil, nil
 	}
@@ -128,35 +128,35 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 	go func() {
 		err := p.st.TLS.HandshakeContext(p.st.Context)
 		if err != nil {
-			log.WithError(err).Debug("TLS: Handshake error")
+			ctx.Log().WithError(err).Debug("TLS: Handshake error")
 			ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
 				return p
 			})
 			return
 		}
-		log.Debug("TLS: handshake done")
-		p.tlsHandshakeFinished()
+		ctx.Log().Debug("TLS: handshake done")
+		p.tlsHandshakeFinished(ctx)
 	}()
 }
 
-func (p *Payload) tlsHandshakeFinished() {
+func (p *Payload) tlsHandshakeFinished(ctx protocol.Context) {
 	cs := p.st.TLS.ConnectionState()
 	label := "client EAP encryption"
 	var context []byte
 	switch cs.Version {
 	case tls.VersionTLS10:
-		log.Debugf("TLS: Version %d (1.0)", cs.Version)
+		ctx.Log().Debugf("TLS: Version %d (1.0)", cs.Version)
 	case tls.VersionTLS11:
-		log.Debugf("TLS: Version %d (1.1)", cs.Version)
+		ctx.Log().Debugf("TLS: Version %d (1.1)", cs.Version)
 	case tls.VersionTLS12:
-		log.Debugf("TLS: Version %d (1.2)", cs.Version)
+		ctx.Log().Debugf("TLS: Version %d (1.2)", cs.Version)
 	case tls.VersionTLS13:
-		log.Debugf("TLS: Version %d (1.3)", cs.Version)
+		ctx.Log().Debugf("TLS: Version %d (1.3)", cs.Version)
 		label = "EXPORTER_EAP_TLS_Key_Material"
 		context = []byte{byte(TypeTLS)}
 	}
 	ksm, err := cs.ExportKeyingMaterial(label, context, 64+64)
-	log.Debugf("TLS: ksm % x %v", ksm, err)
+	ctx.Log().Debugf("TLS: ksm % x %v", ksm, err)
 	p.st.MPPEKey = ksm
 	p.st.HandshakeDone = true
 }
