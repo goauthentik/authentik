@@ -16,32 +16,25 @@ const (
 	CodeRequest  Code = 1
 	CodeResponse Code = 2
 	CodeSuccess  Code = 3
-)
-
-type Type uint8
-
-const (
-	TypeIdentity     Type = 1
-	TypeMD5Challenge Type = 4
-	TypeTLS          Type = 13
+	CodeFailure  Code = 4
 )
 
 type Packet struct {
 	code       Code
 	id         uint8
 	length     uint16
-	msgType    Type
+	msgType    protocol.Type
 	rawPayload []byte
 	Payload    protocol.Payload
 }
 
 type PayloadWriter struct{}
 
-func emptyPayload(t Type) protocol.Payload {
+func emptyPayload(t protocol.Type) protocol.Payload {
 	switch t {
-	case TypeIdentity:
+	case protocol.TypeIdentity:
 		return &IdentityPayload{}
-	case TypeTLS:
+	case tls.TypeTLS:
 		return &tls.Payload{}
 	}
 	return nil
@@ -56,7 +49,7 @@ func Decode(raw []byte) (*Packet, error) {
 		return nil, errors.New("mismatched packet length")
 	}
 	if len(raw) > 4 && (packet.code == CodeRequest || packet.code == CodeResponse) {
-		packet.msgType = Type(raw[4])
+		packet.msgType = protocol.Type(raw[4])
 	}
 	packet.Payload = emptyPayload(packet.msgType)
 	packet.rawPayload = raw[5:]
@@ -73,14 +66,16 @@ func (p *Packet) Encode() ([]byte, error) {
 	buff[0] = uint8(p.code)
 	buff[1] = uint8(p.id)
 
-	payloadBuffer, err := p.Payload.Encode()
-	if err != nil {
-		return buff, err
+	if p.Payload != nil {
+		payloadBuffer, err := p.Payload.Encode()
+		if err != nil {
+			return buff, err
+		}
+		if p.code == CodeRequest || p.code == CodeResponse {
+			buff = append(buff, uint8(p.msgType))
+		}
+		buff = append(buff, payloadBuffer...)
 	}
-	if p.code == CodeRequest || p.code == CodeResponse {
-		buff = append(buff, uint8(p.msgType))
-	}
-	buff = append(buff, payloadBuffer...)
 	binary.BigEndian.PutUint16(buff[2:], uint16(len(buff)))
 	return buff, nil
 }

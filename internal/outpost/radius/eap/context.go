@@ -7,24 +7,31 @@ import (
 )
 
 type context struct {
-	state interface{}
-	log   *log.Entry
+	state       interface{}
+	log         *log.Entry
+	settings    interface{}
+	endStatus   protocol.Status
+	endModifier func(p *radius.Packet) *radius.Packet
 }
 
 func (ctx context) ProtocolSettings() interface{} {
-	return nil
+	return ctx.settings
 }
 
-func (ctx context) GetProtocolState(def func(protocol.Context) interface{}) interface{} {
+func (ctx *context) GetProtocolState(def func(protocol.Context) interface{}) interface{} {
+	if ctx.state == nil {
+		ctx.state = def(ctx)
+	}
 	return ctx.state
 }
 
-func (ctx context) SetProtocolState(st interface{}) {
+func (ctx *context) SetProtocolState(st interface{}) {
 	ctx.state = st
 }
 
-func (ctx context) EndInnerProtocol(func(p *radius.Packet) *radius.Packet) {
-
+func (ctx *context) EndInnerProtocol(st protocol.Status, mf func(p *radius.Packet) *radius.Packet) {
+	ctx.endStatus = st
+	ctx.endModifier = mf
 }
 
 func (ctx context) Log() *log.Entry {
