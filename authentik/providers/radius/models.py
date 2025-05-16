@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import PropertyMapping, Provider
+from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
@@ -36,6 +37,13 @@ class RadiusProvider(OutpostModel, Provider):
             "users that will bind to this provider have a TOTP device configured, as otherwise "
             "a password may incorrectly be rejected if it contains a semicolon."
         ),
+    )
+
+    certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.CASCADE,
+        default=None,
+        null=True
     )
 
     @property

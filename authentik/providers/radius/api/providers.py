@@ -44,6 +44,7 @@ class RadiusProviderSerializer(ProviderSerializer):
             "shared_secret",
             "outpost_set",
             "mfa_support",
+            "certificate",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -79,6 +80,7 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
             "client_networks",
             "shared_secret",
             "mfa_support",
+            "certificate",
         ]
 
 

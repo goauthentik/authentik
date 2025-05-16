@@ -23,24 +23,27 @@ type ProviderInstance struct {
 	appSlug    string
 	flowSlug   string
 	providerId int32
+	certId     string
 	s          *RadiusServer
 	log        *log.Entry
 	eapState   map[string]*eap.State
 }
 
 type RadiusServer struct {
-	s   radius.PacketServer
-	log *log.Entry
-	ac  *ak.APIController
+	s           radius.PacketServer
+	log         *log.Entry
+	ac          *ak.APIController
+	cryptoStore *ak.CryptoStore
 
 	providers []*ProviderInstance
 }
 
 func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RadiusServer{
-		log:       log.WithField("logger", "authentik.outpost.radius"),
-		ac:        ac,
-		providers: []*ProviderInstance{},
+		log:         log.WithField("logger", "authentik.outpost.radius"),
+		ac:          ac,
+		providers:   []*ProviderInstance{},
+		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 	}
 	rs.s = radius.PacketServer{
 		Handler:      rs,

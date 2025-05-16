@@ -42,7 +42,7 @@ func NewBuffConn(initialData []byte, ctx context.Context) *BuffConn {
 var errStall = errors.New("Stall")
 
 func (conn BuffConn) OutboundData() []byte {
-	d, err := retry.DoWithData(
+	d, _ := retry.DoWithData(
 		func() ([]byte, error) {
 			b := conn.writer.Bytes()
 			if len(b) < 1 {
@@ -52,9 +52,6 @@ func (conn BuffConn) OutboundData() []byte {
 		},
 		conn.retryOptions...,
 	)
-	if err != nil {
-		return []byte{}
-	}
 	return d
 }
 

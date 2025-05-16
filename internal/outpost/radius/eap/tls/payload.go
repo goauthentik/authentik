@@ -8,6 +8,7 @@ import (
 	"slices"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
@@ -104,7 +105,21 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	}
 	if p.st.Conn.writer.Len() == 0 && p.st.HandshakeDone {
 		defer p.st.ContextCancel()
-		ctx.EndInnerProtocol(protocol.StatusSuccess, func(r *radius.Packet) *radius.Packet {
+		// If we don't have a final status from the handshake finished function, stall for time
+		pst, _ := retry.DoWithData(
+			func() (protocol.Status, error) {
+				if p.st.FinalStatus == protocol.StatusUnknown {
+					return p.st.FinalStatus, errStall
+				}
+				return p.st.FinalStatus, nil
+			},
+			retry.Context(p.st.Context),
+			retry.Delay(10*time.Microsecond),
+			retry.DelayType(retry.BackOffDelay),
+			retry.MaxDelay(100*time.Millisecond),
+			retry.Attempts(0),
+		)
+		ctx.EndInnerProtocol(pst, func(r *radius.Packet) *radius.Packet {
 			microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
 			microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
 			return r
@@ -129,6 +144,7 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 		err := p.st.TLS.HandshakeContext(p.st.Context)
 		if err != nil {
 			ctx.Log().WithError(err).Debug("TLS: Handshake error")
+			p.st.FinalStatus = protocol.StatusError
 			ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
 				return p
 			})
@@ -159,7 +175,7 @@ func (p *Payload) tlsHandshakeFinished(ctx protocol.Context) {
 	ctx.Log().Debugf("TLS: ksm % x %v", ksm, err)
 	p.st.MPPEKey = ksm
 	p.st.HandshakeDone = true
-	ctx.ProtocolSettings().(Settings).HandshakeSuccessful(ctx, cs.PeerCertificates)
+	p.st.FinalStatus = ctx.ProtocolSettings().(Settings).HandshakeSuccessful(ctx, cs.PeerCertificates)
 }
 
 func (p *Payload) startChunkedTransfer(data []byte) *Payload {

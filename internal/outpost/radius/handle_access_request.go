@@ -128,13 +128,18 @@ func (pi *ProviderInstance) SetEAPState(key string, state *eap.State) {
 }
 
 func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
-	// Testing
-	cert, err := ttls.LoadX509KeyPair(
-		"../t/ca/out/cert_jens-mbp.lab.beryju.org.pem",
-		"../t/ca/out/cert_jens-mbp.lab.beryju.org.key",
-	)
-	if err != nil {
-		panic(err)
+	certId := pi.certId
+	if certId == "" {
+		return eap.Settings{
+			ProtocolsToOffer: []protocol.Type{},
+		}
+	}
+
+	cert := pi.s.cryptoStore.Get(certId)
+	if cert == nil {
+		return eap.Settings{
+			ProtocolsToOffer: []protocol.Type{},
+		}
 	}
 
 	return eap.Settings{
@@ -142,19 +147,18 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 		ProtocolSettings: map[protocol.Type]interface{}{
 			tls.TypeTLS: tls.Settings{
 				Config: &ttls.Config{
-					Certificates: []ttls.Certificate{cert},
+					Certificates: []ttls.Certificate{*cert},
 					ClientAuth:   ttls.RequireAnyClientCert,
 				},
-				HandshakeSuccessful: func(ctx protocol.Context, certs []*x509.Certificate) {
+				HandshakeSuccessful: func(ctx protocol.Context, certs []*x509.Certificate) protocol.Status {
+					ctx.Log().Debug("Starting authn flow")
 					pem := pem.EncodeToMemory(&pem.Block{
 						Type:  "CERTIFICATE",
 						Bytes: certs[0].Raw,
 					})
 
 					fe := flow.NewFlowExecutor(context.Background(), pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
-						// "username":  username,
-						// "client":    r.RemoteAddr(),
-						// "requestId": r.ID(),
+						"client": utils.GetIP(ctx.Packet().RemoteAddr),
 					})
 					fe.DelegateClientIP(utils.GetIP(ctx.Packet().RemoteAddr))
 					fe.Params.Add("goauthentik.io/outpost/radius", "true")
@@ -162,16 +166,14 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 
 					passed, err := fe.Execute()
 					if err != nil {
-						panic(err)
+						ctx.Log().WithError(err).Warning("failed to execute flow")
+						return protocol.StatusError
 					}
+					ctx.Log().WithField("passed", passed).Debug("Finished flow")
 					if passed {
-						ctx.EndInnerProtocol(protocol.StatusSuccess, func(p *radius.Packet) *radius.Packet {
-							return p
-						})
+						return protocol.StatusSuccess
 					} else {
-						ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
-							return p
-						})
+						return protocol.StatusError
 					}
 				},
 			},
