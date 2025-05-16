@@ -27,7 +27,8 @@
     "workspaces": [
         "./packages/*",
         "./web/packages/*",
-        "./web"
+        "./web",
+        "./website"
     ],
     "prettier": "./packages/prettier-config/index.js"
 }

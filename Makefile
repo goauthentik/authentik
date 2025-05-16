@@ -141,7 +141,8 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	cd ./${GEN_API_TS} && npm link
-	npm link @goauthentik/api
+	npm link @goauthentik/api -w @goauthentik/web
+
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
 		--rm -v ${PWD}:/local \

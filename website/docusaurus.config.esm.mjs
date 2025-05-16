@@ -6,7 +6,11 @@
  * @import { BuildUrlValues } from "remark-github";
  */
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
+import { MonoRepoRoot } from "@goauthentik/monorepo";
+import { cp } from "node:fs/promises";
 import { createRequire } from "node:module";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
@@ -16,7 +20,30 @@ import remarkSupportDirective from "./remark/support-directive.mjs";
 import remarkVersionDirective from "./remark/version-directive.mjs";
 
 const require = createRequire(import.meta.url);
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const staticDirectory = resolve(__dirname, "static");
 
+/**
+ * @param {string} fileName
+ */
+function copyStaticFile(fileName) {
+    const source = resolve(MonoRepoRoot, fileName);
+    const destination = resolve(staticDirectory, fileName);
+
+    return cp(source, destination).catch((error) => {
+        const wrapper = new Error(`Failed to copy file "${source}" to "${destination}"`);
+
+        wrapper.cause = error;
+
+        throw wrapper;
+    });
+}
+
+await Promise.all([
+    // ---
+    copyStaticFile("docker-compose.yml"),
+    copyStaticFile("schema.yml"),
+]);
 /**
  * Documentation site configuration for Docusaurus.
  */
