@@ -363,6 +363,9 @@ def django_db_config(config: ConfigLoader | None = None) -> dict:
         pool_options = config.get_dict_from_b64_json("postgresql.pool_options", True)
         if not pool_options:
             pool_options = True
+    # FIXME: Temporarily force pool to be deactivated.
+    # See https://github.com/goauthentik/authentik/issues/14320
+    pool_options = False
 
     db = {
         "default": {
