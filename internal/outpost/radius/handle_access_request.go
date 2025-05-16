@@ -1,8 +1,12 @@
 package radius
 
 import (
+	"context"
 	ttls "crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
+	"encoding/pem"
+	"net/url"
 
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
@@ -11,6 +15,7 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
+	"goauthentik.io/internal/utils"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
 	"layeh.com/radius/rfc2869"
@@ -111,10 +116,8 @@ func (rs *RadiusServer) Handle_AccessRequest_EAP(w radius.ResponseWriter, r *Rad
 		rs.log.WithError(err).Warning("failed to parse EAP packet")
 		return
 	}
-	ep.Handle(r.pi, w, r.Packet)
+	ep.Handle(r.pi, w, r.Request)
 }
-
-// -----------
 
 func (pi *ProviderInstance) GetEAPState(key string) *eap.State {
 	return pi.eapState[key]
@@ -141,6 +144,35 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 				Config: &ttls.Config{
 					Certificates: []ttls.Certificate{cert},
 					ClientAuth:   ttls.RequireAnyClientCert,
+				},
+				HandshakeSuccessful: func(ctx protocol.Context, certs []*x509.Certificate) {
+					pem := pem.EncodeToMemory(&pem.Block{
+						Type:  "CERTIFICATE",
+						Bytes: certs[0].Raw,
+					})
+
+					fe := flow.NewFlowExecutor(context.Background(), pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
+						// "username":  username,
+						// "client":    r.RemoteAddr(),
+						// "requestId": r.ID(),
+					})
+					fe.DelegateClientIP(utils.GetIP(ctx.Packet().RemoteAddr))
+					fe.Params.Add("goauthentik.io/outpost/radius", "true")
+					fe.AddHeader("X-Authentik-Outpost-Certificate", url.QueryEscape(string(pem)))
+
+					passed, err := fe.Execute()
+					if err != nil {
+						panic(err)
+					}
+					if passed {
+						ctx.EndInnerProtocol(protocol.StatusSuccess, func(p *radius.Packet) *radius.Packet {
+							return p
+						})
+					} else {
+						ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
+							return p
+						})
+					}
 				},
 			},
 		},

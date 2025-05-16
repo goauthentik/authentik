@@ -14,8 +14,8 @@ import (
 	"layeh.com/radius/rfc2869"
 )
 
-func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Packet) {
-	rst := rfc2865.State_GetString(r)
+func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Request) {
+	rst := rfc2865.State_GetString(r.Packet)
 	if rst == "" {
 		rst = base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(12))
 	}
@@ -30,6 +30,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	nextChallengeToOffer := st.ChallengesToOffer[0]
 
 	ctx := &context{
+		req:      r,
 		state:    st.TypeState[nextChallengeToOffer],
 		log:      log.WithField("type", nextChallengeToOffer),
 		settings: stm.GetEAPSettings().ProtocolSettings[nextChallengeToOffer],

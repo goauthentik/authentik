@@ -7,11 +7,16 @@ import (
 )
 
 type context struct {
+	req         *radius.Request
 	state       interface{}
 	log         *log.Entry
 	settings    interface{}
 	endStatus   protocol.Status
 	endModifier func(p *radius.Packet) *radius.Packet
+}
+
+func (ctx context) Packet() *radius.Request {
+	return ctx.req
 }
 
 func (ctx context) ProtocolSettings() interface{} {
@@ -30,6 +35,9 @@ func (ctx *context) SetProtocolState(st interface{}) {
 }
 
 func (ctx *context) EndInnerProtocol(st protocol.Status, mf func(p *radius.Packet) *radius.Packet) {
+	if ctx.endStatus != protocol.StatusUnknown {
+		return
+	}
 	ctx.endStatus = st
 	ctx.endModifier = mf
 }

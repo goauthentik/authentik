@@ -14,7 +14,7 @@ const (
 )
 
 type Context interface {
-	// GlobalState()
+	Packet() *radius.Request
 
 	ProtocolSettings() interface{}
 	GetProtocolState(def func(Context) interface{}) interface{}
