@@ -200,7 +200,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: web/dist
-          key: ${{ runner.os }}-web-${{ hashFiles('web/package-lock.json', 'web/package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
+          key: ${{ runner.os }}-web-${{ hashFiles('package-lock.json', 'web/src/**', 'web/packages/sfe/src/**') }}-b
       - name: Prepare Web UI
         if: steps.cache-web.outputs.cache-hit != 'true'
         run: |
