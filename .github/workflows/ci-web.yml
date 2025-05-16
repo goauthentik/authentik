@@ -19,7 +19,6 @@ jobs:
       matrix:
         command:
           - lint
-          - lint:lockfile
           - prettier-check
         project:
           - web

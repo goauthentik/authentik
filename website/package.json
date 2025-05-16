@@ -9,7 +9,6 @@
         "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "serve": "docusaurus serve",

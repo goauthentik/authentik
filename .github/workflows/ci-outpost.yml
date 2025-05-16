@@ -150,9 +150,11 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Generate API
         run: make gen-client-go
-      - name: Build web
+      - name: Prepare Dependencies
         run: |
           npm ci
+      - name: Run ESBuild
+        run: |
           npm run build-proxy -w @goauthentik/web
       - name: Build outpost
         run: |
