@@ -90,8 +90,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 
 	if st.TLS == nil {
 		log.Debug("TLS: no TLS connection in state yet, starting connection")
-		ctx, cancel := context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
-		st.Context = ctx
+		st.Context, st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 		st.Conn = NewBuffConn(p.Data, st.Context)
 		st.TLS = tls.Server(st.Conn, &tls.Config{
 			GetConfigForClient: func(ch *tls.ClientHelloInfo) (*tls.Config, error) {
@@ -109,7 +108,6 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 			},
 		})
 		go func() {
-			defer cancel()
 			err := st.TLS.HandshakeContext(st.Context)
 			if err != nil {
 				log.WithError(err).Debug("TLS: Handshake error")
@@ -145,6 +143,7 @@ func (p *Payload) Handle(stt any) (protocol.Payload, *State) {
 		return p.sendNextChunk(st)
 	}
 	if st.Conn.writer.Len() == 0 && st.HandshakeDone {
+		defer st.ContextCancel()
 		return protocol.EmptyPayload{
 			ModifyPacket: func(p *radius.Packet) *radius.Packet {
 				p.Code = radius.CodeAccessAccept

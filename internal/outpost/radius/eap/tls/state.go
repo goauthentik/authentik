@@ -15,6 +15,7 @@ type State struct {
 	TLS              *tls.Conn
 	Conn             *BuffConn
 	Context          context.Context
+	ContextCancel    context.CancelFunc
 }
 
 func NewState() *State {
