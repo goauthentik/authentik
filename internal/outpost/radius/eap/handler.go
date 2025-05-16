@@ -14,6 +14,14 @@ import (
 	"layeh.com/radius/rfc2869"
 )
 
+func sendErrorResponse(w radius.ResponseWriter, r *radius.Request) {
+	rres := r.Response(radius.CodeAccessReject)
+	err := w.Write(rres)
+	if err != nil {
+		log.WithError(err).Warning("failed to send response")
+	}
+}
+
 func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Request) {
 	rst := rfc2865.State_GetString(r.Packet)
 	if rst == "" {
@@ -25,7 +33,9 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Req
 		st = BlankState(stm.GetEAPSettings())
 	}
 	if len(st.ChallengesToOffer) < 1 {
-		panic("No more challenges")
+		log.Error("No more challenges to offer")
+		sendErrorResponse(w, r)
+		return
 	}
 	nextChallengeToOffer := st.ChallengesToOffer[0]
 
@@ -63,14 +73,19 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Req
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
 	if err != nil {
-		panic(err)
+		log.WithError(err).Warning("failed to encode response")
+		sendErrorResponse(w, r)
 	}
-	log.WithField("length", len(eapEncoded)).Debug("EAP: encapsulating challenge")
+	log.WithField("length", len(eapEncoded)).Debug("EAP: encapsulated challenge")
 	rfc2869.EAPMessage_Set(rres, eapEncoded)
-	p.setMessageAuthenticator(rres)
+	err = p.setMessageAuthenticator(rres)
+	if err != nil {
+		log.WithError(err).Warning("failed to send message authenticator")
+		sendErrorResponse(w, r)
+	}
 	err = w.Write(rres)
 	if err != nil {
-		panic(err)
+		log.WithError(err).Warning("failed to send response")
 	}
 }
 
@@ -95,13 +110,14 @@ func (p *Packet) GetChallengeForType(ctx *context, t protocol.Type) *Packet {
 	return res
 }
 
-func (p *Packet) setMessageAuthenticator(rp *radius.Packet) {
+func (p *Packet) setMessageAuthenticator(rp *radius.Packet) error {
 	_ = rfc2869.MessageAuthenticator_Set(rp, make([]byte, 16))
 	hash := hmac.New(md5.New, rp.Secret)
 	encode, err := rp.MarshalBinary()
 	if err != nil {
-		panic(err)
+		return err
 	}
 	hash.Write(encode)
 	_ = rfc2869.MessageAuthenticator_Set(rp, hash.Sum(nil))
+	return nil
 }

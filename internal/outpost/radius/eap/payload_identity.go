@@ -10,5 +10,5 @@ func (ip *IdentityPayload) Decode(raw []byte) error {
 }
 
 func (ip *IdentityPayload) Encode() ([]byte, error) {
-	panic("Identity encode")
+	return []byte{}, nil
 }
