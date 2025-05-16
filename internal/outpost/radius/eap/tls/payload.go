@@ -18,6 +18,8 @@ import (
 const maxChunkSize = 1000
 const staleConnectionTimeout = 10
 
+const TypeTLS protocol.Type = 13
+
 type Payload struct {
 	Flags  Flag
 	Length uint32
@@ -102,8 +104,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	}
 	if p.st.Conn.writer.Len() == 0 && p.st.HandshakeDone {
 		defer p.st.ContextCancel()
-		ctx.EndInnerProtocol(func(r *radius.Packet) *radius.Packet {
-			r.Code = radius.CodeAccessAccept
+		ctx.EndInnerProtocol(protocol.StatusSuccess, func(r *radius.Packet) *radius.Packet {
 			microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
 			microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
 			return r
@@ -128,7 +129,9 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 		err := p.st.TLS.HandshakeContext(p.st.Context)
 		if err != nil {
 			log.WithError(err).Debug("TLS: Handshake error")
-			// TODO: Send a NAK to the client
+			ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
+				return p
+			})
 			return
 		}
 		log.Debug("TLS: handshake done")
@@ -150,7 +153,7 @@ func (p *Payload) tlsHandshakeFinished() {
 	case tls.VersionTLS13:
 		log.Debugf("TLS: Version %d (1.3)", cs.Version)
 		label = "EXPORTER_EAP_TLS_Key_Material"
-		context = []byte{13}
+		context = []byte{byte(TypeTLS)}
 	}
 	ksm, err := cs.ExportKeyingMaterial(label, context, 64+64)
 	log.Debugf("TLS: ksm % x %v", ksm, err)

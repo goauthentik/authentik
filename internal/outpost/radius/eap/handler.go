@@ -29,9 +29,10 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 	nextChallengeToOffer := st.ChallengesToOffer[0]
 
-	ctx := context{
-		state: st.TypeState[nextChallengeToOffer],
-		log:   log.WithField("type", nextChallengeToOffer),
+	ctx := &context{
+		state:    st.TypeState[nextChallengeToOffer],
+		log:      log.WithField("type", nextChallengeToOffer),
+		settings: stm.GetEAPSettings().ProtocolSettings[nextChallengeToOffer],
 	}
 
 	res := p.GetChallengeForType(ctx, nextChallengeToOffer)
@@ -39,11 +40,24 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	stm.SetEAPState(rst, st)
 
 	rres := r.Response(radius.CodeAccessChallenge)
-	if p, ok := res.Payload.(protocol.EmptyPayload); ok {
-		// TODO: This is a bit hacky here
+	switch ctx.endStatus {
+	case protocol.StatusSuccess:
 		res.code = CodeSuccess
 		res.id -= 1
-		rres = p.ModifyPacket(rres)
+		rres = ctx.endModifier(rres)
+		st.ChallengesToOffer = st.ChallengesToOffer[1:]
+		if len(st.ChallengesToOffer) < 1 {
+			rres.Code = radius.CodeAccessAccept
+		}
+	case protocol.StatusError:
+		res.code = CodeFailure
+		res.id -= 1
+		st.ChallengesToOffer = st.ChallengesToOffer[1:]
+		rres = ctx.endModifier(rres)
+		if len(st.ChallengesToOffer) < 1 {
+			rres.Code = radius.CodeAccessReject
+		}
+	case protocol.StatusUnknown:
 	}
 	rfc2865.State_SetString(rres, rst)
 	eapEncoded, err := res.Encode()
@@ -59,7 +73,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 }
 
-func (p *Packet) GetChallengeForType(ctx context, t Type) *Packet {
+func (p *Packet) GetChallengeForType(ctx *context, t protocol.Type) *Packet {
 	res := &Packet{
 		code:    CodeRequest,
 		id:      p.id + 1,
@@ -67,7 +81,7 @@ func (p *Packet) GetChallengeForType(ctx context, t Type) *Packet {
 	}
 	var payload any
 	switch t {
-	case TypeTLS:
+	case tls.TypeTLS:
 		// TODO: rewrite this
 		if _, ok := p.Payload.(*tls.Payload); !ok {
 			p.Payload = &tls.Payload{}
@@ -76,8 +90,9 @@ func (p *Packet) GetChallengeForType(ctx context, t Type) *Packet {
 		// this
 		payload = p.Payload.(*tls.Payload).Handle(ctx)
 	}
-	// st.TypeState[t] = tst
-	res.Payload = payload.(protocol.Payload)
+	if payload != nil {
+		res.Payload = payload.(protocol.Payload)
+	}
 	return res
 }
 

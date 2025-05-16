@@ -1,10 +1,14 @@
 package eap
 
-import "slices"
+import (
+	"slices"
+
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
+)
 
 type Settings struct {
-	ProtocolsToOffer []Type
-	ProtocolSettings map[Type]interface{}
+	ProtocolsToOffer []protocol.Type
+	ProtocolSettings map[protocol.Type]interface{}
 }
 
 type StateManager interface {
@@ -14,13 +18,13 @@ type StateManager interface {
 }
 
 type State struct {
-	ChallengesToOffer []Type
-	TypeState         map[Type]any
+	ChallengesToOffer []protocol.Type
+	TypeState         map[protocol.Type]any
 }
 
 func BlankState(settings Settings) *State {
 	return &State{
 		ChallengesToOffer: slices.Clone(settings.ProtocolsToOffer),
-		TypeState:         map[Type]any{},
+		TypeState:         map[protocol.Type]any{},
 	}
 }

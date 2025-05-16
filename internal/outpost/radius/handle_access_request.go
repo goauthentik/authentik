@@ -8,6 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/radius/eap"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"layeh.com/radius"
@@ -134,9 +135,9 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 	}
 
 	return eap.Settings{
-		ProtocolsToOffer: []eap.Type{eap.TypeTLS},
-		ProtocolSettings: map[eap.Type]interface{}{
-			eap.TypeTLS: tls.Settings{
+		ProtocolsToOffer: []protocol.Type{tls.TypeTLS},
+		ProtocolSettings: map[protocol.Type]interface{}{
+			tls.TypeTLS: tls.Settings{
 				Config: &ttls.Config{
 					Certificates: []ttls.Certificate{cert},
 					ClientAuth:   ttls.RequireAnyClientCert,
