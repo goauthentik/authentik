@@ -11,6 +11,7 @@ type State struct {
 	HasStarted       bool
 	RemainingChunks  [][]byte
 	HandshakeDone    bool
+	FinalStatus      protocol.Status
 	ClientHello      *tls.ClientHelloInfo
 	MPPEKey          []byte
 	TotalPayloadSize int

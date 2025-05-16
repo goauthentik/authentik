@@ -9,5 +9,5 @@ import (
 
 type Settings struct {
 	Config              *tls.Config
-	HandshakeSuccessful func(ctx protocol.Context, certs []*x509.Certificate)
+	HandshakeSuccessful func(ctx protocol.Context, certs []*x509.Certificate) protocol.Status
 }
