@@ -1,12 +1,14 @@
 package radius
 
 import (
+	ttls "crypto/tls"
 	"encoding/base64"
 
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/radius/eap"
+	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
@@ -122,7 +124,24 @@ func (pi *ProviderInstance) SetEAPState(key string, state *eap.State) {
 }
 
 func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
+	// Testing
+	cert, err := ttls.LoadX509KeyPair(
+		"../t/ca/out/cert_jens-mbp.lab.beryju.org.pem",
+		"../t/ca/out/cert_jens-mbp.lab.beryju.org.key",
+	)
+	if err != nil {
+		panic(err)
+	}
+
 	return eap.Settings{
-		ChallengesToOffer: []eap.Type{eap.TypeTLS},
+		ProtocolsToOffer: []eap.Type{eap.TypeTLS},
+		ProtocolSettings: map[eap.Type]interface{}{
+			eap.TypeTLS: tls.Settings{
+				Config: &ttls.Config{
+					Certificates: []ttls.Certificate{cert},
+					ClientAuth:   ttls.RequireAnyClientCert,
+				},
+			},
+		},
 	}
 }

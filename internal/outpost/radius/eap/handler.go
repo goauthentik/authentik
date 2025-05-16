@@ -28,7 +28,10 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 		panic("No more challenges")
 	}
 	nextChallengeToOffer := st.ChallengesToOffer[0]
-	res, newState := p.GetChallengeForType(st, nextChallengeToOffer)
+
+	ctx := context{}
+
+	res, newState := p.GetChallengeForType(ctx, nextChallengeToOffer)
 	stm.SetEAPState(rst, newState)
 
 	rres := r.Response(radius.CodeAccessChallenge)
@@ -52,21 +55,22 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 }
 
-func (p *Packet) GetChallengeForType(st *State, t Type) (*Packet, *State) {
+func (p *Packet) GetChallengeForType(ctx context[any, any], t Type) *Packet {
 	res := &Packet{
 		code:    CodeRequest,
 		id:      p.id + 1,
 		msgType: t,
 	}
 	var payload any
-	var tst any
 	switch t {
 	case TypeTLS:
+		// TODO: rewrite this
 		if _, ok := p.Payload.(*tls.Payload); !ok {
 			p.Payload = &tls.Payload{}
 			p.Payload.Decode(p.rawPayload)
 		}
-		payload, tst = p.Payload.(*tls.Payload).Handle(st.TypeState[t])
+		// this
+		payload = p.Payload.(*tls.Payload).Handle(ctx)
 	}
 	st.TypeState[t] = tst
 	res.Payload = payload.(protocol.Payload)
