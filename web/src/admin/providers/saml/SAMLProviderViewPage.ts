@@ -134,13 +134,13 @@ export class SAMLProviderViewPage extends AKElement {
             this.provider = prov;
             // Clear existing signing certificate if the provider has none
             if (!this.provider.signingKp) {
-                this.signer = undefined;
+                this.signer = null;
             } else {
                 this.fetchSigningCertificate(this.provider.signingKp);
             }
             // Clear existing verification certificate if the provider has none
             if (!this.provider.verificationKp) {
-                this.verifier = undefined;
+                this.verifier = null;
             } else {
                 this.fetchVerificationCertificate(this.provider.verificationKp);
             }
