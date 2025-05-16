@@ -29,10 +29,14 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 	nextChallengeToOffer := st.ChallengesToOffer[0]
 
-	ctx := context{}
+	ctx := context{
+		state: st.TypeState[nextChallengeToOffer],
+		log:   log.WithField("type", nextChallengeToOffer),
+	}
 
-	res, newState := p.GetChallengeForType(ctx, nextChallengeToOffer)
-	stm.SetEAPState(rst, newState)
+	res := p.GetChallengeForType(ctx, nextChallengeToOffer)
+	st.TypeState[nextChallengeToOffer] = ctx.GetProtocolState(nil)
+	stm.SetEAPState(rst, st)
 
 	rres := r.Response(radius.CodeAccessChallenge)
 	if p, ok := res.Payload.(protocol.EmptyPayload); ok {
@@ -55,7 +59,7 @@ func (p *Packet) Handle(stm StateManager, w radius.ResponseWriter, r *radius.Pac
 	}
 }
 
-func (p *Packet) GetChallengeForType(ctx context[any, any], t Type) *Packet {
+func (p *Packet) GetChallengeForType(ctx context, t Type) *Packet {
 	res := &Packet{
 		code:    CodeRequest,
 		id:      p.id + 1,
@@ -72,9 +76,9 @@ func (p *Packet) GetChallengeForType(ctx context[any, any], t Type) *Packet {
 		// this
 		payload = p.Payload.(*tls.Payload).Handle(ctx)
 	}
-	st.TypeState[t] = tst
+	// st.TypeState[t] = tst
 	res.Payload = payload.(protocol.Payload)
-	return res, st
+	return res
 }
 
 func (p *Packet) setMessageAuthenticator(rp *radius.Packet) {

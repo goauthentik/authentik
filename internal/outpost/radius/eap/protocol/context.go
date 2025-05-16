@@ -5,12 +5,12 @@ import (
 	"layeh.com/radius"
 )
 
-type Context[TState any, TSettings any] interface {
+type Context interface {
 	// GlobalState()
 
-	ProtocolSettings() TSettings
-	GetProtocolState(def func(Context[TState, TSettings]) TState) TState
-	SetProtocolState(TState)
+	ProtocolSettings() interface{}
+	GetProtocolState(def func(Context) interface{}) interface{}
+	SetProtocolState(interface{})
 
 	EndInnerProtocol(func(p *radius.Packet) *radius.Packet)
 

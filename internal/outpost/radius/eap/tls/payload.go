@@ -61,10 +61,8 @@ func (p *Payload) Encode() ([]byte, error) {
 	return buff, nil
 }
 
-type tctx = protocol.Context[*State, Settings]
-
-func (p *Payload) Handle(ctx tctx) protocol.Payload {
-	p.st = ctx.GetProtocolState(NewState)
+func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
+	p.st = ctx.GetProtocolState(NewState).(*State)
 	defer ctx.SetProtocolState(p.st)
 	if !p.st.HasStarted {
 		log.Debug("TLS: handshake starting")
@@ -115,11 +113,11 @@ func (p *Payload) Handle(ctx tctx) protocol.Payload {
 	return p.startChunkedTransfer(p.st.Conn.OutboundData())
 }
 
-func (p *Payload) tlsInit(ctx tctx) {
+func (p *Payload) tlsInit(ctx protocol.Context) {
 	log.Debug("TLS: no TLS connection in state yet, starting connection")
 	p.st.Context, p.st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 	p.st.Conn = NewBuffConn(p.Data, p.st.Context)
-	cfg := ctx.ProtocolSettings().Config.Clone()
+	cfg := ctx.ProtocolSettings().(Settings).Config.Clone()
 	cfg.GetConfigForClient = func(chi *tls.ClientHelloInfo) (*tls.Config, error) {
 		log.Debugf("TLS: ClientHello: %+v\n", chi)
 		p.st.ClientHello = chi
