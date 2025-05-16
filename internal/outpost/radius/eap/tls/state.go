@@ -3,6 +3,8 @@ package tls
 import (
 	"context"
 	"crypto/tls"
+
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
 type State struct {
@@ -18,7 +20,7 @@ type State struct {
 	ContextCancel    context.CancelFunc
 }
 
-func NewState(c tctx) *State {
+func NewState(c protocol.Context) interface{} {
 	c.Log().Debug("TLS: new state")
 	return &State{
 		RemainingChunks: make([][]byte, 0),

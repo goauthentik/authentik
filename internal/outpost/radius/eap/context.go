@@ -1,29 +1,32 @@
 package eap
 
 import (
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"layeh.com/radius"
 )
 
-type context[TState any, TSettings any] struct {
+type context struct {
+	state interface{}
+	log   *log.Entry
 }
 
-func (ctx context[TState, TSettings]) ProtocolSettings() TSettings {
-	return 0
-}
-
-func (ctx context[TState, TSettings]) GetProtocolState(def func(context[TState, TSettings]) TState) TState {
+func (ctx context) ProtocolSettings() interface{} {
 	return nil
 }
 
-func (ctx context[TState, TSettings]) SetProtocolState(TState) {
+func (ctx context) GetProtocolState(def func(protocol.Context) interface{}) interface{} {
+	return ctx.state
+}
+
+func (ctx context) SetProtocolState(st interface{}) {
+	ctx.state = st
+}
+
+func (ctx context) EndInnerProtocol(func(p *radius.Packet) *radius.Packet) {
 
 }
 
-func (ctx context[TState, TSettings]) EndInnerProtocol(func(p *radius.Packet) *radius.Packet) {
-
-}
-
-func (ctx context[TState, TSettings]) Log() *logrus.Entry {
-	return nil
+func (ctx context) Log() *log.Entry {
+	return ctx.log
 }
