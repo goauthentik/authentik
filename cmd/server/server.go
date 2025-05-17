@@ -23,19 +23,10 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:     "authentik",
-	Short:   "Start authentik instance",
-	Version: constants.FullVersion(),
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-			DisableHTMLEscape: true,
-		})
-	},
+	Use:              "authentik",
+	Short:            "Start authentik instance",
+	Version:          constants.FullVersion(),
+	PersistentPreRun: common.PreRun,
 	Run: func(cmd *cobra.Command, args []string) {
 		debug.EnableDebugServer()
 		l := log.WithField("logger", "authentik.root")
@@ -106,7 +97,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 
 		l.Debug("attempting to start outpost")
 		srv := proxyv2.NewProxyServer(ac)
-		ws.ProxyServer = srv
+		ws.ProxyServer = srv.(*proxyv2.ProxyServer)
 		ac.Server = srv
 		err := ac.StartBackgroundTasks()
 		if err != nil {

@@ -28,7 +28,7 @@ type LDAPServer struct {
 	connectionsSync sync.Mutex
 }
 
-func NewServer(ac *ak.APIController) *LDAPServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	ls := &LDAPServer{
 		log:             log.WithField("logger", "authentik.outpost.ldap"),
 		ac:              ac,
