@@ -553,3 +553,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
                     th.start()
                     started = True
         th.join()
+
+        self.user.password = self.user.username
+        self.user.save()
