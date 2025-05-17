@@ -1,3 +1,4 @@
+/// <reference types="../types/esbuild.js" />
 /**
  * @file ESBuild script for building the authentik web UI.
  *
@@ -5,6 +6,7 @@
  */
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
 import {
+    AuthentikVersion,
     MonoRepoRoot,
     NodeEnvironment,
     readBuildIdentifier,
@@ -23,11 +25,15 @@ import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
 
 const logPrefix = "[Build]";
 
-const definitions = serializeEnvironmentVars({
-    NODE_ENV: NodeEnvironment,
-    CWD: process.cwd(),
-    AK_API_BASE_PATH: process.env.AK_API_BASE_PATH,
-});
+/**
+ * @satisfies {Record<keyof ImportMetaEnv, string>}
+ */
+const envRecord = {
+    AK_VERSION: AuthentikVersion,
+
+    AK_API_BASE_PATH: process.env.AK_API_BASE_PATH ?? "",
+};
+const definitions = serializeEnvironmentVars(envRecord);
 
 const patternflyPath = resolvePackage("@patternfly/patternfly");
 

@@ -2,7 +2,7 @@
  * @file Constants for JavaScript and TypeScript files.
  */
 
-/// <reference types="../../types/global.js" />
+/// <reference types="./types/global.js" />
 
 /**
  * The current Node.js environment, defaulting to "development" when not set.

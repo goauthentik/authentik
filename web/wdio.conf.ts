@@ -2,7 +2,6 @@ import replace from "@rollup/plugin-replace";
 import { browser } from "@wdio/globals";
 import type { Options } from "@wdio/types";
 import path from "path";
-import { cwd } from "process";
 import { fileURLToPath } from "url";
 import type { UserConfig } from "vite";
 import litCss from "vite-plugin-lit-css";
@@ -80,7 +79,6 @@ export const config: Options.Testrunner = {
                         "process.env.NODE_ENV": JSON.stringify(
                             isProdBuild ? "production" : "development",
                         ),
-                        "process.env.CWD": JSON.stringify(cwd()),
                         "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
                         "preventAssignment": true,
                     }),

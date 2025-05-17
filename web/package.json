@@ -387,11 +387,11 @@
     ],
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
-        "rapidoc": {
-            "@apitools/openapi-parser@": "0.0.37"
-        },
         "chromedriver": {
             "axios": "^1.8.4"
+        },
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
         }
     }
 }

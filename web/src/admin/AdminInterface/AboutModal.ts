@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/EmptyState";
@@ -45,7 +44,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         }
         return [
             [msg("Version"), version.versionCurrent],
-            [msg("UI Version"), VERSION],
+            [msg("UI Version"), import.meta.env.AK_VERSION],
             [msg("Build"), build],
             [msg("Python version"), status.runtime.pythonVersion],
             [msg("Platform"), status.runtime.platform],
