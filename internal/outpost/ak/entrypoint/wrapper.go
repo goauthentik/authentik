@@ -16,11 +16,11 @@ func OutpostMain(server func(ac *ak.APIController) ak.Outpost) error {
 	debug.EnableDebugServer()
 	akURL := config.Get().AuthentikHost
 	if akURL == "" {
-		return errors.New("env AUTHENTIK_HOST not set!")
+		return errors.New("environment variable `AUTHENTIK_HOST` not set")
 	}
 	akToken := config.Get().AuthentikToken
 	if akToken == "" {
-		return errors.New("env AUTHENTIK_TOKEN not set!")
+		return errors.New("environment variable `AUTHENTIK_TOKEN` not set")
 	}
 
 	akURLActual, err := url.Parse(akURL)

@@ -313,6 +313,7 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             },
         ]
         self.assert_list_dict_equal(expected, response)
+        user.delete()
 
     def assert_list_dict_equal(self, expected: list[dict], actual: list[dict], match_key="dn"):
         """Assert a list of dictionaries is identical, ignoring the ordering of items"""
@@ -324,8 +325,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             self.assertDictEqual(res_item, matching)
 
     @retry()
-    @reconcile_app("authentik_tenants")
-    @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
         self.start_ldap(self.outpost)
@@ -342,8 +341,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         self.assertIsNotNone(server.schema.object_classes["goauthentik.io/ldap/user"])
 
     @retry()
-    @reconcile_app("authentik_tenants")
-    @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""
         self.start_ldap(self.outpost)
