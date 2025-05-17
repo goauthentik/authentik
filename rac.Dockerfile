@@ -6,6 +6,7 @@ FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS build
 ARG TARGETOS
 ARG TARGETARCH
 ARG TARGETVARIANT
+ARG GO_BUILD_ARGS
 
 ARG GOOS=$TARGETOS
 ARG GOARCH=$TARGETARCH
@@ -28,7 +29,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
     CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
-    go build -o /go/rac ./cmd/rac
+    go build ${GO_BUILD_ARGS} -o /go/rac ./cmd/rac
 
 # Stage 2: Run
 FROM ghcr.io/beryju/guacd:1.5.5-fips

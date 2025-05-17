@@ -114,7 +114,7 @@ class DockerTestCase(TestCase):
         for container in containers:
             self.output_container_logs(container)
             try:
-                container.kill()
+                container.stop()
             except DockerException:
                 pass
             try:
