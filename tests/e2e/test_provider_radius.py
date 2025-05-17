@@ -14,8 +14,9 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
-from tests.e2e.utils import DockerTestCase, retry
-from tests.e2e.utils_ws import WebsocketTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
+from tests.websocket import WebsocketTestCase
 
 
 class TestProviderRadius(DockerTestCase, WebsocketTestCase):

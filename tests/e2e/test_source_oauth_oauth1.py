@@ -16,7 +16,9 @@ from authentik.sources.oauth.models import OAuthSource
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
 class OAuth1Callback(OAuthCallback):
@@ -48,7 +50,7 @@ class OAUth1Type(SourceType):
         }
 
 
-class TestSourceOAuth1(SeleniumTestCase):
+class TestSourceOAuth1(DockerTestCase, SeleniumTestCase):
     """Test OAuth1 Source"""
 
     def setUp(self) -> None:

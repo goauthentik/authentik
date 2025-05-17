@@ -13,10 +13,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestProviderProxyForward(SeleniumTestCase):
+class TestProviderProxyForward(DockerTestCase, SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):

@@ -18,10 +18,12 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestProviderProxy(SeleniumTestCase):
+class TestProviderProxy(DockerTestCase, SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):

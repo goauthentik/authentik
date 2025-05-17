@@ -17,8 +17,9 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import DockerTestCase, retry
-from tests.e2e.utils_ws import WebsocketTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
+from tests.websocket import WebsocketTestCase
 
 
 class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
