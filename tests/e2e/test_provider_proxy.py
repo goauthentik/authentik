@@ -58,6 +58,9 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
             invalidation_flow=Flow.objects.get(slug="default-provider-invalidation-flow"),
             internal_host=f"http://{self.host}",
             external_host="http://localhost:9000",
+            basic_auth_enabled=True,
+            basic_auth_user_attribute="basic-username",
+            basic_auth_password_attribute="basic-password",  # nosec
         )
         # Ensure OAuth2 Params are set
         proxy.set_oauth_defaults()
@@ -140,10 +143,10 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
     def test_proxy_basic_auth(self):
         """Test simple outpost setup with single provider"""
         self._prepare()
+        # Setup basic auth
         cred = generate_id()
-        attr = "basic-password"  # nosec
         self.user.attributes["basic-username"] = cred
-        self.user.attributes[attr] = cred
+        self.user.attributes["basic-password"] = cred
         self.user.save()
 
         self.driver.get("http://localhost:9000/api")
@@ -153,9 +156,9 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         body = loads(full_body_text)
 
-        self.assertEqual(body["headers"]["X-Authentik-Username"], [self.user.username])
+        self.assertEqual(body.get("headers").get("X-Authentik-Username"), [self.user.username])
         auth_header = b64encode(f"{cred}:{cred}".encode()).decode()
-        self.assertEqual(body["headers"]["Authorization"], [f"Basic {auth_header}"])
+        self.assertEqual(body.get("headers").get("Authorization"), [f"Basic {auth_header}"])
 
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
