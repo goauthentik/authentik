@@ -115,7 +115,6 @@ export class AKPageNavbar
                     flex-direction: row;
 
                     display: grid;
-                    row-gap: var(--pf-global--spacer--sm);
                     column-gap: var(--pf-global--spacer--sm);
                     grid-template-columns: [brand] auto [toggle] auto [primary] 1fr [secondary] auto;
                     grid-template-rows: auto auto;
@@ -123,7 +122,7 @@ export class AKPageNavbar
                         "brand toggle primary secondary"
                         "brand toggle description secondary";
 
-                    @media (min-width: 426px) {
+                    @media (min-width: 769px) {
                         height: var(--host-navbar-height);
                     }
 
@@ -146,18 +145,22 @@ export class AKPageNavbar
                         grid-column: primary;
                         grid-row: primary / description;
 
-                        align-content: center;
+                        align-self: center;
                         padding-block: var(--pf-global--spacer--md);
+
+                        @media (max-width: 768px) {
+                            padding-block: var(--pf-global--spacer--sm);
+                        }
+
+                        &.block-sibling {
+                            align-self: end;
+                        }
 
                         @media (min-width: 426px) {
                             &.block-sibling {
                                 padding-block-end: 0;
                                 grid-row: primary;
                             }
-                        }
-
-                        @media (max-width: 768px) {
-                            padding-block: var(--pf-global--spacer--sm);
                         }
 
                         .accent-icon {
