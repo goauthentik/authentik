@@ -2,7 +2,7 @@
 
 import os
 from time import sleep
-from typing import Any
+from typing import TYPE_CHECKING, Any
 from unittest.case import TestCase
 
 from docker import DockerClient, from_env
@@ -12,6 +12,9 @@ from docker.models.networks import Network
 
 from authentik.lib.generators import generate_id
 from tests import IS_CI
+
+if TYPE_CHECKING:
+    from authentik.outposts.models import Outpost
 
 
 def get_docker_tag() -> str:
@@ -53,19 +56,6 @@ class DockerTestCase(TestCase):
     @property
     def docker_labels(self) -> dict:
         return {"io.goauthentik.test": self.__label_id}
-
-    def wait_for_container(self, container: Container):
-        """Check that container is health"""
-        attempt = 0
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            sleep(1)
-            attempt += 1
-            if attempt >= self.max_healthcheck_attempts:
-                self.failureException("Container failed to start")
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -123,3 +113,27 @@ class DockerTestCase(TestCase):
                 pass
         self.__network.remove()
         super().tearDown()
+
+    def wait_for_container(self, container: Container):
+        """Check that container is health"""
+        attempt = 0
+        while attempt < self.max_healthcheck_attempts:
+            container.reload()
+            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
+            if status == "healthy":
+                return container
+            attempt += 1
+            sleep(0.5)
+        self.failureException("Container failed to start")
+
+    def wait_for_outpost(self, outpost: "Outpost"):
+        # Wait until outpost healthcheck succeeds
+        attempt = 0
+        while attempt < self.max_healthcheck_attempts:
+            if len(outpost.state) > 0:
+                state = outpost.state[0]
+                if state.last_seen:
+                    return
+            attempt += 1
+            sleep(0.5)
+        self.failureException("Outpost failed to become healthy")

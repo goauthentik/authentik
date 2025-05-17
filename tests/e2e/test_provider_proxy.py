@@ -37,13 +37,10 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
         """Start proxy container based on outpost created"""
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            ports={
-                "9000": "9000",
-            },
-            environment={
-                "AUTHENTIK_TOKEN": outpost.token.key,
-            },
+            ports={"9000": "9000"},
+            environment={"AUTHENTIK_TOKEN": outpost.token.key},
         )
+        self.wait_for_outpost(outpost)
 
     def _prepare(self):
         # set additionalHeaders to test later
@@ -75,17 +72,6 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_proxy(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
 
     @retry()
     @apply_blueprint(
@@ -217,7 +203,7 @@ class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
         self.assertIn("Login to continue to", title)
 
 
-class TestProviderProxyConnect(WebsocketTestCase):
+class TestProviderProxyConnect(DockerTestCase, WebsocketTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])
@@ -256,14 +242,7 @@ class TestProviderProxyConnect(WebsocketTestCase):
         outpost.build_user_permissions(outpost.user)
 
         # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen and state.version:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
+        self.wait_for_outpost(outpost)
 
         state = outpost.state
         self.assertGreaterEqual(len(state), 1)
