@@ -9,14 +9,16 @@ from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_user
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import DockerTestCase, retry
+from tests.e2e.utils_ws import WebsocketTestCase
 
 
-class TestProviderRadius(SeleniumTestCase):
+class TestProviderRadius(DockerTestCase, WebsocketTestCase):
     """Radius Outpost e2e tests"""
 
     def setUp(self):
@@ -35,6 +37,7 @@ class TestProviderRadius(SeleniumTestCase):
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
+        self.user = create_test_user()
         radius: RadiusProvider = RadiusProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
