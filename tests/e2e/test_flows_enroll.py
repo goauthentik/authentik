@@ -11,10 +11,12 @@ from authentik.core.models import User
 from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestFlowsEnroll(SeleniumTestCase):
+class TestFlowsEnroll(DockerTestCase, SeleniumTestCase):
     """Test Enroll flow"""
 
     @retry()
