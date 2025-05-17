@@ -2,6 +2,7 @@
 
 from dataclasses import asdict
 from time import sleep
+from unittest.mock import patch
 
 from pyrad.client import Client
 from pyrad.dictionary import Dictionary
@@ -12,10 +13,12 @@ from authentik.core.models import Application, User
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
+from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.radius.models import RadiusProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
+@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TestProviderRadius(SeleniumTestCase):
     """Radius Outpost e2e tests"""
 
