@@ -16,10 +16,11 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import DockerTestCase, retry
+from tests.e2e.utils_ws import WebsocketTestCase
 
 
-class TestProviderLDAP(SeleniumTestCase):
+class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
     """LDAP and Outpost e2e tests"""
 
     def start_ldap(self, outpost: Outpost):
@@ -37,6 +38,7 @@ class TestProviderLDAP(SeleniumTestCase):
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
+        self.user = create_test_user()
         self.user.attributes["extraAttribute"] = "bar"
         self.user.save()
 
