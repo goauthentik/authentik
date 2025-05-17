@@ -29,7 +29,7 @@ type Event struct {
 }
 
 func (wm Event) ArgsAs(out interface{}) error {
-	return mapstructure.Decode(wm.Args, &out)
+	return mapstructure.Decode(wm.Args, out)
 }
 
 type EventArgsSessionEnd struct {

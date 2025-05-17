@@ -12,7 +12,7 @@ func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.Event) error 
 		return nil
 	}
 	mmsg := ak.EventArgsSessionEnd{}
-	err := msg.ArgsAs(&msg)
+	err := msg.ArgsAs(&mmsg)
 	if err != nil {
 		return err
 	}

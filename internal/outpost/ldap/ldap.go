@@ -129,7 +129,7 @@ func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.Event) erro
 		return nil
 	}
 	mmsg := ak.EventArgsSessionEnd{}
-	err := msg.ArgsAs(&msg)
+	err := msg.ArgsAs(&mmsg)
 	if err != nil {
 		return err
 	}
