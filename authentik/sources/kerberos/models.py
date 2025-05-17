@@ -317,7 +317,7 @@ class KerberosSource(Source):
                 usage="accept", name=name, store=self.get_gssapi_store()
             )
         except gssapi.exceptions.GSSError as exc:
-            LOGGER.warn("GSSAPI credentials failure", exc=exc)
+            LOGGER.warning("GSSAPI credentials failure", exc=exc)
             return None
 
 
