@@ -16,6 +16,14 @@ pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
 pg_name := $(shell uv run python -m authentik.lib.config postgresql.name 2>/dev/null)
 
+define wget_github
+	@if [ -n "$(GITHUB_TOKEN)" ]; then \
+		wget --header="authorization: Bearer $(GITHUB_TOKEN)" $(1) -O $(2); \
+	else \
+		wget $(1) -O $(2); \
+	fi
+endef
+
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
 HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
@@ -72,7 +80,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: npm-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -140,9 +148,8 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ./${GEN_API_TS} && npm i
-	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+	cd ./${GEN_API_TS} && npm link
+	npm link @goauthentik/api -w @goauthentik/web
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
@@ -160,10 +167,15 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml,./${GEN_API_GO}/config.yaml)
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache,./${GEN_API_GO}/templates/README.mustache)
+
+	$(call wget_github,https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache,./${GEN_API_GO}/templates/go.mod.mustache)
+
 	cp schema.yml ./${GEN_API_GO}/
+
 	docker run \
 		--rm -v ${PWD}/${GEN_API_GO}:/local \
 		--user ${UID}:${GID} \
@@ -172,7 +184,9 @@ gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 		-g go \
 		-o /local/ \
 		-c /local/config.yaml
+
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
+
 	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
@@ -184,38 +198,37 @@ gen: gen-build gen-client-ts
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
+web-build: npm-install  ## Build the Authentik UI
+	npm run build -w @goauthentik/web
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
+npm-install:  ## Install the necessary libraries to build the Authentik UI
+	npm ci
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run test -w @goauthentik/web
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/
 	mkdir web/dist/
 	touch web/dist/.gitkeep
-	cd web && npm run watch
+	npm run watch -w @goauthentik/web
 
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run storybook -w @goauthentik/web
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run prettier -w @goauthentik/web
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
+	npm run lint -w @goauthentik/web
 
 web-check-compile:
-	cd web && npm run tsc
+	npm run lint:types
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run extract-locales -w @goauthentik/web
 
 #########################
 ## Website
@@ -223,17 +236,14 @@ web-i18n-extract:
 
 website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
-website-install:
-	cd website && npm ci
-
 website-lint-fix: lint-codespell
-	cd website && npm run prettier
+	npm run prettier --prefix website
 
 website-build:
-	cd website && npm run build
+	npm run build --prefix website
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+	npm run watch --prefix website
 
 #########################
 ## Docker

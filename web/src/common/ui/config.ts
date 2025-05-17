@@ -1,8 +1,7 @@
-import { me } from "@goauthentik/common/users.js";
-import { isUserRoute } from "@goauthentik/elements/router/utils.js";
+import { me } from "@goauthentik/web/common/users.js";
+import { isUserRoute } from "@goauthentik/web/elements/router/utils.js";
 
-import { UiThemeEnum, UserSelf } from "@goauthentik/api";
-import { CurrentBrand } from "@goauthentik/api";
+import { CurrentBrand, UiThemeEnum, UserSelf } from "@goauthentik/api";
 
 export const DefaultBrand = {
     brandingLogo: "/static/dist/assets/icons/icon_left_brand.svg",

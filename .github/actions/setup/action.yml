@@ -28,9 +28,9 @@ runs:
     - name: Setup node
       uses: actions/setup-node@v4
       with:
-        node-version-file: web/package.json
+        node-version-file: package.json
         cache: "npm"
-        cache-dependency-path: web/package-lock.json
+        cache-dependency-path: package-lock.json
     - name: Setup go
       uses: actions/setup-go@v5
       with:
@@ -44,7 +44,7 @@ runs:
       run: |
         export PSQL_TAG=${{ inputs.postgresql_version }}
         docker compose -f .github/actions/setup/docker-compose.yml up -d
-        cd web && npm ci
+        npm ci
     - name: Generate config
       shell: uv run python {0}
       run: |

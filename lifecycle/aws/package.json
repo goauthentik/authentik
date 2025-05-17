@@ -7,7 +7,7 @@
         "aws-cfn": "cross-env CI=false cdk synth --version-reporting=false > template.yaml"
     },
     "engines": {
-        "node": ">=20"
+        "node": ">=22.15.1"
     },
     "devDependencies": {
         "aws-cdk": "^2.1015.0",

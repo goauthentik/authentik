@@ -67,7 +67,6 @@ async function findDisparatePort() {
  * @category ESBuild
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
-    // eslint-disable-next-line no-console
     const log = console.log.bind(console, `[${logPrefix}]`);
 
     /**
@@ -191,7 +190,6 @@ export function liveReloadPlugin(options = {}) {
             };
 
             server.listen(listenOptions, () => {
-                // eslint-disable-next-line no-console
                 console.log(`[${logPrefix}] Listening`);
             });
 

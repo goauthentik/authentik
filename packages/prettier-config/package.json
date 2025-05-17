@@ -1,6 +1,6 @@
 {
     "name": "@goauthentik/prettier-config",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "authentik's Prettier config",
     "license": "MIT",
     "scripts": {
@@ -18,18 +18,16 @@
         "@goauthentik/tsconfig": "^1.0.1",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.10",
-        "typescript": "^5.8.2"
+        "prettier-plugin-packagejson": "^2.5.13",
+        "typescript": "^5.8.3"
     },
     "peerDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "prettier": "^3.5.3",
-        "prettier-plugin-organize-imports": "^4.1.0",
-        "prettier-plugin-packagejson": "^2.5.10"
+        "prettier-plugin-packagejson": "^2.5.13"
     },
     "engines": {
-        "node": ">=20.11"
+        "node": ">=22.15.1"
     },
     "types": "./out/index.d.ts",
     "files": [

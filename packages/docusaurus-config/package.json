@@ -39,7 +39,7 @@
         "react-dom": "^18.0.0"
     },
     "engines": {
-        "node": ">=20.11"
+        "node": ">=22.15.1"
     },
     "types": "./out/index.d.ts",
     "files": [
