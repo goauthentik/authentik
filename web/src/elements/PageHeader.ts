@@ -370,7 +370,8 @@ export class AKPageNavbar
     }
 
     render(): TemplateResult {
-        return html`<navbar aria-label="Main" class="navbar">
+        return html` <slot></slot>
+            <navbar aria-label="Main" class="navbar">
                 <aside class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a href="#/">
                         <div class="logo">
@@ -422,8 +423,7 @@ export class AKPageNavbar
                         </ak-nav-buttons>
                     </div>
                 </section>
-            </navbar>
-            <slot></slot>`;
+            </navbar>`;
     }
 
     //#endregion
