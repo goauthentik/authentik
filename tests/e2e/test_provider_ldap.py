@@ -1,7 +1,6 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
-from time import sleep
 
 from django.db.transaction import atomic
 from guardian.shortcuts import assign_perm
@@ -9,7 +8,7 @@ from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Conn
 from ldap3.core.exceptions import LDAPInvalidCredentialsResult, LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import Application, AuthenticatedSession, User
+from authentik.core.models import Application, AuthenticatedSession, Group, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -24,62 +23,50 @@ from tests.websocket import WebsocketTestCase
 class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
     """LDAP and Outpost e2e tests"""
 
-    def start_ldap(self, outpost: Outpost):
-        """Start ldap container based on outpost created"""
-        self.run_container(
-            image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
-            ports={
-                "3389": "3389",
-                "6636": "6636",
-            },
-            environment={
-                "AUTHENTIK_TOKEN": outpost.token.key,
-            },
-        )
-
-    def _prepare(self) -> Outpost:
-        """prepare user, provider, app and container"""
-        self.user = create_test_user()
-        self.user.attributes["extraAttribute"] = "bar"
-        self.user.save()
-
-        ldap: LDAPProvider = LDAPProvider.objects.create(
-            name=generate_id(),
-            authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
-            search_mode=APIAccessMode.CACHED,
-        )
-        assign_perm("search_full_directory", self.user, ldap)
-        # we need to create an application to actually access the ldap
-        Application.objects.create(name=generate_id(), slug=generate_id(), provider=ldap)
-        outpost: Outpost = Outpost.objects.create(
-            name=generate_id(),
-            type=OutpostType.LDAP,
-            _config=asdict(OutpostConfig(log_level="debug")),
-        )
-        outpost.providers.add(ldap)
-
-        self.start_ldap(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
-        return outpost
-
-    @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @reconcile_app("authentik_tenants")
+    @reconcile_app("authentik_outposts")
+    def setUp(self):
+        super().setUp()
+        # Remove users before starting container so it's not cached
+        User.objects.exclude_anonymous().all().delete()
+        self.user = create_test_user()
+        self.user.attributes["extraAttribute"] = "bar"
+        self.user.save()
+
+        self.ldap: LDAPProvider = LDAPProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
+            search_mode=APIAccessMode.CACHED,
+        )
+        assign_perm("search_full_directory", self.user, self.ldap)
+        # we need to create an application to actually access the ldap
+        self.app = Application.objects.create(
+            name=generate_id(), slug=generate_id(), provider=self.ldap
+        )
+        self.outpost: Outpost = Outpost.objects.create(
+            name=generate_id(),
+            type=OutpostType.LDAP,
+            _config=asdict(OutpostConfig(log_level="debug")),
+        )
+        self.outpost.providers.add(self.ldap)
+
+    def start_ldap(self, outpost: Outpost):
+        """Start ldap container based on outpost created"""
+        self.container = self.run_container(
+            image=self.get_container_image("ghcr.io/goauthentik/dev-ldap"),
+            ports={"3389": "3389", "6636": "6636"},
+            environment={"AUTHENTIK_TOKEN": outpost.token.key},
+        )
+        self.wait_for_outpost(outpost)
+
+    @retry()
     def test_ldap_bind_success(self):
         """Test simple bind"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
@@ -100,13 +87,9 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         )
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     def test_ldap_bind_success_ssl(self):
         """Test simple bind with ssl"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldaps://localhost:6636", get_info=ALL)
         _connection = Connection(
             server,
@@ -127,13 +110,9 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         )
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     def test_ldap_bind_success_starttls(self):
         """Test simple bind with ssl"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389")
         _connection = Connection(
             server,
@@ -155,13 +134,9 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         )
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     def test_ldap_bind_fail(self):
         """Test simple bind (failed)"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
@@ -183,125 +158,96 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         )
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @reconcile_app("authentik_tenants")
-    @reconcile_app("authentik_outposts")
-    def test_ldap_bind_search(self):
+    def test_ldap_search(self):
         """Test simple bind + search"""
-        # Remove users before starting container so it's not cached
-        User.objects.exclude_anonymous().all().delete()
-
-        outpost = self._prepare()
-        server = Server("ldap://localhost:3389", get_info=ALL)
-        _connection = Connection(
-            server,
-            raise_exceptions=True,
-            user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-            password=self.user.username,
-        )
-        _connection.bind()
-        self.assertTrue(
-            Event.objects.filter(
-                action=EventAction.LOGIN,
-                user={
-                    "pk": self.user.pk,
-                    "email": self.user.email,
-                    "username": self.user.username,
-                },
-            )
-        )
-
-        _connection.search(
-            "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
-            "(objectClass=user)",
-            search_scope=SUBTREE,
-            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
-        )
-        response: list = _connection.response
-        # Remove raw_attributes to make checking easier
-        for obj in response:
-            del obj["raw_attributes"]
-            del obj["raw_dn"]
-            obj["attributes"] = dict(obj["attributes"])
-        o_user = outpost.user
-        expected = [
-            {
-                "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                "attributes": {
-                    "cn": o_user.username,
-                    "sAMAccountName": o_user.username,
-                    "uid": o_user.uid,
-                    "name": o_user.name,
-                    "displayName": o_user.name,
-                    "sn": o_user.name,
-                    "mail": "",
-                    "objectClass": [
-                        "top",
-                        "person",
-                        "organizationalPerson",
-                        "inetOrgPerson",
-                        "user",
-                        "posixAccount",
-                        "goauthentik.io/ldap/user",
-                    ],
-                    "uidNumber": 2000 + o_user.pk,
-                    "gidNumber": 2000 + o_user.pk,
-                    "memberOf": [],
-                    "homeDirectory": f"/home/{o_user.username}",
-                    "ak-active": True,
-                    "ak-superuser": False,
-                },
-                "type": "searchResEntry",
-            },
-            {
-                "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                "attributes": {
-                    "cn": self.user.username,
-                    "sAMAccountName": self.user.username,
-                    "uid": self.user.uid,
-                    "name": self.user.name,
-                    "displayName": self.user.name,
-                    "sn": self.user.name,
-                    "mail": self.user.email,
-                    "objectClass": [
-                        "top",
-                        "person",
-                        "organizationalPerson",
-                        "inetOrgPerson",
-                        "user",
-                        "posixAccount",
-                        "goauthentik.io/ldap/user",
-                    ],
-                    "uidNumber": 2000 + self.user.pk,
-                    "gidNumber": 2000 + self.user.pk,
-                    "memberOf": [
-                        f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                        for group in self.user.ak_groups.all()
-                    ],
-                    "homeDirectory": f"/home/{self.user.username}",
-                    "ak-active": True,
-                    "ak-superuser": False,
-                    "extraAttribute": ["bar"],
-                },
-                "type": "searchResEntry",
-            },
+        modes = [
+            (APIAccessMode.DIRECT, APIAccessMode.DIRECT),
+            (APIAccessMode.CACHED, APIAccessMode.DIRECT),
+            (APIAccessMode.DIRECT, APIAccessMode.CACHED),
+            (APIAccessMode.CACHED, APIAccessMode.CACHED),
         ]
-        self.assert_list_dict_equal(expected, response)
+        group = Group.objects.create(name=generate_id())
+        self.user.ak_groups.add(group)
+        for bind_mode, search_mode in modes:
+            with self.subTest(bind_mode=bind_mode, search_mode=search_mode):
+                self.ldap.bind_mode = bind_mode
+                self.ldap.search_mode = search_mode
+                self.ldap.save()
+                self.start_ldap(self.outpost)
+                server = Server("ldap://localhost:3389", get_info=ALL)
+                _connection = Connection(
+                    server,
+                    raise_exceptions=True,
+                    user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    password=self.user.username,
+                )
+                _connection.bind()
+                self.assertTrue(
+                    Event.objects.filter(
+                        action=EventAction.LOGIN,
+                        user={
+                            "pk": self.user.pk,
+                            "email": self.user.email,
+                            "username": self.user.username,
+                        },
+                    )
+                )
+
+                _connection.search(
+                    "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                    f"(memberOf=cn={group.name},ou=groups,DC=ldaP,dc=goauthentik,dc=io)",
+                    search_scope=SUBTREE,
+                    attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+                )
+                response: list = _connection.response
+                # Remove raw_attributes to make checking easier
+                for obj in response:
+                    del obj["raw_attributes"]
+                    del obj["raw_dn"]
+                    obj["attributes"] = dict(obj["attributes"])
+                expected = [
+                    {
+                        "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                        "attributes": {
+                            "cn": self.user.username,
+                            "sAMAccountName": self.user.username,
+                            "uid": self.user.uid,
+                            "name": self.user.name,
+                            "displayName": self.user.name,
+                            "sn": self.user.name,
+                            "mail": self.user.email,
+                            "objectClass": [
+                                "top",
+                                "person",
+                                "organizationalPerson",
+                                "inetOrgPerson",
+                                "user",
+                                "posixAccount",
+                                "goauthentik.io/ldap/user",
+                            ],
+                            "uidNumber": 2000 + self.user.pk,
+                            "gidNumber": 2000 + self.user.pk,
+                            "memberOf": [
+                                f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
+                                for group in self.user.ak_groups.all()
+                            ],
+                            "homeDirectory": f"/home/{self.user.username}",
+                            "ak-active": True,
+                            "ak-superuser": False,
+                            "extraAttribute": ["bar"],
+                        },
+                        "type": "searchResEntry",
+                    },
+                ]
+                self.assert_list_dict_equal(expected, response)
+                self.container.stop()
+                self.container.remove()
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @reconcile_app("authentik_tenants")
-    @reconcile_app("authentik_outposts")
-    def test_ldap_bind_search_no_perms(self):
+    def test_ldap_search_no_perms(self):
         """Test simple bind + search"""
         user = create_test_user()
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
@@ -378,15 +324,11 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             self.assertDictEqual(res_item, matching)
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
@@ -400,18 +342,11 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         self.assertIsNotNone(server.schema.object_classes["goauthentik.io/ldap/user"])
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     @reconcile_app("authentik_tenants")
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""
-        # Remove users before starting container so it's not cached
-        User.objects.exclude_anonymous().all().delete()
-
-        outpost = self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
@@ -442,7 +377,7 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
-        o_user = outpost.user
+        o_user = self.outpost.user
         self.assert_list_dict_equal(
             [
                 {
@@ -464,13 +399,9 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
         )
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
     def test_ldap_server_side_disconnect(self):
         """Test server-side session termination"""
-        self._prepare()
+        self.start_ldap(self.outpost)
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
