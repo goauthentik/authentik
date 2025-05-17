@@ -1,7 +1,14 @@
+import socket
+
 from channels.testing import ChannelsLiveServerTestCase
 from daphne.testing import DaphneProcess
 
-from tests.e2e.utils import get_local_ip
+
+def get_local_ip() -> str:
+    """Get the local machine's IP"""
+    hostname = socket.gethostname()
+    ip_addr = socket.gethostbyname(hostname)
+    return ip_addr
 
 
 def set_database_connection():

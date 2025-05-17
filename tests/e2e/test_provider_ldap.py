@@ -1,14 +1,16 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
+from threading import Thread
 from time import sleep
 
+from django.db.transaction import atomic
 from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
-from ldap3.core.exceptions import LDAPInvalidCredentialsResult
+from ldap3.core.exceptions import LDAPInvalidCredentialsResult, LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
-from authentik.core.models import Application, User
+from authentik.core.models import Application, AuthenticatedSession, User
 from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
@@ -502,3 +504,52 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             ],
             response,
         )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    def test_ldap_server_side_disconnect(self):
+        """Test server-side session termination"""
+        self._prepare()
+        server = Server("ldap://localhost:3389", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={self.user.username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=self.user.username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
+                },
+            )
+        )
+
+        def checker():
+            with atomic():
+                AuthenticatedSession.objects.filter(user=self.user).delete()
+                self.user.set_unusable_password()
+                self.user.save()
+
+        th = Thread(target=checker)
+        started = False
+
+        with self.assertRaises(expected_exception=LDAPSessionTerminatedByServerError):
+            while True:
+                _connection.search(
+                    "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                    "(objectClass=user)",
+                    search_scope=SUBTREE,
+                    attributes=["cn"],
+                )
+                if not started:
+                    th.start()
+                    started = True
+        th.join()

@@ -2,7 +2,6 @@
 
 import json
 import os
-import socket
 from collections.abc import Callable
 from functools import lru_cache, wraps
 from os import environ
@@ -37,6 +36,7 @@ from authentik.core.api.users import UserSerializer
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
+from tests.e2e.utils_ws import get_local_ip
 
 IS_CI = "CI" in environ
 RETRIES = int(environ.get("RETRIES", "3")) if IS_CI else 1
@@ -51,13 +51,6 @@ def get_docker_tag() -> str:
         branch_name = os.environ[env_pr_branch]
     branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
     return f"gh-{branch_name}"
-
-
-def get_local_ip() -> str:
-    """Get the local machine's IP"""
-    hostname = socket.gethostname()
-    ip_addr = socket.gethostbyname(hostname)
-    return ip_addr
 
 
 class DockerTestCase(TestCase):

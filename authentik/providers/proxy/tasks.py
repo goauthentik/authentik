@@ -14,4 +14,3 @@ def proxy_set_defaults():
     for provider in ProxyProvider.objects.all():
         provider.set_oauth_defaults()
         provider.save()
-
