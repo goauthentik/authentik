@@ -252,9 +252,14 @@ export class AKPageNavbar
                     color: var(--pf-global--active-color--100);
                 }
 
-                .page-title {
-                    display: flex;
-                    gap: var(--pf-global--spacer--xs);
+                .pf-c-content .page-title {
+                    display: box;
+                    display: -webkit-box;
+                    line-clamp: 2;
+                    -webkit-line-clamp: 2;
+                    box-orient: vertical;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
 
                 h1 {
