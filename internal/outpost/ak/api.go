@@ -42,10 +42,10 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	wsConn           *websocket.Conn
+	eventConn        *websocket.Conn
 	lastWsReconnect  time.Time
 	wsIsReconnecting bool
-	wsHandlers       []WSHandler
+	eventHandlers    []EventHandler
 	refreshHandlers  []func()
 
 	instanceUUID uuid.UUID
@@ -119,13 +119,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
 		instanceUUID:    uuid.New(),
 		Outpost:         outpost,
-		wsHandlers:      []WSHandler{},
+		eventHandlers:   []EventHandler{},
 		refreshHandlers: make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initWS(akURL, outpost.Pk)
+	err = ac.initEvent(akURL, outpost.Pk)
 	if err != nil {
-		go ac.reconnectWS()
+		go ac.recentEvents()
 	}
 	ac.configureRefreshSignal()
 	return ac
@@ -192,7 +192,7 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
+func (a *APIController) getEventPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
 		"version":        constants.VERSION,
 		"buildHash":      constants.BUILD(""),
@@ -218,12 +218,12 @@ func (a *APIController) StartBackgroundTasks() error {
 		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {
-		a.logger.Debug("Starting WS Handler...")
-		a.startWSHandler()
+		a.logger.Debug("Starting Event Handler...")
+		a.startEventHandler()
 	}()
 	go func() {
-		a.logger.Debug("Starting WS Health notifier...")
-		a.startWSHealth()
+		a.logger.Debug("Starting Event health notifier...")
+		a.startEventHealth()
 	}()
 	go func() {
 		a.logger.Debug("Starting Interval updater...")

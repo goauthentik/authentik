@@ -29,7 +29,7 @@ func NewServer(ac *ak.APIController) *RACServer {
 		connm: sync.RWMutex{},
 		conns: map[string]connection.Connection{},
 	}
-	ac.AddWSHandler(rs.wsHandler)
+	ac.AddEventHandler(rs.wsHandler)
 	return rs
 }
 
@@ -51,8 +51,8 @@ func parseIntOrZero(input string) int {
 	return x
 }
 
-func (rs *RACServer) wsHandler(ctx context.Context, msg ak.WebsocketMessage) error {
-	if msg.Instruction != ak.WebsocketInstructionProviderSpecific {
+func (rs *RACServer) wsHandler(ctx context.Context, msg ak.Event) error {
+	if msg.Instruction != ak.EventKindProviderSpecific {
 		return nil
 	}
 	wsm := WSMessage{}
@@ -77,14 +77,14 @@ func (rs *RACServer) wsHandler(ctx context.Context, msg ak.WebsocketMessage) err
 	cc.OnError = func(err error) {
 		rs.connm.Lock()
 		delete(rs.conns, wsm.ConnID)
-		_ = rs.ac.SendWSHello(map[string]interface{}{
+		_ = rs.ac.SendEventHello(map[string]interface{}{
 			"active_connections": len(rs.conns),
 		})
 		rs.connm.Unlock()
 	}
 	rs.connm.Lock()
 	rs.conns[wsm.ConnID] = *cc
-	_ = rs.ac.SendWSHello(map[string]interface{}{
+	_ = rs.ac.SendEventHello(map[string]interface{}{
 		"active_connections": len(rs.conns),
 	})
 	rs.connm.Unlock()

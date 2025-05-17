@@ -104,10 +104,10 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			tw.Check()
 		})
 
+		l.Debug("attempting to start outpost")
 		srv := proxyv2.NewProxyServer(ac)
 		ws.ProxyServer = srv
 		ac.Server = srv
-		l.Debug("attempting to start outpost")
 		err := ac.StartBackgroundTasks()
 		if err != nil {
 			l.WithError(err).Warning("outpost failed to start")

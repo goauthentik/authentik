@@ -7,11 +7,11 @@ import (
 	"goauthentik.io/internal/outpost/proxyv2/application"
 )
 
-func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.WebsocketMessage) error {
-	if msg.Instruction != ak.WebsocketInstructionSessionEnd {
+func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.Event) error {
+	if msg.Instruction != ak.EventKindSessionEnd {
 		return nil
 	}
-	mmsg := ak.WebsocketMessageSessionEnd{}
+	mmsg := ak.EventArgsSessionEnd{}
 	err := msg.ArgsAs(&msg)
 	if err != nil {
 		return err

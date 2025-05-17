@@ -37,7 +37,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 		connections:     map[string]net.Conn{},
 		connectionsSync: sync.Mutex{},
 	}
-	ac.AddWSHandler(ls.handleWSSessionEnd)
+	ac.AddEventHandler(ls.handleWSSessionEnd)
 	s := ldap.NewServer()
 	s.EnforceLDAP = true
 
@@ -124,11 +124,11 @@ func (ls *LDAPServer) TimerFlowCacheExpiry(ctx context.Context) {
 	}
 }
 
-func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.WebsocketMessage) error {
-	if msg.Instruction != ak.WebsocketInstructionSessionEnd {
+func (ls *LDAPServer) handleWSSessionEnd(ctx context.Context, msg ak.Event) error {
+	if msg.Instruction != ak.EventKindSessionEnd {
 		return nil
 	}
-	mmsg := ak.WebsocketMessageSessionEnd{}
+	mmsg := ak.EventArgsSessionEnd{}
 	err := msg.ArgsAs(&msg)
 	if err != nil {
 		return err
