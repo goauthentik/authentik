@@ -1,7 +1,6 @@
 """LDAP and Outpost e2e tests"""
 
 from dataclasses import asdict
-from threading import Thread
 from time import sleep
 
 from django.db.transaction import atomic
@@ -315,7 +314,7 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
                     ],
                     "homeDirectory": f"/home/{self.user.username}",
                     "ak-active": True,
-                    "ak-superuser": True,
+                    "ak-superuser": False,
                     "extraAttribute": ["bar"],
                 },
                 "type": "searchResEntry",
@@ -532,27 +531,27 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             )
         )
 
-        def checker():
-            with atomic():
-                AuthenticatedSession.objects.filter(user=self.user).delete()
-                self.user.set_unusable_password()
-                self.user.save()
+        self.assertTrue(
+            _connection.search(
+                "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                "(objectClass=user)",
+                search_scope=SUBTREE,
+                attributes=["cn"],
+            )
+        )
 
-        th = Thread(target=checker)
-        started = False
+        with atomic():
+            AuthenticatedSession.objects.filter(user=self.user).delete()
+            self.user.set_unusable_password()
+            self.user.save()
 
         with self.assertRaises(expected_exception=LDAPSessionTerminatedByServerError):
-            while True:
-                _connection.search(
-                    "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
-                    "(objectClass=user)",
-                    search_scope=SUBTREE,
-                    attributes=["cn"],
-                )
-                if not started:
-                    th.start()
-                    started = True
-        th.join()
+            _connection.search(
+                "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+                "(objectClass=user)",
+                search_scope=SUBTREE,
+                attributes=["cn"],
+            )
 
         self.user.password = self.user.username
         self.user.save()

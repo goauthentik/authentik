@@ -95,6 +95,8 @@ class DockerTestCase(TestCase):
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
         image = f"{base}:gh-main"
+        if not IS_CI:
+            return image
         try:
             branch_image = f"{base}:{get_docker_tag()}"
             self.docker_client.images.pull(branch_image)
