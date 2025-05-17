@@ -40,9 +40,9 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 			selectedApp = instance.GetAppSlug()
 			c, err := instance.binder.Bind(username, req)
 			if c == ldap.LDAPResultSuccess {
-				f := instance.GetFlags(bindDN)
+				f := instance.GetFlags(req.BindDN)
 				ls.connectionsSync.Lock()
-				ls.connections[f.Session.Value] = conn
+				ls.connections[f.SessionID()] = conn
 				ls.connectionsSync.Unlock()
 			}
 			return c, err
