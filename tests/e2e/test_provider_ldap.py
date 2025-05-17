@@ -14,7 +14,6 @@ from authentik.core.tests.utils import create_test_user
 from authentik.events.models import Event, EventAction
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
-from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.decorators import retry
@@ -38,7 +37,7 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             },
         )
 
-    def _prepare(self) -> User:
+    def _prepare(self) -> Outpost:
         """prepare user, provider, app and container"""
         self.user = create_test_user()
         self.user.attributes["extraAttribute"] = "bar"
@@ -192,9 +191,8 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
-        # Remove akadmin to ensure list is correct
-        # Remove user before starting container so it's not cached
-        User.objects.filter(username="akadmin").delete()
+        # Remove users before starting container so it's not cached
+        User.objects.exclude_anonymous().all().delete()
 
         outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
@@ -215,8 +213,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
                 },
             )
         )
-
-        embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
 
         _connection.search(
             "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
@@ -255,34 +251,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
                     "gidNumber": 2000 + o_user.pk,
                     "memberOf": [],
                     "homeDirectory": f"/home/{o_user.username}",
-                    "ak-active": True,
-                    "ak-superuser": False,
-                },
-                "type": "searchResEntry",
-            },
-            {
-                "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                "attributes": {
-                    "cn": embedded_account.username,
-                    "sAMAccountName": embedded_account.username,
-                    "uid": embedded_account.uid,
-                    "name": embedded_account.name,
-                    "displayName": embedded_account.name,
-                    "sn": embedded_account.name,
-                    "mail": "",
-                    "objectClass": [
-                        "top",
-                        "person",
-                        "organizationalPerson",
-                        "inetOrgPerson",
-                        "user",
-                        "posixAccount",
-                        "goauthentik.io/ldap/user",
-                    ],
-                    "uidNumber": 2000 + embedded_account.pk,
-                    "gidNumber": 2000 + embedded_account.pk,
-                    "memberOf": [],
-                    "homeDirectory": f"/home/{embedded_account.username}",
                     "ak-active": True,
                     "ak-superuser": False,
                 },
@@ -440,9 +408,8 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_search_attrs_filter(self):
         """Test search with attributes filtering"""
-        # Remove akadmin to ensure list is correct
-        # Remove user before starting container so it's not cached
-        User.objects.filter(username="akadmin").delete()
+        # Remove users before starting container so it's not cached
+        User.objects.exclude_anonymous().all().delete()
 
         outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
@@ -464,8 +431,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
             )
         )
 
-        embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
-
         _connection.search(
             "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
             "(objectClass=user)",
@@ -484,13 +449,6 @@ class TestProviderLDAP(DockerTestCase, WebsocketTestCase):
                     "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
                     "attributes": {
                         "cn": o_user.username,
-                    },
-                    "type": "searchResEntry",
-                },
-                {
-                    "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                    "attributes": {
-                        "cn": embedded_account.username,
                     },
                     "type": "searchResEntry",
                 },

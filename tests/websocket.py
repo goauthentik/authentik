@@ -50,5 +50,3 @@ class WebsocketTestCase(BaseWebsocketTestCase):
         if IS_CI:
             print("::endgroup::", file=stderr)
         super().tearDown()
-        if IS_CI:
-            print("::group::Browser logs")
