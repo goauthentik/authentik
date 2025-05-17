@@ -16,10 +16,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestSourceOAuth2(SeleniumTestCase):
+class TestSourceOAuth2(DockerTestCase, SeleniumTestCase):
     """test OAuth Source flow"""
 
     def setUp(self):

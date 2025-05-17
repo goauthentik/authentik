@@ -1,7 +1,6 @@
 """Radius e2e tests"""
 
 from dataclasses import asdict
-from time import sleep
 
 from pyrad.client import Client
 from pyrad.dictionary import Dictionary
@@ -9,14 +8,17 @@ from pyrad.packet import AccessAccept, AccessReject, AccessRequest
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, User
+from authentik.core.tests.utils import create_test_user
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
 from authentik.providers.radius.models import RadiusProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.decorators import retry
+from tests.docker import DockerTestCase
+from tests.websocket import WebsocketTestCase
 
 
-class TestProviderRadius(SeleniumTestCase):
+class TestProviderRadius(DockerTestCase, WebsocketTestCase):
     """Radius Outpost e2e tests"""
 
     def setUp(self):
@@ -28,13 +30,13 @@ class TestProviderRadius(SeleniumTestCase):
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-radius"),
             ports={"1812/udp": "1812/udp"},
-            environment={
-                "AUTHENTIK_TOKEN": outpost.token.key,
-            },
+            environment={"AUTHENTIK_TOKEN": outpost.token.key},
         )
+        self.wait_for_outpost(outpost)
 
     def _prepare(self) -> User:
         """prepare user, provider, app and container"""
+        self.user = create_test_user()
         radius: RadiusProvider = RadiusProvider.objects.create(
             name=generate_id(),
             authorization_flow=Flow.objects.get(slug="default-authentication-flow"),
@@ -50,17 +52,6 @@ class TestProviderRadius(SeleniumTestCase):
         outpost.providers.add(radius)
 
         self.start_radius(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
         return outpost
 
     @retry()

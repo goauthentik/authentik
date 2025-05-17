@@ -6,10 +6,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
 from authentik.blueprints.tests import apply_blueprint
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestFlowsLoginSFE(SeleniumTestCase):
+class TestFlowsLoginSFE(DockerTestCase, SeleniumTestCase):
     """test default login flow"""
 
     def login(self):

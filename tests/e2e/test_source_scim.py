@@ -8,12 +8,14 @@ from docker.types import Healthcheck
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.scim.models import SCIMSource
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 TEST_POLL_MAX = 25
 
 
-class TestSourceSCIM(SeleniumTestCase):
+class TestSourceSCIM(DockerTestCase, SeleniumTestCase):
     """test SCIM Source flow"""
 
     def setUp(self):

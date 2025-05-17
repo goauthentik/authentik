@@ -13,10 +13,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestProviderProxyForward(SeleniumTestCase):
+class TestProviderProxyForward(DockerTestCase, SeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):
@@ -30,14 +32,11 @@ class TestProviderProxyForward(SeleniumTestCase):
         """Start proxy container based on outpost created"""
         self.run_container(
             image=self.get_container_image("ghcr.io/goauthentik/dev-proxy"),
-            ports={
-                "9000": "9000",
-            },
-            environment={
-                "AUTHENTIK_TOKEN": outpost.token.key,
-            },
+            ports={"9000": "9000"},
+            environment={"AUTHENTIK_TOKEN": outpost.token.key},
             name="ak-test-outpost",
         )
+        self.wait_for_outpost(outpost)
 
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
@@ -76,17 +75,6 @@ class TestProviderProxyForward(SeleniumTestCase):
         outpost.build_user_permissions(outpost.user)
 
         self.start_outpost(outpost)
-
-        # Wait until outpost healthcheck succeeds
-        healthcheck_retries = 0
-        while healthcheck_retries < 50:  # noqa: PLR2004
-            if len(outpost.state) > 0:
-                state = outpost.state[0]
-                if state.last_seen:
-                    break
-            healthcheck_retries += 1
-            sleep(0.5)
-        sleep(5)
 
     @retry()
     def test_traefik(self):

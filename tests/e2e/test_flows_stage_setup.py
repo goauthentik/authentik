@@ -8,10 +8,12 @@ from authentik.core.models import User
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.lib.generators import generate_key
 from authentik.stages.password.models import PasswordStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestFlowsStageSetup(SeleniumTestCase):
+class TestFlowsStageSetup(DockerTestCase, SeleniumTestCase):
     """test stage setup flows"""
 
     @retry()

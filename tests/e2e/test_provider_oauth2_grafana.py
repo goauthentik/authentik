@@ -26,10 +26,12 @@ from authentik.providers.oauth2.models import (
     RedirectURIMatchingMode,
     ScopeMapping,
 )
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestProviderOAuth2OAuth(SeleniumTestCase):
+class TestProviderOAuth2OAuth(DockerTestCase, SeleniumTestCase):
     """test OAuth with OAuth Provider flow"""
 
     def setUp(self):

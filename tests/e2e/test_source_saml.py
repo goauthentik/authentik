@@ -16,7 +16,9 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.stages.identification.models import IdentificationStage
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 IDP_CERT = """-----BEGIN CERTIFICATE-----
 MIIDXTCCAkWgAwIBAgIJALmVVuDWu4NYMA0GCSqGSIb3DQEBCwUAMEUxCzAJBgNV
@@ -70,7 +72,7 @@ Sm75WXsflOxuTn08LbgGc4s=
 -----END PRIVATE KEY-----"""
 
 
-class TestSourceSAML(SeleniumTestCase):
+class TestSourceSAML(DockerTestCase, SeleniumTestCase):
     """test SAML Source flow"""
 
     def setUp(self):

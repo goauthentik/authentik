@@ -1,7 +1,6 @@
 """install ID"""
 
 from functools import lru_cache
-from uuid import uuid4
 
 from psycopg import connect
 
@@ -23,7 +22,9 @@ def get_install_id() -> str:
     from django.db import connection
 
     if settings.TEST:
-        return str(uuid4())
+        # Hardcoded UUID for testing, as some e2e tests run another django instance
+        # in a subprocess, which would generate a different install_id
+        return "fbe3aba7-2dba-4d69-8b72-80ef12fa0196"
     with connection.cursor() as cursor:
         cursor.execute(QUERY)
         return cursor.fetchone()[0]
