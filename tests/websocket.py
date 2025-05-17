@@ -24,10 +24,15 @@ class DatabasePatchDaphneProcess(DaphneProcess):
         self.setup = set_database_connection
 
 
-class WebsocketTestCase(ChannelsLiveServerTestCase):
+class BaseWebsocketTestCase(ChannelsLiveServerTestCase):
+    """Base channels test case"""
 
     host = get_local_ip()
     ProtocolServerProcess = DatabasePatchDaphneProcess
+
+
+class WebsocketTestCase(BaseWebsocketTestCase):
+    """Test case to allow testing against a running Websocket/HTTP server"""
 
     def setUp(self):
         if IS_CI:

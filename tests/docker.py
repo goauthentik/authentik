@@ -37,7 +37,9 @@ class DockerTestCase(TestCase):
 
     def setUp(self) -> None:
         self.__client = from_env()
-        self.__network = self.docker_client.networks.create(name=f"authentik-test-{generate_id()}")
+        self.__network = self.docker_client.networks.create(
+            name=f"authentik-test-{self.__label_id}"
+        )
         super().setUp()
 
     @property

@@ -3,11 +3,8 @@
 from base64 import b64encode
 from dataclasses import asdict
 from json import loads
-from sys import platform
 from time import sleep
-from unittest.case import skip, skipUnless
 
-from channels.testing import ChannelsLiveServerTestCase
 from jwt import decode
 from selenium.webdriver.common.by import By
 
@@ -18,12 +15,13 @@ from authentik.lib.generators import generate_id
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
-from tests.browser import SeleniumTestCase
+from tests.browser import WebsocketSeleniumTestCase
 from tests.decorators import retry
 from tests.docker import DockerTestCase
+from tests.websocket import WebsocketTestCase
 
 
-class TestProviderProxy(DockerTestCase, SeleniumTestCase):
+class TestProviderProxy(DockerTestCase, WebsocketSeleniumTestCase):
     """Proxy and Outpost e2e tests"""
 
     def setUp(self):
@@ -201,10 +199,7 @@ class TestProviderProxy(DockerTestCase, SeleniumTestCase):
         self.assertIn("You've logged out of", title)
 
 
-# TODO: Fix flaky test
-@skip("Flaky test")
-@skipUnless(platform.startswith("linux"), "requires local docker")
-class TestProviderProxyConnect(ChannelsLiveServerTestCase):
+class TestProviderProxyConnect(WebsocketTestCase):
     """Test Proxy connectivity over websockets"""
 
     @retry(exceptions=[AssertionError])

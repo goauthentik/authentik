@@ -1,11 +1,14 @@
 """authentik e2e testing utilities"""
 
+# This file cannot import anything django or anything that will load django
+
 import json
 from sys import stderr
 from time import sleep
+from typing import TYPE_CHECKING
+from unittest.case import TestCase
 from urllib.parse import urlencode
 
-from django.apps import apps
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.urls import reverse
 from selenium import webdriver
@@ -19,22 +22,27 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 from structlog.stdlib import get_logger
 
-from authentik.core.api.users import UserSerializer
-from authentik.core.models import User
-from authentik.core.tests.utils import create_test_admin_user
 from tests import IS_CI, RETRIES, get_local_ip
+from tests.websocket import BaseWebsocketTestCase
+
+if TYPE_CHECKING:
+    from authentik.core.models import User
 
 
-class SeleniumTestCase(StaticLiveServerTestCase):
-    """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
+class BaseSeleniumTestCase(TestCase):
+    """Mixin which adds helpers for spinning up Selenium"""
 
     host = get_local_ip()
     wait_timeout: int
-    user: User
+    user: "User"
 
     def setUp(self):
         if IS_CI:
             print("::group::authentik Logs", file=stderr)
+        from django.apps import apps
+
+        from authentik.core.tests.utils import create_test_admin_user
+
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
         self.driver = self._get_driver()
@@ -161,8 +169,10 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         password_stage.find_element(By.CSS_SELECTOR, "input[name=password]").send_keys(Keys.ENTER)
         sleep(1)
 
-    def assert_user(self, expected_user: User):
+    def assert_user(self, expected_user: "User"):
         """Check users/me API and assert it matches expected_user"""
+        from authentik.core.api.users import UserSerializer
+
         self.driver.get(self.url("authentik_api:user-me") + "?format=json")
         user_json = self.driver.find_element(By.CSS_SELECTOR, "pre").text
         user = UserSerializer(data=json.loads(user_json)["user"])
@@ -170,3 +180,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.assertEqual(user["username"].value, expected_user.username)
         self.assertEqual(user["name"].value, expected_user.name)
         self.assertEqual(user["email"].value, expected_user.email)
+
+
+class SeleniumTestCase(BaseSeleniumTestCase, StaticLiveServerTestCase):
+    """Test case which spins up a selenium instance and a HTTP-only test server"""
+
+
+class WebsocketSeleniumTestCase(BaseSeleniumTestCase, BaseWebsocketTestCase):
+    """Test case which spins up a selenium instance and a Websocket/HTTP test server"""
