@@ -18,12 +18,10 @@ from authentik.providers.oauth2.models import (
     RedirectURI,
     RedirectURIMatchingMode,
 )
-from tests.browser import SeleniumTestCase
-from tests.decorators import retry
-from tests.docker import DockerTestCase
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestProviderOAuth2Github(DockerTestCase, SeleniumTestCase):
+class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
     def setUp(self):

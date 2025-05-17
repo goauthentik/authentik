@@ -18,12 +18,10 @@ from authentik.stages.authenticator_static.models import (
     StaticToken,
 )
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
-from tests.browser import SeleniumTestCase
-from tests.decorators import retry
-from tests.docker import DockerTestCase
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestFlowsAuthenticator(DockerTestCase, SeleniumTestCase):
+class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 
     @retry()

@@ -13,12 +13,10 @@ from authentik.flows.models import Flow
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage
-from tests.browser import SeleniumTestCase
-from tests.decorators import retry
-from tests.docker import DockerTestCase
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestFlowsRecovery(DockerTestCase, SeleniumTestCase):
+class TestFlowsRecovery(SeleniumTestCase):
     """Test Recovery flow"""
 
     def initial_stages(self, user: User):

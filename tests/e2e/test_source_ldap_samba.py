@@ -11,12 +11,10 @@ from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from tests.browser import SeleniumTestCase
-from tests.decorators import retry
-from tests.docker import DockerTestCase
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestSourceLDAPSamba(DockerTestCase, SeleniumTestCase):
+class TestSourceLDAPSamba(SeleniumTestCase):
     """test LDAP Source"""
 
     def setUp(self):

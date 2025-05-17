@@ -11,7 +11,7 @@ from django.test.runner import DiscoverRunner
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
-from tests.docker import get_docker_tag
+from tests.e2e.utils import get_docker_tag
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
@@ -34,8 +34,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
-        CONFIG.set("events.context_processors.geoip", "tests/geoip/GeoLite2-City-Test.mmdb")
-        CONFIG.set("events.context_processors.asn", "tests/geoip/GeoLite2-ASN-Test.mmdb")
+        CONFIG.set("events.context_processors.geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.set("events.context_processors.asn", "tests/GeoLite2-ASN-Test.mmdb")
         CONFIG.set("blueprints_dir", "./blueprints")
         CONFIG.set(
             "outposts.container_image_base",

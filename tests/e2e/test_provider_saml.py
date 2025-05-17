@@ -14,12 +14,10 @@ from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.sources.saml.processors.constants import SAML_BINDING_POST
-from tests.browser import SeleniumTestCase
-from tests.decorators import retry
-from tests.docker import DockerTestCase
+from tests.e2e.utils import SeleniumTestCase, retry
 
 
-class TestProviderSAML(DockerTestCase, SeleniumTestCase):
+class TestProviderSAML(SeleniumTestCase):
     """test SAML Provider flow"""
 
     def setup_client(self, provider: SAMLProvider, force_post: bool = False):
