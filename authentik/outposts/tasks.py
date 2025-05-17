@@ -298,7 +298,7 @@ def outpost_connection_discovery(self: SystemTask):
 
 
 @CELERY_APP.task()
-def proxy_on_logout(session_id: str):
+def outpost_session_end(session_id: str):
     """Update outpost instances connected to a single outpost"""
     layer = get_channel_layer()
     hashed_session_id = hash_session_key(session_id)

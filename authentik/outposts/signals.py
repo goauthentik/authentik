@@ -17,7 +17,7 @@ from authentik.outposts.tasks import (
     CACHE_KEY_OUTPOST_DOWN,
     outpost_controller,
     outpost_post_save,
-    proxy_on_logout,
+    outpost_session_end,
 )
 
 LOGGER = get_logger()
@@ -83,14 +83,14 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
 
 
 @receiver(user_logged_out)
-def logout_proxy_revoke_direct(sender: type[User], request: HttpRequest, **_):
-    """Catch logout by direct logout and forward to proxy providers"""
+def logout_revoke_direct(sender: type[User], request: HttpRequest, **_):
+    """Catch logout by direct logout and forward to providers"""
     if not request.session or not request.session.session_key:
         return
-    proxy_on_logout.delay(request.session.session_key)
+    outpost_session_end.delay(request.session.session_key)
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
-def logout_proxy_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
+def logout_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
-    proxy_on_logout.delay(instance.session.session_key)
+    outpost_session_end.delay(instance.session.session_key)
