@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { VERSION } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
 import {
     EventContext,
@@ -76,7 +75,7 @@ ${context.message as string}
 
 
 **Version and Deployment (please complete the following information):**
-- authentik version: ${VERSION}
+- authentik version: ${import.meta.env.AK_VERSION}
 - Deployment: [e.g. docker-compose, helm]
 
 **Additional context**

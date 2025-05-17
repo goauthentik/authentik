@@ -1,4 +1,3 @@
-import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
 import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
@@ -50,7 +49,7 @@ export function configureSentry(canDoPpi = false) {
             /MutationObserver.observe/gi,
             /NS_ERROR_FAILURE/gi,
         ],
-        release: `authentik@${VERSION}`,
+        release: `authentik@${import.meta.env.AK_VERSION}`,
         integrations: [
             browserTracingIntegration({
                 // https://docs.sentry.io/platforms/javascript/tracing/instrumentation/automatic-instrumentation/#custom-routing
