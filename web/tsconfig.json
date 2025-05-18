@@ -2,6 +2,9 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
+        "checkJs": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
