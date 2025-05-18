@@ -223,7 +223,7 @@ export function inspectStyleSheetTree(element: ReactiveElement): InspectedStyleS
     };
 }
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.NODE_ENV === "development") {
     Object.assign(window, {
         inspectStyleSheetTree,
         serializeStyleSheet,

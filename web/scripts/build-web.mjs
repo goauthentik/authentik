@@ -1,3 +1,4 @@
+/// <reference types="../types/esbuild.js" />
 /**
  * @file ESBuild script for building the authentik web UI.
  *
@@ -9,7 +10,6 @@ import {
     NodeEnvironment,
     readBuildIdentifier,
     resolvePackage,
-    serializeEnvironmentVars,
 } from "@goauthentik/monorepo";
 import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
 import { deepmerge } from "deepmerge-ts";
@@ -20,14 +20,9 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
+import { createBundleDefinitions } from "./esbuild/environment.mjs";
 
 const logPrefix = "[Build]";
-
-const definitions = serializeEnvironmentVars({
-    NODE_ENV: NodeEnvironment,
-    CWD: process.cwd(),
-    AK_API_BASE_PATH: process.env.AK_API_BASE_PATH,
-});
 
 const patternflyPath = resolvePackage("@patternfly/patternfly");
 
@@ -86,7 +81,7 @@ const BASE_ESBUILD_OPTIONS = {
             root: MonoRepoRoot,
         }),
     ],
-    define: definitions,
+    define: createBundleDefinitions(),
     format: "esm",
     logOverride: {
         /**
