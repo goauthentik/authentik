@@ -35,6 +35,11 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const projectRoot = path.join(__dirname, "..");
 process.chdir(projectRoot);
 
+/**
+ *
+ * @param {string[]} flags
+ * @returns
+ */
 const hasFlag = (flags) => process.argv.length > 1 && flags.includes(process.argv[2]);
 
 const [configFile, files] = hasFlag(["-n", "--nightmare"])

@@ -1,17 +1,33 @@
-import { spawnSync } from "child_process";
-import fs from "fs";
-import path from "path";
-import process from "process";
+/**
+ * @file Lit Localize build script.
+ *
+ * @remarks
+ * Determines if all the Xliff translation source files are present and
+ * if the Typescript source files generated from those sources are up-to-date.
+ *
+ * If they are not, it runs the locale building script, intercepting the
+ * long spew of "this string is not translated" and replacing it with a
+ * summary of how many strings are missing with respect to the source locale.
+ *
+ * @import { ConfigFile } from "@lit/localize-tools/lib/types/config"
+ */
+import { PackageRoot } from "@goauthentik/web/paths";
+import { spawnSync } from "node:child_process";
+import { readFileSync, statSync } from "node:fs";
+import path from "node:path";
 
 /**
- * Determines if all the Xliff translation source files are present and if the Typescript source
- * files generated from those sources are up-to-date. If they are not, it runs the locale building
- * script, intercepting the long spew of "this string is not translated" and replacing it with a
- * summary of how many strings are missing with respect to the source locale.
+ * @type {ConfigFile}
  */
+const localizeRules = JSON.parse(
+    readFileSync(path.join(PackageRoot, "lit-localize.json"), "utf-8"),
+);
 
-const localizeRules = JSON.parse(fs.readFileSync("./lit-localize.json", "utf-8"));
-
+/**
+ *
+ * @param {string} loc
+ * @returns {boolean}
+ */
 function generatedFileIsUpToDateWithXliffSource(loc) {
     const xliff = path.join("./xliff", `${loc}.xlf`);
     const gened = path.join("./src/locales", `${loc}.ts`);
@@ -22,7 +38,7 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
     // generates a unique error message and halts the build.
 
     try {
-        var xlfStat = fs.statSync(xliff);
+        var xlfStat = statSync(xliff);
     } catch (_error) {
         console.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
         process.exit(1);
@@ -30,7 +46,7 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
 
     // If the generated file doesn't exist, of course it's not up to date.
     try {
-        var genedStat = fs.statSync(gened);
+        var genedStat = statSync(gened);
     } catch (_error) {
         return false;
     }
