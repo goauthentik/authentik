@@ -1,6 +1,8 @@
 {
     "compilerOptions": {
-        "types": ["jquery"],
+        "noEmit": true,
+        "declaration": false,
+        "types": [],
         "esModuleInterop": true,
         "lib": ["DOM", "ES2015", "ES2017"]
     }
