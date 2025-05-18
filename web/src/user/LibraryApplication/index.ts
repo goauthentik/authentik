@@ -6,7 +6,7 @@ import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
-import { UserInterface } from "@goauthentik/user/UserInterface";
+import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -97,8 +97,19 @@ export class LibraryApplication extends AKElement {
             return html``;
         }
         if (this.application?.launchUrl === "goauthentik.io://providers/rac/launch") {
-            return html`<ak-library-rac-endpoint-launch .app=${this.application}>
-                </ak-library-rac-endpoint-launch>
+            return html`<div class="pf-c-card__header">
+                    <a
+                        @click=${() => {
+                            this.racEndpointLaunch?.onClick();
+                        }}
+                    >
+                        <ak-app-icon
+                            size=${PFSize.Large}
+                            name=${this.application.name}
+                            icon=${ifDefined(this.application.metaIcon || undefined)}
+                        ></ak-app-icon>
+                    </a>
+                </div>
                 <div class="pf-c-card__title">
                     <a
                         @click=${() => {
@@ -107,15 +118,29 @@ export class LibraryApplication extends AKElement {
                     >
                         ${this.application.name}
                     </a>
-                </div>`;
+                </div>
+                <ak-library-rac-endpoint-launch .app=${this.application}>
+                </ak-library-rac-endpoint-launch>`;
         }
-        return html`<div class="pf-c-card__title">
-            <a
-                href="${ifDefined(this.application.launchUrl ?? "")}"
-                target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
-                >${this.application.name}</a
-            >
-        </div>`;
+        return html`<div class="pf-c-card__header">
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                >
+                    <ak-app-icon
+                        size=${PFSize.Large}
+                        name=${this.application.name}
+                        icon=${ifDefined(this.application.metaIcon || undefined)}
+                    ></ak-app-icon>
+                </a>
+            </div>
+            <div class="pf-c-card__title">
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                    >${this.application.name}</a
+                >
+            </div>`;
     }
 
     render(): TemplateResult {
@@ -135,18 +160,6 @@ export class LibraryApplication extends AKElement {
             class="pf-c-card pf-m-hoverable pf-m-compact ${classMap(classes)}"
             style=${styleMap(styles)}
         >
-            <div class="pf-c-card__header">
-                <a
-                    href="${ifDefined(this.application.launchUrl ?? "")}"
-                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
-                >
-                    <ak-app-icon
-                        size=${PFSize.Large}
-                        name=${this.application.name}
-                        icon=${ifDefined(this.application.metaIcon || undefined)}
-                    ></ak-app-icon>
-                </a>
-            </div>
             ${this.renderLaunch()}
             <div class="expander"></div>
             ${expandable ? this.renderExpansion(this.application) : nothing}

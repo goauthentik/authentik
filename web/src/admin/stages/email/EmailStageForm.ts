@@ -1,8 +1,8 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -61,7 +61,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
                     <input
                         type="number"
-                        value="${first(this.instance?.port, 25)}"
+                        value="${this.instance?.port ?? 25}"
                         class="pf-c-form-control"
                         required
                     />
@@ -85,7 +85,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         <input
                             class="pf-c-switch__input"
                             type="checkbox"
-                            ?checked=${first(this.instance?.useTls, true)}
+                            ?checked=${this.instance?.useTls ?? true}
                         />
                         <span class="pf-c-switch__toggle">
                             <span class="pf-c-switch__toggle-icon">
@@ -100,7 +100,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         <input
                             class="pf-c-switch__input"
                             type="checkbox"
-                            ?checked=${first(this.instance?.useSsl, false)}
+                            ?checked=${this.instance?.useSsl ?? false}
                         />
                         <span class="pf-c-switch__toggle">
                             <span class="pf-c-switch__toggle-icon">
@@ -117,7 +117,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.timeout, 30)}"
+                        value="${this.instance?.timeout ?? 30}"
                         class="pf-c-form-control"
                         required
                     />
@@ -160,7 +160,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.activateUserOnSuccess, true)}
+                                ?checked=${this.instance?.activateUserOnSuccess ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -182,7 +182,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.useGlobalSettings, true)}
+                                ?checked=${this.instance?.useGlobalSettings ?? true}
                                 @change=${(ev: Event) => {
                                     const target = ev.target as HTMLInputElement;
                                     this.showConnectionSettings = !target.checked;
@@ -202,19 +202,20 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Token expiry")}
+                        label=${msg("Token expiration")}
                         ?required=${true}
                         name="tokenExpiry"
                     >
                         <input
-                            type="number"
-                            value="${first(this.instance?.tokenExpiry, 30)}"
+                            type="text"
+                            value="${this.instance?.tokenExpiry ?? "minutes=30"}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Time in minutes the token sent is valid.")}
+                            ${msg("Time the token sent is valid.")}
                         </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Subject")}
@@ -223,7 +224,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.subject, "authentik")}"
+                            value="${this.instance?.subject ?? "authentik"}"
                             class="pf-c-form-control"
                             required
                         />

@@ -1,7 +1,7 @@
 import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
 import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
-    NavigationUpdate,
+    NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
@@ -14,9 +14,9 @@ import { property, query } from "lit/decorators.js";
 import { ValidationError } from "@goauthentik/api";
 
 import {
+    ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
-    ExtendedValidationError,
 } from "./types";
 
 export class ApplicationWizardStep extends WizardStep {
@@ -30,7 +30,7 @@ export class ApplicationWizardStep extends WizardStep {
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
     wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application");
+    wizardDescription = msg("Create a new application and configure a provider for it.");
     canCancel = true;
 
     // This should be overridden in the children for more precise targeting.
@@ -48,7 +48,7 @@ export class ApplicationWizardStep extends WizardStep {
     }
 
     protected removeErrors(
-        keyToDelete: keyof ExtendedValidationError,
+        keyToDelete: keyof ApplicationTransactionValidationError,
     ): ValidationError | undefined {
         if (!this.wizard.errors) {
             return undefined;
@@ -71,7 +71,7 @@ export class ApplicationWizardStep extends WizardStep {
     public handleUpdate(
         update?: ApplicationWizardStateUpdate,
         destination?: string,
-        enable?: NavigationUpdate,
+        enable?: NavigationEventInit,
     ) {
         // Inform ApplicationWizard of content state
         if (update) {

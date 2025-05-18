@@ -102,7 +102,7 @@ def ssf_user_session_delete_session_revoked(sender, instance: AuthenticatedSessi
             "format": "complex",
             "session": {
                 "format": "opaque",
-                "id": sha256(instance.session_key.encode("ascii")).hexdigest(),
+                "id": sha256(instance.session.session_key.encode("ascii")).hexdigest(),
             },
             "user": {
                 "format": "email",

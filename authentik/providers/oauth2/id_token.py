@@ -126,7 +126,7 @@ class IDToken:
         id_token.iat = int(now.timestamp())
         id_token.auth_time = int(token.auth_time.timestamp())
         if token.session:
-            id_token.sid = hash_session_key(token.session.session_key)
+            id_token.sid = hash_session_key(token.session.session.session_key)
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = get_login_event(token.session)

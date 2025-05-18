@@ -1,4 +1,4 @@
-```
+```nginx
 # Upgrade WebSocket if requested, otherwise use keepalive
 map $http_upgrade $connection_upgrade_keepalive {
     default upgrade;

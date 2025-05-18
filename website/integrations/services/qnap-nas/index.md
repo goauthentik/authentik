@@ -3,8 +3,6 @@ title: Integrate with QNAP NAS
 sidebar_label: QNAP NAS
 ---
 
-# Integrate with QNAP NAS
-
 ## What is QNAP NAS
 
 > QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attached storage appliances used for file sharing, virtualization, storage management and surveillance applications.

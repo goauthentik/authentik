@@ -1,3 +1,4 @@
+// @file TSConfig used during tests.
 {
     "compilerOptions": {
         "baseUrl": ".",

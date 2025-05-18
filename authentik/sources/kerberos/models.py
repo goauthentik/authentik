@@ -372,8 +372,6 @@ class KerberosSourcePropertyMapping(PropertyMapping):
 class UserKerberosSourceConnection(UserSourceConnection):
     """Connection to configured Kerberos Sources."""
 
-    identifier = models.TextField()
-
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.sources.kerberos.api.source_connection import (

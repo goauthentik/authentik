@@ -102,7 +102,7 @@ export class LibraryPage extends AKElement {
     }
 
     loading() {
-        return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
     }
 
     running() {

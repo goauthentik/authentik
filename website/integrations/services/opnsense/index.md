@@ -1,11 +1,8 @@
 ---
 title: Integrate with OPNsense
 sidebar_label: OPNsense
+support_level: community
 ---
-
-# Integrate with OPNsense
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is OPNsense
 

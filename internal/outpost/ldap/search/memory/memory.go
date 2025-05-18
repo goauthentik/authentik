@@ -98,7 +98,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	entries := make([]*ldap.Entry, 0)
 
-	scope := req.SearchRequest.Scope
+	scope := req.Scope
 	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, req.FilterObjectClass)
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {

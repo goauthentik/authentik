@@ -2,9 +2,8 @@
 title: Google Workspace (with SAML)
 sidebar_label: Google Workspace (SAML)
 tags: [integration, saml, google]
+support_level: authentik
 ---
-
-<span className="badge badge--primary">Support level: authentik</span>
 
 This topic covers configuring authentik to authenticate users with their Google Workspace credentials.
 
@@ -138,7 +137,7 @@ Start by logging into your authentik instance as an administrator and navigating
 
 In the Admin interface, navigate to **Directory -> Federation & Social login** and press **Create**.
 
-In the **New source** modal, choose **SAML Source** and continue by filling in the following fields:
+In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
 
 | Field | Value            |
 | ----- | ---------------- |

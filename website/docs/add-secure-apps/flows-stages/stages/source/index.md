@@ -1,13 +1,10 @@
 ---
 title: Source stage
+authentik_version: "2024.4"
+authentik_enterprise: true
 ---
 
-<span class="badge badge--primary">Enterprise</span>
-<span class="badge badge--version">authentik 2024.4+</span>
-
----
-
-The source stage injects an [OAuth](../../../../users-sources/sources/protocols/oauth/index.md) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
+The source stage injects an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md) Source into the flow execution. This allows for additional user verification, or to dynamically access different sources for different user identifiers (username, email address, etc).
 
 ```mermaid
 sequenceDiagram
@@ -44,13 +41,13 @@ This stage can be used to leverage an external OAuth/SAML identity provider.
 
 For example, you can authenticate users by routing them through a custom device-health solution.
 
-Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../users-sources/sources/protocols/oauth/index.md)/[SAML](../../../../users-sources/sources/protocols/saml/index.md) source by itself.
+Another use case is to route users to authenticate with your legacy (Okta, etc) IdP and then use the returned identity and attributes within authentik as part of an authorization flow, for example as part of an IdP migration. For authentication/enrollment this is also possible with an [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx)/[SAML](../../../../users-sources/sources/protocols/saml/index.md) source by itself.
 
 ### Options
 
 #### Source
 
-The source the user is redirected to. Must be a web-based source, such as [OAuth](../../../../users-sources/sources/protocols/oauth/index.md) or [SAML](../../../../users-sources/sources/protocols/saml/index.md). Sources like [LDAP](../../../../users-sources/sources/protocols/ldap/index.md) are _not_ compatible.
+The source the user is redirected to. Must be a web-based source, such as [OAuth](../../../../users-sources/sources/protocols/oauth/index.mdx) or [SAML](../../../../users-sources/sources/protocols/saml/index.md). Sources like [LDAP](../../../../users-sources/sources/protocols/ldap/index.md) are _not_ compatible.
 
 #### Resume timeout
 

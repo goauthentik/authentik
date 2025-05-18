@@ -52,7 +52,6 @@ function renderRadiusOverview(rawProvider: OneOfProvider) {
 }
 
 function renderRACOverview(rawProvider: OneOfProvider) {
-    // @ts-expect-error TS6133
     const _provider = rawProvider as RACProvider;
 }
 

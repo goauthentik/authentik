@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -11,6 +10,7 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    CompatibilityModeEnum,
     CoreApi,
     CoreGroupsListRequest,
     Group,
@@ -36,7 +36,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
-                    value="${first(provider?.url, "")}"
+                    value="${provider?.url ?? ""}"
                     .errorMessages=${errors?.url ?? []}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
@@ -61,6 +61,55 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                     )}
                     inputHint="code"
                 ></ak-text-input>
+                <ak-radio-input
+                    name="compatibilityMode"
+                    label=${msg("Compatibility Mode")}
+                    .value=${provider?.compatibilityMode}
+                    required
+                    .options=${[
+                        {
+                            label: msg("Default"),
+                            value: CompatibilityModeEnum.Default,
+                            default: true,
+                            description: html`${msg("Default behavior.")}`,
+                        },
+                        {
+                            label: msg("AWS"),
+                            value: CompatibilityModeEnum.Aws,
+                            description: html`${msg(
+                                "Altered behavior for usage with Amazon Web Services.",
+                            )}`,
+                        },
+                        {
+                            label: msg("Slack"),
+                            value: CompatibilityModeEnum.Slack,
+                            description: html`${msg("Altered behavior for usage with Slack.")}`,
+                        },
+                    ]}
+                    help=${msg(
+                        "Alter authentik's behavior for vendor-specific SCIM implementations.",
+                    )}
+                ></ak-radio-input>
+                <ak-form-element-horizontal name="dryRun">
+                    <label class="pf-c-switch">
+                        <input
+                            class="pf-c-switch__input"
+                            type="checkbox"
+                            ?checked=${provider?.dryRun ?? false}
+                        />
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${msg("Enable dry-run mode")}</span>
+                    </label>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "When enabled, mutating requests will be dropped and logged instead.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
             </div>
         </ak-form-group>
         <ak-form-group expanded>
@@ -69,7 +118,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
-                    ?checked=${first(provider?.excludeUsersServiceAccount, true)}
+                    ?checked=${provider?.excludeUsersServiceAccount ?? true}
                 >
                 </ak-switch-input>
 

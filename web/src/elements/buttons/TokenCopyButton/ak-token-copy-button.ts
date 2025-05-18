@@ -84,7 +84,7 @@ export class TokenCopyButton extends BaseTaskButton {
 
         showMessage({
             level: MessageLevel.error,
-            message,
+            message: message,
         });
     }
 }

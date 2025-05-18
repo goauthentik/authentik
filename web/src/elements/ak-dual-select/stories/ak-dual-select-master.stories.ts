@@ -9,7 +9,7 @@ import { Pagination } from "@goauthentik/api";
 
 import "../ak-dual-select";
 import { AkDualSelect } from "../ak-dual-select";
-import type { DualSelectPair } from "../types";
+import { DualSelectEventType, type DualSelectPair } from "../types";
 
 const goodForYouRaw = `
 Apple, Arrowroot, Artichoke, Arugula, Asparagus, Avocado, Bamboo, Banana, Basil, Beet Root,
@@ -24,7 +24,8 @@ Rosemary, Rutabaga, Shallot, Soybeans, Spinach, Squash, Strawberries, Sweet pota
 Thyme, Tomatillo, Tomato, Turnip, Waterchestnut, Watercress, Watermelon, Yams
 `;
 
-const keyToPair = (key: string): DualSelectPair => [slug(key), key];
+const keyToPair = (key: string): DualSelectPair => [slug(key), key, key];
+
 const goodForYou: DualSelectPair[] = goodForYouRaw
     .split("\n")
     .join(" ")
@@ -83,7 +84,7 @@ export class AkSbFruity extends LitElement {
             totalPages: Math.ceil(this.options.length / this.pageLength),
         };
         this.onNavigation = this.onNavigation.bind(this);
-        this.addEventListener("ak-pagination-nav-to", this.onNavigation);
+        this.addEventListener(DualSelectEventType.NavigateTo, this.onNavigation);
     }
 
     onNavigation(evt: Event) {

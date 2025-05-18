@@ -5,15 +5,14 @@ import {
     TITLE_DEFAULT,
 } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { purify } from "@goauthentik/common/purify";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
+import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 import { themeImage } from "@goauthentik/elements/utils/images";
+import "@goauthentik/flow/components/ak-brand-footer";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
 import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
@@ -46,7 +45,6 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
-    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
@@ -173,6 +171,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     constructor() {
+        configureSentry();
         super();
         this.ws = new WebsocketClient();
         const inspector = new URL(window.location.toString()).searchParams.get("inspector");
@@ -198,10 +197,6 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
@@ -243,7 +238,6 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry();
         if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
@@ -392,6 +386,14 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-webauthn>`;
+            case "ak-stage-authenticator-email":
+                await import(
+                    "@goauthentik/flow/stages/authenticator_email/AuthenticatorEmailStage"
+                );
+                return html`<ak-stage-authenticator-email
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-authenticator-email>`;
             case "ak-stage-authenticator-sms":
                 await import("@goauthentik/flow/stages/authenticator_sms/AuthenticatorSMSStage");
                 return html`<ak-stage-authenticator-sms
@@ -518,38 +520,19 @@ export class FlowExecutor extends Interface implements StageHost {
                                             >
                                                 <img
                                                     src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
+                                                        this.brand?.brandingLogo ??
+                                                            globalAK()?.brand.brandingLogo ??
                                                             DefaultBrand.brandingLogo,
-                                                        ),
                                                     )}"
                                                     alt="${msg("authentik Logo")}"
                                                 />
                                             </div>
                                             ${until(this.renderChallenge())}
                                         </div>
-                                        <footer class="pf-c-login__footer">
-                                            <ul class="pf-c-list pf-m-inline">
-                                                ${this.brand?.uiFooterLinks?.map((link) => {
-                                                    if (link.href) {
-                                                        return html`${purify(
-                                                            html`<li>
-                                                                <a href="${link.href}"
-                                                                    >${link.name}</a
-                                                                >
-                                                            </li>`,
-                                                        )}`;
-                                                    }
-                                                    return html`<li>
-                                                        <span>${link.name}</span>
-                                                    </li>`;
-                                                })}
-                                                <li>
-                                                    <span>${msg("Powered by authentik")}</span>
-                                                </li>
-                                            </ul>
-                                        </footer>
+                                        <ak-brand-links
+                                            class="pf-c-login__footer"
+                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                        ></ak-brand-links>
                                     </div>
                                 </div>
                             </div>

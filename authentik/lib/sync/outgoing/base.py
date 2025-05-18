@@ -28,6 +28,14 @@ class Direction(StrEnum):
     remove = "remove"
 
 
+SAFE_METHODS = [
+    "GET",
+    "HEAD",
+    "OPTIONS",
+    "TRACE",
+]
+
+
 class BaseOutgoingSyncClient[
     TModel: "Model", TConnection: "Model", TSchema: dict, TProvider: "OutgoingSyncProvider"
 ]:

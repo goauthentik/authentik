@@ -1,7 +1,6 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -82,7 +81,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.connectionExpiry, "hours=8")}"
+                    value="${this.instance?.connectionExpiry ?? "hours=8"}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
@@ -100,7 +99,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.deleteTokenOnDisconnect, false)}
+                        ?checked=${this.instance?.deleteTokenOnDisconnect ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -135,7 +134,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"
-                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                            value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>

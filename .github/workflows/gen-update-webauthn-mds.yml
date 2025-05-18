@@ -2,7 +2,7 @@ name: authentik-gen-update-webauthn-mds
 on:
   workflow_dispatch:
   schedule:
-    - cron: '30 1 1,15 * *'
+    - cron: "30 1 1,15 * *"
 
 env:
   POSTGRES_DB: authentik
@@ -24,7 +24,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - run: poetry run ak update_webauthn_mds
+      - run: uv run ak update_webauthn_mds
       - uses: peter-evans/create-pull-request@v7
         id: cpr
         with:

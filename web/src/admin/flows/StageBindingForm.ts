@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -123,7 +123,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <input
                     type="number"
-                    value="${first(this.instance?.order, this.defaultOrder)}"
+                    value="${this.instance?.order ?? this.defaultOrder}"
                     class="pf-c-form-control"
                     required
                 />
@@ -133,7 +133,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.evaluateOnPlan, false)}
+                        ?checked=${this.instance?.evaluateOnPlan ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -151,7 +151,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.reEvaluatePolicies, true)}
+                        ?checked=${this.instance?.reEvaluatePolicies ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

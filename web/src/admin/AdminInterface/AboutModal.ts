@@ -1,11 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/EmptyState";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
@@ -19,7 +19,7 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
     static get styles() {
-        return super.styles.concat(
+        return ModalButton.styles.concat(
             PFAbout,
             css`
                 .pf-c-about-modal-box__hero {

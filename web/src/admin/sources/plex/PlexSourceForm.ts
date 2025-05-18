@@ -7,7 +7,7 @@ import {
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
@@ -137,7 +137,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.allowFriends, true)}
+                        ?checked=${this.instance?.allowFriends ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -198,7 +198,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -283,10 +283,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
-                    value="${first(
-                        this.instance?.userPathTemplate,
-                        "goauthentik.io/sources/%(slug)s",
-                    )}"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
@@ -332,7 +329,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
@@ -347,7 +344,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, "")}"
+                            value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control"
                             required
                         />

@@ -4,7 +4,8 @@ from django.urls import reverse
 
 from authentik.core.tests.utils import create_test_flow, create_test_user
 from authentik.enterprise.stages.source.models import SourceStage
-from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
+from authentik.enterprise.stages.source.stage import SourceStageFinal
+from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -87,6 +88,7 @@ class TestSourceStage(FlowTestCase):
         self.assertIsNotNone(flow_token)
         session = self.client.session
         plan: FlowPlan = session[SESSION_KEY_PLAN]
+        plan.insert_stage(in_memory_stage(SourceStageFinal), index=0)
         plan.context[PLAN_CONTEXT_IS_RESTORED] = flow_token
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -96,4 +98,6 @@ class TestSourceStage(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}), follow=True
         )
         self.assertEqual(response.status_code, 200)
-        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertStageRedirects(
+            response, reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        )

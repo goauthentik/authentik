@@ -1,8 +1,7 @@
 ---
 title: FreeIPA
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## Preparation
 

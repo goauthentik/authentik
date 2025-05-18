@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -61,7 +60,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -84,7 +83,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.checkIp, true)}
+                                ?checked=${this.instance?.checkIp ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -99,7 +98,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.checkUsername, false)}
+                                ?checked=${this.instance?.checkUsername ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

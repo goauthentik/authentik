@@ -42,7 +42,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
 
     renderNewAppButton() {
         const href = paramURL("/core/applications", {
-            createForm: true,
+            createWizard: true,
         });
         return html`
             <div class="pf-u-pt-lg">

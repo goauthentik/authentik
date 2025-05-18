@@ -1,11 +1,8 @@
 ---
 title: Integrate with Semgrep
 sidebar_label: Semgrep
+support_level: community
 ---
-
-# Integrate with Semgrep
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Semgrep
 

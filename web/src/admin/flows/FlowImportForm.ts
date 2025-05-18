@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/events/LogViewer";
 import { Form } from "@goauthentik/elements/forms/Form";

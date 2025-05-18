@@ -59,7 +59,7 @@ class SystemInfoSerializer(PassiveSerializer):
             if not isinstance(value, str):
                 continue
             actual_value = value
-            if raw_session in actual_value:
+            if raw_session is not None and raw_session in actual_value:
                 actual_value = actual_value.replace(
                     raw_session, SafeExceptionReporterFilter.cleansed_substitute
                 )

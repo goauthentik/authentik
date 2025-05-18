@@ -1,12 +1,12 @@
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
+import "@goauthentik/elements/Alert.js";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
@@ -21,7 +21,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -120,7 +120,12 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
     }
 
     renderForm(): TemplateResult {
+        const alertMsg = msg(
+            "Using this form will only create an Application. In order to authenticate with the application, you will have to manually pair it with a Provider.",
+        );
+
         return html`<form class="pf-c-form pf-m-horizontal">
+            ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
                 value=${ifDefined(this.instance?.name)}
@@ -188,7 +193,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"
-                        ?checked=${first(this.instance?.openInNewTab, false)}
+                        ?checked=${this.instance?.openInNewTab ?? false}
                         label=${msg("Open in new tab")}
                         help=${msg(
                             "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
@@ -215,7 +220,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         : html` <ak-text-input
                               label=${msg("Icon")}
                               name="metaIcon"
-                              value=${first(this.instance?.metaIcon, "")}
+                              value=${this.instance?.metaIcon ?? ""}
                               help=${iconHelperText}
                           >
                           </ak-text-input>`}

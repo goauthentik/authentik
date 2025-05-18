@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.contrib.auth.management import _get_all_permissions
+from django.contrib.auth.models import Permission
 from django.db import models
 from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
@@ -73,6 +74,35 @@ class Role(SerializerModel):
             ("assign_role_permissions", _("Can assign permissions to users")),
             ("unassign_role_permissions", _("Can unassign permissions from users")),
         ]
+
+
+class InitialPermissionsMode(models.TextChoices):
+    """Determines which entity the initial permissions are assigned to."""
+
+    USER = "user", _("User")
+    ROLE = "role", _("Role")
+
+
+class InitialPermissions(SerializerModel):
+    """Assigns permissions for newly created objects."""
+
+    name = models.TextField(max_length=150, unique=True)
+    mode = models.CharField(choices=InitialPermissionsMode.choices)
+    role = models.ForeignKey(Role, on_delete=models.CASCADE)
+    permissions = models.ManyToManyField(Permission, blank=True)
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.initial_permissions import InitialPermissionsSerializer
+
+        return InitialPermissionsSerializer
+
+    def __str__(self) -> str:
+        return f"Initial Permissions for Role #{self.role_id}, applying to #{self.mode}"
+
+    class Meta:
+        verbose_name = _("Initial Permissions")
+        verbose_name_plural = _("Initial Permissions")
 
 
 class SystemPermission(models.Model):

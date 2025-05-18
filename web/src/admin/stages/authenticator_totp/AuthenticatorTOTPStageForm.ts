@@ -1,7 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -50,7 +49,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -62,7 +61,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">

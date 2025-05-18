@@ -31,9 +31,9 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
+        PolicyBindingCheckTarget.policy,
         PolicyBindingCheckTarget.group,
         PolicyBindingCheckTarget.user,
-        PolicyBindingCheckTarget.policy,
     ];
 
     @property({ type: Array })

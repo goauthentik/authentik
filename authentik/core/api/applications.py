@@ -46,7 +46,7 @@ LOGGER = get_logger()
 
 def user_app_cache_key(user_pk: str, page_number: int | None = None) -> str:
     """Cache key where application list for user is saved"""
-    key = f"{CACHE_PREFIX}/app_access/{user_pk}"
+    key = f"{CACHE_PREFIX}app_access/{user_pk}"
     if page_number:
         key += f"/{page_number}"
     return key

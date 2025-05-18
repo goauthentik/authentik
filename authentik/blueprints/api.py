@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ListSerializer, ModelSerializer
+from rest_framework.serializers import ListSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.blueprints.models import BlueprintInstance
@@ -15,7 +15,7 @@ from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import JSONDictField, PassiveSerializer
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.rbac.decorators import permission_required
 
 

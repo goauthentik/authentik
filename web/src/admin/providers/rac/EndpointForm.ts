@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
@@ -99,7 +98,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
             >
                 <input
                     type="number"
-                    value="${first(this.instance?.maximumConnections, 1)}"
+                    value="${this.instance?.maximumConnections ?? 1}"
                     class="pf-c-form-control"
                     required
                 />
@@ -123,7 +122,7 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"
-                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                            value="${YAML.stringify(this.instance?.settings ?? {})}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>

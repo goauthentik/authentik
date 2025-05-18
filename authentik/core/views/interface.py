@@ -53,6 +53,7 @@ class InterfaceView(TemplateView):
         kwargs["build"] = get_build_hash()
         kwargs["url_kwargs"] = self.kwargs
         kwargs["base_url"] = self.request.build_absolute_uri(CONFIG.get("web.path", "/"))
+        kwargs["base_url_rel"] = CONFIG.get("web.path", "/")
         return super().get_context_data(**kwargs)
 
 

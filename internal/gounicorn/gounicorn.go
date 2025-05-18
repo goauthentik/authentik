@@ -44,10 +44,11 @@ func New(healthcheck func() bool) *GoUnicorn {
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
 	go func() {
 		for sig := range c {
-			if sig == syscall.SIGHUP {
+			switch sig {
+			case syscall.SIGHUP:
 				g.log.Info("SIGHUP received, forwarding to gunicorn")
 				g.Reload()
-			} else if sig == syscall.SIGUSR2 {
+			case syscall.SIGUSR2:
 				g.log.Info("SIGUSR2 received, restarting gunicorn")
 				g.Restart()
 			}

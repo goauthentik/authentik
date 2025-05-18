@@ -7,7 +7,6 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import {
     CapabilitiesEnum,
     WithCapabilitiesConfig,
@@ -105,7 +104,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -228,7 +227,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
@@ -334,7 +333,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.allowIdpInitiated, false)}
+                                ?checked=${this.instance?.allowIdpInitiated ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -397,10 +396,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

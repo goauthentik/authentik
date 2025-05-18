@@ -120,7 +120,7 @@ class TestEventsNotifications(APITestCase):
         )
 
         transport = NotificationTransport.objects.create(
-            name=generate_id(), webhook_mapping=mapping, mode=TransportMode.LOCAL
+            name=generate_id(), webhook_mapping_body=mapping, mode=TransportMode.LOCAL
         )
         NotificationRule.objects.filter(name__startswith="default").delete()
         trigger = NotificationRule.objects.create(name=generate_id(), group=self.group)

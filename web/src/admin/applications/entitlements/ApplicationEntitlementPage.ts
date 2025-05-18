@@ -94,7 +94,7 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
     }
 
     renderExpanded(item: ApplicationEntitlement): TemplateResult {
-        return html` <td></td>
+        return html`<td></td>
             <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
