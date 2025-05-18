@@ -14,6 +14,6 @@ import "@goauthentik/flow/stages/password/PasswordStage";
 
 // end of stage import
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }

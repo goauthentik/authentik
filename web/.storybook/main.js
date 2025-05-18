@@ -3,13 +3,11 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
-import { cwd } from "process";
+import { createBundleDefinitions } from "@goauthentik/web/scripts/esbuild/environment";
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const NODE_ENV = process.env.NODE_ENV || "development";
-
-const CSSImportPattern = /import [\w\$]+ from .+\.(css)/g;
+const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
 
 /**
@@ -54,11 +52,7 @@ const config = {
          */
         const mergedConfig = {
             ...config,
-            define: {
-                "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-                "process.env.CWD": JSON.stringify(cwd()),
-                "process.env.AK_API_BASE_PATH": JSON.stringify(process.env.AK_API_BASE_PATH || ""),
-            },
+            define: createBundleDefinitions(),
             plugins: [inlineCSSPlugin, ...plugins, postcssLit(), tsconfigPaths()],
         };
 
