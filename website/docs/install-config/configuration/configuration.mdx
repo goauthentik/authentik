@@ -134,20 +134,20 @@ You can configure additional read replica databases to distribute database load 
 
 To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add settings for each replica by replacing the default `0` with a unique value for each additional replica.
 
-The same PostgreSQL settings as described above are used for each read replica. For example, for the first replica (index 0):
+The same PostgreSQL settings as described above are used for each read replica. For example, for the first replica (index `0`):
 
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`: The hostname or IP address of the read replica server.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`: The database name on the read replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`: The username for authenticating with the read replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`: The port on which the read replica is listening.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`: The password for authenticating with the read replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`: The SSL verification mode for the replica connection.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`: The path to the CA certificate for verifying the replica's SSL certificate.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`: The path to the client certificate for authenticating with the replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`: The path to the client private key for authenticating with the replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`: The connection lifetime for connections to the replica.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`: Whether to perform health checks on persistent replica connections.
-- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`: Whether to disable server-side cursors for the replica.
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__HOST`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__NAME`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__USER`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PORT`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__PASSWORD`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLMODE`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLROOTCERT`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLCERT`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__SSLKEY`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_MAX_AGE`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__CONN_HEALTH_CHECKS`
+- `AUTHENTIK_POSTGRESQL__READ_REPLICAS__0__DISABLE_SERVER_SIDE_CURSORS`
 
 ### Using a PostgreSQL Connection Pooler
 
