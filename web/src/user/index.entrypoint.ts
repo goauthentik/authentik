@@ -43,7 +43,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 import { CurrentBrand, EventsApi, SessionUser } from "@goauthentik/api";
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 
