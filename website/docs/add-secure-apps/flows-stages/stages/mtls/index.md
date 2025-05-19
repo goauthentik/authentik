@@ -8,7 +8,7 @@ toc_max_heading_level: 5
 
 With the Mutual TLS stage, authentik can authenticate/enroll users based on client certificates. Management of client certificates is out of the scope of this document.
 
-## Configuration
+## Reverse-proxy configuration
 
 Using this stage requires special configuration of the reverse proxy used in front of authentik, as the reverse-proxy talks directly to the browser.
 
@@ -91,3 +91,28 @@ See [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/start
 #### No reverse proxy
 
 When using authentik without a reverse proxy, the certificate authority should be selected in the corresponding brand for the domain.
+
+## Stage configuration
+
+1. Log in as an admin to authentik, and go to the Admin interface.
+
+2. In the Admin interface, nagiate to **System -> Certificates**
+
+3. Create a new certificate for the Certificate Authority used to sign client certificates.
+
+4. In the Admin interface, navigate to **Flows -> Stages**.
+
+5. Click **Create**, and select **Mutual TLS Stage**, and in the **New stage** box, define the following fields:
+
+    - **Name**: define a descriptive name, such as "chrome-device-trust".
+
+    - **Stage-specific settings**
+
+        - **Mode**: Configure the mode this stage operates in.
+
+            - **Certificate optional**: When no certificate is provided by the user or the reverse proxy, the flow will continue to the next stage.
+            - **Certificate required**: When no certificate is provided, the flow ends with an error message.
+
+        - **Certificate authority**: Select the certificate authority used to sign client certificates.
+
+6. Click **Finish**.
