@@ -1,6 +1,8 @@
+from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 
 from django.urls import reverse
+from guardian.shortcuts import assign_perm
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_flow, create_test_user
@@ -16,6 +18,7 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.tests import FlowTestCase
 from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
+from authentik.outposts.models import Outpost, OutpostType
 
 
 class MTLSStageTests(FlowTestCase):
@@ -74,3 +77,39 @@ class MTLSStageTests(FlowTestCase):
             self.assertEqual(res.status_code, 200)
             self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
         self.assertEqual(plan().context[PLAN_CONTEXT_PENDING_USER], self.cert_user)
+
+    def test_parse_outpost_object(self):
+        """Test outposts's format"""
+        # Test object permission
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        assign_perm("pass_outpost_certificate", outpost.user, self.stage)
+        with patch(
+            "authentik.root.middleware.ClientIPMiddleware.get_outpost_user",
+            MagicMock(return_value=outpost.user),
+        ):
+            with self.assertFlowFinishes() as plan:
+                res = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                    headers={"X-Authentik-Outpost-Certificate": quote_plus(self.client_cert)},
+                )
+                self.assertEqual(res.status_code, 200)
+                self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+            self.assertEqual(plan().context[PLAN_CONTEXT_PENDING_USER], self.cert_user)
+
+    def test_parse_outpost_global(self):
+        """Test outposts's format"""
+        # Test global permission
+        outpost = Outpost.objects.create(name=generate_id(), type=OutpostType.PROXY)
+        assign_perm("authentik_stages_mtls.pass_outpost_certificate", outpost.user)
+        with patch(
+            "authentik.root.middleware.ClientIPMiddleware.get_outpost_user",
+            MagicMock(return_value=outpost.user),
+        ):
+            with self.assertFlowFinishes() as plan:
+                res = self.client.get(
+                    reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                    headers={"X-Authentik-Outpost-Certificate": quote_plus(self.client_cert)},
+                )
+                self.assertEqual(res.status_code, 200)
+                self.assertStageRedirects(res, reverse("authentik_core:root-redirect"))
+            self.assertEqual(plan().context[PLAN_CONTEXT_PENDING_USER], self.cert_user)
