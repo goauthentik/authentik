@@ -15,7 +15,7 @@ class MutualTLSStageSerializer(EnterpriseRequiredMixin, StageSerializer):
         model = MutualTLSStage
         fields = StageSerializer.Meta.fields + [
             "mode",
-            "certificate_authority",
+            "certificate_authorities",
             "cert_attribute",
             "user_attribute",
         ]

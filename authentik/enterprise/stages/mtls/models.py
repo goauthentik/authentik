@@ -34,13 +34,12 @@ class MutualTLSStage(Stage):
 
     mode = models.TextField(choices=TLSMode.choices)
 
-    certificate_authority = models.ForeignKey(
+    certificate_authorities = models.ManyToManyField(
         CertificateKeyPair,
-        on_delete=models.SET_DEFAULT,
         default=None,
-        null=True,
+        blank=True,
         help_text=_(
-            "Configure a certificate authority to validate the certificate against. "
+            "Configure certificate authorities to validate the certificate against. "
             "This option has a higher priority than the `client_certificate` option on `Brand`."
         ),
     )

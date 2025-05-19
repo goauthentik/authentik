@@ -85,30 +85,34 @@ class MTLSStageView(ChallengeStageView):
         outpost_raw = self.request.headers.get(HEADER_OUTPOST_FORWARDED)
         return self.__parse_single_cert(outpost_raw)
 
-    def get_ca(self) -> CertificateKeyPair | None:
-        # We can't access `certificate_authority` on `self.executor.current_stage`, as that would
+    def get_authorities(self) -> list[CertificateKeyPair] | None:
+        # We can't access `certificate_authorities` on `self.executor.current_stage`, as that would
         # load the certificate into the directly referenced foreign key, which we have to pickle
         # as part of the flow plan, and cryptography certs can't be pickled
         stage: MutualTLSStage = (
             MutualTLSStage.objects.filter(pk=self.executor.current_stage.pk)
-            .select_related("certificate_authority")
+            .prefetch_related("certificate_authorities")
             .first()
         )
-        if stage.certificate_authority:
-            return stage.certificate_authority
+        if stage.certificate_authorities.exists():
+            return stage.certificate_authorities.order_by("name")
         brand: Brand = self.request.brand
-        if brand.client_certificate:
-            return brand.client_certificate
+        if brand.client_certificates.exists():
+            return brand.client_certificates.order_by("name")
         return None
 
-    def validate_cert(self, ca: Certificate, certs: list[Certificate]):
+    def validate_cert(self, authorities: list[CertificateKeyPair], certs: list[Certificate]):
         for _cert in certs:
-            try:
-                _cert.verify_directly_issued_by(ca)
-                return _cert
-            except (InvalidSignature, TypeError, ValueError):
-                self.logger.warning("Discarding cert not issued by authority", cert=_cert)
-                continue
+            for ca in authorities:
+                try:
+                    _cert.verify_directly_issued_by(ca.certificate)
+                    return _cert
+                except (InvalidSignature, TypeError, ValueError) as exc:
+                    self.logger.warning(
+                        "Discarding cert not issued by authority", cert=_cert, authority=ca, exc=exc
+                    )
+                    continue
+        return None
 
     def check_if_user(self, cert: Certificate):
         stage: MutualTLSStage = self.executor.current_stage
@@ -172,15 +176,15 @@ class MTLSStageView(ChallengeStageView):
             *self._parse_cert_traefik(),
             *self._parse_cert_outpost(),
         ]
-        ca = self.get_ca()
-        if not ca:
+        authorities = self.get_authorities()
+        if not authorities:
             self.logger.warning("No Certificate authority found")
             if stage.mode == TLSMode.OPTIONAL:
                 return self.executor.stage_ok()
             if stage.mode == TLSMode.REQUIRED:
                 return super().dispatch(request, *args, **kwargs)
-        cert = self.validate_cert(ca.certificate, certs)
-        if len(certs) < 1 and stage.mode == TLSMode.REQUIRED:
+        cert = self.validate_cert(authorities, certs)
+        if not cert and stage.mode == TLSMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
             return super().dispatch(
                 request,

@@ -1,6 +1,9 @@
+import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -77,13 +80,15 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Certificate authority")}
-                        name="certificateAuthority"
+                        label=${msg("Certificate authorities")}
+                        name="certificateAuthorities"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.certificateAuthority}
-                            nokey
-                        ></ak-crypto-certificate-search>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${certificateProvider}
+                            .selector=${certificateSelector(this.instance?.certificateAuthorities)}
+                            available-label=${msg("Available Certificates")}
+                            selected-label=${msg("Selected Certificates")}
+                        ></ak-dual-select-dynamic-selected>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.",

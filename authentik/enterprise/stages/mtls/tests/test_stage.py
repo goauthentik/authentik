@@ -28,19 +28,18 @@ class MTLSStageTests(FlowTestCase):
     def setUp(self):
         super().setUp()
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
-
         self.ca = CertificateKeyPair.objects.create(
             name=generate_id(),
             certificate_data=load_fixture("fixtures/ca.pem"),
         )
-
         self.stage = MutualTLSStage.objects.create(
             name=generate_id(),
-            certificate_authority=self.ca,
             mode=TLSMode.REQUIRED,
             cert_attribute=CertAttributes.COMMON_NAME,
             user_attribute=UserAttributes.USERNAME,
         )
+
+        self.stage.certificate_authorities.add(self.ca)
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=0)
         self.client_cert = load_fixture("fixtures/cert_client.pem")
         # User matching the certificate
@@ -140,12 +139,10 @@ class MTLSStageTests(FlowTestCase):
 
     def test_brand_ca(self):
         """Test using a CA from the brand"""
-        self.stage.certificate_authority = None
-        self.stage.save()
+        self.stage.certificate_authorities.clear()
 
         brand = create_test_brand()
-        brand.client_certificate = self.ca
-        brand.save()
+        brand.client_certificates.add(self.ca)
         with self.assertFlowFinishes() as plan:
             res = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -158,7 +155,7 @@ class MTLSStageTests(FlowTestCase):
     def test_no_ca_optional(self):
         """Test using no CA Set"""
         self.stage.mode = TLSMode.OPTIONAL
-        self.stage.certificate_authority = None
+        self.stage.certificate_authorities.clear()
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -169,7 +166,7 @@ class MTLSStageTests(FlowTestCase):
 
     def test_no_ca_required(self):
         """Test using no CA Set"""
-        self.stage.certificate_authority = None
+        self.stage.certificate_authorities.clear()
         self.stage.save()
         res = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),

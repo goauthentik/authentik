@@ -1,3 +1,4 @@
+import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -19,48 +20,10 @@ import { customElement } from "lit/decorators.js";
 import {
     Application,
     Brand,
-    CertificateKeyPair,
     CoreApi,
     CoreApplicationsListRequest,
-    CryptoApi,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
-
-const certToSelect = (s: CertificateKeyPair) => [s.pk, s.name, s.name, s];
-
-export async function certificateProvider(page = 1, search = "") {
-    const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-        ordering: "name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-        hasKey: undefined,
-    });
-    return {
-        pagination: certificates.pagination,
-        options: certificates.results.map(certToSelect),
-    };
-}
-
-export function certificateSelector(instanceMappings?: string[]) {
-    if (!instanceMappings) {
-        return [];
-    }
-
-    return async () => {
-        const pm = new CryptoApi(DEFAULT_CONFIG);
-        const mappings = await Promise.allSettled(
-            instanceMappings.map((instanceId) =>
-                pm.cryptoCertificatekeypairsRetrieve({ kpUuid: instanceId }),
-            ),
-        );
-
-        return mappings
-            .filter((s) => s.status === "fulfilled")
-            .map((s) => s.value)
-            .map(certToSelect);
-    };
-}
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
