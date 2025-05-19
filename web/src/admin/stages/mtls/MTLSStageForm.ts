@@ -1,21 +1,22 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-
-
+import "@goauthentik/elements/forms/Radio";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-
-
-import { MutualTLSStage, StagesApi } from "@goauthentik/api";
-
-
-
-
+import {
+    CertAttributeEnum,
+    MutualTLSStage,
+    MutualTLSStageModeEnum,
+    StagesApi,
+    UserAttributeEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
@@ -39,11 +40,8 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
     }
 
     renderForm(): TemplateResult {
-        return html` <span>
-                ${msg(
-                    "Dummy stage used for testing. Shows a simple continue button and always passes.",
-                )}
-            </span>
+        return html`
+            <span> ${msg("Client-certificate/mTLS authentication/enrollment.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -52,26 +50,108 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="throwError">
-                <label class="pf-c-switch">
-                    <input
-                        class="pf-c-switch__input"
-                        type="checkbox"
-                        ?checked=${this.instance?.throwError ?? false}
-                    />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
-                            <i class="fas fa-check" aria-hidden="true"></i>
-                        </span>
-                    </span>
-                    <span class="pf-c-switch__label">${msg("Throw error?")}</span>
-                </label>
-            </ak-form-element-horizontal>`;
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Certificate optional"),
+                                    value: MutualTLSStageModeEnum.Optional,
+                                    default: true,
+                                    description: html`${msg(
+                                        "If no certificate was provided, this stage will succeed and continue to the next stage.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("Certificate required"),
+                                    value: MutualTLSStageModeEnum.Required,
+                                    description: html`${msg(
+                                        "If no certificate was provided, this stage will stop flow execution.",
+                                    )}`,
+                                },
+                            ]}
+                            .value=${this.instance?.mode}
+                        >
+                        </ak-radio>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Certificate authority")}
+                        name="certificateAuthority"
+                    >
+                        <ak-crypto-certificate-search
+                            .certificate=${this.instance?.certificateAuthority}
+                            nokey
+                        ></ak-crypto-certificate-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure the certificate authority client certificates are validated against.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Certificate attribute")}
+                        required
+                        name="certAttribute"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Common Name"),
+                                    value: CertAttributeEnum.CommonName,
+                                },
+                                {
+                                    label: msg("Email"),
+                                    value: CertAttributeEnum.Email,
+                                    default: true,
+                                },
+                                {
+                                    label: msg("Subject"),
+                                    value: CertAttributeEnum.Subject,
+                                },
+                            ]}
+                            .value=${this.instance?.certAttribute}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Configure the attribute of the certificate used to look for a user.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User attribute")}
+                        required
+                        name="userAttribute"
+                    >
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Username"),
+                                    value: UserAttributeEnum.Username,
+                                },
+                                {
+                                    label: msg("Email"),
+                                    value: UserAttributeEnum.Email,
+                                    default: true,
+                                },
+                            ]}
+                            .value=${this.instance?.userAttribute}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Configure the attribute of the user used to look for a user.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+        `;
     }
 }
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-stage-mtls-form": MutualTLSStageForm;
+        "ak-stage-mtls-form": MTLSStageForm;
     }
 }

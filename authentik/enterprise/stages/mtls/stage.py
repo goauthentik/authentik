@@ -161,9 +161,9 @@ class MTLSStageView(ChallengeStageView):
             *self._parse_cert_outpost(),
         ]
         ca = self.get_ca()
-        if not ca and stage.mode != TLSMode.OPTIONAL:
+        if not ca and stage.mode == TLSMode.OPTIONAL:
             self.logger.warning("No Certificate authority found")
-            return super().dispatch(request, *args, **kwargs)
+            return self.executor.stage_ok()
         cert = self.validate_cert(ca.certificate, certs)
         if len(certs) < 1 and stage.mode == TLSMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
