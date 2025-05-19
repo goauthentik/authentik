@@ -6,8 +6,6 @@
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-import { createBundleDefinitions } from "../bundler/utils/node.js";
-
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
 
@@ -53,7 +51,10 @@ const config = {
         autodocs: "tag",
     },
     async viteFinal(config) {
-        const { mergeConfig } = await import("vite");
+        const [{ mergeConfig }, { createBundleDefinitions }] = await Promise.all([
+            import("vite"),
+            import("@goauthentik/web/bundler/utils/node"),
+        ]);
 
         /**
          * @satisfies {InlineConfig}
