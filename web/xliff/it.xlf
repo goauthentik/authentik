@@ -8619,7 +8619,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se8c58e65674b6847">
   <source>This authentik instance uses a Trial license.</source>
-  <target>Questa istanza Authenk utilizza una licenza di prova.</target>
+  <target>Questa istanza di authentik utilizza una licenza di prova.</target>
 </trans-unit>
 <trans-unit id="s6ee52309e586eb18">
   <source>This authentik instance uses a Non-production license.</source>
