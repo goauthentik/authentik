@@ -13469,11 +13469,15 @@
                     "title": "Web certificate",
                     "description": "Web Certificate used by the authentik Core webserver."
                 },
-                "client_certificate": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Client certificate",
-                    "description": "Certificate used for client authentication."
+                "client_certificates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Certificates used for client authentication."
+                    },
+                    "title": "Client certificates",
+                    "description": "Certificates used for client authentication."
                 },
                 "attributes": {
                     "type": "object",
@@ -15244,11 +15248,15 @@
                     ],
                     "title": "Mode"
                 },
-                "certificate_authority": {
-                    "type": "string",
-                    "format": "uuid",
-                    "title": "Certificate authority",
-                    "description": "Configure a certificate authority to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
+                "certificate_authorities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
+                    },
+                    "title": "Certificate authorities",
+                    "description": "Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
                 },
                 "cert_attribute": {
                     "type": "string",

@@ -4,6 +4,8 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -17,10 +19,48 @@ import { customElement } from "lit/decorators.js";
 import {
     Application,
     Brand,
+    CertificateKeyPair,
     CoreApi,
     CoreApplicationsListRequest,
+    CryptoApi,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
+
+const certToSelect = (s: CertificateKeyPair) => [s.pk, s.name, s.name, s];
+
+export async function certificateProvider(page = 1, search = "") {
+    const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
+        ordering: "name",
+        pageSize: 20,
+        search: search.trim(),
+        page,
+        hasKey: undefined,
+    });
+    return {
+        pagination: certificates.pagination,
+        options: certificates.results.map(certToSelect),
+    };
+}
+
+export function certificateSelector(instanceMappings?: string[]) {
+    if (!instanceMappings) {
+        return [];
+    }
+
+    return async () => {
+        const pm = new CryptoApi(DEFAULT_CONFIG);
+        const mappings = await Promise.allSettled(
+            instanceMappings.map((instanceId) =>
+                pm.cryptoCertificatekeypairsRetrieve({ kpUuid: instanceId }),
+            ),
+        );
+
+        return mappings
+            .filter((s) => s.status === "fulfilled")
+            .map((s) => s.value)
+            .map(certToSelect);
+    };
+}
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {
@@ -305,13 +345,15 @@ export class BrandForm extends ModelForm<Brand, string> {
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Client Certificate")}
-                        name="clientCertificate"
+                        label=${msg("Client Certificates")}
+                        name="clientCertificates"
                     >
-                        <ak-crypto-certificate-search
-                            .certificate=${this.instance?.clientCertificate}
-                            nokey
-                        ></ak-crypto-certificate-search>
+                        <ak-dual-select-dynamic-selected
+                            .provider=${certificateProvider}
+                            .selector=${certificateSelector(this.instance?.clientCertificates)}
+                            available-label=${msg("Available Certificates")}
+                            selected-label=${msg("Selected Certificates")}
+                        ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror

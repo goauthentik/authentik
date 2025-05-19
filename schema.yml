@@ -4461,10 +4461,14 @@ paths:
         schema:
           type: string
       - in: query
-        name: client_certificate
+        name: client_certificates
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: default
         schema:
@@ -37739,10 +37743,14 @@ paths:
           - email
           - subject
       - in: query
-        name: certificate_authority
+        name: certificate_authorities
         schema:
-          type: string
-          format: uuid
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: mode
         schema:
@@ -37855,7 +37863,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this MTLS Stage.
+        description: A UUID string identifying this Mutual TLS Stage.
         required: true
       tags:
       - stages
@@ -37889,7 +37897,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this MTLS Stage.
+        description: A UUID string identifying this Mutual TLS Stage.
         required: true
       tags:
       - stages
@@ -37929,7 +37937,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this MTLS Stage.
+        description: A UUID string identifying this Mutual TLS Stage.
         required: true
       tags:
       - stages
@@ -37968,7 +37976,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this MTLS Stage.
+        description: A UUID string identifying this Mutual TLS Stage.
         required: true
       tags:
       - stages
@@ -37999,7 +38007,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this MTLS Stage.
+        description: A UUID string identifying this Mutual TLS Stage.
         required: true
       tags:
       - stages
@@ -42918,11 +42926,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        client_certificate:
-          type: string
-          format: uuid
-          nullable: true
-          description: Certificate used for client authentication.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - brand_uuid
@@ -42987,11 +42996,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        client_certificate:
-          type: string
-          format: uuid
-          nullable: true
-          description: Certificate used for client authentication.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - domain
@@ -48734,11 +48744,12 @@ components:
             $ref: '#/components/schemas/FlowSet'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
-        certificate_authority:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure a certificate authority to validate the certificate
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
             against. This option has a higher priority than the `client_certificate`
             option on `Brand`.
         cert_attribute:
@@ -48773,11 +48784,12 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
-        certificate_authority:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure a certificate authority to validate the certificate
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
             against. This option has a higher priority than the `client_certificate`
             option on `Brand`.
         cert_attribute:
@@ -52322,11 +52334,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
-        client_certificate:
-          type: string
-          format: uuid
-          nullable: true
-          description: Certificate used for client authentication.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
     PatchedCaptchaStageRequest:
       type: object
@@ -53523,11 +53536,12 @@ components:
             $ref: '#/components/schemas/FlowSetRequest'
         mode:
           $ref: '#/components/schemas/MutualTLSStageModeEnum'
-        certificate_authority:
-          type: string
-          format: uuid
-          nullable: true
-          description: Configure a certificate authority to validate the certificate
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
             against. This option has a higher priority than the `client_certificate`
             option on `Brand`.
         cert_attribute:

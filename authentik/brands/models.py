@@ -75,13 +75,11 @@ class Brand(SerializerModel):
         help_text=_("Web Certificate used by the authentik Core webserver."),
         related_name="+",
     )
-    client_certificate = models.ForeignKey(
+    client_certificates = models.ManyToManyField(
         CertificateKeyPair,
-        null=True,
         default=None,
-        on_delete=models.SET_DEFAULT,
-        help_text=_("Certificate used for client authentication."),
-        related_name="+",
+        blank=True,
+        help_text=_("Certificates used for client authentication."),
     )
     attributes = models.JSONField(default=dict, blank=True)
 
