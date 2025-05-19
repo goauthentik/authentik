@@ -2,10 +2,12 @@
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.flows.models import Flow
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.browser import SeleniumTestCase
+from tests.decorators import retry
+from tests.docker import DockerTestCase
 
 
-class TestFlowsLogin(SeleniumTestCase):
+class TestFlowsLogin(DockerTestCase, SeleniumTestCase):
     """test default login flow"""
 
     def tearDown(self):
