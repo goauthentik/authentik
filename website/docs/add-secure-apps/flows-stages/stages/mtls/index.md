@@ -1,0 +1,93 @@
+---
+title: Mutual TLS stage
+authentik_version: "2025.6"
+authentik_preview: true
+authentik_enterprise: true
+toc_max_heading_level: 5
+---
+
+With the Mutual TLS stage, authentik can authenticate/enroll users based on client certificates. Management of client certificates is out of the scope of this document.
+
+## Configuration
+
+Using this stage requires special configuration of the reverse proxy used in front of authentik, as the reverse-proxy talks directly to the browser.
+
+- nginx
+    - [Standalone nginx](#nginx-standalone)
+    - [nginx kubernetes ingress](#nginx-ingress)
+- Traefik
+    - [Standalone Traefik](#traefik-standalone)
+    - [Traefik kubernetes ingress](#traefik-ingress)
+- [envoy](#envoy)
+- [No reverse proxy](#no-reverse-proxy)
+
+#### nginx Standalone
+
+Add this configuration snippet in your authentik virtual host:
+
+```nginx
+# server {
+    ssl_client_certificate /etc/ssl/path-to-my-ca.pem;
+    ssl_verify_client on;
+
+    # location / {
+        proxy_set_header ssl-client-cert $ssl_client_escaped_cert;
+    # }
+# }
+```
+
+See [nginx documentation](https://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_client_certificate) for reference.
+
+#### nginx Ingress
+
+Add these annotations to your authentik ingress:
+
+```yaml
+nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
+# This secret needs to contain `ca.crt` which is the certificate authority to validate against.
+nginx.ingress.kubernetes.io/auth-tls-secret: namespace/secretName
+```
+
+See [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/examples/auth/client-certs/) for reference.
+
+#### Traefik Standalone
+
+Add this snippet to your traefik configuration
+
+```yaml
+tls:
+    options:
+        default:
+            clientAuth:
+                # in PEM format. each file can contain multiple CAs.
+                caFiles:
+                    - tests/clientca1.crt
+                    - tests/clientca2.crt
+                clientAuthType: RequireAndVerifyClientCert
+```
+
+See [Traefik documentation](https://doc.traefik.io/traefik/https/tls/#client-authentication-mtls) for reference.
+
+#### Traefik Ingress
+
+Create a middleweare objects with these options:
+
+```yaml
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+    name: test-passtlsclientcert
+spec:
+    passTLSClientCert:
+        pem: true
+```
+
+See [Traefik documentation](https://doc.traefik.io/traefik/middlewares/http/passtlsclientcert/) for reference.
+
+#### Envoy
+
+See [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/securing#use-mutual-tls-mtls-to-enforce-client-certificate-authentication) and [Envoy header coumentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert) for configuration.
+
+#### No reverse proxy
+
+When using authentik without a reverse proxy, the certificate authority should be selected in the corresponding brand for the domain.
