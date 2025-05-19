@@ -1,7 +1,8 @@
 /**
- * @file ESBuild environment utilities.
+ * @file Bundler utilities.
  */
-import { AuthentikVersion, NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/monorepo";
+import { NodeEnvironment, serializeEnvironmentVars } from "@goauthentik/core/environment/node";
+import { AuthentikVersion } from "@goauthentik/core/version/node";
 
 /**
  * Creates a mapping of environment variables to their respective runtime constants.

@@ -55,6 +55,20 @@
             "import": "./*/index.js"
         }
     },
+    "imports": {
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
         "@codemirror/lang-html": "^6.4.9",
@@ -115,8 +129,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
+        "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
-        "@goauthentik/monorepo": "^1.0.0",
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
@@ -392,7 +406,6 @@
         "node": ">=20"
     },
     "workspaces": [
-        ".",
         "./packages/*"
     ],
     "prettier": "@goauthentik/prettier-config",

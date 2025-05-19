@@ -11,7 +11,7 @@
  *
  * @import { ConfigFile } from "@lit/localize-tools/lib/types/config"
  */
-import { PackageRoot } from "@goauthentik/web/paths";
+import { PackageRoot } from "#paths/node";
 import { spawnSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
 import path from "node:path";
