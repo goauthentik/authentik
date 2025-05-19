@@ -1,6 +1,6 @@
 [project]
 name = "authentik"
-version = "2025.4.0"
+version = "2025.4.1"
 description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
@@ -19,7 +19,7 @@ dependencies = [
     "django-filter==25.1",
     "django-guardian<3.0.0",
     "django-model-utils==5.0.0",
-    "django-pglock==1.7.1",
+    "django-pglock==1.7.2",
     "django-prometheus==2.3.1",
     "django-redis==5.4.0",
     "django-storages[s3]==1.14.6",
@@ -43,11 +43,11 @@ dependencies = [
     "kubernetes==32.0.1",
     "ldap3==2.9.1",
     "lxml==5.4.0",
-    "msgraph-sdk==1.29.0",
+    "msgraph-sdk==1.30.0",
     "opencontainers==0.0.14",
     "packaging==25.0",
     "paramiko==3.5.1",
-    "psycopg[c,pool]==3.2.8",
+    "psycopg[c,pool]==3.2.9",
     "pydantic==2.11.4",
     "pydantic-scim==0.0.8",
     "pyjwt==2.10.1",
@@ -62,7 +62,7 @@ dependencies = [
     "structlog==25.3.0",
     "swagger-spec-validator==3.0.4",
     "tenant-schemas-celery==4.0.1",
-    "twilio==9.6.0",
+    "twilio==9.6.1",
     "ua-parser==1.0.1",
     "unidecode==1.4.0",
     "urllib3<3",
