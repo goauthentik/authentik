@@ -1,6 +1,7 @@
 .PHONY: gen dev-reset all clean test web website
 
-.SHELLFLAGS += ${SHELLFLAGS} -e
+SHELL := /bin/bash
+.SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
@@ -160,9 +161,12 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
+ifeq ($(wildcard ../authentik-client-go/.*),)
+	git clone --depth 1 https://github.com/goauthentik/client-go.git ../authentik-client-go
+endif
+	cp ../authentik-client-go/config.yaml ./${GEN_API_GO}/config.yaml
+	cp ../authentik-client-go/templates/README.mustache ./${GEN_API_GO}/templates/README.mustache
+	cp ../authentik-client-go/templates/go.mod.mustache ./${GEN_API_GO}/templates/go.mod.mustache
 	cp schema.yml ./${GEN_API_GO}/
 	docker run \
 		--rm -v ${PWD}/${GEN_API_GO}:/local \
