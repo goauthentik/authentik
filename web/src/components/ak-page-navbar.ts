@@ -1,17 +1,18 @@
-import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import "@goauthentik/components/ak-nav-buttons";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { isAdminRoute } from "@goauthentik/elements/router/utils";
-import { themeImage } from "@goauthentik/elements/utils/images";
+import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "#common/constants";
+import { globalAK } from "#common/global";
+import { UIConfig, UserDisplay, getConfigForUser } from "#common/ui/config";
+import { DefaultBrand } from "#common/ui/config";
+import { me } from "#common/users";
+import "#components/ak-nav-buttons";
+import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { isAdminRoute } from "#elements/router/utils";
+import { themeImage } from "#elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, LitElement, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -25,23 +26,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
-//#region Events
-
-export interface SidebarToggleEventDetail {
-    open?: boolean;
-}
-
-//#endregion
-
-//#region Page Navbar
-
-export interface PageNavbarDetails {
-    header?: string;
-    description?: string;
-    icon?: string;
-    iconImage?: boolean;
-}
-
 /**
  * A global navbar component at the top of the page.
  *
@@ -51,13 +35,13 @@ export interface PageNavbarDetails {
 @customElement("ak-page-navbar")
 export class AKPageNavbar
     extends WithBrandConfig(AKElement)
-    implements PageNavbarDetails, SidebarToggleEventDetail
+    implements PageHeaderInit, SidebarToggleEventDetail
 {
     //#region Static Properties
 
     private static elementRef: AKPageNavbar | null = null;
 
-    static readonly setNavbarDetails = (detail: Partial<PageNavbarDetails>): void => {
+    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
         const { elementRef } = AKPageNavbar;
         if (!elementRef) {
             console.debug(
@@ -437,68 +421,8 @@ export class AKPageNavbar
     //#endregion
 }
 
-//#endregion
-
-//#region Page Header
-
-/**
- * A page header component, used to display the page title and description.
- *
- * Internally, this component dispatches the `ak-page-header` event, which is
- * listened to by the `ak-page-navbar` component.
- *
- * @singleton
- */
-@customElement("ak-page-header")
-export class AKPageHeader extends LitElement implements PageNavbarDetails {
-    @property({ type: String })
-    header?: string;
-
-    @property({ type: String })
-    description?: string;
-
-    @property({ type: String })
-    icon?: string;
-
-    @property({ type: Boolean })
-    iconImage = false;
-
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: none;
-                }
-            `,
-        ];
-    }
-
-    connectedCallback(): void {
-        super.connectedCallback();
-
-        AKPageNavbar.setNavbarDetails({
-            header: this.header,
-            description: this.description,
-            icon: this.icon,
-            iconImage: this.iconImage,
-        });
-    }
-
-    updated(): void {
-        AKPageNavbar.setNavbarDetails({
-            header: this.header,
-            description: this.description,
-            icon: this.icon,
-            iconImage: this.iconImage,
-        });
-    }
-}
-
-//#endregion
-
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-page-header": AKPageHeader;
         "ak-page-navbar": AKPageNavbar;
     }
 }
