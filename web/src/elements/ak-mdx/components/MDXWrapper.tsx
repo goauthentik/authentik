@@ -16,5 +16,5 @@ export const MDXWrapper: React.FC<MDXWrapperProps> = ({ children, frontmatter })
         nextChildren.unshift(<h1 key="header-title">{title}</h1>);
     }
 
-    return <>{nextChildren}</>;
+    return <div className="pf-c-content">{nextChildren}</div>;
 };

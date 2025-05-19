@@ -164,7 +164,7 @@ wheels = [
 
 [[package]]
 name = "authentik"
-version = "2025.4.0"
+version = "2025.4.1"
 source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -279,7 +279,7 @@ requires-dist = [
     { name = "django-filter", specifier = "==25.1" },
     { name = "django-guardian", specifier = "<3.0.0" },
     { name = "django-model-utils", specifier = "==5.0.0" },
-    { name = "django-pglock", specifier = "==1.7.1" },
+    { name = "django-pglock", specifier = "==1.7.2" },
     { name = "django-prometheus", specifier = "==2.3.1" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
@@ -303,11 +303,11 @@ requires-dist = [
     { name = "kubernetes", specifier = "==32.0.1" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==5.4.0" },
-    { name = "msgraph-sdk", specifier = "==1.29.0" },
+    { name = "msgraph-sdk", specifier = "==1.30.0" },
     { name = "opencontainers", git = "https://github.com/BeryJu/oci-python?rev=c791b19056769cd67957322806809ab70f5bead8" },
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==3.5.1" },
-    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.2.8" },
+    { name = "psycopg", extras = ["c", "pool"], specifier = "==3.2.9" },
     { name = "pydantic", specifier = "==2.11.4" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
@@ -322,7 +322,7 @@ requires-dist = [
     { name = "structlog", specifier = "==25.3.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
     { name = "tenant-schemas-celery", specifier = "==4.0.1" },
-    { name = "twilio", specifier = "==9.6.0" },
+    { name = "twilio", specifier = "==9.6.1" },
     { name = "ua-parser", specifier = "==1.0.1" },
     { name = "unidecode", specifier = "==1.4.0" },
     { name = "urllib3", specifier = "<3" },
@@ -1063,15 +1063,15 @@ wheels = [
 
 [[package]]
 name = "django-pglock"
-version = "1.7.1"
+version = "1.7.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
     { name = "django-pgactivity" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/9f/3b4b2f7021b626b3981646254f04fcc2db681d7ba7b24be563552368be70/django_pglock-1.7.1.tar.gz", hash = "sha256:69050bdb522fd34585d49bb8a4798dbfbab9ec4754dd1927b1b9eef2ec0edadf", size = 16907, upload-time = "2024-12-16T01:53:47.29Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/1a/6c552b75d0a6b380215c919a667072e4949a3123f275506c6e6ff82f6b76/django_pglock-1.7.2.tar.gz", hash = "sha256:d1d8521b382a5819e8d14978d0e8e63ab2763cb784f5a6bfdbe5de807da4a61a", size = 17287, upload-time = "2025-05-15T22:07:23.744Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/15/bf/6fc72033801279b4ae2003c5b93cc22dfe0814ca1f56432f7cd06975381d/django_pglock-1.7.1-py3-none-any.whl", hash = "sha256:15db418fb56bee37fc8707038495b5085af9b8c203ebfa300202572127bdb3f0", size = 17343, upload-time = "2024-12-16T01:53:45.243Z" },
+    { url = "https://files.pythonhosted.org/packages/fb/d2/21f19531945f03021460d40654bc2fc3b0c474b57b279d5f5a1c34be7f1b/django_pglock-1.7.2-py3-none-any.whl", hash = "sha256:2f9335527779445fe86507b37e26cfde485a32b91d982a8f80039d3bcd25d596", size = 17674, upload-time = "2025-05-15T22:07:22.618Z" },
 ]
 
 [[package]]
@@ -2065,7 +2065,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.29.0"
+version = "1.30.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2075,9 +2075,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e6/31/f37dd23324f6b23008fa19f6cd8d44edec803a4b750239ac005d085fe46a/msgraph_sdk-1.29.0.tar.gz", hash = "sha256:15cfb13d81df65395a663159a9e234a097cca731d60ebc8a3f4016443ba72602", size = 6593690, upload-time = "2025-05-08T12:52:20.528Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e9/4a/4ff19671f6ea06f98fb2405f73a90350e4719ccc692e85e9e0c2fa066826/msgraph_sdk-1.30.0.tar.gz", hash = "sha256:59e30af6d7244c9009146d620c331e169701b651317746b16f561e2e2452e73f", size = 6608744, upload-time = "2025-05-13T13:09:12.594Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/4f/735ff127e05d317ea0af233c0d6ac9e8644a0501e1523046a3fc799c5af7/msgraph_sdk-1.29.0-py3-none-any.whl", hash = "sha256:a52b13e95221da074fd001ccac19b54ebba40400dc4250af58417ac21f7fbed8", size = 27069538, upload-time = "2025-05-08T12:52:17.151Z" },
+    { url = "https://files.pythonhosted.org/packages/70/95/451ec4db8a924274a1f7260809ea03fe9c2b446d84dc5238e92e49a1b522/msgraph_sdk-1.30.0-py3-none-any.whl", hash = "sha256:6748f5cdb5ddbcff9e4f3fb073dd0a604cb00e1cf285dd0fea6969c93ba8282f", size = 27140767, upload-time = "2025-05-13T13:09:07.718Z" },
 ]
 
 [[package]]
@@ -2396,14 +2396,14 @@ wheels = [
 
 [[package]]
 name = "psycopg"
-version = "3.2.8"
+version = "3.2.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "tzdata", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/62/2d36820f3bef9e3737f5c899c8bba6c6de6af513ed977150607e8a86b26d/psycopg-3.2.8.tar.gz", hash = "sha256:cc995d836841e400c4f615d8dea351dc39697ad29df84d428f9c38c8040222f8", size = 158089, upload-time = "2025-05-11T17:20:56.47Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/4a/93a6ab570a8d1a4ad171a1f4256e205ce48d828781312c0bbaff36380ecb/psycopg-3.2.9.tar.gz", hash = "sha256:2fbb46fcd17bc81f993f28c47f1ebea38d66ae97cc2dbc3cad73b37cefbff700", size = 158122, upload-time = "2025-05-13T16:11:15.533Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/16/3f/eda96f7010c7d6bc4e10fdbcaa66d3d0d38f1619591fb1abe0f822dea2ec/psycopg-3.2.8-py3-none-any.whl", hash = "sha256:0e960f1977d77de7f1ace4b54590f686b52c2f9ab1f61fff4141887fc711d9e7", size = 202705, upload-time = "2025-05-11T17:15:45.071Z" },
+    { url = "https://files.pythonhosted.org/packages/44/b0/a73c195a56eb6b92e937a5ca58521a5c3346fb233345adc80fd3e2f542e2/psycopg-3.2.9-py3-none-any.whl", hash = "sha256:01a8dadccdaac2123c916208c96e06631641c0566b22005493f09663c7a8d3b6", size = 202705, upload-time = "2025-05-13T16:06:26.584Z" },
 ]
 
 [package.optional-dependencies]
@@ -2416,9 +2416,9 @@ pool = [
 
 [[package]]
 name = "psycopg-c"
-version = "3.2.8"
+version = "3.2.9"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/c2/af/a8decaae8268130f3037d6d224409bc2aa88d05cbfcaff92c92ef2bd332b/psycopg_c-3.2.8.tar.gz", hash = "sha256:e71439011e72c53e603d8a4e4ac8d7f7f9c46978ec5c78102198e8423adc5751", size = 609525, upload-time = "2025-05-11T17:20:57.946Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/83/7f/6147cb842081b0b32692bf5a0fdf58e9ac95418ebac1184d4431ec44b85f/psycopg_c-3.2.9.tar.gz", hash = "sha256:8c9f654f20c6c56bddc4543a3caab236741ee94b6732ab7090b95605502210e2", size = 609538, upload-time = "2025-05-13T16:11:19.856Z" }
 
 [[package]]
 name = "psycopg-pool"
@@ -3160,7 +3160,7 @@ wheels = [
 
 [[package]]
 name = "twilio"
-version = "9.6.0"
+version = "9.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -3168,9 +3168,9 @@ dependencies = [
     { name = "pyjwt" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/91/e9/ffc6e52465ffc16fad31fa64aea4e10e06cb4803447310c539c6fd66e859/twilio-9.6.0.tar.gz", hash = "sha256:bcb6cbc7f1dad09717d48d3e610573b6a55fa4a1f6fd1006f5b59cf6878b5562", size = 986499, upload-time = "2025-05-05T10:48:17.921Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/95/78/453ff0d35442c53490c22d077f580684a2352846c721d3e01f4c6dfa85bd/twilio-9.6.1.tar.gz", hash = "sha256:bb80b31d4d9e55c33872efef7fb99373149ed4093f21c56cf582797da45862f5", size = 987002, upload-time = "2025-05-13T09:56:55.183Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/04/1d9f452b1089c634bd6d64b40b9002c935b8214e9b08a7cbbfef204c8186/twilio-9.6.0-py2.py3-none-any.whl", hash = "sha256:19e8554c56324186973dcb3121de34626755db15331767e3021a2e23f80c6a3b", size = 1859151, upload-time = "2025-05-05T10:48:15.394Z" },
+    { url = "https://files.pythonhosted.org/packages/02/f4/36fe2566a3ad7f71a89fd28ea2ebb6b2aa05c3a4d5a55b3ca6c358768c6b/twilio-9.6.1-py2.py3-none-any.whl", hash = "sha256:441fdab61b9a204eef770368380b962cbf08dc0fe9f757fe4b1d63ced37ddeed", size = 1859407, upload-time = "2025-05-13T09:56:53.094Z" },
 ]
 
 [[package]]

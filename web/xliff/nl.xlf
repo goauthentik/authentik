@@ -8595,9 +8595,6 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
 </trans-unit>
-<trans-unit id="s10ba15343fe64890">
-  <source>Choose A Provider</source>
-</trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
 </trans-unit>
@@ -9066,6 +9063,9 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 </trans-unit>
 <trans-unit id="sdd66c5a2e706fb81">
   <source>Toggle sidebar</source>
+</trans-unit>
+<trans-unit id="s7d4ec232535a36f0">
+  <source>Choose a Provider</source>
 </trans-unit>
     </body>
   </file>

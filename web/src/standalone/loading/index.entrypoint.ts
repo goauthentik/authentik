@@ -1,7 +1,7 @@
 import { LightInterface } from "@goauthentik/elements/Interface";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -11,19 +11,17 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
 export class Loading extends LightInterface {
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFSpinner,
-            PFEmptyState,
-            css`
-                :host([theme="dark"]) h1 {
-                    color: var(--ak-dark-foreground);
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFPage,
+        PFSpinner,
+        PFEmptyState,
+        css`
+            :host([theme="dark"]) h1 {
+                color: var(--ak-dark-foreground);
+            }
+        `,
+    ];
 
     render(): TemplateResult {
         return html` <section
