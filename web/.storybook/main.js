@@ -3,10 +3,11 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
-import { createBundleDefinitions } from "@goauthentik/web/bundler/utils/node";
 import postcssLit from "rollup-plugin-postcss-lit";
 import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+
+import { createBundleDefinitions } from "../bundler/utils/node.js";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
