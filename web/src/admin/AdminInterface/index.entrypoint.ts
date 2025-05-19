@@ -43,7 +43,7 @@ import {
     renderSidebarItems,
 } from "./AdminSidebar.js";
 
-if (import.meta.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 

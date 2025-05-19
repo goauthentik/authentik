@@ -13,6 +13,8 @@
  * If you need to check the environment at runtime, use `process.env.NODE_ENV` to
  * ensure that module tree-shaking works correctly.
  *
+ * @category Environment
+ * @runtime node
  */
 export const NodeEnvironment = process.env.NODE_ENV || "development";
 
@@ -24,6 +26,7 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
 /**
  * A type helper for serializing environment variables.
  *
+ * @category Environment
  * @template {EnvironmentVariable} T
  * @typedef {T extends string ? `"${T}"` : T} JSONify
  */
@@ -33,8 +36,13 @@ export const NodeEnvironment = process.env.NODE_ENV || "development";
 //#region Utilities
 
 /**
- * Given an object of environment variables, returns a new object with the same keys and values, but
- * with the values serialized as strings.
+ * Given an object of environment variables, serializes them into a mapping of
+ * environment variable names to their respective runtime constants.
+ *
+ * This is useful for defining environment variables while bundling with ESBuild, Vite, etc.
+ *
+ * @category Environment
+ * @runtime node
  *
  * @template {Record<string, EnvironmentVariable>} EnvRecord
  * @template {string} [Prefix='import.meta.env.']
@@ -48,16 +56,9 @@ export function serializeEnvironmentVars(
     input,
     prefix = /** @type {Prefix} */ ("import.meta.env."),
 ) {
-    /**
-     * @type {Record<string, string>}
-     */
-    const env = {};
-
-    for (const [key, value] of Object.entries(input)) {
-        const namespaceKey = prefix + key;
-
-        env[namespaceKey] = JSON.stringify(value || "");
-    }
+    const env = Object.fromEntries(
+        Object.entries(input).map(([key, value]) => [prefix + key, JSON.stringify(value ?? "")]),
+    );
 
     return /** @type {any} */ (env);
 }
