@@ -10,16 +10,9 @@ import {
     setTag,
     setUser,
 } from "@sentry/browser";
-import { getTraceData } from "@sentry/core";
 import * as Spotlight from "@spotlightjs/spotlight";
 
-import {
-    CapabilitiesEnum,
-    FetchParams,
-    Middleware,
-    RequestContext,
-    ResponseError,
-} from "@goauthentik/api";
+import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 /**
  * A generic error that can be thrown without triggering Sentry's reporting.
@@ -28,8 +21,6 @@ export class SentryIgnoredError extends Error {}
 
 export const TAG_SENTRY_COMPONENT = "authentik.component";
 export const TAG_SENTRY_CAPABILITIES = "authentik.capabilities";
-
-let _sentryConfigured = false;
 
 export function configureSentry(canDoPpi = false) {
     const cfg = globalAK().config;
@@ -103,20 +94,5 @@ export function configureSentry(canDoPpi = false) {
         });
     } else {
         console.debug("authentik/config: Sentry enabled.");
-    }
-    _sentryConfigured = true;
-}
-
-export class SentryMiddleware implements Middleware {
-    pre?(context: RequestContext): Promise<FetchParams | void> {
-        if (!_sentryConfigured) {
-            return Promise.resolve(context);
-        }
-        const traceData = getTraceData();
-        // @ts-ignore
-        context.init.headers["baggage"] = traceData["baggage"];
-        // @ts-ignore
-        context.init.headers["sentry-trace"] = traceData["sentry-trace"];
-        return Promise.resolve(context);
     }
 }
