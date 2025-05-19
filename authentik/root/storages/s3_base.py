@@ -289,8 +289,8 @@ class S3Storage(TenantAwareStorage, DirectoryStructureMixin, S3OperationsMixin, 
                         "Listing S3 buckets to validate credentials",
                         tenant=self.tenant_prefix,
                     )
-                    buckets = list(self.client.buckets.all())
-                    bucket_names = [b.name for b in buckets]
+                    buckets_response = self._s3_client.list_buckets()
+                    bucket_names = [b["Name"] for b in buckets_response["Buckets"]]
                     LOGGER.debug(
                         "Successfully listed S3 buckets",
                         bucket_count=len(bucket_names),
@@ -326,9 +326,20 @@ class S3Storage(TenantAwareStorage, DirectoryStructureMixin, S3OperationsMixin, 
                         bucket=bucket_name,
                         tenant=self.tenant_prefix,
                     )
-                    bucket = self.client.Bucket(bucket_name)
-                    # Try to access the bucket to verify permissions
-                    list(bucket.objects.limit(1))
+                    # Create a bucket reference using the S3 client instead of resource style
+                    # Instead of accessing an object through client.Bucket, we use the client directly
+                    # and check if we can list objects in the bucket
+                    self._s3_client.list_objects_v2(Bucket=bucket_name, MaxKeys=1)
+                    
+                    # Create a resource bucket object reference for later use with the client
+                    s3_resource = boto3.resource('s3', 
+                                               region_name=self._region_name,
+                                               endpoint_url=self._endpoint_url,
+                                               aws_access_key_id=self._access_key,
+                                               aws_secret_access_key=self._secret_key,
+                                               aws_session_token=self._security_token)
+                    bucket = s3_resource.Bucket(bucket_name)
+                    
                     LOGGER.debug(
                         "Successfully verified S3 bucket access",
                         bucket=bucket_name,
