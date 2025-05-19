@@ -14,7 +14,7 @@ from rest_framework.request import Request
 from structlog.stdlib import get_logger
 
 from authentik.core.middleware import CTX_AUTH_VIA
-from authentik.core.models import Token, TokenIntents, User
+from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.outposts.models import Outpost
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
 
@@ -110,6 +110,10 @@ class IPCUser(AnonymousUser):
     username = "authentik:system"
     is_active = True
     is_superuser = True
+
+    @property
+    def type(self):
+        return UserTypes.INTERNAL_SERVICE_ACCOUNT
 
     def has_perm(self, perm, obj=None):
         return True
