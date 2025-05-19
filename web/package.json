@@ -35,15 +35,25 @@
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
-        "./paths": "./paths.js",
-        "./scripts/*": "./scripts/*.mjs",
         "./elements/*": "./src/elements/*",
         "./common/*": "./src/common/*",
         "./components/*": "./src/components/*",
         "./flow/*": "./src/flow/*",
         "./locales/*": "./src/locales/*",
         "./user/*": "./src/user/*",
-        "./admin/*": "./src/admin/*"
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",

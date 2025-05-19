@@ -24,6 +24,5 @@ export function createBundleDefinitions() {
         // We need to explicitly set this for NPM packages that use `process`
         // to determine their environment.
         "process.env.NODE_ENV": SerializedNodeEnvironment,
-        "import.meta.env.NODE_ENV": SerializedNodeEnvironment,
     };
 }

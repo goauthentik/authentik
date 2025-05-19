@@ -3,8 +3,9 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
-import { createBundleDefinitions } from "@goauthentik/web/scripts/esbuild/environment";
+import { createBundleDefinitions } from "@goauthentik/web/bundler/utils/node";
 import postcssLit from "rollup-plugin-postcss-lit";
+import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
@@ -29,6 +30,11 @@ const inlineCSSPlugin = {
 };
 
 /**
+ * @satisfies {InlineConfig}
+ */
+// const viteFinal = ;
+
+/**
  * @satisfies {StorybookConfig}
  */
 const config = {
@@ -46,18 +52,16 @@ const config = {
     docs: {
         autodocs: "tag",
     },
-    viteFinal({ plugins = [], ...config }) {
+    viteFinal(config) {
         /**
          * @satisfies {InlineConfig}
          */
-        const mergedConfig = {
-            ...config,
+        const overrides = {
             define: createBundleDefinitions(),
-            plugins: [inlineCSSPlugin, ...plugins, postcssLit(), tsconfigPaths()],
+            plugins: [inlineCSSPlugin, postcssLit(), tsconfigPaths()],
         };
 
-        return mergedConfig;
+        return mergeConfig(config, overrides);
     },
 };
-
 export default config;
