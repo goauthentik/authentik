@@ -5807,7 +5807,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="sc21032b0d37882a0">
         <source>If your authentik_host setting does not match the URL you want to login with, add this setting.</source>
-        <target>Se l'impostazione AUTHENK_HOST non corrisponde all'URL con cui si desidera accedere, aggiungi questa impostazione.</target>
+        <target>Se l'impostazione AUTHENTIK_HOST non corrisponde all'URL con cui si desidera accedere, aggiungi questa impostazione.</target>
         
       </trans-unit>
       <trans-unit id="s6f270e1668c036e9">
