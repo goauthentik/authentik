@@ -162,7 +162,7 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 		--additional-properties=packageVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	pip install ./${GEN_API_PY}
+	uv pip install ${PWD}/${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
