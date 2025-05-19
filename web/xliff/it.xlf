@@ -5832,7 +5832,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s9c29565c5ae1cc92">
         <source>Selecting an integration enables the management of the outpost by authentik.</source>
-        <target>La selezione di un'integrazione consente la gestione dell'autospost di Authenk.</target>
+        <target>La selezione di un'integrazione consente la gestione dell'autospost di authentik.</target>
         
       </trans-unit>
       <trans-unit id="sf9b1c0661a02d9f9">
