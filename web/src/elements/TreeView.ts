@@ -173,9 +173,8 @@ export class TreeView extends AKElement {
                 child.parent = item;
             }
             return item;
-        } else {
-            return this.createNode(path, parentItem.childItems[idx], level + 1);
         }
+        return this.createNode(path, parentItem.childItems[idx], level + 1);
     }
 
     parse(data: string[]): TreeViewItem {

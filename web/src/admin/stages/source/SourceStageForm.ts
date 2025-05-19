@@ -31,11 +31,10 @@ export class SourceStageForm extends BaseStageForm<SourceStage> {
                 stageUuid: this.instance.pk || "",
                 sourceStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
-                sourceStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesSourceCreate({
+            sourceStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

@@ -42,11 +42,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                 brandUuid: this.instance.brandUuid,
                 brandRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
-                brandRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+            brandRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
