@@ -38,6 +38,15 @@ export interface TableLike {
     fetch: () => void;
 }
 
+export interface PaginatedResponse<T> {
+    pagination: Pagination;
+    autocomplete?: {
+        [key: string]: unknown;
+    };
+
+    results: Array<T>;
+}
+
 export class TableColumn {
     title: string;
     orderBy?: string;
@@ -92,12 +101,6 @@ export class TableColumn {
             ${this.orderBy ? this.renderSortable(table) : html`${this.title}`}
         </th>`;
     }
-}
-
-export interface PaginatedResponse<T> {
-    pagination: Pagination;
-
-    results: Array<T>;
 }
 
 export abstract class Table<T> extends AKElement implements TableLike {
@@ -181,6 +184,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFDropdown,
             PFPagination,
             css`
+                .pf-c-toolbar__group.pf-m-search-filter {
+                    flex-grow: 1;
+                }
+                ak-table-search {
+                    width: 100% !important;
+                }
                 .pf-c-table thead .pf-c-table__check {
                     min-width: 3rem;
                 }
@@ -475,9 +484,11 @@ export abstract class Table<T> extends AKElement implements TableLike {
             ? html``
             : html`<div class="pf-c-toolbar__group pf-m-search-filter">
                   <ak-table-search
+                      ?supportsQL=${true}
                       class="pf-c-toolbar__item pf-m-search-filter"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}
+                      .apiResponse=${this.data}
                   >
                   </ak-table-search>
               </div>`;

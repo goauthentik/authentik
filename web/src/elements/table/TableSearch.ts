@@ -1,4 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import { ensureCSSStyleSheet } from "@goauthentik/elements/utils/ensureCSSStyleSheet";
+// @ts-ignore
+import DjangoQL from "djangoql-completion";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,11 +14,55 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import Completion from "djangoql-completion/dist/completion.css";
 
 @customElement("ak-table-search")
 export class TableSearch extends AKElement {
     @property()
     value?: string;
+
+    @property({ type: Boolean })
+    supportsQL: boolean = false;
+
+    ql?: DjangoQL;
+
+    set apiResponse(value: PaginatedResponse<unknown> | undefined) {
+        if (!value || !this.supportsQL) {
+            return;
+        }
+        if (this.ql) {
+            this.ql.loadIntrospections(value.autocomplete);
+            return;
+        }
+        this.ql = new DjangoQL({
+            // either JS object with a result of DjangoQLSchema(MyModel).as_dict(),
+            // or an URL from which this information could be loaded asynchronously
+            introspections: value.autocomplete,
+
+            // css selector for query input or HTMLElement object.
+            // It should be a textarea
+            selector: this.shadowRoot?.querySelector("[name=search]"),
+
+            // optional, you can provide URL for Syntax Help link here.
+            // If not specified, Syntax Help link will be hidden.
+            syntaxHelp: null,
+
+            // optional, enable textarea auto-resize feature. If enabled,
+            // textarea will automatically grow its height when entered text
+            // doesn't fit, and shrink back when text is removed. The purpose
+            // of this is to see full search query without scrolling, could be
+            // helpful for really long queries.
+            autoResize: false,
+            onSubmit: (value: string) => {
+                if (!this.onSearch) return;
+                this.onSearch(value);
+            },
+        });
+        document.adoptedStyleSheets = [
+            ...document.adoptedStyleSheets,
+            ensureCSSStyleSheet(Completion),
+        ];
+    }
 
     @property()
     onSearch?: (value: string) => void;
@@ -26,12 +74,40 @@ export class TableSearch extends AKElement {
             PFToolbar,
             PFInputGroup,
             PFFormControl,
+            Completion,
             css`
                 ::-webkit-search-cancel-button {
                     display: none;
                 }
+                .ql.pf-c-form-control {
+                    font-family: monospace;
+                }
             `,
         ];
+    }
+
+    renderInput(): TemplateResult {
+        if (this.supportsQL) {
+            return html`<textarea
+                class="pf-c-form-control ql"
+                name="search"
+                placeholder=${msg("Search...")}
+                spellcheck="false"
+            >
+${ifDefined(this.value)}</textarea
+            >`;
+        }
+        return html`<input
+            class="pf-c-form-control"
+            name="search"
+            type="search"
+            placeholder=${msg("Search...")}
+            value="${ifDefined(this.value)}"
+            @search=${(ev: Event) => {
+                if (!this.onSearch) return;
+                this.onSearch((ev.target as HTMLInputElement).value);
+            }}
+        />`;
     }
 
     render(): TemplateResult {
@@ -41,23 +117,15 @@ export class TableSearch extends AKElement {
             @submit=${(e: Event) => {
                 e.preventDefault();
                 if (!this.onSearch) return;
-                const el = this.shadowRoot?.querySelector<HTMLInputElement>("input[type=search]");
+                const el = this.shadowRoot?.querySelector<HTMLInputElement | HTMLTextAreaElement>(
+                    "[name=search]",
+                );
                 if (!el) return;
                 if (el.value === "") return;
                 this.onSearch(el?.value);
             }}
         >
-            <input
-                class="pf-c-form-control"
-                name="search"
-                type="search"
-                placeholder=${msg("Search...")}
-                value="${ifDefined(this.value)}"
-                @search=${(ev: Event) => {
-                    if (!this.onSearch) return;
-                    this.onSearch((ev.target as HTMLInputElement).value);
-                }}
-            />
+            ${this.renderInput()}
             <button
                 class="pf-c-button pf-m-control"
                 type="reset"
