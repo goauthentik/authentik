@@ -86,7 +86,7 @@ export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Configure the certificate authority client certificates are validated against.",
+                                "Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

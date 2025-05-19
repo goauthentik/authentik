@@ -1,6 +1,8 @@
+from binascii import hexlify
 from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives import hashes
 from cryptography.x509 import Certificate, NameOID, ObjectIdentifier, load_pem_x509_certificate
 from django.utils.translation import gettext_lazy as _
 
@@ -29,6 +31,9 @@ HEADER_TRAEFIK_FORWARDED = "X-Forwarded-TLS-Client-Cert"
 HEADER_OUTPOST_FORWARDED = "X-Authentik-Outpost-Certificate"
 
 
+PLAN_CONTEXT_CERTIFICATE = "certificate"
+
+
 class MTLSStageView(ChallengeStageView):
 
     def __parse_single_cert(self, raw: str | None) -> list[Certificate]:
@@ -38,7 +43,8 @@ class MTLSStageView(ChallengeStageView):
         try:
             cert = load_pem_x509_certificate(unquote_plus(raw).encode())
             return [cert]
-        except ValueError:
+        except ValueError as exc:
+            self.logger.info("Failed to parse certificate", exc=exc)
             return []
 
     def _parse_cert_xfcc(self) -> list[Certificate]:
@@ -101,6 +107,7 @@ class MTLSStageView(ChallengeStageView):
                 _cert.verify_directly_issued_by(ca)
                 return _cert
             except (InvalidSignature, TypeError, ValueError):
+                self.logger.warning("Discarding cert not issued by authority", cert=_cert)
                 continue
 
     def check_if_user(self, cert: Certificate):
@@ -123,18 +130,22 @@ class MTLSStageView(ChallengeStageView):
             return None
         return User.objects.filter(**{user_attr: cert_attr}).first()
 
+    def _cert_to_dict(self, cert: Certificate) -> dict:
+        """Represent a certificate in a dictionary, as certificate objects cannot be pickled"""
+        return {
+            "serial_number": str(cert.serial_number),
+            "subject": cert.subject.rfc4514_string(),
+            "issuer": cert.issuer.rfc4514_string(),
+            "fingerprint_sha256": hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8"),
+            "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8"),
+        }
+
     def auth_user(self, user: User, cert: Certificate):
         self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
         self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "mtls")
         self.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
         self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS].update(
-            {
-                "certificate": {
-                    "serial_number": str(cert.serial_number),
-                    "subject": cert.subject.rfc4514_string(),
-                    # TODO: Other attributes
-                }
-            }
+            {"certificate": self._cert_to_dict(cert)}
         )
 
     def enroll_prepare_user(self, cert: Certificate):
@@ -145,6 +156,7 @@ class MTLSStageView(ChallengeStageView):
                 "name": self.get_cert_attribute(cert, NameOID.COMMON_NAME),
             }
         )
+        self.executor.plan.context[PLAN_CONTEXT_CERTIFICATE] = self._cert_to_dict(cert)
 
     def get_cert_attribute(self, cert: Certificate, oid: ObjectIdentifier) -> str | None:
         attr = cert.subject.get_attributes_for_oid(oid)
@@ -161,9 +173,12 @@ class MTLSStageView(ChallengeStageView):
             *self._parse_cert_outpost(),
         ]
         ca = self.get_ca()
-        if not ca and stage.mode == TLSMode.OPTIONAL:
+        if not ca:
             self.logger.warning("No Certificate authority found")
-            return self.executor.stage_ok()
+            if stage.mode == TLSMode.OPTIONAL:
+                return self.executor.stage_ok()
+            if stage.mode == TLSMode.REQUIRED:
+                return super().dispatch(request, *args, **kwargs)
         cert = self.validate_cert(ca.certificate, certs)
         if len(certs) < 1 and stage.mode == TLSMode.REQUIRED:
             self.logger.warning("Client certificate required but no certificates given")
@@ -177,13 +192,14 @@ class MTLSStageView(ChallengeStageView):
             self.logger.info("No certificate given, continuing")
             return self.executor.stage_ok()
         existing_user = self.check_if_user(cert)
-        if existing_user and self.executor.flow.designation == FlowDesignation.AUTHENTICATION:
-            self.auth_user(existing_user, cert)
-        elif not existing_user and self.executor.flow.designation == FlowDesignation.ENROLLMENT:
+        if self.executor.flow.designation == FlowDesignation.ENROLLMENT:
             self.enroll_prepare_user(cert)
+        elif existing_user:
+            self.auth_user(existing_user, cert)
         else:
-            self.logger.warning("Invalid configuration")
-            return super().dispatch(request, *args, **kwargs)
+            return super().dispatch(
+                request, *args, error_message=_("No user found for certificate."), **kwargs
+            )
         return self.executor.stage_ok()
 
     def get_challenge(self, *args, error_message: str | None = None, **kwargs):
