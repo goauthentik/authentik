@@ -69,7 +69,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
-            ${this.intent == IntentEnum.AppPassword
+            ${this.intent === IntentEnum.AppPassword
                 ? html`<ak-form-element-horizontal label=${msg("Expiring")} name="expires">
                       <input
                           type="datetime-local"
