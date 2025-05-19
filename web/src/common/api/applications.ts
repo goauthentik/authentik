@@ -68,8 +68,13 @@ export async function setApplicationIcon(
             return { error: "Server did not return a valid icon URL" };
         }
 
-        // Validate that it's either a URL or a Font Awesome icon
+        // Accept Font Awesome icons or any URL (including S3 signed URLs)
         if (!result.meta_icon.startsWith('fa://')) {
+            // For S3 URLs, we don't validate the URL format since they contain signing parameters
+            if (result.meta_icon.includes('AWSAccessKeyId=') || result.meta_icon.includes('X-Amz-Signature=')) {
+                return result;
+            }
+            // For other URLs, validate the format
             try {
                 new URL(result.meta_icon);
             } catch {
@@ -160,12 +165,18 @@ export async function setApplicationIconUrl(
     const api = new CoreApi(DEFAULT_CONFIG);
 
     try {
-        // Accept Font Awesome icons or any valid URL format
+        // Accept Font Awesome icons, S3 signed URLs, or any valid URL format
         if (!url.startsWith('fa://')) {
-            try {
-                new URL(url);
-            } catch (_error) {
-                return { error: "Invalid URL format" };
+            // For S3 URLs, we don't validate the URL format since they contain signing parameters
+            if (url.includes('AWSAccessKeyId=') || url.includes('X-Amz-Signature=')) {
+                // Pass through S3 URLs without validation
+            } else {
+                // For other URLs, validate the format
+                try {
+                    new URL(url);
+                } catch (_error) {
+                    return { error: "Invalid URL format" };
+                }
             }
         }
 
@@ -178,8 +189,13 @@ export async function setApplicationIconUrl(
             return { error: "Server did not return a valid icon URL" };
         }
 
-        // Validate that it's either a URL or a Font Awesome icon
+        // Accept Font Awesome icons, S3 signed URLs, or any valid URL format
         if (!result.meta_icon.startsWith('fa://')) {
+            // For S3 URLs, we don't validate the URL format since they contain signing parameters
+            if (result.meta_icon.includes('AWSAccessKeyId=') || result.meta_icon.includes('X-Amz-Signature=')) {
+                return result;
+            }
+            // For other URLs, validate the format
             try {
                 new URL(result.meta_icon);
             } catch {
