@@ -10,6 +10,7 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
+import { SidebarToggleEventDetail } from "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -36,7 +37,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
-import { SidebarToggleEventDetail } from "../../elements/PageHeader.js";
 import {
     AdminSidebarEnterpriseEntries,
     AdminSidebarEntries,
@@ -86,50 +86,48 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
     //#region Styles
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDrawer,
-            PFNav,
-            css`
-                .pf-c-page__main,
-                .pf-c-drawer__content,
-                .pf-c-page__drawer {
-                    z-index: auto !important;
-                    background-color: transparent;
-                }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNav,
+        css`
+            .pf-c-page__main,
+            .pf-c-drawer__content,
+            .pf-c-page__drawer {
+                z-index: auto !important;
+                background-color: transparent;
+            }
 
-                .display-none {
-                    display: none;
-                }
+            .display-none {
+                display: none;
+            }
 
+            .pf-c-page {
+                background-color: var(--pf-c-page--BackgroundColor) !important;
+            }
+
+            :host([theme="dark"]) {
+                /* Global page background colour */
                 .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
+            }
 
-                :host([theme="dark"]) {
-                    /* Global page background colour */
-                    .pf-c-page {
-                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                    }
-                }
+            ak-page-navbar {
+                grid-area: header;
+            }
 
-                ak-page-navbar {
-                    grid-area: header;
-                }
+            .ak-sidebar {
+                grid-area: nav;
+            }
 
-                .ak-sidebar {
-                    grid-area: nav;
-                }
-
-                .pf-c-drawer__panel {
-                    z-index: var(--pf-global--ZIndex--xl);
-                }
-            `,
-        ];
-    }
+            .pf-c-drawer__panel {
+                z-index: var(--pf-global--ZIndex--xl);
+            }
+        `,
+    ];
 
     //#endregion
 
