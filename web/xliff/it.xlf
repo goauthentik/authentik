@@ -8215,7 +8215,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7bfbf84a8ad5883f">
   <source>Internal Service accounts are created and managed by authentik and cannot be created manually.</source>
-  <target>Gli account di servizio interni vengono creati e gestiti da Authenk e non possono essere creati manualmente.</target>
+  <target>Gli account di servizio interni vengono creati e gestiti da authentik e non possono essere creati manualmente.</target>
 </trans-unit>
 <trans-unit id="sb0680e5f8782db1e">
   <source>Private key Algorithm</source>
