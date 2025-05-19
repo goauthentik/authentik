@@ -6,11 +6,11 @@ authentik_enterprise: true
 toc_max_heading_level: 5
 ---
 
-With the Mutual TLS stage, authentik can authenticate/enroll users based on client certificates. Management of client certificates is out of the scope of this document.
+The Mutual TLS stage enables authentik to authenticate or enroll users utilizing client certificates. Management of client certificates is out of the scope of this document.
 
 ## Reverse-proxy configuration
 
-Using this stage requires special configuration of the reverse proxy used in front of authentik, as the reverse-proxy talks directly to the browser.
+Using this stage requires special configuration of any reverse proxy that is used in front of authentik, as the reverse-proxy interacts directly with the browser.
 
 - nginx
     - [Standalone nginx](#nginx-standalone)
@@ -52,7 +52,7 @@ See [ingress-nginx documentation](https://kubernetes.github.io/ingress-nginx/exa
 
 #### Traefik Standalone
 
-Add this snippet to your traefik configuration
+Add this snippet to your traefik configuration:
 
 ```yaml
 tls:
@@ -66,11 +66,11 @@ tls:
                 clientAuthType: RequireAndVerifyClientCert
 ```
 
-See [Traefik documentation](https://doc.traefik.io/traefik/https/tls/#client-authentication-mtls) for reference.
+See the [Traefik MTLS documentation](https://doc.traefik.io/traefik/https/tls/#client-authentication-mtls) for reference.
 
 #### Traefik Ingress
 
-Create a middleweare objects with these options:
+Create a middleweare object with these options:
 
 ```yaml
 apiVersion: traefik.io/v1alpha1
@@ -82,11 +82,11 @@ spec:
         pem: true
 ```
 
-See [Traefik documentation](https://doc.traefik.io/traefik/middlewares/http/passtlsclientcert/) for reference.
+See the [Traefik PassTLSClientCert documentation](https://doc.traefik.io/traefik/middlewares/http/passtlsclientcert/) for reference.
 
 #### Envoy
 
-See [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/securing#use-mutual-tls-mtls-to-enforce-client-certificate-authentication) and [Envoy header coumentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert) for configuration.
+See the [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/start/quick-start/securing#use-mutual-tls-mtls-to-enforce-client-certificate-authentication) and [Envoy header documentation](https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_conn_man/headers#x-forwarded-client-cert) for configuration.
 
 #### No reverse proxy
 
