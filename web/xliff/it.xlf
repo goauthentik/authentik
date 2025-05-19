@@ -7345,7 +7345,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3484b1e6d0b5335f">
   <source>Manage roles which grant permissions to objects within authentik.</source>
-  <target>Gestisci ruoli che concedono le autorizzazioni agli oggetti all'interno di Authenk.</target>
+  <target>Gestisci ruoli che concedono le autorizzazioni agli oggetti all'interno di authentik.</target>
 </trans-unit>
 <trans-unit id="s259de999919316db">
   <source>Role(s)</source>
