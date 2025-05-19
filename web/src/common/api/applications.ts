@@ -68,6 +68,15 @@ export async function setApplicationIcon(
             return { error: "Server did not return a valid icon URL" };
         }
 
+        // Validate that it's either a URL or a Font Awesome icon
+        if (!result.meta_icon.startsWith('fa://')) {
+            try {
+                new URL(result.meta_icon);
+            } catch {
+                return { error: "Server returned an invalid icon URL format" };
+            }
+        }
+
         return result;
     } catch (error: unknown) {
         // Handle network errors with retry
@@ -151,11 +160,13 @@ export async function setApplicationIconUrl(
     const api = new CoreApi(DEFAULT_CONFIG);
 
     try {
-        // Validate URL format before sending
-        try {
-            new URL(url);
-        } catch (_error) {
-            return { error: "Invalid URL format" };
+        // Accept Font Awesome icons or any valid URL format
+        if (!url.startsWith('fa://')) {
+            try {
+                new URL(url);
+            } catch (_error) {
+                return { error: "Invalid URL format" };
+            }
         }
 
         const result = await api.coreApplicationsIconPartialUpdate({
@@ -165,6 +176,15 @@ export async function setApplicationIconUrl(
 
         if (!result.meta_icon) {
             return { error: "Server did not return a valid icon URL" };
+        }
+
+        // Validate that it's either a URL or a Font Awesome icon
+        if (!result.meta_icon.startsWith('fa://')) {
+            try {
+                new URL(result.meta_icon);
+            } catch {
+                return { error: "Server returned an invalid icon URL format" };
+            }
         }
 
         return result;

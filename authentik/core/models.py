@@ -553,7 +553,7 @@ class Application(SerializerModel, PolicyBindingModel):
     @property
     def get_meta_icon(self) -> str | None:
         """Get the URL to the App Icon image. If the name is /static or starts with http
-        it is returned as-is"""
+        it is returned as-is. For S3 storage, uses custom domain if configured."""
         if not self.meta_icon:
             LOGGER.debug("No meta_icon set")
             return None
@@ -569,6 +569,14 @@ class Application(SerializerModel, PolicyBindingModel):
             LOGGER.debug("Using direct meta_icon name", name=self.meta_icon.name)
             return self.meta_icon.name
 
+        # For S3 storage, check if we have a custom domain configured
+        if hasattr(self.meta_icon.storage, "_custom_domain") and self.meta_icon.storage._custom_domain:
+            # Use the storage's url method to get a properly signed URL
+            url = self.meta_icon.storage.url(self.meta_icon.name)
+            LOGGER.debug("Using custom domain URL with signing", url=url, domain=self.meta_icon.storage._custom_domain)
+            return url
+
+        # Fall back to storage URL
         LOGGER.debug("Using storage URL", url=self.meta_icon.url)
         return self.meta_icon.url
 

@@ -375,7 +375,19 @@ class TenantAwareStorage:
         return f"{self.tenant_prefix}/{name}"
 
 
-class FileStorage(TenantAwareStorage, FileSystemStorage):
+class DirectoryStructureMixin:
+    """Mixin providing directory structure creation functionality for storage backends."""
+    
+    def _ensure_directory_structure(self):
+        """Ensure required directory structure exists.
+        
+        This is an abstract method that should be implemented by storage backends
+        to create their required directory structure.
+        """
+        raise NotImplementedError("Storage backend must implement _ensure_directory_structure")
+
+
+class FileStorage(TenantAwareStorage, DirectoryStructureMixin, FileSystemStorage):
     """Multi-tenant filesystem storage backend."""
 
     def __init__(self, *args, **kwargs):
@@ -404,8 +416,7 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             os.makedirs(tenant_dir, exist_ok=True)
 
             # Create standard subdirectories
-            for subdir in STORAGE_DIRS:
-                os.makedirs(tenant_dir / subdir, exist_ok=True)
+            self._ensure_directory_structure()
 
             LOGGER.debug(
                 "Storage directories initialized",
@@ -431,6 +442,40 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
             raise OSError(
                 f"Cannot create storage directory '{self._base_path}'. System error: {str(e)}"
             ) from e
+
+    def _ensure_directory_structure(self):
+        """Ensure required directory structure exists in the filesystem.
+        
+        Creates all required directories for the current tenant with proper permissions.
+        """
+        try:
+            LOGGER.debug("Ensuring filesystem directory structure exists", tenant=self.tenant_prefix)
+            
+            # Create each required directory
+            for directory in STORAGE_DIRS:
+                dir_path = self._base_path / self.tenant_prefix / directory
+                try:
+                    os.makedirs(dir_path, exist_ok=True)
+                    # Create a .keep file to ensure the directory is tracked by git
+                    keep_file = dir_path / ".keep"
+                    if not keep_file.exists():
+                        keep_file.touch()
+                    LOGGER.debug("Created directory", directory=directory, path=str(dir_path), tenant=self.tenant_prefix)
+                except OSError as e:
+                    LOGGER.error(
+                        "Failed to create directory",
+                        directory=directory,
+                        path=str(dir_path),
+                        error=str(e),
+                        tenant=self.tenant_prefix,
+                    )
+                    raise PermissionError(f"Cannot create directory '{dir_path}': {str(e)}") from e
+                    
+            LOGGER.debug("Filesystem directory structure verified", tenant=self.tenant_prefix)
+            
+        except Exception as e:
+            LOGGER.error("Unexpected error creating directory structure", error=str(e), tenant=self.tenant_prefix)
+            raise OSError(f"Failed to create directory structure: {str(e)}") from e
 
     def get_valid_name(self, name: str) -> str:
         """Return a sanitized filename safe for storage.
@@ -646,7 +691,31 @@ class FileStorage(TenantAwareStorage, FileSystemStorage):
         return saved_name
 
 
-class S3Storage(TenantAwareStorage, BaseS3Storage):
+class S3StorageError(Exception):
+    """Base exception class for S3 storage errors."""
+    def __init__(self, message: str, original_error: Exception = None):
+        self.message = message
+        self.original_error = original_error
+        super().__init__(self.message)
+
+class S3BucketError(S3StorageError):
+    """Exception raised for bucket-related errors."""
+    pass
+
+class S3AccessError(S3StorageError):
+    """Exception raised for access-related errors."""
+    pass
+
+class S3UploadError(S3StorageError):
+    """Exception raised for upload-related errors."""
+    pass
+
+class S3StorageNotConfiguredError(S3StorageError):
+    """Exception raised when S3 storage is not properly configured."""
+    pass
+
+
+class S3Storage(TenantAwareStorage, DirectoryStructureMixin, BaseS3Storage):
     """Multi-tenant S3 (compatible/Amazon) storage backend."""
 
     CONFIG_KEYS = {
@@ -667,89 +736,83 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             **kwargs: Configuration options passed to parent S3Storage
 
         Raises:
-            ImproperlyConfigured: If AWS credentials or configuration is invalid
+            S3StorageNotConfiguredError: If storage is not properly configured
+            S3BucketError: If bucket doesn't exist or cannot be accessed
+            S3AccessError: If credentials are invalid or access is denied
         """
-        # Initialize client/bucket references
-        self._client = None
-        self._s3_client = None
-        self._bucket = None
-
-        # Pre-fetch configuration values
-        self._session_profile = self._get_config_value("session_profile")
-        self._access_key = self._get_config_value("access_key")
-        self._secret_key = self._get_config_value("secret_key")
-        self._security_token = self._get_config_value("security_token")
-        self._bucket_name = self._get_config_value("bucket_name")
-        self._region_name = self._get_config_value("region_name")
-        self._endpoint_url = self._get_config_value("endpoint_url")
-        self._custom_domain = self._get_config_value("custom_domain")
-
-        # Debug
-        LOGGER.debug(
-            "S3Storage initialization",
-            has_session_profile=bool(self._session_profile),
-            has_access_key=(
-                bool(self._access_key) and self._access_key[:4] + "..."
-                if self._access_key
-                else None
-            ),
-            has_secret_key=bool(self._secret_key),
-            has_security_token=bool(self._security_token),
-            bucket_name=self._bucket_name,
-            region_name=self._region_name,
-            endpoint_url=self._endpoint_url,
-            custom_domain=self._custom_domain,
-            tenant=getattr(self, "tenant_prefix", "unknown"),
-            kwargs_keys=list(kwargs.keys()),
-        )
-
-        self._validate_configuration()
-
-        # Update kwargs with our configuration values
-        settings = kwargs.copy()
-        settings.update(
-            {
-                "session_profile": self._session_profile,
-                "access_key": self._access_key,
-                "secret_key": self._secret_key,
-                "security_token": self._security_token,
-                "bucket_name": self._bucket_name,
-                "region_name": self._region_name,
-                "endpoint_url": self._endpoint_url,
-                "custom_domain": self._custom_domain,
-                "querystring_auth": True,
-                "querystring_expire": 3600,
-            }
-        )
-
-        LOGGER.debug(
-            "S3Storage parent initialization",
-            settings_keys=list(settings.keys()),
-            tenant=getattr(self, "tenant_prefix", "unknown"),
-        )
-
-        # Initialize parent class with cleaned settings
         try:
-            super().__init__(**settings)
+            # Initialize client/bucket references
+            self._client = None
+            self._s3_client = None
+            self._bucket = None
+
+            # Pre-fetch configuration values
+            self._session_profile = self._get_config_value("session_profile")
+            self._access_key = self._get_config_value("access_key")
+            self._secret_key = self._get_config_value("secret_key")
+            self._security_token = self._get_config_value("security_token")
+            self._bucket_name = self._get_config_value("bucket_name")
+            self._region_name = self._get_config_value("region_name")
+            self._endpoint_url = self._get_config_value("endpoint_url")
+            self._custom_domain = self._get_config_value("custom_domain")
+
+            # Debug logging
             LOGGER.debug(
-                "S3Storage parent initialization successful",
+                "S3Storage initialization",
+                has_session_profile=bool(self._session_profile),
+                has_access_key=bool(self._access_key),
+                has_secret_key=bool(self._secret_key),
+                has_security_token=bool(self._security_token),
+                bucket_name=self._bucket_name,
+                region_name=self._region_name,
+                endpoint_url=self._endpoint_url,
+                custom_domain=self._custom_domain,
                 tenant=getattr(self, "tenant_prefix", "unknown"),
             )
-        except Exception as e:
-            LOGGER.error(
-                "S3Storage parent initialization failed",
-                error=str(e),
-                error_type=type(e).__name__,
-                tenant=getattr(self, "tenant_prefix", "unknown"),
+
+            # Validate configuration before proceeding
+            self._validate_configuration()
+
+            # Update kwargs with our configuration values
+            settings = kwargs.copy()
+            settings.update(
+                {
+                    "session_profile": self._session_profile,
+                    "access_key": self._access_key,
+                    "secret_key": self._secret_key,
+                    "security_token": self._security_token,
+                    "bucket_name": self._bucket_name,
+                    "region_name": self._region_name,
+                    "endpoint_url": self._endpoint_url,
+                    "custom_domain": self._custom_domain,
+                    "querystring_auth": True,
+                    "querystring_expire": 3600,
+                }
             )
+
+            # Initialize parent class with cleaned settings
+            try:
+                super().__init__(**settings)
+                LOGGER.debug("S3Storage parent initialization successful")
+            except Exception as e:
+                LOGGER.error("S3Storage parent initialization failed", error=str(e))
+                raise S3StorageNotConfiguredError(f"Failed to initialize S3 storage: {str(e)}") from e
+
+            self._file_mapping = {}
+
+            # Apply transfer config if specified
+            transfer_config = CONFIG.refresh("storage.media.s3.transfer_config", None)
+            if transfer_config:
+                settings["transfer_config"] = Config(s3=transfer_config)
+                super().__init__(**settings)
+
+        except S3StorageError:
+            # Re-raise our custom exceptions
             raise
-
-        self._file_mapping = {}
-
-        transfer_config = CONFIG.refresh("storage.media.s3.transfer_config", None)
-        if transfer_config:
-            settings["transfer_config"] = Config(s3=transfer_config)
-        super().__init__(**settings)
+        except Exception as e:
+            # Catch any other unexpected errors
+            LOGGER.error("Unexpected error during S3 storage initialization", error=str(e))
+            raise S3StorageNotConfiguredError(f"Failed to initialize S3 storage: {str(e)}") from e
 
     def _get_config_value(self, key: str) -> str | None:
         """Get refreshed configuration value from environment.
@@ -762,6 +825,62 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         """
         return CONFIG.refresh(self.CONFIG_KEYS[key], None)
 
+    def _ensure_directory_structure(self):
+        """Ensure required directory structure exists in the S3 bucket.
+        
+        Creates empty marker files in each required directory to ensure the structure exists.
+        This is needed because S3 doesn't have real directories, and we need to ensure
+        the paths exist for future operations.
+        """
+        try:
+            LOGGER.debug("Ensuring S3 directory structure exists", tenant=self.tenant_prefix)
+            
+            # Create a marker file for each required directory
+            for directory in STORAGE_DIRS:
+                # Create a path with tenant prefix
+                marker_path = f"{self.tenant_prefix}/{directory}/.keep"
+                
+                try:
+                    # Check if marker already exists
+                    try:
+                        self._s3_client.head_object(Bucket=self._bucket_name, Key=marker_path)
+                        LOGGER.debug("Directory marker exists", directory=directory, tenant=self.tenant_prefix)
+                        continue
+                    except ClientError as e:
+                        if e.response["Error"]["Code"] != "404":
+                            raise
+                    
+                    # Create empty marker file
+                    self._s3_client.put_object(
+                        Bucket=self._bucket_name,
+                        Key=marker_path,
+                        Body=b"",
+                        ContentType="text/plain",
+                    )
+                    LOGGER.debug("Created directory marker", directory=directory, tenant=self.tenant_prefix)
+                    
+                except ClientError as e:
+                    error_code = e.response.get("Error", {}).get("Code", "Unknown")
+                    LOGGER.error(
+                        "Failed to create directory marker",
+                        directory=directory,
+                        error_code=error_code,
+                        error=str(e),
+                        tenant=self.tenant_prefix,
+                    )
+                    if error_code in ("AccessDenied", "AllAccessDisabled"):
+                        raise S3AccessError(f"No permission to create directory structure in bucket '{self._bucket_name}'") from e
+                    else:
+                        raise S3BucketError(f"Failed to create directory structure: {error_code}") from e
+                    
+            LOGGER.debug("S3 directory structure verified", tenant=self.tenant_prefix)
+            
+        except S3StorageError:
+            raise
+        except Exception as e:
+            LOGGER.error("Unexpected error creating directory structure", error=str(e), tenant=self.tenant_prefix)
+            raise S3BucketError(f"Failed to create directory structure: {str(e)}") from e
+
     def _validate_configuration(self):
         """Validate S3 configuration and credentials.
 
@@ -769,63 +888,90 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         bucket exists and is accessible.
 
         Raises:
-            ImproperlyConfigured: If S3 configuration is incomplete or invalid
-            ClientError: If bucket doesn't exist or cannot be accessed
+            S3BucketError: If bucket doesn't exist or cannot be accessed
+            S3AccessError: If credentials are invalid or access is denied
+            S3StorageNotConfiguredError: If storage is not properly configured
         """
-        # Check that bucket_name and region_name are set
-        if not self._bucket_name:
-            LOGGER.error("Missing required S3 configuration: bucket_name")
-            raise ImproperlyConfigured("Missing required S3 configuration: bucket_name")
-
-        if not self._region_name:
-            LOGGER.info("No region_name specified, defaulting to us-east-1")
-            self._region_name = "us-east-1"
-
-        has_profile = bool(self._session_profile)
-        has_credentials = bool(self._access_key) and bool(self._secret_key)
-
-        # Check that session profile is not provided with access key and secret key
-        if has_profile and has_credentials:
-            raise ImproperlyConfigured(
-                "AWS session profile should not be provided with access key and secret key"
-            )
-
-        if not (has_profile or has_credentials):
-            LOGGER.error(
-                "Missing required S3 authentication configuration. "
-                "Either session_profile or (access_key and secret_key) must be set."
-            )
-            raise ImproperlyConfigured(
-                "Missing required S3 authentication configuration. "
-                "Either session_profile or (access_key and secret_key) must be set."
-            )
-
-        # Validate bucket exists and is accessible by attempting to list objects
-        # This only requires s3:ListBucket permission on the specific bucket
         try:
-            _ = self.client  # Ensure client is initialized
-            # Try to list objects in the bucket with max_keys=1 to minimize data transfer
-            self._s3_client.list_objects_v2(Bucket=self._bucket_name, MaxKeys=1)
-        except ClientError as e:
-            error_code = e.response.get("Error", {}).get("Code", "Unknown")
-            if error_code == "NoSuchBucket":
-                LOGGER.error("S3 bucket does not exist", bucket=self._bucket_name)
-                raise ImproperlyConfigured(f"S3 bucket '{self._bucket_name}' does not exist") from e
-            elif error_code == "AccessDenied":
-                LOGGER.error("No permission to access S3 bucket", bucket=self._bucket_name)
-                raise ImproperlyConfigured(
-                    f"No permission to access S3 bucket '{self._bucket_name}'"
-                ) from e
-            else:
-                LOGGER.error(
-                    "Error accessing S3 bucket",
-                    bucket=self._bucket_name,
-                    error=str(e),
-                    code=error_code,
-                )
-                raise
+            # Check that bucket_name and region_name are set
+            if not self._bucket_name:
+                LOGGER.error("Missing required S3 configuration: bucket_name")
+                raise S3StorageNotConfiguredError("Missing required S3 configuration: bucket_name")
 
-        LOGGER.debug("S3 configuration validated successfully", bucket=self._bucket_name)
+            if not self._region_name:
+                LOGGER.info("No region_name specified, defaulting to us-east-1")
+                self._region_name = "us-east-1"
+
+            has_profile = bool(self._session_profile)
+            has_credentials = bool(self._access_key) and bool(self._secret_key)
+
+            # Check that session profile is not provided with access key and secret key
+            if has_profile and has_credentials:
+                raise S3StorageNotConfiguredError(
+                    "AWS session profile should not be provided with access key and secret key"
+                )
+
+            if not (has_profile or has_credentials):
+                LOGGER.error(
+                    "Missing required S3 authentication configuration. "
+                    "Either session_profile or (access_key and secret_key) must be set."
+                )
+                raise S3StorageNotConfiguredError(
+                    "Missing required S3 authentication configuration. "
+                    "Either session_profile or (access_key and secret_key) must be set."
+                )
+
+            # Validate bucket exists and is accessible by attempting to list objects
+            try:
+                _ = self.client  # Ensure client is initialized
+                # Try to list objects in the bucket with max_keys=1 to minimize data transfer
+                try:
+                    self._s3_client.list_objects_v2(Bucket=self._bucket_name, MaxKeys=1)
+                except ClientError as e:
+                    error_code = e.response.get("Error", {}).get("Code", "Unknown")
+                    if error_code == "NoSuchBucket":
+                        LOGGER.error("S3 bucket does not exist", bucket=self._bucket_name)
+                        raise S3BucketError(f"S3 bucket '{self._bucket_name}' does not exist") from e
+                    elif error_code == "NoSuchKey":
+                        # NoSuchKey is not a critical error - it just means the bucket is empty
+                        LOGGER.debug("Bucket is empty", bucket=self._bucket_name)
+                    elif error_code in ("AccessDenied", "AllAccessDisabled"):
+                        LOGGER.error("No permission to access S3 bucket", bucket=self._bucket_name)
+                        raise S3AccessError(f"No permission to access S3 bucket '{self._bucket_name}'") from e
+                    elif error_code == "InvalidAccessKeyId":
+                        LOGGER.error("Invalid AWS credentials", bucket=self._bucket_name)
+                        raise S3AccessError("Invalid AWS credentials") from e
+                    elif error_code == "BucketRegionError":
+                        LOGGER.error("Bucket region mismatch", bucket=self._bucket_name)
+                        raise S3BucketError("Bucket region mismatch") from e
+                    else:
+                        LOGGER.error(
+                            "Error accessing S3 bucket",
+                            bucket=self._bucket_name,
+                            error=str(e),
+                            code=error_code,
+                        )
+                        raise S3BucketError(f"Error accessing S3 bucket: {error_code}") from e
+
+                # Ensure required directory structure exists
+                self._ensure_directory_structure()
+
+            except (NoCredentialsError, NoRegionError) as e:
+                LOGGER.error("AWS credentials/region configuration error", error=str(e))
+                raise S3StorageNotConfiguredError(f"AWS configuration error: {str(e)}") from e
+            except Exception as e:
+                LOGGER.error("Unexpected error during S3 configuration validation", error=str(e))
+                raise S3StorageNotConfiguredError(f"Unexpected error during S3 configuration: {str(e)}") from e
+
+            LOGGER.debug("S3 configuration validated successfully", bucket=self._bucket_name)
+
+        except S3StorageError:
+            # Re-raise our custom exceptions
+            raise
+        except Exception as e:
+            # Catch any other unexpected errors
+            LOGGER.error("Unexpected error during S3 configuration validation", error=str(e))
+            raise S3StorageNotConfiguredError(f"Unexpected error during S3 configuration: {str(e)}") from e
 
     @property
     def client(self):
@@ -1257,7 +1403,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             error_code = e.response.get("Error", {}).get("Code", "Unknown")
             error_message = e.response.get("Error", {}).get("Message", "Unknown error")
             LOGGER.error(
-                "Unexpected error saving image to S3",
+                "Error saving file to S3",
                 name=name,
                 key=normalized_name,
                 error_code=error_code,
@@ -1265,16 +1411,22 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 response=str(e.response),
                 tenant=self.tenant_prefix,
             )
+            if error_code == "NoSuchBucket":
+                raise S3BucketError(f"S3 bucket '{self._bucket_name}' does not exist") from e
+            elif error_code in ("AccessDenied", "AllAccessDisabled"):
+                raise S3AccessError(f"No permission to access S3 bucket '{self._bucket_name}'") from e
+            else:
+                raise S3UploadError(f"Failed to upload file to S3: {error_code}") from e
         else:
             LOGGER.error(
-                "Unexpected error saving image to S3",
+                "Unexpected error saving file to S3",
                 name=name,
                 key=normalized_name,
                 error=str(e),
                 error_type=type(e).__name__,
                 tenant=self.tenant_prefix,
             )
-        raise e
+            raise S3UploadError(f"Failed to upload file to S3: {str(e)}") from e
 
     def _get_file_subdirectory(self, filename: str) -> str:
         """Get the appropriate subdirectory for a file based on its name"""
@@ -1401,8 +1553,9 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
         Args:
             name (str): Name of the file to delete
 
-        Note:
-            Silently ignores 404 errors when the file doesn't exist
+        Raises:
+            S3AccessError: If access is denied
+            S3BucketError: If bucket doesn't exist
         """
         try:
             # Get normalized name from mapping or normalize original name
@@ -1429,7 +1582,12 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                     error=str(e),
                     tenant=self.tenant_prefix,
                 )
-                raise
+                if error_code == "NoSuchBucket":
+                    raise S3BucketError(f"S3 bucket '{self._bucket_name}' does not exist") from e
+                elif error_code in ("AccessDenied", "AllAccessDisabled"):
+                    raise S3AccessError(f"No permission to access S3 bucket '{self._bucket_name}'") from e
+                else:
+                    raise S3StorageError(f"Failed to delete file from S3: {error_code}") from e
             LOGGER.debug(
                 "File not found during delete",
                 name=name,
@@ -1466,7 +1624,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
             _ = self.client
 
-            # Generate presigned URL
+            # Generate presigned URL with explicit signing parameters
             url = self._s3_client.generate_presigned_url(
                 "get_object",
                 Params={
@@ -1475,6 +1633,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                     "ResponseContentDisposition": "inline",
                 },
                 ExpiresIn=3600,
+                HttpMethod="GET",
             )
 
             # If we have a custom domain, we need to preserve AWS signing parameters
@@ -1487,7 +1646,7 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                     # Create new URL with custom domain but preserve AWS signing params
                     custom_url = urlunparse(
                         (
-                            parsed.scheme,
+                            "https" if CONFIG.get_bool("storage.media.s3.secure_urls", True) else "http",
                             self._custom_domain,
                             "/" + normalized_name,
                             "",
@@ -1568,8 +1727,11 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
 
         Returns:
             bool: True if file exists, False otherwise
+
+        Raises:
+            S3AccessError: If access is denied
+            S3BucketError: If bucket doesn't exist
         """
-        # NOTE: The test mocks head_object to accept Key="tenant1/exists.txt"
         tenant_prefixed_name = self._normalize_name(name)
         LOGGER.debug(
             "Checking if file exists", name=name, tenant_prefixed_name=tenant_prefixed_name
@@ -1581,12 +1743,13 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
             LOGGER.debug("File exists", name=name, tenant_prefixed_name=tenant_prefixed_name)
             return True
         except ClientError as e:
-            if e.response["Error"]["Code"] == "404":
+            error_code = e.response.get("Error", {}).get("Code")
+            if error_code == "404":
                 LOGGER.debug(
                     "File does not exist", name=name, tenant_prefixed_name=tenant_prefixed_name
                 )
                 return False
-            # Re-raise for other client errors
+            # Handle other client errors
             LOGGER.error(
                 "Error checking if file exists",
                 name=name,
@@ -1594,4 +1757,9 @@ class S3Storage(TenantAwareStorage, BaseS3Storage):
                 error=str(e),
                 tenant=self.tenant_prefix,
             )
-            raise
+            if error_code == "NoSuchBucket":
+                raise S3BucketError(f"S3 bucket '{self._bucket_name}' does not exist") from e
+            elif error_code in ("AccessDenied", "AllAccessDisabled"):
+                raise S3AccessError(f"No permission to access S3 bucket '{self._bucket_name}'") from e
+            else:
+                raise S3StorageError(f"Error checking if file exists: {error_code}") from e
