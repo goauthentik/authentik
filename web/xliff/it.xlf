@@ -4329,7 +4329,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sdd4bd4224c4e943d">
         <source>authentik: Locale: Displays a list of locales authentik supports.</source>
-        <target>Authenk: Locale: visualizza un elenco di supporti di Autenik Locali.</target>
+        <target>authentik: Locale: visualizza un elenco di lingue che authentik supporta.</target>
         
       </trans-unit>
       <trans-unit id="saf84e7732a9e1336">
