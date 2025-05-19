@@ -7815,7 +7815,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4c80c34a67a6f1c9">
   <source>Multiple values can be set, comma-separated, and authentik will fallback to the next mode when no avatar could be found.</source>
-  <target>È possibile impostare più valori, separati da virgole e Authenk scenderà alla modalità successiva quando non è stato possibile trovare un avatar.</target>
+  <target>È possibile impostare più valori, separati da virgole e authentik scenderà alla modalità successiva quando non è stato possibile trovare un avatar.</target>
 </trans-unit>
 <trans-unit id="h2fafcc3ebafea2f8">
   <source>For example, setting this to <x id="0" equiv-text="&lt;code&gt;"/>gravatar,initials<x id="1" equiv-text="&lt;/code&gt;"/> will
@@ -8083,7 +8083,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sefe04e319223a3d6">
   <source>When the user logs in to authentik using this source password backend, update their credentials in authentik.</source>
-  <target>Quando l'utente accede ad Authenk utilizzando questo backend di password di origine, aggiorna le loro credenziali in Autenik.</target>
+  <target>Quando l'utente accede ad authentik utilizzando questo backend di password di origine, aggiorna le loro credenziali in authentik.</target>
 </trans-unit>
 <trans-unit id="s5f43af3669b1e098">
   <source>Source</source>
