@@ -37855,7 +37855,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this mutual tls stage.
+        description: A UUID string identifying this MTLS Stage.
         required: true
       tags:
       - stages
@@ -37889,7 +37889,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this mutual tls stage.
+        description: A UUID string identifying this MTLS Stage.
         required: true
       tags:
       - stages
@@ -37929,7 +37929,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this mutual tls stage.
+        description: A UUID string identifying this MTLS Stage.
         required: true
       tags:
       - stages
@@ -37968,7 +37968,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this mutual tls stage.
+        description: A UUID string identifying this MTLS Stage.
         required: true
       tags:
       - stages
@@ -37999,7 +37999,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this mutual tls stage.
+        description: A UUID string identifying this MTLS Stage.
         required: true
       tags:
       - stages

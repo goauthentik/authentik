@@ -17,6 +17,7 @@ from authentik.flows.challenge import AccessDeniedChallenge
 from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
@@ -25,9 +26,20 @@ from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 HEADER_PROXY_FORWARDED = "X-Forwarded-Client-Cert"
 HEADER_NGINX_FORWARDED = "SSL-Client-Cert"
 HEADER_TRAEFIK_FORWARDED = "X-Forwarded-TLS-Client-Cert"
+HEADER_OUTPOST_FORWARDED = "X-Authentik-Outpost-Certificate"
 
 
 class MTLSStageView(ChallengeStageView):
+
+    def __parse_single_cert(self, raw: str | None) -> list[Certificate]:
+        """Helper to parse a single certificate"""
+        if not raw:
+            return []
+        try:
+            cert = load_pem_x509_certificate(unquote_plus(raw).encode())
+            return cert
+        except ValueError:
+            return []
 
     def _parse_cert_xfcc(self) -> list[Certificate]:
         """Parse certificates in the format given to us in
@@ -41,34 +53,31 @@ class MTLSStageView(ChallengeStageView):
             raw_cert = {k.split("=")[0]: k.split("=")[1] for k in el}
             if "Cert" not in raw_cert:
                 continue
-            try:
-                cert = load_pem_x509_certificate(unquote_plus(raw_cert["Cert"]).encode())
-                certs.append(cert)
-            except ValueError:
-                continue
+            certs.extend(self.__parse_single_cert(raw_cert["Cert"]))
         return certs
 
     def _parse_cert_nginx(self) -> list[Certificate]:
         """Parse certificates in the format nginx-ingress gives to us"""
         sslcc_raw = self.request.headers.get(HEADER_NGINX_FORWARDED)
-        if not sslcc_raw:
-            return []
-        try:
-            cert = load_pem_x509_certificate(unquote_plus(sslcc_raw).encode())
-            return [cert]
-        except ValueError:
-            return []
+        return self.__parse_single_cert(sslcc_raw)
 
     def _parse_cert_traefik(self) -> list[Certificate]:
         """Parse certificates in the format traefik gives to us"""
         ftcc_raw = self.request.headers.get(HEADER_TRAEFIK_FORWARDED)
-        if not ftcc_raw:
+        return self.__parse_single_cert(ftcc_raw)
+
+    def _parse_cert_outpost(self) -> list[Certificate]:
+        """Parse certificates in the format outposts give to us. Also authenticates
+        the outpost to ensure it has the permission to do so"""
+        user = ClientIPMiddleware.get_outpost_user(self.request)
+        if not user:
             return []
-        try:
-            cert = load_pem_x509_certificate(unquote_plus(ftcc_raw).encode())
-            return [cert]
-        except ValueError:
+        if not user.has_perm(
+            "pass_outpost_certificate", self.executor.current_stage
+        ) and not user.has_perm("authentik_stages_mtls.pass_outpost_certificate"):
             return []
+        outpost_raw = self.request.headers.get(HEADER_OUTPOST_FORWARDED)
+        return self.__parse_single_cert(outpost_raw)
 
     def get_ca(self) -> CertificateKeyPair | None:
         # We can't access `certificate_authority` on `self.executor.current_stage`, as that would
@@ -149,6 +158,7 @@ class MTLSStageView(ChallengeStageView):
             *self._parse_cert_xfcc(),
             *self._parse_cert_nginx(),
             *self._parse_cert_traefik(),
+            *self._parse_cert_outpost(),
         ]
         ca = self.get_ca()
         if not ca and stage.mode != TLSMode.OPTIONAL:

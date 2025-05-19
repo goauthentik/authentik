@@ -67,3 +67,6 @@ class MutualTLSStage(Stage):
     class Meta:
         verbose_name = _("MTLS Stage")
         verbose_name_plural = _("MTLS Stages")
+        permissions = [
+            ("pass_outpost_certificate", _("Permissions to pass Certificates for outposts.")),
+        ]

@@ -7522,6 +7522,7 @@
                             "authentik_stages_mtls.add_mutualtlsstage",
                             "authentik_stages_mtls.change_mutualtlsstage",
                             "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.pass_outpost_certificate",
                             "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
@@ -14240,6 +14241,7 @@
                             "authentik_stages_mtls.add_mutualtlsstage",
                             "authentik_stages_mtls.change_mutualtlsstage",
                             "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.pass_outpost_certificate",
                             "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
@@ -15279,6 +15281,7 @@
                     "permission": {
                         "type": "string",
                         "enum": [
+                            "pass_outpost_certificate",
                             "add_mutualtlsstage",
                             "change_mutualtlsstage",
                             "delete_mutualtlsstage",
