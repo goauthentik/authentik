@@ -160,22 +160,12 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-ifeq ($(wildcard ../authentik-client-go/.*),)
-	git clone --depth 1 https://github.com/goauthentik/client-go.git ../authentik-client-go
+	mkdir -p ${PWD}/${GEN_API_GO}
+ifeq ($(wildcard ${PWD}/${GEN_API_GO}.*),)
+	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
 endif
-	cp ../authentik-client-go/config.yaml ./${GEN_API_GO}/config.yaml
-	cp ../authentik-client-go/templates/README.mustache ./${GEN_API_GO}/templates/README.mustache
-	cp ../authentik-client-go/templates/go.mod.mustache ./${GEN_API_GO}/templates/go.mod.mustache
-	cp schema.yml ./${GEN_API_GO}/
-	docker run \
-		--rm -v ${PWD}/${GEN_API_GO}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
+	make -C ${PWD}/${GEN_API_GO} build
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
 	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
