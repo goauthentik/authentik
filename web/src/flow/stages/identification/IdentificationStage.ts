@@ -267,7 +267,7 @@ export class IdentificationStage extends BaseStage<
                 label=${label}
                 required
                 class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {})["uid_field"]}
+                .errors=${(this.challenge.responseErrors || {}).uid_field}
             >
                 <input
                     type=${type}
@@ -289,9 +289,9 @@ export class IdentificationStage extends BaseStage<
                           inputId="ak-stage-identification-password"
                           required
                           class="pf-c-form__group"
-                          .errors=${(this.challenge?.responseErrors || {})["password"]}
+                          .errors=${(this.challenge?.responseErrors || {}).password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
-                          prefill=${PasswordManagerPrefill["password"] ?? ""}
+                          prefill=${PasswordManagerPrefill.password ?? ""}
                       ></ak-flow-input-password>
                   `
                 : nothing}
