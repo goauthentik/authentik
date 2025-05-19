@@ -7393,7 +7393,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f3edfee24690c9f">
   <source>The token was displayed because authentik does not have permission to write to the clipboard</source>
-  <target>Il token è stato visualizzato perché Authenk non ha il permesso di scrivere negli appunti</target>
+  <target>Il token è stato visualizzato perché authentik non ha il permesso di scrivere negli appunti</target>
 </trans-unit>
 <trans-unit id="saf6097bfa25205b8">
   <source>A copy of this recovery link has been placed in your clipboard</source>
@@ -7773,7 +7773,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s945856050217c828">
   <source>Configure how authentik should show avatars for users. The following values can be set:</source>
-  <target>Configurare come Authenk dovrebbe mostrare avatar per gli utenti. È possibile impostare i seguenti valori:</target>
+  <target>Configurare come authentik dovrebbe mostrare avatar per gli utenti. È possibile impostare i seguenti valori:</target>
 </trans-unit>
 <trans-unit id="sf4ef4c8ce713f775">
   <source>Disables per-user avatars and just shows a 1x1 pixel transparent picture</source>
