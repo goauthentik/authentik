@@ -78,7 +78,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             });
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["metaIcon"];
+            const icon = this.getFormFiles().metaIcon;
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,
