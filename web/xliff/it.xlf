@@ -8479,7 +8479,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sec55a3a7f18615ec">
   <source>Outpost integrations define how authentik connects to external platforms to manage and deploy Outposts.</source>
-  <target>Le integrazioni di avamposto definiscono come Authenk si collega a piattaforme esterne per gestire e distribuire gli avamposti.</target>
+  <target>Le integrazioni di avamposto definiscono come authentik si collega a piattaforme esterne per gestire e distribuire gli avamposti.</target>
 </trans-unit>
 <trans-unit id="s74d86eb7e5a10fdf">
   <source>Operation failed to complete</source>
@@ -8615,7 +8615,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sd8a5f7269b7ac7a3">
   <source>Caution: This authentik instance has entered read-only mode due to expired/exceeded licenses.</source>
-  <target>ATTENZIONE: questa istanza Authenk ha inserito la modalità di sola lettura a causa delle licenze scadute/superate.</target>
+  <target>ATTENZIONE: questa istanza di authentik ha inserito la modalità di sola lettura a causa delle licenze scadute/superate.</target>
 </trans-unit>
 <trans-unit id="se8c58e65674b6847">
   <source>This authentik instance uses a Trial license.</source>
