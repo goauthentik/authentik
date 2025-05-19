@@ -1,15 +1,11 @@
 /**
  * @file Theme utilities.
  */
-import {
-    type StyleRoot,
-    createStyleSheetUnsafe,
-    setAdoptedStyleSheets,
-} from "@goauthentik/web/common/stylesheets.js";
-import { UIConfig } from "@goauthentik/web/common/ui/config.js";
+import { type StyleRoot, createStyleSheetUnsafe, setAdoptedStyleSheets } from "#common/stylesheets";
+import { UIConfig } from "#common/ui/config";
 
-import AKBase from "@goauthentik/web/common/styles/authentik.css";
-import AKBaseDark from "@goauthentik/web/common/styles/theme-dark.css";
+import AKBase from "#common/styles/authentik.css";
+import AKBaseDark from "#common/styles/theme-dark.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";

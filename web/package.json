@@ -56,6 +56,19 @@
         }
     },
     "imports": {
+        "#common/*.css": "./src/common/*.css",
+        "#common/*": "./src/common/*.js",
+        "#elements/*.css": "./src/elements/*.css",
+        "#elements/*": "./src/elements/*.js",
+        "#components/*.css": "./src/components/*.css",
+        "#components/*": "./src/components/*.js",
+        "#user/*.css": "./src/user/*.css",
+        "#user/*": "./src/user/*.js",
+        "#admin/*.css": "./src/admin/*.css",
+        "#admin/*": "./src/admin/*.js",
+        "#flow/*.css": "./src/flow/*.css",
+        "#flow/*": "./src/flow/*.js",
+        "#stories/*": "./src/stories/*.js",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
             "import": "./*/browser.js"
