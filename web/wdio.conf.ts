@@ -1,9 +1,9 @@
 /// <reference types="@wdio/browser-runner" />
+import { createBundleDefinitions } from "#bundler/utils/node";
 import { browser } from "@wdio/globals";
 import type { Options } from "@wdio/types";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { createBundleDefinitions } from "scripts/esbuild/environment.mjs";
 import type { InlineConfig } from "vite";
 import litCSS from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";

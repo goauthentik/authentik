@@ -62,6 +62,9 @@
     ],
     "references": [
         {
+            "path": "./packages/core"
+        },
+        {
             "path": "./packages/esbuild-plugin-live-reload"
         }
     ]

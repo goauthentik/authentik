@@ -9,6 +9,7 @@ import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
 import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { me } from "@goauthentik/common/users";
+import { createReleaseNotesURL } from "@goauthentik/core/version";
 import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import "@goauthentik/elements/PageHeader";
@@ -29,15 +30,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
-
-function createReleaseNotesURL(semver: string): URL {
-    const segments = semver.split(".");
-    const versionFamily = segments.slice(0, -1).join(".");
-
-    const release = `${versionFamily}#fixed-in-${segments.join("")}`;
-
-    return new URL(`/docs/releases/${release}`, "https://goauthentik.io");
-}
 
 const AdminOverviewBase = WithLicenseSummary(AKElement);
 

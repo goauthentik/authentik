@@ -152,6 +152,7 @@ export default [
     {
         ignores: [
             "dist/",
+            "out/",
             ".wireit/",
             "packages/",
             // don't ever lint node_modules

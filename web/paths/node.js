@@ -12,7 +12,7 @@ const relativeDirname = dirname(fileURLToPath(import.meta.url));
 /**
  * The root of the web package.
  */
-export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relativeDirname));
+export const PackageRoot = /** @type {WebPackageIdentifier} */ (resolve(relativeDirname, ".."));
 
 /**
  * The name of the distribution directory.
@@ -25,7 +25,7 @@ export const DistDirectoryName = "dist";
  * This is where the built files are located after running the build process.
  */
 export const DistDirectory = /** @type {`${WebPackageIdentifier}/${DistDirectoryName}`} */ (
-    resolve(relativeDirname, DistDirectoryName)
+    resolve(PackageRoot, DistDirectoryName)
 );
 
 //#endregion

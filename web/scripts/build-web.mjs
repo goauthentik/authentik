@@ -4,14 +4,13 @@
  *
  * @import { BuildOptions } from "esbuild";
  */
+import { mdxPlugin } from "#bundler/mdx-plugin/node";
+import { createBundleDefinitions } from "#bundler/utils/node";
+import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "#paths/node";
+import { NodeEnvironment } from "@goauthentik/core/environment/node";
+import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
+import { readBuildIdentifier } from "@goauthentik/core/version/node";
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
-import {
-    MonoRepoRoot,
-    NodeEnvironment,
-    readBuildIdentifier,
-    resolvePackage,
-} from "@goauthentik/monorepo";
-import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "@goauthentik/web/paths";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
@@ -19,12 +18,9 @@ import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { mdxPlugin } from "./esbuild/build-mdx-plugin.mjs";
-import { createBundleDefinitions } from "./esbuild/environment.mjs";
-
 const logPrefix = "[Build]";
 
-const patternflyPath = resolvePackage("@patternfly/patternfly");
+const patternflyPath = resolvePackage("@patternfly/patternfly", import.meta);
 
 /**
  * @type {Readonly<BuildOptions>}
@@ -162,6 +158,19 @@ async function doWatch() {
 
     await buildContext.rebuild();
     await buildContext.watch();
+
+    const httpURL = new URL("http://localhost");
+    httpURL.port = process.env.COMPOSE_PORT_HTTP ?? "9000";
+
+    const httpsURL = new URL("http://localhost");
+    httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
+
+    console.log(`\n${logPrefix} 🚀 Server running\n\n`);
+
+    console.log(`  🔓 ${httpURL.href}`);
+    console.log(`  🔒 ${httpsURL.href}`);
+
+    console.log(`\n---`);
 
     return /** @type {Promise<void>} */ (
         new Promise((resolve) => {

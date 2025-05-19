@@ -1,7 +1,7 @@
 /**
  * @file Utility functions for working with environment variables.
  */
-/// <reference types="./types/global.js" />
+/// <reference types="../types/node.js" />
 
 //#region Constants
 
