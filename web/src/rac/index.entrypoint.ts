@@ -337,11 +337,11 @@ export class RacInterface extends Interface {
     }
 
     renderOverlay() {
-        if (!this.clientState || this.clientState == GuacClientState.CONNECTED) {
+        if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
         let message = html`${GuacStateToString(this.clientState)}`;
-        if (this.clientState == GuacClientState.WAITING) {
+        if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
         if (this.hasConnected) {

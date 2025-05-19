@@ -144,7 +144,7 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
             password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key == "Enter") {
+                if (ev.key === "Enter") {
                     this.submitForm(ev);
                 }
                 const el = ev.target as HTMLInputElement;
@@ -169,7 +169,7 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
         totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
+            if (ev.key === "Enter") {
                 this.submitForm(ev);
             }
             const el = ev.target as HTMLInputElement;

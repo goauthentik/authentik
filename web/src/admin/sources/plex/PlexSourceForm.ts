@@ -160,7 +160,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     ${this.plexResources?.map((r) => {
                         const selected = Array.from(this.instance?.allowedServers || []).some(
                             (server) => {
-                                return server == r.clientIdentifier;
+                                return server === r.clientIdentifier;
                             },
                         );
                         return html`<option value=${r.clientIdentifier} ?selected=${selected}>
