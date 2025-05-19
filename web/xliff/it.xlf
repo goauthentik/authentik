@@ -8623,7 +8623,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6ee52309e586eb18">
   <source>This authentik instance uses a Non-production license.</source>
-  <target>Questa istanza Authenk utilizza una patente di non produzione.</target>
+  <target>Questa istanza di authentik utilizza una licenza non adatta alla produzione.</target>
 </trans-unit>
 <trans-unit id="s4a799b4562ab2051">
   <source>Access Tokens(s)</source>
