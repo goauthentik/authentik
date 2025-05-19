@@ -2,7 +2,7 @@ from binascii import hexlify
 from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
-from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.x509 import (
     Certificate,
     NameOID,
@@ -157,6 +157,7 @@ class MTLSStageView(ChallengeStageView):
             "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode(  # nosec
                 "utf-8"
             ),
+            "raw": cert.public_bytes(encoding=serialization.Encoding.PEM).decode("utf-8"),
         }
 
     def auth_user(self, user: User, cert: Certificate):
