@@ -37,7 +37,7 @@ class MTLSStageView(ChallengeStageView):
             return []
         try:
             cert = load_pem_x509_certificate(unquote_plus(raw).encode())
-            return cert
+            return [cert]
         except ValueError:
             return []
 
