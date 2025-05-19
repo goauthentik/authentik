@@ -21,7 +21,7 @@ import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose A Provider");
+    label = msg("Choose a Provider");
 
     @state()
     failureMessage = "";

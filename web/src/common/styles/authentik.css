@@ -1,3 +1,12 @@
+/**
+ * @file authentik base UI theme.
+ */
+
+/* Defined to better identify the base theme when debugging constructed stylesheets. */
+.__AK_UI_BASE__ {
+    --__AK_UI_BASE__: 1;
+}
+
 /* #region Global */
 
 :root {

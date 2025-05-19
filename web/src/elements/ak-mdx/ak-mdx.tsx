@@ -27,11 +27,14 @@ import remarkGFM from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
 
-import { CSSResult, css } from "lit";
+import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import OneDark from "@goauthentik/common/styles/one-dark.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
+import PFTable from "@patternfly/patternfly/components/Table/table.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -67,80 +70,96 @@ export class AKMDX extends AKElement {
 
     resolvedHTML = "";
 
-    static get styles(): CSSResult[] {
-        return [
-            PFList,
-            PFContent,
-            css`
-                a {
-                    --pf-global--link--Color: var(--pf-global--link--Color--light);
-                    --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
-                    --pf-global--link--Color--visited: var(--pf-global--link--Color);
+    static styles = [
+        PFBase,
+        PFList,
+        PFTable,
+        PFContent,
+        OneDark,
+        css`
+            :host {
+                --ak-mermaid-message-text: var(--pf-c-content--Color);
+                --ak-table-stripe-background: var(--pf-global--BackgroundColor--light-200);
+            }
+
+            :host([theme="dark"]) {
+                --ak-mermaid-message-text: var(--ak-dark-foreground);
+                --ak-mermaid-box-background-color: var(--ak-dark-background-lighter);
+                --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
+            }
+
+            ak-alert + p {
+                margin-block-start: var(--pf-global--spacer--md);
+            }
+
+            a {
+                --pf-global--link--Color: var(--pf-global--link--Color--light);
+                --pf-global--link--Color--hover: var(--pf-global--link--Color--light--hover);
+                --pf-global--link--Color--visited: var(--pf-global--link--Color);
+            }
+
+            /*
+            Note that order of anchor pseudo-selectors must follow:
+                1. link
+                2. visited
+                3. hover
+                4. active
+            */
+            a:link {
+                color: var(--pf-global--link--Color);
+            }
+
+            a:visited {
+                color: var(--pf-global--link--Color--visited);
+            }
+
+            a:hover {
+                color: var(--pf-global--link--Color--hover);
+            }
+
+            a:active {
+                color: var(--pf-global--link--Color);
+            }
+
+            h2:first-of-type {
+                margin-top: 0;
+            }
+
+            table thead,
+            table tr:nth-child(2n) {
+                background-color: var(--ak-table-stripe-background,);
+            }
+
+            table td,
+            table th {
+                border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
+                padding: var(--pf-global--spacer--md);
+            }
+
+            pre {
+                overflow-x: auto;
+            }
+
+            pre:has(.hljs) {
+                padding: var(--pf-global--spacer--md);
+            }
+
+            svg[id^="mermaid-svg-"] {
+                .rect {
+                    fill: var(
+                        --ak-mermaid-box-background-color,
+                        var(--pf-global--BackgroundColor--light-300)
+                    ) !important;
                 }
 
-                /*
-                Note that order of anchor pseudo-selectors must follow:
-                    1. link
-                    2. visited
-                    3. hover
-                    4. active
-                */
-
-                a:link {
-                    color: var(--pf-global--link--Color);
+                .messageText {
+                    stroke-width: 4;
+                    fill: var(--ak-mermaid-message-text) !important;
+                    paint-order: stroke;
                 }
-
-                a:visited {
-                    color: var(--pf-global--link--Color--visited);
-                }
-
-                a:hover {
-                    color: var(--pf-global--link--Color--hover);
-                }
-
-                a:active {
-                    color: var(--pf-global--link--Color);
-                }
-
-                h2:first-of-type {
-                    margin-top: 0;
-                }
-
-                table thead,
-                table tr:nth-child(2n) {
-                    background-color: var(
-                        --ak-table-stripe-background,
-                        var(--pf-global--BackgroundColor--light-200)
-                    );
-                }
-
-                table td,
-                table th {
-                    border: var(--pf-table-border-width) solid var(--ifm-table-border-color);
-                    padding: var(--pf-global--spacer--md);
-                }
-
-                pre:has(.hljs) {
-                    padding: var(--pf-global--spacer--md);
-                }
-
-                svg[id^="mermaid-svg-"] {
-                    .rect {
-                        fill: var(
-                            --ak-mermaid-box-background-color,
-                            var(--pf-global--BackgroundColor--light-300)
-                        ) !important;
-                    }
-
-                    .messageText {
-                        stroke-width: 4;
-                        fill: var(--ak-mermaid-message-text) !important;
-                        paint-order: stroke;
-                    }
-                }
-            `,
-        ];
-    }
+            }
+        `,
+    ];
 
     public async connectedCallback() {
         super.connectedCallback();

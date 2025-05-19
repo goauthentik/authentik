@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
-import { html, nothing } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
@@ -64,7 +64,15 @@ export class Alert extends AKElement implements IAlert {
     icon = "fa-exclamation-circle";
 
     static get styles() {
-        return [PFBase, PFAlert];
+        return [
+            PFBase,
+            PFAlert,
+            css`
+                p {
+                    margin: 0;
+                }
+            `,
+        ];
     }
 
     get classmap() {

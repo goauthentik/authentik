@@ -99,18 +99,17 @@ class GroupSerializer(ModelSerializer):
             if superuser
             else "authentik_core.disable_group_superuser"
         )
-        has_perm = user.has_perm(perm)
-        if self.instance and not has_perm:
-            has_perm = user.has_perm(perm, self.instance)
-        if not has_perm:
-            raise ValidationError(
-                _(
-                    (
-                        "User does not have permission to set "
-                        "superuser status to {superuser_status}."
-                    ).format_map({"superuser_status": superuser})
+        if self.instance or superuser:
+            has_perm = user.has_perm(perm) or user.has_perm(perm, self.instance)
+            if not has_perm:
+                raise ValidationError(
+                    _(
+                        (
+                            "User does not have permission to set "
+                            "superuser status to {superuser_status}."
+                        ).format_map({"superuser_status": superuser})
+                    )
                 )
-            )
         return superuser
 
     class Meta:

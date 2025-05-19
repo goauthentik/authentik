@@ -1,45 +1,45 @@
-import {
-    appendStyleSheet,
-    createStyleSheetUnsafe,
-    resolveStyleSheetParent,
-} from "@goauthentik/common/stylesheets";
-import { ThemedElement } from "@goauthentik/common/theme";
-import { UIConfig } from "@goauthentik/common/ui/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController";
+import { globalAK } from "@goauthentik/common/global.js";
+import { ThemedElement, applyDocumentTheme } from "@goauthentik/common/theme.js";
+import { UIConfig } from "@goauthentik/common/ui/config.js";
+import { AKElement } from "@goauthentik/elements/Base.js";
+import { VersionContextController } from "@goauthentik/elements/Interface/VersionContextController.js";
 import { ModalOrchestrationController } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 
 import { state } from "lit/decorators.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { Config, CurrentBrand, LicenseSummary, Version } from "@goauthentik/api";
+import {
+    type Config,
+    type CurrentBrand,
+    type LicenseSummary,
+    type Version,
+} from "@goauthentik/api";
 
-import { BrandContextController } from "./BrandContextController";
-import { ConfigContextController } from "./ConfigContextController";
-import { EnterpriseContextController } from "./EnterpriseContextController";
+import { BrandContextController } from "./BrandContextController.js";
+import { ConfigContextController } from "./ConfigContextController.js";
+import { EnterpriseContextController } from "./EnterpriseContextController.js";
 
 const configContext = Symbol("configContext");
 const modalController = Symbol("modalController");
 const versionContext = Symbol("versionContext");
 
 export abstract class LightInterface extends AKElement implements ThemedElement {
-    protected static readonly PFBaseStyleSheet = createStyleSheetUnsafe(PFBase);
-
     constructor() {
         super();
-        const styleParent = resolveStyleSheetParent(document);
-
         this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
 
-        appendStyleSheet(styleParent, Interface.PFBaseStyleSheet);
+        if (!document.documentElement.dataset.theme) {
+            applyDocumentTheme(globalAK().brand.uiTheme);
+        }
     }
 }
 
 export abstract class Interface extends LightInterface implements ThemedElement {
-    [configContext]: ConfigContextController;
+    static styles = [PFBase];
+    protected [configContext]: ConfigContextController;
 
-    [modalController]: ModalOrchestrationController;
+    protected [modalController]: ModalOrchestrationController;
 
     @state()
     public config?: Config;
@@ -49,6 +49,7 @@ export abstract class Interface extends LightInterface implements ThemedElement 
 
     constructor() {
         super();
+
         this.addController(new BrandContextController(this));
         this[configContext] = new ConfigContextController(this);
         this[modalController] = new ModalOrchestrationController(this);

@@ -36,7 +36,7 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
+export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
     style: "short",
     type: "disjunction",
 });

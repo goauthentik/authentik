@@ -1,13 +1,13 @@
 // sort-imports-ignore
 import "rapidoc";
+import "@goauthentik/elements/ak-locale-context/index.js";
 
-import { CSRFHeaderName } from "@goauthentik/common/api/config";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { themeImage } from "@goauthentik/elements/utils/images";
+import { CSRFHeaderName } from "@goauthentik/common/api/middleware.js";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
+import { getCookie } from "@goauthentik/common/utils.js";
+import { Interface } from "@goauthentik/elements/Interface/Interface.js";
+import { DefaultBrand } from "@goauthentik/common/ui/config.js";
+import { themeImage } from "@goauthentik/elements/utils/images.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";

@@ -4,13 +4,13 @@ import { ROUTES } from "@goauthentik/admin/Routes";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
-    EVENT_SIDEBAR_TOGGLE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { AuthenticatedInterface } from "@goauthentik/elements/Interface";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
+import { SidebarToggleEventDetail } from "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
 import "@goauthentik/elements/banner/EnterpriseStatusBanner";
@@ -26,7 +26,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
+import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -52,28 +52,33 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     //#region Properties
 
     @property({ type: Boolean })
-    notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
+    public notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
     @property({ type: Boolean })
-    apiDrawerOpen = getURLParam("apiDrawerOpen", false);
+    public apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
-    ws: WebsocketClient;
+    protected readonly ws: WebsocketClient;
 
-    @state()
-    user?: SessionUser;
+    @property({
+        type: Object,
+        attribute: false,
+        reflect: false,
+    })
+    public user?: SessionUser;
 
     @query("ak-about-modal")
-    aboutModal?: AboutModal;
+    public aboutModal?: AboutModal;
 
     @property({ type: Boolean, reflect: true })
     public sidebarOpen: boolean;
 
-    #toggleSidebar = () => {
-        this.sidebarOpen = !this.sidebarOpen;
-    };
+    @eventOptions({ passive: true })
+    protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {
+        this.sidebarOpen = !!event.detail.open;
+    }
 
     #sidebarMatcher: MediaQueryList;
-    #sidebarListener = (event: MediaQueryListEvent) => {
+    #sidebarMediaQueryListener = (event: MediaQueryListEvent) => {
         this.sidebarOpen = event.matches;
     };
 
@@ -81,50 +86,48 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
     //#region Styles
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFButton,
-            PFDrawer,
-            PFNav,
-            css`
-                .pf-c-page__main,
-                .pf-c-drawer__content,
-                .pf-c-page__drawer {
-                    z-index: auto !important;
-                    background-color: transparent;
-                }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFPage,
+        PFButton,
+        PFDrawer,
+        PFNav,
+        css`
+            .pf-c-page__main,
+            .pf-c-drawer__content,
+            .pf-c-page__drawer {
+                z-index: auto !important;
+                background-color: transparent;
+            }
 
-                .display-none {
-                    display: none;
-                }
+            .display-none {
+                display: none;
+            }
 
+            .pf-c-page {
+                background-color: var(--pf-c-page--BackgroundColor) !important;
+            }
+
+            :host([theme="dark"]) {
+                /* Global page background colour */
                 .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
+            }
 
-                :host([theme="dark"]) {
-                    /* Global page background colour */
-                    .pf-c-page {
-                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                    }
-                }
+            ak-page-navbar {
+                grid-area: header;
+            }
 
-                ak-page-navbar {
-                    grid-area: header;
-                }
+            .ak-sidebar {
+                grid-area: nav;
+            }
 
-                .ak-sidebar {
-                    grid-area: nav;
-                }
-
-                .pf-c-drawer__panel {
-                    z-index: var(--pf-global--ZIndex--xl);
-                }
-            `,
-        ];
-    }
+            .pf-c-drawer__panel {
+                z-index: var(--pf-global--ZIndex--xl);
+            }
+        `,
+    ];
 
     //#endregion
 
@@ -141,8 +144,6 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
     public connectedCallback() {
         super.connectedCallback();
 
-        window.addEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
-
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;
             updateURLParams({
@@ -157,13 +158,14 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
             });
         });
 
-        this.#sidebarMatcher.addEventListener("change", this.#sidebarListener);
+        this.#sidebarMatcher.addEventListener("change", this.#sidebarMediaQueryListener, {
+            passive: true,
+        });
     }
 
     public disconnectedCallback(): void {
         super.disconnectedCallback();
-        window.removeEventListener(EVENT_SIDEBAR_TOGGLE, this.#toggleSidebar);
-        this.#sidebarMatcher.removeEventListener("change", this.#sidebarListener);
+        this.#sidebarMatcher.removeEventListener("change", this.#sidebarMediaQueryListener);
     }
 
     async firstUpdated(): Promise<void> {
@@ -196,7 +198,7 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
         return html` <ak-locale-context>
             <div class="pf-c-page">
-                <ak-page-navbar>
+                <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
                     <ak-version-banner></ak-version-banner>
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
