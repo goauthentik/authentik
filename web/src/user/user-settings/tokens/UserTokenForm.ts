@@ -34,12 +34,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            data.intent = this.intent;
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        data.intent = this.intent;
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

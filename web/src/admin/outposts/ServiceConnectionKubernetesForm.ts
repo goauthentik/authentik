@@ -35,11 +35,10 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-                kubernetesServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+            kubernetesServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
