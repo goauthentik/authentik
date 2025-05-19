@@ -30,7 +30,7 @@ class UserAttributes(models.TextChoices):
 
 
 class MutualTLSStage(Stage):
-    """Client-certificate/mTLS authentication/enrollment"""
+    """Authenticate/enroll users using a client-certificate."""
 
     mode = models.TextField(choices=TLSMode.choices)
 
@@ -65,8 +65,8 @@ class MutualTLSStage(Stage):
         return "ak-stage-mtls-form"
 
     class Meta:
-        verbose_name = _("MTLS Stage")
-        verbose_name_plural = _("MTLS Stages")
+        verbose_name = _("Mutual TLS Stage")
+        verbose_name_plural = _("Mutual TLS Stages")
         permissions = [
             ("pass_outpost_certificate", _("Permissions to pass Certificates for outposts.")),
         ]
