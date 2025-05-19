@@ -5,7 +5,7 @@ import {
 } from "@goauthentik/common/api/middleware.js";
 import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants.js";
 import { globalAK } from "@goauthentik/common/global.js";
-import { SentryMiddleware } from "@goauthentik/common/sentry";
+import { SentryMiddleware } from "@goauthentik/common/sentry/middleware";
 
 import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
