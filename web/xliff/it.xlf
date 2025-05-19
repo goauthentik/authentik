@@ -8291,7 +8291,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s676a0127c35d240a">
   <source>Determines what authentik will do when a User is deleted.</source>
-  <target>Determina cosa farà Authenk quando viene eliminato un utente.</target>
+  <target>Determina cosa farà authentik quando viene eliminato un utente.</target>
 </trans-unit>
 <trans-unit id="sd1aa04cc32caf2b0">
   <source>Group deletion action</source>
@@ -8307,7 +8307,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdb872a9f425937fa">
   <source>Determines what authentik will do when a Group is deleted.</source>
-  <target>Determina cosa farà Authenk quando viene eliminato un gruppo.</target>
+  <target>Determina cosa farà authentik quando viene eliminato un gruppo.</target>
 </trans-unit>
 <trans-unit id="s958928ab6208d748">
   <source>Microsoft Entra Provider</source>
@@ -8319,7 +8319,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s2e707072d5a9615d">
   <source>Email address of the user the actions of authentik will be delegated to.</source>
-  <target>Indirizzo e -mail dell'utente Le azioni di Authenk saranno delegate.</target>
+  <target>Indirizzo e -mail dell'utente Le azioni di authentik saranno delegate.</target>
 </trans-unit>
 <trans-unit id="s03a759e65ceb722d">
   <source>Client ID for the app registration.</source>
