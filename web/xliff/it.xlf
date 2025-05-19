@@ -5736,7 +5736,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s7b18721be331241e">
         <source>Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.</source>
-        <target>Selezionare quali trasporti dovrebbero essere utilizzati per avvisare l'utente. Se nessuno è selezionato, la notifica verrà mostrata solo nell'interfaccia utente di Authenk.</target>
+        <target>Selezionare quali trasporti dovrebbero essere utilizzati per avvisare l'utente. Se nessuno è selezionato, la notifica verrà mostrata solo nell'interfaccia utente di authentik.</target>
         
       </trans-unit>
       <trans-unit id="scd0cfe87af6f2ff2">
@@ -5802,7 +5802,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s0e03fe2dc5b9164b">
         <source>If your authentik Instance is using a self-signed certificate, set this value.</source>
-        <target>Se l'istanza Authenk sta utilizzando un certificato autofirmato, impostare questo valore.</target>
+        <target>Se l'istanza authentik sta utilizzando un certificato autofirmato, impostare questo valore.</target>
         
       </trans-unit>
       <trans-unit id="sc21032b0d37882a0">
