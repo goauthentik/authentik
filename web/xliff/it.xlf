@@ -5389,7 +5389,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sb25d9afe10941425">
         <source>Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.</source>
-        <target>Decide a cosa serve questo flusso. Ad esempio, il flusso di autenticazione viene reindirizzato a quando un utente non autenticato visita Authenk.</target>
+        <target>Decide a cosa serve questo flusso. Ad esempio, il flusso di autenticazione viene reindirizzato a quando un utente non autenticato visita authentik.</target>
         
       </trans-unit>
       <trans-unit id="sb36e4c05244278c1">
