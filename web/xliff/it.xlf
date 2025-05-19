@@ -3180,7 +3180,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s6152026c364ad974">
         <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
-        <target>Fonti di identità, che possono essere sincronizzate nel database di Authentik o possono essere utilizzate dagli utenti per autenticarsi e iscriversi.</target>
+        <target>Fonti di identità, che possono essere sincronizzate nel database di authentik o possono essere utilizzate dagli utenti per autenticarsi e iscriversi.</target>
         
       </trans-unit>
       <trans-unit id="s0a0ca63b967f1630">
