@@ -4,7 +4,6 @@
  * @import { InlineConfig, Plugin } from "vite";
  */
 import postcssLit from "rollup-plugin-postcss-lit";
-import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 import { createBundleDefinitions } from "../bundler/utils/node.js";
@@ -53,7 +52,9 @@ const config = {
     docs: {
         autodocs: "tag",
     },
-    viteFinal(config) {
+    async viteFinal(config) {
+        const { mergeConfig } = await import("vite");
+
         /**
          * @satisfies {InlineConfig}
          */
