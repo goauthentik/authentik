@@ -12,6 +12,7 @@ export default [
     {
         ignores: [
             "dist/",
+            "out/",
             // don't lint the cache
             ".wireit/",
             // let packages have their own configurations
