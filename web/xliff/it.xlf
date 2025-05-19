@@ -3447,7 +3447,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sdcc7b2c109ce9775">
         <source>Tokens are used throughout authentik for Email validation stages, Recovery keys and API access.</source>
-        <target>I token vengono utilizzati in Authentik per le fasi di convalida dell'e-mail, le chiavi di ripristino e l'accesso all'API.</target>
+        <target>I token vengono utilizzati in authentik per le fasi di convalida dell'e-mail, le chiavi di ripristino e l'accesso all'API.</target>
         
       </trans-unit>
       <trans-unit id="sf71dba2c30283a54">
@@ -3472,7 +3472,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s8d7ecd944ebe834b">
         <source>Token is managed by authentik.</source>
-        <target>Token gestito da Authentik</target>
+        <target>Token gestito da authentik</target>
         
       </trans-unit>
       <trans-unit id="sd1288ca57e221cf9">
