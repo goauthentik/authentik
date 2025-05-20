@@ -32,7 +32,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          gh pr edit -t "translate: ${{ steps.title.outputs.title }}" --add-label dependencies
+          gh pr edit ${{ github.event.pull_request.number }} -t "translate: ${{ steps.title.outputs.title }}" --add-label dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}
