@@ -3,7 +3,14 @@ from urllib.parse import unquote_plus
 
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives import hashes
-from cryptography.x509 import Certificate, NameOID, ObjectIdentifier, load_pem_x509_certificate
+from cryptography.x509 import (
+    Certificate,
+    NameOID,
+    ObjectIdentifier,
+    UnsupportedGeneralNameType,
+    load_pem_x509_certificate,
+)
+from cryptography.x509.verification import PolicyBuilder, Store, VerificationError
 from django.utils.translation import gettext_lazy as _
 
 from authentik.brands.models import Brand
@@ -102,15 +109,21 @@ class MTLSStageView(ChallengeStageView):
         return None
 
     def validate_cert(self, authorities: list[CertificateKeyPair], certs: list[Certificate]):
+        authorities_cert = [x.certificate for x in authorities]
         for _cert in certs:
-            for ca in authorities:
                 try:
-                    _cert.verify_directly_issued_by(ca.certificate)
-                    return _cert
-                except (InvalidSignature, TypeError, ValueError) as exc:
-                    self.logger.warning(
-                        "Discarding cert not issued by authority", cert=_cert, authority=ca, exc=exc
+                PolicyBuilder().store(Store(authorities_cert)).build_client_verifier().verify(
+                    _cert, []
                     )
+                return _cert
+            except (
+                InvalidSignature,
+                TypeError,
+                ValueError,
+                VerificationError,
+                UnsupportedGeneralNameType,
+            ) as exc:
+                self.logger.warning("Discarding invalid certificate", cert=_cert, exc=exc)
                     continue
         return None
 

@@ -127,6 +127,18 @@ class MTLSStageTests(FlowTestCase):
             self.assertEqual(res.status_code, 200)
             self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
 
+    def test_invalid_cert(self):
+        """Test invalid certificate"""
+        cert = create_test_cert()
+        with self.assertFlowFinishes() as plan:
+            res = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(cert.certificate_data)},
+            )
+            self.assertEqual(res.status_code, 200)
+            self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
+        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan().context)
+
     def test_auth_no_user(self):
         """Test auth with no user"""
         User.objects.filter(username="client").delete()
