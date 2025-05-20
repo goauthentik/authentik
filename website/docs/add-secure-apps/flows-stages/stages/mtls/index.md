@@ -40,7 +40,7 @@ See [nginx documentation](https://nginx.org/en/docs/http/ngx_http_ssl_module.htm
 
 #### nginx Ingress
 
-Add these annotations to your authentik ingress:
+Add these annotations to your authentik ingress object:
 
 ```yaml
 nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
