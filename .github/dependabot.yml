@@ -23,7 +23,13 @@ updates:
   - package-ecosystem: npm
     directories:
       - "/web"
-      - "/web/sfe"
+      - "/web/packages/sfe"
+      - "/web/packages/core"
+      - "/web/packages/esbuild-plugin-live-reload"
+      - "/packages/prettier-config"
+      - "/packages/tsconfig"
+      - "/packages/docusaurus-config"
+      - "/packages/eslint-config"
     schedule:
       interval: daily
       time: "04:00"
