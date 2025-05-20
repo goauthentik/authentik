@@ -11,15 +11,17 @@ const (
 	StatusUnknown Status = iota
 	StatusSuccess
 	StatusError
+	StatusNextProtocol
 )
 
 type Context interface {
 	Packet() *radius.Request
 
 	ProtocolSettings() interface{}
-	GetProtocolState(def func(Context) interface{}) interface{}
+	GetProtocolState() interface{}
 	SetProtocolState(interface{})
 
+	IsProtocolStart() bool
 	EndInnerProtocol(Status, func(p *radius.Packet) *radius.Packet)
 
 	Log() *log.Entry

@@ -8,7 +8,6 @@ import (
 )
 
 type State struct {
-	HasStarted       bool
 	RemainingChunks  [][]byte
 	HandshakeDone    bool
 	FinalStatus      protocol.Status

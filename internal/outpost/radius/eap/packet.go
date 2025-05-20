@@ -3,11 +3,12 @@ package eap
 import (
 	"encoding/binary"
 	"errors"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
-	"goauthentik.io/internal/outpost/radius/eap/tls"
+	"layeh.com/radius"
 )
 
 type Code uint8
@@ -26,22 +27,30 @@ type Packet struct {
 	msgType    protocol.Type
 	rawPayload []byte
 	Payload    protocol.Payload
+
+	stm         StateManager
+	state       string
+	endModifier func(p *radius.Packet) *radius.Packet
 }
 
 type PayloadWriter struct{}
 
-func emptyPayload(t protocol.Type) protocol.Payload {
-	switch t {
-	case protocol.TypeIdentity:
-		return &IdentityPayload{}
-	case tls.TypeTLS:
-		return &tls.Payload{}
+func emptyPayload(stm StateManager, t protocol.Type) (protocol.Payload, error) {
+	for _, cons := range stm.GetEAPSettings().Protocols {
+		if np := cons(); np.Type() == t {
+			return np, nil
+		}
 	}
-	return nil
+	return nil, fmt.Errorf("unsupported EAP type %d", t)
 }
 
-func Decode(raw []byte) (*Packet, error) {
-	packet := &Packet{}
+func Decode(stm StateManager, raw []byte) (*Packet, error) {
+	packet := &Packet{
+		stm: stm,
+		endModifier: func(p *radius.Packet) *radius.Packet {
+			return p
+		},
+	}
 	packet.code = Code(raw[0])
 	packet.id = raw[1]
 	packet.length = binary.BigEndian.Uint16(raw[2:])
@@ -51,10 +60,14 @@ func Decode(raw []byte) (*Packet, error) {
 	if len(raw) > 4 && (packet.code == CodeRequest || packet.code == CodeResponse) {
 		packet.msgType = protocol.Type(raw[4])
 	}
-	packet.Payload = emptyPayload(packet.msgType)
+	p, err := emptyPayload(stm, packet.msgType)
+	if err != nil {
+		return nil, err
+	}
+	packet.Payload = p
 	packet.rawPayload = raw[5:]
-	log.WithField("raw", debug.FormatBytes(raw)).Debug("EAP: decode raw")
-	err := packet.Payload.Decode(raw[5:])
+	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Debug("EAP: decode raw")
+	err = packet.Payload.Decode(raw[5:])
 	if err != nil {
 		return nil, err
 	}

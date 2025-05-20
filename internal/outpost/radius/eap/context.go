@@ -23,10 +23,7 @@ func (ctx context) ProtocolSettings() interface{} {
 	return ctx.settings
 }
 
-func (ctx *context) GetProtocolState(def func(protocol.Context) interface{}) interface{} {
-	if ctx.state == nil {
-		ctx.state = def(ctx)
-	}
+func (ctx *context) GetProtocolState() interface{} {
 	return ctx.state
 }
 
@@ -34,11 +31,20 @@ func (ctx *context) SetProtocolState(st interface{}) {
 	ctx.state = st
 }
 
+func (ctx *context) IsProtocolStart() bool {
+	return ctx.state == nil
+}
+
 func (ctx *context) EndInnerProtocol(st protocol.Status, mf func(p *radius.Packet) *radius.Packet) {
 	if ctx.endStatus != protocol.StatusUnknown {
 		return
 	}
 	ctx.endStatus = st
+	if mf == nil {
+		mf = func(p *radius.Packet) *radius.Packet {
+			return p
+		}
+	}
 	ctx.endModifier = mf
 }
 

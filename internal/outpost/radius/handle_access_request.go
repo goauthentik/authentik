@@ -12,6 +12,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/radius/eap"
+	"goauthentik.io/internal/outpost/radius/eap/identity"
+	"goauthentik.io/internal/outpost/radius/eap/legacy_nak"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
@@ -111,12 +113,12 @@ func (rs *RadiusServer) Handle_AccessRequest_PAP(w radius.ResponseWriter, r *Rad
 
 func (rs *RadiusServer) Handle_AccessRequest_EAP(w radius.ResponseWriter, r *RadiusRequest) {
 	er := rfc2869.EAPMessage_Get(r.Packet)
-	ep, err := eap.Decode(er)
+	ep, err := eap.Decode(r.pi, er)
 	if err != nil {
 		rs.log.WithError(err).Warning("failed to parse EAP packet")
 		return
 	}
-	ep.Handle(r.pi, w, r.Request)
+	ep.HandleRadiusPacket(w, r.Request)
 }
 
 func (pi *ProviderInstance) GetEAPState(key string) *eap.State {
@@ -128,22 +130,30 @@ func (pi *ProviderInstance) SetEAPState(key string, state *eap.State) {
 }
 
 func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
+	protocols := []eap.ProtocolConstructor{
+		identity.Protocol,
+		legacy_nak.Protocol,
+	}
+
 	certId := pi.certId
 	if certId == "" {
 		return eap.Settings{
-			ProtocolsToOffer: []protocol.Type{},
+			Protocols: protocols,
 		}
 	}
 
 	cert := pi.s.cryptoStore.Get(certId)
 	if cert == nil {
 		return eap.Settings{
-			ProtocolsToOffer: []protocol.Type{},
+			Protocols: protocols,
 		}
 	}
 
 	return eap.Settings{
-		ProtocolsToOffer: []protocol.Type{tls.TypeTLS},
+		Protocols: append(protocols, tls.Protocol),
+		ProtocolPriority: []protocol.Type{
+			tls.TypeTLS,
+		},
 		ProtocolSettings: map[protocol.Type]interface{}{
 			tls.TypeTLS: tls.Settings{
 				Config: &ttls.Config{

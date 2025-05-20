@@ -21,12 +21,24 @@ const staleConnectionTimeout = 10
 
 const TypeTLS protocol.Type = 13
 
+func Protocol() protocol.Payload {
+	return &Payload{}
+}
+
 type Payload struct {
 	Flags  Flag
 	Length uint32
 	Data   []byte
 
 	st *State
+}
+
+func (p *Payload) Type() protocol.Type {
+	return TypeTLS
+}
+
+func (p *Payload) Offerable() bool {
+	return true
 }
 
 func (p *Payload) Decode(raw []byte) error {
@@ -65,15 +77,16 @@ func (p *Payload) Encode() ([]byte, error) {
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
-	p.st = ctx.GetProtocolState(NewState).(*State)
-	defer ctx.SetProtocolState(p.st)
-	if !p.st.HasStarted {
-		ctx.Log().Debug("TLS: handshake starting")
-		p.st.HasStarted = true
+	defer func() {
+		ctx.SetProtocolState(p.st)
+	}()
+	if ctx.IsProtocolStart() {
+		p.st = NewState(ctx).(*State)
 		return &Payload{
 			Flags: FlagTLSStart,
 		}
 	}
+	p.st = ctx.GetProtocolState().(*State)
 
 	if p.st.TLS == nil {
 		p.tlsInit(ctx)
