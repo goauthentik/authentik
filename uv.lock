@@ -283,8 +283,8 @@ requires-dist = [
     { name = "django-prometheus", specifier = "==2.3.1" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tenants", git = "https://github.com/rissson/django-tenants.git?branch=authentik-fixes" },
-    { name = "djangorestframework", git = "https://github.com/authentik-community/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
+    { name = "django-tenants", git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes" },
+    { name = "djangorestframework", git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian", specifier = "==0.3.0" },
     { name = "docker", specifier = "==7.1.0" },
     { name = "drf-orjson-renderer", specifier = "==1.7.3" },
@@ -1119,7 +1119,7 @@ s3 = [
 [[package]]
 name = "django-tenants"
 version = "3.7.0"
-source = { git = "https://github.com/rissson/django-tenants.git?branch=authentik-fixes#156e53a6f5902d74b73dd9d0192fffaa2587a740" }
+source = { git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes#156e53a6f5902d74b73dd9d0192fffaa2587a740" }
 dependencies = [
     { name = "django" },
 ]
@@ -1127,7 +1127,7 @@ dependencies = [
 [[package]]
 name = "djangorestframework"
 version = "3.16.0"
-source = { git = "https://github.com/authentik-community/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e#896722bab969fabc74a08b827da59409cf9f1a4e" }
+source = { git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e#896722bab969fabc74a08b827da59409cf9f1a4e" }
 dependencies = [
     { name = "django" },
 ]
