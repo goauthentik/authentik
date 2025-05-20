@@ -124,7 +124,8 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		defer p.st.ContextCancel()
 		if p.Inner != nil {
 			ctx.Log().Debug("TLS: Handshake is done, delegating to inner protocol")
-			return p.innerHandler(ctx)
+			p.innerHandler(ctx)
+			return p.startChunkedTransfer(p.st.Conn.OutboundData())
 		}
 		// If we don't have a final status from the handshake finished function, stall for time
 		pst, _ := retry.DoWithData(

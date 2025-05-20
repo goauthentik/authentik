@@ -4,6 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/eap"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/identity"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/tls"
 )
 
@@ -11,11 +13,14 @@ const TypePEAP protocol.Type = 25
 
 func Protocol() protocol.Payload {
 	return &tls.Payload{
-		Inner: &Payload{},
+		Inner: &Payload{
+			Inner: &eap.Payload{},
+		},
 	}
 }
 
 type Payload struct {
+	Inner protocol.Payload
 }
 
 func (p *Payload) Type() protocol.Type {
@@ -33,7 +38,16 @@ func (p *Payload) Encode() ([]byte, error) {
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
-	log.Debug("PEAP: Handle")
+	eapState := ctx.StateForProtocol(eap.TypeEAP).(*eap.State)
+	if !ctx.IsProtocolStart() {
+		ctx.Log().Debug("PEAP: Protocol start")
+		return &eap.Payload{
+			Code:    protocol.CodeRequest,
+			ID:      eapState.PacketID,
+			MsgType: identity.TypeIdentity,
+			Payload: &identity.Payload{},
+		}
+	}
 	return &Payload{}
 }
 

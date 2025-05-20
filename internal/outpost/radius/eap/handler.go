@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/eap"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/legacy_nak"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
@@ -30,16 +31,20 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	}
 	p.state = rst
 
-	rp, err := p.handleInner(r)
+	rep, err := p.handleInner(r)
+	rp := &Packet{
+		eap: rep,
+	}
+
 	rres := r.Response(radius.CodeAccessReject)
 	if err == nil {
 		rres = p.endModifier(rres)
-		switch rp.code {
-		case CodeRequest:
+		switch rp.eap.Code {
+		case protocol.CodeRequest:
 			rres.Code = radius.CodeAccessChallenge
-		case CodeFailure:
+		case protocol.CodeFailure:
 			rres.Code = radius.CodeAccessReject
-		case CodeSuccess:
+		case protocol.CodeSuccess:
 			rres.Code = radius.CodeAccessAccept
 		}
 	} else {
@@ -54,7 +59,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 		sendErrorResponse(w, r)
 		return
 	}
-	log.WithField("length", len(eapEncoded)).WithField("type", fmt.Sprintf("%T", rp.Payload)).Debug("EAP: encapsulated challenge")
+	log.WithField("length", len(eapEncoded)).WithField("type", fmt.Sprintf("%T", rp.eap.Payload)).Debug("EAP: encapsulated challenge")
 	rfc2869.EAPMessage_Set(rres, eapEncoded)
 	err = p.setMessageAuthenticator(rres)
 	if err != nil {
@@ -68,40 +73,50 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	}
 }
 
-func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
+func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	st := p.stm.GetEAPState(p.state)
 	if st == nil {
 		log.Debug("EAP: blank state")
 		st = BlankState(p.stm.GetEAPSettings())
 	}
 
+	// FIXME: Statically call Handle of root EAP packet to make its data accessible
+	ectx := &context{
+		state: st.TypeState[eap.TypeEAP],
+		log:   log.WithField("type", fmt.Sprintf("%T", &eap.Payload{})),
+	}
+	p.eap.Handle(ectx)
+	st.TypeState[eap.TypeEAP] = ectx.GetProtocolState()
+	p.stm.SetEAPState(p.state, st)
+
 	nextChallengeToOffer, err := st.GetNextProtocol()
 	if err != nil {
-		return &Packet{
-			code: CodeFailure,
-			id:   p.id,
+		return &eap.Payload{
+			Code: protocol.CodeFailure,
+			ID:   p.eap.ID,
 		}, err
 	}
 
-	next := func() (*Packet, error) {
+	next := func() (*eap.Payload, error) {
 		st.ProtocolIndex += 1
 		p.stm.SetEAPState(p.state, st)
 		return p.handleInner(r)
 	}
 
-	if _, ok := p.Payload.(*legacy_nak.Payload); ok {
+	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
 		log.Debug("EAP: received NAK, trying next protocol")
-		p.Payload = nil
+		p.eap.Payload = nil
 		return next()
 	}
 
 	np, _ := emptyPayload(p.stm, nextChallengeToOffer)
 
 	ctx := &context{
-		req:      r,
-		state:    st.TypeState[np.Type()],
-		log:      log.WithField("type", fmt.Sprintf("%T", np)),
-		settings: p.stm.GetEAPSettings().ProtocolSettings[np.Type()],
+		req:       r,
+		state:     st.TypeState[np.Type()],
+		typeState: st.TypeState,
+		log:       log.WithField("type", fmt.Sprintf("%T", np)),
+		settings:  p.stm.GetEAPSettings().ProtocolSettings[np.Type()],
 	}
 	if !np.Offerable() {
 		ctx.log.Debug("EAP: protocol not offerable, skipping")
@@ -119,11 +134,11 @@ func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
 
 	switch ctx.endStatus {
 	case protocol.StatusSuccess:
-		res.code = CodeSuccess
-		res.id -= 1
+		res.Code = protocol.CodeSuccess
+		res.ID -= 1
 	case protocol.StatusError:
-		res.code = CodeFailure
-		res.id -= 1
+		res.Code = protocol.CodeFailure
+		res.ID -= 1
 	case protocol.StatusNextProtocol:
 		ctx.log.Debug("EAP: Protocol ended, starting next protocol")
 		return next()
@@ -132,18 +147,18 @@ func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
 	return res, nil
 }
 
-func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload) *Packet {
-	res := &Packet{
-		code:    CodeRequest,
-		id:      p.id + 1,
-		msgType: np.Type(),
+func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload) *eap.Payload {
+	res := &eap.Payload{
+		Code:    protocol.CodeRequest,
+		ID:      p.eap.ID + 1,
+		MsgType: np.Type(),
 	}
 	var payload any
 	if ctx.IsProtocolStart() {
-		p.Payload = np
-		p.Payload.Decode(p.rawPayload)
+		p.eap.Payload = np
+		p.eap.Payload.Decode(p.eap.RawPayload)
 	}
-	payload = p.Payload.Handle(ctx)
+	payload = p.eap.Payload.Handle(ctx)
 	if payload != nil {
 		res.Payload = payload.(protocol.Payload)
 	}

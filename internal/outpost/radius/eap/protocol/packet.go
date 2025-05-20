@@ -9,3 +9,12 @@ type Payload interface {
 }
 
 type Type uint8
+
+type Code uint8
+
+const (
+	CodeRequest  Code = 1
+	CodeResponse Code = 2
+	CodeSuccess  Code = 3
+	CodeFailure  Code = 4
+)

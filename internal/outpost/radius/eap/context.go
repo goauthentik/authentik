@@ -9,6 +9,7 @@ import (
 type context struct {
 	req         *radius.Request
 	state       interface{}
+	typeState   map[protocol.Type]any
 	log         *log.Entry
 	settings    interface{}
 	endStatus   protocol.Status
@@ -21,6 +22,10 @@ func (ctx context) Packet() *radius.Request {
 
 func (ctx context) ProtocolSettings() interface{} {
 	return ctx.settings
+}
+
+func (ctx *context) StateForProtocol(p protocol.Type) interface{} {
+	return ctx.typeState[p]
 }
 
 func (ctx *context) GetProtocolState() interface{} {

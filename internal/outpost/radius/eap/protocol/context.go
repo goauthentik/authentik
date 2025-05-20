@@ -18,6 +18,8 @@ type Context interface {
 	Packet() *radius.Request
 
 	ProtocolSettings() interface{}
+
+	StateForProtocol(p Type) interface{}
 	GetProtocolState() interface{}
 	SetProtocolState(interface{})
 
