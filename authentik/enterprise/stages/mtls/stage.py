@@ -111,10 +111,10 @@ class MTLSStageView(ChallengeStageView):
     def validate_cert(self, authorities: list[CertificateKeyPair], certs: list[Certificate]):
         authorities_cert = [x.certificate for x in authorities]
         for _cert in certs:
-                try:
+            try:
                 PolicyBuilder().store(Store(authorities_cert)).build_client_verifier().verify(
                     _cert, []
-                    )
+                )
                 return _cert
             except (
                 InvalidSignature,
@@ -124,7 +124,7 @@ class MTLSStageView(ChallengeStageView):
                 UnsupportedGeneralNameType,
             ) as exc:
                 self.logger.warning("Discarding invalid certificate", cert=_cert, exc=exc)
-                    continue
+                continue
         return None
 
     def check_if_user(self, cert: Certificate):
@@ -154,7 +154,7 @@ class MTLSStageView(ChallengeStageView):
             "subject": cert.subject.rfc4514_string(),
             "issuer": cert.issuer.rfc4514_string(),
             "fingerprint_sha256": hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8"),
-            "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8"),
+            "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode("utf-8"),
         }
 
     def auth_user(self, user: User, cert: Certificate):
