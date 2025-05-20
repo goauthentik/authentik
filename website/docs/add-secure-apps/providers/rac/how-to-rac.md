@@ -4,7 +4,7 @@ title: Create a Remote Access Control (RAC) provider
 
 ## Introduction
 
-The RAC provider is a highly flexible feature for accessing remote machines.
+The Remote Access Control (RAC) provider is a highly flexible feature for accessing remote machines.
 
 For overview information, see the [RAC provider](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
 
