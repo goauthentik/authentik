@@ -114,9 +114,9 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-django-tenants = { git = "https://github.com/rissson/django-tenants.git", branch = "authentik-fixes" }
+django-tenants = { git = "https://github.com/goauthentik/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
-djangorestframework = { git = "https://github.com/authentik-community/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"
