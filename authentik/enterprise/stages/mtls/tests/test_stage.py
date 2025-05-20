@@ -5,7 +5,12 @@ from django.urls import reverse
 from guardian.shortcuts import assign_perm
 
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_brand, create_test_flow, create_test_user
+from authentik.core.tests.utils import (
+    create_test_brand,
+    create_test_cert,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.enterprise.stages.mtls.models import (
     CertAttributes,
@@ -127,6 +132,18 @@ class MTLSStageTests(FlowTestCase):
             self.assertEqual(res.status_code, 200)
             self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
 
+    def test_invalid_cert(self):
+        """Test invalid certificate"""
+        cert = create_test_cert()
+        with self.assertFlowFinishes() as plan:
+            res = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+                headers={"X-Forwarded-TLS-Client-Cert": quote_plus(cert.certificate_data)},
+            )
+            self.assertEqual(res.status_code, 200)
+            self.assertStageResponse(res, self.flow, component="ak-stage-access-denied")
+        self.assertNotIn(PLAN_CONTEXT_PENDING_USER, plan().context)
+
     def test_auth_no_user(self):
         """Test auth with no user"""
         User.objects.filter(username="client").delete()
@@ -200,14 +217,12 @@ class MTLSStageTests(FlowTestCase):
         self.assertEqual(
             plan().context[PLAN_CONTEXT_CERTIFICATE],
             {
-                "fingerprint_sha1": (
-                    "08:d4:a4:79:25:ca:c3:51:28:88:bb:30:c2:96:c3:44:5a:eb:18:07:84:ca:b4:75:27:74:61:19:8a:6a:af:fc"
-                ),
+                "fingerprint_sha1": "52:39:ca:1e:3a:1f:78:3a:9f:26:3b:c2:84:99:48:68:99:99:81:8a",
                 "fingerprint_sha256": (
-                    "08:d4:a4:79:25:ca:c3:51:28:88:bb:30:c2:96:c3:44:5a:eb:18:07:84:ca:b4:75:27:74:61:19:8a:6a:af:fc"
+                    "c1:07:8b:7c:e9:02:57:87:1e:92:e5:81:83:21:bc:92:c7:47:65:e3:97:fb:05:97:6f:36:9e:b5:31:77:98:b7"
                 ),
                 "issuer": "OU=Self-signed,O=authentik,CN=authentik Test CA",
-                "serial_number": "630532384467334865093173111400266136879266564943",
+                "serial_number": "70153443448884702681996102271549704759327537151",
                 "subject": "CN=client",
             },
         )
