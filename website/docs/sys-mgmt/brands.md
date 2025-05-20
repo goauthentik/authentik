@@ -65,7 +65,7 @@ This means that if you want to select a default flow based on policy, you can le
 
 The **Web Certificate** option can be used to configure which certificate authentik uses when its accessed directly via HTTPS (via port 9443).
 
-#### Client Certificates :ak-version[2025.4]
+#### Client Certificates:ak-version[2025.4]
 
 When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this option configures which certificate authorities clients' certificates can be issued by.
 
