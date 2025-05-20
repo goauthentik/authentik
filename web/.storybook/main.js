@@ -3,9 +3,7 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
-import { createBundleDefinitions } from "@goauthentik/web/bundler/utils/node";
 import postcssLit from "rollup-plugin-postcss-lit";
-import { mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
@@ -52,7 +50,12 @@ const config = {
     docs: {
         autodocs: "tag",
     },
-    viteFinal(config) {
+    async viteFinal(config) {
+        const [{ mergeConfig }, { createBundleDefinitions }] = await Promise.all([
+            import("vite"),
+            import("@goauthentik/web/bundler/utils/node"),
+        ]);
+
         /**
          * @satisfies {InlineConfig}
          */

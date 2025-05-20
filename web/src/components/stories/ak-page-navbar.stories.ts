@@ -38,7 +38,7 @@ declare global {
 
 export const SimplePageNavbar = () => {
     return html`
-        <story-ak-page-navbar open=${true} @sidebar-toggle=${() => {}}>
+        <story-ak-page-navbar open @sidebar-toggle=${() => {}}>
             <ak-page-header header="Page Title" description="Page Description"> </ak-page-header>
         </story-ak-page-navbar>
     `;
