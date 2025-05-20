@@ -154,7 +154,9 @@ class MTLSStageView(ChallengeStageView):
             "subject": cert.subject.rfc4514_string(),
             "issuer": cert.issuer.rfc4514_string(),
             "fingerprint_sha256": hexlify(cert.fingerprint(hashes.SHA256()), ":").decode("utf-8"),
-            "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode("utf-8"),
+            "fingerprint_sha1": hexlify(cert.fingerprint(hashes.SHA1()), ":").decode(  # nosec
+                "utf-8"
+            ),
         }
 
     def auth_user(self, user: User, cert: Certificate):
