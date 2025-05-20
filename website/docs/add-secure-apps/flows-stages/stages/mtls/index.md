@@ -6,7 +6,9 @@ authentik_enterprise: true
 toc_max_heading_level: 5
 ---
 
-The Mutual TLS stage enables authentik to authenticate or enroll users utilizing client certificates. Management of client certificates is out of the scope of this document.
+The Mutual TLS stage enables authentik to use client certificates to enroll and authenticate users. These certificates can be local to the device or available via PIV Smart Cards, Yubikeys, etc.
+
+Management of client certificates is out of the scope of this document.
 
 ## Reverse-proxy configuration
 
