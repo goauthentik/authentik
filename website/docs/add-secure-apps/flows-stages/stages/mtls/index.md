@@ -90,7 +90,7 @@ See the [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../sys-mgmt/brands#other-global-settings) for the domain, under **Other global settings**.
+When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../../sys-mgmt/brands.md#client-certificates-ak-version20254) for the domain, under **Other global settings**.
 
 ## Stage configuration
 
