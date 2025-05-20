@@ -59,7 +59,7 @@ RAC connection settings can be set via several methods:
 1. The settings of the RAC provider
 2. RAC endpoint settings
 3. RAC property mappings
-4. Fetched from user or group attributes via RAC property mappings.
+4. Retrieved from user or group attributes via RAC property mappings
 
 For an example of how to set a connection setting see the [RAC SSH public key authentication](./rac-public-key.md) page.
 
