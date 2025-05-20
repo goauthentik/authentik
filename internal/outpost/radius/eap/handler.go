@@ -35,6 +35,8 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	if err == nil {
 		rres = p.endModifier(rres)
 		switch rp.code {
+		case CodeRequest:
+			rres.Code = radius.CodeAccessChallenge
 		case CodeFailure:
 			rres.Code = radius.CodeAccessReject
 		case CodeSuccess:
@@ -81,11 +83,16 @@ func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
 		}, err
 	}
 
-	if _, ok := p.Payload.(*legacy_nak.Payload); ok {
-		log.Debug("EAP: received NAK, trying next protocol")
+	next := func() (*Packet, error) {
 		st.ProtocolIndex += 1
 		p.stm.SetEAPState(p.state, st)
 		return p.handleInner(r)
+	}
+
+	if _, ok := p.Payload.(*legacy_nak.Payload); ok {
+		log.Debug("EAP: received NAK, trying next protocol")
+		p.Payload = nil
+		return next()
 	}
 
 	np, _ := emptyPayload(p.stm, nextChallengeToOffer)
@@ -95,6 +102,10 @@ func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
 		state:    st.TypeState[np.Type()],
 		log:      log.WithField("type", fmt.Sprintf("%T", np)),
 		settings: p.stm.GetEAPSettings().ProtocolSettings[np.Type()],
+	}
+	if !np.Offerable() {
+		ctx.log.Debug("EAP: protocol not offerable, skipping")
+		return next()
 	}
 	ctx.log.Debug("EAP: Passing to protocol")
 
@@ -115,9 +126,7 @@ func (p *Packet) handleInner(r *radius.Request) (*Packet, error) {
 		res.id -= 1
 	case protocol.StatusNextProtocol:
 		ctx.log.Debug("EAP: Protocol ended, starting next protocol")
-		st.ProtocolIndex += 1
-		p.stm.SetEAPState(p.state, st)
-		return p.handleInner(r)
+		return next()
 	case protocol.StatusUnknown:
 	}
 	return res, nil

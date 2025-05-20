@@ -30,10 +30,14 @@ type Payload struct {
 	Length uint32
 	Data   []byte
 
-	st *State
+	st    *State
+	Inner protocol.Payload
 }
 
 func (p *Payload) Type() protocol.Type {
+	if p.Inner != nil {
+		return p.Inner.Type()
+	}
 	return TypeTLS
 }
 
@@ -118,6 +122,10 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	}
 	if p.st.Conn.writer.Len() == 0 && p.st.HandshakeDone {
 		defer p.st.ContextCancel()
+		if p.Inner != nil {
+			ctx.Log().Debug("TLS: Handshake is done, delegating to inner protocol")
+			return p.innerHandler(ctx)
+		}
 		// If we don't have a final status from the handshake finished function, stall for time
 		pst, _ := retry.DoWithData(
 			func() (protocol.Status, error) {
@@ -153,6 +161,7 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 		return nil, nil
 	}
 	p.st.TLS = tls.Server(p.st.Conn, cfg)
+	p.st.TLS.SetDeadline(time.Now().Add(staleConnectionTimeout * time.Second))
 	go func() {
 		err := p.st.TLS.HandshakeContext(p.st.Context)
 		if err != nil {
@@ -188,7 +197,9 @@ func (p *Payload) tlsHandshakeFinished(ctx protocol.Context) {
 	ctx.Log().Debugf("TLS: ksm % x %v", ksm, err)
 	p.st.MPPEKey = ksm
 	p.st.HandshakeDone = true
-	p.st.FinalStatus = ctx.ProtocolSettings().(Settings).HandshakeSuccessful(ctx, cs.PeerCertificates)
+	if p.Inner == nil {
+		p.st.FinalStatus = ctx.ProtocolSettings().(Settings).HandshakeSuccessful(ctx, cs.PeerCertificates)
+	}
 }
 
 func (p *Payload) startChunkedTransfer(data []byte) *Payload {

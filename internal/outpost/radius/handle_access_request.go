@@ -14,6 +14,7 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap"
 	"goauthentik.io/internal/outpost/radius/eap/identity"
 	"goauthentik.io/internal/outpost/radius/eap/legacy_nak"
+	"goauthentik.io/internal/outpost/radius/eap/peap"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
@@ -150,9 +151,10 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 	}
 
 	return eap.Settings{
-		Protocols: append(protocols, tls.Protocol),
+		Protocols: append(protocols, tls.Protocol, peap.Protocol),
 		ProtocolPriority: []protocol.Type{
 			tls.TypeTLS,
+			peap.TypePEAP,
 		},
 		ProtocolSettings: map[protocol.Type]interface{}{
 			tls.TypeTLS: tls.Settings{
@@ -185,6 +187,11 @@ func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
 					} else {
 						return protocol.StatusError
 					}
+				},
+			},
+			peap.TypePEAP: tls.Settings{
+				Config: &ttls.Config{
+					Certificates: []ttls.Certificate{*cert},
 				},
 			},
 		},
