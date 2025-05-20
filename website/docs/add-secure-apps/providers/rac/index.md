@@ -56,7 +56,7 @@ For a full list of possible connection configurations, see the [Apache Guacamole
 
 RAC connection settings can be set via several methods:
 
-1. The settings of the RAC provider.
+1. The settings of the RAC provider
 2. RAC endpoint settings.
 3. RAC property mappings.
 4. Fetched from user or group attributes via RAC property mappings.
