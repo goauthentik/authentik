@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/binary"
 	"errors"
+	"os"
 	"slices"
 	"time"
 
@@ -156,6 +157,15 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 	p.st.Context, p.st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 	p.st.Conn = NewBuffConn(p.Data, p.st.Context)
 	cfg := ctx.ProtocolSettings().(Settings).Config.Clone()
+
+	if klp, ok := os.LookupEnv("SSLKEYLOGFILE"); ok {
+		kl, err := os.OpenFile(klp, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)
+		if err != nil {
+			panic(err)
+		}
+		cfg.KeyLogWriter = kl
+	}
+
 	cfg.GetConfigForClient = func(chi *tls.ClientHelloInfo) (*tls.Config, error) {
 		ctx.Log().Debugf("TLS: ClientHello: %+v\n", chi)
 		p.st.ClientHello = chi
