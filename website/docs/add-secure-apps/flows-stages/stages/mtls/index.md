@@ -10,7 +10,7 @@ The Mutual TLS stage enables authentik to authenticate or enroll users utilizing
 
 ## Reverse-proxy configuration
 
-Using this stage requires special configuration of any reverse proxy that is used in front of authentik, as the reverse-proxy interacts directly with the browser.
+Using the Mutual TLS stage requires special configuration of any reverse proxy that is used in front of authentik, because the reverse-proxy interacts directly with the browser.
 
 - nginx
     - [Standalone nginx](#nginx-standalone)
@@ -70,7 +70,7 @@ See the [Traefik MTLS documentation](https://doc.traefik.io/traefik/https/tls/#c
 
 #### Traefik Ingress
 
-Create a middleweare object with these options:
+Create a middleware object with these options:
 
 ```yaml
 apiVersion: traefik.io/v1alpha1
@@ -90,7 +90,7 @@ See the [Envoy MTLS documentation](https://www.envoyproxy.io/docs/envoy/latest/s
 
 #### No reverse proxy
 
-When using authentik without a reverse proxy, the certificate authorities should be selected in the corresponding brand for the domain.
+When using authentik without a reverse proxy, select the certificate authorities in the corresponding [brand](../../../sys-mgmt/brands#other-global-settings) for the domain, under **Other global settings**.
 
 ## Stage configuration
 
