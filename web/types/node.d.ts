@@ -1,5 +1,5 @@
 /**
- * @file Environment variables available via ESBuild.
+ * @file Global variables provided by Node.js
  */
 
 declare module "module" {
@@ -23,13 +23,19 @@ declare module "process" {
     global {
         namespace NodeJS {
             interface ProcessEnv {
-                CWD: string;
+                /**
+                 * An environment variable used to determine
+                 * whether Node.js is running in production mode.
+                 *
+                 * @see {@link https://nodejs.org/en/learn/getting-started/nodejs-the-difference-between-development-and-production | The difference between development and production}
+                 */
+                readonly NODE_ENV?: "development" | "production";
                 /**
                  * @todo Determine where this is used and if it is needed,
                  * give it a better name.
                  * @deprecated
                  */
-                AK_API_BASE_PATH: string;
+                readonly AK_API_BASE_PATH?: string;
             }
         }
     }

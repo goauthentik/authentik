@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
  * @param {ImportMeta} meta The `import.meta` object of the module.
  *
  * @return {boolean} Whether the module was run directly.
+ * @runtime node
  */
 export function isMain(meta) {
     // Are we not in a module context?

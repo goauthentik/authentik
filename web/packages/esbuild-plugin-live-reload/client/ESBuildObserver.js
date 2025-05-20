@@ -21,7 +21,7 @@ const log = console.debug.bind(console, logPrefix);
  * ESBuild may tree-shake it out of production builds.
  *
  * ```ts
- * if (process.env.NODE_ENV === "development") {
+ * if (process.env.NODE_ENV=== "development") {
  *   await import("@goauthentik/esbuild-plugin-live-reload/client")
  *     .catch(() => console.warn("Failed to import watcher"))
  * }

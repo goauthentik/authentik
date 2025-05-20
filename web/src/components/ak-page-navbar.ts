@@ -1,17 +1,18 @@
-import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { UIConfig, UserDisplay, getConfigForUser } from "@goauthentik/common/ui/config";
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
-import "@goauthentik/components/ak-nav-buttons";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { isAdminRoute } from "@goauthentik/elements/router/utils";
-import { themeImage } from "@goauthentik/elements/utils/images";
+import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "#common/constants";
+import { globalAK } from "#common/global";
+import { UIConfig, UserDisplay, getConfigForUser } from "#common/ui/config";
+import { DefaultBrand } from "#common/ui/config";
+import { me } from "#common/users";
+import "#components/ak-nav-buttons";
+import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { isAdminRoute } from "#elements/router/utils";
+import { themeImage } from "#elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
-import { CSSResult, LitElement, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
@@ -25,23 +26,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
-//#region Events
-
-export interface SidebarToggleEventDetail {
-    open?: boolean;
-}
-
-//#endregion
-
-//#region Page Navbar
-
-export interface PageNavbarDetails {
-    header?: string;
-    description?: string;
-    icon?: string;
-    iconImage?: boolean;
-}
-
 /**
  * A global navbar component at the top of the page.
  *
@@ -51,13 +35,13 @@ export interface PageNavbarDetails {
 @customElement("ak-page-navbar")
 export class AKPageNavbar
     extends WithBrandConfig(AKElement)
-    implements PageNavbarDetails, SidebarToggleEventDetail
+    implements PageHeaderInit, SidebarToggleEventDetail
 {
     //#region Static Properties
 
     private static elementRef: AKPageNavbar | null = null;
 
-    static readonly setNavbarDetails = (detail: Partial<PageNavbarDetails>): void => {
+    static readonly setNavbarDetails = (detail: Partial<PageHeaderInit>): void => {
         const { elementRef } = AKPageNavbar;
         if (!elementRef) {
             console.debug(
@@ -115,7 +99,6 @@ export class AKPageNavbar
                     flex-direction: row;
 
                     display: grid;
-                    row-gap: var(--pf-global--spacer--sm);
                     column-gap: var(--pf-global--spacer--sm);
                     grid-template-columns: [brand] auto [toggle] auto [primary] 1fr [secondary] auto;
                     grid-template-rows: auto auto;
@@ -123,7 +106,7 @@ export class AKPageNavbar
                         "brand toggle primary secondary"
                         "brand toggle description secondary";
 
-                    @media (min-width: 426px) {
+                    @media (min-width: 769px) {
                         height: var(--host-navbar-height);
                     }
 
@@ -146,18 +129,22 @@ export class AKPageNavbar
                         grid-column: primary;
                         grid-row: primary / description;
 
-                        align-content: center;
+                        align-self: center;
                         padding-block: var(--pf-global--spacer--md);
+
+                        @media (max-width: 768px) {
+                            padding-block: var(--pf-global--spacer--sm);
+                        }
+
+                        &.block-sibling {
+                            align-self: end;
+                        }
 
                         @media (min-width: 426px) {
                             &.block-sibling {
                                 padding-block-end: 0;
                                 grid-row: primary;
                             }
-                        }
-
-                        @media (max-width: 768px) {
-                            padding-block: var(--pf-global--spacer--sm);
                         }
 
                         .accent-icon {
@@ -249,9 +236,14 @@ export class AKPageNavbar
                     color: var(--pf-global--active-color--100);
                 }
 
-                .page-title {
-                    display: flex;
-                    gap: var(--pf-global--spacer--xs);
+                .pf-c-content .page-title {
+                    display: box;
+                    display: -webkit-box;
+                    line-clamp: 2;
+                    -webkit-line-clamp: 2;
+                    box-orient: vertical;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
                 }
 
                 h1 {
@@ -370,7 +362,8 @@ export class AKPageNavbar
     }
 
     render(): TemplateResult {
-        return html`<navbar aria-label="Main" class="navbar">
+        return html` <slot></slot>
+            <navbar aria-label="Main" class="navbar">
                 <aside class="brand ${this.open ? "" : "pf-m-collapsed"}">
                     <a href="#/">
                         <div class="logo">
@@ -422,75 +415,14 @@ export class AKPageNavbar
                         </ak-nav-buttons>
                     </div>
                 </section>
-            </navbar>
-            <slot></slot>`;
+            </navbar>`;
     }
 
     //#endregion
 }
 
-//#endregion
-
-//#region Page Header
-
-/**
- * A page header component, used to display the page title and description.
- *
- * Internally, this component dispatches the `ak-page-header` event, which is
- * listened to by the `ak-page-navbar` component.
- *
- * @singleton
- */
-@customElement("ak-page-header")
-export class AKPageHeader extends LitElement implements PageNavbarDetails {
-    @property({ type: String })
-    header?: string;
-
-    @property({ type: String })
-    description?: string;
-
-    @property({ type: String })
-    icon?: string;
-
-    @property({ type: Boolean })
-    iconImage = false;
-
-    static get styles(): CSSResult[] {
-        return [
-            css`
-                :host {
-                    display: none;
-                }
-            `,
-        ];
-    }
-
-    connectedCallback(): void {
-        super.connectedCallback();
-
-        AKPageNavbar.setNavbarDetails({
-            header: this.header,
-            description: this.description,
-            icon: this.icon,
-            iconImage: this.iconImage,
-        });
-    }
-
-    updated(): void {
-        AKPageNavbar.setNavbarDetails({
-            header: this.header,
-            description: this.description,
-            icon: this.icon,
-            iconImage: this.iconImage,
-        });
-    }
-}
-
-//#endregion
-
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-page-header": AKPageHeader;
         "ak-page-navbar": AKPageNavbar;
     }
 }

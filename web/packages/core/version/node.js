@@ -1,16 +1,24 @@
+/**
+ * @file Utility functions for working with semantic versions.
+ *
+ * @runtime node
+ */
+import { MonoRepoRoot } from "#paths/node";
 import { execSync } from "node:child_process";
 
-import PackageJSON from "../../../package.json" with { type: "json" };
-import { MonoRepoRoot } from "./paths.js";
+import PackageJSON from "../../../../package.json" with { type: "json" };
 
 /**
  * The current version of authentik in SemVer format.
  *
+ * @runtime node
  */
 export const AuthentikVersion = /**@type {`${number}.${number}.${number}`} */ (PackageJSON.version);
 
 /**
  * Reads the last commit hash from the current git repository.
+ *
+ * @runtime node
  */
 export function readGitBuildHash() {
     try {
@@ -34,6 +42,7 @@ export function readGitBuildHash() {
  *
  * This must match the behavior defined in authentik's server-side `get_full_version` function.
  *
+ * @runtime node
  * @see {@link "authentik\_\_init\_\_.py"}
  */
 export function readBuildIdentifier() {

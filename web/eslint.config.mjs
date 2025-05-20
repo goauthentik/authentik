@@ -12,6 +12,7 @@ export default [
     {
         ignores: [
             "dist/",
+            "out/",
             // don't lint the cache
             ".wireit/",
             // let packages have their own configurations
@@ -71,7 +72,7 @@ export default [
                 ...globals.node,
             },
         },
-        files: ["scripts/**/*.mjs", "*.ts", "*.mjs"],
+        files: ["scripts/**/*.mjs", "*.ts", "*.mjs", "**/node.js"],
         rules: {
             "no-unused-vars": "off",
             // We WANT our scripts to output to the console!

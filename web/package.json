@@ -35,15 +35,52 @@
     "type": "module",
     "exports": {
         "./package.json": "./package.json",
-        "./paths": "./paths.js",
-        "./scripts/*": "./scripts/*.mjs",
         "./elements/*": "./src/elements/*",
         "./common/*": "./src/common/*",
         "./components/*": "./src/components/*",
         "./flow/*": "./src/flow/*",
         "./locales/*": "./src/locales/*",
         "./user/*": "./src/user/*",
-        "./admin/*": "./src/admin/*"
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "imports": {
+        "#common/*.css": "./src/common/*.css",
+        "#common/*": "./src/common/*.js",
+        "#elements/*.css": "./src/elements/*.css",
+        "#elements/*": "./src/elements/*.js",
+        "#components/*.css": "./src/components/*.css",
+        "#components/*": "./src/components/*.js",
+        "#user/*.css": "./src/user/*.css",
+        "#user/*": "./src/user/*.js",
+        "#admin/*.css": "./src/admin/*.css",
+        "#admin/*": "./src/admin/*.js",
+        "#flow/*.css": "./src/flow/*.css",
+        "#flow/*": "./src/flow/*.js",
+        "#stories/*": "./src/stories/*.js",
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
     },
     "dependencies": {
         "@codemirror/lang-css": "^6.3.1",
@@ -105,21 +142,21 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.11.1",
+        "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
-        "@goauthentik/monorepo": "^1.0.0",
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@rollup/plugin-replace": "^6.0.1",
-        "@storybook/addon-essentials": "^8.6.12",
+        "@storybook/addon-essentials": "^8.6.14",
         "@storybook/addon-links": "^8.6.12",
         "@storybook/blocks": "^8.6.12",
-        "@storybook/experimental-addon-test": "^8.6.12",
-        "@storybook/manager-api": "^8.6.12",
-        "@storybook/test": "^8.6.12",
-        "@storybook/web-components": "^8.6.12",
-        "@storybook/web-components-vite": "^8.6.12",
+        "@storybook/experimental-addon-test": "^8.6.14",
+        "@storybook/manager-api": "^8.6.14",
+        "@storybook/test": "^8.6.14",
+        "@storybook/web-components": "^8.6.14",
+        "@storybook/web-components-vite": "^8.6.14",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
@@ -152,10 +189,10 @@
         "prettier": "^3.3.3",
         "pseudolocale": "^2.1.0",
         "rollup-plugin-postcss-lit": "^2.1.0",
-        "storybook": "^8.6.12",
+        "storybook": "^8.6.14",
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
-        "typescript": "^5.6.2",
+        "typescript": "^5.8.3",
         "typescript-eslint": "^8.8.0",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
@@ -382,7 +419,6 @@
         "node": ">=20"
     },
     "workspaces": [
-        ".",
         "./packages/*"
     ],
     "prettier": "@goauthentik/prettier-config",

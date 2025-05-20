@@ -215,13 +215,11 @@ export class RacInterface extends Interface {
                 );
                 return;
             }
-        } else {
-            if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
-                this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
-                );
-                return;
-            }
+        } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+            this.reconnectingMessage = msg(
+                str`Connection failed after ${this.connectionAttempt} attempts.`,
+            );
+            return;
         }
         const delay = 500 * this.connectionAttempt;
         this.reconnectingMessage = msg(

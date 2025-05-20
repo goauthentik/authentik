@@ -1,10 +1,12 @@
 /**
+ * @file MDX plugin for ESBuild.
+ *
  * @import {
-      OnLoadArgs,
-      OnLoadResult,
-      Plugin,
-      PluginBuild
- * } from 'esbuild'
+ *   OnLoadArgs,
+ *   OnLoadResult,
+ *   Plugin,
+ *   PluginBuild
+ * } from "esbuild"
  */
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
