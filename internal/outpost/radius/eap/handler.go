@@ -8,8 +8,8 @@ import (
 
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
-	"goauthentik.io/internal/outpost/radius/eap/legacy_nak"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/legacy_nak"
 	"layeh.com/radius"
 	"layeh.com/radius/rfc2865"
 	"layeh.com/radius/rfc2869"

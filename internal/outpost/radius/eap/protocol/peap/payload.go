@@ -4,7 +4,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
-	"goauthentik.io/internal/outpost/radius/eap/tls"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/tls"
 )
 
 const TypePEAP protocol.Type = 25
