@@ -174,7 +174,7 @@
         "@wdio/cli": "9.4",
         "@wdio/spec-reporter": "^9.1.2",
         "chromedriver": "^131.0.1",
-        "esbuild": "^0.25.0",
+        "esbuild": "^0.25.4",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
@@ -199,9 +199,9 @@
         "wireit": "^0.14.9"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.24.0",
-        "@esbuild/linux-arm64": "^0.24.0",
-        "@esbuild/linux-x64": "^0.24.0",
+        "@esbuild/darwin-arm64": "^0.25.4",
+        "@esbuild/linux-arm64": "^0.25.4",
+        "@esbuild/linux-x64": "^0.25.4",
         "@rollup/rollup-darwin-arm64": "4.23.0",
         "@rollup/rollup-linux-arm64-gnu": "4.23.0",
         "@rollup/rollup-linux-x64-gnu": "4.23.0"

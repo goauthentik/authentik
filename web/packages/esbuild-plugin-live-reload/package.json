@@ -29,12 +29,12 @@
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/node": "^22.14.1",
-        "esbuild": "^0.25.0",
+        "esbuild": "^0.25.4",
         "prettier": "^3.3.3",
         "typescript": "^5.6.2"
     },
     "peerDependencies": {
-        "esbuild": "^0.25.0"
+        "esbuild": "^0.25.4"
     },
     "engines": {
         "node": ">=20.11"
