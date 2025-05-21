@@ -1,9 +1,8 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
     "license": "MIT",
-    "private": true,
     "scripts": {
         "build": "tsc -p ."
     },
