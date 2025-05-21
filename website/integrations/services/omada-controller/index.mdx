@@ -44,7 +44,7 @@ To support the integration of Omada Controller with authentik, you need to creat
     - **Choose a Provider type**: select **SAML Provider** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - For Cloud Controller, set the **ACS URL** to `https://aps1-omada-account.tplinkcloud.com/sso/saml/login/`. For Software and Hardware Controllers, set the **ACS URL** as the IP Address and port of your controller followed by `/sso/saml/login` (e.g `https://192.168.10.11:8043/sso/saml/login`).
-        - For Cloud Controller, temporarily set the **Audience** to `https://omada.tplinkcloud.com/`. For Software and Hardware Controllers, set the **Audience** as the IP Address and port of your Controller (e.g `https://192.168.10.11:8043`).
+        - For Cloud Controller, set the **Entity ID** to `https://omada.tplinkcloud.com/`. For Software and Hardware Controllers, set the **Entity ID** as the IP Address and port of your Controller (e.g `https://192.168.10.11:8043`).
         - Set the **Service Provider Binding** to `Post`. TEMP-needs testing
         - Under **Advanced protocol settings**, set an available signing certificate.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -83,6 +83,8 @@ An application entitlement is used to control privileged access to the Omada Con
 ## Decoding default relay state
 
 The default relay state is derived by decoding a combination of the **Resource ID** and **Omada ID** with a Base64 encryption tool. This section provides an example of how to do this.
+
+TEMP - this needs to be encode not decode
 
 1. Go to https://www.base64decode.org/ or another Base64 decoding service/application.
 2. In the **Decode from Base64 format** section, enter: `<Resource ID>_<Omada ID>`.
