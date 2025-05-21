@@ -1,10 +1,7 @@
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
+import { AKConfigMixin } from "#elements/Interface/authentikConfigProvider";
 import { createMixin } from "@goauthentik/elements/types";
 
-import { consume } from "@lit/context";
-
 import { CapabilitiesEnum } from "@goauthentik/api";
-import { Config } from "@goauthentik/api";
 
 /**
  * A consumer that provides the capability methods to the element.
@@ -23,13 +20,6 @@ export interface CapabilitiesMixin {
 }
 
 /**
- * Lexically-scoped symbol for the capabilities configuration.
- *
- * @internal
- */
-const kCapabilitiesConfig: unique symbol = Symbol("capabilitiesConfig");
-
-/**
  * A mixin that provides the capability methods to the element.
  *
  * Usage:
@@ -37,14 +27,14 @@ const kCapabilitiesConfig: unique symbol = Symbol("capabilitiesConfig");
  * After importing, simply mixin this function:
  *
  * ```ts
- * export class AkMyNiftyNewFeature extends withCapabilitiesContext(AKElement) {
+ * export class AkMyNiftyNewFeature extends WithCapabilitiesConfig(AKElement) {
  * }
  * ```
  *
  * And then if you need to check on a capability:
  *
  * ```ts
- * if (this.can(CapabilitiesEnum.IsEnterprise) { ... }
+ * if (this.can(CapabilitiesEnum.IsEnterprise)) { ... }
  * ```
  *
  *
@@ -53,21 +43,15 @@ const kCapabilitiesConfig: unique symbol = Symbol("capabilitiesConfig");
  * @category Mixin
  *
  */
-export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin>(
-    ({ SuperClass, subscribe = true }) => {
+export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin, AKConfigMixin>(
+    ({ SuperClass }) => {
         abstract class CapabilitiesProvider extends SuperClass implements CapabilitiesMixin {
-            @consume({
-                context: authentikConfigContext,
-                subscribe,
-            })
-            private readonly [kCapabilitiesConfig]: Config | undefined;
-
             public can(capability: CapabilitiesEnum) {
-                const config = this[kCapabilitiesConfig];
+                const config = this.authentikConfig;
 
                 if (!config) {
                     throw new Error(
-                        "ConfigContext: Attempted to access site configuration before initialization.",
+                        `ConfigContext: Attempted to check capability "${capability}" before initialization. Does the element have the AuthentikConfigMixin applied?`,
                     );
                 }
 

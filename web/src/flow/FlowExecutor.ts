@@ -1,16 +1,14 @@
+import { WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import {
-    EVENT_FLOW_ADVANCE,
-    EVENT_FLOW_INSPECTOR_TOGGLE,
-    TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
+import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Interface";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/LoadingOverlay";
-import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/ak-locale-context/ak-locale-context";
 import { themeImage } from "@goauthentik/elements/utils/images";
 import "@goauthentik/flow/components/ak-brand-footer";
 import "@goauthentik/flow/sources/apple/AppleLoginInit";
@@ -48,7 +46,10 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
+export class FlowExecutor
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    implements StageHost
+{
     @property()
     flowSlug: string = window.location.pathname.split("/")[3];
 
@@ -58,9 +59,9 @@ export class FlowExecutor extends Interface implements StageHost {
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
         if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
+            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
         } else {
-            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
+            document.title = this.brandingTitle;
         }
         this.requestUpdate();
     }
@@ -238,7 +239,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async firstUpdated(): Promise<void> {
-        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+        if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
         this.loading = true;
@@ -520,7 +521,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                             >
                                                 <img
                                                     src="${themeImage(
-                                                        this.brand?.brandingLogo ??
+                                                        this.brand.brandingLogo ??
                                                             globalAK()?.brand.brandingLogo ??
                                                             DefaultBrand.brandingLogo,
                                                     )}"
@@ -531,7 +532,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <ak-brand-links
                                             class="pf-c-login__footer"
-                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                            .links=${this.brand.uiFooterLinks ?? []}
                                         ></ak-brand-links>
                                     </div>
                                 </div>

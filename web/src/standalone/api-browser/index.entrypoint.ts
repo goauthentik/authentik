@@ -5,8 +5,7 @@ import "@goauthentik/elements/ak-locale-context/index.js";
 import { CSRFHeaderName } from "@goauthentik/common/api/middleware.js";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
 import { getCookie } from "@goauthentik/common/utils.js";
-import { Interface } from "@goauthentik/elements/Interface/Interface.js";
-import { DefaultBrand } from "@goauthentik/common/ui/config.js";
+import { Interface } from "@goauthentik/elements/Interface.js";
 import { themeImage } from "@goauthentik/elements/utils/images.js";
 
 import { msg } from "@lit/localize";
@@ -15,9 +14,10 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 @customElement("ak-api-browser")
-export class APIBrowser extends Interface {
+export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
@@ -102,9 +102,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="${msg("authentik Logo")}"
                             class="logo"
-                            src="${themeImage(
-                                this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
-                            )}"
+                            src="${themeImage(this.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>

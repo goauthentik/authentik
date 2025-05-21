@@ -1,5 +1,5 @@
-import { TITLE_DEFAULT } from "@goauthentik/common/constants";
 import { Interface } from "@goauthentik/elements/Interface";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
@@ -43,7 +43,7 @@ const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
-export class RacInterface extends Interface {
+export class RacInterface extends WithBrandConfig(Interface) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -231,10 +231,12 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brand.brandingTitle;
+
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
         }
+
         document.title = `${title}`;
     }
 

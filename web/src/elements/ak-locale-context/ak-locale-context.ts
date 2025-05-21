@@ -70,7 +70,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
     }
 
     updateLocale(requestedLocale: string | undefined = undefined) {
-        const localeRequest = autoDetectLanguage(requestedLocale, this.brand?.defaultLocale);
+        const localeRequest = autoDetectLanguage(requestedLocale, this.brand.defaultLocale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
             console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);

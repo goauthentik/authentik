@@ -1,4 +1,6 @@
-import { LightInterface } from "@goauthentik/elements/Interface";
+import { globalAK } from "@goauthentik/common/global";
+import { applyDocumentTheme } from "@goauthentik/common/theme";
+import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
@@ -10,7 +12,7 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
-export class Loading extends LightInterface {
+export class Loading extends AKElement {
     static styles = [
         PFBase,
         PFPage,
@@ -22,6 +24,16 @@ export class Loading extends LightInterface {
             }
         `,
     ];
+
+    constructor() {
+        super();
+
+        applyDocumentTheme(globalAK().brand.uiTheme);
+    }
+
+    public connectedCallback(): void {
+        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+    }
 
     render(): TemplateResult {
         return html` <section
