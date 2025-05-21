@@ -67,7 +67,6 @@ async function findDisparatePort() {
  * @category ESBuild
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
-    // eslint-disable-next-line no-console
     const log = console.log.bind(console, `[${logPrefix}]`);
 
     /**
@@ -130,19 +129,20 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
 /**
  * Options for the build observer plugin.
  *
- * @typedef {object} BuildObserverOptions
+ * @typedef {object} LiveReloadPluginOptions
  *
- * @property {HTTPServer | HTTPSServer} [server]
- * @property {ListenOptions} [listenOptions]
- * @property {string | URL} [publicURL]
- * @property {string} [logPrefix]
- * @property {string} [relativeRoot]
+ * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
+ * @property {ListenOptions} [listenOptions] Options for the server's listen method.
+ * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
+ * @property {string} [logPrefix] A prefix to use for log messages.
+ * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
  */
 
 /**
  * Creates a plugin that listens for build events and sends them to a server-sent event stream.
  *
- * @param {BuildObserverOptions} [options]
+ * @param {
+ * } [options]
  * @returns {import('esbuild').Plugin}
  */
 export function liveReloadPlugin(options = {}) {
@@ -177,6 +177,10 @@ export function liveReloadPlugin(options = {}) {
                 "import.meta.env.ESBUILD_WATCHER_URL": JSON.stringify(publicURL.href),
             };
 
+            build.initialOptions.define["process.env.NODE_ENV"] ??= JSON.stringify(
+                process.env.NODE_ENV || "development",
+            );
+
             const requestHandler = createRequestHandler({
                 pathname: publicURL.pathname,
                 dispatcher,
@@ -191,7 +195,6 @@ export function liveReloadPlugin(options = {}) {
             };
 
             server.listen(listenOptions, () => {
-                // eslint-disable-next-line no-console
                 console.log(`[${logPrefix}] Listening`);
             });
 
@@ -241,3 +244,5 @@ export function liveReloadPlugin(options = {}) {
         },
     };
 }
+
+export default liveReloadPlugin;

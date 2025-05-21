@@ -10,7 +10,6 @@ import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "#path
 import { NodeEnvironment } from "@goauthentik/core/environment/node";
 import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
 import { readBuildIdentifier } from "@goauthentik/core/version/node";
-import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload/plugin";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
@@ -145,13 +144,17 @@ async function doWatch() {
 
     console.groupEnd();
 
-    const buildOptions = createESBuildOptions({
-        entryPoints,
-        plugins: [
+    const developmentPlugins = await import("@goauthentik/esbuild-plugin-live-reload/plugin")
+        .then(({ liveReloadPlugin }) => [
             liveReloadPlugin({
                 relativeRoot: PackageRoot,
             }),
-        ],
+        ])
+        .catch(() => []);
+
+    const buildOptions = createESBuildOptions({
+        entryPoints,
+        plugins: developmentPlugins,
     });
 
     const buildContext = await esbuild.context(buildOptions);
@@ -162,7 +165,7 @@ async function doWatch() {
     const httpURL = new URL("http://localhost");
     httpURL.port = process.env.COMPOSE_PORT_HTTP ?? "9000";
 
-    const httpsURL = new URL("http://localhost");
+    const httpsURL = new URL("https://localhost");
     httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
 
     console.log(`\n${logPrefix} 🚀 Server running\n\n`);
@@ -236,7 +239,6 @@ await cleanDistDirectory()
     .then(() =>
         delegateCommand()
             .then(() => {
-                console.log("Build complete");
                 process.exit(0);
             })
             .catch((error) => {
