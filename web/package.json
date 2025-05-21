@@ -12,17 +12,16 @@
         "esbuild:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "wireit",
         "format": "wireit",
-        "lint": "wireit",
-        "lint:imports": "wireit",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
+        "lint:imports": "knip --config scripts/knip.config.ts",
         "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:precommit": "wireit",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
         "precommit": "wireit",
-        "prettier": "wireit",
-        "prettier-check": "wireit",
-        "pseudolocalize": "wireit",
+        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
         "test": "wireit",
@@ -123,8 +122,8 @@
         "md-front-matter": "^1.0.4",
         "mermaid": "^11.4.1",
         "rapidoc": "^9.3.8",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
         "rehype-highlight": "^7.0.2",
         "rehype-mermaid": "^3.0.0",
         "rehype-parse": "^9.0.1",
@@ -141,15 +140,16 @@
         "yaml": "^2.5.1"
     },
     "devDependencies": {
-        "@eslint/js": "^9.11.1",
+        "@eslint/js": "^9.27.0",
         "@goauthentik/core": "^1.0.0",
         "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/eslint-config": "^1.0.4",
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
         "@storybook/addon-essentials": "^8.6.14",
-        "@storybook/addon-links": "^8.6.12",
+        "@storybook/addon-links": "^8.6.14",
         "@storybook/blocks": "^8.6.12",
         "@storybook/experimental-addon-test": "^8.6.14",
         "@storybook/manager-api": "^8.6.14",
@@ -160,13 +160,12 @@
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
-        "@types/eslint__js": "^8.42.3",
         "@types/grecaptcha": "^3.0.9",
         "@types/guacamole-common-js": "^1.5.2",
         "@types/mocha": "^10.0.8",
-        "@types/node": "^22.7.4",
-        "@types/react": "^18.3.13",
-        "@types/react-dom": "^18.3.0",
+        "@types/node": "^22.15.21",
+        "@types/react": "^19.1.5",
+        "@types/react-dom": "^19.1.5",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
         "@wdio/browser-runner": "9.4",
@@ -178,8 +177,8 @@
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
         "eslint": "^9.11.1",
-        "eslint-plugin-lit": "^1.15.0",
-        "eslint-plugin-wc": "^2.1.1",
+        "eslint-plugin-lit": "^2.1.1",
+        "eslint-plugin-wc": "^3.0.1",
         "github-slugger": "^2.0.0",
         "globals": "^15.10.0",
         "knip": "^5.30.6",
@@ -192,7 +191,7 @@
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.8.0",
+        "typescript-eslint": "^8.32.1",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.9"
@@ -272,25 +271,8 @@
         "extract-locales": {
             "command": "lit-localize extract"
         },
-        "format": {
-            "command": "prettier --write ."
-        },
-        "format:packages": {
-            "dependencies": [
-                "./packages/sfe:prettier"
-            ]
-        },
-        "lint": {
-            "command": "eslint --max-warnings 0 --fix",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=65536"
-            }
-        },
         "lint:components": {
             "command": "lit-analyzer src"
-        },
-        "lint:imports": {
-            "command": "knip --config scripts/knip.config.ts"
         },
         "lint:types:tests": {
             "command": "tsc --noEmit -p ./tests"
@@ -307,57 +289,18 @@
             "shell": true,
             "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
         },
-        "lint:lockfiles": {
-            "dependencies": [
-                "./packages/sfe:lint:lockfile"
-            ]
-        },
-        "lint:nightmare": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:spelling": {
-            "command": "node scripts/check-spelling.mjs"
-        },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
         "precommit": {
             "command": "prettier --write .",
             "dependencies": [
+                "lint",
                 "lint:types",
                 "lint:components",
-                "lint:spelling",
                 "lint:lockfile",
-                "lint:lockfiles",
-                "lint:precommit",
-                "format:packages"
+                "lint:lockfiles"
             ]
-        },
-        "prettier": {
-            "dependencies": [
-                "format"
-            ]
-        },
-        "prettier-check": {
-            "command": "prettier --check ."
-        },
-        "pseudolocalize": {
-            "command": "node scripts/pseudolocalize.mjs"
         },
         "storybook:build": {
             "command": "storybook build",
@@ -414,8 +357,16 @@
     ],
     "prettier": "@goauthentik/prettier-config",
     "overrides": {
+        "@storybook/addon-docs": {
+            "react": "^19.1.0",
+            "react-dom": "^19.1.0"
+        },
         "chromedriver": {
             "axios": "^1.8.4"
+        },
+        "storybook-addon-mock": {
+            "react": "^19.1.0",
+            "react-dom": "^19.1.0"
         },
         "rapidoc": {
             "@apitools/openapi-parser@": "0.0.37"
