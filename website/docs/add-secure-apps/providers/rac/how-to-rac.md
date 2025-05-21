@@ -54,7 +54,7 @@ Next, you need to add property mappings for each remote machine you want to acce
 
 3. Click **Finish**.
 
-### Create Endpoints for the Provider
+### Create endpoints for the provider
 
 Finally, you need to create an endpoint for each remote machine. Endpoints are defined within providers; connections between the remote machine and authentik are enabled through communication between the provider's endpoint and the remote machine.
 
@@ -63,17 +63,17 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
 3. Click the **Edit** button on the RAC provider that you previously created.
 4. On the Provider page, under **Endpoints**, click **Create**, and provide the following settings:
 
-    - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC)
-    - **Protocol**: select the appropriate protocol
-    - **Host**: the host name or IP address of the remote machine
-    - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation
-    - **Property mapping**: select either the property mapping that you previously created, or use one of the default settings
-    - **Advance settings**: optional
+    - **Name**: define a name for the endpoint, perhaps include the type of connection (RDP, SSH, VNC).
+    - **Protocol**: select the appropriate protocol.
+    - **Host**: enter the host name or IP address of the remote machine.
+    - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
+    - **Property mapping**: select either the property mapping that you previously created, or use one of the default settings.
+    - **Advance settings**: (*optional*)
 
 5. Click **Create**.
 
-### Access the remote machine
+## Access the remote machine
 
-To verify your configuration and access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application and authentik then connects you to a secure session on the remote machine, in your web browser.
+To verify that your configuration and then access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application and authentik then connects you to a secure session on the remote machine, in your web browser.
 
 If you defined multiple endpoints, click the endpoint for the remote machine that you want to access.
