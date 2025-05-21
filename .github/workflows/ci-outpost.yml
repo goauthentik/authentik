@@ -26,7 +26,7 @@ jobs:
           mkdir -p web/dist
           mkdir -p website/help
           touch web/dist/test website/help/test
-      - name: Generate API
+      - name: Generate Golang API Client
         run: make gen-client-go
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v8
@@ -43,7 +43,7 @@ jobs:
           go-version-file: "go.mod"
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
+      - name: Generate Golang API Client
         run: make gen-client-go
       - name: Go unittests
         run: |
@@ -99,7 +99,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Generate API
+      - name: Generate Golang API Client
         run: make gen-client-go
       - name: Build Docker Image
         id: push
@@ -145,16 +145,17 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: package.json
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - name: Generate API
+          cache-dependency-path: package-lock.json
+      - name: Generate Golang API Client
         run: make gen-client-go
-      - name: Build web
-        working-directory: web/
+      - name: Prepare Dependencies
         run: |
           npm ci
-          npm run build-proxy
+      - name: Run ESBuild
+        run: |
+          npm run build-proxy -w @goauthentik/web
       - name: Build outpost
         run: |
           set -x

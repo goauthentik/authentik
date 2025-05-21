@@ -4,24 +4,20 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "build": "run-s build:docker build:schema build:api build:docusaurus",
-        "build-bundled": "run-s build:schema build:api build:docusaurus",
+        "build": "run-s build:api build:docusaurus",
         "build:api": "docusaurus gen-api-docs all",
-        "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
         "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
-        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "serve": "docusaurus serve",
         "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "run-s build:schema build:api start"
+        "watch": "run-s build:api start"
     },
     "dependencies": {
         "@docusaurus/core": "^3.7.0",
@@ -44,15 +40,17 @@
         "react-dom": "^18.3.1",
         "remark-directive": "^4.0.0",
         "remark-github": "^12.0.0",
-        "semver": "^7.7.2"
+        "semver": "^7.7.2",
+        "vscode-languageserver-types": "3.17.5"
     },
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^3.7.0",
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.7.0",
         "@eslint/js": "^9.27.0",
-        "@goauthentik/eslint-config": "^1.0.4",
-        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/core": "^1.0.0",
+        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/lodash": "^4.17.17",
@@ -86,7 +84,7 @@
         "lightningcss-linux-x64-gnu": "1.30.1"
     },
     "engines": {
-        "node": ">=22.14.0"
+        "node": ">=22.15.1"
     },
     "browserslist": {
         "production": [
