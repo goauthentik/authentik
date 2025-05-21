@@ -638,11 +638,11 @@ msgstr "配置用于验证证书的证书机构。此选项的优先级比“品
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stage"
-msgstr "对等 TLS 阶段"
+msgstr "双向 TLS 阶段"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Mutual TLS Stages"
-msgstr "对等 TLS 阶段"
+msgstr "双向 TLS 阶段"
 
 #: authentik/enterprise/stages/mtls/models.py
 msgid "Permissions to pass Certificates for outposts."
