@@ -26,8 +26,8 @@ function remarkVersionDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */
-    return function (tree) {
-        visit(tree, "textDirective", function (node) {
+    return (tree) => {
+        visit(tree, "textDirective", (node) => {
             if (node.name !== "ak-version") return SKIP;
 
             const firstChild = node.children[0];
