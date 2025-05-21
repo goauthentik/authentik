@@ -5,7 +5,7 @@
  * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
  */
-import { MonoRepoRoot } from "@goauthentik/core";
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
 import { cp } from "node:fs/promises";
 import { createRequire } from "node:module";
