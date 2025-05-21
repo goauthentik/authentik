@@ -1,50 +1,74 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { ThemedElement } from "@goauthentik/common/theme";
-import { authentikBrandContext } from "@goauthentik/elements/AuthentikContexts";
-import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { isAbortError } from "#common/errors/network";
+import { BrandingContext, BrandingMixin } from "#elements/Interface/brandProvider";
+import type { ReactiveElementHost } from "#elements/types";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
-import type { CurrentBrand } from "@goauthentik/api";
-import { CoreApi } from "@goauthentik/api";
+import { CoreApi, CurrentBrand } from "@goauthentik/api";
 
-export class BrandContextController implements ReactiveController {
-    host!: ReactiveElementHost<ThemedElement>;
+export class BrandingContextController implements ReactiveController {
+    #log = console.debug.bind(console, `authentik/controller/branding`);
+    #abortController: null | AbortController = null;
 
-    context!: ContextProvider<{ __context__: CurrentBrand | undefined }>;
+    #host: ReactiveElementHost<BrandingMixin>;
+    #context: ContextProvider<Context<unknown, CurrentBrand>>;
 
-    constructor(host: ReactiveElementHost<ThemedElement>) {
-        this.host = host;
-        this.context = new ContextProvider(this.host, {
-            context: authentikBrandContext,
-            initialValue: undefined,
+    constructor(host: ReactiveElementHost<BrandingMixin>, initialValue: CurrentBrand) {
+        this.#host = host;
+        this.#context = new ContextProvider(this.#host, {
+            context: BrandingContext,
+            initialValue,
         });
-        this.fetch = this.fetch.bind(this);
-        this.fetch();
+        this.#host.brand = initialValue;
     }
 
-    fetch() {
-        new CoreApi(DEFAULT_CONFIG).coreBrandsCurrentRetrieve().then((brand) => {
-            this.context.setValue(brand);
-            this.host.brand = brand;
-        });
+    #fetch = () => {
+        this.#log("Fetching configuration...");
+
+        this.#abortController?.abort();
+
+        this.#abortController = new AbortController();
+
+        return new CoreApi(DEFAULT_CONFIG)
+            .coreBrandsCurrentRetrieve({
+                signal: this.#abortController.signal,
+            })
+            .then((brand) => {
+                this.#context.setValue(brand);
+                this.#host.brand = brand;
+            })
+
+            .catch((error: unknown) => {
+                if (isAbortError(error)) {
+                    this.#log("Aborted fetching brand");
+                    return;
+                }
+
+                throw error;
+            })
+            .finally(() => {
+                this.#abortController = null;
+            });
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH, this.#fetch);
+        this.#fetch();
     }
 
-    hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.fetch);
+    public hostDisconnected() {
+        window.removeEventListener(EVENT_REFRESH, this.#fetch);
+        this.#abortController?.abort();
     }
 
-    hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.fetch);
-    }
-
-    hostUpdate() {
+    public hostUpdate() {
         // If the Interface changes its brand information for some reason,
         // we should notify all users of the context of that change. doesn't
-        if (this.host.brand !== this.context.value) {
-            this.context.setValue(this.host.brand);
+        if (this.#host.brand && this.#host.brand !== this.#context.value) {
+            this.#context.setValue(this.#host.brand);
         }
     }
 }

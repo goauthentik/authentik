@@ -1,13 +1,13 @@
 // sort-imports-ignore
 import "rapidoc";
-import "@goauthentik/elements/ak-locale-context/index.js";
+import "#elements/ak-locale-context/index";
 
-import { CSRFHeaderName } from "@goauthentik/common/api/middleware.js";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants.js";
-import { getCookie } from "@goauthentik/common/utils.js";
-import { Interface } from "@goauthentik/elements/Interface/Interface.js";
-import { DefaultBrand } from "@goauthentik/common/ui/config.js";
-import { themeImage } from "@goauthentik/elements/utils/images.js";
+import { CSRFHeaderName } from "#common/api/middleware";
+import { EVENT_THEME_CHANGE } from "#common/constants";
+import { getCookie } from "#common/utils";
+import { Interface } from "#elements/Interface";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { themeImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -17,7 +17,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-api-browser")
-export class APIBrowser extends Interface {
+export class APIBrowser extends WithBrandConfig(Interface) {
     @property()
     schemaPath?: string;
 
@@ -102,9 +102,7 @@ export class APIBrowser extends Interface {
                         <img
                             alt="${msg("authentik Logo")}"
                             class="logo"
-                            src="${themeImage(
-                                this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
-                            )}"
+                            src="${themeImage(this.brandingLogo)}"
                         />
                     </div>
                 </rapi-doc>

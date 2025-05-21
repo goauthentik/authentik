@@ -1,35 +1,61 @@
-import { authentikVersionContext } from "@goauthentik/elements/AuthentikContexts";
+import { createMixin } from "#elements/types";
 
-import { consume } from "@lit/context";
-import { Constructor } from "@lit/reactive-element/decorators/base.js";
-import type { LitElement } from "lit";
+import { consume, createContext } from "@lit/context";
+import { state } from "lit/decorators.js";
 
 import type { Version } from "@goauthentik/api";
 
 /**
- * A consumer that provides version information to the element.
+ * The Lit context for application branding.
+ *
+ * @category Context
+ * @see {@linkcode VersionMixin}
+ * @see {@linkcode WithVersion}
  */
-export declare class VersionConsumer {
+
+export const VersionContext = createContext<Version>(Symbol.for("authentik-version-context"));
+
+/**
+ * A mixin that provides the current version to the element.
+ *
+ * @see {@linkcode WithVersion}
+ */
+export interface VersionMixin {
     /**
      * The current version of the application.
+     *
+     * @format semver
      */
-    public readonly version: Version;
+    readonly version: Version;
 }
 
-export function WithVersion<T extends Constructor<LitElement>>(
-    /**
-     * The superclass constructor to extend.
-     */
-    SuperClass: T,
-    /**
-     * Whether or not to subscribe to the context.
-     */
-    subscribe = true,
-) {
-    class VersionProvider extends SuperClass {
-        @consume({ context: authentikVersionContext, subscribe })
-        public version!: Version;
-    }
+/**
+ * A mixin that provides the current authentik version to the element.
+ *
+ * @category Mixin
+ *
+ * @see {@link https://lit.dev/docs/composition/mixins/#mixins-in-typescript | Lit Mixins}
+ */
+export const WithVersion = createMixin<VersionMixin>(
+    ({
+        /**
+         * The superclass constructor to extend.
+         */
+        SuperClass,
+        /**
+         * Whether or not to subscribe to the context.
+         */
+        subscribe = true,
+    }) => {
+        abstract class VersionProvider extends SuperClass implements VersionMixin {
+            @consume({
+                context: VersionContext,
+                subscribe,
+            })
+            @state()
+            public version!: Version;
+        }
 
-    return VersionProvider as Constructor<VersionConsumer> & T;
-}
+        return VersionProvider;
+    },
+);
