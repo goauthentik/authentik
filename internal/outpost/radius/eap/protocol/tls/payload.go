@@ -36,10 +36,14 @@ type Payload struct {
 }
 
 func (p *Payload) Type() protocol.Type {
-	if p.Inner != nil {
-		return p.Inner.Type()
-	}
+	// if p.inner != nil {
+	// 	return p.inner.Type()
+	// }
 	return TypeTLS
+}
+
+func (p *Payload) HasInner() protocol.Payload {
+	return p.Inner
 }
 
 func (p *Payload) Offerable() bool {
@@ -58,7 +62,7 @@ func (p *Payload) Decode(raw []byte) error {
 	} else {
 		p.Data = raw[0:]
 	}
-	log.WithField("raw", debug.FormatBytes(p.Data)).WithField("size", len(p.Data)).WithField("flags", p.Flags).Debug("TLS: decode raw")
+	log.WithField("raw", debug.FormatBytes(p.Data)).WithField("size", len(p.Data)).WithField("flags", p.Flags).Trace("TLS: decode raw")
 	return nil
 }
 

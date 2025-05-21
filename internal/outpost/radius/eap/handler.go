@@ -97,8 +97,9 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		}, err
 	}
 
-	next := func() (*eap.Payload, error) {
+	next := func(oldProtocol protocol.Type) (*eap.Payload, error) {
 		st.ProtocolIndex += 1
+		delete(st.TypeState, oldProtocol)
 		p.stm.SetEAPState(p.state, st)
 		return p.handleInner(r)
 	}
@@ -106,26 +107,28 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
 		log.Debug("EAP: received NAK, trying next protocol")
 		p.eap.Payload = nil
-		return next()
+		log.Debug(st.ProtocolPriority[st.ProtocolIndex])
+		return next(st.ProtocolPriority[st.ProtocolIndex])
 	}
 
-	np, _ := emptyPayload(p.stm, nextChallengeToOffer)
+	np, t, _ := emptyPayload(p.stm, nextChallengeToOffer)
 
 	ctx := &context{
-		req:       r,
+		req: r,
+		// Always write to the state of the outer protocol
 		state:     st.TypeState[np.Type()],
 		typeState: st.TypeState,
-		log:       log.WithField("type", fmt.Sprintf("%T", np)),
-		settings:  p.stm.GetEAPSettings().ProtocolSettings[np.Type()],
+		log:       log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
+		settings:  p.stm.GetEAPSettings().ProtocolSettings[t],
 	}
 	if !np.Offerable() {
 		ctx.log.Debug("EAP: protocol not offerable, skipping")
-		return next()
+		return next(np.Type())
 	}
 	ctx.log.Debug("EAP: Passing to protocol")
 
-	res := p.GetChallengeForType(ctx, np)
-	st.TypeState[np.Type()] = ctx.GetProtocolState()
+	res := p.GetChallengeForType(ctx, np, t)
+	st.TypeState[t] = ctx.GetProtocolState()
 	p.stm.SetEAPState(p.state, st)
 
 	if ctx.endModifier != nil {
@@ -141,17 +144,17 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		res.ID -= 1
 	case protocol.StatusNextProtocol:
 		ctx.log.Debug("EAP: Protocol ended, starting next protocol")
-		return next()
+		return next(np.Type())
 	case protocol.StatusUnknown:
 	}
 	return res, nil
 }
 
-func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload) *eap.Payload {
+func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload, t protocol.Type) *eap.Payload {
 	res := &eap.Payload{
 		Code:    protocol.CodeRequest,
 		ID:      p.eap.ID + 1,
-		MsgType: np.Type(),
+		MsgType: t,
 	}
 	var payload any
 	if ctx.IsProtocolStart() {

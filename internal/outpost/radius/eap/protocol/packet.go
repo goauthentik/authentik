@@ -8,6 +8,10 @@ type Payload interface {
 	Offerable() bool
 }
 
+type Inner interface {
+	HasInner() Payload
+}
+
 type Type uint8
 
 type Code uint8

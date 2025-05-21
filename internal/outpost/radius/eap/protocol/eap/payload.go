@@ -47,7 +47,7 @@ func (packet *Payload) Decode(raw []byte) error {
 	if packet.Payload == nil {
 		return nil
 	}
-	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Debug("EAP: decode raw")
+	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Trace("EAP: decode raw")
 	err := packet.Payload.Decode(raw[5:])
 	if err != nil {
 		return err

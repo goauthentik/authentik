@@ -21,32 +21,54 @@ func Protocol() protocol.Payload {
 
 type Payload struct {
 	Inner protocol.Payload
+
+	eap *eap.Payload
+	st  *State
+	raw []byte
 }
 
 func (p *Payload) Type() protocol.Type {
 	return TypePEAP
 }
 
+func (p *Payload) HasInner() protocol.Payload {
+	return p.Inner
+}
+
 func (p *Payload) Decode(raw []byte) error {
 	log.WithField("raw", debug.FormatBytes(raw)).Debug("PEAP: Decode")
+	p.raw = raw
 	return nil
 }
 
 func (p *Payload) Encode() ([]byte, error) {
-	log.Debug("PEAP: Encode")
-	return []byte{}, nil
+	return p.eap.Encode()
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
+	defer func() {
+		ctx.SetProtocolState(p.st)
+	}()
+
 	eapState := ctx.StateForProtocol(eap.TypeEAP).(*eap.State)
-	if !ctx.IsProtocolStart() {
+
+	if ctx.IsProtocolStart() {
 		ctx.Log().Debug("PEAP: Protocol start")
+		p.st = &State{}
 		return &eap.Payload{
 			Code:    protocol.CodeRequest,
-			ID:      eapState.PacketID,
+			ID:      eapState.PacketID + 1,
 			MsgType: identity.TypeIdentity,
 			Payload: &identity.Payload{},
 		}
+	}
+	p.st = ctx.GetProtocolState().(*State)
+
+	ep := &eap.Payload{}
+	err := ep.Decode(p.raw)
+	if err != nil {
+		ctx.Log().WithError(err).Warning("PEAP: failed to decode inner EAP")
+		return &Payload{}
 	}
 	return &Payload{}
 }

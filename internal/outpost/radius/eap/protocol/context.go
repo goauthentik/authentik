@@ -19,6 +19,8 @@ type Context interface {
 
 	ProtocolSettings() interface{}
 
+	ForInnerProtocol(p Type) Context
+
 	StateForProtocol(p Type) interface{}
 	GetProtocolState() interface{}
 	SetProtocolState(interface{})

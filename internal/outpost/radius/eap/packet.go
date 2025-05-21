@@ -15,13 +15,20 @@ type Packet struct {
 	endModifier func(p *radius.Packet) *radius.Packet
 }
 
-func emptyPayload(stm StateManager, t protocol.Type) (protocol.Payload, error) {
+func emptyPayload(stm StateManager, t protocol.Type) (protocol.Payload, protocol.Type, error) {
 	for _, cons := range stm.GetEAPSettings().Protocols {
-		if np := cons(); np.Type() == t {
-			return np, nil
+		np := cons()
+		if np.Type() == t {
+			return np, np.Type(), nil
+		}
+		// If the protocol has an inner protocol, return the original type but the code for the inner protocol
+		if i, ok := np.(protocol.Inner); ok {
+			if ii := i.HasInner(); ii != nil {
+				return np, ii.Type(), nil
+			}
 		}
 	}
-	return nil, fmt.Errorf("unsupported EAP type %d", t)
+	return nil, protocol.Type(0), fmt.Errorf("unsupported EAP type %d", t)
 }
 
 func Decode(stm StateManager, raw []byte) (*Packet, error) {
@@ -38,7 +45,7 @@ func Decode(stm StateManager, raw []byte) (*Packet, error) {
 	if err != nil {
 		return nil, err
 	}
-	p, err := emptyPayload(stm, packet.eap.MsgType)
+	p, _, err := emptyPayload(stm, packet.eap.MsgType)
 	if err != nil {
 		return nil, err
 	}

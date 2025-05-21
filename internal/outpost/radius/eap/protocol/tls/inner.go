@@ -13,9 +13,16 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 		return
 	}
-	pl := p.Inner.Handle(ctx)
+	pl := p.Inner.Handle(ctx.ForInnerProtocol(p.Inner.Type()))
 	enc, err := pl.Encode()
-	p.st.TLS.Write(enc)
+	if err != nil {
+		ctx.Log().WithError(err).Warning("failed to encode inner protocol")
+	}
+	// p.st.Conn.expectedWriterByteCount = len(enc)
+	_, err = p.st.TLS.Write(enc)
+	if err != nil {
+		ctx.Log().WithError(err).Warning("failed to write to TLS")
+	}
 	// return &Payload{
 	// 	Data: enc,
 	// }
