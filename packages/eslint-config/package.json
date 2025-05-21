@@ -29,10 +29,10 @@
     "dependencies": {
         "eslint": "^9.23.0",
         "eslint-plugin-import": "^2.31.0",
-        "eslint-plugin-lit": "^1.15.0",
+        "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-react": "^7.37.4",
         "eslint-plugin-react-hooks": "^5.2.0",
-        "eslint-plugin-wc": "^2.1.1"
+        "eslint-plugin-wc": "^3.0.1"
     },
     "devDependencies": {
         "@goauthentik/prettier-config": "^1.0.1",
