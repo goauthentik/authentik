@@ -8,7 +8,7 @@
         "build-locales": "wireit",
         "build-locales:build": "wireit",
         "build-proxy": "wireit",
-        "build:sfe": "wireit",
+        "build:sfe": "npm run build -w @goauthentik/web-sfe",
         "esbuild:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "wireit",
         "format": "wireit",
@@ -238,7 +238,7 @@
             ],
             "dependencies": [
                 "build-locales",
-                "./packages/sfe:build"
+                "build:sfe"
             ],
             "env": {
                 "NODE_RUNNER": {
@@ -246,14 +246,6 @@
                     "default": "node"
                 }
             }
-        },
-        "build:sfe": {
-            "dependencies": [
-                "./packages/sfe:build"
-            ],
-            "files": [
-                "./packages/sfe/**/*.ts"
-            ]
         },
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
