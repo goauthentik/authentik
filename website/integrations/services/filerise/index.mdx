@@ -33,22 +33,25 @@ To support the integration of FileRise with authentik, you need to create an app
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - **Blah**
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - **Redirect URI**:
+            - Strict: `https://filerise.company/api/auth/auth.php?oidc=callback`
+        - **Signing key**: select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
 ## FileRise configuration
 
-Insert Service configuration
-
-1. Write first step here...
-
-2. Continue with steps....
-
+1. Login to FileRise as an admin.
+2. Click on the **Admin Panel** icon at the top right.
+3. Expand the **OIDC Configuration & TOTP** section, and enter the following configurations:
+    - **OIDC Provider URL**: `https://authentik.company/application/o/<application-slug>/`
+    - **OIDC Client OpenID**: Client ID from authentik
+    - **OIDC Client Secret**: Client Secret from authentik
+    - **OIDC Redirect URI**: `https://filerise.company/api/auth/auth.php?oidc=callback`
+4. Click **Save Settings**.
 
 ## Configuration verification
 
-Template sentence that you can typically use here: "To confirm that authentik is properly configured with FileRise, log out and log back in via authentik."
-
-If there are more specific validation methods for the Service (e.g., clicking a button), include these instructions for clarity.
+To confirm that authentik is properly configured with FileRise, log out and log back in using the **Login with OIDC** button.
