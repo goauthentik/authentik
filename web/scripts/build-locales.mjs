@@ -10,6 +10,7 @@
  * summary of how many strings are missing with respect to the source locale.
  *
  * @import { ConfigFile } from "@lit/localize-tools/lib/types/config"
+ * @import { Stats } from "fs";
  */
 import { PackageRoot } from "#paths/node";
 import { spawnSync } from "node:child_process";
@@ -37,16 +38,26 @@ function generatedFileIsUpToDateWithXliffSource(loc) {
     // than the generated file.  The missing XLF file is important enough it
     // generates a unique error message and halts the build.
 
+    /**
+     * @type {Stats}
+     */
+    let xlfStat;
+
     try {
-        var xlfStat = statSync(xliff);
+        xlfStat = statSync(xliff);
     } catch (_error) {
         console.error(`lit-localize expected '${loc}.xlf', but XLF file is not present`);
         process.exit(1);
     }
 
+    /**
+     * @type {Stats}
+     */
+    let genedStat;
+
     // If the generated file doesn't exist, of course it's not up to date.
     try {
-        var genedStat = statSync(gened);
+        genedStat = statSync(gened);
     } catch (_error) {
         return false;
     }

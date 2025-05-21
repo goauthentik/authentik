@@ -39,8 +39,11 @@ export class LoggingMiddleware implements Middleware {
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
+        context.init.headers = {
+            ...context.init.headers,
+            [CSRFHeaderName]: getCookie("authentik_csrf"),
+        };
+
         return Promise.resolve(context);
     }
 }
