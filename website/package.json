@@ -49,7 +49,7 @@
         "@docusaurus/tsconfig": "^3.7.0",
         "@docusaurus/types": "^3.7.0",
         "@goauthentik/prettier-config": "^1.0.4",
-        "@types/lodash": "^4.17.16",
+        "@types/lodash": "^4.17.17",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^18.3.13",
         "@types/semver": "^7.7.0",
