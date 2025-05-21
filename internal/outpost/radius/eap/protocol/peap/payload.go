@@ -47,22 +47,22 @@ func (p *Payload) Encode() ([]byte, error) {
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	defer func() {
-		ctx.SetProtocolState(p.st)
+		ctx.SetProtocolState(TypePEAP, p.st)
 	}()
 
-	eapState := ctx.StateForProtocol(eap.TypeEAP).(*eap.State)
+	rootEap := ctx.RootPayload().(*eap.Payload)
 
-	if ctx.IsProtocolStart() {
+	if ctx.IsProtocolStart(TypePEAP) {
 		ctx.Log().Debug("PEAP: Protocol start")
 		p.st = &State{}
 		return &eap.Payload{
 			Code:    protocol.CodeRequest,
-			ID:      eapState.PacketID + 1,
+			ID:      rootEap.ID + 1,
 			MsgType: identity.TypeIdentity,
 			Payload: &identity.Payload{},
 		}
 	}
-	p.st = ctx.GetProtocolState().(*State)
+	p.st = ctx.GetProtocolState(TypePEAP).(*State)
 
 	ep := &eap.Payload{}
 	err := ep.Decode(p.raw)

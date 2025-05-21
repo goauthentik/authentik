@@ -87,15 +87,15 @@ func (p *Payload) Encode() ([]byte, error) {
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	defer func() {
-		ctx.SetProtocolState(p.st)
+		ctx.SetProtocolState(TypeTLS, p.st)
 	}()
-	if ctx.IsProtocolStart() {
+	if ctx.IsProtocolStart(TypeTLS) {
 		p.st = NewState(ctx).(*State)
 		return &Payload{
 			Flags: FlagTLSStart,
 		}
 	}
-	p.st = ctx.GetProtocolState().(*State)
+	p.st = ctx.GetProtocolState(TypeTLS).(*State)
 
 	if p.st.TLS == nil {
 		p.tlsInit(ctx)

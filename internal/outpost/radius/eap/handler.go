@@ -80,15 +80,6 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		st = BlankState(p.stm.GetEAPSettings())
 	}
 
-	// FIXME: Statically call Handle of root EAP packet to make its data accessible
-	ectx := &context{
-		state: st.TypeState[eap.TypeEAP],
-		log:   log.WithField("type", fmt.Sprintf("%T", &eap.Payload{})),
-	}
-	p.eap.Handle(ectx)
-	st.TypeState[eap.TypeEAP] = ectx.GetProtocolState()
-	p.stm.SetEAPState(p.state, st)
-
 	nextChallengeToOffer, err := st.GetNextProtocol()
 	if err != nil {
 		return &eap.Payload{
@@ -97,9 +88,9 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		}, err
 	}
 
-	next := func(oldProtocol protocol.Type) (*eap.Payload, error) {
+	next := func() (*eap.Payload, error) {
 		st.ProtocolIndex += 1
-		delete(st.TypeState, oldProtocol)
+		st.TypeState = map[protocol.Type]any{}
 		p.stm.SetEAPState(p.state, st)
 		return p.handleInner(r)
 	}
@@ -107,28 +98,25 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
 		log.Debug("EAP: received NAK, trying next protocol")
 		p.eap.Payload = nil
-		log.Debug(st.ProtocolPriority[st.ProtocolIndex])
-		return next(st.ProtocolPriority[st.ProtocolIndex])
+		return next()
 	}
 
 	np, t, _ := emptyPayload(p.stm, nextChallengeToOffer)
 
 	ctx := &context{
-		req: r,
-		// Always write to the state of the outer protocol
-		state:     st.TypeState[np.Type()],
-		typeState: st.TypeState,
-		log:       log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
-		settings:  p.stm.GetEAPSettings().ProtocolSettings[t],
+		req:         r,
+		rootPayload: p.eap,
+		typeState:   st.TypeState,
+		log:         log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
+		settings:    p.stm.GetEAPSettings().ProtocolSettings[t],
 	}
 	if !np.Offerable() {
 		ctx.log.Debug("EAP: protocol not offerable, skipping")
-		return next(np.Type())
+		return next()
 	}
 	ctx.log.Debug("EAP: Passing to protocol")
 
 	res := p.GetChallengeForType(ctx, np, t)
-	st.TypeState[t] = ctx.GetProtocolState()
 	p.stm.SetEAPState(p.state, st)
 
 	if ctx.endModifier != nil {
@@ -144,7 +132,7 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		res.ID -= 1
 	case protocol.StatusNextProtocol:
 		ctx.log.Debug("EAP: Protocol ended, starting next protocol")
-		return next(np.Type())
+		return next()
 	case protocol.StatusUnknown:
 	}
 	return res, nil
@@ -157,7 +145,7 @@ func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload, t protoc
 		MsgType: t,
 	}
 	var payload any
-	if ctx.IsProtocolStart() {
+	if ctx.IsProtocolStart(t) {
 		p.eap.Payload = np
 		p.eap.Payload.Decode(p.eap.RawPayload)
 	}

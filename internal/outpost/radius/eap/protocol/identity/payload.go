@@ -26,7 +26,7 @@ func (ip *Payload) Encode() ([]byte, error) {
 }
 
 func (ip *Payload) Handle(ctx protocol.Context) protocol.Payload {
-	if ctx.IsProtocolStart() {
+	if ctx.IsProtocolStart(TypeIdentity) {
 		ctx.EndInnerProtocol(protocol.StatusNextProtocol, nil)
 	}
 	return nil

@@ -76,8 +76,5 @@ func (p *Payload) Encode() ([]byte, error) {
 
 func (ip *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	ctx.Log().Debug("EAP: Handle")
-	ctx.SetProtocolState(&State{
-		PacketID: ip.ID,
-	})
 	return nil
 }

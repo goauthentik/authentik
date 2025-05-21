@@ -13,7 +13,7 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 		return
 	}
-	pl := p.Inner.Handle(ctx.ForInnerProtocol(p.Inner.Type()))
+	pl := p.Inner.Handle(ctx)
 	enc, err := pl.Encode()
 	if err != nil {
 		ctx.Log().WithError(err).Warning("failed to encode inner protocol")

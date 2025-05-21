@@ -16,16 +16,14 @@ const (
 
 type Context interface {
 	Packet() *radius.Request
+	RootPayload() Payload
 
 	ProtocolSettings() interface{}
 
-	ForInnerProtocol(p Type) Context
+	GetProtocolState(p Type) interface{}
+	SetProtocolState(p Type, s interface{})
+	IsProtocolStart(p Type) bool
 
-	StateForProtocol(p Type) interface{}
-	GetProtocolState() interface{}
-	SetProtocolState(interface{})
-
-	IsProtocolStart() bool
 	EndInnerProtocol(Status, func(p *radius.Packet) *radius.Packet)
 
 	Log() *log.Entry

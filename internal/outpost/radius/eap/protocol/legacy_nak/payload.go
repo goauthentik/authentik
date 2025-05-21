@@ -26,7 +26,7 @@ func (ln *Payload) Encode() ([]byte, error) {
 }
 
 func (ln *Payload) Handle(ctx protocol.Context) protocol.Payload {
-	if ctx.IsProtocolStart() {
+	if ctx.IsProtocolStart(TypeLegacyNAK) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 	}
 	return nil
