@@ -165,7 +165,7 @@ async function doWatch() {
     const httpURL = new URL("http://localhost");
     httpURL.port = process.env.COMPOSE_PORT_HTTP ?? "9000";
 
-    const httpsURL = new URL("http://localhost");
+    const httpsURL = new URL("https://localhost");
     httpsURL.port = process.env.COMPOSE_PORT_HTTPS ?? "9443";
 
     console.log(`\n${logPrefix} 🚀 Server running\n\n`);
@@ -239,7 +239,6 @@ await cleanDistDirectory()
     .then(() =>
         delegateCommand()
             .then(() => {
-                console.log("Build complete");
                 process.exit(0);
             })
             .catch((error) => {
