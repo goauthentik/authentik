@@ -36,9 +36,6 @@ type Payload struct {
 }
 
 func (p *Payload) Type() protocol.Type {
-	// if p.inner != nil {
-	// 	return p.inner.Type()
-	// }
 	return TypeTLS
 }
 
@@ -109,7 +106,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			p.st.Conn.expectedWriterByteCount = 0
 		}
 		p.st.Conn.UpdateData(p.Data)
-		if !p.st.Conn.NeedsMoreData() {
+		if !p.st.Conn.NeedsMoreData() && !p.st.HandshakeDone {
 			// Wait for outbound data to be available
 			p.st.Conn.OutboundData()
 		}
@@ -126,12 +123,12 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		return p.sendNextChunk()
 	}
 	if p.st.Conn.writer.Len() == 0 && p.st.HandshakeDone {
-		defer p.st.ContextCancel()
 		if p.Inner != nil {
 			ctx.Log().Debug("TLS: Handshake is done, delegating to inner protocol")
 			p.innerHandler(ctx)
 			return p.startChunkedTransfer(p.st.Conn.OutboundData())
 		}
+		defer p.st.ContextCancel()
 		// If we don't have a final status from the handshake finished function, stall for time
 		pst, _ := retry.DoWithData(
 			func() (protocol.Status, error) {

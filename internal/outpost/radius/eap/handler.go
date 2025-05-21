@@ -59,7 +59,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 		sendErrorResponse(w, r)
 		return
 	}
-	log.WithField("length", len(eapEncoded)).WithField("type", fmt.Sprintf("%T", rp.eap.Payload)).Debug("EAP: encapsulated challenge")
+	log.WithField("length", len(eapEncoded)).WithField("type", fmt.Sprintf("%T", rp.eap.Payload)).Debug("Root-EAP: encapsulated challenge")
 	rfc2869.EAPMessage_Set(rres, eapEncoded)
 	err = p.setMessageAuthenticator(rres)
 	if err != nil {
@@ -76,7 +76,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	st := p.stm.GetEAPState(p.state)
 	if st == nil {
-		log.Debug("EAP: blank state")
+		log.Debug("Root-EAP: blank state")
 		st = BlankState(p.stm.GetEAPSettings())
 	}
 
@@ -96,7 +96,7 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	}
 
 	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
-		log.Debug("EAP: received NAK, trying next protocol")
+		log.Debug("Root-EAP: received NAK, trying next protocol")
 		p.eap.Payload = nil
 		return next()
 	}
@@ -111,10 +111,10 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		settings:    p.stm.GetEAPSettings().ProtocolSettings[t],
 	}
 	if !np.Offerable() {
-		ctx.log.Debug("EAP: protocol not offerable, skipping")
+		ctx.log.Debug("Root-EAP: protocol not offerable, skipping")
 		return next()
 	}
-	ctx.log.Debug("EAP: Passing to protocol")
+	ctx.log.Debug("Root-EAP: Passing to protocol")
 
 	res := p.GetChallengeForType(ctx, np, t)
 	p.stm.SetEAPState(p.state, st)
@@ -131,7 +131,7 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		res.Code = protocol.CodeFailure
 		res.ID -= 1
 	case protocol.StatusNextProtocol:
-		ctx.log.Debug("EAP: Protocol ended, starting next protocol")
+		ctx.log.Debug("Root-EAP: Protocol ended, starting next protocol")
 		return next()
 	case protocol.StatusUnknown:
 	}

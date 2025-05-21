@@ -2,7 +2,6 @@ package eap
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
@@ -38,16 +37,16 @@ func (packet *Payload) Decode(raw []byte) error {
 	packet.ID = raw[1]
 	packet.Length = binary.BigEndian.Uint16(raw[2:])
 	if packet.Length != uint16(len(raw)) {
-		return errors.New("mismatched packet length")
+		return fmt.Errorf("mismatched packet length; got %d, expected %d", packet.Length, uint16(len(raw)))
 	}
 	if len(raw) > 4 && (packet.Code == protocol.CodeRequest || packet.Code == protocol.CodeResponse) {
 		packet.MsgType = protocol.Type(raw[4])
 	}
+	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Trace("EAP: decode raw")
 	packet.RawPayload = raw[5:]
 	if packet.Payload == nil {
 		return nil
 	}
-	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Trace("EAP: decode raw")
 	err := packet.Payload.Decode(raw[5:])
 	if err != nil {
 		return err

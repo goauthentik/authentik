@@ -5,9 +5,15 @@ import (
 )
 
 func (p *Payload) innerHandler(ctx protocol.Context) {
-	// p.st.TLS.read
-	// d, _ := io.ReadAll(p.st.TLS)
-	err := p.Inner.Decode([]byte{})
+	d := make([]byte, 1024)
+	if !ctx.IsProtocolStart(p.Inner.Type()) {
+		ctx.Log().Debug("TLS: Reading from TLS for inner protocol")
+		_, err := p.st.TLS.Read(d)
+		if err != nil {
+			ctx.Log().WithError(err).Warning("TLS: Failed to read from TLS connection")
+		}
+	}
+	err := p.Inner.Decode(d)
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to decode inner protocol")
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
@@ -16,14 +22,14 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 	pl := p.Inner.Handle(ctx)
 	enc, err := pl.Encode()
 	if err != nil {
-		ctx.Log().WithError(err).Warning("failed to encode inner protocol")
+		ctx.Log().WithError(err).Warning("TLS: failed to encode inner protocol")
+		ctx.EndInnerProtocol(protocol.StatusError, nil)
+		return
 	}
-	// p.st.Conn.expectedWriterByteCount = len(enc)
 	_, err = p.st.TLS.Write(enc)
 	if err != nil {
-		ctx.Log().WithError(err).Warning("failed to write to TLS")
+		ctx.Log().WithError(err).Warning("TLS: failed to write to TLS")
+		ctx.EndInnerProtocol(protocol.StatusError, nil)
+		return
 	}
-	// return &Payload{
-	// 	Data: enc,
-	// }
 }
