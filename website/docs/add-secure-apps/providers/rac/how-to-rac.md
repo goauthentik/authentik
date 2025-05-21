@@ -25,7 +25,7 @@ Depending on whether you are connecting using RDP, SSH, or VNC, the exact config
 
 ### Create an application and RAC provider
 
-The first step is to create the RAC application and provider.
+The first step is to create the RAC application and provider pair.
 
 1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with provider**.
