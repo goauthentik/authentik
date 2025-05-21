@@ -31,14 +31,14 @@
         "@goauthentik/prettier-config": "^1.0.4",
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "@types/node": "^22.14.1",
-        "esbuild": "^0.25.0",
+        "@types/node": "^22.15.21",
+        "esbuild": "^0.25.4",
         "prettier": "^3.5.3",
-        "prettier-plugin-packagejson": "^2.5.13",
+        "prettier-plugin-packagejson": "^2.5.14",
         "typescript": "^5.8.3"
     },
     "peerDependencies": {
-        "esbuild": "^0.25.0"
+        "esbuild": "^0.25.4"
     },
     "engines": {
         "node": ">=22.15.1"
