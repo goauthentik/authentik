@@ -2,7 +2,6 @@
 title: Create a Remote Access Control (RAC) provider
 ---
 
-
 The Remote Access Control (RAC) provider is a highly flexible feature for accessing remote machines.
 
 For overview information, see the [RAC provider](./index.md) documentation. You can also view our video on YouTube for setting up RAC.
@@ -68,12 +67,12 @@ Finally, you need to create an endpoint for each remote machine. Endpoints are d
     - **Host**: enter the host name or IP address of the remote machine.
     - **Maximum concurrent connections**: select a value or use `-1` to disable the limitation.
     - **Property mapping**: select either the property mapping that you previously created, or use one of the default settings.
-    - **Advance settings**: (*optional*)
+    - **Advance settings**: (_optional_)
 
 5. Click **Create**.
 
 ## Access the remote machine
 
-To verify that your configuration and then access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application and authentik then connects you to a secure session on the remote machine, in your web browser.
+To verify your configuration and then access the remote machine, go to the **User interface** of your authentik instance. On the **My applications** page click the **Remote Access** application and authentik then connects you to a secure session on the remote machine, in your web browser.
 
 If you defined multiple endpoints, click the endpoint for the remote machine that you want to access.
