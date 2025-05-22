@@ -57,7 +57,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     help=${msg(
                         "Determines how long a session lasts before being disconnected and requiring re-authorization.",
                     )}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-form-group .expanded=${true}>
