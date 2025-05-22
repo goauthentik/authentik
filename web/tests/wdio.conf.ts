@@ -222,15 +222,6 @@ export const config: WebdriverIO.Config = {
     // beforeSession: function (config, capabilities, specs, cid) {
     // },
     /**
-     * Gets executed before test execution begins. At this point you can access to all global
-     * variables like `browser`. It is the perfect place to define custom commands.
-     * @param {Array.<Object>} capabilities list of capabilities details
-     * @param {Array.<String>} specs        List of spec file paths that are to be run
-     * @param {object}         browser      instance of created browser/device session
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    before: function (_capabilities, _specs) {},
-    /**
      * Runs before a WebdriverIO command gets executed.
      * @param {string} commandName hook command name
      * @param {Array} args arguments that command would receive

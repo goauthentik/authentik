@@ -1,6 +1,14 @@
 {
     "name": "@goauthentik/web-sfe",
     "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "rollup -c rollup.config.mjs --bundleConfigAsCjs",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
+        "watch": "rollup -w -c rollup.config.mjs --bundleConfigAsCjs"
+    },
     "dependencies": {
         "@goauthentik/api": "^2024.6.0-1719577139",
         "base64-js": "^1.5.1",
@@ -10,20 +18,17 @@
         "weakmap-polyfill": "^2.0.4"
     },
     "devDependencies": {
+        "@goauthentik/core": "^1.0.0",
         "@rollup/plugin-commonjs": "^28.0.0",
-        "@rollup/plugin-node-resolve": "^15.3.0",
+        "@rollup/plugin-node-resolve": "^16.0.1",
         "@rollup/plugin-swc": "^0.4.0",
         "@swc/cli": "^0.4.0",
         "@swc/core": "^1.7.28",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@types/jquery": "^3.5.31",
-        "lockfile-lint": "^4.14.0",
-        "prettier": "^3.3.2",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "prettier": "^3.5.3",
         "rollup": "^4.23.0",
-        "rollup-plugin-copy": "^3.5.0",
-        "wireit": "^0.14.9"
+        "rollup-plugin-copy": "^3.5.0"
     },
-    "license": "MIT",
     "optionalDependencies": {
         "@swc/core": "^1.7.28",
         "@swc/core-darwin-arm64": "^1.6.13",
@@ -36,33 +41,5 @@
         "@swc/core-win32-arm64-msvc": "^1.6.13",
         "@swc/core-win32-ia32-msvc": "^1.6.13",
         "@swc/core-win32-x64-msvc": "^1.6.13"
-    },
-    "private": true,
-    "scripts": {
-        "build": "wireit",
-        "lint:lockfile": "wireit",
-        "prettier": "prettier --write ./src ./tsconfig.json ./rollup.config.js ./package.json",
-        "watch": "rollup -w -c rollup.config.js --bundleConfigAsCjs"
-    },
-    "wireit": {
-        "build:sfe": {
-            "command": "rollup -c rollup.config.js --bundleConfigAsCjs",
-            "files": [
-                "../../node_modules/bootstrap/dist/css/bootstrap.min.css",
-                "src/index.ts"
-            ],
-            "output": [
-                "./dist/sfe/*"
-            ]
-        },
-        "build": {
-            "command": "mkdir -p ../../dist/sfe && cp -r dist/sfe/* ../../dist/sfe",
-            "dependencies": [
-                "build:sfe"
-            ]
-        },
-        "lint:lockfile": {
-            "command": "lockfile-lint --path package.json --type npm --allowed-hosts npm --validate-https"
-        }
     }
 }

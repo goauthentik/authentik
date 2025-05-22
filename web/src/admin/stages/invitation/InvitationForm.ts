@@ -34,11 +34,10 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 inviteUuid: this.instance.pk || "",
                 invitationRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-                invitationRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
+            invitationRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

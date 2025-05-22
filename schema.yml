@@ -4461,6 +4461,15 @@ paths:
         schema:
           type: string
       - in: query
+        name: client_certificates
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
         name: default
         schema:
           type: boolean
@@ -24978,6 +24987,7 @@ paths:
           - authentik_stages_identification.identificationstage
           - authentik_stages_invitation.invitation
           - authentik_stages_invitation.invitationstage
+          - authentik_stages_mtls.mutualtlsstage
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
@@ -25226,6 +25236,7 @@ paths:
           - authentik_stages_identification.identificationstage
           - authentik_stages_invitation.invitation
           - authentik_stages_invitation.invitationstage
+          - authentik_stages_mtls.mutualtlsstage
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
@@ -37718,6 +37729,311 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /stages/mtls/:
+    get:
+      operationId: stages_mtls_list
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: query
+        name: cert_attribute
+        schema:
+          type: string
+          enum:
+          - common_name
+          - email
+          - subject
+      - in: query
+        name: certificate_authorities
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - optional
+          - required
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: user_attribute
+        schema:
+          type: string
+          enum:
+          - email
+          - username
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMutualTLSStageList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: stages_mtls_create
+      description: MutualTLSStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MutualTLSStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/mtls/{stage_uuid}/:
+    get:
+      operationId: stages_mtls_retrieve
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: stages_mtls_update
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MutualTLSStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: stages_mtls_partial_update
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMutualTLSStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: stages_mtls_destroy
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/mtls/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_mtls_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/password/:
     get:
       operationId: stages_password_list
@@ -40946,6 +41262,7 @@ components:
       - authentik.enterprise.providers.microsoft_entra
       - authentik.enterprise.providers.ssf
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
+      - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
       - authentik.events
       type: string
@@ -42609,6 +42926,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - brand_uuid
@@ -42673,6 +42996,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - domain
@@ -42842,6 +43171,12 @@ components:
       - name
       - private_key
       - public_key
+    CertAttributeEnum:
+      enum:
+      - subject
+      - common_name
+      - email
+      type: string
     CertificateData:
       type: object
       description: Get CertificateKeyPair's data
@@ -48368,6 +48703,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
+      - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -48375,6 +48711,96 @@ components:
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
       type: string
+    MutualTLSStage:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+      required:
+      - cert_attribute
+      - component
+      - meta_model_name
+      - mode
+      - name
+      - pk
+      - user_attribute
+      - verbose_name
+      - verbose_name_plural
+    MutualTLSStageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
+    MutualTLSStageRequest:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+      required:
+      - cert_attribute
+      - mode
+      - name
+      - user_attribute
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -50220,6 +50646,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedMutualTLSStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MutualTLSStage'
+      required:
+      - pagination
+      - results
     PaginatedNotificationList:
       type: object
       properties:
@@ -51896,6 +52334,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
     PatchedCaptchaStageRequest:
       type: object
@@ -53079,6 +53523,31 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedMutualTLSStageRequest:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -59793,6 +60262,11 @@ components:
       - pk
       - uid
       - username
+    UserAttributeEnum:
+      enum:
+      - username
+      - email
+      type: string
     UserConsent:
       type: object
       description: UserConsent Serializer

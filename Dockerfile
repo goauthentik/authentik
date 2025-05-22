@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS website-builder
 
 ENV NODE_ENV=production
 
@@ -20,7 +20,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-bundled
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -94,7 +94,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Download uv
-FROM ghcr.io/astral-sh/uv:0.7.4 AS uv
+FROM ghcr.io/astral-sh/uv:0.7.6 AS uv
 # Stage 6: Base python image
 FROM ghcr.io/goauthentik/fips-python:3.13.3-slim-bookworm-fips AS python-base
 
