@@ -111,7 +111,7 @@
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
         "core-js": "^3.38.1",
-        "country-flag-icons": "^1.5.13",
+        "country-flag-icons": "^1.5.19",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.2.4",
