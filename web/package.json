@@ -161,7 +161,7 @@
         "@types/codemirror": "^5.60.15",
         "@types/dompurify": "^3.0.5",
         "@types/grecaptcha": "^3.0.9",
-        "@types/guacamole-common-js": "^1.5.2",
+        "@types/guacamole-common-js": "^1.5.3",
         "@types/mocha": "^10.0.8",
         "@types/node": "^22.15.21",
         "@types/react": "^19.1.5",
