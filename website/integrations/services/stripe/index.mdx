@@ -78,7 +78,14 @@ To support the integration of Stripe with authentik, you need to create a group,
 ## Stripe configuration
 
 1. Log in to the [Stripe administrator user authentication page](https://dashboard.stripe.com/account/user_authentication) as an admin.
-2. TEMP
+2. TEMP Navigate to...
+3. TEMP enter the following settings:
+
+    - **Identity Provider URL**: `https://auth.domain.com/application/saml/stripe/sso/binding/redirect/`
+    - **Issuer ID**: authentik
+    - **Identity Provider Certificate**: enter your authentik signing certificate
+
+4. TEMP Click...
 
 ## Configuration verification
 
