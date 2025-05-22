@@ -27,7 +27,7 @@
         "find-free-ports": "^3.1.1"
     },
     "devDependencies": {
-        "@goauthentik/prettier-config": "^1.0.4",
+        "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/node": "^22.15.21",
