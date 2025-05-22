@@ -74,6 +74,9 @@ updates:
       wdio:
         patterns:
           - "@wdio/*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
