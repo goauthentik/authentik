@@ -137,7 +137,7 @@
         "ts-pattern": "^5.4.0",
         "unist-util-visit": "^5.0.0",
         "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.5.1"
+        "yaml": "^2.8.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.27.0",
