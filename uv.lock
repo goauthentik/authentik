@@ -1119,7 +1119,7 @@ s3 = [
 [[package]]
 name = "django-tenants"
 version = "3.7.0"
-source = { git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes#156e53a6f5902d74b73dd9d0192fffaa2587a740" }
+source = { git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes#5766127899608bafcd9a52bc3e74f7acc5272467" }
 dependencies = [
     { name = "django" },
 ]
