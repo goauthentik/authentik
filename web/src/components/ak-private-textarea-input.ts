@@ -9,7 +9,7 @@ import { AkPrivateTextInput } from "./ak-private-text-input.js";
 
 @customElement("ak-private-textarea-input")
 export class AkPrivateTextAreaInput extends AkPrivateTextInput {
-    protected renderVisibleInput() {
+    protected override renderVisibleInput() {
         const code = this.inputHint === "code";
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;

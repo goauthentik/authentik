@@ -17,7 +17,7 @@ export class AkPrivateTextInput extends HorizontalLightComponent<string> {
     public revealed = false;
 
     @property({ type: String })
-    placeholder = "";
+    public placeholder = "";
 
     #onReveal() {
         this.revealed = true;
