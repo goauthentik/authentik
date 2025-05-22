@@ -97,6 +97,9 @@ updates:
           - "swc-*"
           - "lightningcss*"
           - "@rspack/binding*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:
