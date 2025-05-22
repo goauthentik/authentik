@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -45,37 +46,24 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+            <ak-private-textarea-input
                 label=${msg("Certificate")}
                 name="certificateData"
-                ?writeOnly=${this.instance !== undefined}
-                ?required=${true}
-            >
-                <textarea
-                    autocomplete="off"
-                    spellcheck="false"
-                    class="pf-c-form-control pf-m-monospace"
-                    placeholder="-----BEGIN CERTIFICATE-----"
-                    required
-                ></textarea>
-                <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="keyData"
-                ?writeOnly=${this.instance !== undefined}
+                input-hint="code"
+                placeholder="-----BEGIN CERTIFICATE-----"
+                required
+                ?revealed=${this.instance === undefined}
+                help=${msg("PEM-encoded Certificate data.")}
+            ></ak-private-textarea-input>
+            <ak-private-textarea-input
                 label=${msg("Private Key")}
-            >
-                <textarea
-                    autocomplete="off"
-                    class="pf-c-form-control pf-m-monospace"
-                    spellcheck="false"
-                ></textarea>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Optional Private Key. If this is set, you can use this keypair for encryption.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+                name="keyData"
+                input-hint="code"
+                ?revealed=${this.instance === undefined}
+                help=${msg(
+                    "Optional Private Key. If this is set, you can use this keypair for encryption.",
+                )}
+            ></ak-private-textarea-input>`;
     }
 }
 

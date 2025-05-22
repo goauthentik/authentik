@@ -6,6 +6,7 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -442,19 +443,14 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    <ak-private-textarea-input
                         label=${msg("Consumer secret")}
-                        ?required=${true}
-                        ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
-                    >
-                        <textarea
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                        ></textarea>
-                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
-                    </ak-form-element-horizontal>
+                        input-hint="code"
+                        help=${msg("Also known as Client Secret.")}
+                        required
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
