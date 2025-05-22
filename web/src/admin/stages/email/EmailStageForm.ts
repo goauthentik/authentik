@@ -72,13 +72,11 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
+                <ak-private-text-input
                     label=${msg("SMTP Password")}
-                    ?writeOnly=${this.instance !== undefined}
                     name="password"
-                >
-                    <input type="text" value="" class="pf-c-form-control" />
-                </ak-form-element-horizontal>
+                    ?revealed=${this.instance === undefined}
+                ></ak-private-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input
