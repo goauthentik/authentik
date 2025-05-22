@@ -1,6 +1,6 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { isResponseErrorLike } from "@goauthentik/common/errors/network";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config.js";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
+import { isResponseErrorLike } from "@goauthentik/common/errors/network.js";
 
 import { CoreApi, SessionUser } from "@goauthentik/api";
 

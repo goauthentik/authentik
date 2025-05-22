@@ -15,7 +15,7 @@ import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 import { countryCache } from "./CountryCache";
 
 function countryToPair(country: DetailedCountry): DualSelectPair {
-    return [country.code, country.name];
+    return [country.code, country.name, country.name];
 }
 
 @customElement("ak-policy-geoip-form")
@@ -38,11 +38,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 policyUuid: this.instance.pk || "",
                 geoIPPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
-                geoIPPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
+            geoIPPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -210,17 +209,16 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                                     .getCountries()
                                     .then((results) => {
                                         if (!search) return results;
+
                                         return results.filter((result) =>
                                             result.name
                                                 .toLowerCase()
                                                 .includes(search.toLowerCase()),
                                         );
                                     })
-                                    .then((results) => {
-                                        return {
-                                            options: results.map(countryToPair),
-                                        };
-                                    });
+                                    .then((results) => ({
+                                        options: results.map(countryToPair),
+                                    }));
                             }}
                             .selected=${(this.instance?.countriesObj ?? []).map(countryToPair)}
                             available-label="${msg("Available Countries")}"

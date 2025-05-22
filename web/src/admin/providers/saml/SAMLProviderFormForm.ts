@@ -50,7 +50,7 @@ function renderHasSigningKp(provider?: Partial<SAMLProvider>) {
             name="signResponse"
             label=${msg("Sign responses")}
             ?checked=${provider?.signResponse ?? false}
-            help=${msg("When enabled, the assertion element of the SAML response will be signed.")}
+            help=${msg("When enabled, the SAML response will be signed.")}
         >
         </ak-switch-input>`;
 }

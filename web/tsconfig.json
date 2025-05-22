@@ -2,6 +2,9 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
+        "checkJs": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
@@ -49,17 +52,12 @@
     },
     "exclude": [
         // ---
-        "./out/**/*",
-        "./dist/**/*",
+        "**/out/**/*",
+        "**/dist/**/*",
         "src/**/*.test.ts",
         "./tests",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"
-    ],
-    "references": [
-        {
-            "path": "./packages/esbuild-plugin-live-reload"
-        }
     ]
 }

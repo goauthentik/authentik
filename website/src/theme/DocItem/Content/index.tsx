@@ -82,7 +82,7 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         throw new MarkdownLintError(
             `${metadata.id}: ${invalidBadges.length} Badge(s) defined in markdown content instead of the frontmatter.`,
         );
-    }, []);
+    }, [metadata.id]);
 
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>

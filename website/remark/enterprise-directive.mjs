@@ -13,8 +13,8 @@ function remarkEnterpriseDirective() {
     /**
      * @param {Root} tree The MDAST tree to transform.
      */
-    return function (tree) {
-        visit(tree, "textDirective", function (node) {
+    return (tree) => {
+        visit(tree, "textDirective", (node) => {
             if (node.name !== "ak-enterprise") return SKIP;
 
             const data = node.data || (node.data = {});

@@ -1,17 +1,15 @@
-import replace from "@rollup/plugin-replace";
+/// <reference types="@wdio/browser-runner" />
+import { createBundleDefinitions } from "#bundler/utils/node";
 import { browser } from "@wdio/globals";
 import type { Options } from "@wdio/types";
-import path from "path";
-import { cwd } from "process";
-import { fileURLToPath } from "url";
-import type { UserConfig } from "vite";
-import litCss from "vite-plugin-lit-css";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import type { InlineConfig } from "vite";
+import litCSS from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-const isProdBuild = process.env.NODE_ENV === "production";
-const apiBasePath = process.env.AK_API_BASE_PATH || "";
 const runHeadless = process.env.CI !== undefined;
 
 const testSafari = process.env.WDIO_TEST_SAFARI !== undefined;
@@ -72,21 +70,9 @@ export const config: Options.Testrunner = {
     runner: [
         "browser",
         {
-            viteConfig: (userConfig: UserConfig = { plugins: [] }) => ({
-                ...userConfig,
-                plugins: [
-                    litCss(),
-                    replace({
-                        "process.env.NODE_ENV": JSON.stringify(
-                            isProdBuild ? "production" : "development",
-                        ),
-                        "process.env.CWD": JSON.stringify(cwd()),
-                        "process.env.AK_API_BASE_PATH": JSON.stringify(apiBasePath),
-                        "preventAssignment": true,
-                    }),
-                    ...(userConfig?.plugins ?? []),
-                    tsconfigPaths(),
-                ],
+            viteConfig: {
+                define: createBundleDefinitions(),
+                plugins: [litCSS(), tsconfigPaths()],
                 resolve: {
                     alias: {
                         "@goauthentik/admin": path.resolve(__dirname, "src/admin"),
@@ -101,7 +87,7 @@ export const config: Options.Testrunner = {
                         "@goauthentik/user": path.resolve(__dirname, "src/user"),
                     },
                 },
-            }),
+            } satisfies InlineConfig,
         },
     ],
 
