@@ -80,15 +80,13 @@ An application entitlement is used to control privileged access to the Omada Con
 9. Set the desired **SAML Role Name**, **Role**, and **Privileges** for the new SAML role. The **SAML Role Name** must match the name of the previously created authentik application entitlement.
 10. Click TEMP
 
-## Decoding default relay state
+## Encoding default relay state
 
-The default relay state is derived by decoding a combination of the **Resource ID** and **Omada ID** with a Base64 encryption tool. This section provides an example of how to do this.
+The default relay state is derived by encoding a combination of the **Resource ID** and **Omada ID** with a Base64 encryption tool.
 
-TEMP - this needs to be encode not decode
-
-1. Go to https://www.base64decode.org/ or another Base64 decoding service/application.
-2. In the **Decode from Base64 format** section, enter: `<Resource ID>_<Omada ID>`.
-3. Click **Decode**.
+1. Go to https://www.base64encode.org/ or another Base64 encoding service/application.
+2. In the **Encode to Base64 format** section, enter: `<Resource ID>_<Omada ID>`.
+3. Click **Encode**.
 4. Click the **Copy to clipboard**. This is the **Default relay state** value that will be required in the next section
 
 ## Reconfigure authentik provider
