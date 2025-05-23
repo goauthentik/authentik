@@ -1,6 +1,8 @@
 package peap
 
-import "encoding/binary"
+import (
+	"encoding/binary"
+)
 
 type AVPType uint16
 
@@ -29,7 +31,7 @@ func (eavp ExtensionAVP) Encode() []byte {
 	}
 	// The next bit is reserved and should always be set to 0
 	t = t & 0b1011111111111111
-	binary.BigEndian.AppendUint16(buff, t)
-	binary.BigEndian.AppendUint16(buff[2:], uint16(len(eavp.Value)))
+	binary.BigEndian.PutUint16(buff[0:], t)
+	binary.BigEndian.PutUint16(buff[2:], uint16(len(eavp.Value)))
 	return append(buff, eavp.Value...)
 }

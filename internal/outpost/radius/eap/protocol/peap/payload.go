@@ -124,7 +124,16 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	if err != nil {
 		ctx.Log().WithError(err).Warning("PEAP: failed to handle inner EAP")
 	}
-	return &Payload{eap: res.(*eap.Payload)}
+	// Normal payloads need to be wrapped in PEAP to use the correct encoding (see Encode() above)
+	// Extension payloads handle encoding differently
+	pres := res.(*eap.Payload)
+	if _, ok := pres.Payload.(*ExtensionPayload); ok {
+		// HandleInnerEAP will set the MsgType to the PEAP type, however we need to override that
+		pres.MsgType = TypePEAPExtension
+		ctx.Log().Debug("PEAP: Encoding response as extension")
+		return res
+	}
+	return &Payload{eap: pres}
 }
 
 func (p *Payload) GetEAPSettings() protocol.Settings {

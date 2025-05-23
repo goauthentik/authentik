@@ -3,6 +3,7 @@ package peap
 import (
 	"errors"
 
+	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
@@ -17,7 +18,12 @@ func (ep *ExtensionPayload) Decode(raw []byte) error {
 }
 
 func (ep *ExtensionPayload) Encode() ([]byte, error) {
-	return []byte{}, nil
+	log.Debug("PEAP: Extension encode")
+	buff := []byte{}
+	for _, avp := range ep.AVPs {
+		buff = append(buff, avp.Encode()...)
+	}
+	return buff, nil
 }
 
 func (ep *ExtensionPayload) Handle(protocol.Context) protocol.Payload {

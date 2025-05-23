@@ -127,6 +127,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			return nil
 		}
 		ctx.Log().Info("MSCHAPv2: Successfully checked password")
+		p.st.Authenticated = true
 		succ := &SuccessRequest{
 			Payload: &Payload{
 				OpCode: OpSuccess,
@@ -134,7 +135,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			Authenticator: auth,
 		}
 		return succ
-	} else if p.OpCode == OpSuccess {
+	} else if p.OpCode == OpSuccess && p.st.Authenticated {
 		return &peap.ExtensionPayload{
 			AVPs: []peap.ExtensionAVP{
 				{
