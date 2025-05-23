@@ -122,35 +122,35 @@ func (rs *RadiusServer) Handle_AccessRequest_EAP(w radius.ResponseWriter, r *Rad
 	ep.HandleRadiusPacket(w, r.Request)
 }
 
-func (pi *ProviderInstance) GetEAPState(key string) *eap.State {
+func (pi *ProviderInstance) GetEAPState(key string) *protocol.State {
 	return pi.eapState[key]
 }
 
-func (pi *ProviderInstance) SetEAPState(key string, state *eap.State) {
+func (pi *ProviderInstance) SetEAPState(key string, state *protocol.State) {
 	pi.eapState[key] = state
 }
 
-func (pi *ProviderInstance) GetEAPSettings() eap.Settings {
-	protocols := []eap.ProtocolConstructor{
+func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
+	protocols := []protocol.ProtocolConstructor{
 		identity.Protocol,
 		legacy_nak.Protocol,
 	}
 
 	certId := pi.certId
 	if certId == "" {
-		return eap.Settings{
+		return protocol.Settings{
 			Protocols: protocols,
 		}
 	}
 
 	cert := pi.s.cryptoStore.Get(certId)
 	if cert == nil {
-		return eap.Settings{
+		return protocol.Settings{
 			Protocols: protocols,
 		}
 	}
 
-	return eap.Settings{
+	return protocol.Settings{
 		Protocols: append(protocols, tls.Protocol, peap.Protocol),
 		ProtocolPriority: []protocol.Type{
 			tls.TypeTLS,

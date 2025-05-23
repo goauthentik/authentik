@@ -16,13 +16,16 @@ type context struct {
 	endModifier func(p *radius.Packet) *radius.Packet
 }
 
-func (ctx *context) RootPayload() protocol.Payload                    { return ctx.rootPayload }
-func (ctx *context) Packet() *radius.Request                          { return ctx.req }
-func (ctx *context) ProtocolSettings() interface{}                    { return ctx.settings }
-func (ctx *context) GetProtocolState(p protocol.Type) interface{}     { return ctx.typeState[p] }
-func (ctx *context) SetProtocolState(p protocol.Type, st interface{}) { ctx.typeState[p] = st }
-func (ctx *context) IsProtocolStart(p protocol.Type) bool             { return ctx.typeState[p] == nil }
-func (ctx *context) Log() *log.Entry                                  { return ctx.log }
+func (ctx *context) RootPayload() protocol.Payload            { return ctx.rootPayload }
+func (ctx *context) Packet() *radius.Request                  { return ctx.req }
+func (ctx *context) ProtocolSettings() any                    { return ctx.settings }
+func (ctx *context) GetProtocolState(p protocol.Type) any     { return ctx.typeState[p] }
+func (ctx *context) SetProtocolState(p protocol.Type, st any) { ctx.typeState[p] = st }
+func (ctx *context) IsProtocolStart(p protocol.Type) bool     { return ctx.typeState[p] == nil }
+func (ctx *context) Log() *log.Entry                          { return ctx.log }
+func (ctx *context) HandleInnerEAP(protocol.Payload) protocol.Payload {
+	return nil
+}
 
 func (ctx *context) ForInnerProtocol(p protocol.Type) protocol.Context {
 	return &context{

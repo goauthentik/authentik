@@ -24,30 +24,30 @@ type Payload struct {
 	RawPayload []byte
 }
 
-func (ip *Payload) Type() protocol.Type {
+func (p *Payload) Type() protocol.Type {
 	return TypeEAP
 }
 
-func (ip *Payload) Offerable() bool {
+func (p *Payload) Offerable() bool {
 	return false
 }
 
-func (packet *Payload) Decode(raw []byte) error {
-	packet.Code = protocol.Code(raw[0])
-	packet.ID = raw[1]
-	packet.Length = binary.BigEndian.Uint16(raw[2:])
-	if packet.Length != uint16(len(raw)) {
-		return fmt.Errorf("mismatched packet length; got %d, expected %d", packet.Length, uint16(len(raw)))
+func (p *Payload) Decode(raw []byte) error {
+	p.Code = protocol.Code(raw[0])
+	p.ID = raw[1]
+	p.Length = binary.BigEndian.Uint16(raw[2:])
+	if p.Length != uint16(len(raw)) {
+		return fmt.Errorf("mismatched packet length; got %d, expected %d", p.Length, uint16(len(raw)))
 	}
-	if len(raw) > 4 && (packet.Code == protocol.CodeRequest || packet.Code == protocol.CodeResponse) {
-		packet.MsgType = protocol.Type(raw[4])
+	if len(raw) > 4 && (p.Code == protocol.CodeRequest || p.Code == protocol.CodeResponse) {
+		p.MsgType = protocol.Type(raw[4])
 	}
-	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", packet.Payload)).Trace("EAP: decode raw")
-	packet.RawPayload = raw[5:]
-	if packet.Payload == nil {
+	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", p.Payload)).Trace("EAP: decode raw")
+	p.RawPayload = raw[5:]
+	if p.Payload == nil {
 		return nil
 	}
-	err := packet.Payload.Decode(raw[5:])
+	err := p.Payload.Decode(raw[5:])
 	if err != nil {
 		return err
 	}

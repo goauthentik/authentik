@@ -14,6 +14,10 @@ const (
 	StatusNextProtocol
 )
 
+type StateProtocol interface {
+	Payload
+}
+
 type Context interface {
 	Packet() *radius.Request
 	RootPayload() Payload
@@ -24,6 +28,7 @@ type Context interface {
 	SetProtocolState(p Type, s interface{})
 	IsProtocolStart(p Type) bool
 
+	HandleInnerEAP(Payload) Payload
 	EndInnerProtocol(Status, func(p *radius.Packet) *radius.Packet)
 
 	Log() *log.Entry

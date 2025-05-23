@@ -77,7 +77,7 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	st := p.stm.GetEAPState(p.state)
 	if st == nil {
 		log.Debug("Root-EAP: blank state")
-		st = BlankState(p.stm.GetEAPSettings())
+		st = protocol.BlankState(p.stm.GetEAPSettings())
 	}
 
 	nextChallengeToOffer, err := st.GetNextProtocol()

@@ -12,26 +12,26 @@ type Payload struct {
 	DesiredType protocol.Type
 }
 
-func (ln *Payload) Type() protocol.Type {
+func (p *Payload) Type() protocol.Type {
 	return TypeLegacyNAK
 }
 
-func (ln *Payload) Decode(raw []byte) error {
-	ln.DesiredType = protocol.Type(raw[0])
+func (p *Payload) Decode(raw []byte) error {
+	p.DesiredType = protocol.Type(raw[0])
 	return nil
 }
 
-func (ln *Payload) Encode() ([]byte, error) {
-	return []byte{byte(ln.DesiredType)}, nil
+func (p *Payload) Encode() ([]byte, error) {
+	return []byte{byte(p.DesiredType)}, nil
 }
 
-func (ln *Payload) Handle(ctx protocol.Context) protocol.Payload {
+func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	if ctx.IsProtocolStart(TypeLegacyNAK) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 	}
 	return nil
 }
 
-func (ln *Payload) Offerable() bool {
+func (p *Payload) Offerable() bool {
 	return false
 }

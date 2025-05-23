@@ -10,12 +10,12 @@ import (
 
 type Packet struct {
 	eap         *eap.Payload
-	stm         StateManager
+	stm         protocol.StateManager
 	state       string
 	endModifier func(p *radius.Packet) *radius.Packet
 }
 
-func emptyPayload(stm StateManager, t protocol.Type) (protocol.Payload, protocol.Type, error) {
+func emptyPayload(stm protocol.StateManager, t protocol.Type) (protocol.Payload, protocol.Type, error) {
 	for _, cons := range stm.GetEAPSettings().Protocols {
 		np := cons()
 		if np.Type() == t {
@@ -31,7 +31,7 @@ func emptyPayload(stm StateManager, t protocol.Type) (protocol.Payload, protocol
 	return nil, protocol.Type(0), fmt.Errorf("unsupported EAP type %d", t)
 }
 
-func Decode(stm StateManager, raw []byte) (*Packet, error) {
+func Decode(stm protocol.StateManager, raw []byte) (*Packet, error) {
 	packet := &Packet{
 		eap: &eap.Payload{},
 		stm: stm,

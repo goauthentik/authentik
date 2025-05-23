@@ -9,7 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ak"
-	"goauthentik.io/internal/outpost/radius/eap"
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
 func parseCIDRs(raw string) []*net.IPNet {
@@ -45,7 +45,7 @@ func (rs *RadiusServer) Refresh() error {
 	providers := make(map[int32]*ProviderInstance)
 	for _, provider := range apiProviders {
 		existing, ok := rs.providers[provider.Pk]
-		state := map[string]*eap.State{}
+		state := map[string]*protocol.State{}
 		if ok {
 			state = existing.eapState
 		}

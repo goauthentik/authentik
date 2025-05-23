@@ -12,26 +12,26 @@ type Payload struct {
 	Identity string
 }
 
-func (ip *Payload) Type() protocol.Type {
+func (p *Payload) Type() protocol.Type {
 	return TypeIdentity
 }
 
-func (ip *Payload) Decode(raw []byte) error {
-	ip.Identity = string(raw)
+func (p *Payload) Decode(raw []byte) error {
+	p.Identity = string(raw)
 	return nil
 }
 
-func (ip *Payload) Encode() ([]byte, error) {
+func (p *Payload) Encode() ([]byte, error) {
 	return []byte{}, nil
 }
 
-func (ip *Payload) Handle(ctx protocol.Context) protocol.Payload {
+func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	if ctx.IsProtocolStart(TypeIdentity) {
 		ctx.EndInnerProtocol(protocol.StatusNextProtocol, nil)
 	}
 	return nil
 }
 
-func (ip *Payload) Offerable() bool {
+func (p *Payload) Offerable() bool {
 	return false
 }
