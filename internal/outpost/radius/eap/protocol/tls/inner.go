@@ -8,10 +8,14 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 	d := make([]byte, 1024)
 	if !ctx.IsProtocolStart(p.Inner.Type()) {
 		ctx.Log().Debug("TLS: Reading from TLS for inner protocol")
-		_, err := p.st.TLS.Read(d)
+		n, err := p.st.TLS.Read(d)
 		if err != nil {
 			ctx.Log().WithError(err).Warning("TLS: Failed to read from TLS connection")
+			ctx.EndInnerProtocol(protocol.StatusError, nil)
+			return
 		}
+		// Truncate data to the size we read
+		d = d[:n]
 	}
 	err := p.Inner.Decode(d)
 	if err != nil {
