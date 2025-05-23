@@ -53,10 +53,10 @@ To support the integration of FortiManager with authentik, you need to create an
 9. Set the **IdP Logout URL** to: <kbd>https://<em>authentik.company</em>/</kbd>
 10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
 
-## Resources
-
-- [Community post on the Fortinet forum](https://community.fortinet.com/t5/FortiAnalyzer/Technical-Tip-Configure-SAML-SSO-login-with-Azure-AD/ta-p/198324)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with FortiManager, log out and log back in via authentik.
+
+## Resources
+
+- [Community post on the Fortinet forum](https://community.fortinet.com/t5/FortiAnalyzer/Technical-Tip-Configure-SAML-SSO-login-with-Azure-AD/ta-p/198324)

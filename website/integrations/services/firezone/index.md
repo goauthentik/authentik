@@ -60,11 +60,11 @@ Set the following values in the Firezone UI:
 - **Redirect URI**: <kbd>https://<em>firezone.company</em>/auth/oidc/authentik/callback/</kbd>
 - **Auth-create Users**: Turn this on
 
+## Configuration verification
+
+To verify that authentik is correctly set up with Firezone, navigate to your Firezone installation and click **authentik**. A successful login should redirect you to the main page of your installation.
+
 ## Resources
 
 - [Firezone administration documentation on OpenID Connect authentication](https://www.firezone.dev/docs/authenticate/oidc/)
 - [Firezone OIDC troubleshooting documentation](https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli)
-
-## Configuration verification
-
-To verify that authentik is correctly set up with Firezone, navigate to your Firezone installation and click **authentik**. A successful login should redirect you to the main page of your installation.

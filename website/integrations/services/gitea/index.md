@@ -193,10 +193,10 @@ gitea:
         scopes: "email profile"
 ```
 
-## Resources
-
-- [Official Gitea Documentation](https://docs.gitea.com/)
-
 ## Configuration verification
 
 To verify that authentik is correctly set up with Gitea, log out and then log back in using the **Sign in with authentik** button.
+
+## Resources
+
+- [Official Gitea Documentation](https://docs.gitea.com/)
