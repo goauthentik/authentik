@@ -37,7 +37,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
+        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -49,7 +49,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 label=${msg("Certificate")}
                 name="certificateData"
                 ?writeOnly=${this.instance !== undefined}
-                ?required=${true}
+                required
             >
                 <textarea
                     autocomplete="off"

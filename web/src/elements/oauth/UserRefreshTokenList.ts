@@ -98,7 +98,7 @@ export class UserOAuthRefreshTokenList extends Table<TokenModel> {
                 : msg("-")}`,
             html`<ak-chip-group>
                 ${item.scope.sort().map((scope) => {
-                    return html`<ak-chip .removable=${false}>${scope}</ak-chip>`;
+                    return html`<ak-chip>${scope}</ak-chip>`;
                 })}
             </ak-chip-group>`,
         ];

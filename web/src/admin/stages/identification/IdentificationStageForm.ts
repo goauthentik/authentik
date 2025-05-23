@@ -76,7 +76,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
         return html`<span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -84,7 +84,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User fields")} name="userFields">
@@ -196,11 +196,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             <ak-form-group>
                 <span slot="header"> ${msg("Source settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Sources")}
-                        ?required=${true}
-                        name="sources"
-                    >
+                    <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
                             .selector=${sourcesSelector(this.instance?.sources)}

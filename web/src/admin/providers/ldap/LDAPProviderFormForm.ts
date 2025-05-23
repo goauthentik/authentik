@@ -86,7 +86,7 @@ export function renderForm(
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Bind flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >

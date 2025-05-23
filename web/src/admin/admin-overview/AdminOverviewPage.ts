@@ -88,7 +88,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
         return html` <ak-page-header
                 header=${msg(str`Welcome, ${username || ""}.`)}
                 description=${msg("General system status")}
-                ?hasIcon=${false}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section">
