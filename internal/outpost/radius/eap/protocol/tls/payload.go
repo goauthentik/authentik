@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"os"
 	"slices"
 	"time"
@@ -252,4 +253,13 @@ func (p *Payload) sendNextChunk() *Payload {
 		Length: uint32(p.st.TotalPayloadSize),
 		Data:   nextChunk,
 	}
+}
+
+func (p *Payload) String() string {
+	return fmt.Sprintf(
+		"<TLS Packet HandshakeDone=%t, FinalStatus=%d, ClientHello=%v>",
+		p.st.HandshakeDone,
+		p.st.FinalStatus,
+		p.st.ClientHello,
+	)
 }

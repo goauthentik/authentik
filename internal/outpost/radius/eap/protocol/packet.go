@@ -6,6 +6,7 @@ type Payload interface {
 	Handle(ctx Context) Payload
 	Type() Type
 	Offerable() bool
+	String() string
 }
 
 type Inner interface {

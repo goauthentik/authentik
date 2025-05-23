@@ -2,6 +2,7 @@ package peap
 
 import (
 	"encoding/binary"
+	"fmt"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/debug"
@@ -80,7 +81,9 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 
 	if ctx.IsProtocolStart(TypePEAP) {
 		ctx.Log().Debug("PEAP: Protocol start")
-		p.st = &State{}
+		p.st = &State{
+			SubState: make(map[string]*protocol.State),
+		}
 		return &eap.Payload{
 			Code:    protocol.CodeRequest,
 			ID:      rootEap.ID + 1,
@@ -98,6 +101,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			ID:   rootEap.ID + 1,
 		}
 	}
+	ctx.Log().Debugf("PEAP: Decoded inner EAP to %s", ep.String())
 
 	res, err := ctx.HandleInnerEAP(ep, p)
 	if err != nil {
@@ -120,4 +124,11 @@ func (p *Payload) SetEAPState(key string, st *protocol.State) {
 
 func (p *Payload) Offerable() bool {
 	return true
+}
+
+func (p *Payload) String() string {
+	return fmt.Sprintf(
+		"<PEAP Packet Wrapping=%s>",
+		p.eap.String(),
+	)
 }

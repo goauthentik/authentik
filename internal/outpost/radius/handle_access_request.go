@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/identity"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/legacy_nak"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/mschapv2"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/peap"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/tls"
 	"goauthentik.io/internal/outpost/radius/metrics"
@@ -193,7 +194,10 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 				Config: &ttls.Config{
 					Certificates: []ttls.Certificate{*cert},
 				},
-				InnerProtocols: protocol.Settings{},
+				InnerProtocols: protocol.Settings{
+					Protocols:        append(protocols, mschapv2.Protocol),
+					ProtocolPriority: []protocol.Type{mschapv2.TypeMSCHAPv2},
+				},
 			},
 		},
 	}

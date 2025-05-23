@@ -73,7 +73,18 @@ func (p *Payload) Encode() ([]byte, error) {
 	return buff, nil
 }
 
-func (ip *Payload) Handle(ctx protocol.Context) protocol.Payload {
+func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	ctx.Log().Debug("EAP: Handle")
 	return nil
+}
+
+func (p *Payload) String() string {
+	return fmt.Sprintf(
+		"<EAP Packet Code=%d, ID=%d, Type=%d, Length=%d, Payload=%T>",
+		p.Code,
+		p.ID,
+		p.MsgType,
+		p.Length,
+		p.Payload,
+	)
 }

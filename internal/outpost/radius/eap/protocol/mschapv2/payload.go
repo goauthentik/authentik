@@ -1,48 +1,41 @@
-package legacy_nak
+package mschapv2
 
 import (
-	"fmt"
-
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
-const TypeLegacyNAK protocol.Type = 3
+const TypeMSCHAPv2 protocol.Type = 26
 
 func Protocol() protocol.Payload {
 	return &Payload{}
 }
 
 type Payload struct {
-	DesiredType protocol.Type
 }
 
 func (p *Payload) Type() protocol.Type {
-	return TypeLegacyNAK
+	return TypeMSCHAPv2
 }
 
 func (p *Payload) Decode(raw []byte) error {
-	p.DesiredType = protocol.Type(raw[0])
 	return nil
 }
 
 func (p *Payload) Encode() ([]byte, error) {
-	return []byte{byte(p.DesiredType)}, nil
+	return []byte{}, nil
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
-	if ctx.IsProtocolStart(TypeLegacyNAK) {
+	if ctx.IsProtocolStart(TypeMSCHAPv2) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 	}
 	return nil
 }
 
 func (p *Payload) Offerable() bool {
-	return false
+	return true
 }
 
 func (p *Payload) String() string {
-	return fmt.Sprintf(
-		"<Legacy NAK Packet DesiredType=%d>",
-		p.DesiredType,
-	)
+	return "<MSCHAPv2 Packet >"
 }

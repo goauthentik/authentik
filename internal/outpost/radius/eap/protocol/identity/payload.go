@@ -1,6 +1,10 @@
 package identity
 
-import "goauthentik.io/internal/outpost/radius/eap/protocol"
+import (
+	"fmt"
+
+	"goauthentik.io/internal/outpost/radius/eap/protocol"
+)
 
 const TypeIdentity protocol.Type = 1
 
@@ -34,4 +38,11 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 
 func (p *Payload) Offerable() bool {
 	return false
+}
+
+func (p *Payload) String() string {
+	return fmt.Sprintf(
+		"<Identity Packet Identity=%s>",
+		p.Identity,
+	)
 }
