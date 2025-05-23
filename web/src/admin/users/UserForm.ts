@@ -81,11 +81,7 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                required
-                name="username"
-            >
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="username">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"

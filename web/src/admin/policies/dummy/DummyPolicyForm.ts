@@ -82,11 +82,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             <span class="pf-c-switch__label">${msg("Pass policy?")}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (min)")}
-                        required
-                        name="waitMin"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (min)")} required name="waitMin">
                         <input
                             type="number"
                             value="${this.instance?.waitMin ?? 1}"
@@ -99,11 +95,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (max)")}
-                        required
-                        name="waitMax"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (max)")} required name="waitMax">
                         <input
                             type="number"
                             value="${this.instance?.waitMax ?? 5}"

@@ -136,11 +136,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             <ak-form-group>
                 <span slot="header"> ${msg("Advanced settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("JS URL")}
-                        required
-                        name="jsUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
                         <input
                             type="url"
                             value="${ifDefined(
@@ -158,11 +154,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("API URL")}
-                        required
-                        name="apiUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("API URL")} required name="apiUrl">
                         <input
                             type="url"
                             value="${ifDefined(

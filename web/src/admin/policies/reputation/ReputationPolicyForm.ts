@@ -107,11 +107,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                             <span class="pf-c-switch__label">${msg("Check Username")}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Threshold")}
-                        required
-                        name="threshold"
-                    >
+                    <ak-form-element-horizontal label=${msg("Threshold")} required name="threshold">
                         <input
                             type="number"
                             value="${ifDefined(this.instance?.threshold || -5)}"

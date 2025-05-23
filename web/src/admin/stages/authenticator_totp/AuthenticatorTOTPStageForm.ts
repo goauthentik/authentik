@@ -72,11 +72,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Digits")}
-                        required
-                        name="digits"
-                    >
+                    <ak-form-element-horizontal label=${msg("Digits")} required name="digits">
                         <select name="users" class="pf-c-form-control">
                             <option
                                 value="${DigitsEnum._6}"

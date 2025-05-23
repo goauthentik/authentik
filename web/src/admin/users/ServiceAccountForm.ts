@@ -54,11 +54,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("Username")}
-                required
-                name="name"
-            >
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="name">
                 <input
                     type="text"
                     value=""

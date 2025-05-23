@@ -85,11 +85,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Backends")}
-                        required
-                        name="backends"
-                    >
+                    <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${backends}

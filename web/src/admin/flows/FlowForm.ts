@@ -105,11 +105,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 />
                 <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Designation")}
-                required
-                name="designation"
-            >
+            <ak-form-element-horizontal label=${msg("Designation")} required name="designation">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>
                         ---------
@@ -312,11 +308,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
             <ak-form-group>
                 <span slot="header"> ${msg("Appearance settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Layout")}
-                        required
-                        name="layout"
-                    >
+                    <ak-form-element-horizontal label=${msg("Layout")} required name="layout">
                         <select class="pf-c-form-control">
                             <option
                                 value=${FlowLayoutEnum.Stacked}

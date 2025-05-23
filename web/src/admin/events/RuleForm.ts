@@ -97,11 +97,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Transports")}
-                required
-                name="transports"
-            >
+            <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.transports)}

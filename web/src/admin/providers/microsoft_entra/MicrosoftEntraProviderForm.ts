@@ -57,11 +57,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Client ID")}
-                        required
-                        name="clientId"
-                    >
+                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
                         <input
                             type="text"
                             value="${this.instance?.clientId ?? ""}"
@@ -87,11 +83,7 @@ export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEn
                             ${msg("Client secret for the app registration.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Tenant ID")}
-                        required
-                        name="tenantId"
-                    >
+                    <ak-form-element-horizontal label=${msg("Tenant ID")} required name="tenantId">
                         <input
                             type="text"
                             value="${this.instance?.tenantId ?? ""}"

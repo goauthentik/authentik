@@ -69,11 +69,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Hostname")}
-                required
-                name="apiHostname"
-            >
+            <ak-form-element-horizontal label=${msg("API Hostname")} required name="apiHostname">
                 <input
                     type="text"
                     value="${this.instance?.apiHostname ?? ""}"

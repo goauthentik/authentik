@@ -74,11 +74,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Twilio Auth Token")}
-                required
-                name="auth"
-            >
+            <ak-form-element-horizontal label=${msg("Twilio Auth Token")} required name="auth">
                 <input
                     type="text"
                     value="${this.instance?.auth ?? ""}"
@@ -120,11 +116,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("External API URL")}
-                required
-                name="accountSid"
-            >
+            <ak-form-element-horizontal label=${msg("External API URL")} required name="accountSid">
                 <input
                     type="text"
                     value="${this.instance?.accountSid ?? ""}"
@@ -137,11 +129,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Auth Username")}
-                required
-                name="auth"
-            >
+            <ak-form-element-horizontal label=${msg("API Auth Username")} required name="auth">
                 <input
                     type="text"
                     value="${this.instance?.auth ?? ""}"
@@ -237,11 +225,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Provider")}
-                        required
-                        name="provider"
-                    >
+                    <ak-form-element-horizontal label=${msg("Provider")} required name="provider">
                         <select
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {

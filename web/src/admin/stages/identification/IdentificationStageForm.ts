@@ -196,11 +196,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
             <ak-form-group>
                 <span slot="header"> ${msg("Source settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Sources")}
-                        required
-                        name="sources"
-                    >
+                    <ak-form-element-horizontal label=${msg("Sources")} required name="sources">
                         <ak-dual-select-dynamic-selected
                             .provider=${sourcesProvider}
                             .selector=${sourcesSelector(this.instance?.sources)}

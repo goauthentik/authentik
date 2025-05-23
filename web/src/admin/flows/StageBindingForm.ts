@@ -76,11 +76,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
         if (this.instance?.target || this.targetPk) {
             return html``;
         }
-        return html`<ak-form-element-horizontal
-            label=${msg("Target")}
-            required
-            name="target"
-        >
+        return html`<ak-form-element-horizontal label=${msg("Target")} required name="target">
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
                 .currentFlow=${this.instance?.target}

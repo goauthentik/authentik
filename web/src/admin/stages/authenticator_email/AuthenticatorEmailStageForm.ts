@@ -112,11 +112,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         <span class="pf-c-switch__label">${msg("Use SSL")}</span>
                     </label>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Timeout")}
-                    required
-                    name="timeout"
-                >
+                <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
                         value="${this.instance?.timeout ?? 30}"
@@ -197,11 +193,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Subject")}
-                        required
-                        name="subject"
-                    >
+                    <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"
                             value="${this.instance?.subject ?? "authentik Sign-in code"}"

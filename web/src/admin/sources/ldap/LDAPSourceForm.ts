@@ -246,11 +246,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     >
                         <input type="text" value="" class="pf-c-form-control" />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Base DN")}
-                        required
-                        name="baseDn"
-                    >
+                    <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.baseDn)}"

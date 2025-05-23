@@ -39,18 +39,10 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                     ${msg("Optional, comma-separated SubjectAlt Names.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Validity days")}
-                name="validityDays"
-                required
-            >
+            <ak-form-element-horizontal label=${msg("Validity days")} name="validityDays" required>
                 <input class="pf-c-form-control" type="number" value="365" />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Private key Algorithm")}
-                required
-                name="alg"
-            >
+            <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
                 <ak-radio
                     .options=${[
                         {
