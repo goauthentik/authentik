@@ -54,6 +54,7 @@ const items = [
             "services/google/index",
             "services/hashicorp-cloud/index",
             "services/oracle-cloud/index",
+            "services/ovh/index",
         ],
     },
     {
