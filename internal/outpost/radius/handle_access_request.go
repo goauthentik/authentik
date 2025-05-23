@@ -189,10 +189,11 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 					}
 				},
 			},
-			peap.TypePEAP: tls.Settings{
+			peap.TypePEAP: peap.Settings{
 				Config: &ttls.Config{
 					Certificates: []ttls.Certificate{*cert},
 				},
+				InnerProtocols: protocol.Settings{},
 			},
 		},
 	}

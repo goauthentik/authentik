@@ -24,9 +24,10 @@ func Protocol() protocol.Payload {
 type Payload struct {
 	Inner protocol.Payload
 
-	eap *eap.Payload
-	st  *State
-	raw []byte
+	eap      *eap.Payload
+	st       *State
+	settings *Settings
+	raw      []byte
 }
 
 func (p *Payload) Type() protocol.Type {
@@ -73,6 +74,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	defer func() {
 		ctx.SetProtocolState(TypePEAP, p.st)
 	}()
+	p.settings = ctx.ProtocolSettings().(*Settings)
 
 	rootEap := ctx.RootPayload().(*eap.Payload)
 
@@ -97,7 +99,19 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		}
 	}
 
-	return ep
+	return ctx.HandleInnerEAP(ep, p)
+}
+
+func (p *Payload) GetEAPSettings() protocol.Settings {
+	return p.settings.InnerProtocols
+}
+
+func (p *Payload) GetEAPState(key string) *protocol.State {
+	return p.st.SubState[key]
+}
+
+func (p *Payload) SetEAPState(key string, st *protocol.State) {
+	p.st.SubState[key] = st
 }
 
 func (p *Payload) Offerable() bool {

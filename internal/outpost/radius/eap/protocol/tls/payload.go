@@ -157,7 +157,7 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 	ctx.Log().Debug("TLS: no TLS connection in state yet, starting connection")
 	p.st.Context, p.st.ContextCancel = context.WithTimeout(context.Background(), staleConnectionTimeout*time.Second)
 	p.st.Conn = NewBuffConn(p.Data, p.st.Context)
-	cfg := ctx.ProtocolSettings().(Settings).Config.Clone()
+	cfg := ctx.ProtocolSettings().(TLSConfig).TLSConfig().Clone()
 
 	if klp, ok := os.LookupEnv("SSLKEYLOGFILE"); ok {
 		kl, err := os.OpenFile(klp, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0600)

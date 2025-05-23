@@ -23,7 +23,7 @@ func (ctx *context) GetProtocolState(p protocol.Type) any     { return ctx.typeS
 func (ctx *context) SetProtocolState(p protocol.Type, st any) { ctx.typeState[p] = st }
 func (ctx *context) IsProtocolStart(p protocol.Type) bool     { return ctx.typeState[p] == nil }
 func (ctx *context) Log() *log.Entry                          { return ctx.log }
-func (ctx *context) HandleInnerEAP(protocol.Payload) protocol.Payload {
+func (ctx *context) HandleInnerEAP(protocol.Payload, protocol.StateManager) protocol.Payload {
 	return nil
 }
 
