@@ -128,6 +128,7 @@ const items = [
         type: "category",
         label: "Miscellaneous",
         items: [
+            "services/1password/index",
             "services/actual-budget/index",
             "services/adventurelog/index",
             "services/calibre-web/index",
