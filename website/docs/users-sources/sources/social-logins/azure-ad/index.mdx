@@ -119,11 +119,11 @@ You must explicitly add the Azure AD source to the authentication flow:
 
 1. Go to the authentik admin interface.
 2. Navigate to Flows and Stages > Flows.
-3. Select default-authentication-flow.
+3. Select the authentication flow you use for login (usually called default-authentication-flow, but the name may differ depending on your setup).
 4. Click on Stage-Bindings.
-5. Edit default-authentication-identification.
-6. Expand source settings section.
-7. Move **Microsoft Entra ID** from available sources to selected sources
+5. Edit the identification stage (commonly named `default-authentication-identification` but may vary).
+6. Expand source settings section. In `Available Sources` you sheld see the one you created.
+7. Move it to `Selected Sources`
 8. Click Update to save changes.
 
 After this, the Azure AD login button should appear on the login screen, allowing users to authenticate via Azure AD.
