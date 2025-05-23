@@ -14,13 +14,13 @@
         "format": "wireit",
         "lint": "eslint --fix .",
         "lint-check": "eslint --max-warnings 0 .",
-        "prettier": "prettier --cache --write -u .",
-        "prettier-check": "prettier --cache --check -u .",
         "lint:imports": "knip --config scripts/knip.config.ts",
         "lint:lockfile": "wireit",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
         "precommit": "wireit",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
@@ -171,6 +171,7 @@
         "@wdio/browser-runner": "9.4",
         "@wdio/cli": "9.4",
         "@wdio/spec-reporter": "^9.1.2",
+        "@web/test-runner": "^0.20.2",
         "chromedriver": "^136.0.3",
         "esbuild": "^0.25.4",
         "esbuild-plugin-copy": "^2.1.1",
@@ -301,8 +302,7 @@
                 "lint",
                 "lint:types",
                 "lint:components",
-                "lint:lockfile",
-                "lint:lockfiles"
+                "lint:lockfile"
             ]
         },
         "storybook:build": {
@@ -371,12 +371,12 @@
         "chromedriver": {
             "axios": "^1.8.4"
         },
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
         "storybook-addon-mock": {
             "react": "^19.1.0",
             "react-dom": "^19.1.0"
-        },
-        "rapidoc": {
-            "@apitools/openapi-parser@": "0.0.37"
         }
     }
 }
