@@ -1,7 +1,7 @@
 import { globalAK } from "#common/global";
 import "#elements/Alert";
 import { AKElement } from "#elements/Base";
-import { MDXModule, MDXModuleContext, fetchMDXModule } from "#elements/ak-mdx/MDXModuleContext";
+import { MDXModuleContext, fetchMDXModule } from "#elements/ak-mdx/MDXModuleContext";
 import { MDXAnchor } from "#elements/ak-mdx/components/MDXAnchor";
 import { MDXWrapper } from "#elements/ak-mdx/components/MDXWrapper";
 import { remarkAdmonition } from "#elements/ak-mdx/remark/remark-admonition";
@@ -25,6 +25,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGFM from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkParse from "remark-parse";
+import type { MDXModule } from "~docs/types";
 
 import { css } from "lit";
 import { customElement, property } from "lit/decorators.js";
