@@ -5,6 +5,7 @@ import (
 	"crypto/md5"
 	"encoding/base64"
 	"fmt"
+	"reflect"
 
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
@@ -95,8 +96,8 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 		return p.handleEAP(pp, stm)
 	}
 
-	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
-		log.Debug("Root-EAP: received NAK, trying next protocol")
+	if n, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
+		log.WithField("desired", n.DesiredType).Debug("Root-EAP: received NAK, trying next protocol")
 		p.eap.Payload = nil
 		return next()
 	}
@@ -125,11 +126,10 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 		MsgType: t,
 	}
 	var payload any
-	if ctx.IsProtocolStart(t) {
-		p.eap.Payload = np
-		p.eap.Payload.Decode(pp.(*eap.Payload).RawPayload)
+	if reflect.TypeOf(p.eap.Payload) == reflect.TypeOf(np) {
+		np.Decode(pp.(*eap.Payload).RawPayload)
 	}
-	payload = p.eap.Payload.Handle(ctx)
+	payload = np.Handle(ctx)
 	if payload != nil {
 		res.Payload = payload.(protocol.Payload)
 	}
