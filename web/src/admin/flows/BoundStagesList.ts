@@ -127,7 +127,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <div slot="primary">
                     <ak-stage-wizard
                         createText=${msg("Create and bind Stage")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-stage-wizard>
                     <ak-forms-modal>
@@ -148,7 +148,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         return html`
             <ak-stage-wizard
                 createText=${msg("Create and bind Stage")}
-                ?showBindingPage=${true}
+                showBindingPage
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>

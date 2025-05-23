@@ -59,7 +59,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
     renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Twilio Account SID")}
-                ?required=${true}
+                required
                 name="accountSid"
             >
                 <input
@@ -76,7 +76,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Twilio Auth Token")}
-                ?required=${true}
+                required
                 name="auth"
             >
                 <input
@@ -101,7 +101,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     const current = (ev.target as HTMLInputElement).value;
                     this.authType = current as AuthTypeEnum;
                 }}
-                ?required=${true}
+                required
                 name="authType"
             >
                 <ak-radio
@@ -122,7 +122,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("External API URL")}
-                ?required=${true}
+                required
                 name="accountSid"
             >
                 <input
@@ -139,7 +139,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("API Auth Username")}
-                ?required=${true}
+                required
                 name="auth"
             >
                 <input
@@ -196,7 +196,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.mapping === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
@@ -210,7 +210,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -234,12 +234,12 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Provider")}
-                        ?required=${true}
+                        required
                         name="provider"
                     >
                         <select
@@ -265,7 +265,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("From number")}
-                        ?required=${true}
+                        required
                         name="fromNumber"
                     >
                         <input
@@ -334,7 +334,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

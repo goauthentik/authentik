@@ -126,7 +126,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
-        return html` <ak-form-group .expanded=${true}>
+        return html` <ak-form-group expanded>
             <span slot="header"> ${msg("URL settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
@@ -260,7 +260,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -268,7 +268,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -295,7 +295,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -338,7 +338,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                ?required=${true}
+                required
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -424,12 +424,12 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Consumer key")}
-                        ?required=${true}
+                        required
                         name="consumerKey"
                     >
                         <input
@@ -444,7 +444,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Consumer secret")}
-                        ?required=${true}
+                        required
                         ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
                     >
@@ -472,7 +472,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("OAuth Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

@@ -36,7 +36,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -64,7 +64,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
@@ -84,7 +84,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Wait (min)")}
-                        ?required=${true}
+                        required
                         name="waitMin"
                     >
                         <input
@@ -101,7 +101,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Wait (max)")}
-                        ?required=${true}
+                        required
                         name="waitMax"
                     >
                         <input

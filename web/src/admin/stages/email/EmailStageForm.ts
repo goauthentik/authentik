@@ -49,7 +49,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         return html`<ak-form-group>
             <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -57,7 +57,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
                     <input
                         type="number"
                         value="${this.instance?.port ?? 25}"
@@ -111,7 +111,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Timeout")}
-                    ?required=${true}
+                    required
                     name="timeout"
                 >
                     <input
@@ -123,7 +123,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("From address")}
-                    ?required=${true}
+                    required
                     name="fromAddress"
                 >
                     <input
@@ -143,7 +143,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -151,7 +151,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
@@ -202,7 +202,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token expiration")}
-                        ?required=${true}
+                        required
                         name="tokenExpiry"
                     >
                         <input
@@ -218,7 +218,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Subject")}
-                        ?required=${true}
+                        required
                         name="subject"
                     >
                         <input
@@ -230,7 +230,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Template")}
-                        ?required=${true}
+                        required
                         name="template"
                     >
                         <select name="users" class="pf-c-form-control">

@@ -95,7 +95,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("User")}
-                ?required=${true}
+                required
                 name="forUser"
             >
                 <ak-search-select

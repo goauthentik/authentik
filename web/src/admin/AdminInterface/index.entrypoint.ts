@@ -56,18 +56,14 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
     protected readonly ws: WebsocketClient;
 
-    @property({
-        type: Object,
-        attribute: false,
-        reflect: false,
-    })
+    @property({ type: Object, attribute: false })
     public user?: SessionUser;
 
     @query("ak-about-modal")
     public aboutModal?: AboutModal;
 
     @property({ type: Boolean, reflect: true })
-    public sidebarOpen: boolean;
+    public sidebarOpen = false;
 
     @eventOptions({ passive: true })
     protected sidebarListener(event: CustomEvent<SidebarToggleEventDetail>) {

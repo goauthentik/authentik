@@ -62,7 +62,7 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -112,7 +112,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.parent;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
@@ -143,7 +143,7 @@ export class GroupForm extends ModelForm<Group, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Attributes")}
-                ?required=${true}
+                required
                 name="attributes"
             >
                 <ak-codemirror

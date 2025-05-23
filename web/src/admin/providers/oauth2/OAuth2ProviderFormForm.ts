@@ -133,7 +133,7 @@ export function renderForm(
         <ak-form-element-horizontal
             name="authorizationFlow"
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -279,7 +279,7 @@ export function renderForm(
                     label=${msg("Refresh Token validity")}
                     value="${provider?.refreshTokenValidity ?? "days=30"}"
                     inputHint="code"
-                    ?required=${true}
+                    required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
                         </p>

@@ -37,7 +37,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
-                    ?required=${true}
+                    required
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -60,7 +60,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     inputHint="code"
                 ></ak-text-input>
 
-                <ak-form-group .expanded=${true}>
+                <ak-form-group expanded>
                     <span slot="header"> ${msg("Protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-form-element-horizontal

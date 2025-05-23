@@ -38,7 +38,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -46,12 +46,12 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Public Key")}
-                        ?required=${true}
+                        required
                         name="publicKey"
                     >
                         <input
@@ -70,7 +70,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Private Key")}
-                        ?required=${true}
+                        required
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey"
                     >
@@ -138,7 +138,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("JS URL")}
-                        ?required=${true}
+                        required
                         name="jsUrl"
                     >
                         <input
@@ -160,7 +160,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("API URL")}
-                        ?required=${true}
+                        required
                         name="apiUrl"
                     >
                         <input

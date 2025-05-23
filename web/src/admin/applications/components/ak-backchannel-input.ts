@@ -57,7 +57,7 @@ export class AkBackchannelProvidersInput extends AKElement {
     render() {
         const renderOneChip = (provider: Provider) =>
             html`<ak-chip
-                .removable=${true}
+                
                 value=${ifDefined(provider.pk)}
                 @remove=${this.remover(provider)}
                 >${provider.name}</ak-chip
@@ -66,7 +66,7 @@ export class AkBackchannelProvidersInput extends AKElement {
         return html`
             <ak-form-element-horizontal label=${this.label} name=${this.name}>
                 <div class="pf-c-input-group">
-                    <ak-provider-select-table ?backchannel=${true} .confirm=${this.confirm}>
+                    <ak-provider-select-table backchannel .confirm=${this.confirm}>
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
                             ${this.tooltip ? this.tooltip : nothing}
                             <i class="fas fa-plus" aria-hidden="true"></i>

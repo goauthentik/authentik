@@ -49,10 +49,10 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         if (!this.showConnectionSettings) {
             return html``;
         }
-        return html`<ak-form-group .expanded=${true}>
+        return html`<ak-form-group expanded>
             <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -60,7 +60,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
                     <input
                         type="number"
                         value="${this.instance?.port ?? 25}"
@@ -114,7 +114,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("Timeout")}
-                    ?required=${true}
+                    required
                     name="timeout"
                 >
                     <input
@@ -126,7 +126,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("From address")}
-                    ?required=${true}
+                    required
                     name="fromAddress"
                 >
                     <input
@@ -145,7 +145,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -194,12 +194,12 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </p>
             </ak-form-element-horizontal>
             ${this.renderConnectionSettings()}
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Subject")}
-                        ?required=${true}
+                        required
                         name="subject"
                     >
                         <input
@@ -214,7 +214,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token expiration")}
-                        ?required=${true}
+                        required
                         name="tokenExpiry"
                     >
                         <input
@@ -260,7 +260,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

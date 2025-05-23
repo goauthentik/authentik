@@ -51,7 +51,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     renderFormManual(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("User")}
-                ?required=${true}
+                required
                 name="username"
             >
                 <ak-search-select
@@ -83,7 +83,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Duo User ID")}
-                ?required=${true}
+                required
                 name="duoUserId"
             >
                 <input type="text" class="pf-c-form-control" required />

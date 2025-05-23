@@ -45,7 +45,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -71,7 +71,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("API Hostname")}
-                ?required=${true}
+                required
                 name="apiHostname"
             >
                 <input
@@ -83,12 +83,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Duo Auth API")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
-                        ?required=${true}
+                        required
                         name="clientId"
                     >
                         <input
@@ -100,7 +100,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Secret key")}
-                        ?required=${true}
+                        required
                         ?writeOnly=${this.instance !== undefined}
                         name="clientSecret"
                     >
@@ -151,7 +151,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -185,7 +185,7 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
