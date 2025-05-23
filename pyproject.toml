@@ -114,7 +114,7 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-django-tenants = { git = "https://github.com/goauthentik/django-tenants.git", branch = "authentik-fixes" }
+django-tenants = { git = "https://github.com/django-tenants/django-tenants.git", rev = "1c49a0894a70bf37edfc245a7c64832e98ea4f2c" }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 
