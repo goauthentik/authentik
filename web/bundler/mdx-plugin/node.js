@@ -4,8 +4,8 @@
  * @import {
  *   OnLoadArgs,
  *   OnLoadResult,
- OnResolveArgs,
- OnResolveResult,
+ *   OnResolveArgs,
+ *   OnResolveResult,
  *   Plugin,
  *   PluginBuild
  * } from "esbuild"
@@ -15,19 +15,13 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
 /**
- * @typedef {Omit<OnLoadArgs, 'pluginData'> & LoadDataFields} LoadData
- *   Data passed to `onload`.
+ * @typedef {Omit<OnLoadArgs, 'pluginData'> & LoadDataFields} LoadData Data passed to `onload`.
  *
- * @typedef LoadDataFields
- *   Extra fields given in `data` to `onload`.
- * @property {PluginData | null | undefined} [pluginData]
- *   Plugin data.
+ * @typedef LoadDataFields Extra fields given in `data` to `onload`.
+ * @property {PluginData | null | undefined} [pluginData] Plugin data.
  *
- *
- * @typedef PluginData
- *   Extra data passed.
- * @property {Buffer | string | null | undefined} [contents]
- *   File contents.
+ * @typedef PluginData Extra data passed.
+ * @property {Buffer | string | null | undefined} [contents] File contents.
  */
 
 const pluginName = "mdx-plugin";
@@ -41,15 +35,15 @@ const pluginName = "mdx-plugin";
 /**
  * Bundle MDX into JSON modules.
  *
- * @param {MDXPluginOptions} options Options.
- * @returns {Plugin} Plugin.
+ * @param {MDXPluginOptions} options
+ * @returns {Plugin}
  */
 export function mdxPlugin({ root }) {
+    // TODO: Replace with `resolvePackage` after NPM Workspaces support is added.
     const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
     /**
      * @param {PluginBuild} build
-     *   Build.
      */
     function setup(build) {
         /**
@@ -67,9 +61,7 @@ export function mdxPlugin({ root }) {
 
         /**
          * @param {LoadData} data
-         *   Data.
          * @returns {Promise<OnLoadResult>}
-         *   Result.
          */
         async function loadListener(data) {
             const content = String(
