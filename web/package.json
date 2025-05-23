@@ -194,7 +194,7 @@
         "typescript-eslint": "^8.32.1",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
-        "wireit": "^0.14.9"
+        "wireit": "^0.14.12"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.25.4",
