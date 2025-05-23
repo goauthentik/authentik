@@ -46,13 +46,16 @@ func (p *Payload) Decode(raw []byte) error {
 }
 
 func (p *Payload) Encode() ([]byte, error) {
+	log.Debug("PEAP: Encode")
 	return p.eap.Encode()
 }
 
 // Inner EAP packets in PEAP may not include the header, hence we need a custom decoder
 // https://datatracker.ietf.org/doc/html/draft-kamath-pppext-peapv0-00.txt#section-1.1
 func (p *Payload) eapInnerDecode(ctx protocol.Context) (*eap.Payload, error) {
-	ep := &eap.Payload{}
+	ep := &eap.Payload{
+		Settings: p.GetEAPSettings(),
+	}
 	rootEap := ctx.RootPayload().(*eap.Payload)
 	fixedRaw := []byte{
 		byte(rootEap.Code),
@@ -69,6 +72,10 @@ func (p *Payload) eapInnerDecode(ctx protocol.Context) (*eap.Payload, error) {
 		return nil, err
 	}
 	return ep, nil
+}
+
+func (p *Payload) eapEncodeInner(ctx protocol.Context) ([]byte, error) {
+	return []byte{}, nil
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
@@ -101,6 +108,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			ID:   rootEap.ID + 1,
 		}
 	}
+	p.eap = ep
 	ctx.Log().Debugf("PEAP: Decoded inner EAP to %s", ep.String())
 
 	res, err := ctx.HandleInnerEAP(ep, p)

@@ -119,7 +119,21 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 	}
 	ctx.log.Debug("Root-EAP: Passing to protocol")
 
-	res := p.GetChallengeForType(ctx, np, t)
+	res := &eap.Payload{
+		Code:    protocol.CodeRequest,
+		ID:      p.eap.ID + 1,
+		MsgType: t,
+	}
+	var payload any
+	if ctx.IsProtocolStart(t) {
+		p.eap.Payload = np
+		p.eap.Payload.Decode(pp.(*eap.Payload).RawPayload)
+	}
+	payload = p.eap.Payload.Handle(ctx)
+	if payload != nil {
+		res.Payload = payload.(protocol.Payload)
+	}
+
 	stm.SetEAPState(p.state, st)
 
 	if ctx.endModifier != nil {
@@ -143,24 +157,6 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 
 func (p *Packet) handleInner() (*eap.Payload, error) {
 	return p.handleEAP(p.eap, p.stm)
-}
-
-func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload, t protocol.Type) *eap.Payload {
-	res := &eap.Payload{
-		Code:    protocol.CodeRequest,
-		ID:      p.eap.ID + 1,
-		MsgType: t,
-	}
-	var payload any
-	if ctx.IsProtocolStart(t) {
-		p.eap.Payload = np
-		p.eap.Payload.Decode(p.eap.RawPayload)
-	}
-	payload = p.eap.Payload.Handle(ctx)
-	if payload != nil {
-		res.Payload = payload.(protocol.Payload)
-	}
-	return res
 }
 
 func (p *Packet) setMessageAuthenticator(rp *radius.Packet) error {
