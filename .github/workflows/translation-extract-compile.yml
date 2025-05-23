@@ -32,15 +32,25 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
-      - name: Generate API
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+      - name: Prepare Dependencies
+        run: npm ci
+      - name: Generate TypeScript API
         run: make gen-client-ts
-      - name: run extract
+      - name: Run extract
         run: |
           uv run make i18n-extract
-      - name: run compile
+      - name: Run UV compile
         run: |
           uv run ak compilemessages
-          make web-check-compile
+      - name: Lint Project
+        run: |
+          npm run build-locales -w @goauthentik/web
+          npm run lint:types
       - name: Create Pull Request
         if: ${{ github.event_name != 'pull_request' }}
         uses: peter-evans/create-pull-request@v7

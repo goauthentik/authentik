@@ -106,14 +106,14 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v4
         with:
-          node-version-file: web/package.json
+          node-version-file: package.json
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - name: Build web
-        working-directory: web/
+          cache-dependency-path: package-lock.json
+      - name: Prepare Dependencies
+        run: npm ci
+      - name: Run ESBuild (Proxy)
         run: |
-          npm ci
-          npm run build-proxy
+          npm run build-proxy -w @goauthentik/web
       - name: Build outpost
         run: |
           set -x

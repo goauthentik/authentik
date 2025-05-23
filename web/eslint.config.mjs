@@ -24,13 +24,12 @@ export default tseslint.config(
     ...ESLintConfig,
     {
         rules: {
-            "no-console": "off",
+            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
         },
-        files: ["packages/**/*"],
+        files: ["src/**/*"],
     },
     {
         rules: {
-            "no-void": "off",
             "no-implicit-coercion": "off",
             "prefer-template": "off",
             "@typescript-eslint/ban-ts-comment": "off",
@@ -47,7 +46,6 @@ export default tseslint.config(
             "no-empty-function": "off",
             "no-param-reassign": "off",
             "no-throw-literal": "off",
-            // "no-var": "off",
             "prefer-arrow-callback": "off",
             "react/jsx-no-leaked-render": "off",
             "vars-on-top": "off",

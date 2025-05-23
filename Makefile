@@ -73,7 +73,7 @@ core-i18n-extract:
 		--ignore website \
 		-l en
 
-install: web-install website-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
+install: npm-install core-install  ## Install all requires dependencies for `web`, `website` and `core`
 
 dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
@@ -146,9 +146,8 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--additional-properties=npmVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	mkdir -p web/node_modules/@goauthentik/api
-	cd ${PWD}/${GEN_API_TS} && npm i
-	\cp -rf ${PWD}/${GEN_API_TS}/* web/node_modules/@goauthentik/api
+	cd ./${GEN_API_TS} && npm link
+	npm link @goauthentik/api -w @goauthentik/web
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
@@ -183,38 +182,34 @@ gen: gen-build gen-client-ts
 ## Web
 #########################
 
-web-build: web-install  ## Build the Authentik UI
-	cd web && npm run build
+web-build: npm-install  ## Build the Authentik UI
+	npm run build -w @goauthentik/web
 
 web: web-lint-fix web-lint web-check-compile  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
-web-install:  ## Install the necessary libraries to build the Authentik UI
-	cd web && npm ci
+npm-install:  ## Install the necessary libraries to build the Authentik UI
+	npm ci
 
 web-test: ## Run tests for the Authentik UI
-	cd web && npm run test
+	npm run test -w @goauthentik/web
 
 web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
-	rm -rf web/dist/
-	mkdir web/dist/
-	touch web/dist/.gitkeep
-	cd web && npm run watch
+	npm run watch -w @goauthentik/web
 
 web-storybook-watch:  ## Build and run the storybook documentation server
-	cd web && npm run storybook
+	npm run storybook -w @goauthentik/web
 
 web-lint-fix:
-	cd web && npm run prettier
+	npm run prettier -w @goauthentik/web
 
 web-lint:
-	cd web && npm run lint
-	cd web && npm run lit-analyse
+	npm run lint -w @goauthentik/web
 
 web-check-compile:
-	cd web && npm run tsc
+	npm run lint:types
 
 web-i18n-extract:
-	cd web && npm run extract-locales
+	npm run extract-locales -w @goauthentik/web
 
 #########################
 ## Website
@@ -222,17 +217,14 @@ web-i18n-extract:
 
 website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
-website-install:
-	cd website && npm ci
-
 website-lint-fix: lint-codespell
-	cd website && npm run prettier
+	npm run prettier --prefix website
 
 website-build:
-	cd website && npm run build
+	npm run build --prefix website
 
 website-watch:  ## Build and watch the documentation website, updating automatically
-	cd website && npm run watch
+	npm run watch --prefix website
 
 #########################
 ## Docker

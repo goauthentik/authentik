@@ -116,7 +116,6 @@ export const javaScriptConfig = tseslint.config({
         "no-useless-call": "error",
         "no-dupe-class-members": "error",
         "no-var": "error",
-        "no-void": "error",
         "no-with": "error",
         "prefer-arrow-callback": "error",
         "prefer-const": "error",
@@ -131,7 +130,6 @@ export const javaScriptConfig = tseslint.config({
         "vars-on-top": "error",
         "yoda": ["error", "never"],
 
-        "no-console": ["error", { allow: ["debug", "warn", "error"] }],
         // SonarJS is not yet compatible with ESLint 9.  Commenting these out
         // until it is.
         //    "sonarjs/cognitive-complexity": ["off", MAX_COGNITIVE_COMPLEXITY],
