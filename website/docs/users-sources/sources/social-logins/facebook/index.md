@@ -69,5 +69,5 @@ Finally, you need to publish the Facebook app.
 You now have Facebook as a source. Verify by checking that appears on the **Directory -> Federation & Social login** page in authentik.
 
 :::note
-For more details on how to display the new source on the authentik Login page refer to [Add Sources to default Login form](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
