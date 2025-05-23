@@ -126,7 +126,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 		MsgType: t,
 	}
 	var payload any
-	if reflect.TypeOf(p.eap.Payload) == reflect.TypeOf(np) {
+	if reflect.TypeOf(pp.(*eap.Payload).Payload) == reflect.TypeOf(np) {
 		np.Decode(pp.(*eap.Payload).RawPayload)
 	}
 	payload = np.Handle(ctx)
