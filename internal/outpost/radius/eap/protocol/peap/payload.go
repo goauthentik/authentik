@@ -2,6 +2,7 @@ package peap
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 
 	log "github.com/sirupsen/logrus"
@@ -45,9 +46,21 @@ func (p *Payload) Decode(raw []byte) error {
 	return nil
 }
 
+// Inner EAP packets in PEAP may not include the header, hence we need a custom decoder
+// https://datatracker.ietf.org/doc/html/draft-kamath-pppext-peapv0-00.txt#section-1.1
 func (p *Payload) Encode() ([]byte, error) {
-	log.Debug("PEAP: Encode")
-	return p.eap.Encode()
+	log.Debug("PEAP: Encoding inner EAP")
+	if p.eap.Payload == nil {
+		return []byte{}, errors.New("peap: no payload in response eap packet")
+	}
+	payload, err := p.eap.Payload.Encode()
+	if err != nil {
+		return []byte{}, err
+	}
+	encoded := []byte{
+		byte(p.eap.MsgType),
+	}
+	return append(encoded, payload...), nil
 }
 
 // Inner EAP packets in PEAP may not include the header, hence we need a custom decoder
@@ -72,10 +85,6 @@ func (p *Payload) eapInnerDecode(ctx protocol.Context) (*eap.Payload, error) {
 		return nil, err
 	}
 	return ep, nil
-}
-
-func (p *Payload) eapEncodeInner(ctx protocol.Context) ([]byte, error) {
-	return []byte{}, nil
 }
 
 func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
@@ -115,7 +124,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	if err != nil {
 		ctx.Log().WithError(err).Warning("PEAP: failed to handle inner EAP")
 	}
-	return res
+	return &Payload{eap: res.(*eap.Payload)}
 }
 
 func (p *Payload) GetEAPSettings() protocol.Settings {

@@ -34,7 +34,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	p.state = rst
 
 	rp := &Packet{r: r}
-	rep, err := p.handleInner()
+	rep, err := p.handleEAP(p.eap, p.stm)
 	rp.eap = rep
 
 	rres := r.Response(radius.CodeAccessReject)
@@ -153,10 +153,6 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 	case protocol.StatusUnknown:
 	}
 	return res, nil
-}
-
-func (p *Packet) handleInner() (*eap.Payload, error) {
-	return p.handleEAP(p.eap, p.stm)
 }
 
 func (p *Packet) setMessageAuthenticator(rp *radius.Packet) error {
