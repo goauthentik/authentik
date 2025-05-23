@@ -101,7 +101,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 		return next()
 	}
 
-	np, t, _ := emptyPayload(stm, nextChallengeToOffer)
+	np, t, _ := eap.EmptyPayload(stm.GetEAPSettings(), nextChallengeToOffer)
 
 	ctx := &context{
 		req:         p.r,

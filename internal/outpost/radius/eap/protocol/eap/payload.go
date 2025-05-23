@@ -22,6 +22,8 @@ type Payload struct {
 	MsgType    protocol.Type
 	Payload    protocol.Payload
 	RawPayload []byte
+
+	Settings protocol.Settings
 }
 
 func (p *Payload) Type() protocol.Type {
@@ -44,10 +46,12 @@ func (p *Payload) Decode(raw []byte) error {
 	}
 	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", p.Payload)).Trace("EAP: decode raw")
 	p.RawPayload = raw[5:]
-	if p.Payload == nil {
-		return nil
+	pp, _, err := EmptyPayload(p.Settings, p.MsgType)
+	if err != nil {
+		return err
 	}
-	err := p.Payload.Decode(raw[5:])
+	p.Payload = pp
+	err = p.Payload.Decode(raw[5:])
 	if err != nil {
 		return err
 	}
