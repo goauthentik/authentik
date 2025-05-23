@@ -43,5 +43,5 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 5. **Consumer Secret:** Your Client Secret from step 25
 
 :::note
-For instructions on how to display the new source on the authentik Login page refer to the [add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

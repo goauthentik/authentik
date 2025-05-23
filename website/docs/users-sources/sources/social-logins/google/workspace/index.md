@@ -204,5 +204,5 @@ This may take a few minutes to propagate, so try logging in again after a short 
 - [SAML authentication flow](https://infosec.mozilla.org/guidelines/iam/saml.html)
 
 :::note
-For instructions on how to display the new source on the authentik Login page refer to the [add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

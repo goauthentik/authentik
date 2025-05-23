@@ -49,5 +49,5 @@ Here is an example of a complete authentik Mailcow OAuth Source
 Save, and you now have Mailcow as a source.
 
 :::note
-For instructions on how to display the new source on the authentik Login page refer to the [add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::
