@@ -32,7 +32,7 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LicenseSummaryStatusEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
+import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import {
     AdminSidebarEnterpriseEntries,
@@ -202,7 +202,7 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
                 <ak-sidebar class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed
+                    ${this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
                         : nothing}
                 </ak-sidebar>
