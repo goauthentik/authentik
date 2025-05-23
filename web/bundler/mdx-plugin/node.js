@@ -4,10 +4,13 @@
  * @import {
  *   OnLoadArgs,
  *   OnLoadResult,
+ OnResolveArgs,
+ OnResolveResult,
  *   Plugin,
  *   PluginBuild
  * } from "esbuild"
  */
+import { MonoRepoRoot } from "@goauthentik/core/paths/node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
@@ -27,7 +30,7 @@ import * as path from "node:path";
  *   File contents.
  */
 
-const name = "mdx-plugin";
+const pluginName = "mdx-plugin";
 
 /**
  * @typedef MDXPluginOptions
@@ -42,16 +45,25 @@ const name = "mdx-plugin";
  * @returns {Plugin} Plugin.
  */
 export function mdxPlugin({ root }) {
-    return { name, setup };
+    const docsPackageRoot = path.resolve(MonoRepoRoot, "website");
 
     /**
      * @param {PluginBuild} build
      *   Build.
-     * @returns {undefined}
-     *   Nothing.
      */
     function setup(build) {
-        build.onLoad({ filter: /\.mdx?$/ }, onload);
+        /**
+         * @param {OnResolveArgs} args
+         * @returns {Promise<OnResolveResult>}
+         */
+        async function resolveListener(args) {
+            if (!args.path.startsWith("~")) return args;
+
+            return {
+                path: path.resolve(docsPackageRoot, args.path.slice(1)),
+                pluginName,
+            };
+        }
 
         /**
          * @param {LoadData} data
@@ -59,7 +71,7 @@ export function mdxPlugin({ root }) {
          * @returns {Promise<OnLoadResult>}
          *   Result.
          */
-        async function onload(data) {
+        async function loadListener(data) {
             const content = String(
                 data.pluginData &&
                     data.pluginData.contents !== null &&
@@ -77,7 +89,16 @@ export function mdxPlugin({ root }) {
             return {
                 contents: JSON.stringify({ content, publicPath, publicDirectory }),
                 loader: "file",
+                pluginName,
             };
         }
+
+        build.onResolve({ filter: /\.mdx?$/ }, resolveListener);
+        build.onLoad({ filter: /\.mdx?$/ }, loadListener);
     }
+
+    return {
+        name: pluginName,
+        setup,
+    };
 }

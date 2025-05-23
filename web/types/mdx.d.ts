@@ -1,4 +1,4 @@
-declare module "*.md" {
+declare module "~docs/*.md" {
     /**
      * The serialized JSON content of an MD file.
      */
@@ -6,7 +6,7 @@ declare module "*.md" {
     export default serializedJSON;
 }
 
-declare module "*.mdx" {
+declare module "~docs/*.mdx" {
     /**
      * The serialized JSON content of an MDX file.
      */
