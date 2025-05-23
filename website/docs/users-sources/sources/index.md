@@ -15,7 +15,7 @@ Sources are in the following general categories:
 
 For instructions to add a specific source, refer to the documentation links in the left navigation pane.
 
-### Add Sources to Default Login Page
+### Add sources to default login page
 
 To have sources show on the default login screen you will need to add them to the flow. The process below assumes that you have not created or renamed the default stages and flows.
 
