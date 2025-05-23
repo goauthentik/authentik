@@ -114,7 +114,7 @@
         "country-flag-icons": "^1.5.13",
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
-        "dompurify": "^3.2.4",
+        "dompurify": "^3.2.6",
         "fuse.js": "^7.0.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
