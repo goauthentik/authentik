@@ -1,6 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
 import "@goauthentik/elements/AppIcon.js";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/ak-mdx";
@@ -12,6 +11,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
