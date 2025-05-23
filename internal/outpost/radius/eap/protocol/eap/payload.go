@@ -44,7 +44,7 @@ func (p *Payload) Decode(raw []byte) error {
 	if len(raw) > 4 && (p.Code == protocol.CodeRequest || p.Code == protocol.CodeResponse) {
 		p.MsgType = protocol.Type(raw[4])
 	}
-	log.WithField("raw", debug.FormatBytes(raw)).WithField("payload", fmt.Sprintf("%T", p.Payload)).Trace("EAP: decode raw")
+	log.WithField("raw", debug.FormatBytes(raw)).Trace("EAP: decode raw")
 	p.RawPayload = raw[5:]
 	pp, _, err := EmptyPayload(p.Settings, p.MsgType)
 	if err != nil {
