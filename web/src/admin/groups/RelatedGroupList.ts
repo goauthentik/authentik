@@ -65,6 +65,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     <ak-chip-group>
                         ${this.groupsToAdd.map((group) => {
                             return html`<ak-chip
+                                removable
                                 value=${ifDefined(group.pk)}
                                 @remove=${() => {
                                     const idx = this.groupsToAdd.indexOf(group);
