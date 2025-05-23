@@ -25,16 +25,16 @@ func sendErrorResponse(w radius.ResponseWriter, r *radius.Request) {
 }
 
 func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) {
+	p.r = r
 	rst := rfc2865.State_GetString(r.Packet)
 	if rst == "" {
 		rst = base64.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(12))
 	}
 	p.state = rst
 
-	rep, err := p.handleInner(r)
-	rp := &Packet{
-		eap: rep,
-	}
+	rp := &Packet{r: r}
+	rep, err := p.handleInner()
+	rp.eap = rep
 
 	rres := r.Response(radius.CodeAccessReject)
 	if err == nil {
@@ -73,11 +73,11 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	}
 }
 
-func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
-	st := p.stm.GetEAPState(p.state)
+func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap.Payload, error) {
+	st := stm.GetEAPState(p.state)
 	if st == nil {
 		log.Debug("Root-EAP: blank state")
-		st = protocol.BlankState(p.stm.GetEAPSettings())
+		st = protocol.BlankState(stm.GetEAPSettings())
 	}
 
 	nextChallengeToOffer, err := st.GetNextProtocol()
@@ -91,8 +91,8 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	next := func() (*eap.Payload, error) {
 		st.ProtocolIndex += 1
 		st.TypeState = map[protocol.Type]any{}
-		p.stm.SetEAPState(p.state, st)
-		return p.handleInner(r)
+		stm.SetEAPState(p.state, st)
+		return p.handleEAP(pp, stm)
 	}
 
 	if _, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
@@ -101,14 +101,17 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 		return next()
 	}
 
-	np, t, _ := emptyPayload(p.stm, nextChallengeToOffer)
+	np, t, _ := emptyPayload(stm, nextChallengeToOffer)
 
 	ctx := &context{
-		req:         r,
+		req:         p.r,
 		rootPayload: p.eap,
 		typeState:   st.TypeState,
 		log:         log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
-		settings:    p.stm.GetEAPSettings().ProtocolSettings[t],
+		settings:    stm.GetEAPSettings().ProtocolSettings[t],
+		handleInner: func(pp protocol.Payload, sm protocol.StateManager) (protocol.Payload, error) {
+			return p.handleEAP(pp, sm)
+		},
 	}
 	if !np.Offerable() {
 		ctx.log.Debug("Root-EAP: protocol not offerable, skipping")
@@ -117,7 +120,7 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	ctx.log.Debug("Root-EAP: Passing to protocol")
 
 	res := p.GetChallengeForType(ctx, np, t)
-	p.stm.SetEAPState(p.state, st)
+	stm.SetEAPState(p.state, st)
 
 	if ctx.endModifier != nil {
 		p.endModifier = ctx.endModifier
@@ -136,6 +139,10 @@ func (p *Packet) handleInner(r *radius.Request) (*eap.Payload, error) {
 	case protocol.StatusUnknown:
 	}
 	return res, nil
+}
+
+func (p *Packet) handleInner() (*eap.Payload, error) {
+	return p.handleEAP(p.eap, p.stm)
 }
 
 func (p *Packet) GetChallengeForType(ctx *context, np protocol.Payload, t protocol.Type) *eap.Payload {

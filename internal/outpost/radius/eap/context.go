@@ -14,6 +14,7 @@ type context struct {
 	settings    interface{}
 	endStatus   protocol.Status
 	endModifier func(p *radius.Packet) *radius.Packet
+	handleInner func(protocol.Payload, protocol.StateManager) (protocol.Payload, error)
 }
 
 func (ctx *context) RootPayload() protocol.Payload            { return ctx.rootPayload }
@@ -23,8 +24,8 @@ func (ctx *context) GetProtocolState(p protocol.Type) any     { return ctx.typeS
 func (ctx *context) SetProtocolState(p protocol.Type, st any) { ctx.typeState[p] = st }
 func (ctx *context) IsProtocolStart(p protocol.Type) bool     { return ctx.typeState[p] == nil }
 func (ctx *context) Log() *log.Entry                          { return ctx.log }
-func (ctx *context) HandleInnerEAP(protocol.Payload, protocol.StateManager) protocol.Payload {
-	return nil
+func (ctx *context) HandleInnerEAP(p protocol.Payload, st protocol.StateManager) (protocol.Payload, error) {
+	return ctx.handleInner(p, st)
 }
 
 func (ctx *context) ForInnerProtocol(p protocol.Type) protocol.Context {

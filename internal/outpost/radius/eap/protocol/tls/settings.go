@@ -16,6 +16,6 @@ type Settings struct {
 	HandshakeSuccessful func(ctx protocol.Context, certs []*x509.Certificate) protocol.Status
 }
 
-func (s *Settings) TLSConfig() *tls.Config {
+func (s Settings) TLSConfig() *tls.Config {
 	return s.Config
 }

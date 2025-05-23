@@ -9,6 +9,7 @@ import (
 )
 
 type Packet struct {
+	r           *radius.Request
 	eap         *eap.Payload
 	stm         protocol.StateManager
 	state       string

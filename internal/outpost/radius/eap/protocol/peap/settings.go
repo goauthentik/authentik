@@ -11,6 +11,6 @@ type Settings struct {
 	InnerProtocols protocol.Settings
 }
 
-func (s *Settings) TLSConfig() *tls.Config {
+func (s Settings) TLSConfig() *tls.Config {
 	return s.Config
 }

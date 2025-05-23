@@ -26,7 +26,7 @@ type Payload struct {
 
 	eap      *eap.Payload
 	st       *State
-	settings *Settings
+	settings Settings
 	raw      []byte
 }
 
@@ -74,7 +74,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	defer func() {
 		ctx.SetProtocolState(TypePEAP, p.st)
 	}()
-	p.settings = ctx.ProtocolSettings().(*Settings)
+	p.settings = ctx.ProtocolSettings().(Settings)
 
 	rootEap := ctx.RootPayload().(*eap.Payload)
 
@@ -99,7 +99,11 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		}
 	}
 
-	return ctx.HandleInnerEAP(ep, p)
+	res, err := ctx.HandleInnerEAP(ep, p)
+	if err != nil {
+		ctx.Log().WithError(err).Warning("PEAP: failed to handle inner EAP")
+	}
+	return res
 }
 
 func (p *Payload) GetEAPSettings() protocol.Settings {
