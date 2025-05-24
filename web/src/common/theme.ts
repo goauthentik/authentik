@@ -1,11 +1,7 @@
 /**
  * @file Theme utilities.
  */
-import {
-    type StyleRoot,
-    createStyleSheetUnsafe,
-    setAdoptedStyleSheets,
-} from "@goauthentik/common/stylesheets";
+import { type StyleRoot, createStyleSheetUnsafe, setAdoptedStyleSheets } from "#common/stylesheets";
 
 import AKBase from "#common/styles/authentik.css";
 import AKBaseDark from "#common/styles/theme-dark.css";
