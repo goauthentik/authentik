@@ -2,6 +2,7 @@ package peap
 
 import (
 	"encoding/binary"
+	"errors"
 	"fmt"
 )
 
@@ -20,13 +21,18 @@ type ExtensionAVP struct {
 	Value     []byte
 }
 
+var (
+	ErrorReservedBitSet = errors.New("PEAP-Extension: Reserved bit is not 0")
+)
+
 func (eavp *ExtensionAVP) Decode(raw []byte) error {
 	typ := binary.BigEndian.Uint16(raw[:2])
-	// TODO fix this
-	if typ&0b1000000000000000 == 0 {
+	if typ>>15 == 1 {
 		eavp.Mandatory = true
 	}
-	// TODO: Check reserved bit
+	if typ>>14&1 != 0 {
+		return ErrorReservedBitSet
+	}
 	eavp.Type = AVPType(typ & 0b0011111111111111)
 	eavp.Length = binary.BigEndian.Uint16(raw[2:4])
 	val := raw[4:]
