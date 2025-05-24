@@ -10,6 +10,8 @@ import (
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/eap"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/peap"
+	"layeh.com/radius"
+	"layeh.com/radius/vendors/microsoft"
 )
 
 const TypeMSCHAPv2 protocol.Type = 26
@@ -63,7 +65,7 @@ func (p *Payload) Decode(raw []byte) error {
 
 	p.ValueSize = raw[4]
 	if p.ValueSize != responseValueSize {
-		return fmt.Errorf("mschapv2: incorrect value size: %d", p.ValueSize)
+		return fmt.Errorf("MSCHAPv2: incorrect value size: %d", p.ValueSize)
 	}
 	p.Response = raw[5 : p.ValueSize+5]
 	p.Name = raw[5+p.ValueSize:]
@@ -136,7 +138,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		}
 		return succ
 	} else if p.OpCode == OpSuccess && p.st.Authenticated {
-		return &peap.ExtensionPayload{
+		ep := &peap.ExtensionPayload{
 			AVPs: []peap.ExtensionAVP{
 				{
 					Mandatory: true,
@@ -145,6 +147,19 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 				},
 			},
 		}
+		p.st.IsProtocolEnded = true
+		return ep
+	} else if p.st.IsProtocolEnded {
+		ctx.EndInnerProtocol(protocol.StatusSuccess, func(r *radius.Packet) *radius.Packet {
+			if len(microsoft.MSMPPERecvKey_Get(r, ctx.Packet().Packet)) < 1 {
+				microsoft.MSMPPERecvKey_Set(r, p.st.recvKey)
+			}
+			if len(microsoft.MSMPPESendKey_Get(r, ctx.Packet().Packet)) < 1 {
+				microsoft.MSMPPESendKey_Set(r, p.st.sendKey)
+			}
+			return r
+		})
+		return &Payload{}
 	}
 	return response
 }

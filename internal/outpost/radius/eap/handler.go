@@ -34,7 +34,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	p.state = rst
 
 	rp := &Packet{r: r}
-	rep, err := p.handleEAP(p.eap, p.stm)
+	rep, err := p.handleEAP(p.eap, p.stm, nil)
 	rp.eap = rep
 
 	rres := r.Response(radius.CodeAccessReject)
@@ -74,7 +74,7 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	}
 }
 
-func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap.Payload, error) {
+func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, parentContext *context) (*eap.Payload, error) {
 	st := stm.GetEAPState(p.state)
 	if st == nil {
 		log.Debug("Root-EAP: blank state")
@@ -93,7 +93,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 		st.ProtocolIndex += 1
 		st.TypeState = map[protocol.Type]any{}
 		stm.SetEAPState(p.state, st)
-		return p.handleEAP(pp, stm)
+		return p.handleEAP(pp, stm, nil)
 	}
 
 	if n, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
@@ -104,21 +104,26 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 
 	np, t, _ := eap.EmptyPayload(stm.GetEAPSettings(), nextChallengeToOffer)
 
-	ctx := &context{
-		req:         p.r,
-		rootPayload: p.eap,
-		typeState:   st.TypeState,
-		log:         log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
-		settings:    stm.GetEAPSettings().ProtocolSettings[t],
-		handleInner: func(pp protocol.Payload, sm protocol.StateManager) (protocol.Payload, error) {
-			return p.handleEAP(pp, sm)
-		},
+	var ctx *context
+	if parentContext != nil {
+		ctx = parentContext.Inner(np, t).(*context)
+	} else {
+		ctx = &context{
+			req:         p.r,
+			rootPayload: p.eap,
+			typeState:   st.TypeState,
+			log:         log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
+			settings:    stm.GetEAPSettings().ProtocolSettings[t],
+		}
+		ctx.handleInner = func(pp protocol.Payload, sm protocol.StateManager) (protocol.Payload, error) {
+			return p.handleEAP(pp, sm, ctx.Inner(pp, pp.Type()).(*context))
+		}
 	}
 	if !np.Offerable() {
-		ctx.log.Debug("Root-EAP: protocol not offerable, skipping")
+		ctx.Log().Debug("Root-EAP: protocol not offerable, skipping")
 		return next()
 	}
-	ctx.log.Debug("Root-EAP: Passing to protocol")
+	ctx.Log().Debug("Root-EAP: Passing to protocol")
 
 	res := &eap.Payload{
 		Code:    protocol.CodeRequest,
@@ -137,7 +142,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager) (*eap
 	stm.SetEAPState(p.state, st)
 
 	if ctx.endModifier != nil {
-		p.endModifier = ctx.endModifier
+		p.endModifier = ctx.callEndModifier
 	}
 
 	switch ctx.endStatus {

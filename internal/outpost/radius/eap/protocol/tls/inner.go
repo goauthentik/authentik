@@ -23,7 +23,7 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 		return
 	}
-	pl := p.Inner.Handle(ctx)
+	pl := p.Inner.Handle(ctx.Inner(p.Inner, p.Inner.Type()))
 	enc, err := pl.Encode()
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to encode inner protocol")

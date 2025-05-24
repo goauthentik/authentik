@@ -51,7 +51,7 @@ func (p *Payload) Decode(raw []byte) error {
 func (p *Payload) Encode() ([]byte, error) {
 	log.Debug("PEAP: Encoding inner EAP")
 	if p.eap.Payload == nil {
-		return []byte{}, errors.New("peap: no payload in response eap packet")
+		return []byte{}, errors.New("PEAP: no payload in response eap packet")
 	}
 	payload, err := p.eap.Payload.Encode()
 	if err != nil {
@@ -129,6 +129,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	res, err := ctx.HandleInnerEAP(ep, p)
 	if err != nil {
 		ctx.Log().WithError(err).Warning("PEAP: failed to handle inner EAP")
+		return nil
 	}
 	// Normal payloads need to be wrapped in PEAP to use the correct encoding (see Encode() above)
 	// Extension payloads handle encoding differently

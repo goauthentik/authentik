@@ -145,6 +145,7 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			retry.Attempts(0),
 		)
 		ctx.EndInnerProtocol(pst, func(r *radius.Packet) *radius.Packet {
+			ctx.Log().Debug("TLS: Adding MPPE Keys")
 			microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
 			microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
 			return r

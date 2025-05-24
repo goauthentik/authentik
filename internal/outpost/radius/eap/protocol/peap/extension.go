@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/radius/eap/debug"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
 )
 
@@ -14,6 +15,7 @@ type ExtensionPayload struct {
 }
 
 func (ep *ExtensionPayload) Decode(raw []byte) error {
+	log.WithField("raw", debug.FormatBytes(raw)).Debugf("PEAP-Extension: decode raw")
 	ep.AVPs = []ExtensionAVP{}
 	offset := 0
 	for {
@@ -32,7 +34,7 @@ func (ep *ExtensionPayload) Decode(raw []byte) error {
 }
 
 func (ep *ExtensionPayload) Encode() ([]byte, error) {
-	log.Debug("PEAP: Extension encode")
+	log.Debug("PEAP-Extension: encode")
 	buff := []byte{}
 	for _, avp := range ep.AVPs {
 		buff = append(buff, avp.Encode()...)
