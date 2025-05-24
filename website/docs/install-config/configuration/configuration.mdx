@@ -71,7 +71,7 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__NAME`: Specifies the name of the database that authentik will use within PostgreSQL.
 - `AUTHENTIK_POSTGRESQL__USER`: Defines the username that authentik will use to authenticate with PostgreSQL.
 - `AUTHENTIK_POSTGRESQL__PORT`: Specifies the port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
-- `AUTHENTIK_POSTGRESQL__PASSWORD`: Defines the password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`.
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Defines the password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
   {/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
   {/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
 - `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Defines the name of the schema used by default in the database. Defaults to `public`. :ak-version[2024.12]
@@ -94,7 +94,7 @@ The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloa
     - `verify-full`: Verify both the server certificate and that the hostname matches.
 
 - `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: Specifies the file path to the Certificate Authority (CA) certificate used to verify the server's SSL certificate. Required when using `verify-ca` or `verify-full` modes.
-- `AUTHENTIK_POSTGRESQL__SSLCERT`: Specifies the file path to the client certificate that authentik will present to the PostgreSQL server for mutual TLS authentication. Only needed if your PostgreSQL server requires client certificate authentication.
+- `AUTHENTIK_POSTGRESQL__SSLCERT`: Specifies the file path to the client certificate that authentik will present to the PostgreSQL server for mutual TLS authentication. Only needed if the PostgreSQL server requires client certificate authentication.
 - `AUTHENTIK_POSTGRESQL__SSLKEY`: Specifies the file path to the private key corresponding to the client certificate specified in `SSLCERT`. Used to prove authentik's identity to the PostgreSQL server.
 
 ### Connection Management
