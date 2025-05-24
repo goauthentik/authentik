@@ -2,6 +2,8 @@ package tls
 
 import (
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"layeh.com/radius"
+	"layeh.com/radius/vendors/microsoft"
 )
 
 func (p *Payload) innerHandler(ctx protocol.Context) {
@@ -23,7 +25,12 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 		ctx.EndInnerProtocol(protocol.StatusError, nil)
 		return
 	}
-	pl := p.Inner.Handle(ctx.Inner(p.Inner, p.Inner.Type()))
+	pl := p.Inner.Handle(ctx.Inner(p.Inner, p.Inner.Type(), func(r *radius.Packet) *radius.Packet {
+		ctx.Log().Debug("TLS: Adding MPPE Keys")
+		microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
+		microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
+		return r
+	}))
 	enc, err := pl.Encode()
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to encode inner protocol")

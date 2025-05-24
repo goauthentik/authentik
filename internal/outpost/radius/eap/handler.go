@@ -106,7 +106,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 
 	var ctx *context
 	if parentContext != nil {
-		ctx = parentContext.Inner(np, t).(*context)
+		ctx = parentContext.Inner(np, t, nil).(*context)
 	} else {
 		ctx = &context{
 			req:         p.r,
@@ -116,7 +116,7 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 			settings:    stm.GetEAPSettings().ProtocolSettings[t],
 		}
 		ctx.handleInner = func(pp protocol.Payload, sm protocol.StateManager) (protocol.Payload, error) {
-			return p.handleEAP(pp, sm, ctx.Inner(pp, pp.Type()).(*context))
+			return p.handleEAP(pp, sm, ctx.Inner(pp, pp.Type(), nil).(*context))
 		}
 	}
 	if !np.Offerable() {

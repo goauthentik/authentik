@@ -30,7 +30,10 @@ func (ctx *context) Log() *log.Entry                          { return ctx.log }
 func (ctx *context) HandleInnerEAP(p protocol.Payload, st protocol.StateManager) (protocol.Payload, error) {
 	return ctx.handleInner(p, st)
 }
-func (ctx *context) Inner(p protocol.Payload, t protocol.Type) protocol.Context {
+func (ctx *context) Inner(p protocol.Payload, t protocol.Type, pmf func(p *radius.Packet) *radius.Packet) protocol.Context {
+	if ctx.endModifier == nil {
+		ctx.endModifier = pmf
+	}
 	return &context{
 		req:         ctx.req,
 		rootPayload: ctx.rootPayload,
@@ -51,12 +54,9 @@ func (ctx *context) EndInnerProtocol(st protocol.Status, mf func(p *radius.Packe
 		return
 	}
 	ctx.endStatus = st
-	if mf == nil {
-		mf = func(p *radius.Packet) *radius.Packet {
-			return p
-		}
+	if mf != nil {
+		ctx.endModifier = mf
 	}
-	ctx.endModifier = mf
 }
 
 func (ctx *context) callEndModifier(p *radius.Packet) *radius.Packet {
@@ -64,6 +64,7 @@ func (ctx *context) callEndModifier(p *radius.Packet) *radius.Packet {
 		p = ctx.parent.callEndModifier(p)
 	}
 	if ctx.endModifier != nil {
+		ctx.log.Debug("Running end modifier")
 		p = ctx.endModifier(p)
 	}
 	return p
