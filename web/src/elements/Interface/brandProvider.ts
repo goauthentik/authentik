@@ -24,7 +24,7 @@ export interface BrandingMixin {
     /**
      * The current style branding configuration.
      */
-    readonly brand: Readonly<CurrentBrand>;
+    readonly brand?: Readonly<CurrentBrand>;
 
     readonly brandingTitle: string;
     readonly brandingLogo: string;
@@ -55,18 +55,18 @@ export const WithBrandConfig = createMixin<BrandingMixin>(
                 subscribe,
             })
             @state()
-            public brand!: CurrentBrand;
+            public brand?: CurrentBrand;
 
             public get brandingTitle(): string {
-                return this.brand.brandingTitle || DefaultBrand.brandingTitle;
+                return this.brand?.brandingTitle ?? DefaultBrand.brandingTitle;
             }
 
             public get brandingLogo(): string {
-                return this.brand.brandingLogo || DefaultBrand.brandingLogo;
+                return this.brand?.brandingLogo ?? DefaultBrand.brandingLogo;
             }
 
             public get brandingFavicon(): string {
-                return this.brand.brandingFavicon || DefaultBrand.brandingFavicon;
+                return this.brand?.brandingFavicon ?? DefaultBrand.brandingFavicon;
             }
         }
 

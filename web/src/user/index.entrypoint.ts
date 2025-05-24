@@ -202,7 +202,7 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                         <a href="#/" class="pf-c-page__header-brand-link">
                             <img
                                 class="pf-c-brand"
-                                src="${themeImage(this.brand.brandingLogo)}"
+                                src="${themeImage(this.brandingLogo)}"
                                 alt="${this.brandingTitle}"
                             />
                         </a>

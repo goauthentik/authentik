@@ -352,7 +352,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.brand.flowRecovery
+                                    ${this.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
