@@ -521,7 +521,7 @@ export class FlowExecutor
                                             >
                                                 <img
                                                     src="${themeImage(
-                                                        this.brand.brandingLogo ??
+                                                        this.brand?.brandingLogo ??
                                                             globalAK()?.brand.brandingLogo ??
                                                             DefaultBrand.brandingLogo,
                                                     )}"
@@ -532,7 +532,7 @@ export class FlowExecutor
                                         </div>
                                         <ak-brand-links
                                             class="pf-c-login__footer"
-                                            .links=${this.brand.uiFooterLinks ?? []}
+                                            .links=${this.brand?.uiFooterLinks ?? []}
                                         ></ak-brand-links>
                                     </div>
                                 </div>

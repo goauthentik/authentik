@@ -231,7 +231,7 @@ export class RacInterface extends WithBrandConfig(Interface) {
     }
 
     updateTitle(): void {
-        let title = this.brand.brandingTitle;
+        let title = this.brandingTitle;
 
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
