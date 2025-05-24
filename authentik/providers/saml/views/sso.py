@@ -15,7 +15,7 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_POST
 from authentik.lib.views import bad_request_message
-from authentik.policies.views import PolicyAccessView
+from authentik.policies.views import BufferedPolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
 from authentik.providers.saml.models import SAMLBindings, SAMLProvider
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequestParser
@@ -35,7 +35,7 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 
-class SAMLSSOView(PolicyAccessView):
+class SAMLSSOView(BufferedPolicyAccessView):
     """SAML SSO Base View, which plans a flow and injects our final stage.
     Calls get/post handler."""
 
@@ -83,7 +83,7 @@ class SAMLSSOView(PolicyAccessView):
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
         """GET and POST use the same handler, but we can't
-        override .dispatch easily because PolicyAccessView's dispatch"""
+        override .dispatch easily because BufferedPolicyAccessView's dispatch"""
         return self.get(request, application_slug)
 
 
