@@ -1,32 +1,35 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
-import "@goauthentik/admin/applications/ProviderSelectModal";
-import { iconHelperText } from "@goauthentik/admin/helperText";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-file-input";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/Alert";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/Alert";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#components/ak-file-input";
+import "#components/ak-radio-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#admin/applications/ProviderSelectModal";
+import "./components/ak-backchannel-input.js";
+import "./components/ak-provider-search-input.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { iconHelperText } from "#admin/helperText";
+
+import { Application, CoreApi, Provider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { Application, CoreApi, Provider } from "@goauthentik/api";
-
 import { policyOptions } from "./PolicyOptions.js";
-import "./components/ak-backchannel-input";
-import "./components/ak-provider-search-input";
 
 @customElement("ak-application-form")
 export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Application, string>) {

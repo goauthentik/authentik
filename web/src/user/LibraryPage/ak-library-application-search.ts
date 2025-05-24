@@ -1,7 +1,10 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
+import { AKElement } from "#elements/Base";
+import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+
 import Fuse from "fuse.js";
 import { FuseResult } from "fuse.js";
+
+import type { Application } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -10,8 +13,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import type { Application } from "@goauthentik/api";
 
 import {
     LibraryPageSearchEmpty,

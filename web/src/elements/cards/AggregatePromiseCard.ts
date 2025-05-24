@@ -1,6 +1,8 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/elements/Spinner";
-import { AggregateCard, type IAggregateCard } from "@goauthentik/elements/cards/AggregateCard";
+import "#elements/Spinner";
+
+import { PFSize } from "#common/enums";
+
+import { AggregateCard, type IAggregateCard } from "#elements/cards/AggregateCard";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";

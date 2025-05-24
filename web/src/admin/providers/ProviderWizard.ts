@@ -1,17 +1,21 @@
-import "@goauthentik/admin/common/ak-license-notice";
-import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
-import "@goauthentik/admin/providers/saml/SAMLProviderForm";
-import "@goauthentik/admin/providers/saml/SAMLProviderImportForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/ProxyForm";
-import "@goauthentik/elements/wizard/FormWizardPage";
-import "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage";
-import "@goauthentik/elements/wizard/Wizard";
-import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import "#elements/forms/ProxyForm";
+import "#elements/wizard/FormWizardPage";
+import "#elements/wizard/TypeCreateWizardPage";
+import "#elements/wizard/Wizard";
+import "#admin/common/ak-license-notice";
+import "#admin/providers/ldap/LDAPProviderForm";
+import "#admin/providers/oauth2/OAuth2ProviderForm";
+import "#admin/providers/proxy/ProxyProviderForm";
+import "#admin/providers/saml/SAMLProviderForm";
+import "#admin/providers/saml/SAMLProviderImportForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+import { TypeCreateWizardPageLayouts } from "#elements/wizard/TypeCreateWizardPage";
+import type { Wizard } from "#elements/wizard/Wizard";
+
+import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -20,8 +24,6 @@ import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {

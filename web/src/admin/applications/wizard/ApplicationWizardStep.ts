@@ -1,23 +1,25 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
-import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
+import { KeyUnknown, serializeForm } from "#elements/forms/Form";
+import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+
+import { WizardStep } from "#components/ak-wizard/WizardStep";
 import {
     NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
-} from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+} from "#components/ak-wizard/events";
+
+import { styles } from "#admin/applications/wizard/ApplicationWizardFormStepStyles";
+
+import { ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
-
-import { ValidationError } from "@goauthentik/api";
 
 import {
     ApplicationTransactionValidationError,
     type ApplicationWizardState,
     type ApplicationWizardStateUpdate,
-} from "./types";
+} from "./types.js";
 
 export class ApplicationWizardStep extends WizardStep {
     static get styles() {

@@ -1,20 +1,22 @@
-import "@goauthentik/admin/flows/StageBindingForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/stages/StageWizard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/Tabs";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#admin/flows/StageBindingForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/stages/StageWizard";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { Table, TableColumn } from "#elements/table/Table";
+
+import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {

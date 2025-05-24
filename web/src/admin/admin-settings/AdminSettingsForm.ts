@@ -1,14 +1,19 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/elements/ak-array-input.js";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/ak-array-input";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-number-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "./AdminSettingsFooterLinks.js";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
+
+import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -17,9 +22,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
-import { AdminApi, FooterLink, Settings, SettingsRequest } from "@goauthentik/api";
-
-import "./AdminSettingsFooterLinks.js";
 import { IFooterLinkInput, akFooterLinkInput } from "./AdminSettingsFooterLinks.js";
 
 const DEFAULT_REPUTATION_LOWER_LIMIT = -5;

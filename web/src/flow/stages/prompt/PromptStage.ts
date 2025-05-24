@@ -1,12 +1,18 @@
-import "@goauthentik/elements/Divider";
-import "@goauthentik/elements/EmptyState";
+import "#elements/Divider";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
+import { LOCALES } from "#elements/ak-locale-context/definitions";
+
+import { BaseStage } from "#flow/stages/base";
+
 import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+    PromptChallenge,
+    PromptChallengeResponseRequest,
+    PromptTypeEnum,
+    StagePrompt,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -21,13 +27,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    PromptChallenge,
-    PromptChallengeResponseRequest,
-    PromptTypeEnum,
-    StagePrompt,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends WithCapabilitiesConfig(

@@ -1,10 +1,12 @@
-import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "#admin/admin-settings/AdminSettingsFooterLinks";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
-import { html } from "lit";
-
 import { FooterLink } from "@goauthentik/api";
+
+import { html } from "lit";
 
 import "../ak-array-input.js";
 

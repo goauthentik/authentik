@@ -1,10 +1,11 @@
-import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { createMixin } from "@goauthentik/elements/types";
+import { DefaultBrand } from "#common/ui/config";
+
+import { createMixin } from "#elements/types";
+
+import type { CurrentBrand } from "@goauthentik/api";
 
 import { consume, createContext } from "@lit/context";
 import { state } from "lit/decorators.js";
-
-import type { CurrentBrand } from "@goauthentik/api";
 
 /**
  * The Lit context for application branding.

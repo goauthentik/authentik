@@ -1,8 +1,8 @@
-import { createMixin } from "@goauthentik/elements/types";
-
-import { consume, createContext } from "@lit/context";
+import { createMixin } from "#elements/types";
 
 import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
+import { consume, createContext } from "@lit/context";
 
 export const LicenseContext = createContext<LicenseSummary>(Symbol("authentik-license-context"));
 

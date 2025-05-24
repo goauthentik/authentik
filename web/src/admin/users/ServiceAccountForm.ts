@@ -1,13 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/temporal";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
+import "#elements/forms/HorizontalFormElement";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { dateTimeLocal } from "#common/temporal";
+
+import { Form } from "#elements/forms/Form";
+import { ModalForm } from "#elements/forms/ModalForm";
 
 import {
     CoreApi,
@@ -15,6 +12,11 @@ import {
     UserServiceAccountRequest,
     UserServiceAccountResponse,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {

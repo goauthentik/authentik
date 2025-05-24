@@ -1,15 +1,17 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/utils/TimeDeltaHelp";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
+
+import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { ConsentStage, ConsentStageModeEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-consent-form")
 export class ConsentStageForm extends BaseStageForm<ConsentStage> {

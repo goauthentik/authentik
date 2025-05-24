@@ -1,27 +1,19 @@
-import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
-import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
-import {
-    GroupMatchingModeToLabel,
-    UserMatchingModeToLabel,
-} from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#admin/common/ak-flow-search/ak-source-flow-search";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG, config } from "#common/api/config";
+
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
+
+import { iconHelperText, placeholderHelperText } from "#admin/helperText";
+import { BaseSourceForm } from "#admin/sources/BaseSourceForm";
+import { GroupMatchingModeToLabel, UserMatchingModeToLabel } from "#admin/sources/oauth/utils";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -32,6 +24,11 @@ import {
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 

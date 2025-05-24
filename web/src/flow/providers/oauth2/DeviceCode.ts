@@ -1,7 +1,13 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    OAuthDeviceCodeChallenge,
+    OAuthDeviceCodeChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -13,11 +19,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    OAuthDeviceCodeChallenge,
-    OAuthDeviceCodeChallengeResponseRequest,
-} from "@goauthentik/api";
 
 @customElement("ak-flow-provider-oauth2-code")
 export class OAuth2DeviceCode extends BaseStage<

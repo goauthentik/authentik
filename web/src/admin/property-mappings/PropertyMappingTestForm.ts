@@ -1,15 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/ak-search-select";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { Form } from "#elements/forms/Form";
+
+import YAML from "yaml";
 
 import {
     CoreApi,
@@ -23,6 +21,11 @@ import {
     RbacPermissionsAssignedByUsersListModelEnum,
     User,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html, nothing } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-property-mapping-test-form")
 export class PolicyTestForm extends Form<PropertyMappingTestRequest> {

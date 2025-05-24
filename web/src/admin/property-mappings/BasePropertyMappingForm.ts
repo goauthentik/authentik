@@ -1,6 +1,7 @@
-import { docLink } from "@goauthentik/common/global";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import { docLink } from "#common/global";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

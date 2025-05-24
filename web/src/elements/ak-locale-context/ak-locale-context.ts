@@ -1,14 +1,15 @@
-import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { customEvent } from "@goauthentik/elements/utils/customEvents";
+import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { customEvent } from "#elements/utils/customEvents";
 
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { WithBrandConfig } from "../Interface/brandProvider";
-import { initializeLocalization } from "./configureLocale";
-import type { LocaleGetter, LocaleSetter } from "./configureLocale";
-import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
+import { initializeLocalization } from "./configureLocale.js";
+import type { LocaleGetter, LocaleSetter } from "./configureLocale.js";
+import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers.js";
 
 /**
  * A component to manage your locale settings.

@@ -1,4 +1,4 @@
-import { getCookie } from "@goauthentik/common/utils.js";
+import { getCookie } from "#common/utils";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";

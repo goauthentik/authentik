@@ -1,15 +1,19 @@
-import { applicationListStyle } from "@goauthentik/admin/applications/ApplicationListPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/AppIcon";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/AppIcon";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
+import { applicationListStyle } from "#admin/applications/ApplicationListPage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Application, CoreApi, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Application, CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-user-application-table")
 export class UserApplicationTable extends Table<Application> {

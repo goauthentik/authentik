@@ -1,17 +1,18 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
-import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
 
-import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { BaseDeviceStage } from "#flow/stages/authenticator_validate/base";
+import { PasswordManagerPrefill } from "#flow/stages/identification/IdentificationStage";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceClassesEnum,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { CSSResult, TemplateResult, css, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-code")
 export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<

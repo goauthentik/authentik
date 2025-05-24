@@ -1,15 +1,18 @@
-import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { DOM_PURIFY_STRICT } from "@goauthentik/common/purify";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
+import "#elements/EmptyState";
+
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "#common/constants";
+import { DOM_PURIFY_STRICT } from "#common/purify";
+
+import { AKElement } from "#elements/Base";
+
 import mermaid, { MermaidConfig } from "mermaid";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {

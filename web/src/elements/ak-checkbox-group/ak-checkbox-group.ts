@@ -1,5 +1,5 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { AkControlElement } from "#elements/AkControlElement";
+import { CustomEmitterElement } from "#elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues } from "@lit/reactive-element";

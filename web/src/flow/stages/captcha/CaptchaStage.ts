@@ -1,16 +1,22 @@
 /// <reference types="@hcaptcha/types"/>
 /// <reference types="turnstile-types"/>
-import { renderStaticHTMLUnsafe } from "@goauthentik/common/purify";
-import "@goauthentik/elements/EmptyState";
-import { akEmptyState } from "@goauthentik/elements/EmptyState";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import "@goauthentik/elements/forms/FormElement";
-import { createIFrameHTMLWrapper } from "@goauthentik/elements/utils/iframe";
-import { ListenerController } from "@goauthentik/elements/utils/listenerController.js";
-import { randomId } from "@goauthentik/elements/utils/randomId";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+
+import { renderStaticHTMLUnsafe } from "#common/purify";
+
+import { akEmptyState } from "#elements/EmptyState";
+import { bound } from "#elements/decorators/bound";
+import { createIFrameHTMLWrapper } from "#elements/utils/iframe";
+import { ListenerController } from "#elements/utils/listenerController";
+import { randomId } from "#elements/utils/randomId";
+
+import { BaseStage } from "#flow/stages/base";
+
 import { P, match } from "ts-pattern";
+
+import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -22,8 +28,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/api";
 
 type TokenHandler = (token: string) => void;
 

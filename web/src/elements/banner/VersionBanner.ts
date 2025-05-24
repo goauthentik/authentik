@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
+import { AKElement } from "#elements/Base";
+import { WithVersion } from "#elements/Interface/versionProvider";
 
 import { msg, str } from "@lit/localize";
 import { html, nothing } from "lit";

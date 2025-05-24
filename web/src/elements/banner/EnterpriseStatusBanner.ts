@@ -1,14 +1,15 @@
-import { globalAK } from "@goauthentik/common/global";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import { globalAK } from "#common/global";
+
+import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
+
+import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { LicenseFlagsEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends WithLicenseSummary(AKElement) {

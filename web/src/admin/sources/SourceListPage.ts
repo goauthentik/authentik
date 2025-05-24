@@ -1,25 +1,28 @@
-import "@goauthentik/admin/sources/SourceWizard";
-import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
-import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
-import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
-import "@goauthentik/admin/sources/plex/PlexSourceForm";
-import "@goauthentik/admin/sources/saml/SAMLSourceForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#admin/sources/SourceWizard";
+import "#admin/sources/kerberos/KerberosSourceForm";
+import "#admin/sources/ldap/LDAPSourceForm";
+import "#admin/sources/oauth/OAuthSourceForm";
+import "#admin/sources/plex/PlexSourceForm";
+import "#admin/sources/saml/SAMLSourceForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Source, SourcesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Source, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {

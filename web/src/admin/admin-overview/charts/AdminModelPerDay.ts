@@ -1,11 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
+
 import { ChartData, Tick } from "chart.js";
+
+import { Coordinate, EventActions, EventsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
-
-import { Coordinate, EventActions, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-charts-admin-model-per-day")
 export class AdminModelPerDay extends AKChart<Coordinate[]> {

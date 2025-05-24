@@ -1,13 +1,15 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
-import { renderForm } from "@goauthentik/admin/providers/radius/RadiusProviderFormForm.js";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+
+import { ValidationRecord } from "#admin/applications/wizard/types";
+import { renderForm } from "#admin/providers/radius/RadiusProviderFormForm";
+
+import { RadiusProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators.js";
 import { html } from "lit";
-
-import { RadiusProvider } from "@goauthentik/api";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 

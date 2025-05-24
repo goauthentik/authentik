@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

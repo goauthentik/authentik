@@ -1,24 +1,22 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-toggle-group";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
+} from "#admin/providers/oauth2/OAuth2ProviderForm";
 import {
     oauth2SourcesProvider,
     oauth2SourcesSelector,
-} from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-import { match } from "ts-pattern";
+} from "#admin/providers/oauth2/OAuth2Sources";
 
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { match } from "ts-pattern";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -26,6 +24,10 @@ import {
     ProxyProvider,
     ValidationError,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 

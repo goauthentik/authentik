@@ -7,15 +7,16 @@
 import { mdxPlugin } from "#bundler/mdx-plugin/node";
 import { createBundleDefinitions } from "#bundler/utils/node";
 import { DistDirectory, DistDirectoryName, EntryPoint, PackageRoot } from "#paths/node";
-import { NodeEnvironment } from "@goauthentik/core/environment/node";
-import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
-import { readBuildIdentifier } from "@goauthentik/core/version/node";
 import { deepmerge } from "deepmerge-ts";
 import esbuild from "esbuild";
 import copy from "esbuild-plugin-copy";
 import { polyfillNode } from "esbuild-plugin-polyfill-node";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+
+import { NodeEnvironment } from "@goauthentik/core/environment/node";
+import { MonoRepoRoot, resolvePackage } from "@goauthentik/core/paths/node";
+import { readBuildIdentifier } from "@goauthentik/core/version/node";
 
 const logPrefix = "[Build]";
 

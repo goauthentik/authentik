@@ -1,15 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
+
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { EnterpriseApi, License } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { EnterpriseApi, License } from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {

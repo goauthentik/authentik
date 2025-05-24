@@ -1,10 +1,11 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/ak-list-select/ak-list-select.js";
-import { ListSelect } from "@goauthentik/elements/ak-list-select/ak-list-select.js";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
-import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import "#elements/ak-list-select/ak-list-select";
+import "#elements/forms/SearchSelect/ak-portal";
+
+import { AKElement } from "#elements/Base";
+import { ListSelect } from "#elements/ak-list-select/ak-list-select";
+import { bound } from "#elements/decorators/bound";
+import type { GroupedOptions, SelectOption, SelectOptions } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, html, nothing } from "lit";

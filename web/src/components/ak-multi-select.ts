@@ -1,5 +1,6 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/HorizontalFormElement";
+
+import { AkControlElement } from "#elements/AkControlElement";
 
 import { TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

@@ -1,7 +1,7 @@
+import { PolicyEngineMode } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import { PolicyEngineMode } from "@goauthentik/api";
 
 export const policyOptions = [
     {

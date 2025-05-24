@@ -1,13 +1,13 @@
+import "#stories/flow-interface";
+import "./CaptchaStage.js";
+
 import type { StoryObj } from "@storybook/web-components";
+
+import { CaptchaChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
-
-import { CaptchaChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./CaptchaStage";
 
 export default {
     title: "Flow / Stages / Captcha",

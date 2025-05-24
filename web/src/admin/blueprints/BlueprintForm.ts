@@ -1,13 +1,18 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { docLink } from "@goauthentik/common/global";
-import "@goauthentik/components/ak-toggle-group";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/CodeMirror";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#components/ak-toggle-group";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { docLink } from "#common/global";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
 import YAML from "yaml";
+
+import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -15,8 +20,6 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-
-import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 enum blueprintSource {
     file = "file",

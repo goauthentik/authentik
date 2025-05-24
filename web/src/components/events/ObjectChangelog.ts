@@ -1,22 +1,25 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/Dropdown";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#elements/Tabs";
+import "#elements/buttons/Dropdown";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#components/ak-event-info";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { Table, TableColumn } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, EventUser } from "#admin/events/utils";
+
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Event, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-object-changelog")
 export class ObjectChangelog extends Table<Event> {

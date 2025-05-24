@@ -1,10 +1,10 @@
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { formatSlug } from "#elements/router/utils";
 
 import { html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { HorizontalLightComponent } from "./HorizontalLightComponent";
+import { HorizontalLightComponent } from "./HorizontalLightComponent.js";
 
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {

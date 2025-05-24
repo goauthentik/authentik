@@ -1,18 +1,30 @@
-import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
-import "@goauthentik/admin/enterprise/EnterpriseStatusCard";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/Spinner";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/cards/AggregateCard";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#elements/Spinner";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/cards/AggregateCard";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#admin/enterprise/EnterpriseLicenseForm";
+import "#admin/enterprise/EnterpriseStatusCard";
+import "#admin/rbac/ObjectPermissionModal";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import {
+    EnterpriseApi,
+    License,
+    LicenseForecast,
+    LicenseSummary,
+    LicenseSummaryStatusEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -23,15 +35,6 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import {
-    EnterpriseApi,
-    License,
-    LicenseForecast,
-    LicenseSummary,
-    LicenseSummaryStatusEnum,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {

@@ -1,14 +1,15 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter.js";
+import "./ak-dual-select.js";
+
+import { AkControlElement } from "#elements/AkControlElement";
+import { CustomListenerElement } from "#elements/utils/eventEmitter";
+
+import type { Pagination } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
 
-import type { Pagination } from "@goauthentik/api";
-
-import "./ak-dual-select.js";
 import { AkDualSelect } from "./ak-dual-select.js";
 import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
 

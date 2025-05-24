@@ -1,6 +1,7 @@
-import { globalAK } from "@goauthentik/common/global";
-import { applyDocumentTheme } from "@goauthentik/common/theme";
-import { AKElement } from "@goauthentik/elements/Base";
+import { globalAK } from "#common/global";
+import { applyDocumentTheme } from "#common/theme";
+
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";

@@ -1,13 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
-import "@goauthentik/elements/forms/ConfirmationForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+import "#elements/forms/ConfirmationForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
+import { PaginatedResponse } from "#elements/table/Table";
+
 import { ChartData, ChartOptions } from "chart.js";
+
+import { ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
-
-import { ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
 
 export interface SummarizedSyncStatus {
     healthy: number;

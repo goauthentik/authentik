@@ -1,13 +1,16 @@
-import { Interface } from "@goauthentik/elements/Interface";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import "@goauthentik/elements/LoadingOverlay";
+import "#elements/LoadingOverlay";
+
+import AKGlobal from "#common/styles/authentik.css";
+
+import { Interface } from "#elements/Interface";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";

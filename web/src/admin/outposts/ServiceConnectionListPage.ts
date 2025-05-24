@@ -1,26 +1,29 @@
-import "@goauthentik/admin/outposts/OutpostHealth";
-import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
-import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
-import "@goauthentik/admin/outposts/ServiceConnectionWizard";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-status-label";
-import { PFColor } from "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#components/ak-status-label";
+import "#admin/outposts/OutpostHealth";
+import "#admin/outposts/ServiceConnectionDockerForm";
+import "#admin/outposts/ServiceConnectionKubernetesForm";
+import "#admin/outposts/ServiceConnectionWizard";
+import "#admin/rbac/ObjectPermissionModal";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { PFColor } from "#elements/Label";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {

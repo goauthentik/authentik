@@ -1,6 +1,8 @@
-import { globalAK } from "@goauthentik/common/global";
-import { me } from "@goauthentik/common/users";
-import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
+import { globalAK } from "#common/global";
+import { me } from "#common/users";
+
+import { readInterfaceRouteParam } from "#elements/router/utils";
+
 import {
     ErrorEvent,
     EventHint,

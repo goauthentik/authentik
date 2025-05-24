@@ -1,6 +1,7 @@
-import "@goauthentik/elements/Alert";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
+import "#elements/Alert";
+
+import { AKElement } from "#elements/Base";
+import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";

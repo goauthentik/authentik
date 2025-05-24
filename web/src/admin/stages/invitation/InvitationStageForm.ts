@@ -1,13 +1,15 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseStageForm } from "#admin/stages/BaseStageForm";
+
+import { InvitationStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { InvitationStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-form")
 export class InvitationStageForm extends BaseStageForm<InvitationStage> {

@@ -1,17 +1,19 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TableModal } from "@goauthentik/elements/table/TableModal";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TableModal } from "#elements/table/TableModal";
+
+import { Permission, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { Permission, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-rbac-permission-select-table")
 export class PermissionSelectModal extends TableModal<Permission> {

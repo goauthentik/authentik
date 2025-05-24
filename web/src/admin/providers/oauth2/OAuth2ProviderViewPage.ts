@@ -1,17 +1,32 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import renderDescriptionList from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/events/ObjectChangelog";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/ak-mdx/ak-mdx";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#components/events/ObjectChangelog";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/oauth2/OAuth2ProviderForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import renderDescriptionList from "#components/DescriptionList";
+
+import {
+    ClientTypeEnum,
+    CoreApi,
+    CoreUsersListRequest,
+    OAuth2Provider,
+    OAuth2ProviderSetupURLs,
+    PropertyMappingPreview,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    User,
+} from "@goauthentik/api";
 import MDProviderOAuth2 from "@goauthentik/docs/add-secure-apps/providers/oauth2/index.mdx";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -28,18 +43,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ClientTypeEnum,
-    CoreApi,
-    CoreUsersListRequest,
-    OAuth2Provider,
-    OAuth2ProviderSetupURLs,
-    PropertyMappingPreview,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    User,
-} from "@goauthentik/api";
 
 export function TypeToLabel(type?: ClientTypeEnum): string {
     if (!type) return "";

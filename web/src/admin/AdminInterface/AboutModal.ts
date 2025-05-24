@@ -1,9 +1,13 @@
+import "#elements/EmptyState";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { globalAK } from "#common/global";
+
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
 import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/elements/EmptyState";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import { ModalButton } from "#elements/buttons/ModalButton";
+
+import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
@@ -11,8 +15,6 @@ import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
-
-import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {

@@ -1,8 +1,9 @@
-import { PFSize } from "@goauthentik/common/enums.js";
-import { AKElement } from "@goauthentik/elements/Base";
-import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
-import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
-import { Table } from "@goauthentik/elements/table/Table";
+import { PFSize } from "#common/enums";
+
+import { AKElement } from "#elements/Base";
+import { MODAL_BUTTON_STYLES } from "#elements/buttons/ModalButton";
+import { ModalShowEvent } from "#elements/controllers/ModalOrchestrationController";
+import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";

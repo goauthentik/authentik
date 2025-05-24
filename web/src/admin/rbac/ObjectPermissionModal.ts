@@ -1,7 +1,10 @@
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/ModalForm";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "#elements/forms/ModalForm";
+import "#admin/rbac/ObjectPermissionsPage";
+
+import { AKElement } from "#elements/Base";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -9,8 +12,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 /**
  * This is a bit of a hack to get the viewport checking from ModelForm,

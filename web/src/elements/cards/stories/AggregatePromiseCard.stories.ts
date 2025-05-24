@@ -4,6 +4,7 @@ import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { AggregatePromiseCard, type IAggregatePromiseCard } from "../AggregatePromiseCard.js";
+
 import "../AggregatePromiseCard.js";
 
 const metadata: Meta<AggregatePromiseCard> = {

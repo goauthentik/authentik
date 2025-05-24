@@ -1,4 +1,4 @@
-import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
+import { PolicyBindingCheckTarget } from "#admin/policies/utils";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";

@@ -1,5 +1,6 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
+import { ROUTE_SEPARATOR } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
 
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";

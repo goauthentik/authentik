@@ -1,8 +1,9 @@
+import "../QuickActionsCard.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
-import "../QuickActionsCard.js";
 import { QuickAction, QuickActionsCard } from "../QuickActionsCard.js";
 
 const ACTIONS: QuickAction[] = [

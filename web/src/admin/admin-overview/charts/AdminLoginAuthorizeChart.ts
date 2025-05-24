@@ -1,11 +1,13 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart, RGBAColor } from "#elements/charts/Chart";
+
 import { ChartData } from "chart.js";
+
+import { AdminApi, LoginMetrics } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
-
-import { AdminApi, LoginMetrics } from "@goauthentik/api";
 
 @customElement("ak-charts-admin-login-authorization")
 export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {

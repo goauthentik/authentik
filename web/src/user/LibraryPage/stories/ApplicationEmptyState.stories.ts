@@ -1,6 +1,6 @@
 import { html } from "lit";
 
-import "../ak-library-application-empty-list";
+import "../ak-library-application-empty-list.js";
 
 export default {
     title: "Users / <ak-library-application-empty-list>",

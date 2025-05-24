@@ -1,10 +1,15 @@
+import "#components/ak-page-header";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
 import { MessageLevel } from "#common/messages";
-import "#components/ak-page-header";
+
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
+
 import * as Sentry from "@sentry/browser";
+
+import { AdminApi } from "@goauthentik/api";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -14,8 +19,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { AdminApi } from "@goauthentik/api";
 
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {

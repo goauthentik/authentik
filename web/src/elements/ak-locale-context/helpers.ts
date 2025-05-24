@@ -1,7 +1,7 @@
-import { globalAK } from "@goauthentik/common/global";
+import { globalAK } from "#common/global";
 
-import { LOCALES as RAW_LOCALES, enLocale } from "./definitions";
-import { AkLocale } from "./types";
+import { LOCALES as RAW_LOCALES, enLocale } from "./definitions.js";
+import { AkLocale } from "./types.js";
 
 export const DEFAULT_LOCALE = "en";
 

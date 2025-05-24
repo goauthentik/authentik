@@ -1,10 +1,12 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
-import { customElement } from "lit/decorators.js";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 import { renderForm } from "./RadiusProviderFormForm.js";
 

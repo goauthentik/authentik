@@ -1,11 +1,18 @@
+import "#elements/EmptyState";
+
 import {
     Assertion,
     checkWebAuthnSupport,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
-} from "@goauthentik/common/helpers/webauthn";
-import "@goauthentik/elements/EmptyState";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+} from "#common/helpers/webauthn";
+
+import { BaseStage } from "#flow/stages/base";
+
+import {
+    AuthenticatorWebAuthnChallenge,
+    AuthenticatorWebAuthnChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -18,11 +25,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorWebAuthnChallenge,
-    AuthenticatorWebAuthnChallengeResponseRequest,
-} from "@goauthentik/api";
 
 export interface WebAuthnAuthenticatorRegisterChallengeResponse {
     response: Assertion;

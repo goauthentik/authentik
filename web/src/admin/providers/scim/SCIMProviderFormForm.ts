@@ -1,13 +1,10 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
 
 import {
     CompatibilityModeEnum,
@@ -17,6 +14,10 @@ import {
     SCIMProvider,
     ValidationError,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./SCIMProviderFormHelpers.js";
 

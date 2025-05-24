@@ -1,28 +1,28 @@
-import "@goauthentik/admin/groups/GroupForm";
-import "@goauthentik/admin/policies/PolicyBindingForm";
-import { PolicyBindingNotice } from "@goauthentik/admin/policies/PolicyBindingForm";
-import "@goauthentik/admin/policies/PolicyWizard";
-import {
-    PolicyBindingCheckTarget,
-    PolicyBindingCheckTargetToLabel,
-} from "@goauthentik/admin/policies/utils";
-import "@goauthentik/admin/users/UserForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFSize } from "@goauthentik/common/enums.js";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/forms/ProxyForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/Tabs";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#elements/forms/ProxyForm";
+import "#components/ak-status-label";
+import "#admin/groups/GroupForm";
+import "#admin/policies/PolicyBindingForm";
+import "#admin/policies/PolicyWizard";
+import "#admin/users/UserForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { Table, TableColumn } from "#elements/table/Table";
+
+import { PolicyBindingNotice } from "#admin/policies/PolicyBindingForm";
+import { PolicyBindingCheckTarget, PolicyBindingCheckTargetToLabel } from "#admin/policies/utils";
+
+import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {

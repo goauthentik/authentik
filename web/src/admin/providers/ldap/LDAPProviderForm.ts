@@ -1,12 +1,15 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-branded-flow-search";
 
-import { customElement } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 
 import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 import { renderForm } from "./LDAPProviderFormForm.js";
 

@@ -1,11 +1,22 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import "@goauthentik/elements/CodeMirror";
-import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/prompt/PromptStage";
+import "#elements/CodeMirror";
+import "#elements/forms/HorizontalFormElement";
+import "#flow/stages/prompt/PromptStage";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+
+import { CodeMirrorMode } from "#elements/CodeMirror";
+import { ModelForm } from "#elements/forms/ModelForm";
+
+import { StageHost } from "#flow/stages/base";
+
+import {
+    Prompt,
+    PromptChallenge,
+    PromptTypeEnum,
+    StagesApi,
+    instanceOfValidationError,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -15,14 +26,6 @@ import { map } from "lit/directives/map.js";
 
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import {
-    Prompt,
-    PromptChallenge,
-    PromptTypeEnum,
-    StagesApi,
-    instanceOfValidationError,
-} from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;

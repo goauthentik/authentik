@@ -1,5 +1,6 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+
 import { P, match } from "ts-pattern";
 
 import { consume } from "@lit/context";
@@ -15,8 +16,8 @@ import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
 import { wizardStepContext } from "./WizardContexts.js";
 import { NavigationEventInit, WizardCloseEvent, WizardNavigationEvent } from "./events.js";
-import { WizardStepLabel, WizardStepState } from "./types";
-import { type ButtonKind, type NavigableButton, type WizardButton } from "./types";
+import { WizardStepLabel, WizardStepState } from "./types.js";
+import { type ButtonKind, type NavigableButton, type WizardButton } from "./types.js";
 
 const isNavigable = (b: WizardButton): b is NavigableButton =>
     "destination" in b && typeof b.destination === "string" && b.destination.length > 0;

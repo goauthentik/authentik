@@ -1,6 +1,7 @@
-import { AndNext } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AndNext } from "#common/api/config";
+import { globalAK } from "#common/global";
+
+import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -32,7 +33,7 @@ export class UserSettingsPassword extends AKElement {
             <div class="pf-c-card__body">
                 <a
                     href="${ifDefined(this.configureUrl)}${AndNext(
-                        `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({ page: "page-details" })}`,
+                        `${globalAK().api.relBase}if/user/#/settings;$ON.stringify({ page: "page-details" })}`,
                     )}"
                     class="pf-c-button pf-m-primary"
                 >

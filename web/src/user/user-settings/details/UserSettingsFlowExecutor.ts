@@ -1,18 +1,26 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "#user/user-settings/details/stages/prompt/PromptStage";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
+import { refreshMe } from "#common/users";
+
+import { AKElement } from "#elements/Base";
+import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { StageHost } from "#flow/stages/base";
+
 import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
+    ChallengeTypes,
+    FlowChallengeResponseRequest,
+    FlowErrorChallenge,
+    FlowsApi,
+    RedirectChallenge,
+    ShellChallenge,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -24,15 +32,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ChallengeTypes,
-    FlowChallengeResponseRequest,
-    FlowErrorChallenge,
-    FlowsApi,
-    RedirectChallenge,
-    ShellChallenge,
-} from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor

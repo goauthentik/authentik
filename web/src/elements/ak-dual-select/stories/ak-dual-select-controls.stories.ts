@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-dual-select-controls.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "../components/ak-dual-select-controls";
-import { AkDualSelectControls } from "../components/ak-dual-select-controls";
+import { AkDualSelectControls } from "../components/ak-dual-select-controls.js";
 
 const metadata: Meta<AkDualSelectControls> = {
     title: "Elements / Dual Select / Control Panel",

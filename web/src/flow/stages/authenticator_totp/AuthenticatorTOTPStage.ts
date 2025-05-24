@@ -1,10 +1,19 @@
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/forms/FormElement";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#elements/forms/FormElement";
+import "#flow/FormStatic";
+
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+
+import { BaseStage } from "#flow/stages/base";
+
 import "webcomponent-qr-code";
+
+import {
+    AuthenticatorTOTPChallenge,
+    AuthenticatorTOTPChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -17,11 +26,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorTOTPChallenge,
-    AuthenticatorTOTPChallengeResponseRequest,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-totp")
 export class AuthenticatorTOTPStage extends BaseStage<

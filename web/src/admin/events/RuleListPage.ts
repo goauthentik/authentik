@@ -1,25 +1,28 @@
-import "@goauthentik/admin/events/RuleForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import "@goauthentik/admin/rbac/ObjectPermissionModal";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { severityToLabel } from "@goauthentik/common/labels";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import "#admin/events/RuleForm";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionModal";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { severityToLabel } from "#common/labels";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import {
     EventsApi,
     NotificationRule,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {

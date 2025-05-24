@@ -1,13 +1,13 @@
+import "#stories/flow-interface";
+import "./AuthenticatorTOTPStage.js";
+
 import type { StoryObj } from "@storybook/web-components";
+
+import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";
 
 import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
-
-import { AuthenticatorTOTPChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./AuthenticatorTOTPStage";
 
 export default {
     title: "Flow / Stages / AuthenticatorTOTPStage",

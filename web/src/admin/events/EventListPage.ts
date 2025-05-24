@@ -1,21 +1,25 @@
-import "@goauthentik/admin/events/EventVolumeChart";
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import "@goauthentik/components/ak-event-info";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import "#components/ak-event-info";
+import "#admin/events/EventVolumeChart";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import { SlottedTemplateResult } from "#elements/types";
+
+import { EventGeo, EventUser } from "#admin/events/utils";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Event, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-list")
 export class EventListPage extends TablePage<Event> {

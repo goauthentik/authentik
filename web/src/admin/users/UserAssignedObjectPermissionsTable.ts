@@ -1,14 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import "#elements/forms/DeleteBulkForm";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { groupBy } from "#common/utils";
+
+import { PaginatedResponse, Table, TableColumn } from "#elements/table/Table";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { ExtraUserObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { ExtraUserObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-user-assigned-object-permissions-table")
 export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPermission> {

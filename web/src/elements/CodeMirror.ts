@@ -1,3 +1,7 @@
+import { EVENT_THEME_CHANGE } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
 import { css as cssLang } from "@codemirror/lang-css";
 import { html as htmlLang } from "@codemirror/lang-html";
@@ -15,14 +19,12 @@ import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark, oneDarkHighlightStyle } from "@codemirror/theme-one-dark";
 import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
-import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { CSSResult, css } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 export enum CodeMirrorMode {
     XML = "xml",

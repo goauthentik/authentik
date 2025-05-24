@@ -1,7 +1,8 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import "@goauthentik/elements/forms/FormElement";
-import { isActiveElement } from "@goauthentik/elements/utils/focus";
+import "#elements/forms/FormElement";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import { isActiveElement } from "#elements/utils/focus";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";

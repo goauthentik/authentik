@@ -1,7 +1,8 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import { type Spread } from "@goauthentik/elements/types";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { AkControlElement } from "#elements/AkControlElement";
+import { bound } from "#elements/decorators/bound";
+import { type Spread } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";

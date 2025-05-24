@@ -1,5 +1,6 @@
-import { createESLintPackageConfig } from "@goauthentik/eslint-config";
 import tseslint from "typescript-eslint";
+
+import { createESLintPackageConfig } from "@goauthentik/eslint-config";
 
 // @ts-check
 

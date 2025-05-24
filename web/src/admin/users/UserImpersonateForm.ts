@@ -1,13 +1,15 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/components/ak-text-input";
-import { Form } from "@goauthentik/elements/forms/Form";
+import "#components/ak-text-input";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { globalAK } from "#common/global";
+
+import { Form } from "#elements/forms/Form";
+
+import { CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { CoreApi, ImpersonationRequest } from "@goauthentik/api";
 
 @customElement("ak-user-impersonate-form")
 export class UserImpersonateForm extends Form<ImpersonationRequest> {

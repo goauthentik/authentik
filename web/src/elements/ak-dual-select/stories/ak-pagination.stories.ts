@@ -1,11 +1,12 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../components/ak-pagination.js";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "../components/ak-pagination";
 import { AkPagination } from "../components/ak-pagination";
-import { DualSelectEventType } from "../types";
+import { DualSelectEventType } from "../types.js";
 
 const metadata: Meta<AkPagination> = {
     title: "Elements / Dual Select / Pagination Control",

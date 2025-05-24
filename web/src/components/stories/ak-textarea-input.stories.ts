@@ -1,10 +1,11 @@
-import "@goauthentik/elements/messages/MessageContainer";
+import "#elements/messages/MessageContainer";
+import "../ak-textarea-input.js";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "../ak-textarea-input";
-import AkTextareaInput from "../ak-textarea-input";
+import AkTextareaInput from "../ak-textarea-input.js";
 
 const metadata: Meta<AkTextareaInput> = {
     title: "Components / Textarea Input",

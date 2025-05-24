@@ -1,9 +1,9 @@
-import { createMixin } from "@goauthentik/elements/types";
+import { createMixin } from "#elements/types";
+
+import type { Version } from "@goauthentik/api";
 
 import { consume, createContext } from "@lit/context";
 import { state } from "lit/decorators.js";
-
-import type { Version } from "@goauthentik/api";
 
 /**
  * The Lit context for application branding.
