@@ -28,7 +28,10 @@ To support the integration of OVHcloud with authentik, you need to create an app
     - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: Select **SAML Provider** as the provider type.
     - **Configure the Provider**: Provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations:
-        - Set the **ACS URL** to `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region, or `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
+        - Set the **ACS URL** to :
+            - `https://www.ovhcloud.com/eu/auth/saml/acs` for EU region.
+            - `https://www.ovhcloud.com/ca/auth/saml/acs` for CA region.
+            - `https://us.ovhcloud.com/auth/` for US region.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, set an available signing certificate.
 
@@ -59,3 +62,7 @@ To verify that authentik is correctly integrated with OVH Cloud, first log out o
 
 You will be redirected to your authentik installation for authentication. Once authenticated you will be logged in to OVHcloud.
 
+## References
+
+- [User management & Federation - OVHcloud help center](https://help.ovhcloud.com/csm/en-ie-documentation-manage-operate-user-federation?id=kb_browse_cat&kb_id=3d4a8129a884a950f07829d7d5c75243&kb_category=21734cbe50d47d90476b12dfd60b3542&spa=1)
+- [User management & Federation - OVHcloud US help center](https://support.us.ovhcloud.com/hc/en-us/sections/27230986868883-Federation)
