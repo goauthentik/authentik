@@ -1,7 +1,8 @@
-import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
+import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint";
 import { globalAK } from "@goauthentik/common/global";
+import { rootInterface } from "@goauthentik/common/theme";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { AKElement } from "@goauthentik/elements/Base";
 import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 

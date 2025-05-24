@@ -11,10 +11,10 @@ import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { rootInterface } from "@goauthentik/common/theme";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
 import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import {
     CapabilitiesEnum,
@@ -352,7 +352,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.brand.flowRecovery
+                                    ${this.brand?.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"

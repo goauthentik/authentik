@@ -1,9 +1,10 @@
-import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
 import { createMixin } from "@goauthentik/elements/types";
 
-import { consume } from "@lit/context";
+import { consume, createContext } from "@lit/context";
 
 import { type LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
+export const LicenseContext = createContext<LicenseSummary>(Symbol("authentik-license-context"));
 
 /**
  * A consumer that provides license information to the element.
@@ -26,7 +27,7 @@ export interface LicenseMixin {
 export const WithLicenseSummary = createMixin<LicenseMixin>(({ SuperClass, subscribe = true }) => {
     abstract class LicenseProvider extends SuperClass implements LicenseMixin {
         @consume({
-            context: authentikEnterpriseContext,
+            context: LicenseContext,
             subscribe,
         })
         public readonly licenseSummary!: LicenseSummary;

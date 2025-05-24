@@ -1,55 +1,79 @@
+import { AKConfigMixin, AuthentikConfigContext } from "#elements/Interface/authentikConfigProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { ThemedElement } from "@goauthentik/common/theme";
-import { authentikConfigContext } from "@goauthentik/elements/AuthentikContexts";
-import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
+import { isAbortError } from "@goauthentik/common/errors/network";
+import type { ReactiveElementHost } from "@goauthentik/elements/types";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
-import type { Config } from "@goauthentik/api";
-import { RootApi } from "@goauthentik/api";
+import { Config, RootApi } from "@goauthentik/api";
 
+/**
+ * A controller that provides the application configuration to the element.
+ */
 export class ConfigContextController implements ReactiveController {
-    host!: ReactiveElementHost<ThemedElement>;
+    #log = console.debug.bind(console, `authentik/controller/config`);
+    #abortController: null | AbortController = null;
 
-    context!: ContextProvider<{ __context__: Config | undefined }>;
+    #host: ReactiveElementHost<AKConfigMixin>;
+    #context: ContextProvider<Context<unknown, Config>>;
 
-    constructor(host: ReactiveElementHost<ThemedElement>) {
-        this.host = host;
-        this.context = new ContextProvider(this.host, {
-            context: authentikConfigContext,
-            initialValue: undefined,
+    constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
+        this.#host = host;
+
+        this.#context = new ContextProvider(this.#host, {
+            context: AuthentikConfigContext,
+            initialValue,
         });
-        // Pre-hydrate from template-embedded config
-        this.context.setValue(globalAK().config);
-        this.host.config = globalAK().config;
-        this.fetch = this.fetch.bind(this);
-        this.fetch();
+
+        this.#host.authentikConfig = initialValue;
     }
 
-    fetch() {
-        new RootApi(DEFAULT_CONFIG).rootConfigRetrieve().then((config) => {
-            this.context.setValue(config);
-            this.host.config = config;
-        });
+    #fetch = () => {
+        this.#log("Fetching configuration...");
+
+        this.#abortController?.abort();
+
+        this.#abortController = new AbortController();
+
+        return new RootApi(DEFAULT_CONFIG)
+            .rootConfigRetrieve({
+                signal: this.#abortController.signal,
+            })
+            .then((authentikConfig) => {
+                this.#context.setValue(authentikConfig);
+                this.#host.authentikConfig = authentikConfig;
+            })
+            .catch((error: unknown) => {
+                if (isAbortError(error)) {
+                    this.#log("Aborted fetching configuration");
+                    return;
+                }
+
+                throw error;
+            })
+            .finally(() => {
+                this.#abortController = null;
+            });
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH, this.#fetch);
+        this.#fetch();
     }
 
-    hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.fetch);
+    public hostDisconnected() {
+        window.removeEventListener(EVENT_REFRESH, this.#fetch);
+        this.#abortController?.abort();
     }
 
-    hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.fetch);
-    }
-
-    hostUpdate() {
+    public hostUpdate() {
         // If the Interface changes its config information, we should notify all
         // users of the context of that change, without creating an infinite
         // loop of resets.
-        if (this.host.config !== this.context.value) {
-            this.context.setValue(this.host.config);
+        if (this.#host.authentikConfig && this.#host.authentikConfig !== this.#context.value) {
+            this.#context.setValue(this.#host.authentikConfig);
         }
     }
 }

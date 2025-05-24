@@ -1,52 +1,77 @@
+import { LicenseContext, LicenseMixin } from "#elements/Interface/licenseSummaryProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
-import { authentikEnterpriseContext } from "@goauthentik/elements/AuthentikContexts";
-import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
+import { isAbortError } from "@goauthentik/common/errors/network";
+import type { ReactiveElementHost } from "@goauthentik/elements/types";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
-import type { LicenseSummary } from "@goauthentik/api";
-import { EnterpriseApi } from "@goauthentik/api";
+import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
 
-import type { AkAuthenticatedInterface } from "./Interface";
+export class LicenseContextController implements ReactiveController {
+    #log = console.debug.bind(console, `authentik/controller/license`);
+    #abortController: null | AbortController = null;
 
-export class EnterpriseContextController implements ReactiveController {
-    host!: ReactiveElementHost<AkAuthenticatedInterface>;
+    #host: ReactiveElementHost<LicenseMixin>;
+    #context: ContextProvider<Context<unknown, LicenseSummary>>;
 
-    context!: ContextProvider<{ __context__: LicenseSummary | undefined }>;
-
-    constructor(host: ReactiveElementHost<AkAuthenticatedInterface>) {
-        this.host = host;
-        this.context = new ContextProvider(this.host, {
-            context: authentikEnterpriseContext,
-            initialValue: undefined,
-        });
-        this.fetch = this.fetch.bind(this);
-        this.fetch();
-    }
-
-    fetch() {
-        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((enterprise) => {
-            this.context.setValue(enterprise);
-            this.host.licenseSummary = enterprise;
+    constructor(host: ReactiveElementHost<LicenseMixin>, initialValue?: LicenseSummary) {
+        this.#host = host;
+        this.#context = new ContextProvider(this.#host, {
+            context: LicenseContext,
+            initialValue: initialValue,
         });
     }
 
-    hostConnected() {
-        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.fetch);
+    #fetch = () => {
+        this.#log("Fetching license summary...");
+
+        this.#abortController?.abort();
+
+        this.#abortController = new AbortController();
+
+        return new EnterpriseApi(DEFAULT_CONFIG)
+            .enterpriseLicenseSummaryRetrieve(
+                {},
+                {
+                    signal: this.#abortController.signal,
+                },
+            )
+            .then((enterprise) => {
+                this.#context.setValue(enterprise);
+                this.#host.licenseSummary = enterprise;
+            })
+
+            .catch((error: unknown) => {
+                if (isAbortError(error)) {
+                    this.#log("Aborted fetching license summary");
+                    return;
+                }
+
+                throw error;
+            })
+            .finally(() => {
+                this.#abortController = null;
+            });
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
+        this.#fetch();
     }
 
-    hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.fetch);
+    public hostDisconnected() {
+        window.removeEventListener(EVENT_REFRESH_ENTERPRISE, this.#fetch);
+        this.#abortController?.abort();
     }
 
-    hostUpdate() {
+    public hostUpdate() {
         // If the Interface changes its config information, we should notify all
         // users of the context of that change, without creating an infinite
         // loop of resets.
-        if (this.host.licenseSummary !== this.context.value) {
-            this.context.setValue(this.host.licenseSummary);
+        if (this.#host.licenseSummary && this.#host.licenseSummary !== this.#context.value) {
+            this.#context.setValue(this.#host.licenseSummary);
         }
     }
 }

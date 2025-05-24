@@ -1,51 +1,74 @@
+import { VersionContext, VersionMixin } from "#elements/Interface/versionProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { authentikVersionContext } from "@goauthentik/elements/AuthentikContexts";
-import type { ReactiveElementHost } from "@goauthentik/elements/types.js";
+import { isAbortError } from "@goauthentik/common/errors/network";
+import type { ReactiveElementHost } from "@goauthentik/elements/types";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
 import type { Version } from "@goauthentik/api";
 import { AdminApi } from "@goauthentik/api";
 
-import type { AkAuthenticatedInterface } from "./Interface";
-
 export class VersionContextController implements ReactiveController {
-    host!: ReactiveElementHost<AkAuthenticatedInterface>;
+    #log = console.debug.bind(console, `authentik/controller/version`);
+    #abortController: null | AbortController = null;
 
-    context!: ContextProvider<{ __context__: Version | undefined }>;
+    #host: ReactiveElementHost<VersionMixin>;
+    #context: ContextProvider<Context<unknown, Version>>;
 
-    constructor(host: ReactiveElementHost<AkAuthenticatedInterface>) {
-        this.host = host;
-        this.context = new ContextProvider(this.host, {
-            context: authentikVersionContext,
-            initialValue: undefined,
-        });
-        this.fetch = this.fetch.bind(this);
-        this.fetch();
-    }
-
-    fetch() {
-        new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve().then((version) => {
-            this.context.setValue(version);
-            this.host.version = version;
+    constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
+        this.#host = host;
+        this.#context = new ContextProvider(this.#host, {
+            context: VersionContext,
+            initialValue,
         });
     }
 
-    hostConnected() {
-        window.addEventListener(EVENT_REFRESH, this.fetch);
+    #fetch = () => {
+        this.#log("Fetching latest version...");
+
+        this.#abortController?.abort();
+
+        this.#abortController = new AbortController();
+
+        return new AdminApi(DEFAULT_CONFIG)
+            .adminVersionRetrieve({
+                signal: this.#abortController.signal,
+            })
+            .then((version) => {
+                this.#context.setValue(version);
+                this.#host.version = version;
+            })
+
+            .catch((error: unknown) => {
+                if (isAbortError(error)) {
+                    this.#log("Aborted fetching license summary");
+                    return;
+                }
+
+                throw error;
+            })
+            .finally(() => {
+                this.#abortController = null;
+            });
+    };
+
+    public hostConnected() {
+        window.addEventListener(EVENT_REFRESH, this.#fetch);
+        this.#fetch();
     }
 
-    hostDisconnected() {
-        window.removeEventListener(EVENT_REFRESH, this.fetch);
+    public hostDisconnected() {
+        window.removeEventListener(EVENT_REFRESH, this.#fetch);
+        this.#abortController?.abort();
     }
 
-    hostUpdate() {
+    public hostUpdate() {
         // If the Interface changes its version information for some reason,
         // we should notify all users of the context of that change. doesn't
-        if (this.host.version !== this.context.value) {
-            this.context.setValue(this.host.version);
+        if (this.#host.version && this.#host.version !== this.#context.value) {
+            this.#context.setValue(this.#host.version);
         }
     }
 }

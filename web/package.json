@@ -67,6 +67,7 @@
         "#admin/*": "./src/admin/*.js",
         "#flow/*.css": "./src/flow/*.css",
         "#flow/*": "./src/flow/*.js",
+        "#locales/*": "./src/locales/*.js",
         "#stories/*": "./src/stories/*.js",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
