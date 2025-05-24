@@ -7,11 +7,11 @@ import (
 )
 
 type Packet struct {
-	r           *radius.Request
-	eap         *eap.Payload
-	stm         protocol.StateManager
-	state       string
-	endModifier func(p *radius.Packet) *radius.Packet
+	r                 *radius.Request
+	eap               *eap.Payload
+	stm               protocol.StateManager
+	state             string
+	responseModifiers []protocol.ResponseModifier
 }
 
 func Decode(stm protocol.StateManager, raw []byte) (*Packet, error) {
@@ -19,10 +19,8 @@ func Decode(stm protocol.StateManager, raw []byte) (*Packet, error) {
 		eap: &eap.Payload{
 			Settings: stm.GetEAPSettings(),
 		},
-		stm: stm,
-		endModifier: func(p *radius.Packet) *radius.Packet {
-			return p
-		},
+		stm:               stm,
+		responseModifiers: []protocol.ResponseModifier{},
 	}
 	err := packet.eap.Decode(raw)
 	if err != nil {

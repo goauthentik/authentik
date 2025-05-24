@@ -25,8 +25,8 @@ type Context interface {
 	IsProtocolStart(p Type) bool
 
 	HandleInnerEAP(Payload, StateManager) (Payload, error)
-	Inner(Payload, Type, func(p *radius.Packet) *radius.Packet) Context
-	EndInnerProtocol(Status, func(p *radius.Packet) *radius.Packet)
+	Inner(Payload, Type) Context
+	EndInnerProtocol(Status)
 
 	Log() *log.Entry
 }

@@ -39,7 +39,6 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 
 	rres := r.Response(radius.CodeAccessReject)
 	if err == nil {
-		rres = p.endModifier(rres)
 		switch rp.eap.Code {
 		case protocol.CodeRequest:
 			rres.Code = radius.CodeAccessChallenge
@@ -51,6 +50,13 @@ func (p *Packet) HandleRadiusPacket(w radius.ResponseWriter, r *radius.Request) 
 	} else {
 		rres.Code = radius.CodeAccessReject
 		log.WithError(err).Debug("Rejecting request")
+	}
+	for _, mod := range p.responseModifiers {
+		err := mod.ModifyRADIUSResponse(rres, r.Packet)
+		if err != nil {
+			log.WithError(err).Warning("Root-EAP: failed to modify response packet")
+			break
+		}
 	}
 
 	rfc2865.State_SetString(rres, p.state)
@@ -106,7 +112,8 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 
 	var ctx *context
 	if parentContext != nil {
-		ctx = parentContext.Inner(np, t, nil).(*context)
+		ctx = parentContext.Inner(np, t).(*context)
+		ctx.settings = stm.GetEAPSettings().ProtocolSettings[np.Type()]
 	} else {
 		ctx = &context{
 			req:         p.r,
@@ -115,8 +122,9 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 			log:         log.WithField("type", fmt.Sprintf("%T", np)).WithField("code", t),
 			settings:    stm.GetEAPSettings().ProtocolSettings[t],
 		}
-		ctx.handleInner = func(pp protocol.Payload, sm protocol.StateManager) (protocol.Payload, error) {
-			return p.handleEAP(pp, sm, ctx.Inner(pp, pp.Type(), nil).(*context))
+		ctx.handleInner = func(pp protocol.Payload, sm protocol.StateManager, ctx protocol.Context) (protocol.Payload, error) {
+			// cctx := ctx.Inner(np, np.Type(), nil).(*context)
+			return p.handleEAP(pp, sm, ctx.(*context))
 		}
 	}
 	if !np.Offerable() {
@@ -141,8 +149,9 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 
 	stm.SetEAPState(p.state, st)
 
-	if ctx.endModifier != nil {
-		p.endModifier = ctx.callEndModifier
+	if rm, ok := np.(protocol.ResponseModifier); ok {
+		ctx.log.Debug("Root-EAP: Registered response modifier")
+		p.responseModifiers = append(p.responseModifiers, rm)
 	}
 
 	switch ctx.endStatus {

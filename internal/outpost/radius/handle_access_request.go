@@ -153,10 +153,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 
 	return protocol.Settings{
 		Protocols: append(protocols, tls.Protocol, peap.Protocol),
-		ProtocolPriority: []protocol.Type{
-			tls.TypeTLS,
-			peap.TypePEAP,
-		},
+		ProtocolPriority: []protocol.Type{tls.TypeTLS, peap.TypePEAP},
 		ProtocolSettings: map[protocol.Type]interface{}{
 			tls.TypeTLS: tls.Settings{
 				Config: &ttls.Config{
@@ -197,6 +194,13 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 				InnerProtocols: protocol.Settings{
 					Protocols:        append(protocols, mschapv2.Protocol),
 					ProtocolPriority: []protocol.Type{mschapv2.TypeMSCHAPv2},
+					ProtocolSettings: map[protocol.Type]interface{}{
+						mschapv2.TypeMSCHAPv2: mschapv2.Settings{
+							AuthenticateRequest: mschapv2.DebugStaticCredentials(
+								[]byte("foo"), []byte("bar"),
+							),
+						},
+					},
 				},
 			},
 		},

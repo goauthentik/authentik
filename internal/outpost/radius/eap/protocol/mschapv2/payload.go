@@ -160,18 +160,27 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		p.st.IsProtocolEnded = true
 		return ep
 	} else if p.st.IsProtocolEnded {
-		ctx.EndInnerProtocol(protocol.StatusSuccess, func(r *radius.Packet) *radius.Packet {
-			if len(microsoft.MSMPPERecvKey_Get(r, ctx.Packet().Packet)) < 1 {
-				microsoft.MSMPPERecvKey_Set(r, p.st.AuthResponse.RecvKey)
-			}
-			if len(microsoft.MSMPPESendKey_Get(r, ctx.Packet().Packet)) < 1 {
-				microsoft.MSMPPESendKey_Set(r, p.st.AuthResponse.SendKey)
-			}
-			return r
-		})
+		ctx.EndInnerProtocol(protocol.StatusSuccess)
 		return &Payload{}
 	}
 	return response
+}
+
+func (p *Payload) ModifyRADIUSResponse(r *radius.Packet, q *radius.Packet) error {
+	if p.st == nil || p.st.AuthResponse == nil {
+		return nil
+	}
+	if r.Code != radius.CodeAccessAccept {
+		return nil
+	}
+	log.Debug("MSCHAPv2: Radius modifier")
+	if len(microsoft.MSMPPERecvKey_Get(r, q)) < 1 {
+		microsoft.MSMPPERecvKey_Set(r, p.st.AuthResponse.RecvKey)
+	}
+	if len(microsoft.MSMPPESendKey_Get(r, q)) < 1 {
+		microsoft.MSMPPESendKey_Set(r, p.st.AuthResponse.SendKey)
+	}
+	return nil
 }
 
 func (p *Payload) Offerable() bool {

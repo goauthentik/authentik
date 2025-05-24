@@ -2,8 +2,6 @@ package tls
 
 import (
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
-	"layeh.com/radius"
-	"layeh.com/radius/vendors/microsoft"
 )
 
 func (p *Payload) innerHandler(ctx protocol.Context) {
@@ -13,7 +11,7 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 		n, err := p.st.TLS.Read(d)
 		if err != nil {
 			ctx.Log().WithError(err).Warning("TLS: Failed to read from TLS connection")
-			ctx.EndInnerProtocol(protocol.StatusError, nil)
+			ctx.EndInnerProtocol(protocol.StatusError)
 			return
 		}
 		// Truncate data to the size we read
@@ -22,25 +20,20 @@ func (p *Payload) innerHandler(ctx protocol.Context) {
 	err := p.Inner.Decode(d)
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to decode inner protocol")
-		ctx.EndInnerProtocol(protocol.StatusError, nil)
+		ctx.EndInnerProtocol(protocol.StatusError)
 		return
 	}
-	pl := p.Inner.Handle(ctx.Inner(p.Inner, p.Inner.Type(), func(r *radius.Packet) *radius.Packet {
-		ctx.Log().Debug("TLS: Adding MPPE Keys")
-		microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
-		microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
-		return r
-	}))
+	pl := p.Inner.Handle(ctx.Inner(p.Inner, p.Inner.Type()))
 	enc, err := pl.Encode()
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to encode inner protocol")
-		ctx.EndInnerProtocol(protocol.StatusError, nil)
+		ctx.EndInnerProtocol(protocol.StatusError)
 		return
 	}
 	_, err = p.st.TLS.Write(enc)
 	if err != nil {
 		ctx.Log().WithError(err).Warning("TLS: failed to write to TLS")
-		ctx.EndInnerProtocol(protocol.StatusError, nil)
+		ctx.EndInnerProtocol(protocol.StatusError)
 		return
 	}
 }

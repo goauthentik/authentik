@@ -144,15 +144,30 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			retry.MaxDelay(100*time.Millisecond),
 			retry.Attempts(0),
 		)
-		ctx.EndInnerProtocol(pst, func(r *radius.Packet) *radius.Packet {
-			ctx.Log().Debug("TLS: Adding MPPE Keys")
-			microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
-			microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
-			return r
-		})
+		ctx.EndInnerProtocol(pst)
 		return nil
 	}
 	return p.startChunkedTransfer(p.st.Conn.OutboundData())
+}
+
+func (p *Payload) ModifyRADIUSResponse(r *radius.Packet, q *radius.Packet) error {
+	if r.Code != radius.CodeAccessAccept {
+		return nil
+	}
+	if p.st == nil || !p.st.HandshakeDone {
+		return nil
+	}
+	log.Debug("TLS: Adding MPPE Keys")
+	// TLS overrides other protocols' MPPE keys
+	if len(microsoft.MSMPPERecvKey_Get(r, q)) > 0 {
+		microsoft.MSMPPERecvKey_Del(r)
+	}
+	if len(microsoft.MSMPPESendKey_Get(r, q)) > 0 {
+		microsoft.MSMPPESendKey_Del(r)
+	}
+	microsoft.MSMPPERecvKey_Set(r, p.st.MPPEKey[:32])
+	microsoft.MSMPPESendKey_Set(r, p.st.MPPEKey[64:64+32])
+	return nil
 }
 
 func (p *Payload) tlsInit(ctx protocol.Context) {
@@ -181,9 +196,7 @@ func (p *Payload) tlsInit(ctx protocol.Context) {
 		if err != nil {
 			ctx.Log().WithError(err).Debug("TLS: Handshake error")
 			p.st.FinalStatus = protocol.StatusError
-			ctx.EndInnerProtocol(protocol.StatusError, func(p *radius.Packet) *radius.Packet {
-				return p
-			})
+			ctx.EndInnerProtocol(protocol.StatusError)
 			return
 		}
 		ctx.Log().Debug("TLS: handshake done")

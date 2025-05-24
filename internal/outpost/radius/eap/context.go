@@ -16,8 +16,7 @@ type context struct {
 	settings    interface{}
 	parent      *context
 	endStatus   protocol.Status
-	endModifier func(p *radius.Packet) *radius.Packet
-	handleInner func(protocol.Payload, protocol.StateManager) (protocol.Payload, error)
+	handleInner func(protocol.Payload, protocol.StateManager, protocol.Context) (protocol.Payload, error)
 }
 
 func (ctx *context) RootPayload() protocol.Payload            { return ctx.rootPayload }
@@ -28,13 +27,10 @@ func (ctx *context) SetProtocolState(p protocol.Type, st any) { ctx.typeState[p]
 func (ctx *context) IsProtocolStart(p protocol.Type) bool     { return ctx.typeState[p] == nil }
 func (ctx *context) Log() *log.Entry                          { return ctx.log }
 func (ctx *context) HandleInnerEAP(p protocol.Payload, st protocol.StateManager) (protocol.Payload, error) {
-	return ctx.handleInner(p, st)
+	return ctx.handleInner(p, st, ctx)
 }
-func (ctx *context) Inner(p protocol.Payload, t protocol.Type, pmf func(p *radius.Packet) *radius.Packet) protocol.Context {
-	if ctx.endModifier == nil {
-		ctx.endModifier = pmf
-	}
-	return &context{
+func (ctx *context) Inner(p protocol.Payload, t protocol.Type) protocol.Context {
+	nctx := &context{
 		req:         ctx.req,
 		rootPayload: ctx.rootPayload,
 		typeState:   ctx.typeState,
@@ -43,29 +39,17 @@ func (ctx *context) Inner(p protocol.Payload, t protocol.Type, pmf func(p *radiu
 		parent:      ctx,
 		handleInner: ctx.handleInner,
 	}
+	nctx.log.Debug("Creating inner context")
+	return nctx
 }
-func (ctx *context) EndInnerProtocol(st protocol.Status, mf func(p *radius.Packet) *radius.Packet) {
+func (ctx *context) EndInnerProtocol(st protocol.Status) {
 	ctx.log.Info("Ending protocol")
 	if ctx.parent != nil {
-		ctx.parent.EndInnerProtocol(st, mf)
+		ctx.parent.EndInnerProtocol(st)
 		return
 	}
 	if ctx.endStatus != protocol.StatusUnknown {
 		return
 	}
 	ctx.endStatus = st
-	if mf != nil {
-		ctx.endModifier = mf
-	}
-}
-
-func (ctx *context) callEndModifier(p *radius.Packet) *radius.Packet {
-	if ctx.parent != nil {
-		p = ctx.parent.callEndModifier(p)
-	}
-	if ctx.endModifier != nil {
-		ctx.log.Debug("Running end modifier")
-		p = ctx.endModifier(p)
-	}
-	return p
 }
