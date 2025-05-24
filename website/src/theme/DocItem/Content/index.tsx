@@ -26,6 +26,37 @@ class MarkdownLintError extends Error {
     }
 }
 
+function useBadgeLinterEffect() {
+    const { frontMatter, metadata } = useDoc();
+    const { hide_title } = frontMatter;
+    const { id } = metadata;
+
+    useEffect(() => {
+        if (hide_title) {
+            console.debug(`Skipping badge linting for ${id} because \`hide_title\` is set`);
+            return;
+        }
+
+        const invalidBadges = document.querySelectorAll(`.theme-doc-markdown > header + .badge,
+            .theme-doc-markdown .markdown > .badge
+            `);
+
+        const badgeCount = invalidBadges.length;
+
+        if (!badgeCount) return;
+
+        const badgeContent = Array.from(invalidBadges, (badge) => `"${badge.textContent}"`);
+
+        const message = `${id}: ${badgeCount} Badge(s) defined in Markdown content instead of the frontmatter:\n ${badgeContent.join("\n")}`;
+
+        console.error(message);
+
+        console.error(`Found ${badgeCount} invalid badges on ${id}`, invalidBadges);
+
+        throw new MarkdownLintError(message);
+    }, [hide_title, id]);
+}
+
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
     const { frontMatter, metadata, contentTitle } = useDoc();
@@ -36,8 +67,9 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         authentik_version,
         authentik_enterprise,
         authentik_preview,
-        hide_title,
     } = frontMatter;
+
+    useBadgeLinterEffect();
 
     const badges: JSX.Element[] = [];
 
@@ -69,40 +101,34 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         );
     }
 
-    useEffect(() => {
-        if (hide_title) return;
-
-        const invalidBadges = document.querySelectorAll(`.theme-doc-markdown > header + .badge,
-            .theme-doc-markdown .markdown > .badge
-            `);
-
-        if (!invalidBadges.length) return;
-
-        console.error(`Found ${invalidBadges.length} invalid badges on ${id}`, invalidBadges);
-
-        throw new MarkdownLintError(
-            `${id}: ${invalidBadges.length} Badge(s) defined in markdown content instead of the frontmatter.`,
-        );
-    }, [hide_title, id]);
-
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
             {syntheticTitle ? (
                 <header>
                     <Heading as="h1">{syntheticTitle}</Heading>
 
-                    {badges.length ? (
-                        <p className="badge-group">
-                            {badges.map((badge, index) => (
-                                <React.Fragment key={index}>{badge}</React.Fragment>
-                            ))}
-                        </p>
-                    ) : null}
+                    <BadgeGroup badges={badges} />
                 </header>
             ) : null}
 
             <MDXContent>{children}</MDXContent>
         </div>
+    );
+};
+
+interface BadgesProps {
+    badges: JSX.Element[];
+}
+
+const BadgeGroup: React.FC<BadgesProps> = ({ badges }) => {
+    if (!badges.length) return null;
+
+    return (
+        <p className="badge-group">
+            {badges.map((badge, index) => (
+                <React.Fragment key={index}>{badge}</React.Fragment>
+            ))}
+        </p>
     );
 };
 
