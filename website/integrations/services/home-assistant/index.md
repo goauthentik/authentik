@@ -10,12 +10,6 @@ support_level: community
 >
 > -- https://www.home-assistant.io/
 
-:::caution
-You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
-:::
-:::caution
-Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`), see [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
-:::
 :::note
 For Home Assistant to work with authentik, a custom integration needs to be installed for Home Assistant.
 :::
@@ -31,7 +25,53 @@ The following placeholders are used in this guide:
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
 
-## authentik configuration
+
+## Using OAuth2 / OpenID
+
+### authentik configuration
+
+1. Create a **OAuth2/OpenID Provider** under **Aplications** > **Providers**:
+    - Note the **Client ID** and **Client Secret** values because they will be required later.
+    - Set a `Regex` redirect URI to `^(http:\/\/hass\.company\:8123)\/auth\/openid\/callback.*`. (Note the `\` in front of every `.`, `/` and `:`. Check you regex [here](https://regex101.com)
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+2. Create an **Application** under **Applications** > **Applications** using the following settings:
+
+    - **Name**: Home Assistant
+    - **Slug**: homeassistant
+    - **Provider**: Home Assistant (the provider you created in step 1)
+
+### Home Assistant configuration
+
+1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation)
+2. Using a file editor or ssh, edit the file `configuration.yaml` in your homeassistant's `config` by appending the following:
+    ```yaml
+    openid:
+        client_id: <Client ID from Step 1>
+        client_secret: <Client Secret from Step 1>
+        authorize_url: "https://authentik.company/application/o/authorize/"
+        token_url: "https://authentik.company/application/o/token/"
+        user_info_url: "https://authentik.company/application/o/userinfo/"
+        scope: "openid profile email"
+        username_field: "preferred_username"
+    ```
+3. Restart Homeassistant
+
+The login page now has a button called "OpenID/OAuth2 authentication". Clicking it redirects you to authentik to sign in.
+Make sure the user account has been created in Homeassistant, since this integration does not create the users for you.
+
+
+## Using a proxy
+
+:::caution
+You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
+:::
+:::caution
+Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`), see [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
+:::
+
+### authentik configuration
 
 1. Create a **Proxy Provider** under **Applications** > **Providers** using the following settings:
 
@@ -49,7 +89,7 @@ This documentation lists only the settings that you need to change from their de
 
 3. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
 
-## Home Assistant configuration
+### Home Assistant configuration
 
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
 2. If you don't already have it set up, https://github.com/BeryJu/hass-auth-header, using the installation guide.
