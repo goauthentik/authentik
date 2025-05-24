@@ -29,12 +29,14 @@ class MarkdownLintError extends Error {
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
     const { frontMatter, metadata, contentTitle } = useDoc();
+    const { id } = metadata;
     const {
         // ---
         support_level,
         authentik_version,
         authentik_enterprise,
         authentik_preview,
+        hide_title,
     } = frontMatter;
 
     const badges: JSX.Element[] = [];
@@ -57,32 +59,31 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
     if (badges.length && !syntheticTitle) {
         throw new MarkdownLintError(
-            `${metadata.id}: ${badges.length} Badge(s) found with a missing synthetic title. Remove the page heading and set it via the frontmatter.`,
+            `${id}: ${badges.length} Badge(s) found with a missing synthetic title. Remove the page heading and set it via the frontmatter.`,
         );
     }
 
     if (frontMatter.title && contentTitle && frontMatter.title === contentTitle) {
         throw new MarkdownLintError(
-            `${metadata.id}: Synthetic title "${frontMatter.title}" and content title "${contentTitle}" are the same. Remove the first heading and let the frontmatter set the title.`,
+            `${id}: Synthetic title "${frontMatter.title}" and content title "${contentTitle}" are the same. Remove the first heading and let the frontmatter set the title.`,
         );
     }
 
     useEffect(() => {
+        if (hide_title) return;
+
         const invalidBadges = document.querySelectorAll(`.theme-doc-markdown > header + .badge,
             .theme-doc-markdown .markdown > .badge
             `);
 
         if (!invalidBadges.length) return;
 
-        console.error(
-            `Found ${invalidBadges.length} invalid badges on ${metadata.id}`,
-            invalidBadges,
-        );
+        console.error(`Found ${invalidBadges.length} invalid badges on ${id}`, invalidBadges);
 
         throw new MarkdownLintError(
-            `${metadata.id}: ${invalidBadges.length} Badge(s) defined in markdown content instead of the frontmatter.`,
+            `${id}: ${invalidBadges.length} Badge(s) defined in markdown content instead of the frontmatter.`,
         );
-    }, [metadata.id]);
+    }, [hide_title, id]);
 
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
