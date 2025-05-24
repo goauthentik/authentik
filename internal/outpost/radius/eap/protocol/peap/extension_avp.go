@@ -2,6 +2,7 @@ package peap
 
 import (
 	"encoding/binary"
+	"fmt"
 )
 
 type AVPType uint16
@@ -10,11 +11,29 @@ const (
 	AVPAckResult AVPType = 3
 )
 
+const ExtensionHeaderSize = 4
+
 type ExtensionAVP struct {
 	Mandatory bool
 	Type      AVPType // 14-bit field
 	Length    uint16
 	Value     []byte
+}
+
+func (eavp *ExtensionAVP) Decode(raw []byte) error {
+	typ := binary.BigEndian.Uint16(raw[:2])
+	// TODO fix this
+	if typ&0b1000000000000000 == 0 {
+		eavp.Mandatory = true
+	}
+	// TODO: Check reserved bit
+	eavp.Type = AVPType(typ & 0b0011111111111111)
+	eavp.Length = binary.BigEndian.Uint16(raw[2:4])
+	val := raw[4:]
+	if eavp.Length != uint16(len(val)) {
+		return fmt.Errorf("PEAP-Extension: Invalid length: %d, should be %d", eavp.Length, len(val))
+	}
+	return nil
 }
 
 func (eavp ExtensionAVP) Encode() []byte {

@@ -1,7 +1,7 @@
 package peap
 
 import (
-	"errors"
+	"encoding/binary"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
@@ -14,7 +14,21 @@ type ExtensionPayload struct {
 }
 
 func (ep *ExtensionPayload) Decode(raw []byte) error {
-	return errors.New("PEAP: Extension Payload does not support decoding")
+	ep.AVPs = []ExtensionAVP{}
+	offset := 0
+	for {
+		if len(raw[offset:]) < 4 {
+			return nil
+		}
+		len := binary.BigEndian.Uint16(raw[offset+2:offset+2+2]) + ExtensionHeaderSize
+		avp := &ExtensionAVP{}
+		err := avp.Decode(raw[offset : offset+int(len)])
+		if err != nil {
+			return err
+		}
+		ep.AVPs = append(ep.AVPs, *avp)
+		offset = offset + int(len)
+	}
 }
 
 func (ep *ExtensionPayload) Encode() ([]byte, error) {

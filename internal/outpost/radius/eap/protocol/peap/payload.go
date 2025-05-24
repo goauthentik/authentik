@@ -80,6 +80,12 @@ func (p *Payload) eapInnerDecode(ctx protocol.Context) (*eap.Payload, error) {
 	fullLength := len(p.raw) + len(fixedRaw)
 	binary.BigEndian.PutUint16(fixedRaw[2:], uint16(fullLength))
 	fixedRaw = append(fixedRaw, p.raw...)
+	// If the raw data has a msgtype set to type 33 (EAP extension), decode differently
+	if len(p.raw) > 5 && p.raw[4] == byte(TypePEAPExtension) {
+		ep.Payload = &ExtensionPayload{}
+		// Pass original raw data to EAP as extension payloads are encoded like normal EAP packets
+		fixedRaw = p.raw
+	}
 	err := ep.Decode(fixedRaw)
 	if err != nil {
 		return nil, err

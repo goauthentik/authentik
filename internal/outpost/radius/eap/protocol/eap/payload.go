@@ -46,12 +46,14 @@ func (p *Payload) Decode(raw []byte) error {
 	}
 	log.WithField("raw", debug.FormatBytes(raw)).Trace("EAP: decode raw")
 	p.RawPayload = raw[5:]
-	pp, _, err := EmptyPayload(p.Settings, p.MsgType)
-	if err != nil {
-		return err
+	if p.Payload == nil {
+		pp, _, err := EmptyPayload(p.Settings, p.MsgType)
+		if err != nil {
+			return err
+		}
+		p.Payload = pp
 	}
-	p.Payload = pp
-	err = p.Payload.Decode(raw[5:])
+	err := p.Payload.Decode(raw[5:])
 	if err != nil {
 		return err
 	}
