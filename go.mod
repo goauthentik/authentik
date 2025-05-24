@@ -11,7 +11,6 @@ require (
 	github.com/go-ldap/ldap/v3 v3.4.11
 	github.com/go-openapi/runtime v0.28.0
 	github.com/golang-jwt/jwt/v5 v5.2.2
-	github.com/google/gopacket v1.1.19
 	github.com/google/uuid v1.6.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1

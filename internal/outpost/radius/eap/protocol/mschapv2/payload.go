@@ -1,6 +1,7 @@
 package mschapv2
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 
@@ -115,6 +116,8 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 		MSCHAPv2ID: rootEap.ID + 1,
 	}
 
+	settings := ctx.ProtocolSettings().(Settings)
+
 	ctx.Log().Debugf("MSCHAPv2: OpCode: %d", p.OpCode)
 	if p.OpCode == OpResponse {
 		res, err := ParseResponse(p.Response)
@@ -123,21 +126,28 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 			return nil
 		}
 		p.st.PeerChallenge = res.Challenge
-		auth, err := p.checkChapPassword(res)
+		auth, err := settings.AuthenticateRequest(AuthRequest{
+			Challenge:     p.st.Challenge,
+			PeerChallenge: p.st.PeerChallenge,
+		})
 		if err != nil {
 			ctx.Log().WithError(err).Warning("MSCHAPv2: failed to check password")
 			return nil
 		}
+		if !bytes.Equal(auth.NTResponse, res.NTResponse) {
+			ctx.Log().Warning("MSCHAPv2: NT response mismatch")
+			return nil
+		}
 		ctx.Log().Info("MSCHAPv2: Successfully checked password")
-		p.st.Authenticated = true
+		p.st.AuthResponse = auth
 		succ := &SuccessRequest{
 			Payload: &Payload{
 				OpCode: OpSuccess,
 			},
-			Authenticator: auth,
+			Authenticator: []byte(auth.AuthenticatorResponse),
 		}
 		return succ
-	} else if p.OpCode == OpSuccess && p.st.Authenticated {
+	} else if p.OpCode == OpSuccess && p.st.AuthResponse != nil {
 		ep := &peap.ExtensionPayload{
 			AVPs: []peap.ExtensionAVP{
 				{
@@ -152,10 +162,10 @@ func (p *Payload) Handle(ctx protocol.Context) protocol.Payload {
 	} else if p.st.IsProtocolEnded {
 		ctx.EndInnerProtocol(protocol.StatusSuccess, func(r *radius.Packet) *radius.Packet {
 			if len(microsoft.MSMPPERecvKey_Get(r, ctx.Packet().Packet)) < 1 {
-				microsoft.MSMPPERecvKey_Set(r, p.st.recvKey)
+				microsoft.MSMPPERecvKey_Set(r, p.st.AuthResponse.RecvKey)
 			}
 			if len(microsoft.MSMPPESendKey_Get(r, ctx.Packet().Packet)) < 1 {
-				microsoft.MSMPPESendKey_Set(r, p.st.sendKey)
+				microsoft.MSMPPESendKey_Set(r, p.st.AuthResponse.SendKey)
 			}
 			return r
 		})
