@@ -132,6 +132,7 @@ const items = [
             "services/adventurelog/index",
             "services/calibre-web/index",
             "services/engomo/index",
+            "services/filerise/index",
             "services/frappe/index",
             "services/freshrss/index",
             "services/gravitee/index",
