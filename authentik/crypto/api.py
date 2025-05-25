@@ -30,6 +30,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
+from authentik.core.models import UserTypes
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder, PrivateKeyAlg
 from authentik.crypto.models import CertificateKeyPair
@@ -272,11 +273,12 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
-        Event.new(  # noqa # nosec
-            EventAction.SECRET_VIEW,
-            secret=certificate,
-            type="certificate",
-        ).from_http(request)
+        if request.user.type != UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            Event.new(  # noqa # nosec
+                EventAction.SECRET_VIEW,
+                secret=certificate,
+                type="certificate",
+            ).from_http(request)
         if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(
@@ -302,11 +304,12 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()
-        Event.new(  # noqa # nosec
-            EventAction.SECRET_VIEW,
-            secret=certificate,
-            type="private_key",
-        ).from_http(request)
+        if request.user.type != UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            Event.new(  # noqa # nosec
+                EventAction.SECRET_VIEW,
+                secret=certificate,
+                type="private_key",
+            ).from_http(request)
         if "download" in request.query_params:
             # Mime type from https://pki-tutorial.readthedocs.io/en/latest/mime.html
             response = HttpResponse(certificate.key_data, content_type="application/x-pem-file")

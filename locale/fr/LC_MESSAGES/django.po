@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-23 09:00+0000\n"
+"POT-Creation-Date: 2025-05-20 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -112,6 +112,10 @@ msgstr ""
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Certificate Web utilisé par le serveur web d'authentik core."
+
+#: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "Certificats utilisés pour l'authentification client."
 
 #: authentik/brands/models.py
 msgid "Brand"
@@ -674,6 +678,36 @@ msgstr "Appareils point de terminaison"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "Vérification de votre navigateur..."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"Configurez les autorités de certification pour valider le certificat. Cette "
+"option a une priorité plus élevée que l'option `client_certificate` sur "
+"`Marques`."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "Étape TLS mutuel"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "Étapes TLS mutuel"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "Autorisations de délivrer des certificats pour les avant-postes."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "Certificat requis mais aucun certificat n'a été fourni."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "Aucun utilisateur trouvé pour le certificat."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""

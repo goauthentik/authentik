@@ -210,6 +210,9 @@ class PasswordStage extends Stage<PasswordChallenge> {
             <form id="password-form">
                 <img class="mb-4 brand-icon" src="${ak().brand.branding_logo}" alt="">
                 <h1 class="h3 mb-3 fw-normal text-center">${this.challenge?.flowInfo?.title}</h1>
+                <div class="form-label-group my-3">
+                    <input type="text" readonly class="form-control-plaintext" value="Welcome, ${this.challenge?.pendingUser}.">
+                </div>
                 <div class="form-label-group my-3 has-validation">
                     <input type="password" autofocus class="form-control ${this.error("password").length > 0 ? IS_INVALID : ""}" name="password" placeholder="Password">
                     ${this.renderInputError("password")}

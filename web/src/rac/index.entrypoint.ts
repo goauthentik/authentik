@@ -215,13 +215,11 @@ export class RacInterface extends Interface {
                 );
                 return;
             }
-        } else {
-            if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
-                this.reconnectingMessage = msg(
-                    str`Connection failed after ${this.connectionAttempt} attempts.`,
-                );
-                return;
-            }
+        } else if (this.connectionAttempt >= RECONNECT_ATTEMPTS) {
+            this.reconnectingMessage = msg(
+                str`Connection failed after ${this.connectionAttempt} attempts.`,
+            );
+            return;
         }
         const delay = 500 * this.connectionAttempt;
         this.reconnectingMessage = msg(
@@ -337,11 +335,11 @@ export class RacInterface extends Interface {
     }
 
     renderOverlay() {
-        if (!this.clientState || this.clientState == GuacClientState.CONNECTED) {
+        if (!this.clientState || this.clientState === GuacClientState.CONNECTED) {
             return nothing;
         }
         let message = html`${GuacStateToString(this.clientState)}`;
-        if (this.clientState == GuacClientState.WAITING) {
+        if (this.clientState === GuacClientState.WAITING) {
             message = html`${msg("Connecting...")}`;
         }
         if (this.hasConnected) {
