@@ -17,6 +17,10 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::warning
+MinIO has recently limited SSO support to its [Enterprise offering (AIStor)](https://min.io/pricing). We recommend reverting to a version **before `RELEASE.2025-04-22T22-12-26Z`** to continue using SSO for free.
+:::
+
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
