@@ -18,7 +18,7 @@ The following placeholders are used in this guide:
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::warning
-MinIO has recently limited SSO support to its [Enterprise offering (AIStor)](https://min.io/pricing). The last version to include free SSO support is **`RELEASE.2025-04-22T22-12-26Z`**. While it's technically possible to use an earlier version to retain this functionality, we do **not** recommend reverting due to potential security and stability concerns.
+MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
 :::
 
 :::note
