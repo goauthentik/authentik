@@ -34,9 +34,10 @@ var (
 type SolverFunction func(*api.ChallengeTypes, api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error)
 
 type FlowExecutor struct {
-	Params  url.Values
-	Answers map[StageComponent]string
-	Context context.Context
+	Params            url.Values
+	Answers           map[StageComponent]string
+	Context           context.Context
+	InteractiveSolver SolverFunction
 
 	solvers map[StageComponent]SolverFunction
 
@@ -114,7 +115,7 @@ func (fe *FlowExecutor) ApiClient() *api.APIClient {
 	return fe.api
 }
 
-type challengeCommon interface {
+type ChallengeCommon interface {
 	GetComponent() string
 	GetResponseErrors() map[string][]api.ErrorDetail
 }
@@ -169,7 +170,7 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 	if i == nil {
 		return nil, errors.New("response instance was null")
 	}
-	ch := i.(challengeCommon)
+	ch := i.(ChallengeCommon)
 	fe.log.WithField("component", ch.GetComponent()).Debug("Got challenge")
 	gcsp.SetTag("authentik.flow.component", ch.GetComponent())
 	gcsp.Finish()
@@ -188,7 +189,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	if i == nil {
 		return false, errors.New("response request instance was null")
 	}
-	ch := i.(challengeCommon)
+	ch := i.(ChallengeCommon)
 
 	// Check for any validation errors that we might've gotten
 	if len(ch.GetResponseErrors()) > 0 {
@@ -205,11 +206,17 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	case string(StageRedirect):
 		return true, nil
 	default:
-		solver, ok := fe.solvers[StageComponent(ch.GetComponent())]
-		if !ok {
-			return false, fmt.Errorf("unsupported challenge type %s", ch.GetComponent())
+		var err error
+		var rr api.FlowChallengeResponseRequest
+		if fe.InteractiveSolver != nil {
+			rr, err = fe.InteractiveSolver(challenge, responseReq)
+		} else {
+			solver, ok := fe.solvers[StageComponent(ch.GetComponent())]
+			if !ok {
+				return false, fmt.Errorf("unsupported challenge type %s", ch.GetComponent())
+			}
+			rr, err = solver(challenge, responseReq)
 		}
-		rr, err := solver(challenge, responseReq)
 		if err != nil {
 			return false, err
 		}
@@ -224,7 +231,7 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	if i == nil {
 		return false, errors.New("response instance was null")
 	}
-	ch = i.(challengeCommon)
+	ch = i.(ChallengeCommon)
 	fe.log.WithField("component", ch.GetComponent()).Debug("Got response")
 	scsp.SetTag("authentik.flow.component", ch.GetComponent())
 	scsp.Finish()

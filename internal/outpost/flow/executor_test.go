@@ -8,6 +8,6 @@ import (
 )
 
 func TestConvert(t *testing.T) {
-	var a challengeCommon = api.NewIdentificationChallengeWithDefaults()
+	var a ChallengeCommon = api.NewIdentificationChallengeWithDefaults()
 	assert.NotNil(t, a)
 }

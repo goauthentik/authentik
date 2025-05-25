@@ -10,9 +10,11 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/radius/eap"
 	"goauthentik.io/internal/outpost/radius/eap/protocol"
+	"goauthentik.io/internal/outpost/radius/eap/protocol/gtc"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/identity"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/legacy_nak"
 	"goauthentik.io/internal/outpost/radius/eap/protocol/mschapv2"
@@ -152,7 +154,7 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 	}
 
 	return protocol.Settings{
-		Protocols: append(protocols, tls.Protocol, peap.Protocol),
+		Protocols:        append(protocols, tls.Protocol, peap.Protocol),
 		ProtocolPriority: []protocol.Type{tls.TypeTLS, peap.TypePEAP},
 		ProtocolSettings: map[protocol.Type]interface{}{
 			tls.TypeTLS: tls.Settings{
@@ -192,13 +194,80 @@ func (pi *ProviderInstance) GetEAPSettings() protocol.Settings {
 					Certificates: []ttls.Certificate{*cert},
 				},
 				InnerProtocols: protocol.Settings{
-					Protocols:        append(protocols, mschapv2.Protocol),
-					ProtocolPriority: []protocol.Type{mschapv2.TypeMSCHAPv2},
+					Protocols:        append(protocols, gtc.Protocol, mschapv2.Protocol),
+					ProtocolPriority: []protocol.Type{gtc.TypeGTC, mschapv2.TypeMSCHAPv2},
 					ProtocolSettings: map[protocol.Type]interface{}{
 						mschapv2.TypeMSCHAPv2: mschapv2.Settings{
 							AuthenticateRequest: mschapv2.DebugStaticCredentials(
 								[]byte("foo"), []byte("bar"),
 							),
+						},
+						gtc.TypeGTC: gtc.Settings{
+							ChallengeHandler: func(ctx protocol.Context) (gtc.GetChallenge, gtc.ValidateResponse) {
+								fe := flow.NewFlowExecutor(context.Background(), pi.flowSlug, pi.s.ac.Client.GetConfig(), log.Fields{
+									"client": utils.GetIP(ctx.Packet().RemoteAddr),
+								})
+								fe.DelegateClientIP(utils.GetIP(ctx.Packet().RemoteAddr))
+								fe.Params.Add("goauthentik.io/outpost/radius", "true")
+								var ch []byte = nil
+								var ans []byte = nil
+								fe.InteractiveSolver = func(ct *api.ChallengeTypes, afesr api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
+									comp := ct.GetActualInstance().(flow.ChallengeCommon).GetComponent()
+									ch = []byte(comp)
+									for {
+										if ans == nil {
+											continue
+										}
+										break
+									}
+									switch comp {
+									case string(flow.StageIdentification):
+										r := api.NewIdentificationChallengeResponseRequest(string(ans))
+										return api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
+									case string(flow.StagePassword):
+										r := api.NewPasswordChallengeResponseRequest(string(ans))
+										return api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
+									}
+									panic(comp)
+								}
+								passed := false
+								done := false
+								go func() {
+									var err error
+									passed, err = fe.Execute()
+									done = true
+									if err != nil {
+										ctx.Log().WithError(err).Warning("failed to execute flow")
+										// return protocol.StatusError
+									}
+									// ctx.Log().WithField("passed", passed).Debug("Finished flow")
+									// if passed {
+									// 	return protocol.StatusSuccess
+									// } else {
+									// 	return protocol.StatusError
+									// }
+								}()
+								return func() []byte {
+										if done {
+											status := protocol.StatusError
+											if passed {
+												status = protocol.StatusSuccess
+											}
+											ctx.EndInnerProtocol(status)
+										}
+										for {
+											if ch == nil {
+												continue
+											}
+											defer func() {
+												ch = nil
+											}()
+											return ch
+										}
+									}, func(answer []byte) {
+										ans = answer
+									}
+							},
 						},
 					},
 				},
