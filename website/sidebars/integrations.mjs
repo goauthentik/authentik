@@ -138,6 +138,7 @@ const items = [
             "services/karakeep/index",
             "services/home-assistant/index",
             "services/immich/index",
+            "services/ironclad/index",
             "services/jellyfin/index",
             "services/komga/index",
             "services/mealie/index",
