@@ -116,7 +116,7 @@
         "date-fns": "^4.1.0",
         "deepmerge-ts": "^7.1.5",
         "dompurify": "^3.2.6",
-        "fuse.js": "^7.0.0",
+        "fuse.js": "^7.1.0",
         "guacamole-common-js": "^1.5.0",
         "hastscript": "^9.0.1",
         "lit": "^3.2.0",
