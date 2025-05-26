@@ -1,7 +1,7 @@
 """authentik storage backends"""
 
 import os
-from urllib.parse import parse_qsl, urlsplit
+from urllib.parse import parse_qsl, urlsplit, urlunsplit
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
@@ -74,7 +74,6 @@ class S3Storage(BaseS3Storage):
 
     def _normalize_name(self, name):
         try:
-
             return safe_join(self.location, connection.schema_name, name)
         except ValueError:
             raise SuspiciousOperation(f"Attempted access to '{name}' denied.") from None
@@ -89,24 +88,60 @@ class S3Storage(BaseS3Storage):
 
         params["Bucket"] = self.bucket.name
         params["Key"] = name
-        url = self.bucket.meta.client.generate_presigned_url(
-            "get_object",
-            Params=params,
-            ExpiresIn=expire,
-            HttpMethod=http_method,
-        )
 
-        if self.custom_domain:
-            # Key parameter can't be empty. Use "/" and remove it later.
-            params["Key"] = "/"
-            root_url_signed = self.bucket.meta.client.generate_presigned_url(
-                "get_object", Params=params, ExpiresIn=expire
+        # Get the client and configure endpoint URL if custom_domain is set
+        client = self.bucket.meta.client
+
+        # Save original endpoint URL if we need to restore it
+        original_endpoint_url = getattr(client._endpoint, "host", None)
+
+        try:
+            # If custom domain is set, configure the endpoint URL
+            if self.custom_domain:
+                scheme = "https" if self.secure_urls else "http"
+                custom_endpoint = f"{scheme}://{self.custom_domain}"
+
+                # Set the endpoint URL temporarily for this request
+                client._endpoint.host = custom_endpoint
+
+            # Generate the presigned URL using the correctly configured client
+            url = client.generate_presigned_url(
+                "get_object",
+                Params=params,
+                ExpiresIn=expire,
+                HttpMethod=http_method,
             )
-            # Remove signing parameter and previously added key "/".
-            root_url = self._strip_signing_parameters(root_url_signed)[:-1]
-            # Replace bucket domain with custom domain.
-            custom_url = f"{self.url_protocol}//{self.custom_domain}/"
-            url = url.replace(root_url, custom_url)
+
+            # If using custom domain, we need to handle the path correctly
+            if self.custom_domain and self.bucket.name in url:
+                # Parse the generated URL
+                split_url = urlsplit(url)
+
+                # Get the path from the S3 URL
+                s3_path = split_url.path
+
+                # Remove the leading bucket name from the path if it's present
+                bucket_prefix = f"/{self.bucket.name}"
+                if s3_path.startswith(bucket_prefix):
+                    final_path = s3_path[len(bucket_prefix) :]
+                else:
+                    final_path = s3_path
+
+                # Create the custom domain URL with the corrected path and query parameters
+                url = urlunsplit(
+                    (
+                        split_url.scheme,
+                        self.custom_domain,
+                        final_path,
+                        split_url.query,
+                        split_url.fragment,
+                    )
+                )
+
+        finally:
+            # Restore the original endpoint URL if we changed it
+            if self.custom_domain and original_endpoint_url:
+                client._endpoint.host = original_endpoint_url
 
         if self.querystring_auth:
             return url
