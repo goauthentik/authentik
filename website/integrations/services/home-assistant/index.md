@@ -54,7 +54,7 @@ To support the integration of `Home Assistant` using `hass-openid` with authenti
 
 3. Click **Submit** to save the new application and provider.
 
-### Home Assistant configuration
+### Home Assistant configuration for OAuth2 / OpenID
 
 1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation).
 2. Using a file editor or ssh, edit the file `configuration.yaml` in your homeassistant's `config` directory by appending the following:
