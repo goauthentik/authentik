@@ -68,7 +68,7 @@ Make sure the user account has been created in Home Assistant, because this inte
 Using a proxy provider might produce CSRF errors; this is caused by a technology that Home Assistant uses and not authentik. For more information see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
 :::
 :::caution
-Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`), see [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
+Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`). See [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
 :::
 
 ### authentik configuration
