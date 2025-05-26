@@ -50,7 +50,7 @@ class TestRecovery(TestCase):
         )
         token = Token.objects.get(intent=TokenIntents.INTENT_RECOVERY, user=self.user)
         self.client.get(reverse("authentik_recovery:use-token", kwargs={"key": token.key}))
-        self.assertEqual(int(self.client.session["_auth_user_id"]), token.user.pk)
+        self.assertEqual(self.client.session["authenticatedsession"].user.pk, token.user.pk)
 
     def test_recovery_view_invalid(self):
         """Test recovery view with invalid token"""

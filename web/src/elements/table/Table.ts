@@ -207,9 +207,6 @@ export abstract class Table<T> extends AKElement implements TableLike {
         super();
         this.addEventListener(EVENT_REFRESH, async () => {
             await this.fetch();
-            if (this.clearOnRefresh) {
-                this.selectedElements = [];
-            }
         });
         if (this.searchEnabled()) {
             this.search = getURLParam("search", "");
@@ -272,6 +269,11 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 });
 
                 this.expandedElements = newExpanded;
+
+                // Clear selections after fetch if clearOnRefresh is true
+                if (this.clearOnRefresh) {
+                    this.selectedElements = [];
+                }
             })
             .catch(async (error: unknown) => {
                 this.error = await parseAPIResponseError(error);
@@ -565,7 +567,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         const renderBottomPagination = () =>
             html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
 
-        return html` ${this.needChipGroup ? this.renderChipGroup() : html``}
+        return html`${this.needChipGroup ? this.renderChipGroup() : html``}
             ${this.renderToolbarContainer()}
             <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>

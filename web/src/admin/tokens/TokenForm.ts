@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal } from "@goauthentik/common/temporal";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -38,11 +37,10 @@ export class TokenForm extends ModelForm<Token, string> {
                 identifier: this.instance.identifier,
                 tokenRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
-                tokenRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreTokensCreate({
+            tokenRequest: data,
+        });
     }
 
     renderExpiry(): TemplateResult {
@@ -50,7 +48,7 @@ export class TokenForm extends ModelForm<Token, string> {
             <input
                 type="datetime-local"
                 data-type="datetime-local"
-                value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
+                value="${dateTimeLocal(this.instance?.expires ?? new Date())}"
                 class="pf-c-form-control"
             />
         </ak-form-element-horizontal>`;
@@ -64,7 +62,7 @@ export class TokenForm extends ModelForm<Token, string> {
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.identifier, "")}"
+                    value="${this.instance?.identifier ?? ""}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
@@ -123,7 +121,7 @@ export class TokenForm extends ModelForm<Token, string> {
             <ak-form-element-horizontal label=${msg("Description")} name="description">
                 <input
                     type="text"
-                    value="${first(this.instance?.description, "")}"
+                    value="${this.instance?.description ?? ""}"
                     class="pf-c-form-control"
                 />
             </ak-form-element-horizontal>
@@ -132,7 +130,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.expiring, true)}
+                        ?checked=${this.instance?.expiring ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showExpiry = el.checked;

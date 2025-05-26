@@ -15,9 +15,7 @@ export const bindModeOptions = [
     {
         label: msg("Direct binding"),
         value: LDAPAPIAccessMode.Direct,
-        description: html`${msg(
-            "Always execute the configured bind flow to authenticate the user",
-        )}`,
+        description: html`${msg("Always execute the configured bind flow to authenticate the user")}`,
     },
 ];
 
@@ -33,9 +31,7 @@ export const searchModeOptions = [
     {
         label: msg("Direct querying"),
         value: LDAPAPIAccessMode.Direct,
-        description: html`${msg(
-            "Always returns the latest data, but slower than cached querying",
-        )}`,
+        description: html`${msg("Always returns the latest data, but slower than cached querying")}`,
     },
 ];
 

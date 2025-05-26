@@ -1,156 +1,27 @@
 {
     "name": "@goauthentik/web",
     "version": "0.0.0",
-    "dependencies": {
-        "@codemirror/lang-css": "^6.3.1",
-        "@codemirror/lang-html": "^6.4.9",
-        "@codemirror/lang-javascript": "^6.2.2",
-        "@codemirror/lang-python": "^6.1.6",
-        "@codemirror/lang-xml": "^6.1.0",
-        "@codemirror/legacy-modes": "^6.4.1",
-        "@codemirror/theme-one-dark": "^6.1.2",
-        "@floating-ui/dom": "^1.6.11",
-        "@formatjs/intl-listformat": "^7.5.7",
-        "@fortawesome/fontawesome-free": "^6.6.0",
-        "@goauthentik/api": "^2025.2.4-1744139776",
-        "@lit-labs/ssr": "^3.2.2",
-        "@lit/context": "^1.1.2",
-        "@lit/localize": "^0.12.2",
-        "@lit/reactive-element": "^2.0.4",
-        "@lit/task": "^1.0.1",
-        "@mdx-js/mdx": "^3.1.0",
-        "@open-wc/lit-helpers": "^0.7.0",
-        "@patternfly/elements": "^4.0.2",
-        "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^8.32.0",
-        "@spotlightjs/spotlight": "^2.4.2",
-        "@webcomponents/webcomponentsjs": "^2.8.0",
-        "base64-js": "^1.5.1",
-        "change-case": "^5.4.4",
-        "chart.js": "^4.4.4",
-        "chartjs-adapter-date-fns": "^3.0.0",
-        "codemirror": "^6.0.1",
-        "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.38.1",
-        "country-flag-icons": "^1.5.13",
-        "date-fns": "^4.1.0",
-        "deepmerge-ts": "^7.1.5",
-        "dompurify": "^3.2.4",
-        "fuse.js": "^7.0.0",
-        "guacamole-common-js": "^1.5.0",
-        "hastscript": "^9.0.1",
-        "lit": "^3.2.0",
-        "md-front-matter": "^1.0.4",
-        "mermaid": "^11.4.1",
-        "rapidoc": "^9.3.7",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "rehype-highlight": "^7.0.2",
-        "rehype-mermaid": "^3.0.0",
-        "rehype-parse": "^9.0.1",
-        "rehype-stringify": "^10.0.1",
-        "remark-directive": "^4.0.0",
-        "remark-frontmatter": "^5.0.0",
-        "remark-gfm": "^4.0.1",
-        "remark-mdx-frontmatter": "^5.0.0",
-        "style-mod": "^4.1.2",
-        "ts-pattern": "^5.4.0",
-        "unist-util-visit": "^5.0.0",
-        "webcomponent-qr-code": "^1.2.0",
-        "yaml": "^2.5.1"
-    },
-    "devDependencies": {
-        "@eslint/js": "^9.11.1",
-        "@hcaptcha/types": "^1.0.4",
-        "@lit/localize-tools": "^0.8.0",
-        "@rollup/plugin-replace": "^6.0.1",
-        "@storybook/addon-essentials": "^8.3.4",
-        "@storybook/addon-links": "^8.3.4",
-        "@storybook/api": "^7.6.17",
-        "@storybook/blocks": "^8.3.4",
-        "@storybook/builder-vite": "^8.3.4",
-        "@storybook/manager-api": "^8.3.4",
-        "@storybook/web-components": "^8.3.4",
-        "@storybook/web-components-vite": "^8.3.4",
-        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
-        "@types/chart.js": "^2.9.41",
-        "@types/codemirror": "^5.60.15",
-        "@types/dompurify": "^3.0.5",
-        "@types/eslint__js": "^8.42.3",
-        "@types/grecaptcha": "^3.0.9",
-        "@types/guacamole-common-js": "^1.5.2",
-        "@types/mocha": "^10.0.8",
-        "@types/node": "^22.7.4",
-        "@types/react": "^18.3.13",
-        "@types/react-dom": "^18.3.0",
-        "@typescript-eslint/eslint-plugin": "^8.8.0",
-        "@typescript-eslint/parser": "^8.8.0",
-        "@wdio/browser-runner": "9.4",
-        "@wdio/cli": "9.4",
-        "@wdio/spec-reporter": "^9.1.2",
-        "chromedriver": "^131.0.1",
-        "esbuild": "^0.25.0",
-        "esbuild-plugin-polyfill-node": "^0.3.0",
-        "esbuild-plugins-node-modules-polyfill": "^1.7.0",
-        "eslint": "^9.11.1",
-        "eslint-plugin-lit": "^1.15.0",
-        "eslint-plugin-wc": "^2.1.1",
-        "find-free-ports": "^3.1.1",
-        "github-slugger": "^2.0.0",
-        "glob": "^11.0.0",
-        "globals": "^15.10.0",
-        "knip": "^5.30.6",
-        "lit-analyzer": "^2.0.3",
-        "npm-run-all": "^4.1.5",
-        "prettier": "^3.3.3",
-        "pseudolocale": "^2.1.0",
-        "rollup-plugin-modify": "^3.0.0",
-        "rollup-plugin-postcss-lit": "^2.1.0",
-        "storybook": "^8.3.4",
-        "storybook-addon-mock": "^5.0.0",
-        "syncpack": "^13.0.0",
-        "turnstile-types": "^1.2.3",
-        "typescript": "^5.6.2",
-        "typescript-eslint": "^8.8.0",
-        "vite-plugin-lit-css": "^2.0.0",
-        "vite-tsconfig-paths": "^5.0.1",
-        "wireit": "^0.14.9"
-    },
-    "engines": {
-        "node": ">=20"
-    },
     "license": "MIT",
-    "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.24.0",
-        "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.24.0",
-        "@rollup/rollup-darwin-arm64": "4.23.0",
-        "@rollup/rollup-linux-arm64-gnu": "4.23.0",
-        "@rollup/rollup-linux-x64-gnu": "4.23.0"
-    },
     "private": true,
     "scripts": {
         "build": "wireit",
         "build-locales": "wireit",
         "build-locales:build": "wireit",
         "build-proxy": "wireit",
-        "build:sfe": "wireit",
+        "build:sfe": "npm run build -w @goauthentik/web-sfe",
         "esbuild:watch": "node scripts/build-web.mjs --watch",
         "extract-locales": "wireit",
         "format": "wireit",
-        "lint": "wireit",
-        "lint:imports": "wireit",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:imports": "knip --config scripts/knip.config.ts",
         "lint:lockfile": "wireit",
-        "lint:nightmare": "wireit",
-        "lint:package": "wireit",
-        "lint:precommit": "wireit",
         "lint:types": "wireit",
         "lit-analyse": "wireit",
-        "postinstall": "bash scripts/patch-spotlight.sh",
         "precommit": "wireit",
-        "prettier": "wireit",
-        "prettier-check": "wireit",
-        "pseudolocalize": "wireit",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u .",
+        "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
         "test": "wireit",
@@ -161,6 +32,180 @@
         "watch": "run-s build-locales esbuild:watch"
     },
     "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./elements/*": "./src/elements/*",
+        "./common/*": "./src/common/*",
+        "./components/*": "./src/components/*",
+        "./flow/*": "./src/flow/*",
+        "./locales/*": "./src/locales/*",
+        "./user/*": "./src/user/*",
+        "./admin/*": "./src/admin/*",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "imports": {
+        "#common/*.css": "./src/common/*.css",
+        "#common/*": "./src/common/*.js",
+        "#elements/*.css": "./src/elements/*.css",
+        "#elements/*": "./src/elements/*.js",
+        "#components/*.css": "./src/components/*.css",
+        "#components/*": "./src/components/*.js",
+        "#user/*.css": "./src/user/*.css",
+        "#user/*": "./src/user/*.js",
+        "#admin/*.css": "./src/admin/*.css",
+        "#admin/*": "./src/admin/*.js",
+        "#flow/*.css": "./src/flow/*.css",
+        "#flow/*": "./src/flow/*.js",
+        "#locales/*": "./src/locales/*.js",
+        "#stories/*": "./src/stories/*.js",
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "dependencies": {
+        "@codemirror/lang-css": "^6.3.1",
+        "@codemirror/lang-html": "^6.4.9",
+        "@codemirror/lang-javascript": "^6.2.4",
+        "@codemirror/lang-python": "^6.1.6",
+        "@codemirror/lang-xml": "^6.1.0",
+        "@codemirror/legacy-modes": "^6.4.1",
+        "@codemirror/theme-one-dark": "^6.1.2",
+        "@floating-ui/dom": "^1.6.11",
+        "@formatjs/intl-listformat": "^7.7.11",
+        "@fortawesome/fontawesome-free": "^6.6.0",
+        "@goauthentik/api": "^2025.4.1-1747687715",
+        "@lit/context": "^1.1.2",
+        "@lit/localize": "^0.12.2",
+        "@lit/reactive-element": "^2.0.4",
+        "@lit/task": "^1.0.2",
+        "@mdx-js/mdx": "^3.1.0",
+        "@open-wc/lit-helpers": "^0.7.0",
+        "@patternfly/elements": "^4.1.0",
+        "@patternfly/patternfly": "^4.224.2",
+        "@sentry/browser": "^9.22.0",
+        "@spotlightjs/spotlight": "^2.13.3",
+        "@webcomponents/webcomponentsjs": "^2.8.0",
+        "base64-js": "^1.5.1",
+        "change-case": "^5.4.4",
+        "chart.js": "^4.4.9",
+        "chartjs-adapter-date-fns": "^3.0.0",
+        "codemirror": "^6.0.1",
+        "construct-style-sheets-polyfill": "^3.1.0",
+        "core-js": "^3.38.1",
+        "country-flag-icons": "^1.5.19",
+        "date-fns": "^4.1.0",
+        "deepmerge-ts": "^7.1.5",
+        "dompurify": "^3.2.6",
+        "fuse.js": "^7.1.0",
+        "guacamole-common-js": "^1.5.0",
+        "hastscript": "^9.0.1",
+        "lit": "^3.2.0",
+        "md-front-matter": "^1.0.4",
+        "mermaid": "^11.4.1",
+        "rapidoc": "^9.3.8",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "rehype-highlight": "^7.0.2",
+        "rehype-mermaid": "^3.0.0",
+        "rehype-parse": "^9.0.1",
+        "rehype-stringify": "^10.0.1",
+        "remark-directive": "^4.0.0",
+        "remark-frontmatter": "^5.0.0",
+        "remark-gfm": "^4.0.1",
+        "remark-mdx-frontmatter": "^5.0.0",
+        "style-mod": "^4.1.2",
+        "trusted-types": "^2.0.0",
+        "ts-pattern": "^5.4.0",
+        "unist-util-visit": "^5.0.0",
+        "webcomponent-qr-code": "^1.2.0",
+        "yaml": "^2.8.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.27.0",
+        "@goauthentik/core": "^1.0.0",
+        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^1.0.5",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@hcaptcha/types": "^1.0.4",
+        "@lit/localize-tools": "^0.8.0",
+        "@storybook/addon-essentials": "^8.6.14",
+        "@storybook/addon-links": "^8.6.14",
+        "@storybook/blocks": "^8.6.12",
+        "@storybook/experimental-addon-test": "^8.6.14",
+        "@storybook/manager-api": "^8.6.14",
+        "@storybook/test": "^8.6.14",
+        "@storybook/web-components": "^8.6.14",
+        "@storybook/web-components-vite": "^8.6.14",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/chart.js": "^2.9.41",
+        "@types/codemirror": "^5.60.15",
+        "@types/dompurify": "^3.0.5",
+        "@types/grecaptcha": "^3.0.9",
+        "@types/guacamole-common-js": "^1.5.3",
+        "@types/mocha": "^10.0.8",
+        "@types/node": "^22.15.21",
+        "@types/react": "^19.1.5",
+        "@types/react-dom": "^19.1.5",
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
+        "@typescript-eslint/parser": "^8.8.0",
+        "@wdio/browser-runner": "9.4",
+        "@wdio/cli": "9.4",
+        "@wdio/spec-reporter": "^9.1.2",
+        "@web/test-runner": "^0.20.2",
+        "chromedriver": "^136.0.3",
+        "esbuild": "^0.25.4",
+        "esbuild-plugin-copy": "^2.1.1",
+        "esbuild-plugin-polyfill-node": "^0.3.0",
+        "esbuild-plugins-node-modules-polyfill": "^1.7.0",
+        "eslint": "^9.11.1",
+        "eslint-plugin-lit": "^2.1.1",
+        "eslint-plugin-wc": "^3.0.1",
+        "github-slugger": "^2.0.0",
+        "globals": "^15.10.0",
+        "knip": "^5.58.0",
+        "lit-analyzer": "^2.0.3",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.3.3",
+        "pseudolocale": "^2.1.0",
+        "rollup-plugin-postcss-lit": "^2.2.0",
+        "storybook": "^8.6.14",
+        "storybook-addon-mock": "^5.0.0",
+        "turnstile-types": "^1.2.3",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.32.1",
+        "vite-plugin-lit-css": "^2.0.0",
+        "vite-tsconfig-paths": "^5.0.1",
+        "wireit": "^0.14.12"
+    },
+    "optionalDependencies": {
+        "@esbuild/darwin-arm64": "^0.25.4",
+        "@esbuild/linux-arm64": "^0.25.4",
+        "@esbuild/linux-x64": "^0.25.4",
+        "@rollup/rollup-darwin-arm64": "^4.41.0",
+        "@rollup/rollup-linux-arm64-gnu": "^4.41.0",
+        "@rollup/rollup-linux-x64-gnu": "^4.41.0"
+    },
     "wireit": {
         "build": {
             "#comment": [
@@ -194,7 +239,7 @@
             ],
             "dependencies": [
                 "build-locales",
-                "./packages/sfe:build"
+                "build:sfe"
             ],
             "env": {
                 "NODE_RUNNER": {
@@ -202,14 +247,6 @@
                     "default": "node"
                 }
             }
-        },
-        "build:sfe": {
-            "dependencies": [
-                "./packages/sfe:build"
-            ],
-            "files": [
-                "./packages/sfe/**/*.ts"
-            ]
         },
         "build-proxy": {
             "command": "node scripts/build-web.mjs --proxy",
@@ -236,34 +273,17 @@
         "extract-locales": {
             "command": "lit-localize extract"
         },
-        "format": {
-            "command": "prettier --write .",
-            "dependencies": [
-                "lint:package"
-            ]
-        },
-        "format:packages": {
-            "dependencies": [
-                "./packages/sfe:prettier"
-            ]
-        },
-        "lint": {
-            "command": "eslint --max-warnings 0 --fix",
-            "env": {
-                "NODE_OPTIONS": "--max_old_space_size=65536"
-            }
-        },
         "lint:components": {
             "command": "lit-analyzer src"
-        },
-        "lint:imports": {
-            "command": "knip --config scripts/knip.config.ts"
         },
         "lint:types:tests": {
             "command": "tsc --noEmit -p ./tests"
         },
         "lint:types": {
-            "command": "tsc --noEmit -p .",
+            "command": "tsc -p .",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            },
             "dependencies": [
                 "build-locales",
                 "lint:types:tests"
@@ -274,61 +294,17 @@
             "shell": true,
             "command": "sh ./scripts/lint-lockfile.sh package-lock.json"
         },
-        "lint:lockfiles": {
-            "dependencies": [
-                "./packages/sfe:lint:lockfile"
-            ]
-        },
-        "lint:package": {
-            "command": "syncpack format -i '    '"
-        },
-        "lint:nightmare": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --nightmare",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:precommit": {
-            "command": "${NODE_RUNNER} ./scripts/eslint.mjs --precommit",
-            "env": {
-                "NODE_RUNNER": {
-                    "external": true,
-                    "default": "node"
-                }
-            }
-        },
-        "lint:spelling": {
-            "command": "node scripts/check-spelling.mjs"
-        },
         "lit-analyse": {
             "command": "lit-analyzer src"
         },
         "precommit": {
             "command": "prettier --write .",
             "dependencies": [
+                "lint",
                 "lint:types",
                 "lint:components",
-                "lint:spelling",
-                "lint:package",
-                "lint:lockfile",
-                "lint:lockfiles",
-                "lint:precommit",
-                "format:packages"
+                "lint:lockfile"
             ]
-        },
-        "prettier": {
-            "dependencies": [
-                "format"
-            ]
-        },
-        "prettier-check": {
-            "command": "prettier --check ."
-        },
-        "pseudolocalize": {
-            "command": "node scripts/pseudolocalize.mjs"
         },
         "storybook:build": {
             "command": "storybook build",
@@ -372,13 +348,36 @@
             }
         },
         "tsc": {
+            "command": "tsc -p .",
+            "env": {
+                "NODE_OPTIONS": "--max_old_space_size=8192"
+            },
             "dependencies": [
-                "lint:types"
+                "build-locales"
             ]
         }
     },
+    "engines": {
+        "node": ">=20"
+    },
     "workspaces": [
-        ".",
         "./packages/*"
-    ]
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "@storybook/addon-docs": {
+            "react": "^19.1.0",
+            "react-dom": "^19.1.0"
+        },
+        "chromedriver": {
+            "axios": "^1.8.4"
+        },
+        "rapidoc": {
+            "@apitools/openapi-parser@": "0.0.37"
+        },
+        "storybook-addon-mock": {
+            "react": "^19.1.0",
+            "react-dom": "^19.1.0"
+        }
+    }
 }

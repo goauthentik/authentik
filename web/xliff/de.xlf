@@ -612,7 +612,7 @@
         
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, <x id="0" equiv-text="${name || &quot;&quot;}"/>.</source>
+        <source>Welcome, <x id="0" equiv-text="${username || &quot;&quot;}"/>.</source>
         <target>Willkommen,
         <x id="0" equiv-text="${name}"/>.</target>
         
@@ -1091,7 +1091,7 @@
       </trans-unit>
       <trans-unit id="sd62cfc27ad4aa33b">
         <source>Based on the User's Email</source>
-        <target>Basierend auf der E-Mail Adresse des Benutzers</target>
+        <target>Basierend auf der E-Mail-Adresse des Benutzers</target>
         
       </trans-unit>
       <trans-unit id="s55eb75bedf96be0f">
@@ -2361,6 +2361,7 @@
       </trans-unit>
       <trans-unit id="s9307f3dbb07a73b5">
         <source>Only fail the policy, don't invalidate user's password</source>
+        <target>Nur die Richtlinie fehlschlagen lassen, das Passwort des Benutzers nicht ungültig machen.</target>
         
       </trans-unit>
       <trans-unit id="scea1f16238093e35">
@@ -2809,6 +2810,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="sfbc59ff17a73503d">
         <source>User path</source>
+        <target>Nutzerpfad</target>
         
       </trans-unit>
       <trans-unit id="sd18170637295bace">
@@ -2856,11 +2858,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Gruppenmitgliedschaftsfeld</target>
         
       </trans-unit>
-      <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>Feld, das Mitglieder einer Gruppe enthält. Beachten Sie, dass bei Verwendung des Felds „memberUid“ davon ausgegangen wird, dass der Wert einen relativ definierten Namen enthält. z.B. 'memberUid=some-user' statt 'memberUid=cn=some-user,ou=groups,...'</target>
-        
-      </trans-unit>
       <trans-unit id="s026555347e589f0e">
         <source>Object uniqueness field</source>
         <target>Feld für die Eindeutigkeit des Objekts</target>
@@ -2883,6 +2880,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s995535e7af30d754">
         <source>Use the user's email address, but deny enrollment when the email address already exists</source>
+        <target>Verwende die E-Mail-Adresse des Benutzers, aber verweigere die Registrierung, wenn die E-Mail-Adresse bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s542ecb4130f6cea5">
@@ -2891,6 +2889,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s2a1debf34e5aeba4">
         <source>Use the user's username, but deny enrollment when the username already exists</source>
+        <target>Verwende den Anmeldenamen des Benutzers, aber verweigere die Registrierung von der Anmeldename bereits existiert.</target>
         
       </trans-unit>
       <trans-unit id="s81ce0d54727f42d2">
@@ -3745,6 +3744,9 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
         <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${pluckErrorDetail(parsedError)}"/></source>
+        <target>Aktualisieren von 
+        <x id="0" equiv-text="${this.objectLabel}"/>fehlgeschlagen: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
@@ -4956,7 +4958,7 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se50a08ab71bb96ed">
         <source>When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.</source>
-        <target>Sofern eine gültige E-Mailadresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
+        <target>Sofern eine gültige E-Mail-Adresse oder Benutzername angegeben wurde und diese Option aktiviert ist, wird das Profilbild und der Benutzername des Benutzers angezeigt. Ansonsten wird der vom Benutzer eingegebene Text angezeigt.</target>
         
       </trans-unit>
       <trans-unit id="s0295ce5d6f635d75">
@@ -6250,7 +6252,7 @@ Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
         <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
-        <target>Anmelden um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
+        <target>Anmelden, um mit <x id="0" equiv-text="${this.challenge.applicationPre}"/>  fortzufahren.</target>
         
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
@@ -7456,6 +7458,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s28b99b59541f54ca">
   <source>Connection failed after <x id="0" equiv-text="${this.connectionAttempt}"/> attempts.</source>
+  <target>Verbindung nach <x id="0" equiv-text="${this.connectionAttempt}"/> Versuch(en) fehlgeschlagen.</target>
 </trans-unit>
 <trans-unit id="s7c7d956418e1c8c8">
   <source>Re-connecting in <x id="0" equiv-text="${Math.max(1, delay / 1000)}"/> second(s).</source>
@@ -7577,11 +7580,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s456d88f3679190fd">
   <source>Allow users to change email</source>
-  <target>Benutzer können E-Mail ändern</target>
+  <target>Benutzer können E-Mail-Adresse ändern</target>
 </trans-unit>
 <trans-unit id="s5fc6c14d106f40d3">
   <source>Enable the ability for users to change their email.</source>
-  <target>Benutzer haben die Möglichkeit, ihre E-Mail zu ändern.</target>
+  <target>Benutzer haben die Möglichkeit, ihre E-Mail-Adresse zu ändern.</target>
 </trans-unit>
 <trans-unit id="s628e414bb2367057">
   <source>Allow users to change username</source>
@@ -7806,7 +7809,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s8cc0075913c67566">
   <source>Enter the email associated with your account, and we'll send you a link to reset your password.</source>
-  <target>Gib die Email deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
+  <target>Gib die E-Mail-Adresse deines Accounts ein und du erhältst einen Link zum zurücksetzen des Passworts.</target>
 </trans-unit>
 <trans-unit id="s06bfe45ffef2cf60">
   <source>Stage name: <x id="0" equiv-text="${this.challenge.name}"/></source>
@@ -7890,6 +7893,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc1673c93148583ba">
   <source>Request failed. Please try again later.</source>
+  <target>Anfrage fehlgeschlagen. Bitte versuchen Sie es später erneut.</target>
 </trans-unit>
 <trans-unit id="s85be1f5e7a0fa3b1">
   <source>Available Roles</source>
@@ -8282,7 +8286,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s354405ae02cb262d">
   <source>Last seen: <x id="0" equiv-text="${formatElapsedTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</source>
-  <target>Zuletzt gesehen: <x id="0" equiv-text="${getRelativeTime(lastSeen)}"/> (<x id="1" equiv-text="${lastSeen.toLocaleTimeString()}"/>)</target>
 </trans-unit>
 <trans-unit id="s5aebe06e3ddf6ca9">
   <source>Sign assertions</source>
@@ -8698,9 +8701,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
 </trans-unit>
-<trans-unit id="s10ba15343fe64890">
-  <source>Choose A Provider</source>
-</trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
 </trans-unit>
@@ -8854,9 +8854,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s61ffea061fae0af4">
   <source>No notifications found.</source>
+  <target>Keine Benachrichtigungen gefunden.</target>
 </trans-unit>
 <trans-unit id="scf8d5cdc8b434982">
   <source>You don't have any notifications currently.</source>
+  <target>Sie haben zur Zeit keine Benachrichtigungen.</target>
 </trans-unit>
 <trans-unit id="s358e08de4fbebf51">
   <source>Version <x id="0" equiv-text="${this.version?.versionCurrent || &quot;&quot;}"/></source>
@@ -9082,6 +9084,141 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
+</trans-unit>
+<trans-unit id="s783964a224796865">
+  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
+</trans-unit>
+<trans-unit id="s1d47b4f61ca53e8e">
+  <source>Lookup using user attribute</source>
+</trans-unit>
+<trans-unit id="s17359123e1f24504">
+  <source>Field which contains DNs of groups the user is a member of. This field is used to lookup groups from users, e.g. 'memberOf'. To lookup nested groups in an Active Directory environment use 'memberOf:1.2.840.113556.1.4.1941:'.</source>
+</trans-unit>
+<trans-unit id="s891cd64acabf23bf">
+  <source>Initial Permissions</source>
+</trans-unit>
+<trans-unit id="sedb57bf4b42a8e40">
+  <source>Unknown Initial Permissions mode</source>
+</trans-unit>
+<trans-unit id="s6ea6a64acb45dfdf">
+  <source>Successfully updated initial permissions.</source>
+</trans-unit>
+<trans-unit id="sfddf7896ab5938b6">
+  <source>Successfully created initial permissions.</source>
+</trans-unit>
+<trans-unit id="s5c5f240cbb6d0bae">
+  <source>When a user with the selected Role creates an object, the Initial Permissions will be applied to that object.</source>
+</trans-unit>
+<trans-unit id="sbf27294eef56ac81">
+  <source>The Initial Permissions can either be placed on the User creating the object, or the Role selected in the previous field.</source>
+</trans-unit>
+<trans-unit id="s93f04537efda1b24">
+  <source>Available Permissions</source>
+</trans-unit>
+<trans-unit id="s297bc57f9e494470">
+  <source>Selected Permissions</source>
+</trans-unit>
+<trans-unit id="s0ea71d53764d781c">
+  <source>Permissions to grant when a new object is created.</source>
+</trans-unit>
+<trans-unit id="s06fc21a40f5d7de1">
+  <source>Set initial permissions for newly created objects.</source>
+</trans-unit>
+<trans-unit id="sc7104a4d0fc35c7c">
+  <source>Update Initial Permissions</source>
+</trans-unit>
+<trans-unit id="s83fa005829a65be9">
+  <source>Create Initial Permissions</source>
+</trans-unit>
+<trans-unit id="se37ac6cf9c72f21a">
+  <source>Reputation: lower limit</source>
+</trans-unit>
+<trans-unit id="sa634ffa797037aac">
+  <source>Reputation cannot decrease lower than this value. Zero or negative.</source>
+</trans-unit>
+<trans-unit id="s862986ce8e70edd7">
+  <source>Reputation: upper limit</source>
+</trans-unit>
+<trans-unit id="sdd04913b3b46cf30">
+  <source>Reputation cannot increase higher than this value. Zero or positive.</source>
+</trans-unit>
+<trans-unit id="s4d5cb134999b50df">
+  <source>HTTP Basic Auth</source>
+</trans-unit>
+<trans-unit id="s6927635d1c339cfc">
+  <source>Include the client ID and secret as request parameters</source>
+</trans-unit>
+<trans-unit id="s4fca384c634e1a92">
+  <source>Authorization code authentication method</source>
+</trans-unit>
+<trans-unit id="sdc02c276ed429008">
+  <source>How to perform authentication during an authorization_code token request flow</source>
+</trans-unit>
+<trans-unit id="s844baf19a6c4a9b4">
+  <source>Enable "Remember me on this device"</source>
+</trans-unit>
+<trans-unit id="sfa72bca733f40692">
+  <source>When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.</source>
+</trans-unit>
+<trans-unit id="s1c336c2d6cef77b3">
+  <source>Remember me on this device</source>
+</trans-unit>
+<trans-unit id="s86cf007b861152ca">
+  <source>Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.</source>
+</trans-unit>
+<trans-unit id="s79b3fcd40dd63921">
+  <source>Number of previous passwords to check</source>
+</trans-unit>
+<trans-unit id="sdd66c5a2e706fb81">
+  <source>Toggle sidebar</source>
+</trans-unit>
+<trans-unit id="s7d4ec232535a36f0">
+  <source>Choose a Provider</source>
+</trans-unit>
+<trans-unit id="sa30ba280de276758">
+  <source>When enabled, the SAML response will be signed.</source>
+</trans-unit>
+<trans-unit id="s2c42bb3c6f5420d2">
+  <source>Client Certificates</source>
+</trans-unit>
+<trans-unit id="s95901716c0629274">
+  <source>Available Certificates</source>
+</trans-unit>
+<trans-unit id="sdbf6b484fa1436b0">
+  <source>Selected Certificates</source>
+</trans-unit>
+<trans-unit id="s9300147e327fd8f6">
+  <source>Client-certificate/mTLS authentication/enrollment.</source>
+</trans-unit>
+<trans-unit id="sbf990ec848470f5c">
+  <source>Certificate optional</source>
+</trans-unit>
+<trans-unit id="s72e2876e9409b9eb">
+  <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+</trans-unit>
+<trans-unit id="se07d973901a6e6b9">
+  <source>Certificate required</source>
+</trans-unit>
+<trans-unit id="s664c47df020ee414">
+  <source>If no certificate was provided, this stage will stop flow execution.</source>
+</trans-unit>
+<trans-unit id="sbe9da6dad795aa39">
+  <source>Certificate authorities</source>
+</trans-unit>
+<trans-unit id="se3a6aa4f0ab7568e">
+  <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+</trans-unit>
+<trans-unit id="sb8fdf5a09a969870">
+  <source>Certificate attribute</source>
+</trans-unit>
+<trans-unit id="s8069037a865037c9">
+  <source>Configure the attribute of the certificate used to look for a user.</source>
+</trans-unit>
+<trans-unit id="sc185a8ad96f8eaa2">
+  <source>User attribute</source>
+</trans-unit>
+<trans-unit id="s4f9860fefb8fbe01">
+  <source>Configure the attribute of the user used to look for a user.</source>
 </trans-unit>
     </body>
   </file>

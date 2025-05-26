@@ -1,6 +1,5 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -24,11 +23,10 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                 stageUuid: this.instance.pk || "",
                 dummyStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
-                dummyStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesDummyCreate({
+            dummyStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -50,7 +48,7 @@ export class DummyStageForm extends BaseStageForm<DummyStage> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.throwError, false)}
+                        ?checked=${this.instance?.throwError ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

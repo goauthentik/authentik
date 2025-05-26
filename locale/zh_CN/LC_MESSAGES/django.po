@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-05-20 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -102,6 +102,10 @@ msgid "Web Certificate used by the authentik Core webserver."
 msgstr "authentik 核心 Web 服务器使用的 Web 证书。"
 
 #: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "用于客户端身份验证的证书"
+
+#: authentik/brands/models.py
 msgid "Brand"
 msgstr "品牌"
 
@@ -178,6 +182,7 @@ msgid "User's display name."
 msgstr "用户的显示名称。"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "用户"
 
@@ -345,6 +350,18 @@ msgid "Property Mappings"
 msgstr "属性映射"
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr "会话数据"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "会话"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "会话"
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "已认证会话"
 
@@ -446,6 +463,36 @@ msgstr "许可证使用情况"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "许可证使用情况记录"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr "要检查的字段键，可以使用输入阶段中定义的字段键。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "检查指定数量的密码。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "未在上下文中设置密码"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr "此密码被使用过。请选择其他密码。"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "密码唯一性策略"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "密码唯一性策略"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "用户密码历史记录"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -581,6 +628,33 @@ msgstr "端点设备"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "正在验证您的浏览器…"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr "配置用于验证证书的证书机构。此选项的优先级比“品牌”中的“客户端证书”更高。"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "双向 TLS 阶段"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "双向 TLS 阶段"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "为前哨传递证书的权限。"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "需要证书但未提供。"
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "未找到证书的用户。"
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -1177,10 +1251,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "清除策略缓存指标"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr "要检查的字段键，可以使用输入阶段中定义的字段键。"
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr "密码哈希允许出现在 HaveIBeenPwned 中多少次"
 
@@ -1188,10 +1258,6 @@ msgstr "密码哈希允许出现在 HaveIBeenPwned 中多少次"
 msgid ""
 "If the zxcvbn score is equal or less than this value, the policy will fail."
 msgstr "如果 zxcvbn 分数小于等于此值，则策略失败。"
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "未在上下文中设置密码"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1233,20 +1299,6 @@ msgstr "信誉分数"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "信誉分数"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr "正在等待身份验证…"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr "您正在另一个标签页中验证身份。身份验证完成后，此页面会刷新。"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr "在此标签页中验证身份"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -1999,6 +2051,10 @@ msgid "Roles"
 msgstr "角色"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "初始权限"
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "系统权限"
 
@@ -2222,6 +2278,13 @@ msgid ""
 msgstr "当用户修改密码时，将其同步回 LDAP。仅可在单点 LDAP 源时启用。"
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr "基于用户属性而非组属性查询组成员身份。这允许在 FreeIPA 或 Active Directory 等系统上支持嵌套组决策"
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP 源"
 
@@ -2237,6 +2300,22 @@ msgstr "LDAP 源属性映射"
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP 源属性映射"
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "用户 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "用户 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "组 LDAP 源连接"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "组 LDAP 源连接"
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "密码与 Active Directory 复杂度不匹配。"
@@ -2244,6 +2323,14 @@ msgstr "密码与 Active Directory 复杂度不匹配。"
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "未收到令牌。"
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "HTTP 基本身份验证"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "包括客户端 ID 和密钥作为请求参数"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2282,6 +2369,12 @@ msgstr "authentik 用来获取用户信息的 URL。"
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "额外的作用域"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr "在 authorization_code 令牌请求流程期间，如何执行身份验证"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3154,6 +3247,12 @@ msgid ""
 msgstr "启用时，即使输入错误的用户信息，此阶段也会成功并继续。"
 
 #: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr "向用户显示“在此设备上记住我”开关，允许相同用户直接跳过输入密码。"
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "可选注册流程，链接在页面底部。"
 
@@ -3496,6 +3595,14 @@ msgid ""
 "Events will be deleted after this duration.(Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
 msgstr "事件会在多久后被删除。（格式：weeks=3;days=2;hours=3,seconds=2）。"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr "信誉无法降低到此值以下。可为零或负数。"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr "信誉无法提高到此值以上。可为零或正数。"
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

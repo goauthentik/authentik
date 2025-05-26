@@ -22,7 +22,7 @@ The following placeholders are used in this guide:
 
 3. Insert the redirect URL: `https://authentik.company/source/oauth/callback/mailcow/`
 
-![Add OAuth2 CLient](./mailcow2.png)
+![Add OAuth2 Client](./mailcow2.png)
 
 4. Copy the **Client ID** and **Client secret** and _save it for later_
 

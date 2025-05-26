@@ -148,7 +148,6 @@ We'll be publishing a security Issue (CVE-2022-xxxxx) and accompanying fix on _d
 
 <details>
 <summary>Mailing list template</summary>
-<p>
 
 Subject: `Release of authentik Security releases 2022.10.3 and 2022.11.3`
 
@@ -158,12 +157,10 @@ The security advisory for CVE-2022-xxxxx has been published: https://github.com/
 Releases 2022.10.3 and 2022.11.3 with fixes included are available here: https://github.com/goauthentik/authentik/releases
 ```
 
-</p>
 </details>
 
 <details>
 <summary>Discord template</summary>
-<p>
 
 ```markdown
 [...existing announcement...]
@@ -175,5 +172,4 @@ Advisory for for CVE-2022-xxxxx has been published here https://github.com/goaut
 The fixed versions 2022.10.3 and 2022.11.3 are available here: https://github.com/goauthentik/authentik/releases
 ```
 
-</p>
 </details>

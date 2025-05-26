@@ -1,7 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -32,11 +31,10 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                 stageUuid: this.instance.pk || "",
                 authenticatorStaticStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
-                authenticatorStaticStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticCreate({
+            authenticatorStaticStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -48,7 +46,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -60,7 +58,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -79,7 +77,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenCount, 6)}"
+                            value="${this.instance?.tokenCount ?? 6}"
                             class="pf-c-form-control"
                             required
                         />
@@ -96,7 +94,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenLength, 12)}"
+                            value="${this.instance?.tokenLength ?? 12}"
                             class="pf-c-form-control"
                             required
                         />

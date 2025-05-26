@@ -9,16 +9,16 @@ tags:
     - docker
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
 import ExecutionEnvironment from "@docusaurus/ExecutionEnvironment";
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 ## Requirements
 
-- [Python](https://www.python.org/) (3.12 or later)
+- [Python](https://www.python.org/) (3.13 or later)
 - [uv](https://docs.astral.sh/uv/getting-started/installation/), (Latest stable release)
-- [Go](https://go.dev/) (1.23 or later)
-- [Node.js](https://nodejs.org/en) (22 or later)
+- [Go](https://go.dev/) (1.24 or later)
+- [Node.js](https://nodejs.org/en) (24 or later)
 - [PostgreSQL](https://www.postgresql.org/) (16 or later)
 - [Redis](https://redis.io/) (7 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
@@ -54,9 +54,8 @@ values={[
     To install the native dependencies on macOS, run:
 
     ```sh
-    $ pip install uv
-    $ brew install libxmlsec1 libpq krb5   # Required development libraries,
-    $ brew install postgresql redis node@22 golangci-lint   # Required CLI tools
+    $ brew install libxmlsec1 libpq krb5 pkg-config  # Required development libraries,
+    $ brew install uv postgresql redis node@24 golangci-lint   # Required CLI tools
     ```
 
 </TabItem>
@@ -66,14 +65,13 @@ To install native dependencies on Debian or Ubuntu, run:
 
 ```sh
 $ pip install uv
-$ sudo apt-get install  libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
+$ sudo apt-get install libgss-dev krb5-config libkrb5-dev postgresql-server-dev-all
 $ sudo apt-get install postresql redis
 ```
 
 Adjust your needs as required for other distributions such as Red Hat, SUSE, or Arch.
 
-Install golangci-lint locally [from the site
-instructions](https://golangci-lint.run/welcome/install/#other-ci).
+Install golangci-lint locally [from the site instructions](https://golangci-lint.run/welcome/install/#other-ci).
 
   </TabItem>
 
@@ -146,7 +144,7 @@ And now, authentik should now be accessible at `http://localhost:9000`.
 :::info
 To define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow. Example: http://localhost:9000/if/flow/initial-setup/.
 
-In case of issues in this process, feel free to use `make dev-reset` which drops and restores the Authentik PostgreSQL instance to a "fresh install" state.
+In case of issues in this process, feel free to use `make dev-reset` which drops and restores the authentik PostgreSQL instance to a "fresh install" state.
 :::
 
 ## Submitting Pull Requests

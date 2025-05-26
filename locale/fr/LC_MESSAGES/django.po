@@ -9,9 +9,9 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Mordecai, 2023
-# nerdinator <florian.dupret@gmail.com>, 2024
+# Tina, 2024
 # Charles Leclerc, 2025
-# Tina, 2025
+# nerdinator <florian.dupret@gmail.com>, 2025
 # Marc Schmitt, 2025
 # 
 #, fuzzy
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-05-20 00:10+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -114,6 +114,10 @@ msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Certificate Web utilisé par le serveur web d'authentik core."
 
 #: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr "Certificats utilisés pour l'authentification client."
+
+#: authentik/brands/models.py
 msgid "Brand"
 msgstr "Marque"
 
@@ -194,6 +198,7 @@ msgid "User's display name."
 msgstr "Nom d'affichage de l'utilisateur"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "Utilisateur"
 
@@ -383,6 +388,18 @@ msgid "Property Mappings"
 msgstr "Mappages de propriété"
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr "Données de session"
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "Session"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "Sessions"
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "Session Authentifiée"
 
@@ -488,6 +505,38 @@ msgstr "Utilisation de la licence"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "Registre d'utilisation de la licence"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"Clé de champ à vérifier ; les clés de champ définies dans les étapes de "
+"d'invite sont disponibles."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr "Nombre de mots de passe à vérifier."
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "Mot de passe non défini dans le contexte"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr "Ce mot de passe a déjà été utilisé. Veuillez en choisir un autre."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr "Politique d'unicité des mots de passe"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr "Politiques d'unicité des mots de passe"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr "Historique des mots de passe utilisateur"
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -629,6 +678,36 @@ msgstr "Appareils point de terminaison"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "Vérification de votre navigateur..."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+"Configurez les autorités de certification pour valider le certificat. Cette "
+"option a une priorité plus élevée que l'option `client_certificate` sur "
+"`Marques`."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr "Étape TLS mutuel"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr "Étapes TLS mutuel"
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr "Autorisations de délivrer des certificats pour les avant-postes."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr "Certificat requis mais aucun certificat n'a été fourni."
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr "Aucun utilisateur trouvé pour le certificat."
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -1284,12 +1363,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "Nettoyer les métriques de cache de la politique"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-"Clé de champ à vérifier ; les clés de champ définies dans les étapes de "
-"d'invite sont disponibles."
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr ""
 "Combien de fois le hachage du mot de passe est-il autorisé sur "
@@ -1301,10 +1374,6 @@ msgid ""
 msgstr ""
 "Si le score zxcvbn est égal ou inférieur à cette valeur, la politique "
 "échouera."
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "Mot de passe non défini dans le contexte"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1346,22 +1415,6 @@ msgstr "Score de Réputation"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Scores de Réputation"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr "En attente de l'authentification..."
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-"Vous êtes déjà en cours d'authentification dans un autre onglet. Cette page "
-"se rafraîchira lorsque l'authentification sera terminée."
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr "S'authentifier dans cet onglet"
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -2198,6 +2251,10 @@ msgid "Roles"
 msgstr "Rôles"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr "Permissions initiales"
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "Permission système"
 
@@ -2442,6 +2499,16 @@ msgstr ""
 "vers LDAP. Ne peut être activé que sur une seule source LDAP."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+"Recherche de l'appartenance aux groupes basée sur un attribut utilisateur "
+"plutôt que sur un attribut de groupe. Cela permet la résolution des groupes "
+"imbriqués sur des systèmes tels que FreeIPA et Active Directory."
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Source LDAP"
 
@@ -2457,6 +2524,22 @@ msgstr "Mappage de propriété source LDAP"
 msgid "LDAP Source Property Mappings"
 msgstr "Mappages de propriété source LDAP"
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr "Connexion de l'utilisateur à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr "Connexions de l'utilisateur à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr "Connexion du groupe à la source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr "Connexions du groupe à la source LDAP"
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Le mot de passe ne correspond pas à la complexité d'Active Directory."
@@ -2464,6 +2547,14 @@ msgstr "Le mot de passe ne correspond pas à la complexité d'Active Directory."
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "Pas de jeton reçu."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr "Authentification HTTP Basic"
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr "Inclure le client ID et secret comme paramètres de la requête"
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2505,6 +2596,14 @@ msgstr ""
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Portées additionnelles"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
+"Comment effectuer l'authentification lors d'une demande de jeton pour le "
+"flux authorization_code"
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3427,6 +3526,15 @@ msgstr ""
 "utilisateurs entrées sont invalides."
 
 #: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+"Afficher à l'utilisateur l'option \"Se souvenir de moi sur cet appareil\", "
+"afin de permettre aux utilisateurs réguliers de passer directement à la "
+"saisie de leur mot de passe."
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "Flux d'inscription facultatif, qui sera accessible en bas de page."
 
@@ -3809,6 +3917,17 @@ msgid ""
 msgstr ""
 "Les évènements seront supprimés après cet interval. (Format : "
 "weeks=3;days=2;hours=3,seconds=2)"
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+"La réputation ne peut pas descendre en dessous de cette valeur. Zéro ou "
+"négatif."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
+"La réputation ne peut pas monter au dessus de cette valeur. Zéro ou positif."
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

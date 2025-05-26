@@ -2,7 +2,7 @@
 
 from django.test import TransactionTestCase
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.providers.rac.models import (
@@ -36,13 +36,15 @@ class TestModels(TransactionTestCase):
 
     def test_settings_merge(self):
         """Test settings merge"""
+        session = Session.objects.create(
+            session_key=generate_id(),
+            last_ip="255.255.255.255",
+        )
+        auth_session = AuthenticatedSession.objects.create(session=session, user=self.user)
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
-            session=AuthenticatedSession.objects.create(
-                user=self.user,
-                session_key=generate_id(),
-            ),
+            session=auth_session,
         )
         path = f"/tmp/connection/{token.token}"  # nosec
         self.assertEqual(

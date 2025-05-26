@@ -1,4 +1,8 @@
-"""authentik policies app config"""
+"""Authentik policies app config
+
+Every system policy should be its own Django app under the `policies` app.
+For example: The 'dummy' policy is available at `authentik.policies.dummy`.
+"""
 
 from prometheus_client import Gauge, Histogram
 
@@ -35,4 +39,3 @@ class AuthentikPoliciesConfig(ManagedAppConfig):
     label = "authentik_policies"
     verbose_name = "authentik Policies"
     default = True
-    mountpoint = "policy/"

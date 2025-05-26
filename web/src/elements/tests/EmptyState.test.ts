@@ -11,15 +11,15 @@ describe("ak-empty-state", () => {
     afterEach(async () => {
         await browser.execute(async () => {
             await document.body.querySelector("ak-empty-state")?.remove();
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body["_$litPart$"];
+                await delete document.body._$litPart$;
             }
         });
     });
 
     it("should render the default loader", async () => {
-        render(html`<ak-empty-state ?loading=${true} header=${msg("Loading")}> </ak-empty-state>`);
+        render(html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();

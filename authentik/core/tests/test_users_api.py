@@ -3,8 +3,6 @@
 from datetime import datetime
 from json import loads
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
@@ -12,6 +10,7 @@ from authentik.brands.models import Brand
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
+    Session,
     Token,
     User,
     UserTypes,
@@ -381,12 +380,15 @@ class TestUsersAPI(APITestCase):
         """Ensure sessions are deleted when a user is deactivated"""
         user = create_test_admin_user()
         session_id = generate_id()
-        AuthenticatedSession.objects.create(
-            user=user,
+        session = Session.objects.create(
             session_key=session_id,
-            last_ip="",
+            last_ip="255.255.255.255",
+            last_user_agent="",
         )
-        cache.set(KEY_PREFIX + session_id, "foo")
+        AuthenticatedSession.objects.create(
+            session=session,
+            user=user,
+        )
 
         self.client.force_login(self.admin)
         response = self.client.patch(
@@ -397,5 +399,7 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        self.assertIsNone(cache.get(KEY_PREFIX + session_id))
-        self.assertFalse(AuthenticatedSession.objects.filter(session_key=session_id).exists())
+        self.assertFalse(Session.objects.filter(session_key=session_id).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
+        )

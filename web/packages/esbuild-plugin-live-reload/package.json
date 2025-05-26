@@ -1,0 +1,56 @@
+{
+    "name": "@goauthentik/esbuild-plugin-live-reload",
+    "version": "1.0.5",
+    "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p ."
+    },
+    "main": "index.js",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./out/index.d.ts",
+            "import": "./index.js"
+        },
+        "./client": {
+            "types": "./out/client/index.d.ts",
+            "import": "./client/index.js"
+        },
+        "./plugin": {
+            "types": "./out/plugin/index.d.ts",
+            "import": "./plugin/index.js"
+        }
+    },
+    "dependencies": {
+        "find-free-ports": "^3.1.1"
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "^1.0.5",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/node": "^22.15.21",
+        "esbuild": "^0.25.4",
+        "prettier": "^3.5.3",
+        "prettier-plugin-packagejson": "^2.5.14",
+        "typescript": "^5.8.3"
+    },
+    "peerDependencies": {
+        "esbuild": "^0.25.4"
+    },
+    "engines": {
+        "node": ">=22.15.1"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "client/**/*",
+        "plugin/**/*",
+        "out/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "publishConfig": {
+        "access": "public"
+    }
+}

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS website-builder
 
 ENV NODE_ENV=production
 
@@ -20,7 +20,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-bundled
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -40,7 +40,8 @@ COPY ./web /work/web/
 COPY ./website /work/website/
 COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
-RUN npm run build
+RUN npm run build && \
+    npm run build:sfe
 
 # Stage 3: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
@@ -85,18 +86,17 @@ FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.0 AS geoip
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
 ENV GEOIPUPDATE_VERBOSE="1"
 ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
-ENV GEOIPUPDATE_LICENSE_KEY_FILE="/run/secrets/GEOIPUPDATE_LICENSE_KEY"
 
 USER root
 RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
     mkdir -p /usr/share/GeoIP && \
-    /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
+    /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 5: Download uv
-FROM ghcr.io/astral-sh/uv:0.6.14 AS uv
+FROM ghcr.io/astral-sh/uv:0.7.8 AS uv
 # Stage 6: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.12.9-slim-bookworm-fips AS python-base
+FROM ghcr.io/goauthentik/fips-python:3.13.3-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \

@@ -27,7 +27,7 @@ export class FlowImportForm extends Form<Flow> {
     }
 
     async send(): Promise<FlowImportResult> {
-        const file = this.getFormFiles()["flow"];
+        const file = this.getFormFiles().flow;
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }

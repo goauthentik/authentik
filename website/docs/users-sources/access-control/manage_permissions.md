@@ -3,7 +3,9 @@ title: "Manage permissions"
 description: "Learn how to use global and object permissions in authentik."
 ---
 
-Refer to the following topics for instructions to view and manage permissions. To learn more about the concepts and fundamanetals of authentik permissions, refer to [About Permissions](./permissions.md).
+For instructions on viewing and managing permissions, see the following topics.To learn more about the concepts and fundamentals of authentik permissions, refer to [About Permissions](./permissions.md).
+
+To learn about using Initial Permissions, a pre-defined set of permissions, refer to our [documentation](./initial_permissions.mdx).
 
 ## View permissions
 
@@ -21,7 +23,7 @@ To view _object_ permissions for a specific user or role:
 
 ### View flow permissions
 
-\_These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page.\_\_
+_These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page._
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Flows**.
 2. Click the name of the flow (this opens the details page).
@@ -30,7 +32,7 @@ To view _object_ permissions for a specific user or role:
 
 ### View stage permissions
 
-\_These instructions apply to all objects that **do not** have a detail page.\_\_
+_These instructions apply to all objects that **do not** have a detail page._
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Stages**.
 2. On the row for the specific stage whose permissions you want to view, click the **lock icon**.
@@ -68,14 +70,30 @@ To assign or remove _global_ permissions for a user:
 6. In the **Assign permission to user** box, click the plus sign (**+**) and then click the checkbox beside each permission that you want to assign to the user. To remove permissions, deselect the checkbox.
 7. Click **Add**, and then click **Assign** to save your changes and close the box.
 
-### Assign or remove permissions on a specific group
+### Assign `Can view Admin interface` permissions
+
+You can grant regular users, who are not superusers nor Admins, the right to view the Admin interface. This can be useful in scenarios where you have a team who needs to be able to create certain objects (flows, other users, etc) but who should not have full access to the Admin interface.
+
+To assign the `Can view Admin interface` permission to a user (follow the same steps for a role):
+
+1. Go to the Admin interface and navigate to **Directory -> User**.
+2. Select a specific user the clicking on the user's name.
+3. Click the **Permissions** tab at the top of the page.
+4. Click **Assigned Global Permissions** to the left.
+5. In the **Assign permissions** area, click **Assign Permission**.
+6. In the **Assign permission to user** box, click the plus sign (**+**), enter `admin` in the Search field and click the search icon.
+7. Select the returned permission, click **Add**, and then click **Assign** to save your changes and close the box.
+
+Be aware that any rights beyond viewing the Admin interface will need to be assigned as well; for example, if you want a non-administrator user to be able to create flows in the Admin interface, you need to grant those global permissions to add flows.
+
+### Assign or remove object permissions on a group
 
 :::info
 Note that groups themselves do not have permissions. Rather, users and roles have permissions assigned that allow them to create, modify, delete, etc., a group.
 Also there are no global permissions for groups.
 :::
 
-To assign or remove _object_ permissions on a specific group by users and roles:
+To assign or remove _object_ permissions on a specific group for users and roles:
 
 1. Go to the Admin interface and navigate to **Directory -> Groups**.
 2. Select a specific group by clicking the group's name.

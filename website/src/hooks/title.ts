@@ -14,8 +14,7 @@ import { useDoc } from "@docusaurus/plugin-content-docs/client";
  */
 export function useSyntheticTitle(): string | null {
     const { metadata, frontMatter, contentTitle } = useDoc();
-    const shouldRender =
-        !frontMatter.hide_title && typeof contentTitle === "undefined";
+    const shouldRender = !frontMatter.hide_title && typeof contentTitle === "undefined";
     if (!shouldRender) {
         return null;
     }

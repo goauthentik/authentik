@@ -45,7 +45,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             ordering: "codename",
         });
         modelPermissions.results = modelPermissions.results.filter((value) => {
-            return !value.codename.startsWith("add_");
+            return value.codename !== `add_${this.model?.split(".")[1]}`;
         });
         this.modelPermissions = modelPermissions;
         return perms;

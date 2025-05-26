@@ -40,7 +40,7 @@ export class FormGroup extends AKElement {
                  * restructured to allow for this.
                  */
                 .pf-c-form__field-group:has(.pf-c-form__field-group-header:hover) .pf-c-button {
-                    color: var(--pf-global--Color--100) !important;
+                    color: var(--pf-c-button--m-plain--hover--Color) !important;
                 }
 
                 /**

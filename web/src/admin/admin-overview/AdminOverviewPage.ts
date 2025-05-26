@@ -1,29 +1,27 @@
-import "@goauthentik/admin/admin-overview/TopApplicationsTable";
-import "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
-import "@goauthentik/admin/admin-overview/cards/FipsStatusCard";
-import "@goauthentik/admin/admin-overview/cards/RecentEventsCard";
-import "@goauthentik/admin/admin-overview/cards/SystemStatusCard";
-import "@goauthentik/admin/admin-overview/cards/VersionStatusCard";
-import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
-import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
-import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
-import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
-import { VERSION } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/cards/AggregatePromiseCard";
-import "@goauthentik/elements/cards/QuickActionsCard.js";
-import type { QuickAction } from "@goauthentik/elements/cards/QuickActionsCard.js";
-import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import "#admin/admin-overview/TopApplicationsTable";
+import "#admin/admin-overview/cards/AdminStatusCard";
+import "#admin/admin-overview/cards/FipsStatusCard";
+import "#admin/admin-overview/cards/RecentEventsCard";
+import "#admin/admin-overview/cards/SystemStatusCard";
+import "#admin/admin-overview/cards/VersionStatusCard";
+import "#admin/admin-overview/cards/WorkerStatusCard";
+import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
+import "#admin/admin-overview/charts/OutpostStatusChart";
+import "#admin/admin-overview/charts/SyncStatusChart";
+import { me } from "#common/users";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import "#elements/cards/AggregatePromiseCard";
+import type { QuickAction } from "#elements/cards/QuickActionsCard";
+import "#elements/cards/QuickActionsCard";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { paramURL } from "#elements/router/RouterOutlet";
+import { createReleaseNotesURL } from "@goauthentik/core/version";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
-import { map } from "lit/directives/map.js";
-import { when } from "lit/directives/when.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
@@ -33,20 +31,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
-export function versionFamily(): string {
-    const parts = VERSION.split(".");
-    parts.pop();
-    return parts.join(".");
-}
-
-const RELEASE = `${VERSION.split(".").slice(0, -1).join(".")}#fixed-in-${VERSION.replaceAll(
-    ".",
-    "",
-)}`;
-
 const AdminOverviewBase = WithLicenseSummary(AKElement);
-
-type Renderer = () => TemplateResult | typeof nothing;
 
 @customElement("ak-admin-overview")
 export class AdminOverviewPage extends AdminOverviewBase {
@@ -83,7 +68,11 @@ export class AdminOverviewPage extends AdminOverviewBase {
         [msg("Check the logs"), paramURL("/events/log")],
         [msg("Explore integrations"), "https://goauthentik.io/integrations/", true],
         [msg("Manage users"), paramURL("/identity/users")],
-        [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${RELEASE}`, true],
+        [
+            msg("Check the release notes"),
+            createReleaseNotesURL(import.meta.env.AK_VERSION).href,
+            true,
+        ],
     ];
 
     @state()
@@ -94,10 +83,13 @@ export class AdminOverviewPage extends AdminOverviewBase {
     }
 
     render(): TemplateResult {
-        const name = this.user?.user.name ?? this.user?.user.username;
+        const username = this.user?.user.name || this.user?.user.username;
 
-        return html`<ak-page-header description=${msg("General system status")} ?hasIcon=${false}>
-                <span slot="header"> ${msg(str`Welcome, ${name || ""}.`)} </span>
+        return html` <ak-page-header
+                header=${msg(str`Welcome, ${username || ""}.`)}
+                description=${msg("General system status")}
+                ?hasIcon=${false}
+            >
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
@@ -189,45 +181,6 @@ export class AdminOverviewPage extends AdminOverviewBase {
                       <ak-admin-fips-status-system> </ak-admin-fips-status-system>
                   </div>`
                 : nothing} `;
-    }
-
-    renderActions() {
-        const release = `${versionFamily()}#fixed-in-${VERSION.replaceAll(".", "")}`;
-
-        const quickActions: [string, string][] = [
-            [msg("Create a new application"), paramURL("/core/applications", { createForm: true })],
-            [msg("Check the logs"), paramURL("/events/log")],
-            [msg("Explore integrations"), "https://goauthentik.io/integrations/"],
-            [msg("Manage users"), paramURL("/identity/users")],
-            [msg("Check the release notes"), `https://goauthentik.io/docs/releases/${release}`],
-        ];
-
-        const action = ([label, url]: [string, string]) => {
-            const isExternal = url.startsWith("https://");
-            const ex = (truecase: Renderer, falsecase: Renderer) =>
-                when(isExternal, truecase, falsecase);
-
-            const content = html`${label}${ex(
-                () => html`<i class="fas fa-external-link-alt ak-external-link"></i>`,
-                () => nothing,
-            )}`;
-
-            return html`<li>
-                ${ex(
-                    () =>
-                        html`<a
-                            href="${url}"
-                            class="pf-u-mb-xl"
-                            rel="noopener noreferrer"
-                            target="_blank"
-                            >${content}</a
-                        >`,
-                    () => html`<a href="${url}" class="pf-u-mb-xl" )>${content}</a>`,
-                )}
-            </li>`;
-        };
-
-        return html`${map(quickActions, action)}`;
     }
 }
 

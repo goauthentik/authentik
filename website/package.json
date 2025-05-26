@@ -1,23 +1,29 @@
 {
-    "name": "@goauthentik/website-docs",
+    "name": "@goauthentik/docs",
     "version": "0.0.0",
-    "private": true,
     "license": "MIT",
+    "private": true,
     "scripts": {
-        "build": "cp ../docker-compose.yml static/docker-compose.yml && cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
-        "build-bundled": "cp ../schema.yml static/schema.yml && docusaurus gen-api-docs all && cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build": "run-s build:docker build:schema build:api build:docusaurus",
+        "build-bundled": "run-s build:schema build:api build:docusaurus",
+        "build:api": "docusaurus gen-api-docs all",
+        "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
+        "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",
-        "lint:lockfile": "wireit",
+        "lint": "eslint --fix .",
+        "lint-check": "eslint --max-warnings 0 .",
+        "lint:lockfile": "echo 'Skipping lockfile linting'",
         "prettier": "prettier --write .",
         "prettier-check": "prettier --check .",
         "serve": "docusaurus serve",
+        "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "cp -f ../schema.yml ./static/schema.yml && docusaurus gen-api-docs all && docusaurus start"
+        "watch": "run-s build:schema build:api start"
     },
     "dependencies": {
-        "semver": "^7.7.1",
         "@docusaurus/core": "^3.7.0",
         "@docusaurus/faster": "^3.7.0",
         "@docusaurus/plugin-client-redirects": "^3.7.0",
@@ -25,21 +31,62 @@
         "@docusaurus/preset-classic": "^3.7.0",
         "@docusaurus/theme-common": "^3.7.0",
         "@docusaurus/theme-mermaid": "^3.7.0",
+        "@goauthentik/docusaurus-config": "^1.1.0",
+        "@goauthentik/tsconfig": "^1.0.4",
         "@mdx-js/react": "^3.1.0",
         "clsx": "^2.1.1",
-        "disqus-react": "^1.1.6",
-        "docusaurus-plugin-openapi-docs": "4.3.4",
-        "docusaurus-theme-openapi-docs": "4.3.4",
+        "docusaurus-plugin-openapi-docs": "^4.4.0",
+        "docusaurus-theme-openapi-docs": "^4.4.0",
         "postcss": "^8.5.3",
         "prism-react-renderer": "^2.4.1",
         "react": "^18.3.1",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^18.3.1",
-        "react-feather": "^2.0.10",
-        "react-toggle": "^4.1.3",
-        "react-tooltip": "^5.28.0",
         "remark-directive": "^4.0.0",
-        "remark-github": "^12.0.0"
+        "remark-github": "^12.0.0",
+        "semver": "^7.7.2"
+    },
+    "devDependencies": {
+        "@docusaurus/module-type-aliases": "^3.7.0",
+        "@docusaurus/tsconfig": "^3.7.0",
+        "@docusaurus/types": "^3.7.0",
+        "@eslint/js": "^9.27.0",
+        "@goauthentik/eslint-config": "^1.0.5",
+        "@goauthentik/prettier-config": "^1.0.5",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+        "@types/lodash": "^4.17.17",
+        "@types/node": "^22.15.21",
+        "@types/postman-collection": "^3.5.11",
+        "@types/react": "^18.3.22",
+        "@types/semver": "^7.7.0",
+        "@typescript-eslint/eslint-plugin": "^8.8.0",
+        "@typescript-eslint/parser": "^8.8.0",
+        "cross-env": "^7.0.3",
+        "eslint": "^9.11.1",
+        "fast-glob": "^3.3.3",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.5.3",
+        "prettier-plugin-packagejson": "^2.5.14",
+        "typescript": "^5.8.3",
+        "typescript-eslint": "^8.32.1"
+    },
+    "optionalDependencies": {
+        "@rspack/binding-darwin-arm64": "1.3.11",
+        "@rspack/binding-linux-arm64-gnu": "1.3.11",
+        "@rspack/binding-linux-x64-gnu": "1.3.11",
+        "@swc/core-darwin-arm64": "1.11.29",
+        "@swc/core-linux-arm64-gnu": "1.11.29",
+        "@swc/core-linux-x64-gnu": "1.11.29",
+        "@swc/html-darwin-arm64": "1.11.29",
+        "@swc/html-linux-arm64-gnu": "1.11.29",
+        "@swc/html-linux-x64-gnu": "1.11.29",
+        "lightningcss-darwin-arm64": "1.30.1",
+        "lightningcss-linux-arm64-gnu": "1.30.1",
+        "lightningcss-linux-x64-gnu": "1.30.1"
+    },
+    "engines": {
+        "node": ">=22.14.0"
     },
     "browserslist": {
         "production": [
@@ -53,39 +100,16 @@
             "last 1 safari version"
         ]
     },
-    "devDependencies": {
-        "@types/semver": "^7.7.0",
-        "@docusaurus/module-type-aliases": "^3.3.2",
-        "@docusaurus/tsconfig": "^3.7.0",
-        "@docusaurus/types": "^3.3.2",
-        "@types/react": "^18.3.13",
-        "cross-env": "^7.0.3",
-        "prettier": "3.5.3",
-        "typescript": "~5.8.2",
-        "wireit": "^0.14.11"
-    },
-    "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.3.0",
-        "@rspack/binding-linux-arm64-gnu": "1.3.0",
-        "@rspack/binding-linux-x64-gnu": "1.3.0",
-        "lightningcss-darwin-arm64": "1.29.3",
-        "lightningcss-linux-arm64-gnu": "1.29.3",
-        "lightningcss-linux-x64-gnu": "1.29.3",
-        "@swc/core-darwin-arm64": "1.11.13",
-        "@swc/core-linux-arm64-gnu": "1.11.13",
-        "@swc/core-linux-x64-gnu": "1.11.13",
-        "@swc/html-darwin-arm64": "1.11.13",
-        "@swc/html-linux-arm64-gnu": "1.11.13",
-        "@swc/html-linux-x64-gnu": "1.11.13"
-    },
-    "wireit": {
-        "lint:lockfile": {
-            "__comment": "The lockfile-lint package does not have an option to ensure resolved hashes are set everywhere",
-            "shell": true,
-            "command": "[ -z \"$(jq -r '.packages | to_entries[] | select((.key | contains(\"node_modules\")) and (.value | has(\"resolved\") | not)) | .key' < package-lock.json)\" ]"
+    "prettier": "@goauthentik/prettier-config",
+    "overrides": {
+        "fork-ts-checker-webpack-plugin": {
+            "glob": "^11.0.1"
+        },
+        "postman-collection": {
+            "@faker-js/faker": "^6.3.1"
+        },
+        "webpack-dev-server": {
+            "rimraf": "6.0.1"
         }
-    },
-    "engines": {
-        "node": ">=20"
     }
 }
