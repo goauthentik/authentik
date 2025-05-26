@@ -102,9 +102,9 @@ func (p *Packet) handleEAP(pp protocol.Payload, stm protocol.StateManager, paren
 		return p.handleEAP(pp, stm, nil)
 	}
 
-	if n, ok := p.eap.Payload.(*legacy_nak.Payload); ok {
+	if n, ok := pp.(*eap.Payload).Payload.(*legacy_nak.Payload); ok {
 		log.WithField("desired", n.DesiredType).Debug("Root-EAP: received NAK, trying next protocol")
-		p.eap.Payload = nil
+		pp.(*eap.Payload).Payload = nil
 		return next()
 	}
 

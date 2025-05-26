@@ -23,7 +23,7 @@ network={
     identity="foo"
     password="bar"
     ca_cert="ca.pem"
-    phase2="eapauth=MSCHAPV2"
+    phase2="auth=MSCHAPV2"
 }
 ```
 
