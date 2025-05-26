@@ -28,7 +28,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## Using OAuth2 / OpenID
 
-### authentik configuration
+### authentik configuration for OAuth2 / OpenID
 
 To support the integration of `Home Assistant` using `hass-openid` with authentik, you need to create an application/provider pair in authentik.
 
