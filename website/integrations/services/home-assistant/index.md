@@ -30,7 +30,7 @@ This documentation lists only the settings that you need to change from their de
 
 ### authentik configuration
 
-1. Create a **OAuth2/OpenID Provider** under **Aplications** > **Providers**:
+1. Create a **OAuth2/OpenID Provider** under **Applications** > **Providers**:
     - Note the **Client ID** and **Client Secret** values because they will be required later.
     - Set a `Regex` redirect URI to `^(http:\/\/hass\.company\:8123)\/auth\/openid\/callback.*`. (Note the `\` in front of every `.`, `/` and `:`. Check you regex [here](https://regex101.com)
     - Select any available signing key.
