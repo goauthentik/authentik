@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e -x -o pipefail
 hash="$(git rev-parse HEAD || openssl rand -base64 36 | sha256sum)"
 
