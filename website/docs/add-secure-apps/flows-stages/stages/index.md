@@ -57,7 +57,7 @@ To bind a stage to a flow, follow these steps:
 
 ## Bind users and groups to a flow's stage binding
 
-You can use bindings to determine whehther or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
+You can use bindings to determine whether or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
 
 To bind a user or a group to a stage binding for a specific flow, follow these steps:
 

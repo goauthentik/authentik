@@ -114,7 +114,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 #### Local development
 
-authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
+authentik can be run locally, although depending on which part you want to work on, different pre-requisites are required.
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 
@@ -163,7 +163,7 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 All Python code is linted with [black](https://black.readthedocs.io/en/stable/) and [Ruff](https://docs.astral.sh/ruff).
 
-authentik runs on Python 3.12 at the time of writing this.
+authentik runs on Python 3.13 at the time of writing this.
 
 - Use native type-annotations wherever possible.
 - Add meaningful docstrings when possible.

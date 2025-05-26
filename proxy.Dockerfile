@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -76,6 +76,7 @@ EXPOSE 9000 9300 9443
 
 USER 1000
 
-ENV GOFIPS=1
+ENV TMPDIR=/dev/shm/ \
+    GOFIPS=1
 
 ENTRYPOINT ["/proxy"]

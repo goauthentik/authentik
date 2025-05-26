@@ -4,8 +4,8 @@
  * @import { Config as DocusaurusConfig } from "@docusaurus/types"
  * @import { UserThemeConfig } from "./theme.js"
  */
-
 import { deepmerge } from "deepmerge-ts";
+
 import { createThemeConfig } from "./theme.js";
 
 //#region Types

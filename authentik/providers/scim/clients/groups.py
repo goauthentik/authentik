@@ -34,7 +34,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
     """SCIM client for groups"""
 
     connection_type = SCIMProviderGroup
-    connection_type_query = "group"
+    connection_attr = "scimprovidergroup_set"
     mapper: PropertyMappingManager
 
     def __init__(self, provider: SCIMProvider):
@@ -199,7 +199,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
             chunk_size = len(ops)
         if len(ops) < 1:
             return
-        for chunk in batched(ops, chunk_size):
+        for chunk in batched(ops, chunk_size, strict=False):
             req = PatchRequest(Operations=list(chunk))
             self._request(
                 "PATCH",

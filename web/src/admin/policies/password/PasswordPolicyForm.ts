@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -38,11 +37,10 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 policyUuid: this.instance.pk || "",
                 passwordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
-                passwordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordCreate({
+            passwordPolicyRequest: data,
+        });
     }
 
     renderStaticRules(): TemplateResult {
@@ -56,7 +54,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.lengthMin, 10)}"
+                        value="${this.instance?.lengthMin ?? 10}"
                         class="pf-c-form-control"
                         required
                     />
@@ -68,7 +66,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountUppercase, 2)}"
+                        value="${this.instance?.amountUppercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
@@ -80,7 +78,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountLowercase, 2)}"
+                        value="${this.instance?.amountLowercase ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
@@ -92,7 +90,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountDigits, 2)}"
+                        value="${this.instance?.amountDigits ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
@@ -104,7 +102,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                 >
                     <input
                         type="number"
-                        value="${first(this.instance?.amountSymbols, 2)}"
+                        value="${this.instance?.amountSymbols ?? 2}"
                         class="pf-c-form-control"
                         required
                     />
@@ -154,7 +152,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.hibpAllowedCount, 0)}"
+                            value="${this.instance?.hibpAllowedCount ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -179,7 +177,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     >
                         <input
                             type="number"
-                            value="${first(this.instance?.zxcvbnScoreThreshold, 0)}"
+                            value="${this.instance?.zxcvbnScoreThreshold ?? 0}"
                             class="pf-c-form-control"
                             required
                         />
@@ -236,7 +234,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -272,7 +270,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkStaticRules, true)}
+                        ?checked=${this.instance?.checkStaticRules ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showStatic = el.checked;
@@ -291,7 +289,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkHaveIBeenPwned, true)}
+                        ?checked=${this.instance?.checkHaveIBeenPwned ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showHIBP = el.checked;
@@ -316,7 +314,7 @@ export class PasswordPolicyForm extends BasePolicyForm<PasswordPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.checkZxcvbn, true)}
+                        ?checked=${this.instance?.checkZxcvbn ?? true}
                         @change=${(ev: Event) => {
                             const el = ev.target as HTMLInputElement;
                             this.showZxcvbn = el.checked;

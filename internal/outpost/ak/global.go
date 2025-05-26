@@ -55,7 +55,7 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 			EnableTracing: true,
 			TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
 			Release:       fmt.Sprintf("authentik@%s", constants.VERSION),
-			HTTPTransport: webutils.NewUserAgentTransport(constants.OutpostUserAgent(), http.DefaultTransport),
+			HTTPTransport: webutils.NewUserAgentTransport(constants.UserAgentOutpost(), http.DefaultTransport),
 			IgnoreErrors: []string{
 				http.ErrAbortHandler.Error(),
 			},

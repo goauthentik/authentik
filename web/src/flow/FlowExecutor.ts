@@ -1,25 +1,21 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import {
-    EVENT_FLOW_ADVANCE,
-    EVENT_FLOW_INSPECTOR_TOGGLE,
-    TITLE_DEFAULT,
-} from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { configureSentry } from "@goauthentik/common/sentry";
-import { first } from "@goauthentik/common/utils";
-import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/LoadingOverlay";
-import "@goauthentik/elements/ak-locale-context";
-import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
-import { themeImage } from "@goauthentik/elements/utils/images";
-import "@goauthentik/flow/components/ak-brand-footer";
-import "@goauthentik/flow/sources/apple/AppleLoginInit";
-import "@goauthentik/flow/sources/plex/PlexLoginInit";
-import "@goauthentik/flow/stages/FlowErrorStage";
-import "@goauthentik/flow/stages/FlowFrameStage";
-import "@goauthentik/flow/stages/RedirectStage";
-import { StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constants";
+import { globalAK } from "#common/global";
+import { configureSentry } from "#common/sentry/index";
+import { WebsocketClient } from "#common/ws";
+import { Interface } from "#elements/Interface";
+import "#elements/LoadingOverlay";
+import "#elements/ak-locale-context/ak-locale-context";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import { themeImage } from "#elements/utils/images";
+import "#flow/components/ak-brand-footer";
+import "#flow/sources/apple/AppleLoginInit";
+import "#flow/sources/plex/PlexLoginInit";
+import "#flow/stages/FlowErrorStage";
+import "#flow/stages/FlowFrameStage";
+import "#flow/stages/RedirectStage";
+import { StageHost, SubmitOptions } from "#flow/stages/base";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -46,11 +42,13 @@ import {
     FlowsApi,
     ResponseError,
     ShellChallenge,
-    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends Interface implements StageHost {
+export class FlowExecutor
+    extends WithCapabilitiesConfig(WithBrandConfig(Interface))
+    implements StageHost
+{
     @property()
     flowSlug: string = window.location.pathname.split("/")[3];
 
@@ -60,9 +58,9 @@ export class FlowExecutor extends Interface implements StageHost {
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
         if (value?.flowInfo?.title) {
-            document.title = `${value.flowInfo?.title} - ${this.brand?.brandingTitle}`;
+            document.title = `${value.flowInfo?.title} - ${this.brandingTitle}`;
         } else {
-            document.title = this.brand?.brandingTitle || TITLE_DEFAULT;
+            document.title = this.brandingTitle;
         }
         this.requestUpdate();
     }
@@ -173,6 +171,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     constructor() {
+        configureSentry();
         super();
         this.ws = new WebsocketClient();
         const inspector = new URL(window.location.toString()).searchParams.get("inspector");
@@ -198,10 +197,6 @@ export class FlowExecutor extends Interface implements StageHost {
                 this.submit({} as FlowChallengeResponseRequest);
             }
         });
-    }
-
-    async getTheme(): Promise<UiThemeEnum> {
-        return globalAK()?.brand.uiTheme || UiThemeEnum.Automatic;
     }
 
     async submit(
@@ -243,8 +238,7 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     async firstUpdated(): Promise<void> {
-        configureSentry();
-        if (this.config?.capabilities.includes(CapabilitiesEnum.CanDebug)) {
+        if (this.can(CapabilitiesEnum.CanDebug)) {
             this.inspectorAvailable = true;
         }
         this.loading = true;
@@ -525,13 +519,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 class="pf-c-login__main-header pf-c-brand ak-brand"
                                             >
                                                 <img
-                                                    src="${themeImage(
-                                                        first(
-                                                            this.brand?.brandingLogo,
-                                                            globalAK()?.brand.brandingLogo,
-                                                            DefaultBrand.brandingLogo,
-                                                        ),
-                                                    )}"
+                                                    src="${themeImage(this.brand.brandingLogo)}"
                                                     alt="${msg("authentik Logo")}"
                                                 />
                                             </div>
@@ -539,7 +527,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                         </div>
                                         <ak-brand-links
                                             class="pf-c-login__footer"
-                                            .links=${this.brand?.uiFooterLinks ?? []}
+                                            .links=${this.brandingFooterLinks}
                                         ></ak-brand-links>
                                     </div>
                                 </div>

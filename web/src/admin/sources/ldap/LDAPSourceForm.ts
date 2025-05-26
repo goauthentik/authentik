@@ -2,7 +2,6 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -67,7 +66,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -82,7 +81,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
+                        ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -104,7 +103,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.syncUsers, true)}
+                        ?checked=${this.instance?.syncUsers ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -119,7 +118,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.syncUsersPassword, true)}
+                        ?checked=${this.instance?.syncUsersPassword ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -139,7 +138,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.syncGroups, true)}
+                        ?checked=${this.instance?.syncGroups ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -173,7 +172,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.startTls, true)}
+                                ?checked=${this.instance?.startTls ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -191,7 +190,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.sni, false)}
+                                ?checked=${this.instance?.sni ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -335,10 +334,8 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
@@ -421,7 +418,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.lookupGroupsFromUser, false)}
+                                ?checked=${this.instance?.lookupGroupsFromUser ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

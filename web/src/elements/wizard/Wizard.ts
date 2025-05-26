@@ -112,7 +112,7 @@ export class Wizard extends ModalButton {
             const stepElement = document.createElement(step);
 
             stepElement.slot = step;
-            stepElement.dataset["wizardmanaged"] = "true";
+            stepElement.dataset.wizardmanaged = "true";
 
             this.appendChild(stepElement);
         }

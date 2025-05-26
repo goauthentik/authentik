@@ -1,8 +1,7 @@
 ---
 title: Email Authenticator Setup stage
+authentik_version: "2025.2"
 ---
-
-<span class="badge badge--version">authentik 2025.2+</span>
 
 This stage configures an email-based authenticator that sends a one-time code to a user's email address for authentication.
 

@@ -1,6 +1,5 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select";
 import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/FormGroup";
@@ -16,7 +15,7 @@ import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 import { countryCache } from "./CountryCache";
 
 function countryToPair(country: DetailedCountry): DualSelectPair {
-    return [country.code, country.name];
+    return [country.code, country.name, country.name];
 }
 
 @customElement("ak-policy-geoip-form")
@@ -39,11 +38,10 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                 policyUuid: this.instance.pk || "",
                 geoIPPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
-                geoIPPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesGeoipCreate({
+            geoIPPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -112,7 +110,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.historyMaxDistanceKm, 100)}"
+                            value="${this.instance?.historyMaxDistanceKm ?? 100}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -128,7 +126,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.distanceToleranceKm, 50)}"
+                            value="${this.instance?.distanceToleranceKm ?? 50}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -142,7 +140,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.historyLoginCount, 5)}"
+                            value="${this.instance?.historyLoginCount ?? 5}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -178,7 +176,7 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                         <input
                             type="number"
                             min="1"
-                            value="${first(this.instance?.impossibleToleranceKm, 50)}"
+                            value="${this.instance?.impossibleToleranceKm ?? 50}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
@@ -211,17 +209,16 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                                     .getCountries()
                                     .then((results) => {
                                         if (!search) return results;
+
                                         return results.filter((result) =>
                                             result.name
                                                 .toLowerCase()
                                                 .includes(search.toLowerCase()),
                                         );
                                     })
-                                    .then((results) => {
-                                        return {
-                                            options: results.map(countryToPair),
-                                        };
-                                    });
+                                    .then((results) => ({
+                                        options: results.map(countryToPair),
+                                    }));
                             }}
                             .selected=${(this.instance?.countriesObj ?? []).map(countryToPair)}
                             available-label="${msg("Available Countries")}"

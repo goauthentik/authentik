@@ -8,34 +8,7 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import {
-    EVENT_ADD_ALL,
-    EVENT_ADD_SELECTED,
-    EVENT_DELETE_ALL,
-    EVENT_REMOVE_ALL,
-    EVENT_REMOVE_SELECTED,
-} from "../constants";
-
-const styles = [
-    PFBase,
-    PFButton,
-    css`
-        :host {
-            align-self: center;
-            padding-right: var(--pf-c-dual-list-selector__controls--PaddingRight);
-            padding-left: var(--pf-c-dual-list-selector__controls--PaddingLeft);
-        }
-        .pf-c-dual-list-selector {
-            max-width: 4rem;
-        }
-        .ak-dual-list-selector__controls {
-            display: grid;
-            justify-content: center;
-            align-content: center;
-            height: 100%;
-        }
-    `,
-];
+import { DualSelectEventType } from "../types.js";
 
 /**
  * @element ak-dual-select-controls
@@ -43,64 +16,84 @@ const styles = [
  * The "control box" for a dual-list multi-select. It's controlled by the parent orchestrator as to
  * whether or not any of its controls are enabled. It sends a variety of messages to the parent
  * orchestrator which will then reconcile the "available" and "selected" panes at need.
- *
  */
-
 @customElement("ak-dual-select-controls")
-export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
-    static get styles() {
-        return styles;
-    }
+export class AkDualSelectControls extends CustomEmitterElement<DualSelectEventType>(AKElement) {
+    static styles = [
+        PFBase,
+        PFButton,
+        css`
+            :host {
+                align-self: center;
+                padding-right: var(--pf-c-dual-list-selector__controls--PaddingRight);
+                padding-left: var(--pf-c-dual-list-selector__controls--PaddingLeft);
+            }
+            .pf-c-dual-list-selector {
+                max-width: calc(var(--pf-global--spacer-md, 1rem) * 4);
+            }
+            .ak-dual-list-selector__controls {
+                display: grid;
+                justify-content: center;
+                align-content: center;
+                height: 100%;
+            }
+        `,
+    ];
 
-    /* Set to true if any *visible* elements can be added to the selected list
+    /**
+     * Set to true if any *visible* elements can be added to the selected list.
      */
     @property({ attribute: "add-active", type: Boolean })
     addActive = false;
 
-    /* Set to true if any elements can be removed from the selected list (essentially,
+    /**
+     * Set to true if any elements can be removed from the selected list (essentially,
      * if the selected list is not empty)
      */
     @property({ attribute: "remove-active", type: Boolean })
     removeActive = false;
 
-    /* Set to true if *all* the currently visible elements can be moved
+    /**
+     * Set to true if *all* the currently visible elements can be moved
      * into the selected list (essentially, if any visible elements are
-     * not currently selected)
+     * not currently selected).
      */
     @property({ attribute: "add-all-active", type: Boolean })
     addAllActive = false;
 
-    /* Set to true if *any* of the elements currently visible in the available
+    /**
+     * Set to true if *any* of the elements currently visible in the available
      * pane are available to be moved to the selected list, enabling that
-     * all of those specific elements be moved out of the selected list
+     * all of those specific elements be moved out of the selected list.
      */
     @property({ attribute: "remove-all-active", type: Boolean })
     removeAllActive = false;
 
-    /* if deleteAll is enabled, set to true to show that there are elements in the
+    /**
+     * if deleteAll is enabled, set to true to show that there are elements in the
      * selected list that can be deleted.
      */
     @property({ attribute: "delete-all-active", type: Boolean })
     enableDeleteAll = false;
 
-    /* Set to true if you want the `...AllActive` buttons made available. */
+    /**
+     * Set to true if you want the `...AllActive` buttons made available.
+     */
     @property({ attribute: "enable-select-all", type: Boolean })
     selectAll = false;
 
-    /* Set to true if you want the `ClearAllSelected` button made available */
+    /**
+     * Set to true if you want the `ClearAllSelected` button made available
+     */
     @property({ attribute: "enable-delete-all", type: Boolean })
     deleteAll = false;
 
-    constructor() {
-        super();
-        this.onClick = this.onClick.bind(this);
-    }
-
-    onClick(eventName: string) {
-        this.dispatchCustomEvent(eventName);
-    }
-
-    renderButton(label: string, event: string, active: boolean, direction: string) {
+    renderButton(
+        label: string,
+        eventType: DualSelectEventType,
+        active: boolean,
+        direction: string,
+    ) {
         return html`
             <div class="pf-c-dual-list-selector__controls-item">
                 <button
@@ -109,7 +102,7 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     aria-label=${label}
                     class="pf-c-button pf-m-plain"
                     type="button"
-                    @click=${() => this.onClick(event)}
+                    @click=${() => this.dispatchCustomEvent(eventType)}
                     data-ouia-component-type="AK/Button"
                 >
                     <i class="fa ${direction}"></i>
@@ -123,7 +116,7 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
             <div class="ak-dual-list-selector__controls">
                 ${this.renderButton(
                     msg("Add"),
-                    EVENT_ADD_SELECTED,
+                    DualSelectEventType.AddSelected,
                     this.addActive,
                     "fa-angle-right",
                 )}
@@ -131,13 +124,13 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     ? html`
                           ${this.renderButton(
                               msg("Add All Available"),
-                              EVENT_ADD_ALL,
+                              DualSelectEventType.AddAll,
                               this.addAllActive,
                               "fa-angle-double-right",
                           )}
                           ${this.renderButton(
                               msg("Remove All Available"),
-                              EVENT_REMOVE_ALL,
+                              DualSelectEventType.RemoveAll,
                               this.removeAllActive,
                               "fa-angle-double-left",
                           )}
@@ -145,14 +138,14 @@ export class AkDualSelectControls extends CustomEmitterElement(AKElement) {
                     : nothing}
                 ${this.renderButton(
                     msg("Remove"),
-                    EVENT_REMOVE_SELECTED,
+                    DualSelectEventType.RemoveSelected,
                     this.removeActive,
                     "fa-angle-left",
                 )}
                 ${this.deleteAll
                     ? html`${this.renderButton(
                           msg("Remove All"),
-                          EVENT_DELETE_ALL,
+                          DualSelectEventType.DeleteAll,
                           this.enableDeleteAll,
                           "fa-times",
                       )}`

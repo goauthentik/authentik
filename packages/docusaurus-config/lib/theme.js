@@ -4,7 +4,6 @@
  * @import { UserThemeConfig as UserThemeConfigCommon } from "@docusaurus/theme-common";
  * @import { UserThemeConfig as UserThemeConfigAlgolia } from "@docusaurus/theme-search-algolia";
  */
-
 import { deepmerge } from "deepmerge-ts";
 import { themes as prismThemes } from "prism-react-renderer";
 

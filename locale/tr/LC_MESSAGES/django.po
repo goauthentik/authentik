@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-31 00:10+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Jens L. <jens@goauthentik.io>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/authentik/teams/119923/tr/)\n"
@@ -187,6 +187,7 @@ msgid "User's display name."
 msgstr "Kullanıcının görünen adı."
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "Kullanıcı"
 
@@ -373,6 +374,18 @@ msgid "Property Mappings"
 msgstr "Özellik Eşlemeleri"
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "Oturum"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr "Oturumlar"
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "Kimliği Doğrulanmış Oturum"
 
@@ -478,6 +491,38 @@ msgstr "Lisans Kullanımı"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "Lisans Kullanım Kayıtları"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları "
+"mevcuttur."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "Parola bağlam içinde ayarlanmamış"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -1254,12 +1299,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "İlke'nin önbellek ölçümlerini temizleyin"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-"Alan tuşu kontrol etmek için, İstem aşamalarında tanımlanan alan tuşları "
-"mevcuttur."
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr ""
 "haveibeenpwned üzerinde parola karmasının kaç kez olmasına izin verilir"
@@ -1270,10 +1309,6 @@ msgid ""
 msgstr ""
 "Eğer zxcvbn puanı bu değere eşit veya daha az ise, politika başarısız "
 "olacaktır."
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "Parola bağlam içinde ayarlanmamış"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1315,20 +1350,6 @@ msgstr "İtibar Puanı"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "İtibar Puanları"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -2156,6 +2177,10 @@ msgid "Roles"
 msgstr "Roller"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "Sistem yetkisi"
 
@@ -2399,6 +2424,13 @@ msgstr ""
 "Bu yalnızca tek bir LDAP kaynağında etkinleştirilebilir."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Lookup group membership based on a user attribute instead of a group "
+"attribute. This allows nested group resolution on systems like FreeIPA and "
+"Active Directory"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP Kaynağı"
 
@@ -2414,6 +2446,22 @@ msgstr "LDAP Kaynak Özellik Eşlemesi"
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP Kaynak Özellik Eşlemeleri"
 
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr ""
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Parola Active Directory Karmaşıklığıyla eşleşmiyor."
@@ -2421,6 +2469,14 @@ msgstr "Parola Active Directory Karmaşıklığıyla eşleşmiyor."
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "Jeton alınmadı."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2461,6 +2517,12 @@ msgstr "Kullanıcı bilgilerini almak için authentik tarafından kullanılan UR
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Ek Kapsamlar"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -3361,6 +3423,12 @@ msgstr ""
 "olur ve devam eder."
 
 #: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
+
+#: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
 msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı kayıt akışı."
 
@@ -3733,6 +3801,14 @@ msgid ""
 msgstr ""
 "Olaylar bu süreden sonra silinecektir (Format: "
 "weeks=3;days=2;hours=3,seconds=2)."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

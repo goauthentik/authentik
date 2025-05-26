@@ -7,11 +7,7 @@
 }
 
 .homepage_hero__subtitle p {
-    font-size: clamp(
-        1.125rem,
-        0.9946rem + 0.6522vi,
-        1.5rem
-    ); /* Adjust font as page scales */
+    font-size: clamp(1.125rem, 0.9946rem + 0.6522vi, 1.5rem); /* Adjust font as page scales */
     max-width: 28ch; /* Apply a maximum to keep everything in the box */
     text-wrap: balance; /* Prevent widows, orphans, and runts. Doesn't work in Safari */
 }

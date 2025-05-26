@@ -1,3 +1,4 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
@@ -6,14 +7,9 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -63,7 +59,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.getFormFiles().icon;
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -97,12 +93,12 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
             ></ak-text-input>
             <ak-switch-input
                 name="enabled"
-                ?checked=${first(this.instance?.enabled, true)}
+                ?checked=${this.instance?.enabled ?? true}
                 label=${msg("Enabled")}
             ></ak-switch-input>
             <ak-switch-input
                 name="passwordLoginUpdateInternalPassword"
-                ?checked=${first(this.instance?.passwordLoginUpdateInternalPassword, false)}
+                ?checked=${this.instance?.passwordLoginUpdateInternalPassword ?? false}
                 label=${msg("Update internal password on login")}
                 help=${msg(
                     "When the user logs in to authentik using this source password backend, update their credentials in authentik.",
@@ -110,12 +106,12 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
             ></ak-switch-input>
             <ak-switch-input
                 name="syncUsers"
-                ?checked=${first(this.instance?.syncUsers, true)}
+                ?checked=${this.instance?.syncUsers ?? true}
                 label=${msg("Sync users")}
             ></ak-switch-input>
             <ak-switch-input
                 name="syncUsersPassword"
-                ?checked=${first(this.instance?.syncUsersPassword, true)}
+                ?checked=${this.instance?.syncUsersPassword ?? true}
                 label=${msg("User password writeback")}
                 help=${msg(
                     "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
@@ -395,10 +391,8 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     <ak-text-input
                         name="userPathTemplate"
                         label=${msg("User path")}
-                        value=${first(
-                            this.instance?.userPathTemplate,
-                            "goauthentik.io/sources/%(slug)s",
-                        )}
+                        value=${this.instance?.userPathTemplate ??
+                        "goauthentik.io/sources/%(slug)s"}
                         help=${placeholderHelperText}
                     ></ak-text-input>
                 </div>
@@ -443,7 +437,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input
                               type="text"
-                              value="${first(this.instance?.icon, "")}"
+                              value="${this.instance?.icon ?? ""}"
                               class="pf-c-form-control"
                           />
                           <p class="pf-c-form__helper-text">${iconHelperText}</p>

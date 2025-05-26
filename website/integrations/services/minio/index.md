@@ -17,6 +17,10 @@ The following placeholders are used in this guide:
 - `minio.company` is the FQDN of the MinIO installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
+:::warning
+MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
+:::
+
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -42,7 +46,7 @@ To support the integration of MinIO with authentik, you need to create an applic
     }
     ```
 
-    If you wish to create a more franular mapping based on the user's groups in authentik, you can use an expression similar to:
+    If you wish to create a more granular mapping based on the user's groups in authentik, you can use an expression similar to:
 
     ```python
     if ak_is_group_member(request.user, name="Minio admins"):
