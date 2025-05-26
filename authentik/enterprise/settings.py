@@ -19,6 +19,7 @@ TENANT_APPS = [
     "authentik.enterprise.providers.microsoft_entra",
     "authentik.enterprise.providers.ssf",
     "authentik.enterprise.stages.authenticator_endpoint_gdtc",
+    "authentik.enterprise.stages.mtls",
     "authentik.enterprise.stages.source",
 ]
 

@@ -1,3 +1,12 @@
+/**
+ * @file authentik dark UI theme.
+ */
+
+/* Defined to better identify the dark theme when debugging constructed stylesheets. */
+.__AK_UI_DARK__ {
+    --__AK_UI_DARK__: 1;
+}
+
 /* #region Global */
 
 :root {
@@ -5,9 +14,6 @@
     --ak-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
     --pf-global--BorderColor--100: var(--ak-dark-background-lighter) !important;
-    --ak-mermaid-message-text: var(--ak-dark-foreground) !important;
-    --ak-mermaid-box-background-color: var(--ak-dark-background-lighter) !important;
-    --ak-table-stripe-background: var(--pf-global--BackgroundColor--dark-200);
 }
 
 body {
@@ -256,8 +262,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: var(--ak-dark-background-lighter);
 }
 
-.pf-c-button.pf-m-plain:hover {
-    color: var(--ak-dark-foreground);
+.pf-c-button.pf-m-plain {
+    --pf-c-button--m-plain--focus--Color: var(--pf-global--Color--200);
+    --pf-c-button--m-plain--hover--Color: var(--ak-dark-foreground);
+
+    &:focus:hover {
+        color: var(--pf-c-button--m-plain--hover--Color);
+    }
 }
 
 .pf-c-button.pf-m-control {

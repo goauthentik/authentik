@@ -12,7 +12,6 @@ import type { DualSelectPair } from "./types.js";
  * A top-level component for multi-select elements have dynamically generated "selected"
  * lists.
  */
-
 @customElement("ak-dual-select-dynamic-selected")
 export class AkDualSelectDynamic extends AkDualSelectProvider {
     /**
@@ -23,20 +22,24 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
      * @attr
      */
     @property({ attribute: false })
-    selector: (_: DualSelectPair[]) => Promise<DualSelectPair[]> = async (_) => Promise.resolve([]);
+    selector: (_: DualSelectPair[]) => Promise<DualSelectPair[]> = () => Promise.resolve([]);
 
-    private firstUpdateHasRun = false;
+    #didFirstUpdate = false;
 
     willUpdate(changed: PropertyValues<this>) {
         super.willUpdate(changed);
+
         // On the first update *only*, even before rendering, when the options are handed up, update
         // the selected list with the contents derived from the selector.
-        if (!this.firstUpdateHasRun && this.options.length > 0) {
-            this.firstUpdateHasRun = true;
-            this.selector(this.options).then((selected) => {
-                this.selected = selected;
-            });
-        }
+
+        if (this.#didFirstUpdate) return;
+        if (this.options.length === 0) return;
+
+        this.#didFirstUpdate = true;
+
+        this.selector(this.options).then((selected) => {
+            this.selected = selected;
+        });
     }
 
     render() {
