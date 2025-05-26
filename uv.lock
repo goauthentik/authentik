@@ -283,7 +283,7 @@ requires-dist = [
     { name = "django-prometheus", specifier = "==2.3.1" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
-    { name = "django-tenants", git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes" },
+    { name = "django-tenants", specifier = "==3.8.0" },
     { name = "djangorestframework", git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian", specifier = "==0.3.0" },
     { name = "docker", specifier = "==7.1.0" },
@@ -1118,11 +1118,12 @@ s3 = [
 
 [[package]]
 name = "django-tenants"
-version = "3.7.0"
-source = { git = "https://github.com/goauthentik/django-tenants.git?branch=authentik-fixes#156e53a6f5902d74b73dd9d0192fffaa2587a740" }
+version = "3.8.0"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
 ]
+sdist = { url = "https://files.pythonhosted.org/packages/a8/7b/22e3bb79d48e5a4fdcacdcdc27bbc5c2523a2b7892b440bfe229f313d823/django_tenants-3.8.0.tar.gz", hash = "sha256:07d009d5d01be2d65c3f5ddbf323d58d1228838fc1a64fded15c8e5c6f41cf8f", size = 154307, upload-time = "2025-05-23T16:07:24.307Z" }
 
 [[package]]
 name = "djangorestframework"
