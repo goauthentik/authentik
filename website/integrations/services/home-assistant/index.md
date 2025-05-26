@@ -59,7 +59,7 @@ This documentation lists only the settings that you need to change from their de
 3. Restart Home Assistant
 
 The login page now has a button called "OpenID/OAuth2 authentication". Click it to redirect you to authentik to sign in.
-Make sure the user account has been created in Homeassistant, since this integration does not create the users for you.
+Make sure the user account has been created in Home Assistant, because this integration does not create the users for you.
 
 
 ## Using a proxy
