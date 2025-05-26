@@ -1,15 +1,17 @@
 .PHONY: gen dev-reset all clean test web website
 
-.SHELLFLAGS += ${SHELLFLAGS} -e
+SHELL := /usr/bin/env bash
+.SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
+NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
-GEN_API_TS = "gen-ts-api"
-GEN_API_PY = "gen-py-api"
-GEN_API_GO = "gen-go-api"
+GEN_API_TS = gen-ts-api
+GEN_API_PY = gen-py-api
+GEN_API_GO = gen-go-api
 
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
@@ -115,36 +117,46 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	sed -i 's/}/&#125;/g' diff.md
 	npx prettier --write diff.md
 
-gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
-	./scripts/gen-client-ts.mjs
+gen-clean-ts:  ## Remove generated API client for Typescript
+	rm -rf ${PWD}/${GEN_API_TS}/
+	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
-	npm i --prefix ${GEN_API_TS}
+gen-clean-go:  ## Remove generated API client for Go
+	mkdir -p ${PWD}/${GEN_API_GO}
+ifneq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
+	make -C ${PWD}/${GEN_API_GO} clean
+else
+	rm -rf ${PWD}/${GEN_API_GO}
+endif
 
-	cd ./${GEN_API_TS} && npm link
-	cd ./web && npm link @goauthentik/api
+gen-clean-py:  ## Remove generated API client for Python
+	rm -rf ${PWD}/${GEN_API_PY}/
 
-gen-client-py: ## Build and install the authentik API for Python
-	./scripts/gen-client-py.mjs
+gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
+
+gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescript into the authentik UI Application
+    ./scripts/gen-client-ts.mjs
+
+    npm i --prefix ${GEN_API_TS}
+
+    cd ./${GEN_API_TS} && npm link
+    cd ./web && npm link @goauthentik/api
+
+gen-client-py: gen-clean-py ## Build and install the authentik API for Python
+    ./scripts/gen-client-py.mjs
 
 	pip install ./${GEN_API_PY}
 
-gen-client-go:  ## Build and install the authentik API for Golang
-	rm -rf ./${GEN_API_GO}/
-	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
-	cp schema.yml ./${GEN_API_GO}/
-	docker run \
-		--rm -v ${PWD}/${GEN_API_GO}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
+gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
+	mkdir -p ${PWD}/${GEN_API_GO}
+ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
+	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
+else
+	cd ${PWD}/${GEN_API_GO} && git pull
+endif
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
+	make -C ${PWD}/${GEN_API_GO} build
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
 	uv run scripts/generate_config.py
@@ -215,7 +227,7 @@ docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
-	BUILD=true ./scripts/test_docker.sh
+	BUILD=true ${PWD}/scripts/test_docker.sh
 
 #########################
 ## CI
@@ -235,14 +247,3 @@ ci-ruff: ci--meta-debug
 
 ci-codespell: ci--meta-debug
 	uv run codespell -s
-
-ci-bandit: ci--meta-debug
-	uv run bandit -r $(PY_SOURCES)
-
-ci-pending-migrations: ci--meta-debug
-	uv run ak makemigrations --check
-
-ci-test: ci--meta-debug
-	uv run coverage run manage.py test --keepdb --randomly-seed ${CI_TEST_SEED} authentik
-	uv run coverage report
-	uv run coverage xml
