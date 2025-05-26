@@ -102,7 +102,7 @@ To support the integration of `Home Assistant` using `hass-auth-headers` with au
 
 4. Create an outpost deployment for the provider you've created above, as described [here](https://docs.goauthentik.io/docs/add-secure-apps/outposts/). Deploy this Outpost either on the same host or a different host that can access Home Assistant. The outpost will connect to authentik and configure itself.
 
-### Home Assistant configuration
+### Home Assistant configuration with a proxy provider
 
 1. Configure [trusted_proxies](https://www.home-assistant.io/integrations/http/#trusted_proxies) for the HTTP integration with the IP(s) of the Host(s) authentik is running on.
 2. If you don't already have it set up, https://github.com/BeryJu/hass-auth-header, using the installation guide.
