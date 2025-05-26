@@ -80,7 +80,7 @@ Using a proxy provider might produce CSRF errors; this is caused by a technology
 Only prefixes starting with `/auth` need to be proxied (excluding prefixes starting with `/auth/token`). See [this GitHub issue](https://github.com/BeryJu/hass-auth-header/issues/212). This can be configured in the reverse proxy (e.g. nginx, Traefik) or in authentik Provider's **Unauthorized Paths**.
 :::
 
-### authentik configuration
+### authentik configuration with a proxy provider
 
 To support the integration of `Home Assistant` using `hass-auth-headers` with authentik, you need to create an application/provider pair in authentik.
 
