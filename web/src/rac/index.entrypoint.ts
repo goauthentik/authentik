@@ -1,13 +1,13 @@
-import { TITLE_DEFAULT } from "@goauthentik/common/constants";
-import { Interface } from "@goauthentik/elements/Interface";
-import "@goauthentik/elements/LoadingOverlay";
+import { Interface } from "#elements/Interface";
+import "#elements/LoadingOverlay";
+import { WithBrandConfig } from "#elements/mixins/branding";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import AKGlobal from "#common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -43,7 +43,7 @@ const RECONNECT_ATTEMPTS_INITIAL = 5;
 const RECONNECT_ATTEMPTS = 5;
 
 @customElement("ak-rac")
-export class RacInterface extends Interface {
+export class RacInterface extends WithBrandConfig(Interface) {
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -231,10 +231,12 @@ export class RacInterface extends Interface {
     }
 
     updateTitle(): void {
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brandingTitle;
+
         if (this.endpointName) {
             title = `${this.endpointName} - ${title}`;
         }
+
         document.title = `${title}`;
     }
 

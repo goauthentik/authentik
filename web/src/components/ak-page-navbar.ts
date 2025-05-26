@@ -1,12 +1,11 @@
-import { EVENT_WS_MESSAGE, TITLE_DEFAULT } from "#common/constants";
+import { EVENT_WS_MESSAGE } from "#common/constants";
 import { globalAK } from "#common/global";
 import { UIConfig, UserDisplay, getConfigForUser } from "#common/ui/config";
-import { DefaultBrand } from "#common/ui/config";
 import { me } from "#common/users";
 import "#components/ak-nav-buttons";
 import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
-import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { WithBrandConfig } from "#elements/mixins/branding";
 import { isAdminRoute } from "#elements/router/utils";
 import { themeImage } from "#elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -290,7 +289,7 @@ export class AKPageNavbar
     //#region Private Methods
 
     #setTitle(header?: string) {
-        let title = this.brand?.brandingTitle || TITLE_DEFAULT;
+        let title = this.brandingTitle;
 
         if (isAdminRoute()) {
             title = `${msg("Admin")} - ${title}`;
@@ -368,9 +367,7 @@ export class AKPageNavbar
                     <a href="#/">
                         <div class="logo">
                             <img
-                                src=${themeImage(
-                                    this.brand?.brandingLogo ?? DefaultBrand.brandingLogo,
-                                )}
+                                src=${themeImage(this.brandingLogo)}
                                 alt="${msg("authentik Logo")}"
                                 loading="lazy"
                             />
