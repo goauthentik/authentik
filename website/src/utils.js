@@ -1,7 +1,5 @@
 export function generateVersionDropdown(allReleases) {
-    const releases = allReleases.filter(
-        (release) => typeof release === "string",
-    );
+    const releases = allReleases.filter((release) => typeof release === "string");
     const latest = releases[0].replace(/releases\/\d+\/v/, "");
     return `<div class="navbar__item dropdown dropdown--hoverable dropdown--right">
         <div aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link menu__link">

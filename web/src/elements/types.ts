@@ -2,17 +2,26 @@ import { type LitElement, type ReactiveControllerHost, type TemplateResult, noth
 import "lit";
 
 /**
+ * Type utility to make readonly properties mutable.
+ */
+export type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
+/**
  * A custom element which may be used as a host for a ReactiveController.
  *
  * @remarks
  *
  * This type is derived from an internal type in Lit.
  */
-export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & T> & HTMLElement;
+export type ReactiveElementHost<T> = Partial<ReactiveControllerHost & Writeable<T>> & HTMLElement;
 
-export type AbstractLitElementConstructor = abstract new (...args: never[]) => LitElement;
+export type AbstractLitElementConstructor<T = unknown> = abstract new (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ...args: any[]
+) => LitElement & T;
 
-export type LitElementConstructor = new (...args: never[]) => LitElement;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LitElementConstructor<T = unknown> = new (...args: any[]) => LitElement & T;
 
 /**
  * A constructor that has been extended with a mixin.
@@ -31,11 +40,11 @@ export type ConstructorWithMixin<SuperClass, Mixin> =
 /**
  * The init object passed to the `createMixin` callback.
  */
-export interface CreateMixinInit<T extends LitElementConstructor = LitElementConstructor> {
+export interface CreateMixinInit<C = unknown> {
     /**
      * The superclass constructor to extend.
      */
-    SuperClass: T;
+    SuperClass: LitElementConstructor<C>;
     /**
      * Whether or not to subscribe to the context.
      *
@@ -52,7 +61,9 @@ export interface CreateMixinInit<T extends LitElementConstructor = LitElementCon
  * @param mixinCallback The callback that will be called to create the mixin.
  * @template Mixin The mixin class to union with the superclass.
  */
-export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unknown) {
+export function createMixin<Mixin, C = unknown>(
+    mixinCallback: (init: CreateMixinInit<C>) => unknown,
+) {
     return <T extends LitElementConstructor | AbstractLitElementConstructor>(
         /**
          * The superclass constructor to extend.
@@ -67,7 +78,7 @@ export function createMixin<Mixin>(mixinCallback: (init: CreateMixinInit) => unk
         subscribe?: boolean,
     ) => {
         const MixinClass = mixinCallback({
-            SuperClass: SuperClass as LitElementConstructor,
+            SuperClass: SuperClass as LitElementConstructor<C>,
             subscribe,
         });
 

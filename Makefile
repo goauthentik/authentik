@@ -1,6 +1,7 @@
 .PHONY: gen dev-reset all clean test web website
 
-.SHELLFLAGS += ${SHELLFLAGS} -e
+SHELL := /usr/bin/env bash
+.SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
@@ -8,9 +9,9 @@ NPM_VERSION = $(shell python -m scripts.generate_semver)
 PY_SOURCES = authentik tests scripts lifecycle .github
 DOCKER_IMAGE ?= "authentik:test"
 
-GEN_API_TS = "gen-ts-api"
-GEN_API_PY = "gen-py-api"
-GEN_API_GO = "gen-go-api"
+GEN_API_TS = gen-ts-api
+GEN_API_PY = gen-py-api
+GEN_API_GO = gen-go-api
 
 pg_user := $(shell uv run python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell uv run python -m authentik.lib.config postgresql.host 2>/dev/null)
@@ -117,14 +118,19 @@ gen-diff:  ## (Release) generate the changelog diff between the current schema a
 	npx prettier --write diff.md
 
 gen-clean-ts:  ## Remove generated API client for Typescript
-	rm -rf ./${GEN_API_TS}/
-	rm -rf ./web/node_modules/@goauthentik/api/
+	rm -rf ${PWD}/${GEN_API_TS}/
+	rm -rf ${PWD}/web/node_modules/@goauthentik/api/
 
 gen-clean-go:  ## Remove generated API client for Go
-	rm -rf ./${GEN_API_GO}/
+	mkdir -p ${PWD}/${GEN_API_GO}
+ifneq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
+	make -C ${PWD}/${GEN_API_GO} clean
+else
+	rm -rf ${PWD}/${GEN_API_GO}
+endif
 
 gen-clean-py:  ## Remove generated API client for Python
-	rm -rf ./${GEN_API_PY}/
+	rm -rf ${PWD}/${GEN_API_PY}/
 
 gen-clean: gen-clean-ts gen-clean-go gen-clean-py  ## Remove generated API clients
 
@@ -141,8 +147,8 @@ gen-client-ts: gen-clean-ts  ## Build and install the authentik API for Typescri
 		--git-repo-id authentik \
 		--git-user-id goauthentik
 	mkdir -p web/node_modules/@goauthentik/api
-	cd ./${GEN_API_TS} && npm i
-	\cp -rf ./${GEN_API_TS}/* web/node_modules/@goauthentik/api
+	cd ${PWD}/${GEN_API_TS} && npm i
+	\cp -rf ${PWD}/${GEN_API_TS}/* web/node_modules/@goauthentik/api
 
 gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 	docker run \
@@ -156,24 +162,17 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 		--additional-properties=packageVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	pip install ./${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
-	mkdir -p ./${GEN_API_GO} ./${GEN_API_GO}/templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./${GEN_API_GO}/config.yaml
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./${GEN_API_GO}/templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./${GEN_API_GO}/templates/go.mod.mustache
-	cp schema.yml ./${GEN_API_GO}/
-	docker run \
-		--rm -v ${PWD}/${GEN_API_GO}:/local \
-		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
-		-i /local/schema.yml \
-		-g go \
-		-o /local/ \
-		-c /local/config.yaml
+	mkdir -p ${PWD}/${GEN_API_GO}
+ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
+	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
+else
+	cd ${PWD}/${GEN_API_GO} && git pull
+endif
+	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
+	make -C ${PWD}/${GEN_API_GO} build
 	go mod edit -replace goauthentik.io/api/v3=./${GEN_API_GO}
-	rm -rf ./${GEN_API_GO}/config.yaml ./${GEN_API_GO}/templates/
 
 gen-dev-config:  ## Generate a local development config file
 	uv run scripts/generate_config.py
@@ -244,7 +243,7 @@ docker:  ## Build a docker image of the current source tree
 	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 test-docker:
-	BUILD=true ./scripts/test_docker.sh
+	BUILD=true ${PWD}/scripts/test_docker.sh
 
 #########################
 ## CI

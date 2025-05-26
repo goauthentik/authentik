@@ -1,90 +1,56 @@
-import eslint from "@eslint/js";
-import tsparser from "@typescript-eslint/parser";
-import litconf from "eslint-plugin-lit";
-import wcconf from "eslint-plugin-wc";
-import globals from "globals";
+import { createESLintPackageConfig } from "@goauthentik/eslint-config";
 import tseslint from "typescript-eslint";
 
-export default [
-    // You would not believe how much this change has frustrated users: ["if an ignores key is used
-    // without any other keys in the configuration object, then the patterns act as global
-    // ignores"](https://eslint.org/docs/latest/use/configure/ignore)
+// @ts-check
+
+/**
+ * ESLint configuration for authentik's monorepo.
+ */
+const ESLintConfig = createESLintPackageConfig({
+    ignorePatterns: [
+        "**/dist/**",
+        "**/out/**",
+        "**/.wireit/**",
+        "**/node_modules/",
+        "**/.storybook/*",
+        "coverage/",
+        "src/locale-codes.ts",
+        "storybook-static/",
+        "src/locales/",
+    ],
+});
+
+export default tseslint.config(
+    ...ESLintConfig,
     {
-        ignores: [
-            "dist/",
-            // don't lint the cache
-            ".wireit/",
-            // let packages have their own configurations
-            "packages/",
-            // don't ever lint node_modules
-            "node_modules/",
-            ".storybook/*",
-            // don't lint build output (make sure it's set to your correct build folder name)
-            // don't lint nyc coverage output
-            "coverage/",
-            "src/locale-codes.ts",
-            "storybook-static/",
-            "src/locales/",
-        ],
-    },
-    eslint.configs.recommended,
-    wcconf.configs["flat/recommended"],
-    litconf.configs["flat/recommended"],
-    ...tseslint.configs.recommended,
-    {
-        languageOptions: {
-            parser: tsparser,
-            parserOptions: {
-                ecmaVersion: 12,
-                sourceType: "module",
-            },
-        },
-        files: ["src/**"],
         rules: {
-            "lit/attribute-names": "off",
-            // "lit/attribute-names": "error",
-            "lit/no-private-properties": "error",
-            // "lit/prefer-nothing": "warn",
-            "lit/no-template-bind": "error",
-            "no-unused-vars": "off",
-            "no-console": ["error", { allow: ["debug", "warn", "error"] }],
-            "@typescript-eslint/ban-ts-comment": "off",
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                {
-                    argsIgnorePattern: "^_",
-                    varsIgnorePattern: "^_",
-                    caughtErrorsIgnorePattern: "^_",
-                },
-            ],
-        },
-    },
-    {
-        languageOptions: {
-            parser: tsparser,
-            parserOptions: {
-                ecmaVersion: 12,
-                sourceType: "module",
-            },
-            globals: {
-                ...globals.nodeBuiltin,
-                ...globals.node,
-            },
-        },
-        files: ["scripts/**/*.mjs", "*.ts", "*.mjs"],
-        rules: {
-            "no-unused-vars": "off",
-            // We WANT our scripts to output to the console!
             "no-console": "off",
+        },
+        files: ["packages/**/*"],
+    },
+    {
+        rules: {
+            "no-void": "off",
+            "no-implicit-coercion": "off",
+            "prefer-template": "off",
             "@typescript-eslint/ban-ts-comment": "off",
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                {
-                    argsIgnorePattern: "^_",
-                    varsIgnorePattern: "^_",
-                    caughtErrorsIgnorePattern: "^_",
-                },
-            ],
+            "@typescript-eslint/no-unused-vars": "off",
+            "@typescript-eslint/no-use-before-define": "off",
+            "array-callback-return": "off",
+            "block-scoped-var": "off",
+            "consistent-return": "off",
+            "func-names": "off",
+            "guard-for-in": "off",
+            "no-bitwise": "off",
+            "no-div-regex": "off",
+            "no-else-return": "off",
+            "no-empty-function": "off",
+            "no-param-reassign": "off",
+            "no-throw-literal": "off",
+            // "no-var": "off",
+            "prefer-arrow-callback": "off",
+            "react/jsx-no-leaked-render": "off",
+            "vars-on-top": "off",
         },
     },
-];
+);

@@ -23,7 +23,7 @@ To view _object_ permissions for a specific user or role:
 
 ### View flow permissions
 
-\_These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page.\_\_
+_These instructions apply to all objects that have a detail page, which can be accessed by clicking on the name in the list page._
 
 1. Go to the Admin interface and navigate to **Flows and Stages -> Flows**.
 2. Click the name of the flow (this opens the details page).

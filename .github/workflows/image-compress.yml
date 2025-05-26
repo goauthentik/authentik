@@ -53,6 +53,7 @@ jobs:
           body: ${{ steps.compress.outputs.markdown }}
           delete-branch: true
           signoff: true
+          labels: dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         with:

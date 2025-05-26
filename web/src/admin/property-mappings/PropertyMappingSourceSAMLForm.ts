@@ -25,11 +25,10 @@ export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLS
                 pmUuid: this.instance.pk,
                 sAMLSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
-                sAMLSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
+            sAMLSourcePropertyMappingRequest: data,
+        });
     }
 }
 
