@@ -71,7 +71,7 @@ The login page now has a button called "OpenID/OAuth2 authentication". Click it 
 Make sure the user account has been created in Home Assistant, because this integration does not create the users for you.
 
 
-## Using a proxy
+## Using a proxy provider
 
 :::caution
 Using a proxy provider might produce CSRF errors; this is caused by a technology that Home Assistant uses and not authentik. For more information see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).
