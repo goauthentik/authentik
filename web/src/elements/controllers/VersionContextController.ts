@@ -1,14 +1,13 @@
-import { VersionContext, VersionMixin } from "#elements/Interface/versionProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { isAbortError } from "@goauthentik/common/errors/network";
-import type { ReactiveElementHost } from "@goauthentik/elements/types";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { isAbortError } from "#common/errors/network";
+import { VersionContext, VersionMixin } from "#elements/mixins/version";
+import type { ReactiveElementHost } from "#elements/types";
 
 import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
-import type { Version } from "@goauthentik/api";
-import { AdminApi } from "@goauthentik/api";
+import { AdminApi, Version } from "@goauthentik/api";
 
 export class VersionContextController implements ReactiveController {
     #log = console.debug.bind(console, `authentik/controller/version`);

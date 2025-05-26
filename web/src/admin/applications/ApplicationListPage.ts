@@ -1,8 +1,8 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
 import "@goauthentik/admin/applications/ApplicationForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
 import "@goauthentik/elements/AppIcon";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import "@goauthentik/elements/ak-mdx/ak-mdx";
 import "@goauthentik/elements/buttons/SpinnerButton/ak-spinner-button";
 import "@goauthentik/elements/forms/DeleteBulkForm";

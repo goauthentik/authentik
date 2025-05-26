@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { isAbortError } from "#common/errors/network";
-import { BrandingContext, BrandingMixin } from "#elements/Interface/brandProvider";
+import { BrandingContext, BrandingMixin } from "#elements/mixins/branding";
 import type { ReactiveElementHost } from "#elements/types";
 
 import { Context, ContextProvider } from "@lit/context";

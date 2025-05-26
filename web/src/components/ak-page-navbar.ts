@@ -5,7 +5,7 @@ import { me } from "#common/users";
 import "#components/ak-nav-buttons";
 import type { PageHeaderInit, SidebarToggleEventDetail } from "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
-import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { WithBrandConfig } from "#elements/mixins/branding";
 import { isAdminRoute } from "#elements/router/utils";
 import { themeImage } from "#elements/utils/images";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";

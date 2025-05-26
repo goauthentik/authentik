@@ -1,8 +1,8 @@
-import { LicenseContext, LicenseMixin } from "#elements/Interface/licenseSummaryProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
-import { isAbortError } from "@goauthentik/common/errors/network";
-import type { ReactiveElementHost } from "@goauthentik/elements/types";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH_ENTERPRISE } from "#common/constants";
+import { isAbortError } from "#common/errors/network";
+import { LicenseContext, LicenseMixin } from "#elements/mixins/license";
+import type { ReactiveElementHost } from "#elements/types";
 
 import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";

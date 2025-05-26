@@ -1,8 +1,8 @@
-import { AKConfigMixin, AuthentikConfigContext } from "#elements/Interface/authentikConfigProvider";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { isAbortError } from "@goauthentik/common/errors/network";
-import type { ReactiveElementHost } from "@goauthentik/elements/types";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { isAbortError } from "#common/errors/network";
+import { AKConfigMixin, AuthentikConfigContext } from "#elements/mixins/config";
+import type { ReactiveElementHost } from "#elements/types";
 
 import { Context, ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";

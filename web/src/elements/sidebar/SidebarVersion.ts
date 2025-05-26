@@ -1,10 +1,10 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { WithVersion } from "#elements/mixins/version";
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint";
 import { globalAK } from "@goauthentik/common/global";
 import { rootInterface } from "@goauthentik/common/theme";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
-import { WithVersion } from "@goauthentik/elements/Interface/versionProvider";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, css, html, nothing } from "lit";

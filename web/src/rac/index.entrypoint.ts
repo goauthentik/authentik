@@ -1,6 +1,6 @@
 import { Interface } from "#elements/Interface";
-import { WithBrandConfig } from "#elements/Interface/brandProvider";
 import "#elements/LoadingOverlay";
+import { WithBrandConfig } from "#elements/mixins/branding";
 import Guacamole from "guacamole-common-js";
 
 import { msg, str } from "@lit/localize";

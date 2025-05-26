@@ -1,4 +1,4 @@
-import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/Interface/capabilitiesProvider";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";

@@ -1,6 +1,6 @@
 import { Interface } from "#elements/Interface";
-import { LicenseContextController } from "#elements/Interface/EnterpriseContextController";
-import { VersionContextController } from "#elements/Interface/VersionContextController";
+import { LicenseContextController } from "#elements/controllers/EnterpriseContextController";
+import { VersionContextController } from "#elements/controllers/VersionContextController";
 
 export class AuthenticatedInterface extends Interface {
     constructor() {

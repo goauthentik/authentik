@@ -1,4 +1,4 @@
-import { AKConfigMixin } from "#elements/Interface/authentikConfigProvider";
+import { AKConfigMixin } from "#elements/mixins/config";
 import { createMixin } from "@goauthentik/elements/types";
 
 import { CapabilitiesEnum } from "@goauthentik/api";

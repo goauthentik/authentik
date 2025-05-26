@@ -6,7 +6,7 @@ import { CSRFHeaderName } from "#common/api/middleware";
 import { EVENT_THEME_CHANGE } from "#common/constants";
 import { getCookie } from "#common/utils";
 import { Interface } from "#elements/Interface";
-import { WithBrandConfig } from "#elements/Interface/brandProvider";
+import { WithBrandConfig } from "#elements/mixins/branding";
 import { themeImage } from "#elements/utils/images";
 
 import { msg } from "@lit/localize";

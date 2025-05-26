@@ -1,8 +1,8 @@
-import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/elements/EmptyState";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 
 import { msg } from "@lit/localize";
