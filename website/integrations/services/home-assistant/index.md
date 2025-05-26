@@ -26,6 +26,9 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 
+
+Home Assistant can use either [OAuth2 / OpenID](#using-OAuth2-OpenID) or a [proxy-provider](#Using a proxy provider). See the relevant instructions for each below.
+
 ## Using OAuth2 / OpenID
 
 ### authentik configuration for OAuth2 / OpenID
