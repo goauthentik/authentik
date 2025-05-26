@@ -3,6 +3,7 @@ from dataclasses import asdict
 
 from celery.exceptions import Retry
 from celery.result import allow_join_result
+from celery import group
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
@@ -82,21 +83,41 @@ class SyncTasks:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
-                for page in users_paginator.page_range:
-                    messages.append(_("Syncing page {page} of users".format(page=page)))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(User), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
+                messages.append(_("Syncing users"))
+                user_results = (
+                    group(
+                        [
+                            sync_objects.signature(
+                                args=(class_to_path(User), page, provider_pk),
+                                time_limit=PAGE_TIMEOUT,
+                                soft_time_limit=PAGE_TIMEOUT,
+                            )
+                            for page in users_paginator.page_range
+                        ]
+                    )
+                    .apply_async()
+                    .get()
+                )
+                for result in user_results:
+                    for msg in result:
                         messages.append(LogEvent(**msg))
-                for page in groups_paginator.page_range:
-                    messages.append(_("Syncing page {page} of groups".format(page=page)))
-                    for msg in sync_objects.apply_async(
-                        args=(class_to_path(Group), page, provider_pk),
-                        time_limit=PAGE_TIMEOUT,
-                        soft_time_limit=PAGE_TIMEOUT,
-                    ).get():
+                messages.append(_("Syncing groups"))
+                group_results = (
+                    group(
+                        [
+                            sync_objects.signature(
+                                args=(class_to_path(Group), page, provider_pk),
+                                time_limit=PAGE_TIMEOUT,
+                                soft_time_limit=PAGE_TIMEOUT,
+                            )
+                            for page in groups_paginator.page_range
+                        ]
+                    )
+                    .apply_async()
+                    .get()
+                )
+                for result in group_results:
+                    for msg in result:
                         messages.append(LogEvent(**msg))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
