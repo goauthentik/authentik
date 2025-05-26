@@ -1,9 +1,9 @@
 from collections.abc import Callable
 from dataclasses import asdict
 
+from celery import group
 from celery.exceptions import Retry
 from celery.result import allow_join_result
-from celery import group
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
