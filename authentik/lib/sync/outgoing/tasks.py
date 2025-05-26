@@ -153,6 +153,15 @@ class SyncTasks:
             self.logger.debug("starting discover")
             client.discover()
         self.logger.debug("starting sync for page", page=page)
+        messages.append(
+            asdict(
+                LogEvent(
+                    _("Syncing page {page} of groups".format(page=page)),
+                    log_level="info",
+                    logger=f"{provider._meta.verbose_name}@{object_type}",
+                )
+            )
+        )
         for obj in paginator.page(page).object_list:
             obj: Model
             try:
