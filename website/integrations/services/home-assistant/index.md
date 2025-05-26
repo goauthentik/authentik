@@ -27,11 +27,11 @@ This documentation lists only the settings that you need to change from their de
 
 
 
-Home Assistant can use either [OAuth2 / OpenID](#using-OAuth2-OpenID) or a [proxy-provider](#Using a proxy provider). See the relevant instructions for each below.
+Home Assistant can use either [OIDC](#using-OIDC) or a [proxy-provider](#Using a proxy provider). See the relevant instructions for each below.
 
-## Using OAuth2 / OpenID
+## Using OIDC
 
-### authentik configuration for OAuth2 / OpenID
+### authentik configuration for OIDC
 
 To support the integration of `Home Assistant` using `hass-openid` with authentik, you need to create an application/provider pair in authentik.
 
@@ -54,7 +54,7 @@ To support the integration of `Home Assistant` using `hass-openid` with authenti
 
 3. Click **Submit** to save the new application and provider.
 
-### Home Assistant configuration for OAuth2 / OpenID
+### Home Assistant configuration for OIDC
 
 1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation).
 2. Using a file editor or ssh, edit the file `configuration.yaml` in your homeassistant's `config` directory by appending the following:
