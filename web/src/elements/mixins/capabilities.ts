@@ -1,3 +1,5 @@
+import { globalAK } from "#common/global";
+
 import { AKConfigMixin } from "#elements/mixins/config";
 import { createMixin } from "@goauthentik/elements/types";
 
@@ -47,12 +49,14 @@ export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin, AKConfigMix
     ({ SuperClass }) => {
         abstract class CapabilitiesProvider extends SuperClass implements CapabilitiesMixin {
             public can(capability: CapabilitiesEnum) {
-                const config = this.authentikConfig;
+                let config = this.authentikConfig;
 
                 if (!config) {
-                    throw new Error(
+                    console.warn(
                         `ConfigContext: Attempted to check capability "${capability}" before initialization. Does the element have the AuthentikConfigMixin applied?`,
                     );
+
+                    config = globalAK().config;
                 }
 
                 return config.capabilities.includes(capability);
