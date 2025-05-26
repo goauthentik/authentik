@@ -44,7 +44,7 @@ This documentation lists only the settings that you need to change from their de
 
 ### Home Assistant configuration
 
-1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation)
+1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation).
 2. Using a file editor or ssh, edit the file `configuration.yaml` in your homeassistant's `config` by appending the following:
     ```yaml
     openid:
