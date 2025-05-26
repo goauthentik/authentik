@@ -11,10 +11,10 @@ import "#admin/admin-overview/charts/SyncStatusChart";
 import { me } from "#common/users";
 import "#components/ak-page-header";
 import { AKElement } from "#elements/Base";
-import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
 import "#elements/cards/AggregatePromiseCard";
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
 import "#elements/cards/QuickActionsCard";
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { paramURL } from "#elements/router/RouterOutlet";
 import { createReleaseNotesURL } from "@goauthentik/core/version";
 

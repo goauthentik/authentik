@@ -26,9 +26,41 @@ class MarkdownLintError extends Error {
     }
 }
 
+function useBadgeLinterEffect() {
+    const { frontMatter, metadata } = useDoc();
+    const { hide_title } = frontMatter;
+    const { id } = metadata;
+
+    useEffect(() => {
+        if (hide_title) {
+            console.debug(`Skipping badge linting for ${id} because \`hide_title\` is set`);
+            return;
+        }
+
+        const invalidBadges = document.querySelectorAll(`.theme-doc-markdown > header + .badge,
+            .theme-doc-markdown .markdown > .badge
+            `);
+
+        const badgeCount = invalidBadges.length;
+
+        if (!badgeCount) return;
+
+        const badgeContent = Array.from(invalidBadges, (badge) => `"${badge.textContent}"`);
+
+        const message = `${id}: ${badgeCount} Badge(s) defined in Markdown content instead of the frontmatter:\n ${badgeContent.join("\n")}`;
+
+        console.error(message);
+
+        console.error(`Found ${badgeCount} invalid badges on ${id}`, invalidBadges);
+
+        throw new MarkdownLintError(message);
+    }, [hide_title, id]);
+}
+
 const DocItemContent: React.FC<Props> = ({ children }) => {
     const syntheticTitle = useSyntheticTitle();
     const { frontMatter, metadata, contentTitle } = useDoc();
+    const { id } = metadata;
     const {
         // ---
         support_level,
@@ -36,6 +68,8 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
         authentik_enterprise,
         authentik_preview,
     } = frontMatter;
+
+    useBadgeLinterEffect();
 
     const badges: JSX.Element[] = [];
 
@@ -57,32 +91,15 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
 
     if (badges.length && !syntheticTitle) {
         throw new MarkdownLintError(
-            `${metadata.id}: ${badges.length} Badge(s) found with a missing synthetic title. Remove the page heading and set it via the frontmatter.`,
+            `${id}: ${badges.length} Badge(s) found with a missing synthetic title. Remove the page heading and set it via the frontmatter.`,
         );
     }
 
     if (frontMatter.title && contentTitle && frontMatter.title === contentTitle) {
         throw new MarkdownLintError(
-            `${metadata.id}: Synthetic title "${frontMatter.title}" and content title "${contentTitle}" are the same. Remove the first heading and let the frontmatter set the title.`,
+            `${id}: Synthetic title "${frontMatter.title}" and content title "${contentTitle}" are the same. Remove the first heading and let the frontmatter set the title.`,
         );
     }
-
-    useEffect(() => {
-        const invalidBadges = document.querySelectorAll(`.theme-doc-markdown > header + .badge,
-            .theme-doc-markdown .markdown > .badge
-            `);
-
-        if (!invalidBadges.length) return;
-
-        console.error(
-            `Found ${invalidBadges.length} invalid badges on ${metadata.id}`,
-            invalidBadges,
-        );
-
-        throw new MarkdownLintError(
-            `${metadata.id}: ${invalidBadges.length} Badge(s) defined in markdown content instead of the frontmatter.`,
-        );
-    }, [metadata.id]);
 
     return (
         <div className={clsx(ThemeClassNames.docs.docMarkdown, "markdown")}>
@@ -90,18 +107,28 @@ const DocItemContent: React.FC<Props> = ({ children }) => {
                 <header>
                     <Heading as="h1">{syntheticTitle}</Heading>
 
-                    {badges.length ? (
-                        <p className="badge-group">
-                            {badges.map((badge, index) => (
-                                <React.Fragment key={index}>{badge}</React.Fragment>
-                            ))}
-                        </p>
-                    ) : null}
+                    <BadgeGroup badges={badges} />
                 </header>
             ) : null}
 
             <MDXContent>{children}</MDXContent>
         </div>
+    );
+};
+
+interface BadgesProps {
+    badges: JSX.Element[];
+}
+
+const BadgeGroup: React.FC<BadgesProps> = ({ badges }) => {
+    if (!badges.length) return null;
+
+    return (
+        <p className="badge-group">
+            {badges.map((badge, index) => (
+                <React.Fragment key={index}>{badge}</React.Fragment>
+            ))}
+        </p>
     );
 };
 

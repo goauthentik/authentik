@@ -40,7 +40,7 @@
         "esbuild": "^0.25.4"
     },
     "engines": {
-        "node": ">=22.15.1"
+        "node": ">=22"
     },
     "types": "./out/index.d.ts",
     "files": [

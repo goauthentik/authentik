@@ -1,3 +1,5 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import type { AdminInterface } from "@goauthentik/admin/AdminInterface/index.entrypoint.js";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
@@ -11,15 +13,10 @@ import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { userTypeToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+import { rootInterface } from "@goauthentik/common/theme";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-status-label";
-import { rootInterface } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/TreeView";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";

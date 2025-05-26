@@ -1,6 +1,6 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { globalAK } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";

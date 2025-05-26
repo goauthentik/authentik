@@ -1,6 +1,6 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 import { customElement } from "lit/decorators.js";
 
