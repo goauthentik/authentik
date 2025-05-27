@@ -9,7 +9,7 @@ dependencies = [
     "celery==5.5.2",
     "channels==4.2.2",
     "channels-redis==4.2.1",
-    "cryptography==44.0.3",
+    "cryptography==45.0.3",
     "dacite==1.9.2",
     "deepmerge==2.0",
     "defusedxml==0.7.1",
@@ -23,7 +23,7 @@ dependencies = [
     "django-prometheus==2.3.1",
     "django-redis==5.4.0",
     "django-storages[s3]==1.14.6",
-    "django-tenants==3.7.0",
+    "django-tenants==3.8.0",
     "djangorestframework==3.16.0",
     "djangorestframework-guardian==0.3.0",
     "docker==7.1.0",
@@ -114,7 +114,6 @@ no-binary-package = [
 ]
 
 [tool.uv.sources]
-django-tenants = { git = "https://github.com/goauthentik/django-tenants.git", branch = "authentik-fixes" }
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
 
