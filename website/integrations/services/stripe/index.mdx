@@ -75,17 +75,29 @@ To support the integration of Stripe with authentik, you need to create a group,
 
 3. Click **Submit** to save the new application and provider.
 
+### Download certificate file
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for Stripe`).
+3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your `Certificate` file and it will be required in the next section.
+
 ## Stripe configuration
 
 1. Log in to the [Stripe administrator user authentication page](https://dashboard.stripe.com/account/user_authentication) as an admin.
-2. TEMP Navigate to...
-3. TEMP enter the following settings:
+2. Click on the **Settings** cogwheel, and navigate to **Team and security** > **Single sign-on (SSO)**.
+3. Click **Add domain**, and enter the domain of the users that will utilize SSO. For more information, see the [Stripe Proving Domain Owenership documentation](https://docs.stripe.com/get-started/account/sso/other#proving-domain-verification).
+4. Once your domain is verified, click on the 3 dots next to the domain name, and click **Manage SSO Settings**.
+5. Enter the following settings:
 
     - **Identity Provider URL**: `https://auth.domain.com/application/saml/stripe/sso/binding/redirect/`
-    - **Issuer ID**: authentik
-    - **Identity Provider Certificate**: enter your authentik signing certificate
+    - **Issuer ID**: `authentik`
+    - **Identity Provider Certificate**: Paste in the contents of your authentik signing certificate.
 
-4. TEMP Click...
+6. Click **Continue**.
+7. Enter the email address of an authentik user that will be used for testing the SSO configuration and click **Continue**. Ensure that the user has the appropriate group membership in authentik. You will be redirected to authentik, once logged in, you will be redirected back to Stripe.
+8. If the test is succesful, click **Continue**. Otherwise, verify your configuration and try again.
+9. Select the **SSO Enforcement** type. `Required` will force users to utilize authentik SSO. `Optional` will allow users to utilize authentik SSO or standard Stripe login.
+10. Click **Save**.
 
 ## Configuration verification
 
