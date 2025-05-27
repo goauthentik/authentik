@@ -36,7 +36,7 @@ runs:
       with:
         go-version-file: "go.mod"
     - name: Setup docker cache
-      uses: ScribeMD/docker-cache@0.5.0
+      uses: AndreKurait/docker-cache@fb28c93772363301b8d0a6072ce850224b73f74e
       with:
         key: docker-images-${{ runner.os }}-${{ hashFiles('.github/actions/setup/docker-compose.yml', 'Makefile') }}-${{ inputs.postgresql_version }}
     - name: Setup dependencies
