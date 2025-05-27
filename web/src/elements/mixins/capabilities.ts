@@ -1,7 +1,6 @@
-import { globalAK } from "#common/global";
-
-import { AKConfigMixin } from "#elements/mixins/config";
-import { createMixin } from "@goauthentik/elements/types";
+import { WithAuthentikConfig } from "#elements/mixins/config";
+import { kAKConfig } from "#elements/mixins/config";
+import { LitElementConstructor, createMixin } from "#elements/types";
 
 import { CapabilitiesEnum } from "@goauthentik/api";
 
@@ -45,27 +44,26 @@ export interface CapabilitiesMixin {
  * @category Mixin
  *
  */
-export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin, AKConfigMixin>(
-    ({ SuperClass }) => {
-        abstract class CapabilitiesProvider extends SuperClass implements CapabilitiesMixin {
-            public can(capability: CapabilitiesEnum) {
-                let config = this.authentikConfig;
+export const WithCapabilitiesConfig = createMixin<CapabilitiesMixin>(({ SuperClass }) => {
+    abstract class CapabilitiesProvider
+        extends WithAuthentikConfig(SuperClass)
+        implements CapabilitiesMixin
+    {
+        public can(capability: CapabilitiesEnum) {
+            const config = this[kAKConfig];
 
-                if (!config) {
-                    console.warn(
-                        `ConfigContext: Attempted to check capability "${capability}" before initialization. Does the element have the AuthentikConfigMixin applied?`,
-                    );
-
-                    config = globalAK().config;
-                }
-
-                return config.capabilities.includes(capability);
+            if (!config) {
+                throw new Error(
+                    `CapabilitiesMixin: Attempted to check capability "${capability}" before initialization. Does the element have the AuthentikConfigMixin applied?`,
+                );
             }
-        }
 
-        return CapabilitiesProvider;
-    },
-);
+            return config.capabilities.includes(capability);
+        }
+    }
+
+    return CapabilitiesProvider;
+});
 
 // Re-export `CapabilitiesEnum`, so you won't have to import it on a separate line if you
 // don't need anything else from the API.

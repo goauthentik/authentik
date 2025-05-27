@@ -4,7 +4,7 @@ import { isAbortError } from "#common/errors/network";
 import { VersionContext, VersionMixin } from "#elements/mixins/version";
 import type { ReactiveElementHost } from "#elements/types";
 
-import { Context, ContextProvider } from "@lit/context";
+import { ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
 import { AdminApi, Version } from "@goauthentik/api";
@@ -14,7 +14,7 @@ export class VersionContextController implements ReactiveController {
     #abortController: null | AbortController = null;
 
     #host: ReactiveElementHost<VersionMixin>;
-    #context: ContextProvider<Context<unknown, Version>>;
+    #context: ContextProvider<VersionContext>;
 
     constructor(host: ReactiveElementHost<VersionMixin>, initialValue?: Version) {
         this.#host = host;
