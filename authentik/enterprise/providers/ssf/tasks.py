@@ -1,7 +1,8 @@
-from celery import group
 from django.http import HttpRequest
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import actor
+from dramatiq.composition import group
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
@@ -14,12 +15,11 @@ from authentik.enterprise.providers.ssf.models import (
     StreamEvent,
 )
 from authentik.events.logs import LogEvent
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 session = get_http_session()
 LOGGER = get_logger()
@@ -42,7 +42,7 @@ def send_ssf_event(
     for stream in Stream.objects.filter(**stream_filter):
         event_data = stream.prepare_event_payload(event_type, data, **extra_data)
         payload.append((str(stream.uuid), event_data))
-    return _send_ssf_event.delay(payload)
+    return _send_ssf_event.send(payload)
 
 
 def _check_app_access(stream_uuid: str, event_data: dict) -> bool:
@@ -65,7 +65,7 @@ def _check_app_access(stream_uuid: str, event_data: dict) -> bool:
     return engine.passing
 
 
-@CELERY_APP.task()
+@actor
 def _send_ssf_event(event_data: list[tuple[str, dict]]):
     tasks = []
     for stream, data in event_data:
@@ -73,27 +73,29 @@ def _send_ssf_event(event_data: list[tuple[str, dict]]):
             continue
         event = StreamEvent.objects.create(**data)
         tasks.extend(send_single_ssf_event(stream, str(event.uuid)))
-    main_task = group(*tasks)
-    main_task()
+    main_task = group(tasks)
+    main_task.run()
 
 
 def send_single_ssf_event(stream_id: str, evt_id: str):
     stream = Stream.objects.filter(pk=stream_id).first()
     if not stream:
-        return
+        return []
     event = StreamEvent.objects.filter(pk=evt_id).first()
     if not event:
-        return
+        return []
     if event.status == SSFEventStatus.SENT:
-        return
+        return []
     if stream.delivery_method == DeliveryMethods.RISC_PUSH:
-        return [ssf_push_event.si(str(event.pk))]
+        return [ssf_push_event.message(str(event.pk))]
     return []
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-def ssf_push_event(self: SystemTask, event_id: str):
-    self.save_on_success = False
+@actor
+def ssf_push_event(event_id: str):
+    self: Task = CurrentTask.get_task()
+    # TODO: fix me
+    # self.save_on_success = False
     event = StreamEvent.objects.filter(pk=event_id).first()
     if not event:
         return
@@ -126,7 +128,9 @@ def ssf_push_event(self: SystemTask, event_id: str):
             LogEvent(
                 _("Failed to send request"),
                 log_level="warning",
-                logger=self.__name__,
+                # TODO: fix me
+                # logger=self.__name__,
+                logger=str(self.uid),
                 attributes=attrs,
             ),
         )

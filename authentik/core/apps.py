@@ -1,8 +1,7 @@
 """authentik core app config"""
 
-from django.conf import settings
-
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class AuthentikCoreConfig(ManagedAppConfig):
@@ -13,14 +12,6 @@ class AuthentikCoreConfig(ManagedAppConfig):
     verbose_name = "authentik Core"
     mountpoint = ""
     default = True
-
-    @ManagedAppConfig.reconcile_global
-    def debug_worker_hook(self):
-        """Dispatch startup tasks inline when debugging"""
-        if settings.DEBUG:
-            from authentik.root.celery import worker_ready_hook
-
-            worker_ready_hook()
 
     @ManagedAppConfig.reconcile_tenant
     def source_inbuilt(self):
@@ -34,3 +25,16 @@ class AuthentikCoreConfig(ManagedAppConfig):
             },
             managed=Source.MANAGED_INBUILT,
         )
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.core.tasks.clean_expired_models",
+                crontab="2-59/5 * * * *",
+            ),
+            ScheduleSpec(
+                actor_name="authentik.core.tasks.clean_temporary_users",
+                crontab="9-59/5 * * * *",
+            ),
+        ]

@@ -9,17 +9,15 @@ from urllib.parse import urlparse
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
-from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models.base import Model
 from django.utils.text import slugify
 from docker.constants import DEFAULT_UNIX_SOCKET
+from dramatiq.actor import actor
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
-from authentik.events.models import TaskStatus
-from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
 from authentik.outposts.consumer import OUTPOST_GROUP
@@ -43,7 +41,8 @@ from authentik.providers.rac.controllers.docker import RACDockerController
 from authentik.providers.rac.controllers.kubernetes import RACKubernetesController
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
+from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
@@ -77,8 +76,8 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
     return None
 
 
-@CELERY_APP.task()
-def outpost_service_connection_state(connection_pk: Any):
+@actor
+def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
         OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
@@ -102,37 +101,10 @@ def outpost_service_connection_state(connection_pk: Any):
     cache.set(connection.state_key, state, timeout=None)
 
 
-@CELERY_APP.task(
-    bind=True,
-    base=SystemTask,
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
-@prefill_task
-def outpost_service_connection_monitor(self: SystemTask):
-    """Regularly check the state of Outpost Service Connections"""
-    connections = OutpostServiceConnection.objects.all()
-    for connection in connections.iterator():
-        outpost_service_connection_state.delay(connection.pk)
-    self.set_status(
-        TaskStatus.SUCCESSFUL,
-        f"Successfully updated {len(connections)} connections.",
-    )
-
-
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
-def outpost_controller_all():
-    """Launch Controller for all Outposts which support it"""
-    for outpost in Outpost.objects.exclude(service_connection=None):
-        outpost_controller.delay(outpost.pk.hex, "up", from_cache=False)
-
-
-@CELERY_APP.task(bind=True, base=SystemTask)
-def outpost_controller(
-    self: SystemTask, outpost_pk: str, action: str = "up", from_cache: bool = False
-):
+@actor
+def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
+    self: Task = CurrentTask.get_task()
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -160,11 +132,12 @@ def outpost_controller(
         self.set_status(TaskStatus.SUCCESSFUL, *logs)
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def outpost_token_ensurer(self: SystemTask):
-    """Periodically ensure that all Outposts have valid Service Accounts
-    and Tokens"""
+@actor
+def outpost_token_ensurer():
+    """
+    Periodically ensure that all Outposts have valid Service Accounts and Tokens
+    """
+    self: Task = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
@@ -175,7 +148,7 @@ def outpost_token_ensurer(self: SystemTask):
     )
 
 
-@CELERY_APP.task()
+@actor
 def outpost_post_save(model_class: str, model_pk: Any):
     """If an Outpost is saved, Ensure that token is created/updated
 
@@ -190,7 +163,8 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, Outpost):
         LOGGER.debug("Trigger reconcile for outpost", instance=instance)
-        outpost_controller.delay(str(instance.pk))
+        for schedule in instance.schedules.all():
+            schedule.send()
 
     if isinstance(instance, OutpostModel | Outpost):
         LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
@@ -198,7 +172,8 @@ def outpost_post_save(model_class: str, model_pk: Any):
 
     if isinstance(instance, OutpostServiceConnection):
         LOGGER.debug("triggering ServiceConnection state update", instance=instance)
-        outpost_service_connection_state.delay(str(instance.pk))
+        for schedule in instance.schedules.all():
+            schedule.send()
 
     for field in instance._meta.get_fields():
         # Each field is checked if it has a `related_model` attribute (when ForeginKeys or M2Ms)
@@ -245,12 +220,10 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
 
-@CELERY_APP.task(
-    base=SystemTask,
-    bind=True,
-)
-def outpost_connection_discovery(self: SystemTask):
+@actor
+def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
+    self: Task = CurrentTask.get_task()
     messages = []
     if not CONFIG.get_bool("outposts.discover"):
         messages.append("Outpost integration discovery is disabled")

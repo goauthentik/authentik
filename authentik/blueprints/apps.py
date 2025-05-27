@@ -6,9 +6,12 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
+from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.lib.utils.time import fqdn_rand
 from authentik.root.signals import startup
+from authentik.tasks.schedules.lib import ScheduleSpec
 
 
 class ManagedAppConfig(AppConfig):
@@ -34,7 +37,7 @@ class ManagedAppConfig(AppConfig):
 
     def import_related(self):
         """Automatically import related modules which rely on just being imported
-        to register themselves (mainly django signals and celery tasks)"""
+        to register themselves (mainly django signals and tasks)"""
 
         def import_relative(rel_module: str):
             try:
@@ -80,6 +83,16 @@ class ManagedAppConfig(AppConfig):
         func._authentik_managed_reconcile = ManagedAppConfig.RECONCILE_GLOBAL_CATEGORY
         return func
 
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        """Get a list of schedule specs that must exist in each tenant"""
+        return []
+
+    @property
+    def global_schedule_specs(self) -> list[ScheduleSpec]:
+        """Get a list of schedule specs that must exist in the default tenant"""
+        return []
+
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
@@ -113,18 +126,37 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     default = True
 
     @ManagedAppConfig.reconcile_global
-    def load_blueprints_v1_tasks(self):
-        """Load v1 tasks"""
-        self.import_module("authentik.blueprints.v1.tasks")
+    def tasks_middlewares(self):
+        from authentik.blueprints.v1.tasks import BlueprintWatcherMiddleware
+
+        get_broker().add_middleware(BlueprintWatcherMiddleware())
 
     @ManagedAppConfig.reconcile_tenant
     def blueprints_discovery(self):
         """Run blueprint discovery"""
-        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
+        from authentik.tasks.schedules.models import Schedule
 
-        blueprints_discovery.delay()
-        clear_failed_blueprints.delay()
+        for schedule in Schedule.objects.filter(
+            actor_name__in=(
+                "authentik.blueprints.v1.tasks.blueprints_discovery",
+                "authentik.blueprints.v1.tasks.clear_failed_blueprints",
+            ),
+        ):
+            schedule.send()
 
     def import_models(self):
         super().import_models()
         self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
+
+    @property
+    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        return [
+            ScheduleSpec(
+                actor_name="authentik.blueprints.v1.tasks.blueprints_discovery",
+                crontab=f"{fqdn_rand('blueprints_v1_discover')} * * * *",
+            ),
+            ScheduleSpec(
+                actor_name="authentik.blueprints.v1.tasks.clear_failed_blueprints",
+                crontab=f"{fqdn_rand('blueprints_v1_cleanup')} * * * *",
+            ),
+        ]

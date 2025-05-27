@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Django manage.py"""
+
 import os
 import sys
 import warnings

@@ -27,6 +27,7 @@ import (
 	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/brand_tls"
+	"goauthentik.io/internal/worker"
 )
 
 const (
@@ -46,6 +47,7 @@ type WebServer struct {
 
 	g              *gounicorn.GoUnicorn
 	gunicornReady  bool
+	worker         *worker.Worker
 	mainRouter     *mux.Router
 	loggingRouter  *mux.Router
 	log            *log.Entry
@@ -170,6 +172,7 @@ func (ws *WebServer) Start() {
 
 	go ws.runMetricsServer()
 	go ws.attemptStartBackend()
+	go ws.attemptStartWorker()
 	go ws.listenPlain()
 	go ws.listenTLS()
 }
@@ -196,6 +199,12 @@ func (ws *WebServer) attemptStartBackend() {
 				break
 			}
 		}
+	}
+}
+
+func (ws *WebServer) attemptStartWorker() {
+	if ws.worker == nil {
+		return
 	}
 }
 

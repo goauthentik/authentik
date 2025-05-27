@@ -1,15 +1,15 @@
 """duo tasks"""
 
+from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User
-from authentik.root.celery import CELERY_APP
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task()
+@actor(store_results=True)
 def duo_import_devices(stage_pk: str):
     """Import duo devices"""
     created = 0

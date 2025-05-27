@@ -171,6 +171,7 @@ dependencies = [
     { name = "celery" },
     { name = "channels" },
     { name = "channels-redis" },
+    { name = "cron-converter" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
@@ -182,6 +183,7 @@ dependencies = [
     { name = "django-guardian" },
     { name = "django-model-utils" },
     { name = "django-pglock" },
+    { name = "django-pgtrigger" },
     { name = "django-prometheus" },
     { name = "django-redis" },
     { name = "django-storages", extra = ["s3"] },
@@ -189,6 +191,7 @@ dependencies = [
     { name = "djangorestframework" },
     { name = "djangorestframework-guardian" },
     { name = "docker" },
+    { name = "dramatiq", extra = ["watch"] },
     { name = "drf-orjson-renderer" },
     { name = "drf-spectacular" },
     { name = "dumb-init" },
@@ -223,6 +226,7 @@ dependencies = [
     { name = "setproctitle" },
     { name = "structlog" },
     { name = "swagger-spec-validator" },
+    { name = "tenacity" },
     { name = "tenant-schemas-celery" },
     { name = "twilio" },
     { name = "ua-parser" },
@@ -269,6 +273,7 @@ requires-dist = [
     { name = "celery", specifier = "==5.5.2" },
     { name = "channels", specifier = "==4.2.2" },
     { name = "channels-redis", specifier = "==4.2.1" },
+    { name = "cron-converter", specifier = "==1.2.1" },
     { name = "cryptography", specifier = "==45.0.3" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
@@ -280,6 +285,7 @@ requires-dist = [
     { name = "django-guardian", specifier = "==3.0.0" },
     { name = "django-model-utils", specifier = "==5.0.0" },
     { name = "django-pglock", specifier = "==1.7.2" },
+    { name = "django-pgtrigger", specifier = "==4.15.2" },
     { name = "django-prometheus", specifier = "==2.3.1" },
     { name = "django-redis", specifier = "==5.4.0" },
     { name = "django-storages", extras = ["s3"], specifier = "==1.14.6" },
@@ -287,6 +293,7 @@ requires-dist = [
     { name = "djangorestframework", git = "https://github.com/goauthentik/django-rest-framework?rev=896722bab969fabc74a08b827da59409cf9f1a4e" },
     { name = "djangorestframework-guardian", specifier = "==0.3.0" },
     { name = "docker", specifier = "==7.1.0" },
+    { name = "dramatiq", extras = ["watch"], specifier = "==1.17.1" },
     { name = "drf-orjson-renderer", specifier = "==1.7.3" },
     { name = "drf-spectacular", specifier = "==0.28.0" },
     { name = "dumb-init", specifier = "==1.2.5.post1" },
@@ -321,6 +328,7 @@ requires-dist = [
     { name = "setproctitle", specifier = "==1.3.6" },
     { name = "structlog", specifier = "==25.3.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
+    { name = "tenacity", specifier = "==9.1.2" },
     { name = "tenant-schemas-celery", specifier = "==4.0.1" },
     { name = "twilio", specifier = "==9.6.1" },
     { name = "ua-parser", specifier = "==1.0.1" },
@@ -868,6 +876,18 @@ wheels = [
 ]
 
 [[package]]
+name = "cron-converter"
+version = "1.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "python-dateutil" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c1/45/549d071e7bde4d3bb6a566b1a116e3b79803df916c3499d27509b214a965/cron_converter-1.2.1.tar.gz", hash = "sha256:6766c6ba44b8236201ac03030f314fd655343c1c4848ce216458e8d340066c59", size = 14313, upload-time = "2024-05-25T17:56:51.757Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2e/76/2a477e17b7c5c49e81bdc711aab7ba9a2a661c54b7c5021e0c1c01abb0e0/cron_converter-1.2.1-py3-none-any.whl", hash = "sha256:4604e356c15a8fbe76a86bb42508f611ad3cade7dd65e2d6f601c2e0d5226ffc", size = 13338, upload-time = "2024-05-25T17:56:49.51Z" },
+]
+
+[[package]]
 name = "cryptography"
 version = "45.0.3"
 source = { registry = "https://pypi.org/simple" }
@@ -1075,6 +1095,18 @@ wheels = [
 ]
 
 [[package]]
+name = "django-pgtrigger"
+version = "4.15.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/3e/5f/dfbe4ac57214549d49e1748fcced105a1ae8718f79bc26c7288835fb6de9/django_pgtrigger-4.15.2.tar.gz", hash = "sha256:a7286db986baa3aa759526c440b8b9baf894b56a4ee237333a44c06f56ab6b9f", size = 33120, upload-time = "2025-04-29T20:38:22.033Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/40/97/81a4779e73f09d347d006b866b85b4be7774543d9f6eb6fe49a1303802af/django_pgtrigger-4.15.2-py3-none-any.whl", hash = "sha256:77ac6bd44fe5df0307e2630e3294cc68dcb25c9ec1a6bb523667546d28c80bea", size = 36434, upload-time = "2025-04-29T20:38:20.7Z" },
+]
+
+[[package]]
 name = "django-prometheus"
 version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1168,6 +1200,24 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/91/9b/4a2ea29aeba62471211598dac5d96825bb49348fa07e906ea930394a83ce/docker-7.1.0.tar.gz", hash = "sha256:ad8c70e6e3f8926cb8a92619b832b4ea5299e2831c14284663184e200546fa6c", size = 117834, upload-time = "2024-05-23T11:13:57.216Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e3/26/57c6fb270950d476074c087527a558ccb6f4436657314bfb6cdf484114c4/docker-7.1.0-py3-none-any.whl", hash = "sha256:c96b93b7f0a746f9e77d325bcfb87422a3d8bd4f03136ae8a85b37f1898d5fc0", size = 147774, upload-time = "2024-05-23T11:13:55.01Z" },
+]
+
+[[package]]
+name = "dramatiq"
+version = "1.17.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "prometheus-client" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c6/7a/6792ddc64a77d22bfd97261b751a7a76cf2f9d62edc59aafb679ac48b77d/dramatiq-1.17.1.tar.gz", hash = "sha256:2675d2f57e0d82db3a7d2a60f1f9c536365349db78c7f8d80a63e4c54697647a", size = 99071, upload-time = "2024-10-26T05:09:28.283Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/36/925c7afd5db4f1a3f00676b9c3c58f31ff7ae29a347282d86c8d429280a5/dramatiq-1.17.1-py3-none-any.whl", hash = "sha256:951cdc334478dff8e5150bb02a6f7a947d215ee24b5aedaf738eff20e17913df", size = 120382, upload-time = "2024-10-26T05:09:26.436Z" },
+]
+
+[package.optional-dependencies]
+watch = [
+    { name = "watchdog" },
+    { name = "watchdog-gevent" },
 ]
 
 [[package]]
@@ -1380,6 +1430,28 @@ wheels = [
 ]
 
 [[package]]
+name = "gevent"
+version = "25.5.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "cffi", marker = "platform_python_implementation == 'CPython' and sys_platform == 'win32'" },
+    { name = "greenlet", marker = "platform_python_implementation == 'CPython'" },
+    { name = "zope-event" },
+    { name = "zope-interface" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f1/58/267e8160aea00ab00acd2de97197eecfe307064a376fb5c892870a8a6159/gevent-25.5.1.tar.gz", hash = "sha256:582c948fa9a23188b890d0bc130734a506d039a2e5ad87dae276a456cc683e61", size = 6388207, upload-time = "2025-05-12T12:57:59.833Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/25/2162b38d7b48e08865db6772d632bd1648136ce2bb50e340565e45607cad/gevent-25.5.1-cp313-cp313-macosx_11_0_universal2.whl", hash = "sha256:a022a9de9275ce0b390b7315595454258c525dc8287a03f1a6cacc5878ab7cbc", size = 2928044, upload-time = "2025-05-12T11:11:36.33Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/e0/dbd597a964ed00176da122ea759bf2a6c1504f1e9f08e185379f92dc355f/gevent-25.5.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:3fae8533f9d0ef3348a1f503edcfb531ef7a0236b57da1e24339aceb0ce52922", size = 1788751, upload-time = "2025-05-12T11:52:32.643Z" },
+    { url = "https://files.pythonhosted.org/packages/f1/74/960cc4cf4c9c90eafbe0efc238cdf588862e8e278d0b8c0d15a0da4ed480/gevent-25.5.1-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:c7b32d9c3b5294b39ea9060e20c582e49e1ec81edbfeae6cf05f8ad0829cb13d", size = 1869766, upload-time = "2025-05-12T11:54:23.903Z" },
+    { url = "https://files.pythonhosted.org/packages/56/78/fa84b1c7db79b156929685db09a7c18c3127361dca18a09e998e98118506/gevent-25.5.1-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:7b95815fe44f318ebbfd733b6428b4cb18cc5e68f1c40e8501dd69cc1f42a83d", size = 1835358, upload-time = "2025-05-12T12:00:06.794Z" },
+    { url = "https://files.pythonhosted.org/packages/00/5c/bfefe3822bbca5b83bfad256c82251b3f5be13d52d14e17a786847b9b625/gevent-25.5.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2d316529b70d325b183b2f3f5cde958911ff7be12eb2b532b5c301f915dbbf1e", size = 2073071, upload-time = "2025-05-12T11:33:04.2Z" },
+    { url = "https://files.pythonhosted.org/packages/20/e4/08a77a3839a37db96393dea952e992d5846a881b887986dde62ead6b48a1/gevent-25.5.1-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:f6ba33c13db91ffdbb489a4f3d177a261ea1843923e1d68a5636c53fe98fa5ce", size = 1809805, upload-time = "2025-05-12T12:00:00.537Z" },
+    { url = "https://files.pythonhosted.org/packages/2b/ac/28848348f790c1283df74b0fc0a554271d0606676470f848eccf84eae42a/gevent-25.5.1-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:37ee34b77c7553777c0b8379915f75934c3f9c8cd32f7cd098ea43c9323c2276", size = 2138305, upload-time = "2025-05-12T11:40:56.566Z" },
+    { url = "https://files.pythonhosted.org/packages/52/9e/0e9e40facd2d714bfb00f71fc6dacaacc82c24c1c2e097bf6461e00dec9f/gevent-25.5.1-cp313-cp313-win_amd64.whl", hash = "sha256:9fa6aa0da224ed807d3b76cdb4ee8b54d4d4d5e018aed2478098e685baae7896", size = 1637444, upload-time = "2025-05-12T12:17:45.995Z" },
+]
+
+[[package]]
 name = "google-api-core"
 version = "2.24.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1448,6 +1520,30 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/39/24/33db22342cf4a2ea27c9955e6713140fedd51e8b141b5ce5260897020f1a/googleapis_common_protos-1.70.0.tar.gz", hash = "sha256:0e1b44e0ea153e6594f9f394fef15193a68aaaea2d843f83e2742717ca753257", size = 145903, upload-time = "2025-04-14T10:17:02.924Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/86/f1/62a193f0227cf15a920390abe675f386dec35f7ae3ffe6da582d3ade42c7/googleapis_common_protos-1.70.0-py3-none-any.whl", hash = "sha256:b8bfcca8c25a2bb253e0e0b0adaf8c00773e5e6af6fd92397576680b807e0fd8", size = 294530, upload-time = "2025-04-14T10:17:01.271Z" },
+]
+
+[[package]]
+name = "greenlet"
+version = "3.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/34/c1/a82edae11d46c0d83481aacaa1e578fea21d94a1ef400afd734d47ad95ad/greenlet-3.2.2.tar.gz", hash = "sha256:ad053d34421a2debba45aa3cc39acf454acbcd025b3fc1a9f8a0dee237abd485", size = 185797, upload-time = "2025-05-09T19:47:35.066Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/89/30/97b49779fff8601af20972a62cc4af0c497c1504dfbb3e93be218e093f21/greenlet-3.2.2-cp313-cp313-macosx_11_0_universal2.whl", hash = "sha256:3ab7194ee290302ca15449f601036007873028712e92ca15fc76597a0aeb4c59", size = 269150, upload-time = "2025-05-09T14:50:30.784Z" },
+    { url = "https://files.pythonhosted.org/packages/21/30/877245def4220f684bc2e01df1c2e782c164e84b32e07373992f14a2d107/greenlet-3.2.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:2dc5c43bb65ec3669452af0ab10729e8fdc17f87a1f2ad7ec65d4aaaefabf6bf", size = 637381, upload-time = "2025-05-09T15:24:12.893Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/16/adf937908e1f913856b5371c1d8bdaef5f58f251d714085abeea73ecc471/greenlet-3.2.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:decb0658ec19e5c1f519faa9a160c0fc85a41a7e6654b3ce1b44b939f8bf1325", size = 651427, upload-time = "2025-05-09T15:24:51.074Z" },
+    { url = "https://files.pythonhosted.org/packages/ad/49/6d79f58fa695b618654adac64e56aff2eeb13344dc28259af8f505662bb1/greenlet-3.2.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:6fadd183186db360b61cb34e81117a096bff91c072929cd1b529eb20dd46e6c5", size = 645795, upload-time = "2025-05-09T15:29:26.673Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/e6/28ed5cb929c6b2f001e96b1d0698c622976cd8f1e41fe7ebc047fa7c6dd4/greenlet-3.2.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1919cbdc1c53ef739c94cf2985056bcc0838c1f217b57647cbf4578576c63825", size = 648398, upload-time = "2025-05-09T14:53:36.61Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/70/b200194e25ae86bc57077f695b6cc47ee3118becf54130c5514456cf8dac/greenlet-3.2.2-cp313-cp313-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:3885f85b61798f4192d544aac7b25a04ece5fe2704670b4ab73c2d2c14ab740d", size = 606795, upload-time = "2025-05-09T14:53:47.039Z" },
+    { url = "https://files.pythonhosted.org/packages/f8/c8/ba1def67513a941154ed8f9477ae6e5a03f645be6b507d3930f72ed508d3/greenlet-3.2.2-cp313-cp313-musllinux_1_1_aarch64.whl", hash = "sha256:85f3e248507125bf4af607a26fd6cb8578776197bd4b66e35229cdf5acf1dfbf", size = 1117976, upload-time = "2025-05-09T15:27:06.542Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/30/d0e88c1cfcc1b3331d63c2b54a0a3a4a950ef202fb8b92e772ca714a9221/greenlet-3.2.2-cp313-cp313-musllinux_1_1_x86_64.whl", hash = "sha256:1e76106b6fc55fa3d6fe1c527f95ee65e324a13b62e243f77b48317346559708", size = 1145509, upload-time = "2025-05-09T14:54:02.223Z" },
+    { url = "https://files.pythonhosted.org/packages/90/2e/59d6491834b6e289051b252cf4776d16da51c7c6ca6a87ff97e3a50aa0cd/greenlet-3.2.2-cp313-cp313-win_amd64.whl", hash = "sha256:fe46d4f8e94e637634d54477b0cfabcf93c53f29eedcbdeecaf2af32029b4421", size = 296023, upload-time = "2025-05-09T14:53:24.157Z" },
+    { url = "https://files.pythonhosted.org/packages/65/66/8a73aace5a5335a1cba56d0da71b7bd93e450f17d372c5b7c5fa547557e9/greenlet-3.2.2-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:ba30e88607fb6990544d84caf3c706c4b48f629e18853fc6a646f82db9629418", size = 629911, upload-time = "2025-05-09T15:24:22.376Z" },
+    { url = "https://files.pythonhosted.org/packages/48/08/c8b8ebac4e0c95dcc68ec99198842e7db53eda4ab3fb0a4e785690883991/greenlet-3.2.2-cp313-cp313t-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:055916fafad3e3388d27dd68517478933a97edc2fc54ae79d3bec827de2c64c4", size = 635251, upload-time = "2025-05-09T15:24:52.205Z" },
+    { url = "https://files.pythonhosted.org/packages/37/26/7db30868f73e86b9125264d2959acabea132b444b88185ba5c462cb8e571/greenlet-3.2.2-cp313-cp313t-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:2593283bf81ca37d27d110956b79e8723f9aa50c4bcdc29d3c0543d4743d2763", size = 632620, upload-time = "2025-05-09T15:29:28.051Z" },
+    { url = "https://files.pythonhosted.org/packages/10/ec/718a3bd56249e729016b0b69bee4adea0dfccf6ca43d147ef3b21edbca16/greenlet-3.2.2-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:89c69e9a10670eb7a66b8cef6354c24671ba241f46152dd3eed447f79c29fb5b", size = 628851, upload-time = "2025-05-09T14:53:38.472Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/9d/d1c79286a76bc62ccdc1387291464af16a4204ea717f24e77b0acd623b99/greenlet-3.2.2-cp313-cp313t-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:02a98600899ca1ca5d3a2590974c9e3ec259503b2d6ba6527605fcd74e08e207", size = 593718, upload-time = "2025-05-09T14:53:48.313Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/41/96ba2bf948f67b245784cd294b84e3d17933597dffd3acdb367a210d1949/greenlet-3.2.2-cp313-cp313t-musllinux_1_1_aarch64.whl", hash = "sha256:b50a8c5c162469c3209e5ec92ee4f95c8231b11db6a04db09bbe338176723bb8", size = 1105752, upload-time = "2025-05-09T15:27:08.217Z" },
+    { url = "https://files.pythonhosted.org/packages/68/3b/3b97f9d33c1f2eb081759da62bd6162159db260f602f048bc2f36b4c453e/greenlet-3.2.2-cp313-cp313t-musllinux_1_1_x86_64.whl", hash = "sha256:45f9f4853fb4cc46783085261c9ec4706628f3b57de3e68bae03e8f8b3c0de51", size = 1125170, upload-time = "2025-05-09T14:54:04.082Z" },
 ]
 
 [[package]]
@@ -3099,6 +3195,15 @@ wheels = [
 ]
 
 [[package]]
+name = "tenacity"
+version = "9.1.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0a/d4/2b0cd0fe285e14b36db076e78c93766ff1d529d70408bd1d2a5a84f1d929/tenacity-9.1.2.tar.gz", hash = "sha256:1169d376c297e7de388d18b4481760d478b0e99a777cad3a9c86e556f4b697cb", size = 48036, upload-time = "2025-04-02T08:25:09.966Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e5/30/643397144bfbfec6f6ef821f36f33e57d35946c44a2352d3c9f0ae847619/tenacity-9.1.2-py3-none-any.whl", hash = "sha256:f77bf36710d8b73a50b2dd155c97b870017ad21afe6ab300326b0371b3b05138", size = 28248, upload-time = "2025-04-02T08:25:07.678Z" },
+]
+
+[[package]]
 name = "tenant-schemas-celery"
 version = "4.0.1"
 source = { registry = "https://pypi.org/simple" }
@@ -3368,6 +3473,19 @@ wheels = [
 ]
 
 [[package]]
+name = "watchdog-gevent"
+version = "0.2.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "gevent" },
+    { name = "watchdog" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/97/69/91cfca7c21c382e3a8aca4251dcd7d4315228d9346381feb2dde36d14061/watchdog_gevent-0.2.1.tar.gz", hash = "sha256:ae6b94d0f8c8ce1c5956cd865f612b61f456cf19801744bba25a349fe8e8c337", size = 4296, upload-time = "2024-10-19T05:29:12.987Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/00/a9/54b88e150b77791958957e2188312477d09fc84820fc03f8b3a7569d10b0/watchdog_gevent-0.2.1-py3-none-any.whl", hash = "sha256:e8114658104a018f626ee54052335407c1438369febc776c4b4c4308ed002350", size = 3462, upload-time = "2024-10-19T05:29:11.421Z" },
+]
+
+[[package]]
 name = "watchfiles"
 version = "1.0.5"
 source = { registry = "https://pypi.org/simple" }
@@ -3555,6 +3673,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/3f/50/bad581df71744867e9468ebd0bcd6505de3b275e06f202c2cb016e3ff56f/zipp-3.21.0.tar.gz", hash = "sha256:2c9958f6430a2040341a52eb608ed6dd93ef4392e02ffe219417c1b28b5dd1f4", size = 24545, upload-time = "2024-11-10T15:05:20.202Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/1a/7e4798e9339adc931158c9d69ecc34f5e6791489d469f5e50ec15e35f458/zipp-3.21.0-py3-none-any.whl", hash = "sha256:ac1bbe05fd2991f160ebce24ffbac5f6d11d83dc90891255885223d42b3cd931", size = 9630, upload-time = "2024-11-10T15:05:19.275Z" },
+]
+
+[[package]]
+name = "zope-event"
+version = "5.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "setuptools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/46/c2/427f1867bb96555d1d34342f1dd97f8c420966ab564d58d18469a1db8736/zope.event-5.0.tar.gz", hash = "sha256:bac440d8d9891b4068e2b5a2c5e2c9765a9df762944bda6955f96bb9b91e67cd", size = 17350, upload-time = "2023-06-23T06:28:35.709Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/42/f8dbc2b9ad59e927940325a22d6d3931d630c3644dae7e2369ef5d9ba230/zope.event-5.0-py3-none-any.whl", hash = "sha256:2832e95014f4db26c47a13fdaef84cef2f4df37e66b59d8f1f4a8f319a632c26", size = 6824, upload-time = "2023-06-23T06:28:32.652Z" },
 ]
 
 [[package]]

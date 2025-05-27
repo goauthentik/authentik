@@ -58,18 +58,6 @@ class AuthentikEventsConfig(ManagedAppConfig):
             ).save()
 
     @ManagedAppConfig.reconcile_tenant
-    def prefill_tasks(self):
-        """Prefill tasks"""
-        from authentik.events.models import SystemTask
-        from authentik.events.system_tasks import _prefill_tasks
-
-        for task in _prefill_tasks:
-            if SystemTask.objects.filter(name=task.name).exists():
-                continue
-            task.save()
-            self.logger.debug("prefilled task", task_name=task.name)
-
-    @ManagedAppConfig.reconcile_tenant
     def run_scheduled_tasks(self):
         """Run schedule tasks which are behind schedule (only applies
         to tasks of which we keep metrics)"""
