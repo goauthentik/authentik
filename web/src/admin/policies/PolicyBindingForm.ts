@@ -182,7 +182,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(policy: Policy): boolean => {
                                 return policy.pk === this.instance?.policy;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -219,7 +219,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.group;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -256,7 +256,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                             .selected=${(user: User): boolean => {
                                 return user.pk === this.instance?.user;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         ${this.typeNotices
@@ -300,7 +300,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     ${msg("Negates the outcome of the binding. Messages are unaffected.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
                     value="${this.instance?.order ?? this.defaultOrder}"
@@ -308,7 +308,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Timeout")} ?required=${true} name="timeout">
+            <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                 <input
                     type="number"
                     value="${this.instance?.timeout ?? 30}"
