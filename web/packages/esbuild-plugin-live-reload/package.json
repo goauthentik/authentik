@@ -1,7 +1,7 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
     "version": "1.0.5",
-    "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
+    "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "scripts": {
         "build": "npm run build:types && npm run build:docs",
@@ -48,6 +48,14 @@
     "engines": {
         "node": ">=22"
     },
+    "keywords": [
+        "esbuild",
+        "live-reload",
+        "browser",
+        "refresh",
+        "reload",
+        "authentik"
+    ],
     "repository": {
         "type": "git",
         "url": "git+https://github.com/goauthentik/authentik.git",

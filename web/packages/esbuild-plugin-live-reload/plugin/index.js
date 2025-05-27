@@ -15,7 +15,9 @@ import { resolve as resolvePath } from "node:path";
  * @param {Event} event
  * @returns {string}
  *
- * @category ESBuild
+ * @category Server API
+ * @ignore
+ * @internal
  * @runtime node
  */
 export function serializeCustomEventToStream(event) {
@@ -59,14 +61,14 @@ async function findDisparatePort() {
  * @property {EventTarget} dispatcher
  * @property {string} [logPrefix]
  *
- * @category ESBuild
+ * @category Server API
  * @runtime node
  */
 
 /**
  * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
  *
- * @category ESBuild
+ * @category Server API
  * @runtime node
  */
 
@@ -76,7 +78,7 @@ async function findDisparatePort() {
  * @param {EventServerInit} options
  * @returns {RequestHandler}
  *
- * @category ESBuild
+ * @category Server API
  * @runtime node
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
@@ -142,6 +144,9 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
 /**
  * Options for the build observer plugin.
  *
+ * @category Plugin API
+ * @runtime node
+ *
  * @typedef {object} LiveReloadPluginOptions
  *
  * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
@@ -149,9 +154,6 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
  * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
  * @property {string} [logPrefix] A prefix to use for log messages.
  * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
- *
- * @category ESBuild
- * @runtime node
  */
 
 /**

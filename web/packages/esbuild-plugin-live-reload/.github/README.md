@@ -1,10 +1,14 @@
-# `@goauthentik/esbuild-plugin-live-reload`
+_An ESBuild development plugin that watches for file changes and triggers automatic browser refreshes._
 
-_A plugin that enables live reloading of ESBuild during development._
+## Quick start
 
-## Usage
+```sh
+npm install -D @goauthentik/esbuild-plugin-live-reload
+# Or with Yarn:
+yarn add -D @goauthentik/esbuild-plugin-live-reload
+```
 
-### Node.js setup
+### 1. Configure ESBuild
 
 ```js
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload";
@@ -20,7 +24,10 @@ const buildOptions = {
     define: {
         "process.env.NODE_ENV": JSON.stringify(NodeEnvironment),
     },
-    plugins: [liveReloadPlugin(/** @see {@link LiveReloadPluginOptions} */)],
+    plugins: [
+        /** @see {@link LiveReloadPluginOptions} */
+        liveReloadPlugin(),
+    ],
 };
 
 const buildContext = await esbuild.context(buildOptions);
@@ -29,21 +36,23 @@ await buildContext.rebuild();
 await buildContext.watch();
 ```
 
-### Browser setup
+### 2. Connect your browser
+
+Add the following import near the beginning of your application's entry point.
 
 ```js
-// Place this at the beginning of your application's entry point.
-
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");
 }
 ```
 
+That's it! Your browser will now automatically refresh whenever ESBuild finishes rebuilding your code.
+
 ## About authentik
 
 [authentik](https://goauthentik.io) is an open source Identity Provider that unifies your identity needs into a single platform, replacing Okta, Active Directory, and Auth0.
 
-We use this package to enable live reloading of ESBuild during development, and we hope you'll find it useful too. If you have any questions, feature requests, or bug reports, please [open an issue](https://github.com/goauthentik/authentik/issues/new/choose).
+We built this plugin to streamline our development workflow, and we're sharing it with the community. If you have any questions, feature requests, or bug reports, please [open an issue](https://github.com/goauthentik/authentik/issues/new/choose).
 
 ## License
 
