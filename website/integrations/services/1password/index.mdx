@@ -1,0 +1,77 @@
+---
+title: Integrate with 1Password
+sidebar_label: 1Password
+support_level: community
+---
+
+## What is 1Password
+
+> 1Password is a password management tool that simplifies the process of creating, storing, and sharing passwords. It allows you to create strong, unique passwords, securely store them in a vault, and automatically fill them in when needed.
+>
+> -- https://1password.com/
+
+## Preparation
+
+The following placeholders are used in this guide:
+
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of 1Password with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://TEMP`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+### Setup automated user provisioning in authentik _(optional)_
+
+Optionally, you can configure automated user provisioning from authentik to 1Password. This enables you to create users and groups, manage access, and suspend 1Password users with authentik.
+
+To support automated user provisioning, you need to create a group, and a SCIM provider in authentik. This SCIM provider is the connected to the **1Password SCIM Bridge**. For more information, see the [1Password SCIM Documentation](https://support.1password.com/scim/).
+
+#### Create a user group in authentik
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (e.g. `1Password Users`), and click **Create**.
+4. Click the name of the newly created group and navigate to the **Users** tab.
+5. Click **Add existing user**, select the user that needs Wazuh admin access and click **Add**.
+
+#### Create a SCIM provider
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click **Create**
+
+## 1Password configuration
+
+### SSO
+
+TEMP
+
+### Setup automated user provisioning in 1Password _(optional)_
+
+TEMP
+
+## Configuration verification
+
+To verify that authentik is properly integrated with 1Password, first sign out of your account. Then, navigate to the [1Password login page](https://my.1password.com/signin), enter an email that’s provisioned for SSO, and click **Sign in with authentik**. You will then be redirected to authentik for authentication before being sent back to the 1Password dashboard.
+
+## Resources
+
+- [1Password SCIM Documentation](https://support.1password.com/scim/)
