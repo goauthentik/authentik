@@ -175,9 +175,10 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def _get_driver(self) -> WebDriver:
         count = 0
+        opts = webdriver.ChromeOptions()
+        opts.add_argument("--disable-search-engine-choice-screen")
+        opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         try:
-            opts = webdriver.ChromeOptions()
-            opts.add_argument("--disable-search-engine-choice-screen")
             return webdriver.Chrome(options=opts)
         except WebDriverException:
             pass
@@ -185,7 +186,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             try:
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    options=webdriver.ChromeOptions(),
+                    options=opts,
                 )
                 driver.maximize_window()
                 return driver
