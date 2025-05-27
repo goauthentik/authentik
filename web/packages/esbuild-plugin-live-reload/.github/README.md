@@ -47,5 +47,4 @@ We use this package to enable live reloading of ESBuild during development, and 
 
 ## License
 
-This code is licensed under the [MIT License](https://www.tldrlegal.com/license/mit-license).
-[A copy of the license](./LICENSE.txt) is included with this package.
+This code is licensed under the [MIT License](https://www.tldrlegal.com/license/mit-license)
