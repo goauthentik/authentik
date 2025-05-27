@@ -42,6 +42,11 @@
     "engines": {
         "node": ">=22"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "web/packages/esbuild-plugin-live-reload"
+    },
     "types": "./out/index.d.ts",
     "files": [
         "./index.js",

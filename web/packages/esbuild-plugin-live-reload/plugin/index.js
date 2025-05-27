@@ -7,12 +7,16 @@
  */
 import { findFreePorts } from "find-free-ports";
 import * as http from "node:http";
-import * as path from "node:path";
+import { resolve as resolvePath } from "node:path";
 
 /**
  * Serializes a custom event to a text stream.
+ *
  * @param {Event} event
  * @returns {string}
+ *
+ * @category ESBuild
+ * @runtime node
  */
 export function serializeCustomEventToStream(event) {
     // @ts-expect-error - TS doesn't know about the detail property
@@ -54,17 +58,26 @@ async function findDisparatePort() {
  * @property {string} pathname
  * @property {EventTarget} dispatcher
  * @property {string} [logPrefix]
+ *
+ * @category ESBuild
+ * @runtime node
  */
 
 /**
  * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
+ *
+ * @category ESBuild
+ * @runtime node
  */
 
 /**
  * Create an event request handler.
+ *
  * @param {EventServerInit} options
  * @returns {RequestHandler}
+ *
  * @category ESBuild
+ * @runtime node
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
     const log = console.log.bind(console, `[${logPrefix}]`);
@@ -136,13 +149,15 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
  * @property {string | URL} [publicURL] A URL to listen on. If not provided, a random port will be used.
  * @property {string} [logPrefix] A prefix to use for log messages.
  * @property {string} [relativeRoot] A relative path to the root of the project. This is used to resolve build errors, line numbers, and file paths.
+ *
+ * @category ESBuild
+ * @runtime node
  */
 
 /**
  * Creates a plugin that listens for build events and sends them to a server-sent event stream.
  *
- * @param {
- * } [options]
+ * @param {LiveReloadPluginOptions} [options]
  * @returns {import('esbuild').Plugin}
  */
 export function liveReloadPlugin(options = {}) {
@@ -234,7 +249,7 @@ export function liveReloadPlugin(options = {}) {
                             location: error.location
                                 ? {
                                       ...error.location,
-                                      file: path.resolve(relativeRoot, error.location.file),
+                                      file: resolvePath(relativeRoot, error.location.file),
                                   }
                                 : null,
                         })),
