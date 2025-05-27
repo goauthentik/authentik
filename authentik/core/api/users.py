@@ -84,8 +84,8 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
+from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.stage import pickle_flow_token_for_email
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
 
@@ -483,6 +483,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 "user": user,
                 "flow": flow,
                 "_plan": _plan,
+                "revoke_on_execution": not for_email,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})

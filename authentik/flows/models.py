@@ -303,6 +303,7 @@ class FlowToken(Token):
 
     flow = models.ForeignKey(Flow, on_delete=models.CASCADE)
     _plan = models.TextField()
+    revoke_on_execution = models.BooleanField(default=True)
 
     @staticmethod
     def pickle(plan: "FlowPlan") -> str:
