@@ -1,4 +1,5 @@
 from base64 import b64encode
+from copy import deepcopy
 from pickle import dumps  # nosec
 
 from django.utils.translation import gettext as _
@@ -12,9 +13,10 @@ def pickle_flow_token_for_email(plan: FlowPlan):
     """Insert a consent stage into the flow plan and pickle it for a FlowToken,
     to be sent via Email. This is to prevent automated email scanners, which sometimes
     open links in emails in a full browser from breaking the link."""
-    plan.insert_stage(in_memory_stage(EmailTokenRevocationConsentStageView), index=0)
-    plan.context[PLAN_CONTEXT_CONSENT_HEADER] = _("Continue to confirm this email address.")
-    data = dumps(plan)
+    plan_copy = deepcopy(plan)
+    plan_copy.insert_stage(in_memory_stage(EmailTokenRevocationConsentStageView), index=0)
+    plan_copy.context[PLAN_CONTEXT_CONSENT_HEADER] = _("Continue to confirm this email address.")
+    data = dumps(plan_copy)
     return b64encode(data).decode()
 
 
