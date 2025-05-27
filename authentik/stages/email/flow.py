@@ -1,7 +1,6 @@
 from base64 import b64encode
 from pickle import dumps  # nosec
 
-from django.db import Error
 from django.utils.translation import gettext as _
 
 from authentik.flows.models import FlowToken, in_memory_stage
@@ -21,15 +20,15 @@ def pickle_flow_token_for_email(plan: FlowPlan):
 
 class EmailTokenRevocationConsentStageView(ConsentStageView):
 
-    def get_challenge(self):
+    def get(self, request, *args, **kwargs):
         token: FlowToken = self.executor.plan.context[PLAN_CONTEXT_IS_RESTORED]
         try:
             token.refresh_from_db()
-        except Error:
+        except FlowToken.DoesNotExist:
             return self.executor.stage_invalid(
                 _("Link was already used, please request a new link.")
             )
-        return super().get_challenge()
+        return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response):
         token: FlowToken = self.executor.plan.context[PLAN_CONTEXT_IS_RESTORED]
