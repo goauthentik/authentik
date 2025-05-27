@@ -177,17 +177,17 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         count = 0
         opts = webdriver.ChromeOptions()
         opts.add_argument("--disable-search-engine-choice-screen")
-        opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+        # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
         opts.add_experimental_option(
             "prefs",
             {
                 "profile.password_manager_leak_detection": False,
             },
         )
-        try:
-            return webdriver.Chrome(options=opts)
-        except WebDriverException:
-            pass
+        # try:
+        #     return webdriver.Chrome(options=opts)
+        # except WebDriverException:
+        #     pass
         while count < RETRIES:
             # try:
             driver = webdriver.Remote(
