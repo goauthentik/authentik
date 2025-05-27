@@ -166,10 +166,10 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::group::authentik Logs", file=stderr)
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
+        self.logger = get_logger()
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.logger = get_logger()
         self.user = create_test_admin_user()
         super().setUp()
 
@@ -181,7 +181,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         opts.add_experimental_option(
             "prefs",
             {
-            "profile.password_manager_leak_detection": False,
+                "profile.password_manager_leak_detection": False,
             },
         )
         try:
@@ -196,7 +196,8 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
                 )
                 driver.maximize_window()
                 return driver
-            except WebDriverException:
+            except WebDriverException as exc:
+                self.logger.warning("Failed to setup webdriver", exc=exc)
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
