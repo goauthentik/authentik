@@ -32,8 +32,6 @@ PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
 
-
-
 class EmailChallenge(Challenge):
     """Email challenge"""
 
