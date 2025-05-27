@@ -9009,7 +9009,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Cette option configure les liens affichés en bas de page sur l’exécuteur de flux. L'URL est limitée à des addresses web et courriel. Si le nom est laissé vide, l'URL sera affichée.</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
   <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
