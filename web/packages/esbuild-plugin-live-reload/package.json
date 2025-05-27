@@ -4,7 +4,11 @@
     "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p ."
+        "build": "npm run build:types && npm run build:docs",
+        "build:docs": "typedoc",
+        "build:types": "tsc -p .",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u ."
     },
     "main": "index.js",
     "type": "module",
@@ -34,6 +38,8 @@
         "esbuild": "^0.25.4",
         "prettier": "^3.5.3",
         "prettier-plugin-packagejson": "^2.5.14",
+        "typedoc": "^0.28.5",
+        "typedoc-plugin-markdown": "^4.6.3",
         "typescript": "^5.8.3"
     },
     "peerDependencies": {
