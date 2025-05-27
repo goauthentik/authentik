@@ -166,30 +166,35 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             print("::group::authentik Logs", file=stderr)
         apps.get_app_config("authentik_tenants").ready()
         self.wait_timeout = 60
+        self.logger = get_logger()
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
-        self.logger = get_logger()
         self.user = create_test_admin_user()
         super().setUp()
 
     def _get_driver(self) -> WebDriver:
         count = 0
-        try:
-            opts = webdriver.ChromeOptions()
-            opts.add_argument("--disable-search-engine-choice-screen")
-            return webdriver.Chrome(options=opts)
-        except WebDriverException:
-            pass
+        opts = webdriver.ChromeOptions()
+        opts.add_argument("--disable-search-engine-choice-screen")
+        # This breaks selenium when running remotely...?
+        # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
+        opts.add_experimental_option(
+            "prefs",
+            {
+                "profile.password_manager_leak_detection": False,
+            },
+        )
         while count < RETRIES:
             try:
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    options=webdriver.ChromeOptions(),
+                    options=opts,
                 )
                 driver.maximize_window()
                 return driver
-            except WebDriverException:
+            except WebDriverException as exc:
+                self.logger.warning("Failed to setup webdriver", exc=exc)
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
