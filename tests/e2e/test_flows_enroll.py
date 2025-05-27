@@ -92,6 +92,15 @@ class TestFlowsEnroll(SeleniumTestCase):
 
         sleep(2)
 
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            "[type=submit]",
+        ).click()
+
+        self.wait_for_url(self.if_user_url())
+
         self.assert_user(User.objects.get(username=self.username))
 
     def initial_stages(self):
