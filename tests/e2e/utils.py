@@ -189,16 +189,16 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
         except WebDriverException:
             pass
         while count < RETRIES:
-            try:
-                driver = webdriver.Remote(
-                    command_executor="http://localhost:4444/wd/hub",
-                    options=opts,
-                )
-                driver.maximize_window()
-                return driver
-            except WebDriverException as exc:
-                self.logger.warning("Failed to setup webdriver", exc=exc)
-                count += 1
+            # try:
+            driver = webdriver.Remote(
+                command_executor="http://localhost:4444/wd/hub",
+                options=opts,
+            )
+            driver.maximize_window()
+            return driver
+            # except WebDriverException as exc:
+            #     self.logger.warning("Failed to setup webdriver", exc=exc)
+            #     count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
