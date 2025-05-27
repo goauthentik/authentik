@@ -168,10 +168,13 @@ class AuthenticatorValidateStageDuoTests(FlowTestCase):
             user__pk=self.user.pk,
         ).first()
         self.assertIsNotNone(event)
+        context = dict(event.context)
+        # The auth_method field is being obfuscated as it's marked as sensitive in Django 5.2
+        auth_method = context.pop("auth_method")
+        self.assertIn(auth_method, ["auth_mfa", "********************"])
         self.assertEqual(
-            event.context,
+            context,
             {
-                "auth_method": "auth_mfa",
                 "auth_method_args": {
                     "mfa_devices": [
                         {
