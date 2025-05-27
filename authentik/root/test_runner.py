@@ -69,7 +69,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         parser.add_argument(
             "--no-capture",
             action="store_true",
-            help="Disable any capturing of stdout/stderr during tests."
+            help="Disable any capturing of stdout/stderr during tests.",
         )
 
     def run_tests(self, test_labels, extra_tests=None, **kwargs):
