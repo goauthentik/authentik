@@ -78,6 +78,7 @@ class PolicyBindingSerializer(ModelSerializer):
             "negate",
             "enabled",
             "order",
+            "honor_order",
             "timeout",
             "failure_result",
         ]
@@ -110,7 +111,16 @@ class PolicyBindingFilter(FilterSet):
 
     class Meta:
         model = PolicyBinding
-        fields = ["policy", "policy__isnull", "target", "target_in", "enabled", "order", "timeout"]
+        fields = [
+            "policy",
+            "policy__isnull",
+            "target",
+            "target_in",
+            "enabled",
+            "order",
+            "honor_order",
+            "timeout",
+        ]
 
 
 class PolicyBindingViewSet(UsedByMixin, ModelViewSet):
