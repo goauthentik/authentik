@@ -16,8 +16,6 @@ The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
 
-It is required to prove ownership of the domain that users sign into Stripe with, for more information see the [Stripe SSO Documentation](https://docs.stripe.com/get-started/account/sso/other#proving-domain-verification).
-
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
 :::
@@ -95,7 +93,7 @@ To support the integration of Stripe with authentik, you need to create a group,
 
 6. Click **Continue**.
 7. Enter the email address of an authentik user that will be used for testing the SSO configuration and click **Continue**. Ensure that the user has the appropriate group membership in authentik. You will be redirected to authentik, once logged in, you will be redirected back to Stripe.
-8. If the test is succesful, click **Continue**. Otherwise, verify your configuration and try again.
+8. If the test is successful, click **Continue**. Otherwise, verify your configuration and try again.
 9. Select the **SSO Enforcement** type. `Required` will force users to utilize authentik SSO. `Optional` will allow users to utilize authentik SSO or standard Stripe login.
 10. Click **Save**.
 
