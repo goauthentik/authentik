@@ -9,7 +9,7 @@ from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.utils.http import urlencode
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
