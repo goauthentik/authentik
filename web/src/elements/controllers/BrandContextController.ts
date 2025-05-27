@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
+import { isCausedByAbortError } from "#common/errors/network";
 import { BrandingContext, BrandingMixin } from "#elements/mixins/branding";
 import type { ReactiveElementHost } from "#elements/types";
 
@@ -42,7 +42,7 @@ export class BrandingContextController implements ReactiveController {
             })
 
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching brand");
                     return;
                 }

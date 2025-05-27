@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
+import { isCausedByAbortError } from "#common/errors/network";
 import { VersionContext, VersionMixin } from "#elements/mixins/version";
 import type { ReactiveElementHost } from "#elements/types";
 
@@ -41,7 +41,7 @@ export class VersionContextController implements ReactiveController {
             })
 
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching license summary");
                     return;
                 }

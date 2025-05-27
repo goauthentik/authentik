@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
+import { isCausedByAbortError } from "#common/errors/network";
 import { AKConfigMixin, AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import type { ReactiveElementHost } from "#elements/types";
 
@@ -46,7 +46,7 @@ export class ConfigContextController implements ReactiveController {
                 this.#host[kAKConfig] = authentikConfig;
             })
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching configuration");
                     return;
                 }
