@@ -152,6 +152,7 @@
         "@storybook/addon-essentials": "^8.6.14",
         "@storybook/addon-links": "^8.6.14",
         "@storybook/blocks": "^8.6.12",
+        "@storybook/channels": "^8.6.14",
         "@storybook/experimental-addon-test": "^8.6.14",
         "@storybook/manager-api": "^8.6.14",
         "@storybook/test": "^8.6.14",
