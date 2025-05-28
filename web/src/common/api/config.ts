@@ -3,7 +3,7 @@ import {
     EventMiddleware,
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware.js";
-import { EVENT_LOCALE_REQUEST, VERSION } from "@goauthentik/common/constants.js";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
 import { globalAK } from "@goauthentik/common/global.js";
 import { SentryMiddleware } from "@goauthentik/common/sentry/middleware";
 
@@ -79,4 +79,6 @@ export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
 
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
+console.debug(
+    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
+);

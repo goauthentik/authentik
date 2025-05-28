@@ -97,7 +97,8 @@ class GroupsView(SCIMObjectView):
                     self.logger.warning("Invalid group member", exc=exc)
                     continue
                 query |= Q(uuid=member.value)
-            group.users.set(User.objects.filter(query))
+            if query:
+                group.users.set(User.objects.filter(query))
         if not connection:
             connection, _ = SCIMSourceGroup.objects.get_or_create(
                 source=self.source,

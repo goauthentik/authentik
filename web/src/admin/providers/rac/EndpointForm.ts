@@ -45,11 +45,10 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                 pbmUuid: this.instance.pk || "",
                 patchedEndpointRequest: data,
             });
-        } else {
-            return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
-                endpointRequest: data,
-            });
         }
+        return new RacApi(DEFAULT_CONFIG).racEndpointsCreate({
+            endpointRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

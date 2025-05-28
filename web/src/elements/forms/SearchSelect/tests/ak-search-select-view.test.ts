@@ -102,9 +102,9 @@ describe("Search select: Test Input Field", () => {
             document.body.querySelector("#a-separate-component")?.remove();
             document.body.querySelector("ak-search-select-view")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });
