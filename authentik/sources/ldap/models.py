@@ -346,6 +346,9 @@ class UserLDAPSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User LDAP Source Connection")
         verbose_name_plural = _("User LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]
 
 
 class GroupLDAPSourceConnection(GroupSourceConnection):
@@ -366,3 +369,6 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
     class Meta:
         verbose_name = _("Group LDAP Source Connection")
         verbose_name_plural = _("Group LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]
