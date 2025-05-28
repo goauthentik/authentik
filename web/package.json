@@ -143,7 +143,7 @@
     "devDependencies": {
         "@eslint/js": "^9.27.0",
         "@goauthentik/core": "^1.0.0",
-        "@goauthentik/esbuild-plugin-live-reload": "^1.0.4",
+        "@goauthentik/esbuild-plugin-live-reload": "^1.0.5",
         "@goauthentik/eslint-config": "^1.0.5",
         "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
