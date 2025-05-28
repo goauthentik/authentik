@@ -58,11 +58,10 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 instanceUuid: this.instance.pk,
                 blueprintInstanceRequest: data,
             });
-        } else {
-            return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
-                blueprintInstanceRequest: data,
-            });
         }
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsCreate({
+            blueprintInstanceRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

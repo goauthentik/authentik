@@ -132,7 +132,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH = False
+GUARDIAN_MONKEY_PATCH_USER = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -424,7 +424,7 @@ else:
         "BACKEND": "authentik.root.storages.FileStorage",
         "OPTIONS": {
             "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": "/media/",
+            "base_url": CONFIG.get("web.path", "/") + "media/",
         },
     }
     # Compatibility for apps not supporting top-level STORAGES

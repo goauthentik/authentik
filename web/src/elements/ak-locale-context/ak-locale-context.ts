@@ -5,7 +5,7 @@ import { customEvent } from "@goauthentik/elements/utils/customEvents";
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { WithBrandConfig } from "../Interface/brandProvider";
+import { WithBrandConfig } from "../mixins/branding";
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
 import { DEFAULT_LOCALE, autoDetectLanguage, getBestMatchLocale } from "./helpers";
@@ -70,7 +70,7 @@ export class LocaleContext extends WithBrandConfig(AKElement) {
     }
 
     updateLocale(requestedLocale: string | undefined = undefined) {
-        const localeRequest = autoDetectLanguage(requestedLocale, this.brand?.defaultLocale);
+        const localeRequest = autoDetectLanguage(requestedLocale, this.brand.defaultLocale);
         const locale = getBestMatchLocale(localeRequest);
         if (!locale) {
             console.warn(`authentik/locale: failed to find locale for code ${localeRequest}`);
