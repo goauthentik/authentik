@@ -181,6 +181,7 @@ const items = [
             "services/budibase/index",
             "services/drupal/index",
             "services/pocketbase/index",
+            "services/stripe/index",
             "services/wordpress/index",
         ],
     },
