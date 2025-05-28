@@ -27,7 +27,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -45,7 +45,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 
 ### Get the certificate's SHA-256 fingerprint
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **System** > **Certificates**, expand the certificate chosen in the previous section, and take note of the **Certificate Fingerprint (SHA256)**.
 
 ## YouTrack configuration
@@ -61,7 +61,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 
 ### Update the authentik provider
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** > **_application name_**, then click **Edit**.
 3. Replace the placeholder value for the **ACS URL** with the value copied from the previous section.
 

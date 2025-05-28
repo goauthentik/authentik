@@ -27,7 +27,7 @@ To support the integration of Gitea with authentik, you need to create an applic
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -89,7 +89,7 @@ You can add users to the groups at any point.
 
 #### Create custom property mapping
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following configurations:
 
     - **Name**: Choose a descriptive name (.e.g `authentik gitea OAuth Mapping: OpenID 'gitea'`)
@@ -113,7 +113,7 @@ You can add users to the groups at any point.
 
 #### Add the custom property mapping to the Gitea provider
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the **Edit** icon of the Gitea provider.
 3. Under **Advanced protocol settings** > **Scopes** add the following scopes to **Selected Scopes**:
 
