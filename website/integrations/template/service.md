@@ -43,7 +43,7 @@ _Any specific info about this integration can go here._
 
 ## Service configuration
 
-Insert Service configuration
+Insert service configuration
 
 1. Write first step here...
 
