@@ -24,7 +24,7 @@ group_in_slapd = {
     "attributes": {
         "cn": group_in_slapd_cn,
         "uid": group_in_slapd_uid,
-        "objectClass": "groupOfNames",
+        "objectClass": group_in_slapd_objectClass,
         "member": [user_in_slapd["dn"]],
     },
 }
