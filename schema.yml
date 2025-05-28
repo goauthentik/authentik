@@ -45901,11 +45901,17 @@ components:
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -47629,19 +47635,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -48367,11 +48381,17 @@ components:
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -49089,19 +49109,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -56147,19 +56175,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -56388,19 +56424,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -56707,19 +56751,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -56872,19 +56924,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -57484,19 +57544,27 @@ components:
           readOnly: true
         assigned_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: Get application slug, return empty string if no application
+            exists
           readOnly: true
         assigned_application_name:
           type: string
-          description: Application's display Name.
+          description: Get application name, return empty string if no application
+            exists
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
@@ -58193,11 +58261,17 @@ components:
           readOnly: true
         assigned_backchannel_application_slug:
           type: string
-          description: Internal application name, used in URLs.
+          description: |-
+            Get backchannel application slug.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         assigned_backchannel_application_name:
           type: string
-          description: Application's display Name.
+          description: |-
+            Get backchannel application name.
+
+            Returns an empty string if no backchannel application exists.
           readOnly: true
         verbose_name:
           type: string
