@@ -68,7 +68,7 @@ tls:
                 clientAuthType: RequireAndVerifyClientCert
 ```
 
-See the [Traefik MTLS documentation](https://doc.traefik.io/traefik/https/tls/#client-authentication-mtls) for reference.
+See the [Traefik mTLS documentation](https://doc.traefik.io/traefik/https/tls/#client-authentication-mtls) for reference.
 
 #### Traefik Ingress
 
