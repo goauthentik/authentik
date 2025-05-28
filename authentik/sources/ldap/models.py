@@ -330,7 +330,9 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
 class UserLDAPSourceConnection(UserSourceConnection):
     validated_by = models.UUIDField(
-        null=True, blank=True, help_text=_("Helper field for batch deletions")
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
     )
 
     @property
@@ -348,7 +350,9 @@ class UserLDAPSourceConnection(UserSourceConnection):
 
 class GroupLDAPSourceConnection(GroupSourceConnection):
     validated_by = models.UUIDField(
-        null=True, blank=True, help_text=_("Helper field for batch deletions")
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
     )
 
     @property
