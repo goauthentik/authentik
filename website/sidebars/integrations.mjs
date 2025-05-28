@@ -122,6 +122,7 @@ const items = [
             "services/gravity/index",
             "services/netbird/index",
             "services/opnsense/index",
+            "services/pangolin/index",
             "services/pfsense/index",
         ],
     },
