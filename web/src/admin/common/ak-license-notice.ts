@@ -1,3 +1,4 @@
+import { $PFBase } from "#common/theme";
 import { WithLicenseSummary } from "#elements/mixins/license";
 import "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -8,6 +9,8 @@ import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-license-notice")
 export class AkLicenceNotice extends WithLicenseSummary(AKElement) {
+    static styles = [$PFBase];
+
     @property()
     notice = msg("Enterprise only");
 
