@@ -2,6 +2,8 @@
 title: Scaling
 ---
 
+import ScalingCalculator from "@site/src/components/ScalingCalculator";
+
 authentik can be scaled to several thousands of users. This page aims to provide some guidance on installation sizing and tuning for those large installations.
 
 :::note
@@ -20,13 +22,13 @@ The authentik server is a stateless component that serves HTTP requests. As such
 
 The authentik worker is a stateless component that processes background tasks for authentik. This includes:
 
--   maintenance tasks, such as removing outdated resources
--   synchronization tasks for sources and providers such as SCIM, Google Workspace, LDAP, etc.
--   one-off tasks that are triggered by some action by a user or an administrator, such as sending notifications.
+- maintenance tasks, such as removing outdated resources
+- synchronization tasks for sources and providers such as SCIM, Google Workspace, LDAP, etc.
+- one-off tasks that are triggered by some action by a user or an administrator, such as sending notifications.
 
 Scaling the worker thus greatly depends on the usage made of authentik. If not synchronization is configured and there are few one-off tasks, then the worker will use almost no resources. However, if the worker has to process lengthy synchronization tasks and is then backlogged with other tasks, then it needs to be scaled up.
 
-As such, we recommend setting up some [monitoring](./monitoring.md) and observing how the worker behaves, then scaling it up accordingly. You should aim to have as few tasks as possible in the worker queue.
+As such, we recommend setting up some [monitoring](../sys-mgmt/monitoring.md) and observing how the worker behaves, then scaling it up accordingly. You should aim to have as few tasks as possible in the worker queue.
 
 ### PostgreSQL & Redis
 
@@ -36,16 +38,7 @@ The specific usage that authentik makes of PostgreSQL and Redis doesn't scale li
 
 ## Calculator
 
-We provide a calculator to size your deployments of the authentik server based on benchmarks and real-world data we have observed.
-
-The calculator takes two inputs:
-
--   the number of active users on the instance. This is used to calculate how much database storage will be required, and how many concurrent logins should be expected.
--   the number of concurrent logins expected. For N thousands users, we don't expect those N thousands users to log in at the exact same time. As such, we estimate that all of the users will log in over a period of 15 minutes, greatly reducing the load on the instance. Furthermore, as login uses [flows](../flow/index.md), a single login process may take several seconds for the user to complete it (entering their password, their MFA method, etc.). We estimate that number at 10 seconds. If you know what usage pattern to expect, you can override that value from the computed one.
-
-import ScalingCalculator from "../../src/components/ScalingCalculator";
-
-<ScalingCalculator></ScalingCalculator>
+<ScalingCalculator />
 
 #### Known issues
 
