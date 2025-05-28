@@ -54,11 +54,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
-                promptRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+            promptRequest: data,
+        });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {

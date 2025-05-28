@@ -33,11 +33,10 @@ export class ConsentStageForm extends BaseStageForm<ConsentStage> {
                 stageUuid: this.instance.pk || "",
                 consentStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
-                consentStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesConsentCreate({
+            consentStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
