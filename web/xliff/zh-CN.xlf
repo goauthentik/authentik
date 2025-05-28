@@ -6350,6 +6350,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
 </trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+</trans-unit>
 </body>
 </file>
 </xliff>
