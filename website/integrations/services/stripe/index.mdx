@@ -92,7 +92,7 @@ To support the integration of Stripe with authentik, you need to create a group,
     - **Identity Provider Certificate**: Paste in the contents of your authentik signing certificate.
 
 6. Click **Continue**.
-7. Enter the email address of an authentik user that will be used for testing the SSO configuration and click **Continue**. Ensure that the user has the appropriate group membership in authentik. You will be redirected to authentik, once logged in, you will be redirected back to Stripe.
+7. Enter the email address of an authentik user designated for testing the SSO configuration and click **Continue**. Ensure that the user belongs to the appropriate authentik group. After logging in on authentik, you will be redirected back to Stripe.
 8. If the test is successful, click **Continue**. Otherwise, verify your configuration and try again.
 9. Choose the **SSO Enforcement** setting. Selecting `Required` mandates that users use authentik to log in, whereas `Optional` allows users to choose between authentik and the standard Stripe login.
 10. Click **Save**.
