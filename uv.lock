@@ -170,7 +170,7 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "celery" },
     { name = "channels" },
-    { name = "channels-redis" },
+    { name = "channels-postgres" },
     { name = "cryptography" },
     { name = "dacite" },
     { name = "deepmerge" },
@@ -268,7 +268,7 @@ requires-dist = [
     { name = "argon2-cffi", specifier = "==23.1.0" },
     { name = "celery", specifier = "==5.5.2" },
     { name = "channels", specifier = "==4.2.2" },
-    { name = "channels-redis", specifier = "==4.2.1" },
+    { name = "channels-postgres", specifier = "==1.1.2" },
     { name = "cryptography", specifier = "==45.0.3" },
     { name = "dacite", specifier = "==1.9.2" },
     { name = "deepmerge", specifier = "==2.0" },
@@ -712,18 +712,18 @@ daphne = [
 ]
 
 [[package]]
-name = "channels-redis"
-version = "4.2.1"
+name = "channels-postgres"
+version = "1.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asgiref" },
     { name = "channels" },
     { name = "msgpack" },
-    { name = "redis" },
+    { name = "psycopg", extra = ["pool"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c7/6d/c379c9feea4522cbdb4eba9b3d23a6270ba8cbd94e847b21834d898109d6/channels_redis-4.2.1.tar.gz", hash = "sha256:8375e81493e684792efe6e6eca60ef3d7782ef76c6664057d2e5c31e80d636dd", size = 31152, upload-time = "2024-11-15T12:58:49.836Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f5/21/c74be89ec2f93fa832f9c5b47f08c73e5e07279aab176a1f7ef4a240722d/channels_postgres-1.1.2.tar.gz", hash = "sha256:bfdf580ba65aab0d5e944d38ddd807d3521939153b786b53d6f932b6f3defd8e", size = 19696, upload-time = "2025-04-20T16:09:01.83Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/aa/981d08ae9627c3b9d8dd150f0fe644122a351abc1f47bcf53d2bfff80d91/channels_redis-4.2.1-py3-none-any.whl", hash = "sha256:2ca33105b3a04b5a327a9c47dd762b546f30b76a0cd3f3f593a23d91d346b6f4", size = 20487, upload-time = "2024-11-15T12:58:47.847Z" },
+    { url = "https://files.pythonhosted.org/packages/fd/0b/1ec2c7357ebff7ff457f39d51ccb74be56ac796595dfc228658ba23974a1/channels_postgres-1.1.2-py3-none-any.whl", hash = "sha256:301e1980f23e325e289ac93265baf54ceae289c19f1893d1b55e40fe73149f67", size = 16176, upload-time = "2025-04-20T16:09:00.383Z" },
 ]
 
 [[package]]
