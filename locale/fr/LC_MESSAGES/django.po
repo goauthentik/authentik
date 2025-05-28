@@ -2516,7 +2516,7 @@ msgid ""
 "Delete authentik users and groups which were previously supplied by this "
 "source, but are now missing from it."
 msgstr ""
-"Supprime les utilisateurs et les groupes authentik qui étaient auparavant "
+"Supprimer les utilisateurs et les groupes authentik qui étaient auparavant "
 "fournis par cette source, mais qui en sont maintenant absents."
 
 #: authentik/sources/ldap/models.py
