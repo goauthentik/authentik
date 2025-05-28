@@ -18,13 +18,13 @@ user_in_slapd = {
 group_in_slapd_dn = "cn=user_in_slapd_cn,ou=groups,dc=goauthentik,dc=io"
 group_in_slapd_cn = "group_in_slapd_cn"
 group_in_slapd_uid = "group_in_slapd_uid"
-group_in_slapd_objectClass = "groupOfNames"
+group_in_slapd_object_class = "groupOfNames"
 group_in_slapd = {
     "dn": group_in_slapd_dn,
     "attributes": {
         "cn": group_in_slapd_cn,
         "uid": group_in_slapd_uid,
-        "objectClass": group_in_slapd_objectClass,
+        "objectClass": group_in_slapd_object_class,
         "member": [user_in_slapd["dn"]],
     },
 }
