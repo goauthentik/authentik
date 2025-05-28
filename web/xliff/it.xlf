@@ -9010,7 +9010,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>Questo opzione configura il link in basso nel flusso delle pagine di esecuzione. L'URL e' limitato a web e indirizzo mail-Se il nome viene lasciato vuoto, verra' visualizzato l'URL</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
   <target>Applicazioni esterne che utilizzano <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> come fornitore di identità tramite protocolli come OAuth2 e SAML. Qui sono mostrate tutte le applicazioni, anche quelle a cui non è possibile accedere.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
@@ -9855,6 +9855,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
 </trans-unit>
     </body>
   </file>

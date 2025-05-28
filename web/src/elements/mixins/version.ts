@@ -1,7 +1,6 @@
 import { createMixin } from "#elements/types";
 
-import { consume, createContext } from "@lit/context";
-import { state } from "lit/decorators.js";
+import { Context, consume, createContext } from "@lit/context";
 
 import type { Version } from "@goauthentik/api";
 
@@ -14,6 +13,8 @@ import type { Version } from "@goauthentik/api";
  */
 
 export const VersionContext = createContext<Version>(Symbol.for("authentik-version-context"));
+
+export type VersionContext = Context<symbol, Version>;
 
 /**
  * A mixin that provides the current version to the element.
@@ -33,18 +34,11 @@ export interface VersionMixin {
  * A mixin that provides the current authentik version to the element.
  *
  * @category Mixin
- *
- * @see {@link https://lit.dev/docs/composition/mixins/#mixins-in-typescript | Lit Mixins}
  */
 export const WithVersion = createMixin<VersionMixin>(
     ({
-        /**
-         * The superclass constructor to extend.
-         */
+        // ---
         SuperClass,
-        /**
-         * Whether or not to subscribe to the context.
-         */
         subscribe = true,
     }) => {
         abstract class VersionProvider extends SuperClass implements VersionMixin {
@@ -52,7 +46,6 @@ export const WithVersion = createMixin<VersionMixin>(
                 context: VersionContext,
                 subscribe,
             })
-            @state()
             public version!: Version;
         }
 

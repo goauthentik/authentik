@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
-import { isAbortError } from "#common/errors/network";
-import { AKConfigMixin, AuthentikConfigContext } from "#elements/mixins/config";
+import { isCausedByAbortError } from "#common/errors/network";
+import { AKConfigMixin, AuthentikConfigContext, kAKConfig } from "#elements/mixins/config";
 import type { ReactiveElementHost } from "#elements/types";
 
-import { Context, ContextProvider } from "@lit/context";
+import { ContextProvider } from "@lit/context";
 import type { ReactiveController } from "lit";
 
 import { Config, RootApi } from "@goauthentik/api";
@@ -17,7 +17,7 @@ export class ConfigContextController implements ReactiveController {
     #abortController: null | AbortController = null;
 
     #host: ReactiveElementHost<AKConfigMixin>;
-    #context: ContextProvider<Context<unknown, Config>>;
+    #context: ContextProvider<AuthentikConfigContext>;
 
     constructor(host: ReactiveElementHost<AKConfigMixin>, initialValue: Config) {
         this.#host = host;
@@ -27,7 +27,7 @@ export class ConfigContextController implements ReactiveController {
             initialValue,
         });
 
-        this.#host.authentikConfig = initialValue;
+        this.#host[kAKConfig] = initialValue;
     }
 
     #fetch = () => {
@@ -43,10 +43,10 @@ export class ConfigContextController implements ReactiveController {
             })
             .then((authentikConfig) => {
                 this.#context.setValue(authentikConfig);
-                this.#host.authentikConfig = authentikConfig;
+                this.#host[kAKConfig] = authentikConfig;
             })
             .catch((error: unknown) => {
-                if (isAbortError(error)) {
+                if (isCausedByAbortError(error)) {
                     this.#log("Aborted fetching configuration");
                     return;
                 }
@@ -72,8 +72,8 @@ export class ConfigContextController implements ReactiveController {
         // If the Interface changes its config information, we should notify all
         // users of the context of that change, without creating an infinite
         // loop of resets.
-        if (this.#host.authentikConfig && this.#host.authentikConfig !== this.#context.value) {
-            this.#context.setValue(this.#host.authentikConfig);
+        if (this.#host[kAKConfig] && this.#host[kAKConfig] !== this.#context.value) {
+            this.#context.setValue(this.#host[kAKConfig]);
         }
     }
 }
