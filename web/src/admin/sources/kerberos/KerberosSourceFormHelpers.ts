@@ -25,7 +25,7 @@ export function propertyMappingsSelector(object: string, instanceMappings?: stri
         return async (mappings: DualSelectPair<KerberosSourcePropertyMapping>[]) =>
             mappings.filter(
                 ([_0, _1, _2, mapping]: DualSelectPair<KerberosSourcePropertyMapping>) =>
-                    object == "user" &&
+                    object === "user" &&
                     mapping?.managed?.startsWith("goauthentik.io/sources/kerberos/user/default/"),
             );
     }

@@ -1,6 +1,6 @@
 .PHONY: gen dev-reset all clean test web website
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
@@ -162,15 +162,13 @@ gen-client-py: gen-clean-py ## Build and install the authentik API for Python
 		--additional-properties=packageVersion=${NPM_VERSION} \
 		--git-repo-id authentik \
 		--git-user-id goauthentik
-	uv pip install ${PWD}/${GEN_API_PY}
 
 gen-client-go: gen-clean-go  ## Build and install the authentik API for Golang
 	mkdir -p ${PWD}/${GEN_API_GO}
 ifeq ($(wildcard ${PWD}/${GEN_API_GO}/.*),)
 	git clone --depth 1 https://github.com/goauthentik/client-go.git ${PWD}/${GEN_API_GO}
 else
-	cd ${PWD}/${GEN_API_GO}
-	git pull
+	cd ${PWD}/${GEN_API_GO} && git pull
 endif
 	cp ${PWD}/schema.yml ${PWD}/${GEN_API_GO}
 	make -C ${PWD}/${GEN_API_GO} build

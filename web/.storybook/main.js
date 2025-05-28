@@ -3,13 +3,10 @@
  * @import { StorybookConfig } from "@storybook/web-components-vite";
  * @import { InlineConfig, Plugin } from "vite";
  */
-import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-const NODE_ENV = process.env.NODE_ENV || "development";
-
-const CSSImportPattern = /import [\w\$]+ from .+\.(css)/g;
+const CSSImportPattern = /import [\w$]+ from .+\.(css)/g;
 const JavaScriptFilePattern = /\.m?(js|ts|tsx)$/;
 
 /**
@@ -31,6 +28,11 @@ const inlineCSSPlugin = {
 };
 
 /**
+ * @satisfies {InlineConfig}
+ */
+// const viteFinal = ;
+
+/**
  * @satisfies {StorybookConfig}
  */
 const config = {
@@ -48,22 +50,21 @@ const config = {
     docs: {
         autodocs: "tag",
     },
-    viteFinal({ plugins = [], ...config }) {
+    async viteFinal(config) {
+        const [{ mergeConfig }, { createBundleDefinitions }] = await Promise.all([
+            import("vite"),
+            import("@goauthentik/web/bundler/utils/node"),
+        ]);
+
         /**
          * @satisfies {InlineConfig}
          */
-        const mergedConfig = {
-            ...config,
-            define: {
-                "process.env.NODE_ENV": JSON.stringify(NODE_ENV),
-                "process.env.CWD": JSON.stringify(cwd()),
-                "process.env.AK_API_BASE_PATH": JSON.stringify(process.env.AK_API_BASE_PATH || ""),
-            },
-            plugins: [inlineCSSPlugin, ...plugins, postcssLit(), tsconfigPaths()],
+        const overrides = {
+            define: createBundleDefinitions(),
+            plugins: [inlineCSSPlugin, postcssLit(), tsconfigPaths()],
         };
 
-        return mergedConfig;
+        return mergeConfig(config, overrides);
     },
 };
-
 export default config;

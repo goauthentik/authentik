@@ -55,7 +55,7 @@ CODER_OIDC_ICON_URL=https://authentik.company/static/dist/assets/icons/icon.png
 
 ## Resources
 
-- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)
+- [Coder OIDC authentication documentation](https://coder.com/docs/admin/users/oidc-auth/)
 
 ## Configuration verification
 

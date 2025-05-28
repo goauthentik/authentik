@@ -129,11 +129,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
-                outpostRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+            outpostRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

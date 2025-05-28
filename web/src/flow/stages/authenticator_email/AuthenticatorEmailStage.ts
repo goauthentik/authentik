@@ -56,7 +56,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         label="${msg("Configure your email")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["email"]}
+                        .errors=${(this.challenge?.responseErrors || {}).email}
                     >
                         <input
                             type="email"
@@ -109,7 +109,7 @@ export class AuthenticatorEmailStage extends BaseStage<
                         label="${msg("Code")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                        .errors=${(this.challenge?.responseErrors || {}).code}
                     >
                         <input
                             type="text"
