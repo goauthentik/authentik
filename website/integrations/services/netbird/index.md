@@ -57,7 +57,7 @@ If an access group is created for the Netbird application, the Netbird service a
 
 ### Set up a service account
 
-1. Log into authentik as an admin, and open the authentik Admin interface.
+1. Log into authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Users**, and click **Create a service account**.
 3. Set the **Username** to `NetBird` and disable the **Create group** option. Click **Create** and take note of the **password**.
 
@@ -65,7 +65,7 @@ If an access group is created for the Netbird application, the Netbird service a
 
 NetBird requires the service account to have full administrative access to the authentik instance. Follow these steps to make it an administrator.
 
-1. Log into authentik as an admin, and open the authentik Admin interface.
+1. Log into authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups**, and click **`authentik Admins`**.
 3. On the top of the group configuration page, switch to the **Users** tab near the top of the page, then click **Add existing user**, and select the service account you just created.
 
