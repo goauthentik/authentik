@@ -77,8 +77,12 @@ class BaseLDAPSynchronizer:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
 
-    def get_identifier(self, object):
-        attributes = object.get("attributes", {})
+    def get_attributes(self, object):
+        if "attributes" not in object:
+            return
+        return object.get("attributes", {})
+
+    def get_identifier(self, attributes: dict):
         if not attributes.get(self._source.object_uniqueness_field):
             return
         return flatten(attributes[self._source.object_uniqueness_field])

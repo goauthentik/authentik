@@ -36,7 +36,9 @@ class UserLDAPForwardDeletion(BaseLDAPSynchronizer):
         for batch in batched(users, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for user in batch:
-                if identifier := self.get_identifier(user):
+                if not (attributes := self.get_attributes(user)):
+                    continue
+                if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
             UserLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
                 validated_by=uuid

@@ -34,7 +34,9 @@ class GroupLDAPForwardDeletion(BaseLDAPSynchronizer):
         for batch in batched(groups, UPDATE_CHUNK_SIZE, strict=False):
             identifiers = []
             for group in batch:
-                if identifier := self.get_identifier(group):
+                if not (attributes := self.get_attributes(group)):
+                    continue
+                if identifier := self.get_identifier(attributes):
                     identifiers.append(identifier)
             GroupLDAPSourceConnection.objects.filter(identifier__in=identifiers).update(
                 validated_by=uuid
