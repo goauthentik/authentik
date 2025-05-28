@@ -99,9 +99,10 @@ class ChallengeStageView(StageView):
             self.logger.debug("Got StageInvalidException", exc=exc)
             return self.executor.stage_invalid()
         if not challenge.is_valid():
-            self.logger.warning(
+            self.logger.error(
                 "f(ch): Invalid challenge",
                 errors=challenge.errors,
+                challenge=challenge.data,
             )
         return HttpChallengeResponse(challenge)
 
