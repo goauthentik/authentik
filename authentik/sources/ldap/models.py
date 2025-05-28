@@ -139,7 +139,6 @@ class LDAPSource(Source):
 
     delete_not_found_objects = models.BooleanField(
         default=False,
-        blank=True,
         help_text=_(
             "Delete authentik users and groups which were previously supplied by this source, "
             "but are now missing from it."
