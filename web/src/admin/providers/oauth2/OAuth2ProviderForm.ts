@@ -82,11 +82,10 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 id: this.instance.pk,
                 oAuth2ProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
-                oAuth2ProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
+            oAuth2ProviderRequest: data,
+        });
     }
 
     renderForm() {

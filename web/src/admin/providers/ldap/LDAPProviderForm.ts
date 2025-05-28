@@ -1,8 +1,8 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
 import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
 
 import { customElement } from "lit/decorators.js";
 
@@ -24,11 +24,10 @@ export class LDAPProviderFormPage extends WithBrandConfig(BaseProviderForm<LDAPP
                 id: this.instance.pk,
                 lDAPProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
-                lDAPProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
+            lDAPProviderRequest: data,
+        });
     }
 
     renderForm() {

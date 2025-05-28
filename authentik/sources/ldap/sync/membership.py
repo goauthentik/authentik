@@ -63,9 +63,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     group_member_dn = group_member.get("dn", {})
                     members.append(group_member_dn)
             else:
-                if "attributes" not in group:
+                if (attributes := self.get_attributes(group)) is None:
                     continue
-                members = group.get("attributes", {}).get(self._source.group_membership_field, [])
+                members = attributes.get(self._source.group_membership_field, [])
 
             ak_group = self.get_group(group)
             if not ak_group:

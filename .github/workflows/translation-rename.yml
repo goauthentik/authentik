@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
     steps:
+      - uses: actions/checkout@v4
       - id: generate_token
         uses: tibdex/github-app-token@v2
         with:
@@ -31,7 +32,7 @@ jobs:
         env:
           GH_TOKEN: ${{ steps.generate_token.outputs.token }}
         run: |
-          gh pr edit -t "translate: ${{ steps.title.outputs.title }}" --add-label dependencies
+          gh pr edit ${{ github.event.pull_request.number }} -t "translate: ${{ steps.title.outputs.title }}" --add-label dependencies
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}

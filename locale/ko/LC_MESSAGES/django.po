@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-23 09:00+0000\n"
+"POT-Creation-Date: 2025-05-28 11:25+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: NavyStack, 2023\n"
 "Language-Team: Korean (https://app.transifex.com/authentik/teams/119923/ko/)\n"
@@ -98,6 +98,10 @@ msgstr ""
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Authentik Core 웹서버에서 사용하는 웹 인증서."
+
+#: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr ""
 
 #: authentik/brands/models.py
 msgid "Brand"
@@ -625,6 +629,33 @@ msgstr ""
 msgid "Verifying your browser..."
 msgstr ""
 
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr ""
+
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
@@ -946,8 +977,11 @@ msgid "Starting full provider sync"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
+msgid "Syncing users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -2264,6 +2298,12 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP 소스"
 
@@ -2277,6 +2317,11 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -2657,6 +2702,11 @@ msgstr ""
 msgid "Group SAML Source Connections"
 msgstr ""
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr ""
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr ""
@@ -3017,6 +3067,10 @@ msgstr "사용자 동의"
 msgid "User Consents"
 msgstr "사용자 동의"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr ""
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "거부 스테이지"
@@ -3032,6 +3086,14 @@ msgstr "더미 스테이지"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "더미 스테이지"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr ""
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"

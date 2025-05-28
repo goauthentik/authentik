@@ -13,14 +13,26 @@ from authentik.events.system_tasks import TaskStatus
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import class_to_path
-from authentik.sources.ldap.models import LDAPSource, LDAPSourcePropertyMapping
+from authentik.sources.ldap.models import (
+    GroupLDAPSourceConnection,
+    LDAPSource,
+    LDAPSourcePropertyMapping,
+    UserLDAPSourceConnection,
+)
+from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
-from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
+from authentik.sources.ldap.tests.mock_slapd import (
+    group_in_slapd_cn,
+    group_in_slapd_uid,
+    mock_slapd_connection,
+    user_in_slapd_cn,
+    user_in_slapd_uid,
+)
 
 LDAP_PASSWORD = generate_key()
 
@@ -308,3 +320,160 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync_all.delay().get()
+
+    def test_user_deletion(self):
+        """Test user deletion"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertFalse(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_user_deletion_still_in_source(self):
+        """Test that user is not deleted if it's still in the source"""
+        username = user_in_slapd_cn
+        identifier = user_in_slapd_uid
+        user = User.objects.create_user(username=username)
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier=identifier
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(User.objects.filter(username=username).exists())
+
+    def test_user_deletion_no_sync(self):
+        """Test that user is not deleted if sync_users is False"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.sync_users = False
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_user_deletion_no_delete(self):
+        """Test that user is not deleted if delete_not_found_objects is False"""
+        user = User.objects.create_user(username="not-in-the-source")
+        UserLDAPSourceConnection.objects.create(
+            user=user, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
+
+    def test_group_deletion(self):
+        """Test group deletion"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertFalse(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_group_deletion_still_in_source(self):
+        """Test that group is not deleted if it's still in the source"""
+        groupname = group_in_slapd_cn
+        identifier = group_in_slapd_uid
+        group = Group.objects.create(name=groupname)
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier=identifier
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(Group.objects.filter(name=groupname).exists())
+
+    def test_group_deletion_no_sync(self):
+        """Test that group is not deleted if sync_groups is False"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.sync_groups = False
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_group_deletion_no_delete(self):
+        """Test that group is not deleted if delete_not_found_objects is False"""
+        group = Group.objects.create(name="not-in-the-source")
+        GroupLDAPSourceConnection.objects.create(
+            group=group, source=self.source, identifier="not-in-the-source"
+        )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+        self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
+
+    def test_batch_deletion(self):
+        """Test batch deletion"""
+        BATCH_SIZE = DELETE_CHUNK_SIZE + 1
+        for i in range(BATCH_SIZE):
+            user = User.objects.create_user(username=f"not-in-the-source-{i}")
+            group = Group.objects.create(name=f"not-in-the-source-{i}")
+            group.users.add(user)
+            UserLDAPSourceConnection.objects.create(
+                user=user, source=self.source, identifier=f"not-in-the-source-{i}-user"
+            )
+            GroupLDAPSourceConnection.objects.create(
+                group=group, source=self.source, identifier=f"not-in-the-source-{i}-group"
+            )
+        self.source.object_uniqueness_field = "uid"
+        self.source.group_object_filter = "(objectClass=groupOfNames)"
+        self.source.delete_not_found_objects = True
+        self.source.save()
+
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync_all.delay().get()
+
+        self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
+        self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())

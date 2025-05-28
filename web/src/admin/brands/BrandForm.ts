@@ -1,9 +1,12 @@
+import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -42,11 +45,10 @@ export class BrandForm extends ModelForm<Brand, string> {
                 brandUuid: this.instance.brandUuid,
                 brandRequest: data,
             });
-        } else {
-            return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
-                brandRequest: data,
-            });
         }
+        return new CoreApi(DEFAULT_CONFIG).coreBrandsCreate({
+            brandRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -303,6 +305,17 @@ export class BrandForm extends ModelForm<Brand, string> {
                         <ak-crypto-certificate-search
                             .certificate=${this.instance?.webCertificate}
                         ></ak-crypto-certificate-search>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Client Certificates")}
+                        name="clientCertificates"
+                    >
+                        <ak-dual-select-dynamic-selected
+                            .provider=${certificateProvider}
+                            .selector=${certificateSelector(this.instance?.clientCertificates)}
+                            available-label=${msg("Available Certificates")}
+                            selected-label=${msg("Selected Certificates")}
+                        ></ak-dual-select-dynamic-selected>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror

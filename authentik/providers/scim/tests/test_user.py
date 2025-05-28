@@ -384,7 +384,7 @@ class SCIMUserTests(TestCase):
                 self.assertIn(request.method, SAFE_METHODS)
         task = SystemTask.objects.filter(uid=slugify(self.provider.name)).first()
         self.assertIsNotNone(task)
-        drop_msg = task.messages[2]
+        drop_msg = task.messages[3]
         self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
         self.assertIsNotNone(drop_msg["attributes"]["url"])
         self.assertIsNotNone(drop_msg["attributes"]["body"])

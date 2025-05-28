@@ -1,3 +1,4 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -6,18 +7,14 @@ import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/Alert.js";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
+import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -78,7 +75,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             });
         }
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["metaIcon"];
+            const icon = this.getFormFiles().metaIcon;
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
                     slug: app.slug,

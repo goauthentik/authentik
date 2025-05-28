@@ -1,17 +1,17 @@
-import "@goauthentik/admin/applications/ApplicationForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
-import "@goauthentik/elements/AppIcon.js";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import "@goauthentik/elements/ak-mdx";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/applications/ApplicationForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#elements/AppIcon";
+import "#elements/ak-mdx/ak-mdx";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { getURLParam } from "#elements/router/RouteMatch";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -22,7 +22,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
-import "./ApplicationWizardHint";
+import "./ApplicationWizardHint.js";
 
 export const applicationListStyle = css`
     /* Fix alignment issues with images in tables */
@@ -50,7 +50,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     pageDescription(): string {
         return msg(
-            str`External applications that use ${this.brand?.brandingTitle ?? "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {

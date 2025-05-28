@@ -32,11 +32,10 @@ export class RoleForm extends ModelForm<Role, string> {
                 uuid: this.instance.pk,
                 patchedRoleRequest: data,
             });
-        } else {
-            return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
-                roleRequest: data,
-            });
         }
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
+            roleRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

@@ -25,13 +25,12 @@ export class PropertyMappingProviderMicrosoftEntraForm extends BasePropertyMappi
                 pmUuid: this.instance.pk,
                 microsoftEntraProviderMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(
-                DEFAULT_CONFIG,
-            ).propertymappingsProviderMicrosoftEntraCreate({
-                microsoftEntraProviderMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderMicrosoftEntraCreate(
+            {
+                microsoftEntraProviderMappingRequest: data,
+            },
+        );
     }
 }
 

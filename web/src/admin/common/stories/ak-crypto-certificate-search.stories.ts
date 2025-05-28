@@ -75,7 +75,7 @@ export const CryptoCertificateSearch = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const showMessage = (ev: CustomEvent<any>) => {
         const detail = ev.detail;
-        delete detail["target"];
+        delete detail.target;
         document.getElementById("message-pad")!.innerText = `Event: ${JSON.stringify(
             detail,
             null,

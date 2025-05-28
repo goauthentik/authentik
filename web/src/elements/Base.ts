@@ -1,19 +1,14 @@
-import { globalAK } from "@goauthentik/common/global.js";
-import {
-    StyleRoot,
-    createCSSResult,
-    createStyleSheetUnsafe,
-} from "@goauthentik/common/stylesheets.js";
+import { globalAK } from "#common/global";
+import { StyleRoot, createCSSResult, createStyleSheetUnsafe } from "#common/stylesheets";
 import {
     $AKBase,
     CSSColorSchemeValue,
     ResolvedUITheme,
-    ThemedElement,
     applyUITheme,
     createUIThemeEffect,
     formatColorScheme,
     resolveUITheme,
-} from "@goauthentik/common/theme.js";
+} from "#common/theme";
 
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
@@ -21,11 +16,8 @@ import { property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
-// Re-export the theme helpers
-export { rootInterface } from "@goauthentik/common/theme";
-
 @localized()
-export class AKElement extends LitElement implements ThemedElement {
+export class AKElement extends LitElement {
     //#region Static Properties
 
     public static styles?: Array<CSSResult | CSSModule>;

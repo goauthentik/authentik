@@ -67,9 +67,9 @@ export class Portal extends LitElement implements IPortal {
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
         this.dropdownContainer = document.createElement("div");
-        this.dropdownContainer.dataset["managedBy"] = "ak-portal";
+        this.dropdownContainer.dataset.managedBy = "ak-portal";
         if (this.name) {
-            this.dropdownContainer.dataset["managedFor"] = this.name;
+            this.dropdownContainer.dataset.managedFor = this.name;
         }
         document.body.append(this.dropdownContainer);
         if (!this.anchor) {

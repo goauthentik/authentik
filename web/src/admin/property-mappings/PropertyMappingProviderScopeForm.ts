@@ -24,11 +24,10 @@ export class PropertyMappingProviderScopeForm extends BasePropertyMappingForm<Sc
                 pmUuid: this.instance.pk,
                 scopeMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
-                scopeMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScopeCreate({
+            scopeMappingRequest: data,
+        });
     }
 
     renderExtraFields(): TemplateResult {

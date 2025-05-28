@@ -46,12 +46,11 @@ export class UserForm extends ModelForm<User, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated user.");
-        } else {
-            if (this.group) {
-                return msg(str`Successfully created user and added to group ${this.group.name}`);
-            }
-            return msg("Successfully created user.");
         }
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
+        return msg("Successfully created user.");
     }
 
     async send(data: User): Promise<User> {

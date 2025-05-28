@@ -1,0 +1,59 @@
+{
+    "name": "@goauthentik/core",
+    "version": "1.0.0",
+    "description": "Core functionality for the authentik monorepo",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "tsc -p .",
+        "prettier": "prettier --write .",
+        "prettier-check": "prettier --check ."
+    },
+    "main": "index.js",
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        "./*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "./*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "./*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        },
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        }
+    },
+    "imports": {
+        "#*/browser": {
+            "types": "./out/*/browser.d.ts",
+            "import": "./*/browser.js"
+        },
+        "#*/node": {
+            "types": "./out/*/node.d.ts",
+            "import": "./*/node.js"
+        },
+        "#*": {
+            "types": "./out/*/index.d.ts",
+            "import": "./*/index.js"
+        }
+    },
+    "devDependencies": {
+        "@goauthentik/prettier-config": "^1.0.5",
+        "@goauthentik/tsconfig": "^1.0.4",
+        "@types/node": "^22.15.21",
+        "prettier": "^3.3.3",
+        "typescript": "^5.6.3"
+    },
+    "engines": {
+        "node": ">=20.11"
+    },
+    "types": "./out/index.d.ts",
+    "prettier": "@goauthentik/prettier-config"
+}

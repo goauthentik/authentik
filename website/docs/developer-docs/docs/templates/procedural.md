@@ -22,7 +22,7 @@ In this section, inform the reader of anything they need to do, or have configur
 
 ## Overview of steps/workflow (optional section)
 
-If the task is quite long or complex, it might be good to add a bullet list of the main steps, or even a diagram of the workflow, just so that the reader can first familairize themselves with the 50,000 meter view before they dive into the detailed steps.
+If the task is quite long or complex, it might be good to add a bullet list of the main steps, or even a diagram of the workflow, just so that the reader can first familiarize themselves with the 50,000 meter view before they dive into the detailed steps.
 
 ## First several group steps
 

@@ -35,11 +35,10 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                 stageUuid: this.instance.pk || "",
                 promptStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
-                promptStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
+            promptStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

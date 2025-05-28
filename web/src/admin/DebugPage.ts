@@ -1,9 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
 import * as Sentry from "@sentry/browser";
 
 import { CSSResult, TemplateResult, html } from "lit";

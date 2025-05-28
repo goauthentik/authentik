@@ -54,12 +54,11 @@ export class GroupForm extends ModelForm<Group, string> {
                 groupUuid: this.instance.pk,
                 patchedGroupRequest: data,
             });
-        } else {
-            data.users = [];
-            return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
-                groupRequest: data,
-            });
         }
+        data.users = [];
+        return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
+            groupRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

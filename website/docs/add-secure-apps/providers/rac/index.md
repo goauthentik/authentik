@@ -16,6 +16,8 @@ Note that with RAC, you create a single application and associated provider that
 
 For instructions on creating a RAC provider, refer to the [Managing RAC providers](./how-to-rac.md) documentation. You can also view our [video on YouTube](https://www.youtube.com/watch?v=9wahIBRV6Ts) for setting up a RAC.
 
+For an example of how to configure RAC connections settings, refer to the [RAC SSH Public Key Authentication](./rac-public-key.md) documentation.
+
 There are several components used with a RAC provider; let's take a closer look at the high-level configuration layout of these components and how they are managed using endpoints and connections.
 
 ![](./rac-v3.png)
@@ -36,17 +38,30 @@ Configuration details such as credentials can be specified through _settings_, w
 
 1. Provider settings
 2. Endpoint settings
-3. Connection settings (see [Connections](#connections))
+3. Connection settings
 4. Provider property mapping settings
 5. Endpoint property mapping settings
 
-### Connections
+### Connection settings
 
 Each connection is authorized through authentik Policy objects that are bound to the application and the endpoint. Additional verification can be done with the authorization flow.
 
+A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user/customization.mdx). Once the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually.
+
 Additionally it is possible to modify the connection settings through the authorization flow. Configuration set in `connection_settings` in the flow plan context will be merged with other settings as shown above.
 
-A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user/customization.mdx). Once the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually.
+The RAC provider utilises [Apache Guacamole](https://guacamole.apache.org/) for establishing SSH, RDP and VNC connections. RAC supports the use of Apache Guacamole connection configurations.
+
+For a full list of possible connection configurations, see the [Apache Guacamole connection configuration documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#configuring-connections).
+
+RAC connection settings can be set via several methods:
+
+1. The settings of the RAC provider
+2. RAC endpoint settings
+3. RAC property mappings
+4. Retrieved from user or group attributes via RAC property mappings
+
+For an example of how to set a connection setting see the [RAC SSH public key authentication](./rac-public-key.md) page.
 
 ## Capabilities
 

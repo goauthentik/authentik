@@ -25,11 +25,10 @@ export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPS
                 pmUuid: this.instance.pk,
                 lDAPSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
-                lDAPSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceLdapCreate({
+            lDAPSourcePropertyMappingRequest: data,
+        });
     }
 }
 

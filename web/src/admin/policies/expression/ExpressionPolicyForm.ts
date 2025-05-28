@@ -27,11 +27,10 @@ export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {
                 policyUuid: this.instance.pk || "",
                 expressionPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
-                expressionPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionCreate({
+            expressionPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

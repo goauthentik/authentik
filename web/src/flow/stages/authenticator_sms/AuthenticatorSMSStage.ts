@@ -56,7 +56,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         label="${msg("Phone number")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["phone_number"]}
+                        .errors=${(this.challenge?.responseErrors || {}).phone_number}
                     >
                         <input
                             type="tel"
@@ -107,7 +107,7 @@ export class AuthenticatorSMSStage extends BaseStage<
                         label="${msg("Code")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                        .errors=${(this.challenge?.responseErrors || {}).code}
                     >
                         <input
                             type="text"

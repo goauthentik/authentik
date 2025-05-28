@@ -67,10 +67,10 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                         required
                         grab-focus
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["password"]}
+                        .errors=${(this.challenge?.responseErrors || {}).password}
                         ?allow-show-password=${this.challenge.allowShowPassword}
                         invalid=${this.hasError("password").toString()}
-                        prefill=${PasswordManagerPrefill["password"] ?? ""}
+                        prefill=${PasswordManagerPrefill.password ?? ""}
                     ></ak-flow-input-password>
 
                     ${this.challenge.recoveryUrl

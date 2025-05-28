@@ -137,6 +137,14 @@ class LDAPSource(Source):
         ),
     )
 
+    delete_not_found_objects = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Delete authentik users and groups which were previously supplied by this source, "
+            "but are now missing from it."
+        ),
+    )
+
     @property
     def component(self) -> str:
         return "ak-source-ldap-form"
@@ -321,6 +329,12 @@ class LDAPSourcePropertyMapping(PropertyMapping):
 
 
 class UserLDAPSourceConnection(UserSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.sources.ldap.api import (
@@ -332,9 +346,18 @@ class UserLDAPSourceConnection(UserSourceConnection):
     class Meta:
         verbose_name = _("User LDAP Source Connection")
         verbose_name_plural = _("User LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]
 
 
 class GroupLDAPSourceConnection(GroupSourceConnection):
+    validated_by = models.UUIDField(
+        null=True,
+        blank=True,
+        help_text=_("Unique ID used while checking if this object still exists in the directory."),
+    )
+
     @property
     def serializer(self) -> type[Serializer]:
         from authentik.sources.ldap.api import (
@@ -346,3 +369,6 @@ class GroupLDAPSourceConnection(GroupSourceConnection):
     class Meta:
         verbose_name = _("Group LDAP Source Connection")
         verbose_name_plural = _("Group LDAP Source Connections")
+        indexes = [
+            models.Index(fields=["validated_by"]),
+        ]

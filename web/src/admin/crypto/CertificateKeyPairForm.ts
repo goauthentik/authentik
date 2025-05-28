@@ -30,11 +30,10 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 kpUuid: this.instance.pk || "",
                 patchedCertificateKeyPairRequest: data,
             });
-        } else {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
-                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
-            });
         }
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
+            certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
+        });
     }
 
     renderForm(): TemplateResult {

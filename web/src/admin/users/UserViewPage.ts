@@ -1,44 +1,38 @@
-import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/admin/providers/rac/ConnectionTokenList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserApplicationTable";
-import "@goauthentik/admin/users/UserChart";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserImpersonateForm";
-import {
-    renderRecoveryEmailRequest,
-    requestRecoveryLink,
-} from "@goauthentik/admin/users/UserListPage";
-import "@goauthentik/admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { formatElapsedTime } from "@goauthentik/common/temporal";
-import { me } from "@goauthentik/common/users";
-import "@goauthentik/components/DescriptionList";
-import {
-    type DescriptionPair,
-    renderDescriptionList,
-} from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/components/events/UserEvents";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/oauth/UserAccessTokenList";
-import "@goauthentik/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/elements/user/SessionList";
-import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/UserReputationList";
-import "@goauthentik/elements/user/sources/SourceSettings";
+import "#admin/groups/RelatedGroupList";
+import "#admin/providers/rac/ConnectionTokenList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/users/UserActiveForm";
+import "#admin/users/UserApplicationTable";
+import "#admin/users/UserChart";
+import "#admin/users/UserForm";
+import "#admin/users/UserImpersonateForm";
+import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
+import "#admin/users/UserPasswordForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
+import { userTypeToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+import { me } from "#common/users";
+import "#components/DescriptionList";
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+import "#components/ak-page-header";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#components/events/UserEvents";
+import { AKElement } from "#elements/Base";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/ModalForm";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import "#elements/oauth/UserAccessTokenList";
+import "#elements/oauth/UserRefreshTokenList";
+import "#elements/user/SessionList";
+import "#elements/user/UserConsentList";
+import "#elements/user/UserReputationList";
+import "#elements/user/sources/SourceSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";

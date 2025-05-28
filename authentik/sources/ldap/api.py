@@ -111,6 +111,7 @@ class LDAPSourceSerializer(SourceSerializer):
             "sync_parent_group",
             "connectivity",
             "lookup_groups_from_user",
+            "delete_not_found_objects",
         ]
         extra_kwargs = {"bind_password": {"write_only": True}}
 
@@ -147,6 +148,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "user_property_mappings",
         "group_property_mappings",
         "lookup_groups_from_user",
+        "delete_not_found_objects",
     ]
     search_fields = ["name", "slug"]
     ordering = ["name"]

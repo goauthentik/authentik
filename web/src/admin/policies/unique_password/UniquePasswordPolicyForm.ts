@@ -24,11 +24,10 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                 policyUuid: this.instance.pk || "",
                 uniquePasswordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordCreate({
-                uniquePasswordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordCreate({
+            uniquePasswordPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

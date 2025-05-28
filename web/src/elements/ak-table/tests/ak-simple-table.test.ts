@@ -40,9 +40,9 @@ describe("Simple Table", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-simple-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });

@@ -25,11 +25,10 @@ export class PropertyMappingSourcePlexForm extends BasePropertyMappingForm<PlexS
                 pmUuid: this.instance.pk,
                 plexSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexCreate({
-                plexSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourcePlexCreate({
+            plexSourcePropertyMappingRequest: data,
+        });
     }
 }
 

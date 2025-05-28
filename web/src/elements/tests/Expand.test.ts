@@ -10,9 +10,9 @@ describe("ak-expand", () => {
     afterEach(async () => {
         await browser.execute(async () => {
             await document.body.querySelector("ak-expand")?.remove();
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body["_$litPart$"];
+                await delete document.body._$litPart$;
             }
         });
     });

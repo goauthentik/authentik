@@ -12,14 +12,14 @@ If you're focusing solely on frontend development, you can create a minimal deve
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en) (22 or later)
+- [Node.js](https://nodejs.org/en) (24 or later)
 - [Docker](https://www.docker.com/) (Latest Community Edition or Docker Desktop)
 - [Docker Compose](https://docs.docker.com/compose/) (Compose v2)
 - [Make](https://www.gnu.org/software/make/) (3 or later)
 
 :::info
 
-Depending on platform, some native dependencies might be required. On macOS, run `brew install node@22`, and for Docker `brew install --cask docker`
+Depending on platform, some native dependencies might be required. On macOS, run `brew install node@24`, and for Docker `brew install --cask docker`
 
 :::
 
