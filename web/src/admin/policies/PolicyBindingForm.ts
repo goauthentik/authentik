@@ -72,9 +72,8 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     getSuccessMessage(): string {
         if (this.instance?.pk) {
             return msg("Successfully updated binding.");
-        } else {
-            return msg("Successfully created binding.");
         }
+        return msg("Successfully created binding.");
     }
 
     static get styles(): CSSResult[] {
@@ -111,11 +110,10 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 policyBindingUuid: this.instance.pk,
                 policyBindingRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
-                policyBindingRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsCreate({
+            policyBindingRequest: data,
+        });
     }
 
     async getOrder(): Promise<number> {

@@ -211,7 +211,7 @@ export class NavigationButtons extends AKElement {
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            ${this.userDisplayName != ""
+            ${this.userDisplayName
                 ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
                       <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
                           ${this.userDisplayName}
