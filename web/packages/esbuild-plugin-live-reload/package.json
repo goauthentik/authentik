@@ -1,10 +1,14 @@
 {
     "name": "@goauthentik/esbuild-plugin-live-reload",
     "version": "1.0.5",
-    "description": "ESBuild plugin to watch for file changes and trigger client-side reloads.",
+    "description": "ESBuild + browser refresh. Build completes, page reloads.",
     "license": "MIT",
     "scripts": {
-        "build": "tsc -p ."
+        "build": "npm run build:types && npm run build:docs",
+        "build:docs": "typedoc",
+        "build:types": "tsc -p .",
+        "prettier": "prettier --cache --write -u .",
+        "prettier-check": "prettier --cache --check -u ."
     },
     "main": "index.js",
     "type": "module",
@@ -34,6 +38,8 @@
         "esbuild": "^0.25.4",
         "prettier": "^3.5.3",
         "prettier-plugin-packagejson": "^2.5.14",
+        "typedoc": "^0.28.5",
+        "typedoc-plugin-markdown": "^4.6.3",
         "typescript": "^5.8.3"
     },
     "peerDependencies": {
@@ -41,6 +47,19 @@
     },
     "engines": {
         "node": ">=22"
+    },
+    "keywords": [
+        "esbuild",
+        "live-reload",
+        "browser",
+        "refresh",
+        "reload",
+        "authentik"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goauthentik/authentik.git",
+        "directory": "web/packages/esbuild-plugin-live-reload"
     },
     "types": "./out/index.d.ts",
     "files": [
