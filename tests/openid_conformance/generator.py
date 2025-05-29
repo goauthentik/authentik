@@ -173,10 +173,9 @@ def generate(plan_name: str):
         def setUp(self):
             return super().setUp()
 
-        @classmethod
-        def tearDownClass(cls):
-            super().tearDown()
-            cls.conformance.exporthtml(cls.plan_id, Path(__file__).parent / "exports")
+        def tearDown(self):
+            self.conformance.exporthtml(self.plan_id, Path(__file__).parent / "exports")
+            return super().tearDown()
 
     for test in test_plan["modules"]:
         setattr(
