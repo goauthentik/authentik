@@ -1,8 +1,6 @@
 services:
   mongodb:
     image: mongo:6.0.13
-    volumes:
-      - mongo:/data/db
   httpd:
     image: ghcr.io/beryju/oidc-conformance-suite-httpd:v5.1.32
     ports:
@@ -29,6 +27,3 @@ services:
       - mongodb:mongodb
     depends_on:
       - mongodb
-
-volumes:
-  mongo:

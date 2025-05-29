@@ -12,7 +12,6 @@ from urllib3.util.retry import Retry
 class Conformance:
     HTTP_OK = 200
     HTTP_CREATED = 201
-    HTTP_NO_CONTENT = 204
 
     def __init__(self, api_url_base, api_token, verify_ssl):
         if not api_url_base.endswith("/"):
@@ -112,15 +111,6 @@ class Conformance:
             payload["variant"] = json.dumps(variant)
         response = self.session.post(url, params=payload, data=configuration)
         if response.status_code != Conformance.HTTP_CREATED:
-            raise Exception(
-                f"create_test_plan failed - HTTP {response.status_code} {response.content}"
-            )
-        return response.json()
-
-    def delete_test_plan(self, plan_id: str):
-        url = f"{self.api_url_base}api/plan/{plan_id}"
-        response = self.session.delete(url)
-        if response.status_code != Conformance.HTTP_NO_CONTENT:
             raise Exception(
                 f"create_test_plan failed - HTTP {response.status_code} {response.content}"
             )
