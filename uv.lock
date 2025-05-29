@@ -356,7 +356,7 @@ dev = [
     { name = "pytest-django", specifier = "==4.11.1" },
     { name = "pytest-github-actions-annotate-failures", specifier = "==0.3.0" },
     { name = "pytest-randomly", specifier = "==3.16.0" },
-    { name = "pytest-subtests", git = "https://github.com/pytest-dev/pytest-subtests.git?rev=9981d1c28d4ccbca435ce0e396804628acfeeb40" },
+    { name = "pytest-subtests", specifier = ">=0.14.1" },
     { name = "pytest-timeout", specifier = "==2.4.0" },
     { name = "requests-mock", specifier = "==1.12.1" },
     { name = "ruff", specifier = "==0.11.9" },
@@ -2673,11 +2673,15 @@ wheels = [
 
 [[package]]
 name = "pytest-subtests"
-version = "0.14.2.dev13+g9981d1c"
-source = { git = "https://github.com/pytest-dev/pytest-subtests.git?rev=9981d1c28d4ccbca435ce0e396804628acfeeb40#9981d1c28d4ccbca435ce0e396804628acfeeb40" }
+version = "0.14.1"
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c0/4c/ba9eab21a2250c2d46c06c0e3cd316850fde9a90da0ac8d0202f074c6817/pytest_subtests-0.14.1.tar.gz", hash = "sha256:350c00adc36c3aff676a66135c81aed9e2182e15f6c3ec8721366918bbbf7580", size = 17632, upload-time = "2024-12-10T00:21:04.856Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a9/b7/7ca948d35642ae72500efda6ba6fa61dcb6683feb596d19c4747c63c0789/pytest_subtests-0.14.1-py3-none-any.whl", hash = "sha256:e92a780d98b43118c28a16044ad9b841727bd7cb6a417073b38fd2d7ccdf052d", size = 8833, upload-time = "2024-12-10T00:20:58.873Z" },
 ]
 
 [[package]]

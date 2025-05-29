@@ -86,6 +86,7 @@ class TestOpenIDConformance(SeleniumTestCase):
         """Process instructions for a single test, navigate to browser URLs and take screenshots"""
         tested_browser_url = 0
         uploaded_image = 0
+        cleared_cookies = False
         while True:
             # Fetch all info
             test_status = self.conformance.get_test_status(module_id)
@@ -93,8 +94,11 @@ class TestOpenIDConformance(SeleniumTestCase):
             test_info = self.conformance.get_module_info(module_id)
             # Check if we need to clear cookies - tests only indicates this in their written summary
             # so this check is a bit brittle
-            if "cookies" in test_info["summary"]:
+            if "cookies" in test_info["summary"] and not cleared_cookies:
+                # Navigate to our origin to delete cookies in the right context
+                self.driver.get(self.url("authentik_api:user-me") + "?format=json")
                 self.driver.delete_all_cookies()
+                cleared_cookies = True
             # Check if we need deal with any browser URLs
             browser_urls = test_status.get("browser", {}).get("urls", [])
             if len(browser_urls) > tested_browser_url:
@@ -124,7 +128,6 @@ class TestOpenIDConformance(SeleniumTestCase):
 
     def do_browser(self, url):
         """For any specific OpenID Conformance test, execute the operations required"""
-        # self.driver.switch_to.new_window("tab")
         self.driver.get(url)
         if "if/flow/default-authentication-flow" in self.driver.current_url:
             self.login()
