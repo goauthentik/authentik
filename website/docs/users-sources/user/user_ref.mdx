@@ -42,7 +42,7 @@ user.ak_groups.filter(name__startswith='test')
 
 ### List a user's group memberships including parent groups
 
-Use the following example to list all groups that a User object is a member of, including parent groups:
+Use the following example to list all groups that a user object is a member of, including parent groups:
 
 ```python
 groups = [group.name for group in request.user.all_groups()]
