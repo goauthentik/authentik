@@ -83,20 +83,14 @@ class TestOpenIDConformance(SeleniumTestCase):
             # so this check is a bit brittle
             if "cookies" in test_info["summary"]:
                 self.driver.delete_all_cookies()
-            # print("test status", module_id, test_status)
-            # print("test log", module_id, test_log)
             # Check if we need deal with any browser URLs
             browser_urls = test_status.get("browser", {}).get("urls", [])
-            print("browser urls", len(browser_urls), tested_browser_url)
             if len(browser_urls) > tested_browser_url:
-                print("browser url: Opening", tested_browser_url)
                 self.do_browser(browser_urls[tested_browser_url])
                 tested_browser_url += 1
             # Check if we need to upload any items
             upload_items = [x for x in test_log if "upload" in x]
-            print("upload items", len(upload_items), uploaded_image)
             if len(upload_items) > uploaded_image:
-                print("uploading image", uploaded_image)
                 screenshot = self.get_screenshot()
                 self.conformance.upload_image(
                     module_id, upload_items[uploaded_image]["upload"], screenshot
