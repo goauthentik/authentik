@@ -25,7 +25,7 @@ These are examples of how User objects can be used within Policies and Property 
 
 ### List a user's group memberships
 
-Use the following example to list all groups that a User object is a direct member of:
+Use the following example to list all groups that a user object is a member of:
 
 ```python
 for group in user.ak_groups.all():
@@ -34,7 +34,7 @@ for group in user.ak_groups.all():
 
 ### List a user's group memberships and filter based on group name
 
-Use the following example to list groups that a User object is a member of, but filter based on group name:
+Use the following example to list groups that a user object is a member of, but filter based on group name:
 
 ```python
 user.ak_groups.filter(name__startswith='test')
