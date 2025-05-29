@@ -1,4 +1,5 @@
 from json import dumps
+from os import makedirs
 from pathlib import Path
 from time import sleep
 
@@ -15,7 +16,6 @@ class TestOpenIDConformance(SeleniumTestCase):
 
     conformance: Conformance
 
-    @retry()
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
@@ -27,15 +27,16 @@ class TestOpenIDConformance(SeleniumTestCase):
     @apply_blueprint("system/providers-oauth2.yaml")
     @reconcile_app("authentik_crypto")
     @apply_blueprint("testing/oidc-conformance.yaml")
-    def test_oidcc_basic_certification_test(self):
-        test_plan_name = "oidcc-basic-certification-test-plan"
+    def setUp(self):
+        super().setUp()
+        makedirs(Path(__file__).parent / "exports", exist_ok=True)
         provider_a = OAuth2Provider.objects.get(
             client_id="4054d882aff59755f2f279968b97ce8806a926e1"
         )
         provider_b = OAuth2Provider.objects.get(
             client_id="ad64aeaf1efe388ecf4d28fcc537e8de08bcae26"
         )
-        test_plan_config = {
+        self.test_plan_config = {
             "alias": "authentik",
             "description": "authentik",
             "server": {
@@ -58,11 +59,17 @@ class TestOpenIDConformance(SeleniumTestCase):
             "consent": {},
         }
 
+    @retry()
+    def test_oidcc_basic_certification_test(self):
+        test_plan_name = "oidcc-basic-certification-test-plan"
+        self.run_test(test_plan_name, self.test_plan_config)
+
+    def run_test(self, test_plan: str, test_plan_config: dict):
         # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
 
         test_plan = self.conformance.create_test_plan(
-            test_plan_name,
+            test_plan,
             dumps(test_plan_config),
             {
                 "server_metadata": "discovery",
@@ -79,12 +86,12 @@ class TestOpenIDConformance(SeleniumTestCase):
                     plan_id, module_name, variant
                 )
                 module_id = module_instance["id"]
-                self.run_test(module_id)
+                self.run_single_test(module_id)
                 self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
         self.conformance.exporthtml(plan_id, Path(__file__).parent / "exports")
 
-    def run_test(self, module_id: str):
+    def run_single_test(self, module_id: str):
         """Process instructions for a single test, navigate to browser URLs and take screenshots"""
         tested_browser_url = 0
         uploaded_image = 0
