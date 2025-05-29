@@ -124,6 +124,7 @@ class Conformance:
             raise Exception(
                 f"create_test_plan failed - HTTP {response.status_code} {response.content}"
             )
+        return response.json()
 
     def create_test(self, test_name, configuration):
         url = f"{self.api_url_base}api/runner"
