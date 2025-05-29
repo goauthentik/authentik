@@ -168,7 +168,6 @@ class Conformance:
         response = self.session.post(url, data=data, headers={"Content-Type": "text/plain"})
         if response.status_code != Conformance.HTTP_OK:
             raise Exception(f"upload_image failed - HTTP {response.status_code} {response.content}")
-        return response.json()
 
     def start_test(self, module_id):
         url = f"{self.api_url_base}api/runner/{module_id}"
