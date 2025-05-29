@@ -38,6 +38,6 @@ class FlowInterfaceView(InterfaceView):
         return False
 
     def get_template_names(self) -> list[str]:
-        if self.compat_needs_sfe() or "sfe" in self.request.GET:
-            return ["if/flow-sfe.html"]
-        return ["if/flow.html"]
+        # if self.compat_needs_sfe() or "sfe" in self.request.GET:
+        return ["if/flow-sfe.html"]
+        # return ["if/flow.html"]

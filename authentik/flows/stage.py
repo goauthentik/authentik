@@ -108,6 +108,7 @@ class ChallengeStageView(StageView):
 
     def post(self, request: Request, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
+        print(request.data)
         valid = False
         try:
             challenge: ChallengeResponse = self.get_response_instance(data=request.data)

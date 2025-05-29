@@ -1,20 +1,12 @@
 import { fromByteArray } from "base64-js";
-import "formdata-polyfill";
+// import "formdata-polyfill";
 import $ from "jquery";
 import "weakmap-polyfill";
 
-import {
-    type AuthenticatorValidationChallenge,
-    type AutosubmitChallenge,
-    type ChallengeTypes,
-    ChallengeTypesFromJSON,
-    type ContextualFlowInfo,
-    type DeviceChallenge,
-    type ErrorDetail,
-    type IdentificationChallenge,
-    type PasswordChallenge,
-    type RedirectChallenge,
-} from "@goauthentik/api";
+
+
+import { type AuthenticatorValidationChallenge, type AutosubmitChallenge, type ChallengeTypes, ChallengeTypesFromJSON, type ContextualFlowInfo, type DeviceChallenge, type ErrorDetail, type IdentificationChallenge, type PasswordChallenge, type RedirectChallenge } from "@goauthentik/api";
+
 
 interface GlobalAuthentik {
     brand: {
@@ -67,15 +59,17 @@ class SimpleFlowExecutor {
         });
     }
 
-    submit(data: { [key: string]: unknown } | FormData) {
+    submit(data: { [key: string]: unknown } | HTMLFormElement) {
         $("button[type=submit]").addClass("disabled")
             .html(`<span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                <span role="status">Loading...</span>`);
+                <span id="loading-text" role="status">Loading...</span>`);
         let finalData: { [key: string]: unknown } = {};
-        if (data instanceof FormData) {
-            finalData = {};
-            data.forEach((value, key) => {
-                finalData[key] = value;
+        if (data.tagName === "FORM") {
+            // @ts-expect-error
+            const rawData = $(data as unknown as string).serializeArray();
+
+            rawData.forEach((entry) => {
+                finalData[entry.name] = entry.value;
             });
         } else {
             finalData = data;
@@ -198,8 +192,7 @@ class IdentificationStage extends Stage<IdentificationChallenge> {
         $("#ident-form input[name=uid_field]").trigger("focus");
         $("#ident-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
+            this.executor.submit(ev.target as HTMLFormElement);
         });
     }
 }
@@ -222,8 +215,7 @@ class PasswordStage extends Stage<PasswordChallenge> {
         $("#password-form input").trigger("focus");
         $("#password-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
+            this.executor.submit(ev.target as HTMLFormElement);
         });
     }
 }
@@ -485,8 +477,7 @@ class AuthenticatorValidateStage extends Stage<AuthenticatorValidationChallenge>
         $("#totp-form input").trigger("focus");
         $("#totp-form").on("submit", (ev) => {
             ev.preventDefault();
-            const data = new FormData(ev.target as HTMLFormElement);
-            this.executor.submit(data);
+            this.executor.submit(ev.target as HTMLFormElement);
         });
     }
 
