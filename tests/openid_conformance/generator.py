@@ -102,6 +102,7 @@ def generate(plan_name: str):
             self.run_test(module_id)
             self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
+
         return tester_func
 
     class test_cls(BaseOpenIDConformance):
