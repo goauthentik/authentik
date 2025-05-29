@@ -6,6 +6,8 @@ services:
       - /dev/shm:/dev/shm
     network_mode: host
     restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   mailpit:
     image: docker.io/axllent/mailpit:v1.25.1
     ports:
