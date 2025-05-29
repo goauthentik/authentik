@@ -1,4 +1,5 @@
 from json import dumps
+from pathlib import Path
 from time import sleep
 
 from selenium.webdriver.common.by import By
@@ -81,6 +82,7 @@ class TestOpenIDConformance(SeleniumTestCase):
                 self.run_test(module_id)
                 self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
             sleep(2)
+        self.conformance.exporthtml(plan_id, Path(__file__).parent / "exports")
 
     def run_test(self, module_id: str):
         """Process instructions for a single test, navigate to browser URLs and take screenshots"""
