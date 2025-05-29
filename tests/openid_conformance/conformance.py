@@ -249,7 +249,7 @@ class Conformance:
             )
         return response.json()
 
-    async def wait_for_state(self, module_id, required_states, timeout=240):
+    def wait_for_state(self, module_id, required_states, timeout=240):
         timeout_at = time.time() + timeout
         while True:
             if time.time() > timeout_at:
@@ -257,7 +257,7 @@ class Conformance:
                     f"Timed out waiting for test module {module_id} to be in one of states: {required_states}"
                 )
 
-            info = await self.get_module_info(module_id)
+            info = self.get_module_info(module_id)
 
             status = info["status"]
             print(f"module id {module_id} status is {status}")
@@ -266,7 +266,7 @@ class Conformance:
             if status == "INTERRUPTED":
                 raise Exception(f"Test module {module_id} has moved to INTERRUPTED")
 
-            await asyncio.sleep(1)
+            time.sleep(1)
 
     async def close_client(self):
         self.httpclient.close()
