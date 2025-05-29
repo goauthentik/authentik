@@ -52,15 +52,22 @@ test_plan_config = {
                         ["text", "css", "[name=password]", "foo"],
                         ["click", "css", "button[type=submit]"],
                         ["wait", "css", "#loading-text", 10],
-                        ["wait", "contains", "application/o/authorize", 10],
+                        ["wait", "css", "#foo", 10],
+                        ["click", "css", "#foo"],
+                        # ["wait", "contains", "application/o/authorize", 10],
                     ],
                 },
                 {
                     "task": "Authorize",
                     "match": "http://10.120.20.76:9000/application/o/authorize*",
+                    "optional": True,
+                    "commands": [
+                        ["wait", "css", "#loading-text", 10],
+                    ],
                 },
                 {
                     "task": "Authorize 2",
+                    "optional": True,
                     "match": "http://10.120.20.76:9000/if/flow/default-provider-authorization-implicit-consent*",
                 },
             ],
