@@ -117,8 +117,8 @@ config system saml
 end
 ```
 
+## Configuration verification
+
 ## Resources
 
 - [Offocial Fortigate documentation on SAML authentication](https://community.fortinet.com/t5/FortiGate/Technical-Tip-Configuring-SAML-SSO-login-for-FortiGate/ta-p/194656)
-
-## Configuration verification

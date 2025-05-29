@@ -75,11 +75,11 @@ For **oauthgeneric**:
 
 Once that is done, navigate to the **Authentication** sub-section of the **Administration** interface's **Configuration Settings** section and enable **oauth** under **Authentication backend**.
 
+## Configuration verification
+
+To verify that authentik is correctly configured with DocuWiki, log out and log back in through authentik. You should notice a new button on the login page.
+
 ## Resources
 
 - [DocuWiki OAuth plugin](https://www.dokuwiki.org/plugin:oauth)
 - [DocuWiki plugin for generic OAuth](https://www.dokuwiki.org/plugin:oauthgeneric)
-
-## Configuration verification
-
-To verify that authentik is correctly configured with DocuWiki, log out and log back in through authentik. You should notice a new button on the login page.
