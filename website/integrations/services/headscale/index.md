@@ -42,7 +42,7 @@ To support the integration of Headscale with authentik, you need to create an ap
 
 ## Headscale configuration
 
-To support the integration of Headscale with authentik, you'll need to update your `config.yaml`:
+To support the integration of Headscale with authentik, you'll need to update the `config.yaml` file of your Headscale deployment:
 
 ```yaml showLineNumbers title="/etc/headscale/config.yaml"
 oidc:
@@ -90,10 +90,10 @@ oidc:
     strip_email_domain: true
 ```
 
-## Resources
-
-- [Headscale OIDC documentation](https://headscale.net/stable/ref/oidc/#basic-configuration)
-
 ## Configuration verification
 
 To verify the integration with Headscale, log out and attempt to log back in using OIDC.
+
+## Resources
+
+- [Headscale OIDC documentation](https://headscale.net/stable/ref/oidc/#basic-configuration)
