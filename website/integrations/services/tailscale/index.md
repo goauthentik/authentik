@@ -69,10 +69,10 @@ To support the integration of Tailscale with authentik, you need to create an ap
     - **Prompts**: keep the default value `consent`.
 4. Click **Sign up with OIDC** and follow the prompts to complete the Tailscale-specific configuration.
 
-## Resources
-
-- [Tailscale SSO documentation](https://tailscale.com/kb/1240/sso-custom-oidc)
-
 ## Configuration verification
 
 To verify the integration with Tailscale, log out and attempt to log back in using an email address from your configured SSO domain. You should be redirected to your authentik instance and after successfully logging in, you should be redirected to the Tailscale dashboard.
+
+## Resources
+
+- [Tailscale SSO documentation](https://tailscale.com/kb/1240/sso-custom-oidc)
