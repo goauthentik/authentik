@@ -75,4 +75,4 @@ To support the integration of Tailscale with authentik, you need to create an ap
 
 ## Configuration verification
 
-To verify the integration with Tailscale, log out and attempt to log back in. When you enter an email address from your configured SSO domain, you should be redirected to authentik.
+To verify the integration with Tailscale, log out and attempt to log back in using an email address from your configured SSO domain. You should be redirected to your authentik instance and after successfully logging in, you should be redirected to the Tailscale dashboard.
