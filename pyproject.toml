@@ -95,6 +95,7 @@ dev = [
     "pytest-django==4.11.1",
     "pytest-github-actions-annotate-failures==0.3.0",
     "pytest-randomly==3.16.0",
+    "pytest-subtests",
     "pytest-timeout==2.4.0",
     "requests-mock==1.12.1",
     "ruff==0.11.9",
@@ -116,6 +117,7 @@ no-binary-package = [
 [tool.uv.sources]
 opencontainers = { git = "https://github.com/vsoch/oci-python", rev = "ceb4fcc090851717a3069d78e85ceb1e86c2740c" }
 djangorestframework = { git = "https://github.com/goauthentik/django-rest-framework", rev = "896722bab969fabc74a08b827da59409cf9f1a4e" }
+pytest-subtests = { git = "https://github.com/pytest-dev/pytest-subtests.git", rev = "9981d1c28d4ccbca435ce0e396804628acfeeb40" }
 
 [project.scripts]
 ak = "lifecycle.ak:main"
