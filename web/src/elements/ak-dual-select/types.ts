@@ -43,15 +43,19 @@ export type DualSelectPair<T = unknown> = [
     localMapping?: T,
 ];
 
+export type DualSelectPairSource<T = unknown> = (
+    sourceInit: DualSelectPair<T>[],
+) => Promise<DualSelectPair<T>[]>;
+
 export type BasePagination = Pick<
     Pagination,
     "startIndex" | "endIndex" | "count" | "previous" | "next"
 >;
 
-export type DataProvision = {
+export interface DataProvision<T = unknown> {
     pagination?: Pagination;
-    options: DualSelectPair[];
-};
+    options: DualSelectPair<T>[];
+}
 
 export type DataProvider = (page: number, search?: string) => Promise<DataProvision>;
 
