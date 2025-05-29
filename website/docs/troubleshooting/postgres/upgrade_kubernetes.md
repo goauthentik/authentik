@@ -14,7 +14,7 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 - Your existing `values.yaml` file used for authentik deployment
 - Basic understanding of Kubernetes and Helm commands
 
-## Stopping authentik Services
+## Stopping authentik services
 
 Begin by scaling down authentik services to prevent database access during the migration:
 
@@ -23,7 +23,7 @@ kubectl scale deploy --replicas 0 authentik-server
 kubectl scale deploy --replicas 0 authentik-worker
 ```
 
-## Backing Up the Database
+## Backing up the database
 
 Connect to your PostgreSQL pod:
 
@@ -55,7 +55,7 @@ kubectl cp authentik-postgresql-0:/bitnami/postgresql/dump.sql ./authentik-db-ba
 This ensures you have a backup even if something goes wrong with the pod or storage.
 :::
 
-## Preparing the Data Directory
+## Preparing the data directory
 
 While still connected to the PostgreSQL pod, prepare the data directory for the upgrade:
 
@@ -88,7 +88,7 @@ Apply these changes using Helm to deploy the updated configuration.
 
 This will restart the PostgreSQL pod with the new image. When the pod starts, PostgreSQL will initialize a new, empty data directory since the previous directory was renamed.
 
-## Restoring Database Content
+## Restoring database content
 
 Connect to the PostgreSQL pod again:
 
@@ -112,7 +112,7 @@ export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
 psql -U $POSTGRES_USER $POSTGRES_DB < dump.sql
 ```
 
-## Restarting authentik Services
+## Restarting authentik services
 
 After the database restoration completes successfully, restart authentik using Helm with your updated configuration.
 
@@ -129,14 +129,14 @@ If you encounter issues during the upgrade process:
 - Verify the values in your `values.yaml` file match the recommended settings
 - Ensure you have sufficient storage available for both the database dump and the database itself
 
-### Dump File Not Found
+### Dump file not found
 
 If your dump file is missing after upgrading:
 
 - You may need to restore from the external backup if you copied it out of the pod
 - The volume might have been recreated if you're using ephemeral storage
 
-### Restoring the Original Database
+### Restoring the original database
 
 For persistent problems, you can restore from the `data-old` directory if needed:
 
