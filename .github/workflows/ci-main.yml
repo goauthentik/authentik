@@ -267,6 +267,11 @@ jobs:
           flags: conformance
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-certification
+          path: tests/openid_conformance/exports/
   ci-core-mark:
     if: always()
     needs:
