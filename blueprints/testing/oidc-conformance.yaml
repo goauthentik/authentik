@@ -23,12 +23,41 @@ entries:
     attrs:
       name: "authentik default OAuth Mapping: OpenID 'phone'"
       scope_name: phone
-      description: "General phone Information"
+      description: "General phone information"
       expression: |
         return {
             "phone_number": "+1234",
             "phone_number_verified": True,
         }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-profile-oidc-standard
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "OIDC conformance profile"
+      scope_name: profile
+      description: "General profile information"
+      expression: |
+        return {
+            # Because authentik only saves the user's full name, and has no concept of first and last names,
+            # the full name is used as given name.
+            # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+            "name": request.user.name,
+            "given_name": request.user.name,
+            "preferred_username": request.user.username,
+            "nickname": request.user.username,
+            "groups": [group.name for group in request.user.ak_groups.all()],
+            "website" : "foo",
+            "zoneinfo" : "foo",
+            "birthdate" : "2000",
+            "gender" : "foo",
+            "profile" : "foo",
+            "middle_name" : "foo",
+            "locale" : "foo",
+            "picture" : "foo",
+            "updated_at" : 1234,
+            "family_name" : "foo",
+        }
+
 
   - model: authentik_providers_oauth2.oauth2provider
     id: provider
@@ -48,7 +77,7 @@ entries:
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
-        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile-oidc-standard]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
@@ -77,7 +106,7 @@ entries:
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
-        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile-oidc-standard]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
