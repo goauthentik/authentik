@@ -64,6 +64,11 @@ class TestOpenIDConformance(SeleniumTestCase):
         test_plan_name = "oidcc-basic-certification-test-plan"
         self.run_test(test_plan_name, self.test_plan_config)
 
+    @retry()
+    def test_oidcc_implicit_certification_test(self):
+        test_plan_name = "oidcc-implicit-certification-test-plan"
+        self.run_test(test_plan_name, self.test_plan_config)
+
     def run_test(self, test_plan: str, test_plan_config: dict):
         # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
