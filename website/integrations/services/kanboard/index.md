@@ -48,17 +48,17 @@ Integrating Kanboard with authentik requires enabling the plugin system and inst
 
 To enable plugin management through the web interface, add the following line to your Kanboard configuration file, typically located at `/var/www/app/config.php`:
 
-```yaml showLineNumbers
+```yaml
 define('PLUGIN_INSTALLER', true);
 ```
 
-Once that is done, restart your server to apply the updated configuration.
+Then, restart your server to apply the updated configuration.
 
 ### Install and configure the plugin
 
-1. Install the OAuth2 plugin by navigating to your **Profile Icon** > **Settings** > **Plugins**.
+1. Log in to Kanboard as an administrator and navigate to your **Profile Icon** > **Settings** > **Plugins**.
 2. Locate the **OAuth2** plugin in the list and click **Install**.
-3. After installation, navigate to **Profile Icon** > **Settings** > **Integrations**.
+3. After the installation is complete, navigate to **Profile Icon** > **Settings** > **Integrations**.
 4. Under **OAuth2 Authentication**, configure the following settings:
 
 | Setting                    | Value                                                 |
@@ -78,10 +78,10 @@ Once that is done, restart your server to apply the updated configuration.
 
 5. Click **Save** to apply your configuration.
 
-## Resources
-
-- [Kanboard OAuth2 plugin](https://github.com/kanboard/plugin-oauth2)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Kanboard, log out and attempt to log back in by clicking **OAuth2 login**.
+
+## Resources
+
+- [Kanboard OAuth2 plugin](https://github.com/kanboard/plugin-oauth2)
