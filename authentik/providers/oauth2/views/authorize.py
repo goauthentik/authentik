@@ -630,7 +630,6 @@ class OAuthFulfillmentStage(StageView):
         if self.params.response_type in [
             ResponseTypes.ID_TOKEN_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
-            ResponseTypes.ID_TOKEN,
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token
