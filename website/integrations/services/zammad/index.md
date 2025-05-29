@@ -53,7 +53,11 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Issuer** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Audience** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**, add the two **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to the name property mapping created in the previous section.
+    - Under **Advanced protocol settings**
+      - Add the two **Property Mappings** you created in the previous section
+      - Set the **NameID Property Mapping** to the name property mapping created in the previous section
+      - Select your Signing Certificate (the default is named `authentik Self-signed Certificate`)
+      - Be sure **Sign assertions** is active
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -63,11 +67,13 @@ To support the integration of Zammad with authentik, you need to create an appli
 Configure Zammad SAML settings by going to settings (the gear icon), and selecting `Security -> Third-party Applications` and activate `Authentication via SAML` and change the following fields:
 
 - Display name: authentik
-- IDP SSO target URL: https://authentik.company/application/saml/zammad/sso/binding/init/
-- IDP single logout target URL: https://zammad.company/auth/saml/slo
-- IDP certificate: ----BEGIN CERTIFICATE---- …
+- IDP SSO target URL: https://authentik.company/application/saml/zammad/sso/binding/post/
+- IDP single logout target URL: https://authentik.company/application/saml/zammad/slo/binding/redirect/
+- Download your IDP certificate from https://authentik.company/if/admin/#/crypto/certificates
+  - Copy the entire contents into the IDP certificate box, including the `----BEGIN CERTIFICATE----` and `----END CERTIFICATE----` lines
 - IDP certificate fingerprint: empty
-- Name Identifier Format: empty
+- Name Identifier Format: <kbd>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</kbd>
+- If you want Zammad users to be created automatically the first time the sign in via Authentik, activate the **Automatic account link on initial logon** option 
 
 ## Additional Resources
 
