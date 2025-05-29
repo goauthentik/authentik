@@ -1,3 +1,4 @@
+from functools import partial
 from json import dumps
 from pathlib import Path
 from time import sleep
@@ -70,10 +71,24 @@ class BaseOpenIDConformance(SeleniumTestCase):
 def generate(plan_name: str):
 
     test_plan_name = "oidcc-basic-certification-test-plan"
+    provider_a = OAuth2Provider.objects.get(client_id="4054d882aff59755f2f279968b97ce8806a926e1")
+    provider_b = OAuth2Provider.objects.get(client_id="ad64aeaf1efe388ecf4d28fcc537e8de08bcae26")
     test_plan_config = {
         "alias": "authentik",
         "description": "authentik",
         "server": {},
+        "client": {
+            "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
+            "client_secret": provider_a.client_secret,
+        },
+        "client_secret_post": {
+            "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
+            "client_secret": provider_a.client_secret,
+        },
+        "client2": {
+            "client_id": "ad64aeaf1efe388ecf4d28fcc537e8de08bcae26",
+            "client_secret": provider_b.client_secret,
+        },
         "consent": {},
     }
 
@@ -89,66 +104,33 @@ def generate(plan_name: str):
         },
     )
 
-    def generate_test_func(test: dict):
-        @retry()
-        def tester_func(self: BaseOpenIDConformance):
-            # Fetch name and variant of the next test to run
-            module_name = test["testModule"]
-            variant = test["variant"]
-            module_instance = self.conformance.create_test_from_plan_with_variant(
-                self.plan_id, module_name, variant
-            )
-            module_id = module_instance["id"]
-            self.run_test(module_id)
-            self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
-            sleep(2)
-        return tester_func
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint(
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
+    )
+    @apply_blueprint("system/providers-oauth2.yaml")
+    @reconcile_app("authentik_crypto")
+    @apply_blueprint("testing/oidc-conformance.yaml")
+    def tester_func(self: BaseOpenIDConformance, test: dict):
+        # Fetch name and variant of the next test to run
+        module_name = test["testModule"]
+        variant = test["variant"]
+        module_instance = self.conformance.create_test_from_plan_with_variant(
+            self.plan_id, module_name, variant
+        )
+        module_id = module_instance["id"]
+        self.run_test(module_id)
+        self.conformance.wait_for_state(module_id, ["FINISHED"], timeout=self.wait_timeout)
+        sleep(2)
 
     class test_cls(BaseOpenIDConformance):
 
-        @classmethod
-        @apply_blueprint(
-            "default/flow-default-authentication-flow.yaml",
-            "default/flow-default-invalidation-flow.yaml",
-        )
-        @apply_blueprint(
-            "default/flow-default-provider-authorization-implicit-consent.yaml",
-            "default/flow-default-provider-invalidation.yaml",
-        )
-        @apply_blueprint("system/providers-oauth2.yaml")
-        @reconcile_app("authentik_crypto")
-        @apply_blueprint("testing/oidc-conformance.yaml")
-        def setUpClass(cls):
-            super().setUpClass()
-            provider_a = OAuth2Provider.objects.get(
-                client_id="4054d882aff59755f2f279968b97ce8806a926e1"
-            )
-            provider_b = OAuth2Provider.objects.get(
-                client_id="ad64aeaf1efe388ecf4d28fcc537e8de08bcae26"
-            )
-            test_plan_config.update(
-                {
-                    "client": {
-                        "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
-                        "client_secret": provider_a.client_secret,
-                    },
-                    "client_secret_post": {
-                        "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
-                        "client_secret": provider_a.client_secret,
-                    },
-                    "client2": {
-                        "client_id": "ad64aeaf1efe388ecf4d28fcc537e8de08bcae26",
-                        "client_secret": provider_b.client_secret,
-                    },
-                    "server": {
-                        "discoveryUrl": cls.url(
-                            cls,
-                            "authentik_providers_oauth2:provider-info",
-                            application_slug="conformance",
-                        ),
-                    },
-                }
-            )
+        def setUp(self):
             test_plan = conformance.create_test_plan(
                 test_plan_name,
                 dumps(test_plan_config),
@@ -157,20 +139,12 @@ def generate(plan_name: str):
                     "client_registration": "static_client",
                 },
             )
-            cls.plan_id = test_plan["id"]
-
-        @apply_blueprint(
-            "default/flow-default-authentication-flow.yaml",
-            "default/flow-default-invalidation-flow.yaml",
-        )
-        @apply_blueprint(
-            "default/flow-default-provider-authorization-implicit-consent.yaml",
-            "default/flow-default-provider-invalidation.yaml",
-        )
-        @apply_blueprint("system/providers-oauth2.yaml")
-        @reconcile_app("authentik_crypto")
-        @apply_blueprint("testing/oidc-conformance.yaml")
-        def setUp(self):
+            test_plan_config["server"] = {
+                "discoveryUrl": self.url(
+                    "authentik_providers_oauth2:provider-info", application_slug="conformance"
+                ),
+            }
+            self.plan_id = test_plan["id"]
             return super().setUp()
 
         def tearDown(self):
@@ -181,9 +155,9 @@ def generate(plan_name: str):
         setattr(
             test_cls,
             f"test_{test["testModule"]}_{dumps(["variant"])}",
-            generate_test_func(test),
+            partial(tester_func, test=test),
         )
 
     conformance.delete_test_plan(test_plan["id"])
-    test_cls.conformance = conformance
+
     return test_cls
