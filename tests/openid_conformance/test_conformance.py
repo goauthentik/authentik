@@ -94,6 +94,9 @@ class TestOpenIDConformance(SeleniumTestCase):
             test_status = self.conformance.get_test_status(module_id)
             test_log = self.conformance.get_test_log(module_id)
             test_info = self.conformance.get_module_info(module_id)
+            # Check status early, if we're finished already we don't want to do anything extra
+            if test_info["status"] in ["INTERRUPTED", "FINISHED"]:
+                return
             # Check if we need to clear cookies - tests only indicates this in their written summary
             # so this check is a bit brittle
             if "cookies" in test_info["summary"] and not cleared_cookies:
@@ -117,8 +120,6 @@ class TestOpenIDConformance(SeleniumTestCase):
                 sleep(3)
                 uploaded_image += 1
                 continue
-            if test_info["status"] in ["INTERRUPTED", "FINISHED"]:
-                return
             sleep(0.1)
 
     def get_screenshot(self):
