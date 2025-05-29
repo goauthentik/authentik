@@ -99,6 +99,7 @@ class TestOpenIDConformance(SeleniumTestCase):
                 uploaded_image += 1
             if test_info["status"] in ["INTERRUPTED", "FINISHED"]:
                 return
+            sleep(0.1)
 
     def get_screenshot(self):
         """Get a screenshot, but resize the window first so we don't exceed 500kb"""
