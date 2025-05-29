@@ -75,6 +75,17 @@ class Conformance:
             )
         return response.json()
 
+    def get_test_status(self,module_id):
+        """Returns an array containing a dictionary per test module"""
+        api_url = f"{self.api_url_base}api/runner/{module_id}"
+        response = self.httpclient.get(api_url)
+
+        if response.status_code != 200:
+            raise Exception(
+                f"get_test_status failed - HTTP {response.status_code:d} {response.content}"
+            )
+        return response.json()
+
     async def exporthtml(self, plan_id, path):
         for i in range(5):
             api_url = f"{self.api_url_base}api/plan/exporthtml/{plan_id}"
@@ -148,7 +159,7 @@ class Conformance:
             certificationOfConformancePdf.close()
             clientSideData.close()
 
-    async def create_test_plan(self, name, configuration, variant=None):
+    def create_test_plan(self, name, configuration, variant=None):
         api_url = f"{self.api_url_base}api/plan"
         payload = {"planName": name}
         if variant != None:
@@ -161,7 +172,7 @@ class Conformance:
             )
         return response.json()
 
-    async def create_test(self, test_name, configuration):
+    def create_test(self, test_name, configuration):
         api_url = f"{self.api_url_base}api/runner"
         payload = {"test": test_name}
         response = self.httpclient.post(api_url, params=payload, data=configuration)
@@ -183,7 +194,7 @@ class Conformance:
             )
         return response.json()
 
-    async def create_test_from_plan_with_variant(self, plan_id, test_name, variant):
+    def create_test_from_plan_with_variant(self, plan_id, test_name, variant):
         api_url = f"{self.api_url_base}api/runner"
         payload = {"test": test_name, "plan": plan_id}
         if variant != None:
@@ -196,7 +207,7 @@ class Conformance:
             )
         return response.json()
 
-    async def get_module_info(self, module_id):
+    def get_module_info(self, module_id):
         api_url = f"{self.api_url_base}api/info/{module_id}"
         response = self.httpclient.get(api_url)
 
@@ -206,13 +217,25 @@ class Conformance:
             )
         return response.json()
 
-    async def get_test_log(self, module_id):
+    def get_test_log(self, module_id):
         api_url = f"{self.api_url_base}api/log/{module_id}"
         response = self.httpclient.get(api_url)
 
         if response.status_code != 200:
             raise Exception(
                 f"get_test_log failed - HTTP {response.status_code:d} {response.content}"
+            )
+        return response.json()
+
+    def upload_image(self, log_id, placeholder, data):
+        api_url = f"{self.api_url_base}api/log/{log_id}/images/{placeholder}"
+        response = self.httpclient.post(api_url, data=data, headers={
+            "Content-Type": "text/plain"
+        })
+
+        if response.status_code != 200:
+            raise Exception(
+                f"upload_image failed - HTTP {response.status_code:d} {response.content}"
             )
         return response.json()
 

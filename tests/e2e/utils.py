@@ -176,6 +176,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     def _get_driver(self) -> WebDriver:
         count = 0
         opts = webdriver.ChromeOptions()
+        opts.accept_insecure_certs = True
         opts.add_argument("--disable-search-engine-choice-screen")
         # This breaks selenium when running remotely...?
         # opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
@@ -260,7 +261,6 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
 
     def login(self, shadow_dom=True):
         """Do entire login flow"""
-
         if shadow_dom:
             flow_executor = self.get_shadow_root("ak-flow-executor")
             identification_stage = self.get_shadow_root("ak-stage-identification", flow_executor)
