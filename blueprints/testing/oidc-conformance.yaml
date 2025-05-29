@@ -44,8 +44,7 @@ entries:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback
         - matching_mode: strict
-          url: https://10.120.20.76:8443/test/a/authentik/callback
-          # url: !Format [https://%s:8443/test/a/authentik/callback, !Context host_ip]
+          url: https://host.docker.internal:8443/test/a/authentik/callback
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
@@ -74,8 +73,7 @@ entries:
         - matching_mode: strict
           url: https://localhost:8443/test/a/authentik/callback
         - matching_mode: strict
-          url: https://10.120.20.76:8443/test/a/authentik/callback
-          # url: !Format [https://%s:8443/test/a/authentik/callback, !Context host_ip]
+          url: https://host.docker.internal:8443/test/a/authentik/callback
       property_mappings:
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
         - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
