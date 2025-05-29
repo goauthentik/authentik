@@ -147,13 +147,13 @@ class OAuthAuthorizationParams:
         if not self.provider:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
+        self.check_redirect_uri()
+        self.check_grant()
+        self.check_scope(github_compat)
         if self.request:
             raise AuthorizeError(
                 self.redirect_uri, "request_not_supported", self.grant_type, self.state
             )
-        self.check_redirect_uri()
-        self.check_grant()
-        self.check_scope(github_compat)
         self.check_nonce()
         self.check_code_challenge()
 
