@@ -50,10 +50,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
         raw_scim_group = super().to_schema(obj, connection)
         try:
             scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
-            if SCIM_GROUP_SCHEMA not in scim_group.schemas:
-                scim_group.schemas.insert(0, SCIM_GROUP_SCHEMA)
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
+        if SCIM_GROUP_SCHEMA not in scim_group.schemas:
+            scim_group.schemas.insert(0, SCIM_GROUP_SCHEMA)
+        # As this might be unset, we need to tell pydantic it's set so ensure the schemas
+        # are included, even if its just the defaults
+        scim_group.schemas = list(scim_group.schemas)
         if not scim_group.externalId:
             scim_group.externalId = str(obj.pk)
 

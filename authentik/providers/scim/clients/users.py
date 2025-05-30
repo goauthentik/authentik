@@ -34,10 +34,13 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
         raw_scim_user = super().to_schema(obj, connection)
         try:
             scim_user = SCIMUserSchema.model_validate(delete_none_values(raw_scim_user))
-            if SCIM_USER_SCHEMA not in scim_user.schemas:
-                scim_user.schemas.insert(0, SCIM_USER_SCHEMA)
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
+        if SCIM_USER_SCHEMA not in scim_user.schemas:
+            scim_user.schemas.insert(0, SCIM_USER_SCHEMA)
+        # As this might be unset, we need to tell pydantic it's set so ensure the schemas
+        # are included, even if its just the defaults
+        scim_user.schemas = list(scim_user.schemas)
         if not scim_user.externalId:
             scim_user.externalId = str(obj.uid)
         return scim_user
