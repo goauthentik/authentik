@@ -65,7 +65,7 @@ kubectl cp authentik-postgresql-0:/bitnami/postgresql/dump.sql ./authentik-db-ba
 This ensures you have a backup even if something goes wrong with the pod or storage.
 :::
 
-## Preparing the data directory
+## Prepare the data directory
 
 While still connected to the PostgreSQL pod, prepare the data directory for the upgrade:
 
