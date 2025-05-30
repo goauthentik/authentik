@@ -33,7 +33,7 @@ kubectl scale deploy --replicas 0 authentik-server
 kubectl scale deploy --replicas 0 authentik-worker
 ```
 
-## Backing up the database
+## Back up the database
 
 Connect to your PostgreSQL pod:
 
