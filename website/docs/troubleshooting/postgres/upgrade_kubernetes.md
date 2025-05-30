@@ -41,7 +41,7 @@ Connect to your PostgreSQL pod:
 kubectl exec -it authentik-postgresql-0 -- bash
 ```
 
-Once connected, execute these commands to create a database backup:
+After you are connected, execute these commands to create a database backup:
 
 ```shell
 # Navigate to the PostgreSQL data directory
