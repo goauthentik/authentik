@@ -66,7 +66,7 @@ Once that's done, the next step is to update your `.env` file to include the fol
     OIDC_DISPLAY_NAME_CLAIMS=name # Claim(s) for the user's display name. Can have multiple attributes listed, separated with a '|' in which case those values will be joined with a space.
     OIDC_CLIENT_ID=<Client ID from authentik>
     OIDC_CLIENT_SECRET=<Client Secret from authentik>
-    OIDC_ISSUER=https://authentik.company/application/o/<your-application-slug>
+    OIDC_ISSUER=https://authentik.company/application/o/<application-slug>
     OIDC_ISSUER_DISCOVER=true
     OIDC_END_SESSION_ENDPOINT=true
     ```
@@ -99,8 +99,11 @@ To support the integration of BookStack with authentik, you need to create an ap
 
 ### Obtain the SAML metadata URL
 
-1. In the authentik Admin Interface, nagiate to **Applications** > **Providers** and click on the provider tied to the application/provider pair created in the previous step.
-2. Under the **Related objects** section, click **Copy download URL**. Take note of this value as you will need it later.
+### Download metadata file
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for bookstack`).
+3. Under **Related objects** > **Metadata**, click on **Copy download URL**. This is your authentik metadata download URL and it will be required in the next section.
 
 ## Bookstack configuration
 
@@ -115,7 +118,7 @@ Once that's done, the next step is to update your `.env` file to include the fol
     SAML2_USER_TO_GROUPS=true
     SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
     SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
-    SAML2_IDP_ENTITYID=https://authentik.company/api/v3/providers/saml/<your-application-slug>/metadata/?download
+    SAML2_IDP_ENTITYID=<authentik metadata URL>
     SAML2_AUTOLOAD_METADATA=true
     ```
 
