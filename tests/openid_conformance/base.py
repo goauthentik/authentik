@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions as ec
 
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.providers.oauth2.models import OAuth2Provider
-from tests.e2e.utils import SeleniumTestCase, retry
+from tests.e2e.utils import SeleniumTestCase
 from tests.openid_conformance.conformance import Conformance
 
 
@@ -62,42 +62,6 @@ class TestOpenIDConformance(SeleniumTestCase):
             "server_metadata": "discovery",
             "client_registration": "static_client",
         }
-
-    @retry()
-    def test_oidcc_basic_certification_test(self):
-        test_plan_name = "oidcc-basic-certification-test-plan"
-        self.run_test(test_plan_name, self.test_plan_config)
-
-    @retry()
-    def test_oidcc_implicit_certification_test(self):
-        test_plan_name = "oidcc-implicit-certification-test-plan"
-        self.run_test(test_plan_name, self.test_plan_config)
-
-    # @retry()
-    # def test_oidcc_hybrid_certification_test(self):
-    #     test_plan_name = "oidcc-hybrid-certification-test-plan"
-    #     self.run_test(test_plan_name, self.test_plan_config)
-
-    # @retry()
-    # def test_oidcc_formpost_basic_certification_test(self):
-    #     test_plan_name = "oidcc-formpost-basic-certification-test-plan"
-    #     self.run_test(test_plan_name, self.test_plan_config)
-
-    # @retry()
-    # def test_oidcc_formpost_implicit_certification_test(self):
-    #     test_plan_name = "oidcc-formpost-implicit-certification-test-plan"
-    #     self.run_test(test_plan_name, self.test_plan_config)
-
-    # @retry()
-    # def test_oidcc_formpost_hybrid_certification_test(self):
-    #     test_plan_name = "oidcc-formpost-hybrid-certification-test-plan"
-    #     self.run_test(test_plan_name, self.test_plan_config)
-
-    # @retry()
-    # def test_oidcc_config_certification_test(self):
-    #     test_plan_name = "oidcc-config-certification-test-plan"
-    #     self.test_variant = {}
-    #     self.run_test(test_plan_name, self.test_plan_config)
 
     def run_test(self, test_plan: str, test_plan_config: dict):
         # Create a Conformance instance...

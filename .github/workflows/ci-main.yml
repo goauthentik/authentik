@@ -227,8 +227,17 @@ jobs:
           file: unittest.xml
           token: ${{ secrets.CODECOV_TOKEN }}
   test-conformance:
+    name: test-conformance (${{ matrix.job.name }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - name: basic
+            glob: tests/openid_conformance/test_basic.py
+          - name: implicit
+            glob: tests/openid_conformance/test_implicit.py
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
@@ -254,7 +263,7 @@ jobs:
           npm run build:sfe
       - name: run conformance
         run: |
-          uv run coverage run manage.py test tests/openid_conformance/test_*
+          uv run coverage run manage.py test ${{ matrix.job.glob }}
           uv run coverage xml
       - if: ${{ always() }}
         uses: codecov/codecov-action@v5
