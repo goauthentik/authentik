@@ -56,7 +56,24 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ## Bitwarden configuration
 
-TEMP TEMP TEMP
+1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator.
+2. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
+
+    - **Allow SSO authentication**: checked
+    - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if you have Claimed a Domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
+    - **Type**: `OIDC`
+    - Under **TEMP**:
+        - **TEMP**:
+
+3. Click **Save**.
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Bitwarden provider.
+3. Under **Protocol settgins**, set the following required configurations:
+    - **TEMP**:
+4. Click **Update**
 
 </TabItem>
 
@@ -76,7 +93,6 @@ To support the integration of Bitwarden with authentik, you need to create an ap
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
         - Temporarily set the **ACS URL** to `https://temp.temp`
-        - Set the **Audience** to `https://temp.temp`
         - Under **Advanced protocol settings**, set **Signing Certificate** to use any available certificate.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -90,15 +106,39 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ## Bitwarden configuration
 
-TEMP TEMP TEMP
+1. Log in to the [Bitwarden dashboard](https://vault.bitwarden.com/#/login) as an administrator.
+2. In the sidebar, navigate to **Admin Console** > **Settings** > **Single sign-on**, and enter the following settings:
+    - **Allow SSO authentication**: checked
+    - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if you have Claimed a Domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
+    - **Type**: `SAML 2.0`
+    - Under **SAML service provider configuration**:
+        - **Expect signed assertions**: checked
+    - Under **SAML identity provider configuration**:
+        - **Entity ID**: `authentik`
+        - **Single sign-on service URL**: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
+        - **Single log-out service URL**: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
+        - **X509 public certificate**: paste the contents of your certificate file.
+3. Under **SAML service provider configuration**, take note of the **SP entity ID** and **Assertion consumer service (ACS) URL**. These will be required in the next section.
+4. Click **Save**.
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Bitwarden provider.
+3. Under **Protocol settings**, set the following required configurations:
+    - **ACS URL**: set to the **Assertion consumer service (ACS) URL** from Bitwarden.
+    - **Audience**: set to the **SP entity ID** from Bitwarden.
+4. Click **Update**
 
 </TabItem>
 </Tabs>
 
 ## Resources
 
-TEMP TEMP TEMP
+- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
+- [Bitwarden Help - SAML 2.0 Configuration](https://bitwarden.com/help/configure-sso-saml/)
+- [Bitwarden Help - Claimed Domains](https://bitwarden.com/help/claimed-domains/)
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Bitwarden... TEMP
+To confirm that authentik is properly configured with Bitwarden, log out and go to the [Bitwarden login page](https://vault.bitwarden.com/#/login). Enter the email address of a Bitwarden account and click **Use single sign-on**. If you haven't claimed the email domain in Bitwarden, enter the unique SSO identifier that you selected, and click **Continue**. You should be redirected to authentik to login, once succesful you should be redirected to the Bitwarden dashboard.
