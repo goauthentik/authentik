@@ -98,7 +98,7 @@ Apply these changes using Helm to deploy the updated configuration.
 
 This will restart the PostgreSQL pod with the new image. When the pod starts, PostgreSQL will initialize a new, empty data directory since the previous directory was renamed.
 
-## Restoring database content
+## Restore database content
 
 Connect to the PostgreSQL pod again:
 
