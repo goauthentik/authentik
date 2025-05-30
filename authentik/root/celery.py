@@ -27,7 +27,7 @@ from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
 from authentik import get_full_version
-from authentik.lib.sentry import before_send
+from authentik.lib.sentry import before_send, should_ignore_exception
 from authentik.lib.utils.errors import exception_to_string
 
 # set the default Django settings module for the 'celery' program.
@@ -81,7 +81,7 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
 
     LOGGER.warning("Task failure", task_id=task_id.replace("-", ""), exc=exception)
     CTX_TASK_ID.set(...)
-    if before_send({}, {"exc_info": (None, exception, None)}) is not None:
+    if not should_ignore_exception(exception):
         Event.new(
             EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
         ).save()
