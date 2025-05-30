@@ -90,10 +90,10 @@ To support the integration of Frappe with authentik, you need to create an appli
 4. **Save the Configuration**
     - Click the black **Save** button in the top-right corner to complete the setup.
 
-## Resources
-
-- [Frappe's official OpenID Connect guide](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)
-
 ## Configuration verification
 
 To verify that authentik is correctly set up with Frappe, navigate to your Frappe installation and click **Login with Provider**. A successful login should redirect you to the main page of your installation.
+
+## Resources
+
+- [Frappe's official OpenID Connect guide](https://docs.frappe.io/framework/user/en/guides/integration/openid_connect_and_frappe_social_login)

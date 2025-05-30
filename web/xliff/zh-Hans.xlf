@@ -9011,7 +9011,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brandingTitle}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9870,6 +9870,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
   <target>配置用于查询用户的用户属性。</target>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
 </trans-unit>
     </body>
   </file>

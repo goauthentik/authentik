@@ -25,7 +25,7 @@ You will need an existing group or multiple in authentik to assign roles in Veea
 
 ## Veeam Enterprise Manager pre-configuration
 
-Login to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
+Log in to your Veeam Enterprise Manager. Navigate to the Configuration in the top-right. On the left sidebar, select Settings. Select the SAML Authentication tab.
 
 Check the checkbox called "Enable SAML 2.0". Further down the site, click the "Download" button, to download the metadata.
 

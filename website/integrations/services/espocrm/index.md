@@ -61,10 +61,10 @@ Configure the following fields:
 - **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</kbd>
 - **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</kbd>
 
-## Resources
-
-- [EspoCRM administrator documentation on OpenID Connect authentication](https://docs.espocrm.com/administration/oidc/)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with EspoCRM, log out and log back in via authentik. Clicking the "Login" button on the homepage should redirect you to authentik.
+
+## Resources
+
+- [EspoCRM administrator documentation on OpenID Connect authentication](https://docs.espocrm.com/administration/oidc/)

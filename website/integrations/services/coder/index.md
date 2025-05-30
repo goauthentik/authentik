@@ -53,10 +53,10 @@ CODER_OIDC_SIGN_IN_TEXT=Log in with authentik
 CODER_OIDC_ICON_URL=https://authentik.company/static/dist/assets/icons/icon.png
 ```
 
-## Resources
-
-- [Coder OIDC authentication documentation](https://coder.com/docs/admin/users/oidc-auth/)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Coder, log out and attempt to log back in by clicking **Log in with authentik**.
+
+## Resources
+
+- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)

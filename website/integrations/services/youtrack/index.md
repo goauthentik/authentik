@@ -65,10 +65,10 @@ To support the integration of YouTrack with authentik, you need to create an app
 2. Navigate to **Applications** > **Providers** > **_application name_**, then click **Edit**.
 3. Replace the placeholder value for the **ACS URL** with the value copied from the previous section.
 
-## Resources
-
-- [YouTrack SAML 2.0 Auth Module Documentation](https://www.jetbrains.com/help/youtrack/server/saml-authentication-module.html)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with YouTrack, log out and attempt to log back in. You should be redirected to authentik to complete authentication.
+
+## Resources
+
+- [YouTrack SAML 2.0 Auth Module Documentation](https://www.jetbrains.com/help/youtrack/server/saml-authentication-module.html)
