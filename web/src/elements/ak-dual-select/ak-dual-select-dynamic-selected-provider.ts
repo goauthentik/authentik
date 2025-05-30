@@ -4,7 +4,7 @@ import { ref } from "lit/directives/ref.js";
 
 import { AkDualSelectProvider } from "./ak-dual-select-provider.js";
 import "./ak-dual-select.js";
-import type { DualSelectPair } from "./types.js";
+import type { DualSelectPair, DualSelectPairSource } from "./types.js";
 
 /**
  * @element ak-dual-select-dynamic-provider
@@ -22,7 +22,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
      * @attr
      */
     @property({ attribute: false })
-    selector: (_: DualSelectPair[]) => Promise<DualSelectPair[]> = () => Promise.resolve([]);
+    selector?: DualSelectPairSource;
 
     #didFirstUpdate = false;
 
@@ -37,7 +37,7 @@ export class AkDualSelectDynamic extends AkDualSelectProvider {
 
         this.#didFirstUpdate = true;
 
-        this.selector(this.options).then((selected) => {
+        this.selector?.(this.options).then((selected) => {
             this.selected = selected;
         });
     }
