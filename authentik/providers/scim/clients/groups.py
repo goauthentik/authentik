@@ -47,13 +47,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMProviderGroup, SCIMGroupSchema]):
 
     def to_schema(self, obj: Group, connection: SCIMProviderGroup) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_group = super().to_schema(
-            obj,
-            connection,
-            schemas=(SCIM_GROUP_SCHEMA,),
-        )
+        raw_scim_group = super().to_schema(obj, connection)
         try:
             scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
+            if SCIM_GROUP_SCHEMA not in scim_group.schemas:
+                scim_group.schemas.insert(0, SCIM_GROUP_SCHEMA)
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_group.externalId:

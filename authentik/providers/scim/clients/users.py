@@ -31,13 +31,11 @@ class SCIMUserClient(SCIMClient[User, SCIMProviderUser, SCIMUserSchema]):
 
     def to_schema(self, obj: User, connection: SCIMProviderUser) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
-        raw_scim_user = super().to_schema(
-            obj,
-            connection,
-            schemas=(SCIM_USER_SCHEMA,),
-        )
+        raw_scim_user = super().to_schema(obj, connection)
         try:
             scim_user = SCIMUserSchema.model_validate(delete_none_values(raw_scim_user))
+            if SCIM_USER_SCHEMA not in scim_user.schemas:
+                scim_user.schemas.insert(0, SCIM_USER_SCHEMA)
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_user.externalId:
