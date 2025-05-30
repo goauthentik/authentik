@@ -84,7 +84,7 @@ mv data data-old
 Do not delete the old data directory immediately. Keeping it as `data-old` allows for recovery if the upgrade encounters issues.
 :::
 
-## Upgrading PostgreSQL
+## Upgrade PostgreSQL
 
 Now update your `values.yaml` to specify the new PostgreSQL version:
 
