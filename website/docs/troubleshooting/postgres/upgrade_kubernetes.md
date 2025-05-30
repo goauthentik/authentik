@@ -122,7 +122,7 @@ export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
 psql -U $POSTGRES_USER $POSTGRES_DB < dump.sql
 ```
 
-## Restarting authentik services
+## Restart authentik services
 
 After the database restoration completes successfully, restart authentik using Helm with your updated configuration.
 
