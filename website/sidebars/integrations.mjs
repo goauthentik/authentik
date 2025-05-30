@@ -86,6 +86,7 @@ const items = [
             "services/hashicorp-vault/index",
             "services/jenkins/index",
             "services/knocknoc/index",
+            "services/komodo/index",
             "services/meshcentral/index",
             "services/minio/index",
             "services/netbox/index",
