@@ -42,18 +42,33 @@ To support the integration of Komodo with authentik, you need to create an appli
 
 ## Komodo configuration
 
-Add the following environment variables to your Komodo Core deployment:
+### Setup OIDC connection
+
+1. Edit the following environment variables in your Komodo `compose.env` file, or if using a mounted config file, edit your `./komodo/core.config.toml` file:
 
 ```yaml
 KOMODO_OIDC_ENABLED=true
-KOMODO_OIDC_PROVIDER=https://authentik.company/application/o/authorize TEMP
+KOMODO_OIDC_PROVIDER=https://authentik.company/application/o/authorize
 KOMODO_OIDC_CLIENT_ID=<authentik client ID>
 KOMODO_OIDC_CLIENT_SECRET=<authentik client secret>
 ```
 
+2. Redeploy Komodo for the changes to take effect.
+
+### User configuration
+
+Komodo doesn't currently have a method to provision OIDC users, therefore OIDC accounts need to be manually enabled after first login. Follow these steps to create and enable OIDC users in Komodo:
+
+1. Log in to Komodo via the OIDC button on the login page.
+2. You will be redirected to authentik to login (if you are already logged in, you will be redirected to step 3).
+3. You will be redirected back to Komodo, and receive an error message saying "User Not Enabled".
+4. Log in to Komodo as an administrator.
+5. Navigate to **Settings**, and under the **Users** section, click the name of your authentik user. The **User type** should be **OIDC**.
+6. Click **Enable User**, and assign the desired pemissions.
+
 ## Configuration verification
 
-To confirm that authentik is properly configured with Komodo, log out and attempt to log back in by clicking ...
+To confirm that authentik is properly configured with Komodo, log out and attempt to log back in by clicking the OIDC button. You should be redirected to authentik to login, if successful you will be redirected to the Komodo dashboard.
 
 ## Resources
 
