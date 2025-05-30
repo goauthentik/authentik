@@ -8147,6 +8147,12 @@
                     "title": "Group membership field",
                     "description": "Field which contains members of a group."
                 },
+                "user_membership_attribute": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User membership attribute",
+                    "description": "Attribute which matches the value of `group_membership_field`."
+                },
                 "object_uniqueness_field": {
                     "type": "string",
                     "minLength": 1,
