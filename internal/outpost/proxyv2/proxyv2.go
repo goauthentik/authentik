@@ -35,7 +35,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController) *ProxyServer {
+func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {

@@ -135,6 +135,10 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	return ac
 }
 
+func (a *APIController) Log() *log.Entry {
+	return a.logger
+}
+
 // Start Starts all handlers, non-blocking
 func (a *APIController) Start() error {
 	err := a.Server.Refresh()

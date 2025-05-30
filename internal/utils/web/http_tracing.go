@@ -2,7 +2,6 @@ package web
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/getsentry/sentry-go"
@@ -20,7 +19,7 @@ func NewTracingTransport(ctx context.Context, inner http.RoundTripper) *tracingT
 func (tt *tracingTransport) RoundTrip(r *http.Request) (*http.Response, error) {
 	span := sentry.StartSpan(tt.ctx, "authentik.go.http_request")
 	r.Header.Set("sentry-trace", span.ToSentryTrace())
-	span.Description = fmt.Sprintf("%s %s", r.Method, r.URL.String())
+	span.Description = r.Method + " " + r.URL.String()
 	span.SetTag("url", r.URL.String())
 	span.SetTag("method", r.Method)
 	defer span.Finish()
