@@ -16,12 +16,10 @@ def migrate_permissions_before_delete(apps: Apps, schema_editor: BaseDatabaseSch
     # Get the content types
     try:
         old_ct = ContentType.objects.using(db_alias).get(
-            app_label="authentik_core",
-            model="oldauthenticatedsession"
+            app_label="authentik_core", model="oldauthenticatedsession"
         )
         new_ct = ContentType.objects.using(db_alias).get(
-            app_label="authentik_core",
-            model="authenticatedsession"
+            app_label="authentik_core", model="authenticatedsession"
         )
     except ContentType.DoesNotExist:
         return  # If either content type doesn't exist, nothing to migrate
@@ -31,13 +29,11 @@ def migrate_permissions_before_delete(apps: Apps, schema_editor: BaseDatabaseSch
 
     # Create equivalent permissions for the new content type
     for old_perm in old_perms:
-        new_codename = old_perm.codename.replace('oldauthenticatedsession', 'authenticatedsession')
-        new_name = old_perm.name.replace('oldauthenticatedsession', 'authenticated session')
+        new_codename = old_perm.codename.replace("oldauthenticatedsession", "authenticatedsession")
+        new_name = old_perm.name.replace("oldauthenticatedsession", "authenticated session")
 
         new_perm, created = Permission.objects.using(db_alias).get_or_create(
-            codename=new_codename,
-            content_type=new_ct,
-            defaults={'name': new_name}
+            codename=new_codename, content_type=new_ct, defaults={"name": new_name}
         )
 
         # Update all groups and user permissions to point to the new permission
@@ -57,8 +53,8 @@ def migrate_permissions_before_delete(apps: Apps, schema_editor: BaseDatabaseSch
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('contenttypes', '0002_remove_content_type_name'),
-        ('auth', '0001_initial'),
+        ("contenttypes", "0002_remove_content_type_name"),
+        ("auth", "0001_initial"),
         ("authentik_core", "0046_session_and_more"),
         ("authentik_providers_rac", "0007_migrate_session"),
         ("authentik_providers_oauth2", "0028_migrate_session"),
