@@ -14,6 +14,16 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 - Your existing `values.yaml` file used for authentik deployment
 - Basic understanding of Kubernetes and Helm commands
 
+## Overview of workflow
+
+The basic steps to upgrades PostgreSQL on Kubernetes are:
+1. Stop authentik services
+2. Back up the database
+3. Prepare the data directory
+4. Upgrade PostgreSQL
+5. Restore database content
+6. Restart authentik services
+
 ## Stop authentik services
 
 Begin by scaling down authentik services to prevent database access during the migration:
