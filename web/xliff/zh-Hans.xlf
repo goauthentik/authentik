@@ -9873,9 +9873,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s42b57339ad2f3ac7">
   <source>Delete Not Found Objects</source>
+  <target>删除不存在对象</target>
 </trans-unit>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>删除之前由此源提供，但现已缺失的用户和组。</target>
 </trans-unit>
     </body>
   </file>
