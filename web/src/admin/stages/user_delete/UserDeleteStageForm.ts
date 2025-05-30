@@ -23,11 +23,10 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
                 stageUuid: this.instance.pk || "",
                 userDeleteStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
-                userDeleteStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
+            userDeleteStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

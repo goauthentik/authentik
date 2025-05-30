@@ -85,6 +85,7 @@ class IdentificationChallenge(Challenge):
     primary_action = CharField()
     sources = LoginSourceSerializer(many=True, required=False)
     show_source_labels = BooleanField()
+    enable_remember_me = BooleanField(required=False, default=True)
 
     component = CharField(default="ak-stage-identification")
 
@@ -235,6 +236,7 @@ class IdentificationStageView(ChallengeStageView):
                 and current_stage.password_stage.allow_show_password,
                 "show_source_labels": current_stage.show_source_labels,
                 "flow_designation": self.executor.flow.designation,
+                "enable_remember_me": current_stage.enable_remember_me,
             }
         )
         # If the user has been redirected to us whilst trying to access an

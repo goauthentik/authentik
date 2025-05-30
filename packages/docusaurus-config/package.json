@@ -1,0 +1,61 @@
+{
+    "name": "@goauthentik/docusaurus-config",
+    "version": "1.1.0",
+    "description": "authentik's Docusaurus config",
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc -p ."
+    },
+    "type": "module",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": "./index.js",
+            "types": "./out/index.d.ts"
+        },
+        "./css/*.css": "./css/*.css"
+    },
+    "dependencies": {
+        "deepmerge-ts": "^7.1.5",
+        "prism-react-renderer": "^2.4.1"
+    },
+    "devDependencies": {
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-search-algolia": "^3.7.0",
+        "@docusaurus/types": "^3.7.0",
+        "@goauthentik/prettier-config": "^1.0.1",
+        "@goauthentik/tsconfig": "^1.0.1",
+        "@types/react": "^19.1.5",
+        "@types/react-dom": "^19.1.5",
+        "prettier": "^3.5.3",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "typescript": "^5.8.3"
+    },
+    "peerDependencies": {
+        "@docusaurus/theme-common": "^3.7.0",
+        "@docusaurus/theme-search-algolia": "^3.7.0",
+        "@docusaurus/types": "^3.7.0",
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
+    },
+    "engines": {
+        "node": ">=20.11"
+    },
+    "types": "./out/index.d.ts",
+    "files": [
+        "./index.js",
+        "lib/**/*",
+        "css/**/*",
+        "out/**/*"
+    ],
+    "prettier": "@goauthentik/prettier-config",
+    "peerDependenciesMeta": {
+        "@docusaurus/theme-search-algolia": {
+            "optional": true
+        }
+    },
+    "publishConfig": {
+        "access": "public"
+    }
+}

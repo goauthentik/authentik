@@ -5,6 +5,7 @@ import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import "@goauthentik/flow/stages/captcha/CaptchaStage";
+import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -35,7 +36,7 @@ export const PasswordManagerPrefill: {
     totp: undefined,
 };
 
-export const OR_LIST_FORMATTERS = new Intl.ListFormat("default", {
+export const OR_LIST_FORMATTERS: Intl.ListFormat = new Intl.ListFormat("default", {
     style: "short",
     type: "disjunction",
 });
@@ -46,6 +47,8 @@ export class IdentificationStage extends BaseStage<
     IdentificationChallengeResponseRequest
 > {
     form?: HTMLFormElement;
+
+    rememberMe: AkRememberMeController;
 
     @state()
     captchaToken = "";
@@ -62,8 +65,9 @@ export class IdentificationStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            /* login page's icons */
+            AkRememberMeController.styles,
             css`
+                /* login page's icons */
                 .pf-c-login__main-footer-links-item button {
                     background-color: transparent;
                     border: 0;
@@ -79,6 +83,11 @@ export class IdentificationStage extends BaseStage<
                 }
             `,
         ];
+    }
+
+    constructor() {
+        super();
+        this.rememberMe = new AkRememberMeController(this);
     }
 
     updated(changedProperties: PropertyValues<this>) {
@@ -135,7 +144,7 @@ export class IdentificationStage extends BaseStage<
             password.setAttribute("name", "password");
             password.setAttribute("autocomplete", "current-password");
             password.onkeyup = (ev: KeyboardEvent) => {
-                if (ev.key == "Enter") {
+                if (ev.key === "Enter") {
                     this.submitForm(ev);
                 }
                 const el = ev.target as HTMLInputElement;
@@ -160,7 +169,7 @@ export class IdentificationStage extends BaseStage<
         totp.setAttribute("name", "code");
         totp.setAttribute("autocomplete", "one-time-code");
         totp.onkeyup = (ev: KeyboardEvent) => {
-            if (ev.key == "Enter") {
+            if (ev.key === "Enter") {
                 this.submitForm(ev);
             }
             const el = ev.target as HTMLInputElement;
@@ -258,7 +267,7 @@ export class IdentificationStage extends BaseStage<
                 label=${label}
                 required
                 class="pf-c-form__group"
-                .errors=${(this.challenge.responseErrors || {})["uid_field"]}
+                .errors=${(this.challenge.responseErrors || {}).uid_field}
             >
                 <input
                     type=${type}
@@ -268,8 +277,10 @@ export class IdentificationStage extends BaseStage<
                     autocomplete="username"
                     spellcheck="false"
                     class="pf-c-form-control"
+                    value=${this.rememberMe?.username ?? ""}
                     required
                 />
+                ${this.rememberMe.render()}
             </ak-form-element>
             ${this.challenge.passwordFields
                 ? html`
@@ -278,9 +289,9 @@ export class IdentificationStage extends BaseStage<
                           inputId="ak-stage-identification-password"
                           required
                           class="pf-c-form__group"
-                          .errors=${(this.challenge?.responseErrors || {})["password"]}
+                          .errors=${(this.challenge?.responseErrors || {}).password}
                           ?allow-show-password=${this.challenge.allowShowPassword}
-                          prefill=${PasswordManagerPrefill["password"] ?? ""}
+                          prefill=${PasswordManagerPrefill.password ?? ""}
                       ></ak-flow-input-password>
                   `
                 : nothing}

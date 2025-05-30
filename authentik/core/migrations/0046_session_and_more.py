@@ -31,7 +31,10 @@ class PickleSerializer:
 
     def loads(self, data):
         """Unpickle data to be loaded from redis"""
-        return pickle.loads(data)  # nosec
+        try:
+            return pickle.loads(data)  # nosec
+        except Exception:
+            return {}
 
 
 def _migrate_session(
@@ -76,6 +79,7 @@ def _migrate_session(
         AuthenticatedSession.objects.using(db_alias).create(
             session=session,
             user=old_auth_session.user,
+            uuid=old_auth_session.uuid,
         )
 
 

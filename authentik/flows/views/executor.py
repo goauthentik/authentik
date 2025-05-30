@@ -69,7 +69,6 @@ SESSION_KEY_APPLICATION_PRE = "authentik/flows/application_pre"
 SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
-SESSION_KEY_AUTH_STARTED = "authentik/flows/auth_started"
 QS_KEY_TOKEN = "flow_token"  # nosec
 QS_QUERY = "query"
 
@@ -147,7 +146,8 @@ class FlowExecutorView(APIView):
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
             LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
         finally:
-            token.delete()
+            if token.revoke_on_execution:
+                token.delete()
         if not isinstance(plan, FlowPlan):
             return None
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token
@@ -454,7 +454,6 @@ class FlowExecutorView(APIView):
             SESSION_KEY_APPLICATION_PRE,
             SESSION_KEY_PLAN,
             SESSION_KEY_GET,
-            SESSION_KEY_AUTH_STARTED,
             # We might need the initial POST payloads for later requests
             # SESSION_KEY_POST,
             # We don't delete the history on purpose, as a user might

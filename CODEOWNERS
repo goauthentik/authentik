@@ -23,6 +23,8 @@ docker-compose.yml              @goauthentik/infrastructure
 Makefile                        @goauthentik/infrastructure
 .editorconfig                   @goauthentik/infrastructure
 CODEOWNERS                      @goauthentik/infrastructure
+# Web packages
+packages/                       @goauthentik/frontend
 # Web
 web/                            @goauthentik/frontend
 tests/wdio/                     @goauthentik/frontend

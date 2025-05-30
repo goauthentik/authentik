@@ -62,7 +62,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	apiConfig.Scheme = akURL.Scheme
 	apiConfig.HTTPClient = &http.Client{
 		Transport: web.NewUserAgentTransport(
-			constants.OutpostUserAgent(),
+			constants.UserAgentOutpost(),
 			web.NewTracingTransport(
 				rsp.Context(),
 				GetTLSTransport(),

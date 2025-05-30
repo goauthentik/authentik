@@ -27,7 +27,7 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -45,80 +45,6 @@ To support the integration of ArgoCD with authentik, you need to create an appli
 Using the authentik Admin interface, navigate to **Directory** -> **Groups** and click **Create** to create two required groups: `ArgoCD Admins` for administrator users and `ArgoCD Viewers` for read-only users.
 
 After creating the groups, select a group, navigate to the **Users** tab, and manage its members by using the **Add existing user** and **Create user** buttons as needed.
-
-## Terraform provider
-
-```hcl
-data "authentik_flow" "default-provider-authorization-implicit-consent" {
-  slug = "default-provider-authorization-implicit-consent"
-}
-
-data "authentik_flow" "default-provider-invalidation" {
-  slug = "default-invalidation-flow"
-}
-
-data "authentik_property_mapping_provider_scope" "scope-email" {
-  name = "authentik default OAuth Mapping: OpenID 'email'"
-}
-
-data "authentik_property_mapping_provider_scope" "scope-profile" {
-  name = "authentik default OAuth Mapping: OpenID 'profile'"
-}
-
-data "authentik_property_mapping_provider_scope" "scope-openid" {
-  name = "authentik default OAuth Mapping: OpenID 'openid'"
-}
-
-data "authentik_certificate_key_pair" "generated" {
-  name = "authentik Self-signed Certificate"
-}
-
-resource "authentik_provider_oauth2" "argocd" {
-  name          = "ArgoCD"
-  #  Required. You can use the output of:
-  #     $ openssl rand -hex 16
-  client_id     = "my_client_id"
-
-  # Optional: will be generated if not provided
-  # client_secret = "my_client_secret"
-
-  authorization_flow = data.authentik_flow.default-provider-authorization-implicit_consent.id
-  invalidation_flow  = data.authentik_flow.default-provider-invalidation.id
-
-  signing_key = data.authentik_certificate_key_pair.generated.id
-
-  allowed_redirect_uris = [
-    {
-      matching_mode = "strict",
-      url           = "https://argocd.company/api/dex/callback",
-    },
-    {
-      matching_mode = "strict",
-      url           = "http://localhost:8085/auth/callback",
-    }
-  ]
-
-  property_mappings = [
-    data.authentik_property_mapping_provider_scope.scope-email.id,
-    data.authentik_property_mapping_provider_scope.scope-profile.id,
-    data.authentik_property_mapping_provider_scope.scope-openid.id,
-  ]
-}
-
-resource "authentik_application" "argocd" {
-  name              = "ArgoCD"
-  slug              = "argocd"
-  protocol_provider = authentik_provider_oauth2.argocd.id
-}
-
-resource "authentik_group" "argocd_admins" {
-  name    = "ArgoCD Admins"
-}
-
-resource "authentik_group" "argocd_viewers" {
-  name    = "ArgoCD Viewers"
-}
-```
 
 ## ArgoCD Configuration
 

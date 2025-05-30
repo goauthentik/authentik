@@ -1,7 +1,8 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, groupBy } from "@goauthentik/common/utils";
+import { groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-switch-input.js";
 import "@goauthentik/elements/ak-checkbox-group/ak-checkbox-group.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
@@ -158,68 +159,38 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="caseInsensitiveMatching">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.caseInsensitiveMatching, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Case insensitive matching")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, user fields are matched regardless of their casing.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="pretendUserExists">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.pretendUserExists, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Pretend user exists")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When enabled, the stage will always accept the given user identifier and continue.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="showMatchedUser">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.showMatchedUser, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label">${msg("Show matched user")}</span>
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    <ak-switch-input
+                        name="caseInsensitiveMatching"
+                        label=${msg("Case insensitive matching")}
+                        ?checked=${this.instance?.caseInsensitiveMatching ?? true}
+                        help=${msg(
+                            "When enabled, user fields are matched regardless of their casing.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="pretendUserExists"
+                        label=${msg("Pretend user exists")}
+                        ?checked=${this.instance?.pretendUserExists ?? true}
+                        help=${msg(
+                            "When enabled, the stage will always accept the given user identifier and continue.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="showMatchedUser"
+                        label=${msg("Show matched user")}
+                        ?checked=${this.instance?.showMatchedUser ?? true}
+                        help=${msg(
+                            "When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.",
+                        )}
+                    ></ak-switch-input>
+                    <ak-switch-input
+                        name="enableRememberMe"
+                        label=${msg('Enable "Remember me on this device"')}
+                        ?checked=${this.instance?.enableRememberMe}
+                        help=${msg(
+                            "When enabled, the user can save their username in a cookie, allowing them to skip directly to entering their password.",
+                        )}
+                    ></ak-switch-input>
                 </div>
             </ak-form-group>
             <ak-form-group>
@@ -247,7 +218,7 @@ export class IdentificationStageForm extends BaseStageForm<IdentificationStage> 
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.showSourceLabels, false)}
+                                ?checked=${this.instance?.showSourceLabels ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

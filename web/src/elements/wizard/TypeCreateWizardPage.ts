@@ -1,5 +1,5 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import "@goauthentik/admin/common/ak-license-notice";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";
@@ -105,7 +105,7 @@ export class TypeCreateWizardPage extends WithLicenseSummary(WizardPage) {
                 return html`<div
                     class="pf-l-grid__item pf-m-3-col pf-c-card ${requiresEnterprise
                         ? "pf-m-non-selectable-raised"
-                        : "pf-m-selectable-raised"} ${this.selectedType == type
+                        : "pf-m-selectable-raised"} ${this.selectedType === type
                         ? "pf-m-selected-raised"
                         : ""}"
                     tabindex=${idx}

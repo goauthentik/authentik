@@ -1,14 +1,14 @@
-import "@goauthentik/admin/sources/kerberos/KerberosSourceViewPage";
-import "@goauthentik/admin/sources/ldap/LDAPSourceViewPage";
-import "@goauthentik/admin/sources/oauth/OAuthSourceViewPage";
-import "@goauthentik/admin/sources/plex/PlexSourceViewPage";
-import "@goauthentik/admin/sources/saml/SAMLSourceViewPage";
-import "@goauthentik/admin/sources/scim/SCIMSourceViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/sources/kerberos/KerberosSourceViewPage";
+import "#admin/sources/ldap/LDAPSourceViewPage";
+import "#admin/sources/oauth/OAuthSourceViewPage";
+import "#admin/sources/plex/PlexSourceViewPage";
+import "#admin/sources/saml/SAMLSourceViewPage";
+import "#admin/sources/scim/SCIMSourceViewPage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import "#elements/EmptyState";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -34,7 +34,7 @@ export class SourceViewPage extends AKElement {
 
     renderSource(): TemplateResult {
         if (!this.source) {
-            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading ?fullHeight=${true}></ak-empty-state>`;
         }
         switch (this.source?.component) {
             case "ak-source-kerberos-form":

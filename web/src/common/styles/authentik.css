@@ -1,3 +1,12 @@
+/**
+ * @file authentik base UI theme.
+ */
+
+/* Defined to better identify the base theme when debugging constructed stylesheets. */
+.__AK_UI_BASE__ {
+    --__AK_UI_BASE__: 1;
+}
+
 /* #region Global */
 
 :root {
@@ -17,21 +26,36 @@
 
     /* Minimum width after which the sidebar becomes automatic */
     --ak-sidebar--minimum-auto-width: 80rem;
+
+    /**
+     * The height of the navbar and branded sidebar.
+     * @todo This shouldn't be necessary. The sidebar can instead use a grid layout
+     * ensuring they share the same height.
+     */
+    --ak-navbar--height: 7rem;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-    background-color: transparent;
+@supports selector(::-webkit-scrollbar) {
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+        background-color: var(--ak-accent);
+    }
+    ::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+    ::-webkit-scrollbar-corner {
+        background-color: transparent;
+    }
 }
-::-webkit-scrollbar-thumb {
-    background-color: var(--ak-accent);
-}
-::-webkit-scrollbar-track {
-    background-color: transparent;
-}
-::-webkit-scrollbar-corner {
-    background-color: transparent;
+
+@supports not selector(::-webkit-scrollbar) {
+    :root {
+        scrollbar-color: var(--ak-accent) transparent;
+    }
 }
 
 html {

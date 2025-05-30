@@ -62,7 +62,8 @@ function prepare_debug {
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y --no-install-recommends krb5-kdc krb5-user krb5-admin-server libkrb5-dev gcc
-    VIRTUAL_ENV=/ak-root/.venv uv sync --frozen
+    source "${VENV_PATH}/bin/activate"
+    uv sync --active --frozen
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }
@@ -82,7 +83,8 @@ if [[ "$1" == "server" ]]; then
     run_authentik
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
-    check_if_root "python -m manage worker"
+    shift
+    check_if_root "python -m manage worker $@"
 elif [[ "$1" == "worker-status" ]]; then
     wait_for_db
     celery -A authentik.root.celery flower \
@@ -96,6 +98,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
+    shift
     exec python -m authentik.lib.config $@
 elif [[ "$1" == "debug" ]]; then
     exec sleep infinity

@@ -1,8 +1,8 @@
-import React, { type ReactNode } from "react";
+import Link from "@docusaurus/Link";
 import Translate from "@docusaurus/Translate";
 import { ThemeClassNames } from "@docusaurus/theme-common";
-import Link from "@docusaurus/Link";
 import type { Props } from "@theme/EditThisPage";
+import React, { type ReactNode } from "react";
 
 export default function EditThisPage({ editUrl }: Props): ReactNode {
     return (

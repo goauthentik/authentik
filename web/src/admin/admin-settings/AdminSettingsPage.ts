@@ -1,16 +1,15 @@
-import "@goauthentik/admin/admin-settings/AdminSettingsForm";
-import { AdminSettingsForm } from "@goauthentik/admin/admin-settings/AdminSettingsForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
+import "#admin/admin-settings/AdminSettingsForm";
+import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import { AKElement } from "#elements/Base";
+import "#elements/CodeMirror";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -83,13 +82,10 @@ export class AdminSettingsPage extends AKElement {
     }
 
     render() {
-        if (!this.settings) {
-            return nothing;
-        }
+        if (!this.settings) return nothing;
+
         return html`
-            <ak-page-header icon="fa fa-cog" header="" description="">
-                <span slot="header"> ${msg("System settings")} </span>
-            </ak-page-header>
+            <ak-page-header icon="fa fa-cog" header="${msg("System settings")}"> </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">

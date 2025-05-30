@@ -84,6 +84,10 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/roles/RoleListPage");
         return html`<ak-role-list></ak-role-list>`;
     }),
+    new Route(new RegExp("^/identity/initial-permissions$"), async () => {
+        await import("@goauthentik/admin/rbac/InitialPermissionsListPage");
+        return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
+    }),
     new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
         await import("@goauthentik/admin/roles/RoleViewPage");
         return html`<ak-role-view roleId=${args.id}></ak-role-view>`;

@@ -53,7 +53,7 @@ For detailed instructions, refer to Google documentation.
 4. On the service account page, click the **Details** tab, and expand the **Advanced settings** area.
 5. Log in to the Admin Console, and then navigate to **Chrome browser -> Connectors**.
 6. Click on **New Provider Configuration**.
-7. Under Okta, click "Set up".
+7. Under Universal Device Trust, click "Set up".
 8. Enter a name.
 9. Enter the URL: https://authentik.company/endpoint/gdtc/chrome/
 10. Under Service accounts, enter the full name of the service account created above, for example `authentik-gdtc-docs@authentik-enterprise-dev.iam.gserviceaccount.com`.
