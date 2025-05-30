@@ -14,7 +14,7 @@ For this guide, we assume the PostgreSQL pod is named `authentik-postgresql-0`, 
 - Your existing `values.yaml` file used for authentik deployment
 - Basic understanding of Kubernetes and Helm commands
 
-## Stopping authentik services
+## Stop authentik services
 
 Begin by scaling down authentik services to prevent database access during the migration:
 
