@@ -94,11 +94,11 @@ class SCIMUserTests(TestCase):
     @Mocker()
     def test_user_create_custom_schema(self, mock: Mocker):
         """Test user creation with custom schema"""
-        schmea = SCIMMapping.objects.create(
+        schema = SCIMMapping.objects.create(
             name="custom_schema",
             expression="""return {"schemas": ["foo"]}""",
         )
-        self.provider.property_mappings.add(schmea)
+        self.provider.property_mappings.add(schema)
         scim_id = generate_id()
         mock.get(
             "https://localhost/ServiceProviderConfig",
