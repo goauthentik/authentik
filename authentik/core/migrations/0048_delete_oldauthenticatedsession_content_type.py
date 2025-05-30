@@ -23,5 +23,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.RunPython(
             code=remove_old_authenticated_session_content_type,
+            reverse_code=migrations.RunPython.noop
         ),
     ]
