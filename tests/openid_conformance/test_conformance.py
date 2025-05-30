@@ -58,6 +58,10 @@ class TestOpenIDConformance(SeleniumTestCase):
             },
             "consent": {},
         }
+        self.test_variant = {
+            "server_metadata": "discovery",
+            "client_registration": "static_client",
+        }
 
     @retry()
     def test_oidcc_basic_certification_test(self):
@@ -69,6 +73,32 @@ class TestOpenIDConformance(SeleniumTestCase):
         test_plan_name = "oidcc-implicit-certification-test-plan"
         self.run_test(test_plan_name, self.test_plan_config)
 
+    # @retry()
+    # def test_oidcc_hybrid_certification_test(self):
+    #     test_plan_name = "oidcc-hybrid-certification-test-plan"
+    #     self.run_test(test_plan_name, self.test_plan_config)
+
+    # @retry()
+    # def test_oidcc_formpost_basic_certification_test(self):
+    #     test_plan_name = "oidcc-formpost-basic-certification-test-plan"
+    #     self.run_test(test_plan_name, self.test_plan_config)
+
+    # @retry()
+    # def test_oidcc_formpost_implicit_certification_test(self):
+    #     test_plan_name = "oidcc-formpost-implicit-certification-test-plan"
+    #     self.run_test(test_plan_name, self.test_plan_config)
+
+    # @retry()
+    # def test_oidcc_formpost_hybrid_certification_test(self):
+    #     test_plan_name = "oidcc-formpost-hybrid-certification-test-plan"
+    #     self.run_test(test_plan_name, self.test_plan_config)
+
+    # @retry()
+    # def test_oidcc_config_certification_test(self):
+    #     test_plan_name = "oidcc-config-certification-test-plan"
+    #     self.test_variant = {}
+    #     self.run_test(test_plan_name, self.test_plan_config)
+
     def run_test(self, test_plan: str, test_plan_config: dict):
         # Create a Conformance instance...
         self.conformance = Conformance(f"https://{self.host}:8443/", None, verify_ssl=False)
@@ -76,10 +106,7 @@ class TestOpenIDConformance(SeleniumTestCase):
         test_plan = self.conformance.create_test_plan(
             test_plan,
             dumps(test_plan_config),
-            {
-                "server_metadata": "discovery",
-                "client_registration": "static_client",
-            },
+            self.test_variant,
         )
         plan_id = test_plan["id"]
         for test in test_plan["modules"]:
