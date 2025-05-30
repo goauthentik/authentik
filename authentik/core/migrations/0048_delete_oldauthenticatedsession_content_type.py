@@ -13,7 +13,7 @@ def migrate_authenticated_session_permissions(apps: Apps, schema_editor: BaseDat
 
     # `apps` here is just an instance of `django.db.migrations.state.AppConfigStub`, we need the
     # real config for creating permissions and content types
-    authentik_core_config = global_apps.get_app_config('authentik_core')
+    authentik_core_config = global_apps.get_app_config("authentik_core")
     # These are only ran by django after all migrations, but we need them right now.
     # `global_apps` is needed,
     create_permissions(authentik_core_config, using=db_alias, verbosity=1)
@@ -39,28 +39,41 @@ def migrate_authenticated_session_permissions(apps: Apps, schema_editor: BaseDat
 
     # Create equivalent permissions for the new content type
     for old_perm in old_perms:
-        new_perm = Permission.objects.using(db_alias).filter(
-            content_type=new_ct, codename=old_perm.codename,
-        ).first()
+        new_perm = (
+            Permission.objects.using(db_alias)
+            .filter(
+                content_type=new_ct,
+                codename=old_perm.codename,
+            )
+            .first()
+        )
         if not new_perm:
             # This should exist at this point, but if not, let's cut our losses
             continue
 
         # Global user permissions
         User = apps.get_model("authentik_core", "User")
-        User.user_permissions.through.objects.using(db_alias).filter(permission=old_perm).all().update(permission=new_perm)
+        User.user_permissions.through.objects.using(db_alias).filter(
+            permission=old_perm
+        ).all().update(permission=new_perm)
 
         # Global role permissions
         DjangoGroup = apps.get_model("auth", "Group")
-        DjangoGroup.permissions.through.objects.using(db_alias).filter(permission=old_perm).all().update(permission=new_perm)
+        DjangoGroup.permissions.through.objects.using(db_alias).filter(
+            permission=old_perm
+        ).all().update(permission=new_perm)
 
         # Object user permissions
         UserObjectPermission = apps.get_model("guardian", "UserObjectPermission")
-        UserObjectPermission.objects.using(db_alias).filter(permission=old_perm).all().update(permission=new_perm, content_type=new_ct)
+        UserObjectPermission.objects.using(db_alias).filter(permission=old_perm).all().update(
+            permission=new_perm, content_type=new_ct
+        )
 
         # Object role permissions
         GroupObjectPermission = apps.get_model("guardian", "GroupObjectPermission")
-        GroupObjectPermission.objects.using(db_alias).filter(permission=old_perm).all().update(permission=new_perm, content_type=new_ct)
+        GroupObjectPermission.objects.using(db_alias).filter(permission=old_perm).all().update(
+            permission=new_perm, content_type=new_ct
+        )
 
 
 def remove_old_authenticated_session_content_type(
