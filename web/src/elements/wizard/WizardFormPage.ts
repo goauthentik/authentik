@@ -1,4 +1,4 @@
-import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
+import { Form } from "@goauthentik/elements/forms/Form";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -12,11 +12,11 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export abstract class WizardForm extends Form<KeyUnknown> {
+export abstract class WizardForm extends Form<Record<string, unknown>> {
     viewportCheck = false;
 
     @property({ attribute: false })
-    nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
+    nextDataCallback!: (data: Record<string, unknown>) => Promise<boolean>;
 
     /* Override the traditional behavior of the form and instead simply serialize the form and push
      * it's contents to the next page.
@@ -59,9 +59,10 @@ export class WizardFormPage extends WizardPage {
         return Boolean(response);
     };
 
-    nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (): Promise<boolean> => {
-        return false;
-    };
+    nextDataCallback: (data: Record<string, unknown>) => Promise<boolean> =
+        async (): Promise<boolean> => {
+            return false;
+        };
 
     renderForm(): TemplateResult {
         return html``;

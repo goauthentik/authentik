@@ -54,7 +54,7 @@ const BUTTON_KIND_TO_LABEL: Record<ButtonKind, string> = {
  * @fires WizardCloseEvent - request parent container (Wizard) to close the wizard
  */
 
-export class WizardStep extends AKElement {
+export abstract class WizardStep extends AKElement {
     // These additions are necessary because we don't want to inherit *all* of the modal box
     // modifiers, just the ones related to managing the height of the display box.
     static get styles() {
@@ -200,6 +200,7 @@ export class WizardStep extends AKElement {
     renderCloseButton(button: WizardButton) {
         return html`<div class="pf-c-wizard__footer-cancel">
             <button
+                data-test-id="wizard-navigation-abort"
                 class=${classMap(this.getButtonClasses(button))}
                 type="button"
                 @click=${this.onWizardCloseEvent}
@@ -278,7 +279,10 @@ export class WizardStep extends AKElement {
                   <div class="pf-c-wizard">
                       <div class="pf-c-wizard__header" data-ouid-component-id="wizard-header">
                           ${this.canCancel ? this.renderHeaderCancelIcon() : nothing}
-                          <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">
+                          <h1
+                              class="pf-c-title pf-m-3xl pf-c-wizard__title"
+                              data-test-id="wizard-title"
+                          >
                               ${this.wizardTitle}
                           </h1>
                           <p class="pf-c-wizard__description">${this.wizardDescription}</p>

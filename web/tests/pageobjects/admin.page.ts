@@ -1,13 +1,15 @@
-import { $ } from "@wdio/globals";
+/// <reference types="@wdio/globals/types" />
+import { navigateBrowser } from "#tests/utils/navigation";
+import { findElementByTestID } from "#tests/utils/selectors";
 
-import Page from "../pageobjects/page.js";
-
-export default class AdminPage extends Page {
-    public async pageHeader() {
-        return await $(">>>ak-page-header").$('>>>slot[name="header"]');
+export abstract class AdminPage {
+    public static get $pageHeader() {
+        return findElementByTestID("page-header");
     }
 
-    async openApplicationsListPage() {
-        await this.open("if/admin/#/core/applications");
+    public static async openApplicationsListPage() {
+        return navigateBrowser("/if/admin/#/core/applications");
     }
 }
+
+export default AdminPage;

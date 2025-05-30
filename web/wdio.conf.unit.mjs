@@ -10,7 +10,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;
-const lemmeSee = !!process.env.WDIO_LEMME_SEE;
+// const lemmeSee = !!process.env.WDIO_LEMME_SEE;
 
 /**
  * @type {WebdriverIO.Capabilities[]}
@@ -75,9 +75,7 @@ const browserRunnerOptions = {
         },
         plugins: [
             // ---
-            // @ts-ignore WDIO's Vite is out of date.
             litCSS(),
-            // @ts-ignore WDIO's Vite is out of date.
             tsconfigPaths(),
         ],
     },
@@ -116,7 +114,7 @@ export const config = {
         addCommands(browser);
     },
 
-    afterTest() {
-        if (lemmeSee) return browser.pause(500);
-    },
+    // afterTest() {
+    //     if (lemmeSee) return browser.pause(500);
+    // },
 };
