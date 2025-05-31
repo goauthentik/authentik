@@ -37,6 +37,9 @@ export class QLSearch extends AKElement {
     @property()
     onSearch?: (value: string) => void;
 
+    @state()
+    selected?: number;
+
     ql?: QL;
 
     set apiResponse(value: PaginatedResponse<unknown> | undefined) {
@@ -60,6 +63,9 @@ export class QLSearch extends AKElement {
                 }
                 :host([theme="dark"]) .pf-c-search-input__text::before {
                     border: 0;
+                }
+                .selected {
+                    background-color: gray;
                 }
             `,
         ];
@@ -98,6 +104,62 @@ export class QLSearch extends AKElement {
         this.requestUpdate();
     }
 
+    onKeyDown(ev: KeyboardEvent) {
+        switch (ev.key) {
+            case "ArrowUp":
+                if (this.ql?.suggestions.length) {
+                    if (this.selected === undefined) {
+                        this.selected = this.ql?.suggestions.length - 1;
+                    } else if (this.selected === 0) {
+                        this.selected = undefined;
+                    } else {
+                        this.selected -= 1;
+                    }
+                    this.refreshCompletions();
+                    ev.preventDefault();
+                }
+                break;
+            case "ArrowDown":
+                if (this.ql?.suggestions.length) {
+                    if (this.selected === undefined) {
+                        this.selected = 0;
+                    } else if (this.selected < this.ql?.suggestions.length - 1) {
+                        this.selected += 1;
+                    } else {
+                        this.selected = undefined;
+                    }
+                    this.refreshCompletions();
+                    ev.preventDefault();
+                }
+                break;
+            case "Tab":
+                if (this.selected) {
+                    this.ql?.selectCompletion(this.selected);
+                    ev.preventDefault();
+                }
+                break;
+            case "Enter":
+                // Technically this is a textarea, due to automatic multi-line feature,
+                // but other than that it should look and behave like a normal input.
+                // So expected behavior when pressing Enter is to submit the form,
+                // not to add a new line.
+                if (this.selected!== undefined) {
+                    this.ql?.selectCompletion(this.selected);
+                }
+                ev.preventDefault();
+                break;
+            case "Escape":
+                this.menuOpen = false;
+                break;
+            case "Shift": // Shift
+            case "Control": // Ctrl
+            case "Alt": // Alt
+            case "Meta": // Windows Key or Cmd on Mac
+                // Control keys shouldn't trigger completion popup
+                break;
+        }
+    }
+
     renderMenu() {
         if (!this.menuOpen || !this.ql) {
             return nothing;
@@ -106,7 +168,11 @@ export class QLSearch extends AKElement {
             <div class="pf-c-search-input__menu">
                 <ul class="pf-c-search-input__menu-list">
                     ${this.ql.suggestions.map((suggestion, idx) => {
-                        return html`<li class="pf-c-search-input__menu-list-item">
+                        return html`<li
+                            class="pf-c-search-input__menu-list-item ${this.selected === idx
+                                ? "selected"
+                                : ""}"
+                        >
                             <button
                                 class="pf-c-search-input__menu-item"
                                 type="button"
@@ -136,6 +202,7 @@ export class QLSearch extends AKElement {
                         placeholder=${msg("Search...")}
                         spellcheck="false"
                         @input=${(ev: InputEvent) => this.refreshCompletions()}
+                        @keydown=${this.onKeyDown}
                     >
 ${ifDefined(this.value)}</textarea
                     >
