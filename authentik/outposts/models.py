@@ -19,7 +19,7 @@ from packaging.version import Version, parse
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_build_hash, authentik_version
 from authentik.blueprints.models import ManagedModel
 from authentik.brands.models import Brand
 from authentik.core.models import (
@@ -38,7 +38,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.controllers.k8s.utils import get_namespace
 
-OUR_VERSION = parse(__version__)
+OUR_VERSION = parse(authentik_version())
 OUTPOST_HELLO_INTERVAL = 10
 LOGGER = get_logger()
 
@@ -451,7 +451,7 @@ class OutpostState:
         """Check if outpost version matches our version"""
         if not self.version:
             return False
-        if self.build_hash != get_build_hash():
+        if self.build_hash != authentik_build_hash():
             return False
         return parse(self.version) != OUR_VERSION
 

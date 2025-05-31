@@ -24,7 +24,7 @@ from requests import RequestException
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.brands.models import Brand
 from authentik.brands.utils import DEFAULT_BRAND
 from authentik.core.middleware import (
@@ -473,7 +473,7 @@ class NotificationTransport(SerializerModel):
                     "title": notification.body,
                     "color": "#fd4b2d",
                     "fields": fields,
-                    "footer": f"authentik {get_full_version()}",
+                    "footer": f"authentik {authentik_full_version()}",
                 }
             ],
         }

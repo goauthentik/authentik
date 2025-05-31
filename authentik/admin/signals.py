@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from packaging.version import parse
 from prometheus_client import Gauge
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.root.celery import CELERY_APP
 from authentik.root.monitoring import monitoring_set
 
@@ -15,7 +15,7 @@ GAUGE_WORKERS = Gauge(
 )
 
 
-_version = parse(get_full_version())
+_version = parse(authentik_full_version())
 
 
 @receiver(monitoring_set)

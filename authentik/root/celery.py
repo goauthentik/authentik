@@ -26,7 +26,7 @@ from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -164,7 +164,7 @@ class LivenessProbe(bootsteps.StartStopStep):
 @inspect_command(default_timeout=0.2)
 def ping(state, **kwargs):
     """Ping worker(s)."""
-    return {"ok": "pong", "version": get_full_version()}
+    return {"ok": "pong", "version": authentik_full_version()}
 
 
 CELERY_APP.config_from_object(settings.CELERY)

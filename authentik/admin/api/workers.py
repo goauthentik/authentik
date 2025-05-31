@@ -10,7 +10,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.rbac.permissions import HasPermission
 from authentik.root.celery import CELERY_APP
 
@@ -34,7 +34,7 @@ class WorkerView(APIView):
     def get(self, request: Request) -> Response:
         """Get currently connected worker count."""
         raw: list[dict[str, dict]] = CELERY_APP.control.ping(timeout=0.5)
-        our_version = parse(get_full_version())
+        our_version = parse(authentik_full_version())
         response = []
         for worker in raw:
             key = list(worker.keys())[0]
@@ -50,7 +50,7 @@ class WorkerView(APIView):
             response.append(
                 {
                     "worker_id": f"authentik-debug@{gethostname()}",
-                    "version": get_full_version(),
+                    "version": authentik_full_version(),
                     "version_matching": True,
                 }
             )

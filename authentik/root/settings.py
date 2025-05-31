@@ -10,7 +10,7 @@ from celery.schedules import crontab
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.lib.config import CONFIG, django_db_config, redis_url
 from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
@@ -137,7 +137,7 @@ GUARDIAN_MONKEY_PATCH_USER = False
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
     "DESCRIPTION": "Making authentication simple.",
-    "VERSION": __version__,
+    "VERSION": authentik_version(),
     "COMPONENT_SPLIT_REQUEST": True,
     "SCHEMA_PATH_PREFIX": "/api/v([0-9]+(beta)?)",
     "SCHEMA_PATH_PREFIX_TRIM": True,
@@ -486,7 +486,7 @@ if DEBUG:
 
 TENANT_APPS.append("authentik.core")
 
-CONFIG.log("info", "Booting authentik", version=__version__)
+CONFIG.log("info", "Booting authentik", version=authentik_version())
 
 # Attempt to load enterprise app, if available
 try:

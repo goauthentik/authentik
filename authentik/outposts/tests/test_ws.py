@@ -8,7 +8,7 @@ from channels.testing import WebsocketCommunicator
 from django.contrib.contenttypes.models import ContentType
 from django.test import TransactionTestCase
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.consumer import WebsocketMessage, WebsocketMessageInstruction
 from authentik.outposts.models import Outpost, OutpostType
@@ -73,7 +73,7 @@ class TestOutpostWS(TransactionTestCase):
                 WebsocketMessage(
                     instruction=WebsocketMessageInstruction.HELLO,
                     args={
-                        "version": __version__,
+                        "version": authentik_version(),
                         "buildHash": "foo",
                         "uuid": "123",
                     },
