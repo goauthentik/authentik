@@ -40,7 +40,14 @@ export class QLSearch extends AKElement {
     @state()
     selected?: number;
 
+    @state()
+    cursorX: number = 0;
+
+    @state()
+    cursorY: number = 0;
+
     ql?: QL;
+    canvas?: CanvasRenderingContext2D;
 
     set apiResponse(value: PaginatedResponse<unknown> | undefined) {
         if (!value || !value.autocomplete || !this.ql) {
@@ -60,12 +67,17 @@ export class QLSearch extends AKElement {
                 }
                 .ql.pf-c-form-control {
                     font-family: monospace;
+                    resize: vertical;
                 }
                 :host([theme="dark"]) .pf-c-search-input__text::before {
                     border: 0;
                 }
                 .selected {
                     background-color: gray;
+                }
+                .pf-c-search-input__menu {
+                    position: fixed;
+                    min-width: 0;
                 }
             `,
         ];
@@ -83,11 +95,15 @@ export class QLSearch extends AKElement {
             },
             selector: this.searchElement,
             autoResize: false,
-            onSubmit: (value: string) => {
-                if (!this.onSearch) return;
-                this.onSearch(value);
-            },
         });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        if (!context) {
+            console.error("authentik/ql: failed to get canvas context");
+            return;
+        }
+        context.font = window.getComputedStyle(this.searchElement).font;
+        this.canvas = context;
     }
 
     refreshCompletions() {
@@ -101,10 +117,66 @@ export class QLSearch extends AKElement {
             return;
         }
         this.menuOpen = true;
+        this.updateDropdownPosition();
         this.requestUpdate();
     }
 
+    updateDropdownPosition() {
+        if (!this.searchElement) {
+            return;
+        }
+        const bcr = this.getBoundingClientRect();
+        // We need the width of a letter to measure x; we use a monospaced font but still
+        // check the length for `m` as its the widest ASCII char
+        const metrics = this.canvas?.measureText("m");
+        const letterWidth = Math.ceil(metrics?.width || 0) + 1;
+
+        // Mostly static variables for padding, font line-height and how many
+        const lineHeight = parseInt(window.getComputedStyle(this.searchElement).lineHeight, 10);
+        const paddingTop = parseInt(window.getComputedStyle(this.searchElement).paddingTop, 10);
+        const paddingBottom = parseInt(
+            window.getComputedStyle(this.searchElement).paddingBottom,
+            10,
+        );
+        const paddingLeft = parseInt(window.getComputedStyle(this.searchElement).paddingLeft, 10);
+        const paddingRight = parseInt(window.getComputedStyle(this.searchElement).paddingRight, 10);
+        const actualInnerWidth = bcr.width - paddingLeft - paddingRight;
+        const lettersPerLine = Math.floor(actualInnerWidth / letterWidth);
+
+        const col = (this.searchElement.selectionStart % lettersPerLine) + 1;
+        const line = Math.floor(this.searchElement.selectionStart / lettersPerLine) + 1;
+
+        let relX = 0;
+        let relY = 1;
+        let letterIndex = 0;
+
+        this.searchElement.value.split(" ").some((word, idx) => {
+            letterIndex += word.length;
+            const newRelX = relX + word.length * letterWidth;
+            if (newRelX > actualInnerWidth) {
+                relY += 1;
+                if (letterIndex > this.searchElement!.selectionStart) {
+                    relX =
+                        letterWidth * word.length -
+                        (letterIndex - this.searchElement!.selectionStart) * letterWidth;
+                    return true;
+                }
+                relX = word.length * letterWidth;
+            } else {
+                relX = newRelX + 1;
+            }
+        });
+
+        this.cursorX = bcr.x + paddingLeft + relX;
+        this.cursorY = bcr.y + paddingTop + relY * lineHeight;
+        console.debug(
+            `Position: idx=${this.searchElement.selectionStart} x=${this.cursorX} y=${this.cursorY} col=${col} line=${line} lw=${letterWidth} lpl=${lettersPerLine} relX=${relX} relY=${relY}`,
+        );
+    }
+
     onKeyDown(ev: KeyboardEvent) {
+        this.updateDropdownPosition();
+        if (!this.menuOpen) return;
         switch (ev.key) {
             case "ArrowUp":
                 if (this.ql?.suggestions.length) {
@@ -143,7 +215,7 @@ export class QLSearch extends AKElement {
                 // but other than that it should look and behave like a normal input.
                 // So expected behavior when pressing Enter is to submit the form,
                 // not to add a new line.
-                if (this.selected!== undefined) {
+                if (this.selected !== undefined) {
                     this.ql?.selectCompletion(this.selected);
                 }
                 ev.preventDefault();
@@ -165,7 +237,10 @@ export class QLSearch extends AKElement {
             return nothing;
         }
         return html`
-            <div class="pf-c-search-input__menu">
+            <div
+                class="pf-c-search-input__menu"
+                style="left: ${this.cursorX}px; top: ${this.cursorY}px;"
+            >
                 <ul class="pf-c-search-input__menu-list">
                     ${this.ql.suggestions.map((suggestion, idx) => {
                         return html`<li
