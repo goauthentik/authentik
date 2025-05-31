@@ -78,7 +78,7 @@ Configure Zammad SAML settings by going to settings (the gear icon), and selecti
 - IDP single logout target URL: https://authentik.company/application/saml/zammad/slo/binding/redirect/
 - **IDP Certificate**: paste the contents of your certificate file
 - IDP certificate fingerprint: empty
-- Name Identifier Format: <kbd>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</kbd>
+- Name Identifier Format: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
 - If you want Zammad users to be created automatically the first time the sign in via Authentik, activate the **Automatic account link on initial logon** option 
 
 ## Additional Resources
