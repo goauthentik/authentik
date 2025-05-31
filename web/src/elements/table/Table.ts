@@ -15,6 +15,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
+import { Introspections } from "@mrmarble/djangoql-completion";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -40,9 +41,7 @@ export interface TableLike {
 
 export interface PaginatedResponse<T> {
     pagination: Pagination;
-    autocomplete?: {
-        [key: string]: unknown;
-    };
+    autocomplete?: Introspections;
 
     results: Array<T>;
 }
