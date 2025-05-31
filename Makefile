@@ -86,6 +86,12 @@ dev-create-db:
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
 
+bump:
+	uv version $(version)
+	$(MAKE) gen-build
+	npm version --no-git-tag-version $(version)
+	bumpversion --new-version $(version) minor --verbose -h
+
 #########################
 ## API Schema
 #########################
