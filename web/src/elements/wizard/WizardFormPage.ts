@@ -1,5 +1,5 @@
-import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import { Form, KeyUnknown } from "#elements/forms/Form";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";

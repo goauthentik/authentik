@@ -1,6 +1,6 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+import { randomId } from "#elements/utils/randomId";
 
 import { TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -11,8 +11,8 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { TableColumn } from "./TableColumn.js";
-import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types";
-import { convertContent } from "./utils";
+import type { Column, TableFlat, TableGroup, TableGrouped, TableRow } from "./types.js";
+import { convertContent } from "./utils.js";
 
 export type RawContent = string | number | TemplateResult;
 export type ContentType = RawContent[][] | TableRow[] | TableGrouped;
@@ -179,7 +179,7 @@ export class SimpleTable extends AKElement implements ISimpleTable {
 
     public renderBody() {
         // prettier-ignore
-        return this.content.kind === 'flat' 
+        return this.content.kind === 'flat'
             ? this.renderRows(this.content.content)
             : this.renderRowGroups(this.content.content);
     }

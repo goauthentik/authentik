@@ -1,7 +1,10 @@
-import "#admin/admin-overview/charts/AdminModelPerDay";
-import "#components/ak-page-header";
-import { AKElement } from "#elements/Base";
 import "#elements/cards/AggregatePromiseCard";
+import "#components/ak-page-header";
+import "#admin/admin-overview/charts/AdminModelPerDay";
+
+import { AKElement } from "#elements/Base";
+
+import { EventActions } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -12,8 +15,6 @@ import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
-
-import { EventActions } from "@goauthentik/api";
 
 @customElement("ak-admin-dashboard-users")
 export class DashboardUserPage extends AKElement {

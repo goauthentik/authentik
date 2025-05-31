@@ -1,23 +1,24 @@
-import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import { bound } from "@goauthentik/elements/decorators/bound.js";
-import "@goauthentik/user/LibraryApplication";
+import "#elements/EmptyState";
+import "#user/LibraryApplication/index";
+import "./ak-library-application-empty-list.js";
+import "./ak-library-application-list.js";
+import "./ak-library-application-search-empty.js";
+import "./ak-library-application-search.js";
+
+import { groupBy } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
+
+import type { Application } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import styles from "./LibraryPageImpl.css";
-
-import type { Application } from "@goauthentik/api";
-
-import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
-import "./ak-library-application-empty-list.js";
-import "./ak-library-application-list.js";
-import "./ak-library-application-search-empty.js";
-import "./ak-library-application-search.js";
+import styles from "./LibraryPageImpl.styles.js";
+import { appHasLaunchUrl } from "./LibraryPageImpl.utils.js";
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,

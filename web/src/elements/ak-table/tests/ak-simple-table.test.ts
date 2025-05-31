@@ -1,11 +1,13 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../ak-simple-table.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, browser } from "@wdio/globals";
 import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
 import { html } from "lit";
 
-import "../ak-simple-table.js";
 import { nutritionDbUSDA } from "../stories/sample_nutrition_db.js";
 
 const columns = ["Name", "Calories", "Protein", "Fiber", "Sugar"];

@@ -1,14 +1,13 @@
-import "@goauthentik/admin/applications/wizard/ak-application-wizard";
-import {
-    ShowHintController,
-    ShowHintControllerHost,
-} from "@goauthentik/components/ak-hint/ShowHintController";
-import "@goauthentik/components/ak-hint/ak-hint";
-import "@goauthentik/components/ak-hint/ak-hint-body";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Label";
-import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import "#elements/Label";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#components/ak-hint/ak-hint";
+import "#components/ak-hint/ak-hint-body";
+import "#admin/applications/wizard/ak-application-wizard";
+
+import { AKElement } from "#elements/Base";
+import { getURLParam } from "#elements/router/RouteMatch";
+
+import { ShowHintController, ShowHintControllerHost } from "#components/ak-hint/ShowHintController";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";

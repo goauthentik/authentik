@@ -1,4 +1,4 @@
-import { applyDocumentTheme } from "@goauthentik/common/theme.js";
+import { applyDocumentTheme } from "#common/theme";
 
 import { TemplateResult, render as litRender } from "lit";
 

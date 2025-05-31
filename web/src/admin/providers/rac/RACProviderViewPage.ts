@@ -1,18 +1,26 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/rac/ConnectionTokenList";
-import "@goauthentik/admin/providers/rac/EndpointForm";
-import "@goauthentik/admin/providers/rac/EndpointList";
-import "@goauthentik/admin/providers/rac/RACProviderForm";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ModalButton";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#admin/providers/RelatedApplicationButton";
+import "#admin/providers/rac/ConnectionTokenList";
+import "#admin/providers/rac/EndpointForm";
+import "#admin/providers/rac/EndpointList";
+import "#admin/providers/rac/RACProviderForm";
+import "#admin/rbac/ObjectPermissionsPage";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+
+import {
+    ProvidersApi,
+    RACProvider,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -29,12 +37,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ProvidersApi,
-    RACProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 @customElement("ak-provider-rac-view")
 export class RACProviderViewPage extends AKElement {

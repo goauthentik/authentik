@@ -1,4 +1,12 @@
-import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
+import "./providers/ak-application-wizard-provider-for-ldap.js";
+import "./providers/ak-application-wizard-provider-for-oauth.js";
+import "./providers/ak-application-wizard-provider-for-proxy.js";
+import "./providers/ak-application-wizard-provider-for-rac.js";
+import "./providers/ak-application-wizard-provider-for-radius.js";
+import "./providers/ak-application-wizard-provider-for-saml.js";
+import "./providers/ak-application-wizard-provider-for-scim.js";
+
+import type { NavigableButton, WizardButton } from "#components/ak-wizard/types";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, nothing } from "lit";
@@ -8,13 +16,6 @@ import { html, unsafeStatic } from "lit/static-html.js";
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider } from "../types.js";
 import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
-import "./providers/ak-application-wizard-provider-for-ldap.js";
-import "./providers/ak-application-wizard-provider-for-oauth.js";
-import "./providers/ak-application-wizard-provider-for-proxy.js";
-import "./providers/ak-application-wizard-provider-for-rac.js";
-import "./providers/ak-application-wizard-provider-for-radius.js";
-import "./providers/ak-application-wizard-provider-for-saml.js";
-import "./providers/ak-application-wizard-provider-for-scim.js";
 
 const providerToTag = new Map([
     ["ldapprovider", "ak-application-wizard-provider-for-ldap"],

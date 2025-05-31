@@ -1,6 +1,7 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/FormStatic";
+
+import { DummyChallenge, DummyChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -13,7 +14,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { DummyChallenge, DummyChallengeResponseRequest } from "@goauthentik/api";
+import { BaseStage } from "../base.js";
 
 @customElement("ak-stage-dummy")
 export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponseRequest> {

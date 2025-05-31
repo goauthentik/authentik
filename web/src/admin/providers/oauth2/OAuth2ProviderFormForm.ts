@@ -1,25 +1,23 @@
-import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "#elements/ak-array-input";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
+import "#elements/utils/TimeDeltaHelp";
+import "#components/ak-radio-input";
+import "#components/ak-text-input";
+import "#components/ak-textarea-input";
+import "#admin/common/ak-crypto-certificate-search";
+import "#admin/common/ak-flow-search/ak-flow-search";
+
+import { ascii_letters, digits, randomString } from "#common/utils";
+
 import {
     IRedirectURIInput,
     akOAuthRedirectURIInput,
-} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-text-input";
-import "@goauthentik/components/ak-textarea-input";
-import "@goauthentik/elements/ak-array-input.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
-
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/oauth2/OAuth2ProviderRedirectURI";
 
 import {
     ClientTypeEnum,
@@ -31,6 +29,10 @@ import {
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";

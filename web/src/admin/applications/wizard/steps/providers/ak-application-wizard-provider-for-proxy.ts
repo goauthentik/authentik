@@ -1,20 +1,22 @@
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { ValidationRecord } from "@goauthentik/admin/applications/wizard/types";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { WizardUpdateEvent } from "#components/ak-wizard/events";
+
+import { ValidationRecord } from "#admin/applications/wizard/types";
 import {
     ProxyModeValue,
     type SetMode,
     type SetShowHttpBasic,
     renderForm,
-} from "@goauthentik/admin/providers/proxy/ProxyProviderFormForm.js";
-import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events.js";
+} from "#admin/providers/proxy/ProxyProviderFormForm";
+
+import { ProxyMode, ProxyProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { ProxyMode, ProxyProvider } from "@goauthentik/api";
-
-import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm";
+import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 
 @customElement("ak-application-wizard-provider-for-proxy")
 export class ApplicationWizardProxyProviderForm extends ApplicationWizardProviderForm<ProxyProvider> {

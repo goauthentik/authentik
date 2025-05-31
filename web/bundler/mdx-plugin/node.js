@@ -11,6 +11,7 @@
  * } from "esbuild"
  */
 import { MonoRepoRoot } from "@goauthentik/core/paths/node";
+
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 

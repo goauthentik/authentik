@@ -1,20 +1,17 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+import "#elements/ak-dual-select/ak-dual-select-dynamic-selected-provider";
+import "#elements/ak-dual-select/ak-dual-select-provider";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#elements/forms/Radio";
+import "#elements/forms/SearchSelect/ak-search-select";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { BaseProviderForm } from "#admin/providers/BaseProviderForm";
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
-} from "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers.js";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
-import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
+} from "#admin/providers/microsoft_entra/MicrosoftEntraProviderFormHelpers";
 
 import {
     CoreApi,
@@ -24,6 +21,11 @@ import {
     OutgoingSyncDeleteAction,
     ProvidersApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-provider-microsoft-entra-form")
 export class MicrosoftEntraProviderFormPage extends BaseProviderForm<MicrosoftEntraProvider> {

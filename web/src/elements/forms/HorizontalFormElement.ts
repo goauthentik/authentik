@@ -1,10 +1,9 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { AKElement } from "#elements/Base";
+import { FormGroup } from "#elements/forms/FormGroup";
+import { formatSlug } from "#elements/router/utils";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";

@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { type SlottedTemplateResult } from "@goauthentik/elements/types";
+import { AKElement } from "#elements/Base";
+import { type SlottedTemplateResult } from "#elements/types";
 
 import { css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";

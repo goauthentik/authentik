@@ -1,25 +1,29 @@
-import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
-import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
-import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { camelToSnake } from "@goauthentik/common/utils.js";
-import "@goauthentik/components/ak-radio-input";
-import "@goauthentik/components/ak-slug-input";
-import "@goauthentik/components/ak-switch-input";
-import "@goauthentik/components/ak-text-input";
-import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/FormGroup";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-import { isSlug } from "@goauthentik/elements/router/utils.js";
+import "#elements/forms/FormGroup";
+import "#elements/forms/HorizontalFormElement";
+import "#components/ak-radio-input";
+import "#components/ak-slug-input";
+import "#components/ak-switch-input";
+import "#components/ak-text-input";
+import "#admin/applications/wizard/ak-wizard-title";
+
+import { camelToSnake } from "#common/utils";
+
+import { type KeyUnknown } from "#elements/forms/Form";
+import { isSlug } from "#elements/router/utils";
+
+import { type NavigableButton, type WizardButton } from "#components/ak-wizard/types";
+
+import { policyOptions } from "#admin/applications/PolicyOptions";
+import { ApplicationWizardStep } from "#admin/applications/wizard/ApplicationWizardStep";
+
+import { type ApplicationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { type ApplicationRequest } from "@goauthentik/api";
-
-import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
+import { ApplicationWizardStateUpdate, ValidationRecord } from "../types.js";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 

@@ -1,5 +1,6 @@
 import { globalAK } from "#common/global";
 import { applyDocumentTheme } from "#common/theme";
+
 import { AKElement } from "#elements/Base";
 
 import { msg } from "@lit/localize";

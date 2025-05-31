@@ -1,8 +1,11 @@
-import { ROUTE_SEPARATOR } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
-import { Route } from "@goauthentik/elements/router/Route";
-import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";
-import "@goauthentik/elements/router/Router404";
+import "#elements/router/Router404";
+
+import { ROUTE_SEPARATOR } from "#common/constants";
+
+import { AKElement } from "#elements/Base";
+import { Route } from "#elements/router/Route";
+import { RouteMatch } from "#elements/router/RouteMatch";
+
 import {
     BrowserClient,
     SEMANTIC_ATTRIBUTE_SENTRY_SOURCE,

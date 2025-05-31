@@ -1,5 +1,6 @@
-import "@goauthentik/elements/EmptyState";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+
+import { AppleChallengeResponseRequest, AppleLoginChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -12,7 +13,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AppleChallengeResponseRequest, AppleLoginChallenge } from "@goauthentik/api";
+import { BaseStage } from "../../stages/base.js";
 
 @customElement("ak-flow-source-oauth-apple")
 export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChallengeResponseRequest> {

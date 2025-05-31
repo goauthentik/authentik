@@ -1,5 +1,5 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+import { AKElement } from "#elements/Base";
+import { Wizard } from "#elements/wizard/Wizard";
 
 import { CSSResult, PropertyDeclaration, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
