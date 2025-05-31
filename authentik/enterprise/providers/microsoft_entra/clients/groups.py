@@ -29,7 +29,7 @@ class MicrosoftEntraGroupClient(
     """Microsoft client for groups"""
 
     connection_type = MicrosoftEntraProviderGroup
-    connection_type_query = "group"
+    connection_attr = "microsoftentraprovidergroup_set"
     can_discover = True
 
     def __init__(self, provider: MicrosoftEntraProvider) -> None:
