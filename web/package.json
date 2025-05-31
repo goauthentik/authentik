@@ -92,7 +92,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.7.11",
-        "@fortawesome/fontawesome-free": "^6.6.0",
+        "@fortawesome/fontawesome-free": "^6.7.2",
         "@goauthentik/api": "^2025.4.1-1748622869",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
