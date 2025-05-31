@@ -26,21 +26,6 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Zammad with authentik, you need to create an application/provider pair in authentik.
 
-### Create property mappings
-
-1. Log in to authentik as an administrator and open the authentik Admin interface.
-2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
-    - **Name Mapping:**
-        - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>name</kbd>
-        - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return request.user.name</kbd>
-    - **Email Mapping:**
-        - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>email</kbd>
-        - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return request.user.email</kbd>
-
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -53,10 +38,7 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Issuer** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Audience** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**:
-      - **Property Mappings**: add the property mappings you created in the previous section.
-      - **NameID Property Mapping**: set to the email property mapping created in the previous section
-      - Select an available Signing Certificate,
+    - Under **Advanced protocol settings**, select an available Signing Certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
