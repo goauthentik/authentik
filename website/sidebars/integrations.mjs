@@ -125,6 +125,7 @@ const items = [
             "services/opnsense/index",
             "services/pangolin/index",
             "services/pfsense/index",
+            "services/tailscale/index",
         ],
     },
     {
