@@ -57,7 +57,7 @@ To support the integration of `Home Assistant` using `hass-openid` with authenti
 ### Home Assistant configuration for OIDC
 
 1. Follow the installation guide on [https://github.com/cavefire/hass-openid](https://github.com/cavefire/hass-openid?tab=readme-ov-file#installation).
-2. Using a file editor or ssh, edit the file `configuration.yaml` in your homeassistant's `config` directory by appending the following:
+2. Using a file editor or ssh, edit the file `configuration.yaml` in your Home Assistant's `config` directory by appending the following:
     ```yaml
     openid:
         client_id: <Client ID from Step 1>
