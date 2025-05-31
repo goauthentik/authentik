@@ -69,6 +69,7 @@
         "#flow/*": "./src/flow/*.js",
         "#locales/*": "./src/locales/*.js",
         "#stories/*": "./src/stories/*.js",
+        "#tests/*": "./tests/*.js",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
             "import": "./*/browser.js"
@@ -187,6 +188,7 @@
         "knip": "^5.58.0",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
+        "p-iteration": "^1.1.8",
         "prettier": "^3.3.3",
         "pseudolocale": "^2.1.0",
         "rollup-plugin-postcss-lit": "^2.2.0",
@@ -278,7 +280,7 @@
             "command": "lit-analyzer src"
         },
         "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
+            "command": "tsc --noEmit -p tsconfig.test.json"
         },
         "lint:types": {
             "command": "tsc -p .",
@@ -314,33 +316,33 @@
             }
         },
         "test": {
-            "command": "wdio ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.mjs --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],
             "env": {
                 "CI": "true",
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e:watch": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],
             "env": {
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:watch": {
-            "command": "wdio run ./wdio.conf.ts",
+            "command": "wdio run ./wdio.conf.mjs",
             "dependencies": [
                 "build"
             ],

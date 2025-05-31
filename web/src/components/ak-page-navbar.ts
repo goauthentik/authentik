@@ -390,7 +390,7 @@ export class AKPageNavbar
                         ${this.hasIcon
                             ? html`<slot name="icon">${this.renderIcon()}</slot>`
                             : nothing}
-                        ${this.header}
+                        <span data-test-id="page-header">${this.header}</span>
                     </h1>
                 </section>
                 ${this.description

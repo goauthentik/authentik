@@ -1,5 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
+import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -8,8 +9,6 @@ import { map } from "lit/directives/map.js";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { randomId } from "../utils/randomId";
 
 export interface RadioOption<T> {
     label: string;

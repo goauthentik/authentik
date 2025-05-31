@@ -2,15 +2,15 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+import type { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, LitElement, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -24,33 +24,51 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { instanceOfValidationError } from "@goauthentik/api";
 
-export interface KeyUnknown {
-    [key: string]: unknown;
+export interface SerializableControl<T = string | string[]> extends LitElement {
+    /**
+     * Return the value of the control as a JSON-compatible object.
+     *
+     * Typically, this is derived from any {@linkcode HTMLInputElement} elements
+     * within the control.
+     */
+    json(): T;
+
+    /**
+     * The name of the control, corresponding to the inner input's `name` attribute.
+     */
+    name?: string;
 }
 
-// Literally the only field `assignValue()` cares about.
-type HTMLNamedElement = Pick<HTMLInputElement, "name">;
+export function isSerializableControl(input: Element): input is SerializableControl {
+    if (!(input instanceof HTMLElement)) return false;
+    if (!("dataset" in input && input.dataset instanceof DOMStringMap)) return false;
 
-export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
+    return "akControl" in input.dataset;
+}
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
  */
-function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown): void {
-    let parent = json;
-    if (!element.name?.includes(".")) {
-        parent[element.name] = value;
+function assignValue(name: string, value: unknown, target: Record<string, unknown>): void {
+    let parent = target;
+
+    if (!name.includes(".")) {
+        parent[name] = value;
         return;
     }
-    const nameElements = element.name.split(".");
+
+    const nameElements = name.split(".");
+
     for (let index = 0; index < nameElements.length - 1; index++) {
         const nameEl = nameElements[index];
         // Ensure all nested structures exist
         if (!(nameEl in parent)) {
             parent[nameEl] = {};
         }
+
         parent = parent[nameEl] as { [key: string]: unknown };
     }
+
     parent[nameElements[nameElements.length - 1]] = value;
 }
 
@@ -58,73 +76,95 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
  * Convert the elements of the form to JSON.[4]
  *
  */
-export function serializeForm<T extends KeyUnknown>(
-    elements: NodeListOf<HorizontalFormElement>,
-): T | undefined {
-    const json: { [key: string]: unknown } = {};
-    elements.forEach((element) => {
+export function serializeForm<T = Record<string, unknown>>(
+    elements: Iterable<HorizontalFormElement | SerializableControl>,
+): T {
+    const record: Record<string, unknown> = {};
+
+    Array.from(elements).forEach((element) => {
         element.requestUpdate();
-        if (element.hidden) {
+
+        if (element.hidden) return;
+
+        if (isSerializableControl(element)) {
+            const fieldName = element.getAttribute("name");
+
+            if (!fieldName) {
+                console.error(
+                    `Control ${element.tagName} is missing a name attribute. This is required for serialization.`,
+                    element,
+                );
+
+                return;
+            }
+
+            assignValue(fieldName, element.json(), record);
             return;
         }
 
-        if ("akControl" in element.dataset) {
-            assignValue(element, (element as unknown as AkControlElement).json(), json);
+        const inputElement = element.querySelector("[name]");
+
+        if (!inputElement || (element.writeOnly && !element.writeOnlyActivated)) {
             return;
         }
 
-        const inputElement = element.querySelector<AkControlElement>("[name]");
-        if (element.hidden || !inputElement || (element.writeOnly && !element.writeOnlyActivated)) {
+        const fieldName = inputElement.getAttribute("name")!;
+
+        if (isSerializableControl(inputElement)) {
+            assignValue(element.name, inputElement.json(), record);
             return;
         }
 
-        if ("akControl" in inputElement.dataset) {
-            assignValue(element, (inputElement as unknown as AkControlElement).json(), json);
-            return;
-        }
-
-        if (
-            inputElement.tagName.toLowerCase() === "select" &&
-            "multiple" in inputElement.attributes
-        ) {
-            const selectElement = inputElement as unknown as HTMLSelectElement;
+        if (inputElement instanceof HTMLSelectElement && inputElement.hasAttribute("multiple")) {
             assignValue(
-                inputElement,
-                Array.from(selectElement.selectedOptions).map((v) => v.value),
-                json,
+                fieldName,
+                Array.from(inputElement.selectedOptions, (v) => v.value),
+                record,
             );
-        } else if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "date") {
-            assignValue(inputElement, inputElement.valueAsDate, json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            inputElement.type === "datetime-local"
-        ) {
-            assignValue(inputElement, dateToUTC(new Date(inputElement.valueAsNumber)), json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            "type" in inputElement.dataset &&
-            inputElement.dataset.type === "datetime-local"
-        ) {
-            // Workaround for Firefox <93, since 92 and older don't support
-            // datetime-local fields
-            assignValue(inputElement, dateToUTC(new Date(inputElement.value)), json);
-        } else if (
-            inputElement.tagName.toLowerCase() === "input" &&
-            inputElement.type === "checkbox"
-        ) {
-            assignValue(inputElement, inputElement.checked, json);
-        } else if ("selectedFlow" in inputElement) {
-            assignValue(inputElement, inputElement.value, json);
-        } else {
-            assignValue(inputElement, inputElement.value, json);
+
+            return;
         }
+
+        if (inputElement instanceof HTMLInputElement) {
+            if (inputElement.type === "date") {
+                assignValue(fieldName, inputElement.valueAsDate, record);
+                return;
+            }
+            if (inputElement.type === "datetime-local") {
+                assignValue(fieldName, dateToUTC(new Date(inputElement.valueAsNumber)), record);
+                return;
+            }
+            if ("type" in inputElement.dataset && inputElement.dataset.type === "datetime-local") {
+                // Workaround for Firefox <93, since 92 and older don't support
+                // datetime-local fields
+                assignValue(fieldName, dateToUTC(new Date(inputElement.value)), record);
+                return;
+            }
+
+            if (inputElement.type === "checkbox") {
+                assignValue(fieldName, inputElement.checked, record);
+                return;
+            }
+
+            assignValue(fieldName, inputElement.value, record);
+            return;
+        }
+
+        if ("value" in inputElement) {
+            assignValue(fieldName, inputElement.value, record);
+            return;
+        }
+
+        console.warn(
+            `Could not serialize element ${inputElement.tagName} with name ${fieldName}`,
+            inputElement,
+        );
     });
-    return json as unknown as T;
+
+    return record as unknown as T;
 }
 
 /**
- * Form
- *
  * The base form element for interacting with user inputs.
  *
  * All forms either[1] inherit from this class and implement the `renderForm()` method to
@@ -137,9 +177,8 @@ export function serializeForm<T extends KeyUnknown>(
  * @fires eventname - description
  *
  * @csspart partname - description
- */
-
-/* TODO:
+ *
+ * @todo
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
@@ -152,9 +191,13 @@ export function serializeForm<T extends KeyUnknown>(
  *
  *
  */
-
-export abstract class Form<T> extends AKElement {
-    abstract send(data: T): Promise<unknown>;
+export abstract class Form<D = never, R = unknown> extends AKElement {
+    /**
+     * Send the data payload to the API endpoint, as defined by the subclass.
+     *
+     * @param data The data to send.
+     */
+    abstract send(data: D): Promise<R>;
 
     viewportCheck = true;
 
@@ -239,26 +282,29 @@ export abstract class Form<T> extends AKElement {
      * `./flow/stages/prompt/PromptStage: 147: case PromptTypeEnum.File.`
      * Consider moving this functionality to there.
      */
-    getFormFiles(): { [key: string]: File } {
-        const files: { [key: string]: File } = {};
+    getFormFiles(): Record<string, File> {
+        const files: Record<string, File> = {};
+
         const elements =
             this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
                 "ak-form-element-horizontal",
             ) || [];
-        for (let i = 0; i < elements.length; i++) {
-            const element = elements[i];
+
+        for (const element of elements) {
             element.requestUpdate();
-            const inputElement = element.querySelector<HTMLInputElement>("[name]");
-            if (!inputElement) {
-                continue;
-            }
-            if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "file") {
-                if ((inputElement.files || []).length < 1) {
-                    continue;
-                }
-                files[element.name] = (inputElement.files || [])[0];
-            }
+
+            const inputElement = element.querySelector<HTMLInputElement>("input[name]");
+            if (!inputElement) continue;
+
+            if (inputElement.type !== "file") continue;
+
+            const [file] = inputElement.files || [];
+
+            if (!file) continue;
+
+            files[element.name] = file;
         }
+
         return files;
     }
 
@@ -266,14 +312,13 @@ export abstract class Form<T> extends AKElement {
      * Convert the elements of the form to JSON.[4]
      *
      */
-    serializeForm(): T | undefined {
+    serializeForm(): D | undefined {
         const elements = this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
             "ak-form-element-horizontal",
         );
-        if (!elements) {
-            return {} as T;
-        }
-        return serializeForm(elements) as T;
+        if (!elements) return {} as D;
+
+        return serializeForm<D>(elements);
     }
     /**
      * Serialize and send the form to the destination. The `send()` method must be overridden for
@@ -281,7 +326,7 @@ export abstract class Form<T> extends AKElement {
      * field-levels errors to the fields, and send the rest of them to the Notifications.
      *
      */
-    async submit(event: Event): Promise<unknown | undefined> {
+    async submit(event: Event): Promise<unknown> {
         event.preventDefault();
 
         const data = this.serializeForm();
@@ -325,7 +370,7 @@ export abstract class Form<T> extends AKElement {
                         const elementName = element.name;
                         if (!elementName) return;
 
-                        const snakeProperty = camelToSnake(elementName);
+                        const snakeProperty = snakeCase(elementName);
 
                         if (snakeProperty in parsedError) {
                             element.errorMessages = parsedError[snakeProperty];

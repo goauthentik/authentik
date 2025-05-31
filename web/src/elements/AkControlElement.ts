@@ -1,3 +1,5 @@
+import type { SerializableControl } from "@goauthentik/elements/forms/Form";
+
 import { AKElement } from "./Base";
 
 /**
@@ -8,7 +10,10 @@ import { AKElement } from "./Base";
  * extracting the value.
  *
  */
-export class AkControlElement<T = string | string[]> extends AKElement {
+export abstract class AkControlElement<T = string | string[]>
+    extends AKElement
+    implements SerializableControl<T>
+{
     constructor() {
         super();
         this.dataset.akControl = "true";
@@ -25,4 +30,17 @@ export class AkControlElement<T = string | string[]> extends AKElement {
     get isValid(): boolean {
         return true;
     }
+}
+
+/**
+ * Serializes a collection of form elements into a JSON object.
+ */
+export function formatFormElementAsJSON<T = Record<string, string>>(
+    inputs: Iterable<HTMLInputElement> = [],
+): T {
+    const record = Object.fromEntries(
+        Array.from(inputs, (control) => [control.name, control.value]),
+    );
+
+    return record as T;
 }

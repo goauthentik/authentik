@@ -4,7 +4,7 @@ import { ref } from "lit/directives/ref.js";
 
 import { AkDualSelectProvider } from "./ak-dual-select-provider.js";
 import "./ak-dual-select.js";
-import type { DualSelectPair, DualSelectPairSource } from "./types.js";
+import type { DualSelectPairSource } from "./types.js";
 
 /**
  * @element ak-dual-select-dynamic-provider

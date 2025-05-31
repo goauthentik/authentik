@@ -3,14 +3,11 @@
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+import { addCommands } from "#tests/commands";
+import { ConsoleTestRunner } from "#tests/utils/logger";
 import { browser } from "@wdio/globals";
 
-import { addCommands } from "./commands.mjs";
-
-/// <reference types="@wdio/globals/types" />
-/// <reference types="./types/webdriver.js" />
-
-const headless = !!process.env.CI;
+const headless = !!process.env.CI || !!process.env.WDIO_HEADLESS;
 const lemmeSee = !!process.env.WDIO_LEMME_SEE;
 
 /**
@@ -63,34 +60,36 @@ if (process.env.WDIO_TEST_FIREFOX) {
 export const config = {
     runner: "local",
     tsConfigPath: "./tsconfig.json",
-
     specs: [
         // "./tests/specs/**/*.ts"
-        "./tests/specs/new-application-by-wizard.ts",
+        // "./tests/specs/sessions.ts",
+        "./tests/specs/oauth-provider.ts",
+        // "./tests/specs/providers.ts",
+        // "./tests/specs/new-application-by-wizard.ts",
     ],
     exclude: [],
     maxInstances: 1,
     capabilities,
 
-    logLevel: "warn",
+    logLevel: "error",
     baseUrl: "http://localhost",
-    waitforTimeout: 10000,
-    connectionRetryTimeout: 120000,
-    connectionRetryCount: 3,
+    waitforInterval: 800,
+    waitforTimeout: 10_000,
+    // connectionRetryTimeout: 120_000,
+    // connectionRetryCount: 3,
 
-    framework: "mocha",
+    // framework: "mocha",
     reporters: ["spec"],
     mochaOpts: {
         ui: "bdd",
-        timeout: 60000,
+        timeout: 15_000,
+        // timeout: 10_000,
     },
     /**
-     * @param {WebdriverIO.Capabilities} capabilities
-     * @param {string[]} specs
      * @param {WebdriverIO.Browser} browser
-     * @returns {void}
      */
-    before(capabilities, specs, browser) {
+    before(_capabilities, _specs, browser) {
+        ConsoleTestRunner.setLevel("info");
         addCommands(browser);
     },
 
