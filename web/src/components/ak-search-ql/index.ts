@@ -58,6 +58,9 @@ export class QLSearch extends AKElement {
                 .ql.pf-c-form-control {
                     font-family: monospace;
                 }
+                :host([theme="dark"]) .pf-c-search-input__text::before {
+                    border: 0;
+                }
             `,
         ];
     }
@@ -82,6 +85,7 @@ export class QLSearch extends AKElement {
     }
 
     refreshCompletions() {
+        this.value = this.searchElement?.value;
         if (!this.ql) {
             return;
         }

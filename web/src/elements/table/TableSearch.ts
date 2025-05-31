@@ -50,6 +50,11 @@ export class TableSearch extends AKElement {
             return html`<ak-search-ql
                 .apiResponse=${this.apiResponse}
                 .value=${this.value}
+                .onSearch=${(value: string) => {
+                    if (!this.onSearch) return;
+                    this.onSearch(value);
+                }}
+                name="search"
             ></ak-search-ql>`;
         }
         return html`<input
