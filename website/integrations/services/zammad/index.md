@@ -53,11 +53,10 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Issuer** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Audience** to <kbd>https://<em>zammad.company</em>/auth/saml/metadata</kbd>.
     - Set the **Service Provider Binding** to `Post`.
-    - Under **Advanced protocol settings**
-      - Add the two **Property Mappings** you created in the previous section
-      - Set the **NameID Property Mapping** to the name property mapping created in the previous section
-      - Select your Signing Certificate (the default is named `authentik Self-signed Certificate`)
-      - Be sure **Sign assertions** is active
+    - Under **Advanced protocol settings**:
+      - **Property Mappings**: add the property mappings you created in the previous section.
+      - **NameID Property Mapping**: set to the email property mapping created in the previous section
+      - Select an available Signing Certificate,
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
