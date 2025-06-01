@@ -60,7 +60,7 @@ Configure Zammad SAML settings by going to settings (the gear icon), and selecti
 - **IDP Certificate**: paste the contents of your certificate file.
 - **IDP certificate fingerprint**: Leave this empty.
 - **Name Identifier Format**: `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`
-- If you want Zammad users to be created automatically the first time the sign in via Authentik, activate the **Automatic account link on initial logon** option 
+- **Automatic account link on initial logon**: Enable this to automatically create Zammad users when they sign in using authentik for the first time.
 
 ## Additional Resources
 
