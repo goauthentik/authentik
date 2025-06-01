@@ -41,7 +41,8 @@ class TestOpenIDConformance(SeleniumTestCase):
             "description": "authentik",
             "server": {
                 "discoveryUrl": self.url(
-                    "authentik_providers_oauth2:provider-info", application_slug="conformance"
+                    "authentik_providers_oauth2:provider-info",
+                    application_slug="oidc-conformance-1",
                 ),
             },
             "client": {
@@ -137,4 +138,13 @@ class TestOpenIDConformance(SeleniumTestCase):
         self.driver.get(url)
         if "if/flow/default-authentication-flow" in self.driver.current_url:
             self.login()
-            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#complete")))
+        if "prompt=consent" in url or "offline_access" in url:
+            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
+            sleep(1)
+            flow_executor = self.get_shadow_root("ak-flow-executor")
+            consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+            consent_stage.find_element(
+                By.CSS_SELECTOR,
+                "[type=submit]",
+            ).click()
+        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#complete")))

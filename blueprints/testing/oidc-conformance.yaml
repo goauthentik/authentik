@@ -60,13 +60,14 @@ entries:
 
 
   - model: authentik_providers_oauth2.oauth2provider
-    id: provider
+    id: oidc-conformance-1
     identifiers:
       name: oidc-conformance-1
     attrs:
       authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
       invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
-      issuer_mode: per_provider
+      # Required as OIDC Conformance test requires issues to be the same across multiple clients
+      issuer_mode: global
       client_id: 4054d882aff59755f2f279968b97ce8806a926e1
       client_secret: 4c7e4933009437fb486b5389d15b173109a0555dc47e0cc0949104f1925bcc6565351cb1dffd7e6818cf074f5bd50c210b565121a7328ee8bd40107fc4bbd867
       redirect_uris:
@@ -84,10 +85,10 @@ entries:
       signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
   - model: authentik_core.application
     identifiers:
-      slug: conformance
+      slug: oidc-conformance-1
     attrs:
-      provider: !KeyOf provider
-      name: Conformance
+      provider: !KeyOf oidc-conformance-1
+      name: OIDC Conformance (1)
 
   - model: authentik_providers_oauth2.oauth2provider
     id: oidc-conformance-2
@@ -96,7 +97,8 @@ entries:
     attrs:
       authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
       invalidation_flow: !Find [authentik_flows.flow, [slug, default-provider-invalidation-flow]]
-      issuer_mode: per_provider
+      # Required as OIDC Conformance test requires issues to be the same across multiple clients
+      issuer_mode: global
       client_id: ad64aeaf1efe388ecf4d28fcc537e8de08bcae26
       client_secret: ff2e34a5b04c99acaf7241e25a950e7f6134c86936923d8c698d8f38bd57647750d661069612c0ee55045e29fe06aa101804bdae38e8360647d595e771fea789
       redirect_uris:
@@ -117,4 +119,4 @@ entries:
       slug: oidc-conformance-2
     attrs:
       provider: !KeyOf oidc-conformance-2
-      name: OIDC Conformance
+      name: OIDC Conformance (2)
