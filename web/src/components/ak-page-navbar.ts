@@ -157,6 +157,7 @@ export class AKPageNavbar
                     }
 
                     &.page-description {
+                        padding-top: 0.3em;
                         grid-area: description;
                         margin-block-end: var(--pf-global--spacer--md);
 
