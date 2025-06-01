@@ -136,9 +136,13 @@ class TestOpenIDConformance(SeleniumTestCase):
     def do_browser(self, url):
         """For any specific OpenID Conformance test, execute the operations required"""
         self.driver.get(url)
+        should_expect_completion = False
         if "if/flow/default-authentication-flow" in self.driver.current_url:
+            self.logger.debug("Logging in")
             self.login()
+            should_expect_completion = True
         if "prompt=consent" in url or "offline_access" in url:
+            self.logger.debug("Authorizing")
             self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "ak-flow-executor")))
             sleep(1)
             flow_executor = self.get_shadow_root("ak-flow-executor")
@@ -147,4 +151,6 @@ class TestOpenIDConformance(SeleniumTestCase):
                 By.CSS_SELECTOR,
                 "[type=submit]",
             ).click()
-        self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#complete")))
+            should_expect_completion = True
+        if should_expect_completion:
+            self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "#complete")))
