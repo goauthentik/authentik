@@ -29,6 +29,36 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Mattermost Team Edition with authentik, you need to create an application/provider pair in authentik.
 
+### Create property mappings
+
+You need to create two scope mappings.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
+    - **Name**: Set an appropriate name.
+    - **Scope Name**: `id`
+    - **Description**: Set an appropriate description, if desired.
+    - **Expression**:
+        ```python
+        return {
+            "id": request.user.attributes.get("mattermostId", request.user.id)
+        }
+        ```
+3. Click **Create** again, and create a **Scope Mapping** with the following settings:
+    - **Name**: Set an appropriate name.
+    - **Scope Name**: `username`
+    - **Description**: Set an appropriate description, if desired.
+    - **Expression**:
+        ```python
+        return {
+            "username": request.user.username
+        }
+        ```
+
+:::note
+The `mattermostId` property mapping is optional. Without it, Mattermost will use a variation on users' email addresses as their ID on the system. This leads to userids that look like **person-example.com** for a user whose email address is `person@example.com`. Since these are the nicknames in a chat system, that may be undesirable. Using the `mattermostId` property you can select or construct a different identifier that might be more aesthetically pleasing.
+:::
+
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
@@ -41,6 +71,7 @@ To support the integration of Mattermost Team Edition with authentik, you need t
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
     - Set a `Strict` redirect URI to <kbd>https://<em>mattermost.company</em>/signup/gitlab/complete</kbd>
     - Select any available signing key.
+    - Under **Advanced protocol settings**, add the scopes you just created to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
