@@ -42,7 +42,9 @@ class TestSourceSCIM(SeleniumTestCase):
         test_launch = session.post(
             "http://localhost:8080/test/run",
             data={
-                "endPoint": self.live_server_url + f"/source/scim/{source.slug}/v2",
+                "endPoint": self.host_url(
+                    "authentik_sources_scim:v2-root", source_slug=source.slug
+                ),
                 "username": "foo",
                 "password": source.token.key,
                 "jwtToken": None,
