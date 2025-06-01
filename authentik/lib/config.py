@@ -313,8 +313,6 @@ class ConfigLoader:
             return {}
         try:
             b64decoded_str = base64.b64decode(config_value).decode("utf-8")
-            b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
-            b64decoded_str = "{" + b64decoded_str + "}"
             return json.loads(b64decoded_str)
         except (JSONDecodeError, TypeError, ValueError) as exc:
             self.log(
