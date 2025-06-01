@@ -50,6 +50,7 @@ func NewServer(ac *ak.APIController) *LDAPServer {
 	s.BindFunc("", ls)
 	s.UnbindFunc("", ls)
 	s.SearchFunc("", ls)
+	s.CompareFunc("", ls)
 	return ls
 }
 
