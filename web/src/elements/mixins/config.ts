@@ -1,8 +1,10 @@
 import { createMixin } from "@goauthentik/elements/types";
 
-import { consume, createContext } from "@lit/context";
+import { Context, consume, createContext } from "@lit/context";
 
 import type { Config } from "@goauthentik/api";
+
+export const kAKConfig = Symbol("kAKConfig");
 
 /**
  * The Lit context for the application configuration.
@@ -12,6 +14,8 @@ import type { Config } from "@goauthentik/api";
  * @see {@linkcode WithAuthentikConfig}
  */
 export const AuthentikConfigContext = createContext<Config>(Symbol.for("authentik-config-context"));
+
+export type AuthentikConfigContext = Context<symbol, Config>;
 
 /**
  * A consumer that provides the application configuration to the element.
@@ -23,7 +27,7 @@ export interface AKConfigMixin {
     /**
      * The current configuration of the application.
      */
-    readonly authentikConfig: Readonly<Config>;
+    readonly [kAKConfig]: Readonly<Config>;
 }
 
 /**
@@ -33,13 +37,8 @@ export interface AKConfigMixin {
  */
 export const WithAuthentikConfig = createMixin<AKConfigMixin>(
     ({
-        /**
-         * The superclass constructor to extend.
-         */
+        // ---
         SuperClass,
-        /**
-         * Whether or not to subscribe to the context.
-         */
         subscribe = true,
     }) => {
         abstract class AKConfigProvider extends SuperClass implements AKConfigMixin {
@@ -47,7 +46,7 @@ export const WithAuthentikConfig = createMixin<AKConfigMixin>(
                 context: AuthentikConfigContext,
                 subscribe,
             })
-            public readonly authentikConfig!: Readonly<Config>;
+            public readonly [kAKConfig]!: Readonly<Config>;
         }
 
         return AKConfigProvider;

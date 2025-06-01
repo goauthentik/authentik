@@ -30,7 +30,6 @@
         "rollup-plugin-copy": "^3.5.0"
     },
     "optionalDependencies": {
-        "@swc/core": "^1.7.28",
         "@swc/core-darwin-arm64": "^1.6.13",
         "@swc/core-darwin-x64": "^1.6.13",
         "@swc/core-linux-arm-gnueabihf": "^1.6.13",

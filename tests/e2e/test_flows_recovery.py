@@ -84,6 +84,14 @@ class TestFlowsRecovery(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         sleep(2)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            "[type=submit]",
+        ).click()
+
         # We can now enter the new password
         flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)

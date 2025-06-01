@@ -7,12 +7,18 @@
  */
 import { findFreePorts } from "find-free-ports";
 import * as http from "node:http";
-import * as path from "node:path";
+import { resolve as resolvePath } from "node:path";
 
 /**
  * Serializes a custom event to a text stream.
+ *
  * @param {Event} event
  * @returns {string}
+ *
+ * @category Server API
+ * @ignore
+ * @internal
+ * @runtime node
  */
 export function serializeCustomEventToStream(event) {
     // @ts-expect-error - TS doesn't know about the detail property
@@ -54,17 +60,26 @@ async function findDisparatePort() {
  * @property {string} pathname
  * @property {EventTarget} dispatcher
  * @property {string} [logPrefix]
+ *
+ * @category Server API
+ * @runtime node
  */
 
 /**
  * @typedef {(req: http.IncomingMessage, res: http.ServerResponse) => void} RequestHandler
+ *
+ * @category Server API
+ * @runtime node
  */
 
 /**
  * Create an event request handler.
+ *
  * @param {EventServerInit} options
  * @returns {RequestHandler}
- * @category ESBuild
+ *
+ * @category Server API
+ * @runtime node
  */
 export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build Observer" }) {
     const log = console.log.bind(console, `[${logPrefix}]`);
@@ -129,6 +144,9 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
 /**
  * Options for the build observer plugin.
  *
+ * @category Plugin API
+ * @runtime node
+ *
  * @typedef {object} LiveReloadPluginOptions
  *
  * @property {HTTPServer | HTTPSServer} [server] A server to listen on. If not provided, a new server will be created.
@@ -141,8 +159,7 @@ export function createRequestHandler({ pathname, dispatcher, logPrefix = "Build 
 /**
  * Creates a plugin that listens for build events and sends them to a server-sent event stream.
  *
- * @param {
- * } [options]
+ * @param {LiveReloadPluginOptions} [options]
  * @returns {import('esbuild').Plugin}
  */
 export function liveReloadPlugin(options = {}) {
@@ -234,7 +251,7 @@ export function liveReloadPlugin(options = {}) {
                             location: error.location
                                 ? {
                                       ...error.location,
-                                      file: path.resolve(relativeRoot, error.location.file),
+                                      file: resolvePath(relativeRoot, error.location.file),
                                   }
                                 : null,
                         })),

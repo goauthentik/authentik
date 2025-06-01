@@ -9009,8 +9009,8 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
   <target>Cette option configure les liens affichés en bas de page sur l’exécuteur de flux. L'URL est limitée à des addresses web et courriel. Si le nom est laissé vide, l'URL sera affichée.</target>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>Applications externes qui utilisent <x id="0" equiv-text="${this.brandingTitle}"/> comme fournisseur d'identité en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accès.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9812,48 +9812,71 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="sa30ba280de276758">
   <source>When enabled, the SAML response will be signed.</source>
+  <target>Si activé, la réponse SAML sera signée.</target>
 </trans-unit>
 <trans-unit id="s2c42bb3c6f5420d2">
   <source>Client Certificates</source>
+  <target>Certificats clients</target>
 </trans-unit>
 <trans-unit id="s95901716c0629274">
   <source>Available Certificates</source>
+  <target>Certificats disponibles</target>
 </trans-unit>
 <trans-unit id="sdbf6b484fa1436b0">
   <source>Selected Certificates</source>
+  <target>Certificats sélectionnés</target>
 </trans-unit>
 <trans-unit id="s9300147e327fd8f6">
   <source>Client-certificate/mTLS authentication/enrollment.</source>
+  <target>Authentification/inscription par certificat client/mTLS.</target>
 </trans-unit>
 <trans-unit id="sbf990ec848470f5c">
   <source>Certificate optional</source>
+  <target>Certificat facultatif</target>
 </trans-unit>
 <trans-unit id="s72e2876e9409b9eb">
   <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+  <target>Si aucun certificat n'a été fourni, cette étape réussira et passera à l'étape suivante.</target>
 </trans-unit>
 <trans-unit id="se07d973901a6e6b9">
   <source>Certificate required</source>
+  <target>Certificat requis</target>
 </trans-unit>
 <trans-unit id="s664c47df020ee414">
   <source>If no certificate was provided, this stage will stop flow execution.</source>
+  <target>Si aucun certificat n'a été fourni, cette étape arrêtera l'exécution du flux.</target>
 </trans-unit>
 <trans-unit id="sbe9da6dad795aa39">
   <source>Certificate authorities</source>
+  <target>Autorités de certification</target>
 </trans-unit>
 <trans-unit id="se3a6aa4f0ab7568e">
   <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+  <target>Configurez l'autorité de certification par rapport à laquelle les certificats clients sont validés. L'autorité de certification peut également être configurée sur une marque, ce qui permet d'utiliser différentes autorités de certification pour différents domaines.</target>
 </trans-unit>
 <trans-unit id="sb8fdf5a09a969870">
   <source>Certificate attribute</source>
+  <target>Attribut du certificat</target>
 </trans-unit>
 <trans-unit id="s8069037a865037c9">
   <source>Configure the attribute of the certificate used to look for a user.</source>
+  <target>Configurez l'attribut du certificat utilisé pour rechercher un utilisateur.</target>
 </trans-unit>
 <trans-unit id="sc185a8ad96f8eaa2">
   <source>User attribute</source>
+  <target>Attribut utilisateur</target>
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+  <target>Configurez l'attribut utilisateur utilisé pour rechercher un utilisateur.</target>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+  <target>Supprimer les objets introuvables</target>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>Supprimer les utilisateurs et les groupes authentik qui étaient auparavant fournis par cette source, mais qui en sont maintenant absents.</target>
 </trans-unit>
     </body>
   </file>

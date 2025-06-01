@@ -519,7 +519,7 @@ export class FlowExecutor
                                                 class="pf-c-login__main-header pf-c-brand ak-brand"
                                             >
                                                 <img
-                                                    src="${themeImage(this.brand.brandingLogo)}"
+                                                    src="${themeImage(this.brandingLogo)}"
                                                     alt="${msg("authentik Logo")}"
                                                 />
                                             </div>

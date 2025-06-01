@@ -148,6 +148,26 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     <span class="pf-c-switch__label">${msg("Sync groups")}</span>
                 </label>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="deleteNotFoundObjects">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${this.instance?.deleteNotFoundObjects ?? false}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${msg("Delete Not Found Objects")}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Delete authentik users and groups which were previously supplied by this source, but are now missing from it.",
+                    )}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Connection settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -409,8 +429,23 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.",
+                                "Field which contains members of a group. The value of this field is matched against User membership attribute.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User membership attribute")}
+                        ?required=${true}
+                        name="userMembershipAttribute"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.userMembershipAttribute || "distinguishedName"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Attribute which matches the value of Group membership field.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="lookupGroupsFromUser">

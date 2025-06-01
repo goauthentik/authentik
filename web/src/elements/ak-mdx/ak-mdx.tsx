@@ -54,7 +54,7 @@ const highlightThemeOptions: HighlightOptions = {
 export type Replacer = (input: string) => string;
 
 @customElement("ak-mdx")
-export class AKMDX extends WithAuthentikConfig(AKElement) {
+export class AKMDX extends AKElement {
     @property({
         reflect: true,
     })

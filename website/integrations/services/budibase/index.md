@@ -27,7 +27,7 @@ To support the integration of Budibase with authentik, you need to create an app
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -50,10 +50,10 @@ From the main page of your Budibase installation, add the following values under
 - **Callback URL**: <kbd>https://<em>budibase.company</em>/api/global/auth/oidc/callback/</kbd>
 - **Name**: <kbd>authentik</kbd>
 
-## Resources
-
-- [Budibase official documentation on OpenID Connect](https://docs.budibase.com/docs/openid-connect)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Budibase, visit your Budibase installation, and click **Sign in with authentik**.
+
+## Resources
+
+- [Budibase official documentation on OpenID Connect](https://docs.budibase.com/docs/openid-connect)
