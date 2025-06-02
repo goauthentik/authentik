@@ -52,7 +52,7 @@ def register_signals(
             return
         task_sync_direct.delay(
             class_to_path(instance.__class__), instance.pk, Direction.remove.value
-        ).get(propagate=False)
+        )
 
     pre_delete.connect(model_pre_delete, User, dispatch_uid=uid, weak=False)
     pre_delete.connect(model_pre_delete, Group, dispatch_uid=uid, weak=False)
