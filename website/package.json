@@ -61,7 +61,7 @@
         "@types/react": "^18.3.22",
         "@types/semver": "^7.7.0",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
-        "@typescript-eslint/parser": "^8.8.0",
+        "@typescript-eslint/parser": "^8.33.0",
         "cross-env": "^7.0.3",
         "eslint": "^9.11.1",
         "fast-glob": "^3.3.3",
