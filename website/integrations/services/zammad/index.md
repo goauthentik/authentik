@@ -49,7 +49,6 @@ To support the integration of Zammad with authentik, you need to create an appli
 2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for zammad`).
 3. Under **Related objects** > **Download signing certificate **, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
-
 ## zammad Setup
 
 Configure Zammad SAML settings by going to settings (the gear icon) and selecting `Security -> Third-party Applications` and activate `Authentication via SAML` and change the following fields:
