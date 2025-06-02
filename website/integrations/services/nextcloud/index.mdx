@@ -316,70 +316,82 @@ The following placeholders are used in this guide:
 This documentation lists only the settings you need to change from their default values. Other changes might cause issues accessing your application.
 :::
 
-#### Authentik configuration
+## Authentik configuration
 
-Create a app and provider pair
+### Create an application and provider in authentik
 
-Create an ldap outpost and attach the nextcloud app/provider
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-TEMP
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **LDAP** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - TEMP
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
-#### Nextcloud configuration
+3. Click **Submit** to save the new application and provider.
 
-1. **Install the app:**
-   In Nextcloud, ensure the **LDAP user and group backend** app is installed. Then navigate to **Settings** > **LDAP user and group backend**.
+### Create an LDAP outpost
 
-2. **Configure the following settings:**
+1. Log in to authentik as an admin, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Outposts** and click **Create**.
 
-    - On the **Server** tab:
-        - Click the **+** icon and enter the following settings:
-            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceeded by `ldap://`.
-            - **Port**: `3389`
-            - For **Credentials**
+    - **Name**: provide a suitable name for the outpost.
+    - **Type**: `LDAP`
+    - Under applications, add the newly created Nextcloud application to **Selected Applications**.
+
+3. Click **Create**.
+
+## Nextcloud configuration
+
+1.  **Install the app:**
+    In Nextcloud, ensure the **LDAP user and group backend** app is installed. Then navigate to **Settings** > **LDAP user and group backend**.
+
+2.  **Configure the following settings:**
+
+- On the **Server** tab:
+
+    - Click the **+** icon and enter the following settings:
+        - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceeded by `ldap://`
+        - **Port**: `389`
+        - For **Credentials** enter the **Bind DN** of the authentik LDAP provider and the associated user password.
+        - For **Base DN** enter the **Search base** of the authentik LDAP provider.
+
+- On the **Users** tab: - Set **Only these object classes** to `Users`. - On the **LDAP/AD integration** tab:
+
+    - Uncheck **LDAP/AD Username**.
+    - Set **Other Attributes** to `cn`.
+    - Click **Expert** in the top right corner and enter these settings:
+        - **Internal Username Attribute**: `uid`
+        - **UUID Attribute for Users**: `uid`
+        - **UUID Attribute for Groups**: `gidNumber`
+    - Click **Advanced** in the top right corner and enter these settings:
+        - Under **Connection Settings**:
+            - **Configuration Active**: checked
+        - Under **Directory Settings**:
+            - **User Display Name Field**: `name`
+            - **Base User Tree**: enter the **Search base** of the authentik LDAP provider.
+            - **Group Display Name Field**: `cn`
+            - **Base Group Tree**: enter the **Search base** of the authentik LDAP provider.
+            - **Group-Member Association**: `gidNumber`
+        - Under **Special Attributes**:
+            - **Email Field**: `mailPrimaryAddress`
+
+- On the **Groups** tab:
+
+    - Set **Only these object classes** to `groups`.
+    - Select the authentik groups that require Nextcloud access.
 
 :::note
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
 :::
 
-#### Group quotas
-
-1. **Set up groups:**
-   Create a group for each storage quota level and assign a custom attribute (e.g., `nextcloud_quota`) with values like `15 GB`.
-
-2. **Create a custom SAML property mapping:**
-   Name the mapping **SAML Nextcloud Quota** with:
-
-    - **SAML Attribute Name:** `nextcloud_quota`
-    - **Expression:**
-
-        ```python
-        return user.group_attributes().get("nextcloud_quota", "1 GB")
-        ```
-
-        (Here, `"1 GB"` is the default if no quota is set.)
-
-3. **Configure Nextcloud:**
-   In Nextcloud under **Settings > SSO & SAML Authentication**, set the **Attribute to map the quota to** as `nextcloud_quota`.
-
-#### Admin group
-
-To grant admin access to authentik users:
-
-1. **Create a custom SAML property mapping for admins:**
-   Configure a mapping with:
-
-    - **SAML Attribute Name:** `http://schemas.xmlsoap.org/claims/Group`
-    - **Expression:**
-
-        ```python
-        for group in request.user.all_groups():
-            yield group.name
-        if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
-            yield "admin"
-        ```
-
-2. **Update the Nextcloud provider:**
-   Replace the default Groups mapping with this custom mapping.
+## Configuration verification
 
   </TabItem>
 </Tabs>
+
+## Resources
+
+- [Nextcloud docs - User authentication with LDAP](https://docs.nextcloud.com/server/latest/admin_manual/configuration_user/user_auth_ldap.html)
+- [Nextcloud OIDC App - User Documentation](https://github.com/H2CK/oidc/wiki/User-Documentation)
