@@ -19,7 +19,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 - **Sync users**: Enable or disable user synchronization between authentik and the LDAP source.
 - **User password writeback**: Enable this option if you want to write password changes that are made in authentik back to LDAP.
 - **Sync groups**: Enable/disable group synchronization between authentik and the LDAP source.
-- **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes the deletion of users and groups in authentik when they are removed in the LDAP source. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
+- **Delete Not Found Objects**: :ak-version[2025.6] This option synchronizes user and group deletions from LDAP sources to authentik. User deletion requires enabling **Sync users** and group deletion requires enabling **Sync groups**.
 
 #### Connection settings
 
@@ -44,7 +44,7 @@ To create or edit a source in authentik, open the Admin interface and navigate t
 
 #### Additional Settings
 
-- **Parent Group**: Parent group for all the groups imported from LDAP .An example use case of this would be to import Active Directory groups under a root `imported-from-ad` group.
+- **Parent Group**: Parent group for all the groups imported from LDAP. An example use case would be to import Active Directory groups under a root `imported-from-ad` group.
 - **User path**: Path template for all new users created.
 - **Additional User DN**: Prepended to the base DN for user queries.
 - **Additional Group DN**: Prepended to the base DN for group queries.
