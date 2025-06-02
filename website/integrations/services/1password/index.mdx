@@ -49,8 +49,9 @@ To support the integration of 1Password with authentik, you need to create an ap
 4. Set the following values:
     - **Client ID**: authentik Client ID.
     - **Well-known URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
-5. Click **Test connection** to validate the configuration.
-6. After the test completes successfully, click **Save**.
+5. Verify that the **Redirect URIs** shown, match those configured in authentik. If not, update the values in authentik.
+6. Click **Test connection** to validate the configuration.
+7. After the test completes successfully, click **Save**.
 
 ## Configuration verification
 
