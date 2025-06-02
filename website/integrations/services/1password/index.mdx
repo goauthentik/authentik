@@ -33,22 +33,40 @@ To support the integration of 1Password with authentik, you need to create an ap
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://TEMP`.
+        - Set **Client type** to `Public`.
+        - Note the **Client ID** and **slug** values because they will be required later.
+        - Set two `Strict` redirect URIs to `https://<1password-sign-in-URL>.1password.com/sso/oidc/redirect/` and `onepassword://sso/oidc/redirect`.
         - Select any available signing key.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
-### Setup automated user provisioning in authentik _(optional)_
+## 1Password configuration
 
-Optionally, you can configure automated user provisioning from authentik to 1Password. This enables you to create users and groups, manage access, and suspend 1Password users with authentik.
+1. Log in to the [1Password dashboard](https://start.1password.com/) as an administrator.
+2. Click **Policies** in the sidebar.
+3. Under **Configure Identity Provider**, click **Manage**.
+4. Set the following values:
+    - **Client ID**: authentik Client ID.
+    - **Well-known URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
+5. Click **Test connection** to validate the configuration.
+6. After the test completes successfully, click **Save**.
+
+## Configuration verification
+
+To verify that authentik is properly integrated with 1Password, first sign out of your account. Then, navigate to the [1Password login page](https://my.1password.com/signin), enter an email that's provisioned for SSO in Bitwarden, and click **Sign in with authentik**. You will then be redirected to authentik for authentication before being sent back to the 1Password dashboard.
+
+## Automated user provisioning _(optional)_
+
+You can optionally configure automated user provisioning from authentik to 1Password. This allows you to create users and groups, manage access, and suspend users in 1Password with authentik.
 
 To support automated user provisioning, you need to create a group, and a SCIM provider in authentik. This SCIM provider is then connected to the **1Password SCIM Bridge**, which will need to be deployed. For more information, see the [Automate provisioning in 1Password Business using SCIM Documentation](https://support.1password.com/scim/).
 
-#### Create a user group in authentik
+### Setup automated user provisioning in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+#### Create a user group
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Directory** > **Groups** and click **Create**.
 3. Set a name for the group (e.g. `1Password Users`), and click **Create**.
 4. Click the name of the newly created group and navigate to the **Users** tab.
@@ -62,28 +80,23 @@ To support automated user provisioning, you need to create a group, and a SCIM p
     - **Choose a Provider type**: select **SCIM** as the provider type.
     - **Configure the Provider**: provide a name (e.g. 1password-scim), and the following required configurations.
         - Set the **URL** to `scim-bridge.company`.
-        - Set the **Token** to TEMP The token taken from 1Password SCIM Bridge TEMP
+        - Set the **Token** to the token taken from your 1Password SCIM Bridge deployment.
         - Under **User filtering**:
             - Set **Group** to the previously created group (e.g. `1Password Users`).
 
 3. Click **Finish** to save the new provider.
 
-## 1Password configuration
+### Setup automated user provisioning in 1Password
 
-### SSO
+1. Log in to the [1Password dashboard](https://start.1password.com/) as an administrator.
+2. Click on **Integrations** in the sidebar and **Automated User Provisioning**.
+3. Enable **Provisioning users & groups**.
 
-TEMP
-
-### Setup automated user provisioning in 1Password _(optional)_
-
-TEMP
-
-## Configuration verification
-
-To verify that authentik is properly integrated with 1Password, first sign out of your account. Then, navigate to the [1Password login page](https://my.1password.com/signin), enter an email that’s provisioned for SSO, and click **Sign in with authentik**. You will then be redirected to authentik for authentication before being sent back to the 1Password dashboard.
+For more information see the [Automate provisioning in 1Password Business using SCIM Documentation](https://support.1password.com/scim/), [1Password SCIM Bridge deployment methods Documentation](https://github.com/1Password/scim-examples), and the [1Password Connect Microsoft Entra ID to 1Password SCIM Bridge Documentation](https://support.1password.com/scim-entra-id/#next-steps) that can be used as an example.
 
 ## Resources
 
 - [Configure Unlock 1Password with SSO using OpenID Connect Documentation](https://support.1password.com/sso-configure-generic/)
 - [Automate provisioning in 1Password Business using SCIM Documentation](https://support.1password.com/scim/)
 - [1Password SCIM Bridge deployment methods Documentation](https://github.com/1Password/scim-examples)
+- [1Password Connect Microsoft Entra ID to 1Password SCIM Bridge Documentation](https://support.1password.com/scim-entra-id/#next-steps)
