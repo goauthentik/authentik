@@ -21,6 +21,9 @@ declare module "@docusaurus/plugin-content-docs/src/sidebars/types" {
 }
 
 declare module "@docusaurus/plugin-content-docs/client" {
+    export * from "@docusaurus/plugin-content-docs/lib/client/docSidebarItemsExpandedState.js";
+    export * from "@docusaurus/plugin-content-docs/lib/client/docsUtils.js";
+
     import { DocContextValue as BaseDocContextValue } from "@docusaurus/plugin-content-docs/lib/client/doc.js";
     import { DocFrontMatter as BaseDocFrontMatter } from "@docusaurus/plugin-content-docs";
 
