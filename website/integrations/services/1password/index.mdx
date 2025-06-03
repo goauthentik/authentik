@@ -27,7 +27,7 @@ To support the integration of 1Password with authentik, you need to create an ap
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -48,10 +48,22 @@ To support the integration of 1Password with authentik, you need to create an ap
 3. Under **Configure Identity Provider**, click **Manage**.
 4. Set the following values:
     - **Client ID**: Client ID from authentik.
-    - **Well-known URL**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
-5. Verify that the **Redirect URIs** shown, match those configured in authentik. If not, update the values in authentik.
-6. Click **Test connection** to validate the configuration.
-7. After the test completes successfully, click **Save**.
+    - **Well-known URL**: `https://temp.temp`
+5. Take note of the **Redirect URIs** that are shown shown because they will be required in the next section.
+6. Keep the page open as you will need to return to it after reconfiguring authentik.
+
+## Reconfigure authentik provider
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created 1Password provider.
+    - Set redirect URIs matching the values taken from 1Password.
+3. Click **Update**
+
+## Finalize 1Password configuration
+
+1. Return to the 1Password SSO configuration page.
+2. Click **Test connection** to validate the configuration.
+3. After the test completes successfully, click **Save**.
 
 ## Configuration verification
 
