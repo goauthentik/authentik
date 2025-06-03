@@ -1,6 +1,7 @@
 from enum import StrEnum, auto
 from uuid import uuid4
 
+from django.contrib.contenttypes.fields import ContentType, GenericForeignKey
 import pgtrigger
 from django.db import models
 from django.utils import timezone
@@ -32,8 +33,7 @@ class TaskState(models.TextChoices):
 class TaskStatus(models.TextChoices):
     """Task soft-state. Self-reported by the task"""
 
-    UNKNOWN = "unknown"
-    SUCCESSFUL = "successful"
+    INFO = "info"
     WARNING = "warning"
     ERROR = "error"
 
@@ -59,18 +59,21 @@ class Task(SerializerModel):
     result = models.BinaryField(null=True, help_text=_("Task result"))
     result_expiry = models.DateTimeField(null=True, help_text=_("Result expiry time"))
 
-    schedule_uid = models.TextField(blank=True)
-    uid = models.TextField(blank=True)
-    # Probably only have one `logs` field
-    description = models.TextField(blank=True)
-    status = models.TextField(blank=True, choices=TaskStatus.choices)
+    rel_obj_content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, null=True)
+    rel_obj_id = models.TextField(null=True)
+    rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
+
+    uid = models.TextField(blank=True, null=True)
     messages = models.JSONField(default=list)
 
     class Meta:
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
         default_permissions = ("view",)
-        indexes = (models.Index(fields=("state", "mtime")),)
+        indexes = (
+            models.Index(fields=("state", "mtime")),
+            models.Index(fields=("rel_obj_content_type", "rel_obj_id")),
+        )
         triggers = (
             pgtrigger.Trigger(
                 name="notify_enqueueing",
@@ -97,24 +100,23 @@ class Task(SerializerModel):
 
         return TaskSerializer
 
-    def set_uid(self, uid: str):
-        """Set UID, so in the case of an unexpected error its saved correctly"""
-        self.uid = uid
+    def log(self, status: TaskStatus, *messages: str | LogEvent | Exception, save=False):
+        self.messages: list
+        for msg in messages:
+            message = msg
+            if isinstance(message, Exception):
+                message = exception_to_string(message)
+            if not isinstance(message, LogEvent):
+                message = LogEvent(message, logger=self.actor_name, log_level=status.value)
+            self.messages.append(sanitize_item(message))
+        if save:
+            self.save()
 
-    def set_status(self, status: TaskStatus, *messages: LogEvent | str):
-        """Set result for current run, will overwrite previous result."""
-        self.status = status
-        self.messages = list(messages)
-        for idx, msg in enumerate(self.messages):
-            if not isinstance(msg, LogEvent):
-                self.messages[idx] = LogEvent(msg, logger=str(self), log_level="info")
-        self.messages = sanitize_item(self.messages)
+    def info(self, *messages: str | LogEvent | Exception, save=False):
+        self.log(TaskStatus.INFO, *messages, save=save)
 
-    def set_error(self, exception: Exception, *messages: LogEvent | str):
-        """Set result to error and save exception"""
-        self.status = TaskStatus.ERROR
-        self.messages = list(messages)
-        self.messages.extend(
-            [LogEvent(exception_to_string(exception), logger=str(self), log_level="error")]
-        )
-        self.messages = sanitize_item(self.messages)
+    def warning(self, *messages: str | LogEvent | Exception, save=False):
+        self.log(TaskStatus.WARNING, *messages, save=save)
+
+    def error(self, *messages: str | LogEvent | Exception, save=False):
+        self.log(TaskStatus.ERROR, *messages, save=save)

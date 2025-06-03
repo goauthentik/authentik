@@ -14,7 +14,6 @@ from authentik.events.models import Event, EventAction, Notification
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
@@ -49,10 +48,10 @@ def clear_update_notifications():
 @actor
 def update_latest_version():
     """Update latest version info"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskStatus.WARNING, "Version check disabled.")
+        self.warning("Version check disabled.")
         return
     try:
         response = get_http_session().get(
@@ -62,7 +61,7 @@ def update_latest_version():
         data = response.json()
         upstream_version = data.get("stable", {}).get("version")
         cache.set(VERSION_CACHE_KEY, upstream_version, VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskStatus.SUCCESSFUL, "Successfully updated latest Version")
+        self.info("Successfully updated latest Version")
         _set_prom_info()
         # Check if upstream version is newer than what we're running,
         # and if no event exists yet, create one.
@@ -85,7 +84,7 @@ def update_latest_version():
             ).save()
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
-        self.set_error(exc)
+        raise exc
 
 
 _set_prom_info()

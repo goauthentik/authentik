@@ -23,7 +23,6 @@ class TaskSerializer(ModelSerializer):
             "actor_name",
             "state",
             "mtime",
-            "schedule_uid",
             "uid",
             "messages",
         ]
@@ -41,13 +40,11 @@ class TaskViewSet(
         "queue_name",
         "actor_name",
         "state",
-        "schedule_uid",
     )
     filterset_fields = (
         "queue_name",
         "actor_name",
         "state",
-        "schedule_uid",
     )
     ordering = (
         "actor_name",

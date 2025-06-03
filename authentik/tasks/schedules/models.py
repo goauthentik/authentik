@@ -71,7 +71,7 @@ class Schedule(SerializerModel):
         return actor.send_with_options(
             args=pickle.loads(self.args),  # nosec
             kwargs=pickle.loads(self.kwargs),  # nosec
-            schedule_uid=self.uid,
+            rel_obj=self,
             **pickle.loads(self.options),  # nosec
         )
 

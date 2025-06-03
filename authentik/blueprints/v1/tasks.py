@@ -154,9 +154,7 @@ def blueprints_discovery(path: str | None = None):
             continue
         check_blueprint_v1_file(blueprint)
         count += 1
-    self.set_status(
-        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=count))
-    )
+    self.info(_("Successfully imported {count} files.".format(count=count)))
 
 
 def check_blueprint_v1_file(blueprint: BlueprintFile):
@@ -189,15 +187,13 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 @actor
 def apply_blueprint(instance_pk: str):
     """Apply single blueprint"""
-    self: Task = CurrentTask.get_task()
-    # TODO: fixme
-    # self.save_on_success = False
+    self = CurrentTask.get_task()
     instance: BlueprintInstance | None = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
             return
-        self.set_uid(slugify(instance.name))
+        self.uid = slugify(instance.name)
         blueprint_content = instance.retrieve()
         file_hash = sha512(blueprint_content.encode()).hexdigest()
         importer = Importer.from_string(blueprint_content, instance.context)
@@ -207,19 +203,18 @@ def apply_blueprint(instance_pk: str):
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
-            self.set_status(TaskStatus.ERROR, *logs)
+            self.error(*logs)
             return
         with capture_logs() as logs:
             applied = importer.apply()
             if not applied:
                 instance.status = BlueprintInstanceStatus.ERROR
                 instance.save()
-                self.set_status(TaskStatus.ERROR, *logs)
+                self.error(*logs)
                 return
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
-        self.set_status(TaskStatus.SUCCESSFUL)
     except (
         OSError,
         DatabaseError,
@@ -230,7 +225,7 @@ def apply_blueprint(instance_pk: str):
     ) as exc:
         if instance:
             instance.status = BlueprintInstanceStatus.ERROR
-        self.set_error(exc)
+        self.error(exc)
     finally:
         if instance:
             instance.save()

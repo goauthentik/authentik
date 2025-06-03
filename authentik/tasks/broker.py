@@ -98,7 +98,7 @@ class PostgresBroker(Broker):
 
         self.queues = set()
         self.actor_options = {
-            "schedule_uid",
+            "rel_obj",
         }
 
         self.db_alias = db_alias
@@ -192,7 +192,7 @@ class PostgresBroker(Broker):
             "actor_name": message.actor_name,
             "state": TaskState.QUEUED,
             "message": message.encode(),
-            "schedule_uid": message.options.get("schedule_uid", ""),
+            "rel_obj": message.options.get("rel_obj", None),
         }
         create_defaults = {
             **query,
