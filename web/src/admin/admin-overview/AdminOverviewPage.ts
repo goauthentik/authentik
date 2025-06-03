@@ -85,8 +85,8 @@ export class AdminOverviewPage extends AdminOverviewBase {
     render(): TemplateResult {
         const username = this.user?.user.name || this.user?.user.username;
 
-        return html` <ak-page-header
-                header=${msg(str`Welcome, ${username || ""}.`)}
+        return html`<ak-page-header
+                header=${this.user ? msg(str`Welcome, ${username || ""}.`) : msg("Welcome.")}
                 description=${msg("General system status")}
                 ?hasIcon=${false}
             >
