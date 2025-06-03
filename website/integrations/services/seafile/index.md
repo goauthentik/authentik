@@ -81,6 +81,7 @@ OAUTH_ATTRIBUTE_MAP = {
 To confirm that authentik is properly configured with `seafile`, log out of authentik and seafile and navigate to the seafile login page. You should see a "log in using sso" button. Clicking this button will lead you to the default authentik sign in page.
 
 ## Resources
+
 - [Seafile Oauth authentication documentation](https://manual.seafile.com/13.0/config/oauth/)
 - [Seafile seahub_settings.py documentation](https://manual.seafile.com/13.0/config/seahub_settings_py/)
 
