@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-20 00:10+0000\n"
+"POT-Creation-Date: 2025-05-28 11:25+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -974,9 +974,12 @@ msgid "Starting full provider sync"
 msgstr "开始全量提供程序同步"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
-msgstr "正在同步用户页面 {page}"
+msgid "Syncing users"
+msgstr "正在同步用户"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
+msgstr "正在同步组"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -2285,6 +2288,12 @@ msgid ""
 msgstr "基于用户属性而非组属性查询组成员身份。这允许在 FreeIPA 或 Active Directory 等系统上支持嵌套组决策"
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr "删除之前由此源提供，但现已缺失的用户和组。"
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP 源"
 
@@ -2299,6 +2308,11 @@ msgstr "LDAP 源属性映射"
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP 源属性映射"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr "检查此对象是否仍在目录中时使用的唯一 ID。"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
@@ -2677,6 +2691,11 @@ msgstr "组 SAML 源连接"
 msgid "Group SAML Source Connections"
 msgstr "组 SAML 源连接"
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "继续前往 {source_name}"
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "SCIM 源"
@@ -3043,6 +3062,10 @@ msgstr "用户同意授权"
 msgid "User Consents"
 msgstr "用户同意授权"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr "无效的同意令牌，将重新显示输入"
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "拒绝阶段"
@@ -3058,6 +3081,14 @@ msgstr "虚拟阶段"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "虚拟阶段"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "继续以确认电子邮件地址。"
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr "链接已被使用，请申请一个新链接。"
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"

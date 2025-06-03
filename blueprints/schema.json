@@ -8575,6 +8575,12 @@
                     "title": "Group membership field",
                     "description": "Field which contains members of a group."
                 },
+                "user_membership_attribute": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User membership attribute",
+                    "description": "Attribute which matches the value of `group_membership_field`."
+                },
                 "object_uniqueness_field": {
                     "type": "string",
                     "minLength": 1,
@@ -8608,6 +8614,11 @@
                     "type": "boolean",
                     "title": "Lookup groups from user",
                     "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
+                },
+                "delete_not_found_objects": {
+                    "type": "boolean",
+                    "title": "Delete not found objects",
+                    "description": "Delete authentik users and groups which were previously supplied by this source, but are now missing from it."
                 }
             },
             "required": []

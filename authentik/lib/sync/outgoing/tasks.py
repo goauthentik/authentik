@@ -1,18 +1,21 @@
+from collections.abc import Callable
 from dataclasses import asdict
 
+from celery import group
+from celery.exceptions import Retry
+from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from dramatiq.actor import Actor
-from dramatiq.composition import group
-from dramatiq.errors import Retry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.logs import LogEvent
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask
 from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
@@ -24,8 +27,6 @@ from authentik.lib.sync.outgoing.exceptions import (
 )
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
 from authentik.lib.utils.reflection import class_to_path, path_to_class
-from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 
 class SyncTasks:
@@ -38,35 +39,34 @@ class SyncTasks:
         super().__init__()
         self._provider_model = provider_model
 
-    def sync_paginator(
-        self,
-        provider_pk: int,
-        sync_objects: Actor,
-        paginator: Paginator,
-        object_type: type[User | Group],
-        **options,
-    ):
-        tasks = []
-        for page in paginator.page_range:
-            page_sync = sync_objects.message_with_options(
-                args=(class_to_path(object_type), page, provider_pk),
-                time_limit=PAGE_TIMEOUT * 1000,
-                **options,
-            )
-            tasks.append(page_sync)
-        return tasks
+    def sync_all(self, single_sync: Callable[[int], None]):
+        for provider in self._provider_model.objects.filter(
+            Q(backchannel_application__isnull=False) | Q(application__isnull=False)
+        ):
+            self.trigger_single_task(provider, single_sync)
 
-    def sync(
+    def trigger_single_task(self, provider: OutgoingSyncProvider, sync_task: Callable[[int], None]):
+        """Wrapper single sync task that correctly sets time limits based
+        on the amount of objects that will be synced"""
+        users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
+        groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
+        soft_time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT
+        time_limit = soft_time_limit * 1.5
+        return sync_task.apply_async(
+            (provider.pk,), time_limit=int(time_limit), soft_time_limit=int(soft_time_limit)
+        )
+
+    def sync_single(
         self,
+        task: SystemTask,
         provider_pk: int,
-        sync_objects: Actor,
+        sync_objects: Callable[[int, int], list[str]],
     ):
-        task: Task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
             provider_pk=provider_pk,
         )
-        provider: OutgoingSyncProvider = self._provider_model.objects.filter(
+        provider = self._provider_model.objects.filter(
             Q(backchannel_application__isnull=False) | Q(application__isnull=False),
             pk=provider_pk,
         ).first()
@@ -78,32 +78,50 @@ class SyncTasks:
         self.logger.debug("Starting provider sync")
         users_paginator = Paginator(provider.get_object_qs(User), PAGE_SIZE)
         groups_paginator = Paginator(provider.get_object_qs(Group), PAGE_SIZE)
-        with provider.sync_lock as lock_acquired:
+        with allow_join_result(), provider.sync_lock as lock_acquired:
             if not lock_acquired:
                 self.logger.debug("Failed to acquire sync lock, skipping", provider=provider.name)
                 return
             try:
-                tasks = group(
-                    self.sync_paginator(
-                        provider_pk=provider_pk,
-                        sync_objects=sync_objects,
-                        paginator=users_paginator,
-                        object_type=User,
-                        schedule_uid=task.schedule_uid,
+                messages.append(_("Syncing users"))
+                user_results = (
+                    group(
+                        [
+                            sync_objects.signature(
+                                args=(class_to_path(User), page, provider_pk),
+                                time_limit=PAGE_TIMEOUT,
+                                soft_time_limit=PAGE_TIMEOUT,
+                            )
+                            for page in users_paginator.page_range
+                        ]
                     )
-                    + self.sync_paginator(
-                        provider_pk=provider_pk,
-                        sync_objects=sync_objects,
-                        paginator=groups_paginator,
-                        object_type=Group,
-                        schedule_uid=task.schedule_uid,
-                    )
+                    .apply_async()
+                    .get()
                 )
-                tasks.run()
-                tasks.wait(timeout=provider.get_sync_time_limit() * 1000)
+                for result in user_results:
+                    for msg in result:
+                        messages.append(LogEvent(**msg))
+                messages.append(_("Syncing groups"))
+                group_results = (
+                    group(
+                        [
+                            sync_objects.signature(
+                                args=(class_to_path(Group), page, provider_pk),
+                                time_limit=PAGE_TIMEOUT,
+                                soft_time_limit=PAGE_TIMEOUT,
+                            )
+                            for page in groups_paginator.page_range
+                        ]
+                    )
+                    .apply_async()
+                    .get()
+                )
+                for result in group_results:
+                    for msg in result:
+                        messages.append(LogEvent(**msg))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
-                raise Retry() from exc
+                raise task.retry(exc=exc) from exc
             except StopSync as exc:
                 task.set_error(exc)
                 return
@@ -118,9 +136,7 @@ class SyncTasks:
             provider_pk=provider_pk,
             object_type=object_type,
         )
-        messages = [
-            f"Syncing page {page} of {_object_type._meta.verbose_name_plural}",
-        ]
+        messages = []
         provider = self._provider_model.objects.filter(pk=provider_pk).first()
         if not provider:
             return messages
@@ -137,6 +153,15 @@ class SyncTasks:
             self.logger.debug("starting discover")
             client.discover()
         self.logger.debug("starting sync for page", page=page)
+        messages.append(
+            asdict(
+                LogEvent(
+                    _("Syncing page {page} of groups".format(page=page)),
+                    log_level="info",
+                    logger=f"{provider._meta.verbose_name}@{object_type}",
+                )
+            )
+        )
         for obj in paginator.page(page).object_list:
             obj: Model
             try:

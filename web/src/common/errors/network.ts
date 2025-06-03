@@ -57,6 +57,19 @@ export function isAbortError(error: unknown): error is AbortErrorLike {
     return error instanceof DOMException && error.name === "AbortError";
 }
 
+/**
+ * Type predicate to check if an error originates from an aborted request.
+ *
+ * @see {@linkcode isAbortError} for the underlying implementation.
+ */
+export function isCausedByAbortError(error: unknown): error is AbortErrorLike {
+    return (
+        error instanceof Error &&
+        // ---
+        (isAbortError(error) || isAbortError(error.cause))
+    );
+}
+
 //#endregion
 
 //#region API
