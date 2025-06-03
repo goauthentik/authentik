@@ -42,7 +42,7 @@ To support the integration of Seafile with authentik, you need to create an appl
 
 ## Seafile configuration
 
-1. Locate the `seahub_settings.py` file. Location differs based on installation method. see [seahub docs](https://manual.seafile.com/11.0/config/seahub_settings_py/).
+1. Locate the `seahub_settings.py` file. Location differs based on installation method. see [seahub docs](https://manual.seafile.com/13.0/config/seahub_settings_py/).
 
 2. Add the following section to the file, make sure to change the client id and client secret to match authentik.
 ```
@@ -79,3 +79,8 @@ OAUTH_ATTRIBUTE_MAP = {
 ## Configuration verification
 
 To confirm that authentik is properly configured with `seafile`, log out of authentik and seafile and navigate to the seafile login page. You should see a "log in using sso" button. Clicking this button will lead you to the default authentik sign in page.
+
+## Resources
+- [Seafile Oauth authentication documentation](https://manual.seafile.com/13.0/config/oauth/)
+- [Seafile seahub_settings.py documentation](https://manual.seafile.com/13.0/config/seahub_settings_py/)
+
