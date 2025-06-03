@@ -9011,7 +9011,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
   <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
+  <target>通过 OAuth2 和 SAML 等协议，使用 <x id="0" equiv-text="${this.brandingTitle}"/> 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -9691,10 +9691,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
   <target>预览输入失败</target>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-  <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'。当选中“使用用户属性查询”时，此配置应该为用户属性，否则为组属性。</target>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
   <target>使用用户属性查询</target>
@@ -9870,6 +9866,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
   <target>配置用于查询用户的用户属性。</target>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+  <target>删除不存在对象</target>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+  <target>删除之前由此源提供，但现已缺失的用户和组。</target>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
 </trans-unit>
     </body>
   </file>

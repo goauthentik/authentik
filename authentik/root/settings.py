@@ -424,7 +424,7 @@ else:
         "BACKEND": "authentik.root.storages.FileStorage",
         "OPTIONS": {
             "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": "/media/",
+            "base_url": CONFIG.get("web.path", "/") + "media/",
         },
     }
     # Compatibility for apps not supporting top-level STORAGES
