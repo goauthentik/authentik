@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-11 00:10+0000\n"
+"POT-Creation-Date: 2025-05-28 11:25+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Ville Ranki, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/authentik/teams/119923/fi/)\n"
@@ -107,6 +107,10 @@ msgid "Web Certificate used by the authentik Core webserver."
 msgstr "Web-sertifikaatti, jota authentik Core -verkkopalvelin käyttää."
 
 #: authentik/brands/models.py
+msgid "Certificates used for client authentication."
+msgstr ""
+
+#: authentik/brands/models.py
 msgid "Brand"
 msgstr "Brändi"
 
@@ -186,6 +190,7 @@ msgid "User's display name."
 msgstr "Käyttäjän näytettävä nimi"
 
 #: authentik/core/models.py authentik/providers/oauth2/models.py
+#: authentik/rbac/models.py
 msgid "User"
 msgstr "Käyttäjä"
 
@@ -372,6 +377,18 @@ msgid "Property Mappings"
 msgstr "Ominaisuuskytkennät"
 
 #: authentik/core/models.py
+msgid "session data"
+msgstr ""
+
+#: authentik/core/models.py
+msgid "Session"
+msgstr "Istunto"
+
+#: authentik/core/models.py
+msgid "Sessions"
+msgstr ""
+
+#: authentik/core/models.py
 msgid "Authenticated Session"
 msgstr "Autentikoitu istunto"
 
@@ -477,6 +494,38 @@ msgstr "Lisenssin käyttö"
 #: authentik/enterprise/models.py
 msgid "License Usage Records"
 msgstr "Lisenssin käyttötiedot"
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Field key to check, field keys defined in Prompt stages are available."
+msgstr ""
+"Kentän avain, joka tarkistetaan. Kysymysvaiheissa määritellyt kenttien "
+"avaimet ovat käytettävissä."
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Number of passwords to check against."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+#: authentik/policies/password/models.py
+msgid "Password not set in context"
+msgstr "Salasanaa ei ole asetettu kontekstissa"
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "This password has been used previously. Please choose a different one."
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policy"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "Password Uniqueness Policies"
+msgstr ""
+
+#: authentik/enterprise/policies/unique_password/models.py
+msgid "User Password History"
+msgstr ""
 
 #: authentik/enterprise/policy.py
 msgid "Enterprise required to access this feature."
@@ -612,6 +661,33 @@ msgstr "Päätelaitteet"
 #: authentik/enterprise/stages/authenticator_endpoint_gdtc/stage.py
 msgid "Verifying your browser..."
 msgstr "Selaintasi varmennetaan..."
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid ""
+"Configure certificate authorities to validate the certificate against. This "
+"option has a higher priority than the `client_certificate` option on "
+"`Brand`."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stage"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Mutual TLS Stages"
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/models.py
+msgid "Permissions to pass Certificates for outposts."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "Certificate required but no certificate was given."
+msgstr ""
+
+#: authentik/enterprise/stages/mtls/stage.py
+msgid "No user found for certificate."
+msgstr ""
 
 #: authentik/enterprise/stages/source/models.py
 msgid ""
@@ -951,9 +1027,12 @@ msgid "Starting full provider sync"
 msgstr "Käynnistetään palveluntarjoajan täysi synkronisointi"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
-msgstr "Synkronoidaan käyttäjien sivua {page}"
+msgid "Syncing users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
+msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -1252,12 +1331,6 @@ msgid "Clear Policy's cache metrics"
 msgstr "Tyhjennä käytäntövälimuistitilastot"
 
 #: authentik/policies/password/models.py
-msgid "Field key to check, field keys defined in Prompt stages are available."
-msgstr ""
-"Kentän avain, joka tarkistetaan. Kysymysvaiheissa määritellyt kenttien "
-"avaimet ovat käytettävissä."
-
-#: authentik/policies/password/models.py
 msgid "How many times the password hash is allowed to be on haveibeenpwned"
 msgstr ""
 "Kuinka monta kertaa salasanan tiiviste saa olla haveibeenpwned-palvelussa."
@@ -1268,10 +1341,6 @@ msgid ""
 msgstr ""
 "Jos zxcvbn-pistemäärä on tämä arvo tai pienempi, käytännön suorittaminen "
 "epäonnistuu."
-
-#: authentik/policies/password/models.py
-msgid "Password not set in context"
-msgstr "Salasanaa ei ole asetettu kontekstissa"
 
 #: authentik/policies/password/models.py
 msgid "Invalid password."
@@ -1313,20 +1382,6 @@ msgstr "Mainepistemäärä"
 #: authentik/policies/reputation/models.py
 msgid "Reputation Scores"
 msgstr "Mainepistemäärät"
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Waiting for authentication..."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid ""
-"You're already authenticating in another tab. This page will refresh once "
-"authentication is completed."
-msgstr ""
-
-#: authentik/policies/templates/policies/buffer.html
-msgid "Authenticate in this tab"
-msgstr ""
 
 #: authentik/policies/templates/policies/denied.html
 msgid "Permission denied"
@@ -2156,6 +2211,10 @@ msgid "Roles"
 msgstr "Roolit"
 
 #: authentik/rbac/models.py
+msgid "Initial Permissions"
+msgstr ""
+
+#: authentik/rbac/models.py
 msgid "System permission"
 msgstr "Järjestelmän käyttöoikeus"
 
@@ -2405,6 +2464,12 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP-lähde"
 
@@ -2420,6 +2485,27 @@ msgstr "LDAP-lähteen ominaisuuskytkentä"
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP-lähteen ominaisuuskytkennät"
 
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "User LDAP Source Connections"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connection"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Group LDAP Source Connections"
+msgstr ""
+
 #: authentik/sources/ldap/signals.py
 msgid "Password does not match Active Directory Complexity."
 msgstr "Salasana ei vastaa Active Directoryn monimutkaisuusmääritystä."
@@ -2427,6 +2513,14 @@ msgstr "Salasana ei vastaa Active Directoryn monimutkaisuusmääritystä."
 #: authentik/sources/oauth/clients/oauth2.py
 msgid "No token received."
 msgstr "Tunnistetta ei saatu."
+
+#: authentik/sources/oauth/models.py
+msgid "HTTP Basic Authentication"
+msgstr ""
+
+#: authentik/sources/oauth/models.py
+msgid "Include the client ID and secret as request parameters"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "Request Token URL"
@@ -2467,6 +2561,12 @@ msgstr "URL, jota authentik käyttää käyttäjätiedon hakemiseksi."
 #: authentik/sources/oauth/models.py
 msgid "Additional Scopes"
 msgstr "Lisäkäyttöalueet"
+
+#: authentik/sources/oauth/models.py
+msgid ""
+"How to perform authentication during an authorization_code token request "
+"flow"
+msgstr ""
 
 #: authentik/sources/oauth/models.py
 msgid "OAuth Source"
@@ -2781,6 +2881,11 @@ msgstr "Ryhmän SAML-lähteen yhteys"
 #: authentik/sources/saml/models.py
 msgid "Group SAML Source Connections"
 msgstr "Ryhmän SAML-lähteen yhteydet"
+
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr ""
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
@@ -3161,6 +3266,10 @@ msgstr "Käyttäjän hyväksyntä"
 msgid "User Consents"
 msgstr "Käyttäjän hyväksynnät"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr ""
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Kieltovaihe"
@@ -3176,6 +3285,14 @@ msgstr "Valevaihe"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "Valevaiheet"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr ""
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
@@ -3376,6 +3493,12 @@ msgid ""
 msgstr ""
 "Kun tämä on käytössä, vaihe onnistuu ja suoritus jatkuu, vaikka olisi "
 "syötetty virheelliset käyttäjätiedot."
+
+#: authentik/stages/identification/models.py
+msgid ""
+"Show the user the 'Remember me on this device' toggle, allowing repeat users"
+" to skip straight to entering their password."
+msgstr ""
 
 #: authentik/stages/identification/models.py
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
@@ -3753,6 +3876,14 @@ msgid ""
 msgstr ""
 "Tapahtumat poistetaan tämän ajan jälkeen. (Muoto: "
 "weeks=3;days=2;hours=3;seconds=2)."
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot decrease lower than this value. Zero or negative."
+msgstr ""
+
+#: authentik/tenants/models.py
+msgid "Reputation cannot increase higher than this value. Zero or positive."
+msgstr ""
 
 #: authentik/tenants/models.py
 msgid "The option configures the footer links on the flow executor pages."

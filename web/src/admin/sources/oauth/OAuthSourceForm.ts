@@ -1,3 +1,4 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
@@ -6,14 +7,9 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -88,7 +84,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.getFormFiles().icon;
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -136,11 +132,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 >
                     <input
                         type="text"
-                        value="${first(
-                            this.instance?.authorizationUrl,
-                            this.providerType.authorizationUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.authorizationUrl ??
+                        this.providerType.authorizationUrl ??
+                        ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -152,11 +146,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 <ak-form-element-horizontal label=${msg("Access token URL")} name="accessTokenUrl">
                     <input
                         type="url"
-                        value="${first(
-                            this.instance?.accessTokenUrl,
-                            this.providerType.accessTokenUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.accessTokenUrl ??
+                        this.providerType.accessTokenUrl ??
+                        ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -168,11 +160,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 <ak-form-element-horizontal label=${msg("Profile URL")} name="profileUrl">
                     <input
                         type="url"
-                        value="${first(
-                            this.instance?.profileUrl,
-                            this.providerType.profileUrl,
-                            "",
-                        )}"
+                        value="${this.instance?.profileUrl ?? this.providerType.profileUrl ?? ""}"
                         class="pf-c-form-control pf-m-monospace"
                         autocomplete="off"
                         spellcheck="false"
@@ -188,7 +176,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       >
                           <input
                               type="url"
-                              value="${first(this.instance?.requestTokenUrl, "")}"
+                              value="${this.instance?.requestTokenUrl ?? ""}"
                               class="pf-c-form-control pf-m-monospace"
                               autocomplete="off"
                           />
@@ -207,11 +195,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       >
                           <input
                               type="url"
-                              value="${first(
-                                  this.instance?.oidcWellKnownUrl,
-                                  this.providerType.oidcWellKnownUrl,
-                                  "",
-                              )}"
+                              value="${this.instance?.oidcWellKnownUrl ??
+                              this.providerType.oidcWellKnownUrl ??
+                              ""}"
                               class="pf-c-form-control pf-m-monospace"
                               autocomplete="off"
                               spellcheck="false"
@@ -231,11 +217,9 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           >
                               <input
                                   type="url"
-                                  value="${first(
-                                      this.instance?.oidcJwksUrl,
-                                      this.providerType.oidcJwksUrl,
-                                      "",
-                                  )}"
+                                  value="${this.instance?.oidcJwksUrl ??
+                                  this.providerType.oidcJwksUrl ??
+                                  ""}"
                                   class="pf-c-form-control pf-m-monospace"
                                   autocomplete="off"
                                   spellcheck="false"
@@ -249,7 +233,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
                                   mode=${CodeMirrorMode.JavaScript}
-                                  value="${JSON.stringify(first(this.instance?.oidcJwks, {}))}"
+                                  value="${JSON.stringify(this.instance?.oidcJwks ?? {})}"
                               >
                               </ak-codemirror>
                               <p class="pf-c-form__helper-text">${msg("Raw JWKS data.")}</p>
@@ -296,7 +280,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -381,10 +365,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                 <input
                     type="text"
-                    value="${first(
-                        this.instance?.userPathTemplate,
-                        "goauthentik.io/sources/%(slug)s",
-                    )}"
+                    value="${this.instance?.userPathTemplate ?? "goauthentik.io/sources/%(slug)s"}"
                     class="pf-c-form-control pf-m-monospace"
                     autocomplete="off"
                     spellcheck="false"
@@ -432,7 +413,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control pf-m-monospace"
                           autocomplete="off"
                           spellcheck="false"
@@ -474,7 +455,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
-                            value="${first(this.instance?.additionalScopes, "")}"
+                            value="${this.instance?.additionalScopes ?? ""}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"

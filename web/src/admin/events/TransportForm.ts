@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -47,11 +46,10 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                notificationTransportRequest: data,
-            });
         }
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+            notificationTransportRequest: data,
+        });
     }
 
     onModeChange(mode: string | undefined): void {
@@ -185,7 +183,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.sendOnce, false)}
+                        ?checked=${this.instance?.sendOnce ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

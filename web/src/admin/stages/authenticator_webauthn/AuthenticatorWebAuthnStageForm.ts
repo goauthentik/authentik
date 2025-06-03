@@ -2,7 +2,6 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
 import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -42,11 +41,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                authenticatorWebAuthnStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+            authenticatorWebAuthnStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -58,7 +56,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -70,7 +68,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">

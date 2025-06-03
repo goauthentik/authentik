@@ -1,11 +1,7 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -58,7 +54,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         }
 
         if (this.can(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["background"];
+            const icon = this.getFormFiles().background;
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,
@@ -227,7 +223,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.compatibilityMode, false)}
+                                ?checked=${this.instance?.compatibilityMode ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -407,7 +403,7 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                           >
                               <input
                                   type="text"
-                                  value="${first(this.instance?.background, "")}"
+                                  value="${this.instance?.background ?? ""}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
