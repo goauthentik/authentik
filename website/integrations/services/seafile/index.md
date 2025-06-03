@@ -14,7 +14,7 @@ support_level: community
 
 The following placeholders are used in this guide:
 
-- `seafile.company` is the FQDN of the `seafile` installation.
+- `seafile.company` is the FQDN of the Seafile installation.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
