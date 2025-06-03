@@ -1,6 +1,5 @@
 """authentik Recovery app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

@@ -1,6 +1,5 @@
 """authentik consent app"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

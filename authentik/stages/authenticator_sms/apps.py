@@ -1,6 +1,5 @@
 """SMS"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

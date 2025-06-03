@@ -1,6 +1,5 @@
 """authentik redirect app"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

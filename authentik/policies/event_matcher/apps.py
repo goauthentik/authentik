@@ -1,6 +1,5 @@
 """authentik Event Matcher policy app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

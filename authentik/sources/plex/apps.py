@@ -1,6 +1,5 @@
 """authentik plex config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

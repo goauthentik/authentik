@@ -1,6 +1,5 @@
 """authentik brands app"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

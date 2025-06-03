@@ -1,6 +1,5 @@
 """authentik delete stage app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

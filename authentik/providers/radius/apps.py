@@ -1,6 +1,5 @@
 """authentik radius provider app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

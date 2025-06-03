@@ -1,6 +1,5 @@
 """Authentik policy geoip app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

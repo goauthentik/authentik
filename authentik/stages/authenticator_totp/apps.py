@@ -1,6 +1,5 @@
 """TOTP"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

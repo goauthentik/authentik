@@ -1,6 +1,5 @@
 """authentik ldap provider app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

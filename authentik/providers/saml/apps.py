@@ -1,6 +1,5 @@
 """authentik SAML IdP app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

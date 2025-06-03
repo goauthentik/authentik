@@ -1,6 +1,5 @@
 """authentik captcha app"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

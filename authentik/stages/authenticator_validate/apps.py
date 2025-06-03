@@ -1,6 +1,5 @@
 """Authenticator Validation Stage"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

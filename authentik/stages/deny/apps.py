@@ -1,6 +1,5 @@
 """authentik deny stage app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

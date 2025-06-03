@@ -1,6 +1,5 @@
 """authentik API AppConfig"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

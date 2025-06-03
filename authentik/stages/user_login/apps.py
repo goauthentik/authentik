@@ -1,6 +1,5 @@
 """authentik login stage app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

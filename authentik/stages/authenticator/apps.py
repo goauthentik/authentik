@@ -1,6 +1,5 @@
 """Authenticator"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

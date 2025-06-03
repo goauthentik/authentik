@@ -1,6 +1,5 @@
 """Authentik policy_expression app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

@@ -1,6 +1,5 @@
 """Authentik policy dummy app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

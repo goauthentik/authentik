@@ -1,6 +1,5 @@
 """Authentik policy_expiry app config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 

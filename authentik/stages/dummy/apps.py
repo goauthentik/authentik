@@ -1,6 +1,5 @@
 """authentik dummy stage config"""
 
-
 from authentik.blueprints.apps import ManagedAppConfig
 
 
