@@ -41,7 +41,7 @@ _Any specific info about this integration can go here._
 
 3. Click **Submit** to save the new application and provider.
 
-## Service configuration
+## Seafile configuration
 
 1. Locate the `seahub_settings.py` file. Location differs based on installation method. see [seahub docs](https://manual.seafile.com/11.0/config/seahub_settings_py/).
 
