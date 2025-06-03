@@ -148,6 +148,7 @@ const items = [
             "services/miniflux/index",
             "services/node-red/index",
             "services/open-webui/index",
+            "services/seafile/index",
             "services/semaphore/index",
             "services/sonar-qube/index",
             "services/sonarr/index",
