@@ -59,7 +59,6 @@ OAUTH_ACTIVATE_USER_AFTER_CREATION = True
 OAUTH_CLIENT_ID = "<client_id_from_authentik>"
 OAUTH_CLIENT_SECRET = "<client secret>"
 
-# Callback url when user authentication succeeded. Note, the redirect url you input when you register your client application MUST be exactly the same as this value.
 OAUTH_REDIRECT_URL = 'https://seafile.company/oauth/callback/'
 
 OAUTH_PROVIDER = 'authentik'
