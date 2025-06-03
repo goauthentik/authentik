@@ -56,7 +56,7 @@ OAUTH_CREATE_UNKNOWN_USER = True
 # Automatically activate Seafile users when they log in for the first time. Defaults to True.
 OAUTH_ACTIVATE_USER_AFTER_CREATION = True
 
-OAUTH_CLIENT_ID = "<client id>"
+OAUTH_CLIENT_ID = "<client_id_from_authentik>"
 OAUTH_CLIENT_SECRET = "<client secret>"
 
 # Callback url when user authentication succeeded. Note, the redirect url you input when you register your client application MUST be exactly the same as this value.
