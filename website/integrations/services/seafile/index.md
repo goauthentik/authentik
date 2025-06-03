@@ -57,7 +57,7 @@ OAUTH_CREATE_UNKNOWN_USER = True
 OAUTH_ACTIVATE_USER_AFTER_CREATION = True
 
 OAUTH_CLIENT_ID = "<client_id_from_authentik>"
-OAUTH_CLIENT_SECRET = "<client secret>"
+OAUTH_CLIENT_SECRET = "<client_secret_from_authentik>"
 
 OAUTH_REDIRECT_URL = 'https://seafile.company/oauth/callback/'
 
