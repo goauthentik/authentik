@@ -43,8 +43,6 @@ _Any specific info about this integration can go here._
 
 ## Service configuration
 
-Insert service configuration
-
 1. Locate the `seahub_settings.py` file. Location differs based on installation method. see [seahub docs](https://manual.seafile.com/11.0/config/seahub_settings_py/).
 
 2. Add the following section to the file, make sure to change the client id and client secret to match authentik.
