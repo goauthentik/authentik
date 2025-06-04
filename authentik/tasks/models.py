@@ -1,5 +1,5 @@
 from enum import StrEnum, auto
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pgtrigger
 from django.contrib.contenttypes.fields import ContentType, GenericForeignKey
@@ -63,7 +63,7 @@ class Task(SerializerModel):
     rel_obj_id = models.TextField(null=True)
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
 
-    uid = models.TextField(blank=True, null=True)
+    _uid = models.TextField(blank=True, null=True)
     messages = models.JSONField(default=list)
 
     class Meta:
@@ -95,13 +95,20 @@ class Task(SerializerModel):
         return str(self.message_id)
 
     @property
+    def uid(self) -> str:
+        uid = str(self.actor_name)
+        if self._uid:
+            uid += f":{self._uid}"
+        return uid
+
+    @property
     def serializer(self):
         from authentik.tasks.api import TaskSerializer
 
         return TaskSerializer
 
-    def set_uid(self, uid: str, save: bool = False):
-        self.uid = uid
+    def set_uid(self, uid: str | UUID, save: bool = False):
+        self._uid = str(uid)
         if save:
             self.save()
 
@@ -112,7 +119,7 @@ class Task(SerializerModel):
             if isinstance(message, Exception):
                 message = exception_to_string(message)
             if not isinstance(message, LogEvent):
-                message = LogEvent(message, logger=self.actor_name, log_level=status.value)
+                message = LogEvent(message, logger=self.uid, log_level=status.value)
             self.messages.append(sanitize_item(message))
         if save:
             self.save()
