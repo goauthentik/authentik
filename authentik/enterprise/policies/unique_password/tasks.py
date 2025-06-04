@@ -7,7 +7,6 @@ from authentik.enterprise.policies.unique_password.models import (
     UserPasswordHistory,
 )
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
@@ -17,22 +16,20 @@ def check_and_purge_password_history():
     """Check if any UniquePasswordPolicy exists, and if not, purge the password history table.
     This is run on a schedule instead of being triggered by policy binding deletion.
     """
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     if not UniquePasswordPolicy.objects.exists():
         UserPasswordHistory.objects.all().delete()
         LOGGER.debug("Purged UserPasswordHistory table as no policies are in use")
-        self.set_status(TaskStatus.SUCCESSFUL, "Successfully purged UserPasswordHistory")
+        self.info("Successfully purged UserPasswordHistory")
         return
 
-    self.set_status(
-        TaskStatus.SUCCESSFUL, "Not purging password histories, a unique password policy exists"
-    )
+    self.info("Not purging password histories, a unique password policy exists")
 
 
 @actor
 def trim_password_histories():
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
 
     """Removes rows from UserPasswordHistory older than
     the `n` most recent entries.
@@ -67,4 +64,4 @@ def trim_password_histories():
 
     num_deleted, _ = UserPasswordHistory.objects.exclude(pk__in=all_pks_to_keep).delete()
     LOGGER.debug("Deleted stale password history records", count=num_deleted)
-    self.set_status(TaskStatus.SUCCESSFUL, f"Delete {num_deleted} stale password history records")
+    self.info(f"Delete {num_deleted} stale password history records")
