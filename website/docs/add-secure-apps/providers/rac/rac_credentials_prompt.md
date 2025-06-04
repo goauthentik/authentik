@@ -87,6 +87,7 @@ Depending on the configuration of the RDP server that's being connected to, it i
 
 :::note
 Other options for the connection security type are: `any`, `nla`, `nla-ext`, `vmconnect`, and `rdp`. For more information see the [Guacamole RDP Authentication and Security Documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#authentication-and-security).
+:::
 
 ## Configuration verification
 
