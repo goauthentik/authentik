@@ -129,5 +129,5 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     def apply(self, request: Request, *args, **kwargs) -> Response:
         """Apply a blueprint"""
         blueprint = self.get_object()
-        apply_blueprint.send(blueprint.pk).get()
+        apply_blueprint.send_with_options(args=(blueprint.pk,), rel_obj=blueprint)
         return self.retrieve(request, *args, **kwargs)

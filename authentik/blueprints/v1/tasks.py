@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
 from sys import platform
+from uuid import UUID
 
 from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -192,7 +193,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 
 
 @actor
-def apply_blueprint(instance_pk: str):
+def apply_blueprint(instance_pk: UUID):
     """Apply single blueprint"""
     self = CurrentTask.get_task()
     self.set_uid(str(instance_pk))
