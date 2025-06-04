@@ -975,11 +975,11 @@ msgstr "开始全量提供程序同步"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Syncing users"
-msgstr ""
+msgstr "正在同步用户"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Syncing groups"
-msgstr ""
+msgstr "正在同步组"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -2291,7 +2291,7 @@ msgstr "基于用户属性而非组属性查询组成员身份。这允许在 Fr
 msgid ""
 "Delete authentik users and groups which were previously supplied by this "
 "source, but are now missing from it."
-msgstr ""
+msgstr "删除之前由此源提供，但现已缺失的用户和组。"
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source"
@@ -2312,7 +2312,7 @@ msgstr "LDAP 源属性映射"
 #: authentik/sources/ldap/models.py
 msgid ""
 "Unique ID used while checking if this object still exists in the directory."
-msgstr ""
+msgstr "检查此对象是否仍在目录中时使用的唯一 ID。"
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
@@ -2694,7 +2694,7 @@ msgstr "组 SAML 源连接"
 #: authentik/sources/saml/views.py
 #, python-brace-format
 msgid "Continue to {source_name}"
-msgstr ""
+msgstr "继续前往 {source_name}"
 
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
@@ -3064,7 +3064,7 @@ msgstr "用户同意授权"
 
 #: authentik/stages/consent/stage.py
 msgid "Invalid consent token, re-showing prompt"
-msgstr ""
+msgstr "无效的同意令牌，将重新显示输入"
 
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
@@ -3084,11 +3084,11 @@ msgstr "虚拟阶段"
 
 #: authentik/stages/email/flow.py
 msgid "Continue to confirm this email address."
-msgstr ""
+msgstr "继续以确认电子邮件地址。"
 
 #: authentik/stages/email/flow.py
 msgid "Link was already used, please request a new link."
-msgstr ""
+msgstr "链接已被使用，请申请一个新链接。"
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"

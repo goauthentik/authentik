@@ -28582,6 +28582,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: user_membership_attribute
+        schema:
+          type: string
+      - in: query
         name: user_object_filter
         schema:
           type: string
@@ -47893,6 +47897,9 @@ components:
         group_membership_field:
           type: string
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
@@ -48106,6 +48113,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -53443,6 +53454,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1

@@ -10,13 +10,14 @@ import { generateVersionDropdown } from "../src/utils.js";
  * @type {SidebarItemConfig[]}
  */
 const releases = [
+    "releases/2025/v2025.6",
     "releases/2025/v2025.4",
     "releases/2025/v2025.2",
-    "releases/2024/v2024.12",
     {
         type: "category",
         label: "Previous versions",
         items: [
+            "releases/2024/v2024.12",
             "releases/2024/v2024.10",
             "releases/2024/v2024.8",
             "releases/2024/v2024.6",
@@ -301,18 +302,19 @@ const items = [
                         },
                         items: [
                             "add-secure-apps/flows-stages/stages/authenticator_duo/index",
-                            "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
                             "add-secure-apps/flows-stages/stages/authenticator_email/index",
+                            "add-secure-apps/flows-stages/stages/authenticator_endpoint_gdtc/index",
                             "add-secure-apps/flows-stages/stages/authenticator_sms/index",
                             "add-secure-apps/flows-stages/stages/authenticator_static/index",
                             "add-secure-apps/flows-stages/stages/authenticator_totp/index",
-                            "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/authenticator_validate/index",
+                            "add-secure-apps/flows-stages/stages/authenticator_webauthn/index",
                             "add-secure-apps/flows-stages/stages/captcha/index",
                             "add-secure-apps/flows-stages/stages/deny",
                             "add-secure-apps/flows-stages/stages/email/index",
                             "add-secure-apps/flows-stages/stages/identification/index",
                             "add-secure-apps/flows-stages/stages/invitation/index",
+                            "add-secure-apps/flows-stages/stages/mtls/index",
                             "add-secure-apps/flows-stages/stages/password/index",
                             "add-secure-apps/flows-stages/stages/prompt/index",
                             "add-secure-apps/flows-stages/stages/redirect/index",

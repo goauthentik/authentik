@@ -361,7 +361,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition User DN")}
+                        label=${msg("Additional User DN")}
                         name="additionalUserDn"
                     >
                         <input
@@ -374,7 +374,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition Group DN")}
+                        label=${msg("Additional Group DN")}
                         name="additionalGroupDn"
                     >
                         <input
@@ -429,8 +429,23 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.",
+                                "Field which contains members of a group. The value of this field is matched against User membership attribute.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("User membership attribute")}
+                        ?required=${true}
+                        name="userMembershipAttribute"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.userMembershipAttribute || "distinguishedName"}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Attribute which matches the value of Group membership field.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="lookupGroupsFromUser">
