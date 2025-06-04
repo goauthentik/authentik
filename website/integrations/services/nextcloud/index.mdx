@@ -73,7 +73,7 @@ If you want to control user storage and designate Nextcloud administrators, you 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property mappings** and click **Create**.
 
-    - **Select type**: select **Scope mapping** as the property mapping type.
+    - **Select type**: select **Scope mapping**.
     - **Create Scope Mapping**:
 
         - **Name**: `Nextcloud Profile`
@@ -84,9 +84,9 @@ If you want to control user storage and designate Nextcloud administrators, you 
             # Extract all groups the user is a member of
             groups = [group.name for group in user.ak_groups.all()]
 
-            # Nextcloud admins must be members of a group called "admin".
-            # This is static and cannot be changed.
-            # Append "admin" to the user's groups if they are an admin in authentik.
+            # In Nextcloud, administrators must be members of a fixed group called "admin".
+
+            # If a user is an admin in authentik, ensure that "admin" is appended to their group list.
             if user.is_superuser and "admin" not in groups:
                 groups.append("admin")
 
@@ -100,7 +100,7 @@ If you want to control user storage and designate Nextcloud administrators, you 
             }
             ```
 
-3. Click **Finish** to save the property mapping.
+3. Click **Finish**.
 
 :::note
 To set a quota, define the `nextcloud_quota` attribute for individual users or groups. For example, setting it to `1 GB` will restrict the user to 1GB of storage. If not set, storage is unlimited.
@@ -142,7 +142,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     - **Client ID**: Client ID from authentik.
     - **Client secret**: Client secret from authentik.
     - **Discovery endpoint**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
-    - **Scope**: `email profile openid` (omit `openid` if preferred)
+    - **Scope**: `email profile openid`
     - Under **Attribute mappings**:
 
         - **User ID mapping**: `sub` (or `user_id` for existing users)
@@ -155,14 +155,14 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
             Enable **Use group provisioning** to allow writing to this field.
             :::
 
-    - **Use unique user ID**: If deselected, Nextcloud uses the mapped user ID in the Federated Cloud ID.
+    - **Use unique user ID**: If this option is disabled, Nextcloud will use the mapped user ID as the Federated Cloud ID.
 
     :::tip
     To avoid a hashed Federated Cloud ID, deselect **Use unique user ID** and use `user_id` for the User ID mapping.
     :::
 
     :::danger
-    If you are using a the `Nextcloud Profile` property mapping and want administrators to be able to log in, ensure that **Use unique user ID** is deselected. Otherwise, this setting will remove administrator users from the internal admin group and replace them with a hashed group ID named "admin", which lacks actual administrator access rights.
+    If you're using the `Nextcloud Profile` property mapping and want administrators to retain their ability to log in, make sure that **Use unique user ID** is disabled. If this setting is enabled, it will remove administrator users from the internal admin group and replace them with a hashed group ID named "admin," which does not have real administrative privileges.
     :::
 
 ## Making OIDC the default login method
@@ -175,7 +175,7 @@ Automatically redirect users to authentik when they access Nextcloud by running 
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **OpenID Connect** option. You will be redirected to authentik to log in, if successful you will then be redirected to the Nextcloud dashboard.
+To confirm that authentik is correctly configured with Nextcloud, log out and then log back in by clicking **OpenID Connect**. You'll then be redirected to authentik to log in, and once authentication is successful, you'll reach the Nextcloud dashboard.
 
   </TabItem>
   <TabItem value="saml">
@@ -291,8 +291,7 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 ## Nextcloud configuration
 
 1. In Nextcloud, ensure that the **SSO & SAML Authentication** app is installed.
-2. Log in to Nextcloud as an administrator.
-3. Navigate to **Settings** > **SSO & SAML Authentication** and configure the following settings:
+2. Log in to Nextcloud as an administrator, navigate to **Settings** > **SSO & SAML Authentication**, and configure the following settings:
 
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
 
@@ -308,7 +307,7 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
     - **Set attribute mappings**:
         - **Display name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
         - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
-        - **User groups**: http://schemas.xmlsoap.org/claims/Group`
+        - **User groups**: `http://schemas.xmlsoap.org/claims/Group`
 
 :::note
 If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
@@ -364,7 +363,7 @@ This documentation lists only the settings that you need to change from their de
     - On the **Server** tab:
 
         - Click the **+** icon and enter the following settings:
-            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceded by `ldap://` or `ldaps://`.
+            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceded by `ldap://` or `ldaps://`. If using LDAPS you will also need to defint the certificate that is being used.
             - **Port**: `389` or `636` for secure LDAP.
             - Under **Credentials**, enter the **Bind DN** of the authentik LDAP provider and the associated user password.
             - Under **Base DN**, enter the **Search base** of the authentik LDAP provider.
