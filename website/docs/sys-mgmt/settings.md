@@ -57,6 +57,10 @@ When enabled, all the events caused by a user will be deleted upon the user's de
 
 Globally enable/disable impersonation. Defaults to `true`.
 
+### Require reason for impersonation
+
+Require administrators to provide a reason for impersonating a user. Defaults to `true`.
+
 ### Default token duration
 
 Default duration for generated tokens. Defaults to `minutes=30`.

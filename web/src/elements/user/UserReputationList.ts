@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -73,7 +73,7 @@ export class UserReputationList extends Table<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`<div>${getRelativeTime(item.updated)}</div>
+            html`<div>${formatElapsedTime(item.updated)}</div>
                 <small>${item.updated.toLocaleString()}</small>`,
         ];
     }

@@ -6,7 +6,7 @@ const config: KnipConfig = {
         "./src/user/UserInterface.ts",
         "./src/flow/FlowInterface.ts",
         "./src/standalone/api-browser/index.ts",
-        "./src/enterprise/rac/index.ts",
+        "./src/rac/index.ts",
         "./src/standalone/loading/index.ts",
         "./src/polyfill/poly.ts",
     ],

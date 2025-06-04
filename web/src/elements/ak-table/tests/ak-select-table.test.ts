@@ -1,5 +1,6 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
 import { $, browser } from "@wdio/globals";
+import { expect } from "expect-webdriverio";
 import { slug } from "github-slugger";
 
 import { html } from "lit";
@@ -33,6 +34,7 @@ describe("Select Table", () => {
         );
         // @ts-ignore
         selecttable = await $("ak-select-table");
+        // @ts-ignore
         table = await selecttable.$(">>>table");
     });
 
@@ -63,9 +65,9 @@ describe("Select Table", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });
@@ -136,9 +138,9 @@ describe("Multiselect Table", () => {
         await browser.execute(() => {
             document.body.querySelector("ak-select-table")?.remove();
             // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body["_$litPart$"]) {
+            if (document.body._$litPart$) {
                 // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                delete document.body["_$litPart$"];
+                delete document.body._$litPart$;
             }
         });
     });

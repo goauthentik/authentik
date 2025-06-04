@@ -2,7 +2,7 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -10,6 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -68,12 +69,12 @@ export class RecentEventsCard extends Table<Event> {
         </div>`;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
@@ -81,7 +82,11 @@ export class RecentEventsCard extends Table<Event> {
         ];
     }
 
-    renderEmpty(): TemplateResult {
+    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+        if (this.error) {
+            return super.renderEmpty(inner);
+        }
+
         return super.renderEmpty(
             html`<ak-empty-state header=${msg("No Events found.")}>
                 <div slot="body">${msg("No matching events could be found.")}</div>

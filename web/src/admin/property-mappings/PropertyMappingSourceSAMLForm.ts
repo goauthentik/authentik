@@ -10,7 +10,7 @@ import { PropertymappingsApi, SAMLSourcePropertyMapping } from "@goauthentik/api
 @customElement("ak-property-mapping-source-saml-form")
 export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLSourcePropertyMapping> {
     docLink(): string {
-        return "/docs/user-sources/sources/property-mappings/expressions?utm_source=authentik";
+        return "/docs/users-sources/sources/property-mappings/expressions?utm_source=authentik";
     }
 
     loadInstance(pk: string): Promise<SAMLSourcePropertyMapping> {
@@ -25,11 +25,10 @@ export class PropertyMappingSourceSAMLForm extends BasePropertyMappingForm<SAMLS
                 pmUuid: this.instance.pk,
                 sAMLSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
-                sAMLSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceSamlCreate({
+            sAMLSourcePropertyMappingRequest: data,
+        });
     }
 }
 

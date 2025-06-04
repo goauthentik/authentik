@@ -57,11 +57,10 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 stageUuid: this.instance.pk || "",
                 authenticatorValidateStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
-                authenticatorValidateStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
+            authenticatorValidateStageRequest: data,
+        });
     }
 
     isDeviceClassSelected(field: DeviceClassesEnum): boolean {
@@ -79,6 +78,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
             [DeviceClassesEnum.Webauthn, msg("WebAuthn Authenticators")],
             [DeviceClassesEnum.Duo, msg("Duo Authenticators")],
             [DeviceClassesEnum.Sms, msg("SMS-based Authenticators")],
+            [DeviceClassesEnum.Email, msg("Email-based Authenticators")],
         ];
 
         return html`
@@ -125,7 +125,9 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         <input
                             type="text"
                             value="${this.instance?.lastAuthThreshold || "seconds=0"}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">

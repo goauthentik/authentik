@@ -34,11 +34,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                 stageUuid: this.instance.pk || "",
                 passwordStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
-                passwordStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPasswordCreate({
+            passwordStageRequest: data,
+        });
     }
 
     isBackendSelected(field: BackendsEnum): boolean {
@@ -55,19 +54,19 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
     renderForm(): TemplateResult {
         const backends = [
             {
-                name: BackendsEnum.CoreAuthInbuiltBackend,
+                name: BackendsEnum.AuthentikCoreAuthInbuiltBackend,
                 label: msg("User database + standard password"),
             },
             {
-                name: BackendsEnum.CoreAuthTokenBackend,
+                name: BackendsEnum.AuthentikCoreAuthTokenBackend,
                 label: msg("User database + app passwords"),
             },
             {
-                name: BackendsEnum.SourcesLdapAuthLdapBackend,
+                name: BackendsEnum.AuthentikSourcesLdapAuthLdapBackend,
                 label: msg("User database + LDAP password"),
             },
             {
-                name: BackendsEnum.SourcesKerberosAuthKerberosBackend,
+                name: BackendsEnum.AuthentikSourcesKerberosAuthKerberosBackend,
                 label: msg("User database + Kerberos password"),
             },
         ];

@@ -19,24 +19,27 @@ export class FormWizardPage extends WizardPage {
         this.activePageCallback(this);
     };
 
-    nextCallback = async () => {
+    nextCallback = async (): Promise<boolean> => {
         const form = this.querySelector<Form<unknown>>("*");
+
         if (!form) {
             return Promise.reject(msg("No form found"));
         }
+
         const formPromise = form.submit(new Event("submit"));
+
         if (!formPromise) {
             return Promise.reject(msg("Form didn't return a promise for submitting"));
         }
+
         return formPromise
             .then((data) => {
                 this.host.state[this.slot] = data;
                 this.host.canBack = false;
+
                 return true;
             })
-            .catch(() => {
-                return false;
-            });
+            .catch(() => false);
     };
 }
 

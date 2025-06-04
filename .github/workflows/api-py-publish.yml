@@ -30,7 +30,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-          cache: "poetry"
       - name: Generate API Client
         run: make gen-client-py
       - name: Publish package

@@ -130,6 +130,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_well_known_url",
             "oidc_jwks_url",
             "oidc_jwks",
+            "authorization_code_auth_method",
         ]
         extra_kwargs = {
             "consumer_secret": {"write_only": True},
@@ -152,6 +153,7 @@ class OAuthSourceFilter(FilterSet):
     class Meta:
         model = OAuthSource
         fields = [
+            "pbm_uuid",
             "name",
             "slug",
             "enabled",

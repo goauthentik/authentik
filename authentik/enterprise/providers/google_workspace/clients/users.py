@@ -20,7 +20,7 @@ class GoogleWorkspaceUserClient(GoogleWorkspaceSyncClient[User, GoogleWorkspaceP
     """Sync authentik users into google workspace"""
 
     connection_type = GoogleWorkspaceProviderUser
-    connection_type_query = "user"
+    connection_attr = "googleworkspaceprovideruser_set"
     can_discover = True
 
     def __init__(self, provider: GoogleWorkspaceProvider) -> None:

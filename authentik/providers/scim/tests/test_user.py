@@ -3,12 +3,15 @@
 from json import loads
 
 from django.test import TestCase
+from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
+from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
+from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync, sync_tasks
 from authentik.tenants.models import Tenant
@@ -69,6 +72,57 @@ class SCIMUserTests(TestCase):
             mock.request_history[1].body,
             {
                 "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User"],
+                "active": True,
+                "emails": [
+                    {
+                        "primary": True,
+                        "type": "other",
+                        "value": f"{uid}@goauthentik.io",
+                    }
+                ],
+                "externalId": user.uid,
+                "name": {
+                    "familyName": uid,
+                    "formatted": f"{uid} {uid}",
+                    "givenName": uid,
+                },
+                "displayName": f"{uid} {uid}",
+                "userName": uid,
+            },
+        )
+
+    @Mocker()
+    def test_user_create_custom_schema(self, mock: Mocker):
+        """Test user creation with custom schema"""
+        schema = SCIMMapping.objects.create(
+            name="custom_schema",
+            expression="""return {"schemas": ["foo"]}""",
+        )
+        self.provider.property_mappings.add(schema)
+        scim_id = generate_id()
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Users",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        user = User.objects.create(
+            username=uid,
+            name=f"{uid} {uid}",
+            email=f"{uid}@goauthentik.io",
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertJSONEqual(
+            mock.request_history[1].body,
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:User", "foo"],
                 "active": True,
                 "emails": [
                     {
@@ -330,3 +384,59 @@ class SCIMUserTests(TestCase):
                 "userName": uid,
             },
         )
+
+    def test_user_create_dry_run(self):
+        """Test user creation (dry_run)"""
+        # Update the provider before we start mocking as saving the provider triggers a full sync
+        self.provider.dry_run = True
+        self.provider.save()
+        with Mocker() as mock:
+            scim_id = generate_id()
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                json={},
+            )
+            mock.post(
+                "https://localhost/Users",
+                json={
+                    "id": scim_id,
+                },
+            )
+            uid = generate_id()
+            User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+            self.assertEqual(mock.call_count, 1, mock.request_history)
+            self.assertEqual(mock.request_history[0].method, "GET")
+
+    def test_sync_task_dry_run(self):
+        """Test sync tasks"""
+        # Update the provider before we start mocking as saving the provider triggers a full sync
+        self.provider.dry_run = True
+        self.provider.save()
+        with Mocker() as mock:
+            uid = generate_id()
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                json={},
+            )
+            User.objects.create(
+                username=uid,
+                name=f"{uid} {uid}",
+                email=f"{uid}@goauthentik.io",
+            )
+
+            sync_tasks.trigger_single_task(self.provider, scim_sync).get()
+
+            self.assertEqual(mock.call_count, 3)
+            for request in mock.request_history:
+                self.assertIn(request.method, SAFE_METHODS)
+        task = SystemTask.objects.filter(uid=slugify(self.provider.name)).first()
+        self.assertIsNotNone(task)
+        drop_msg = task.messages[3]
+        self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
+        self.assertIsNotNone(drop_msg["attributes"]["url"])
+        self.assertIsNotNone(drop_msg["attributes"]["body"])
+        self.assertIsNotNone(drop_msg["attributes"]["method"])

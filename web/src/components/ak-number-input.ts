@@ -9,6 +9,9 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
     @property({ type: Number, reflect: true })
     value = NaN;
 
+    @property({ type: Number, reflect: true })
+    min = NaN;
+
     renderControl() {
         const setValue = (ev: InputEvent) => {
             const value = (ev.target as HTMLInputElement).value;
@@ -19,6 +22,7 @@ export class AkNumberInput extends HorizontalLightComponent<number> {
             type="number"
             @input=${setValue}
             value=${ifDefined(this.value)}
+            min=${ifDefined(this.min)}
             class="pf-c-form-control"
             ?required=${this.required}
         />`;

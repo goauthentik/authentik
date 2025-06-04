@@ -1,7 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -51,11 +50,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 stageUuid: this.instance.pk || "",
                 authenticatorSMSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-                authenticatorSMSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
+            authenticatorSMSStageRequest: data,
+        });
     }
 
     renderProviderTwillio(): TemplateResult {
@@ -66,8 +64,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.accountSid, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.accountSid ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -81,8 +81,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.auth, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.auth ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -125,8 +127,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.accountSid, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.accountSid ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">
@@ -140,8 +144,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.auth, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.auth ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -156,8 +162,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.authPassword, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.authPassword ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg("This is the password to be used with basic auth")}
@@ -205,7 +213,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -217,7 +225,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -262,8 +270,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.fromNumber, "")}"
-                            class="pf-c-form-control"
+                            value="${this.instance?.fromNumber ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -278,7 +288,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.verifyOnly, false)}
+                                ?checked=${this.instance?.verifyOnly ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

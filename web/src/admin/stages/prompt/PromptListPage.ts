@@ -97,7 +97,7 @@ export class PromptListPage extends TablePage<Prompt> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesPromptPrompt}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikStagesPromptPrompt}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal> `,

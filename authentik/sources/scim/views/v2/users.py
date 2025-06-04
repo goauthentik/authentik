@@ -2,6 +2,7 @@
 
 from uuid import uuid4
 
+from django.db.models import Q
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
 from django.urls import reverse
@@ -113,8 +114,11 @@ class UsersView(SCIMObjectView):
     def post(self, request: Request, **kwargs) -> Response:
         """Create user handler"""
         connection = SCIMSourceUser.objects.filter(
+            Q(
+                Q(user__uuid=request.data.get("id"))
+                | Q(user__username=request.data.get("userName"))
+            ),
             source=self.source,
-            user__uuid=request.data.get("id"),
         ).first()
         if connection:
             self.logger.debug("Found existing user")

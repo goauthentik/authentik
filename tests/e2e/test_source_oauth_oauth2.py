@@ -192,5 +192,5 @@ class TestSourceOAuth2(SeleniumTestCase):
         results = body_json["results"]
         self.assertEqual(len(results), 1)
         connection = results[0]
-        self.assertEqual(connection["source"]["slug"], self.slug)
+        self.assertEqual(connection["source_obj"]["slug"], self.slug)
         self.assertEqual(connection["user"], self.user.pk)

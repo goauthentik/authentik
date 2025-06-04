@@ -114,7 +114,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                         label="${msg("Code")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                        .errors=${(this.challenge?.responseErrors || {}).code}
                     >
                         <!-- @ts-ignore -->
                         <input
@@ -125,7 +125,8 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             placeholder="${msg("Please enter your TOTP Code")}"
                             autofocus=""
                             autocomplete="one-time-code"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            spellcheck="false"
                             required
                         />
                     </ak-form-element>

@@ -38,11 +38,10 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                 stageUuid: this.instance.pk || "",
                 redirectStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
-                redirectStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
+            redirectStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -91,7 +90,9 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                         <input
                             type="text"
                             value="${this.instance?.targetStatic ?? ""}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg("Redirect the user to a static URL.")}

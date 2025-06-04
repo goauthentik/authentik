@@ -93,7 +93,7 @@ export class BrandListPage extends TablePage<Brand> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacPermissionsAssignedByUsersListModelEnum.BrandsBrand}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBrandsBrand}
                     objectPk=${item.brandUuid}
                 >
                 </ak-rbac-object-permission-modal>`,

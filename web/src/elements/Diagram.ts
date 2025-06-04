@@ -83,7 +83,7 @@ export class Diagram extends AKElement {
             }
         });
         if (!this.diagram) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html`${until(
             mermaid.render("graph", this.diagram).then((r) => {

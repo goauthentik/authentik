@@ -20,7 +20,7 @@ When these stages are successfully completed, authentik logs in the user.
 
 By default, policies are evaluated dynamically, right before the stage (to which a policy is bound) is presented to the user. This flexibility allows the login process to continue, change, or stop, based on the success or failure of each policy.
 
-This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.md).
+This default behaviour can be altered by enabling the **Evaluate when flow is planned** option on the stage binding. With this setting a _flow plan_ containing all stages is generated upon flow execution. This means that all attached policies are evaluated upon execution. For more information about flow plans, read our [flow context documentation](./context/index.mdx).
 
 ## Permissions
 
@@ -46,7 +46,7 @@ To create a flow, follow these steps:
 
 After creating the flow, you can then [bind specific stages](../stages/index.md#bind-a-stage-to-a-flow) to the flow and [bind policies](../../../customize/policies/working_with_policies.md) to the flow to further customize the user's log in and authentication process.
 
-To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../customize/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
+To determine which flow should be used, authentik will first check which default authentication flow is configured in the active [**Brand**](../../../sys-mgmt/brands.md). If no default is configured there, the policies in all flows with the matching designation are checked, and the first flow with matching policies sorted by `slug` will be used.
 
 ## Flow configuration options
 
@@ -88,4 +88,4 @@ import Defaultflowlist from "../flow/flow_list/\_defaultflowlist.mdx";
 
 - **Layout**: select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
-- **Background**: optionally, select a background image for the UI presentation of the flow.
+- **Background**: optionally, select a background image for the UI presentation of the flow. This overrides any default background image configured in the [Branding settings](../../../sys-mgmt/brands.md#branding-settings).

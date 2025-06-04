@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -32,6 +32,12 @@ export class MFADeviceForm extends ModelForm<Device, string> {
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoUpdate({
                     id: parseInt(this.instance?.pk, 10),
                     duoDeviceRequest: device,
+                });
+                break;
+            case "authentik_stages_authenticator_email.EmailDevice":
+                await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsEmailUpdate({
+                    id: parseInt(this.instance?.pk, 10),
+                    emailDeviceRequest: device,
                 });
                 break;
             case "authentik_stages_authenticator_sms.SMSDevice":

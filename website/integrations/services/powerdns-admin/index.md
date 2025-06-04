@@ -1,11 +1,8 @@
 ---
 title: Integrate with PowerDNS-Admin
 sidebar_label: PowerDNS-Admin
+support_level: community
 ---
-
-# PowerDNS-Admin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is PowerDNS-Admin
 
@@ -15,10 +12,14 @@ sidebar_label: PowerDNS-Admin
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
-- `pdns-admin.company` is the FQDN of the PowerDNS-Admin install.
-- `authentik.company` is the FQDN of the authentik install.
+- `pdns-admin.company` is the FQDN of the PowerDNS-Admin installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create a SAML provider with the following parameters:
 

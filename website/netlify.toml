@@ -63,11 +63,14 @@
   status = 302
 
 [[redirects]]
-  from = "/docs/add-secure-apps/flows-stages/flow/layouts.md"
-  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow.md"
+  from = "/docs/add-secure-apps/flows-stages/flow/layouts"
+  to = "/docs/add-secure-apps/flows-stages/flow/executors/if-flow"
   status = 302
 
-
+[[redirects]]
+  from = "/docs/customize/brands"
+  to = "/docs/customize/branding"
+  status = 302
 
 
 # Migration to new structure with script Sept 2025
@@ -1003,8 +1006,20 @@
   force = true
 
 [[redirects]]
+  from = "/schema.yaml"
+  to = "/schema.yml"
+  status = 302
+  force = true
+
+[[redirects]]
   from = "/developer-docs/api/api"
   to = "/docs/developer-docs/api/api"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/developer-docs/api/reference/*"
+  to = "/docs/developer-docs/api/reference/:splat"
   status = 302
   force = true
 

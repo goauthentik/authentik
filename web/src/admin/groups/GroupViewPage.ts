@@ -3,11 +3,11 @@ import "@goauthentik/admin/groups/RelatedUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/ak-page-header";
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -203,7 +203,7 @@ export class GroupViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreGroup}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreGroup}
                 objectPk=${this.group.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

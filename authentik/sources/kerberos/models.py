@@ -12,6 +12,7 @@ from django.db.models.fields import b64decode
 from django.http import HttpRequest
 from django.shortcuts import reverse
 from django.templatetags.static import static
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from kadmin import KAdmin, KAdminApiVersion
 from kadmin.exceptions import PyKAdminException
@@ -173,11 +174,17 @@ class KerberosSource(Source):
     def get_base_user_properties(self, principal: str, **kwargs):
         localpart, _ = principal.rsplit("@", 1)
 
-        return {
+        properties = {
             "username": localpart,
             "type": UserTypes.INTERNAL,
             "path": self.get_user_path(),
         }
+
+        if "principal_obj" in kwargs:
+            princ_expiry = kwargs["principal_obj"].expire_time
+            properties["is_active"] = princ_expiry is None or princ_expiry > now()
+
+        return properties
 
     def get_base_group_properties(self, group_id: str, **kwargs):
         return {
@@ -310,7 +317,7 @@ class KerberosSource(Source):
                 usage="accept", name=name, store=self.get_gssapi_store()
             )
         except gssapi.exceptions.GSSError as exc:
-            LOGGER.warn("GSSAPI credentials failure", exc=exc)
+            LOGGER.warning("GSSAPI credentials failure", exc=exc)
             return None
 
 
@@ -364,8 +371,6 @@ class KerberosSourcePropertyMapping(PropertyMapping):
 
 class UserKerberosSourceConnection(UserSourceConnection):
     """Connection to configured Kerberos Sources."""
-
-    identifier = models.TextField()
 
     @property
     def serializer(self) -> type[Serializer]:

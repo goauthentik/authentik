@@ -8,8 +8,8 @@ You can test upcoming authentik versions, including major new features that are 
 Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install. Upgrading from Beta versions to the next release is usually possible, however also not supported.
 :::
 
-import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 
 <Tabs
   defaultValue="docker-compose"
@@ -26,8 +26,6 @@ AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
 AUTHENTIK_TAG=gh-next
 AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 ```
-
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
 Next, run the upgrade commands below.
 
@@ -46,8 +44,6 @@ image:
     # pullPolicy: Always to ensure you always get the latest version
     pullPolicy: Always
 ```
-
-The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
 Next, run the upgrade commands below.
 

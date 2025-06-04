@@ -17,6 +17,7 @@ class TestMetadataProcessor(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.source = SAMLSource.objects.create(
+            name=generate_id(),
             slug=generate_id(),
             issuer="authentik",
             signing_kp=create_test_cert(),

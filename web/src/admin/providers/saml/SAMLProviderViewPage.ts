@@ -247,7 +247,7 @@ export class SAMLProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersSamlSamlprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
@@ -502,7 +502,7 @@ export class SAMLProviderViewPage extends AKElement {
 
     renderTabPreview(): TemplateResult {
         if (!this.preview) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"

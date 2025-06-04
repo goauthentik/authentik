@@ -1,44 +1,38 @@
-import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/admin/providers/rac/ConnectionTokenList";
-import "@goauthentik/admin/rbac/ObjectPermissionsPage";
-import "@goauthentik/admin/users/UserActiveForm";
-import "@goauthentik/admin/users/UserApplicationTable";
-import "@goauthentik/admin/users/UserChart";
-import "@goauthentik/admin/users/UserForm";
-import "@goauthentik/admin/users/UserImpersonateForm";
-import {
-    renderRecoveryEmailRequest,
-    requestRecoveryLink,
-} from "@goauthentik/admin/users/UserListPage";
-import "@goauthentik/admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { PFSize } from "@goauthentik/common/enums.js";
-import { userTypeToLabel } from "@goauthentik/common/labels";
-import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/DescriptionList";
-import {
-    type DescriptionPair,
-    renderDescriptionList,
-} from "@goauthentik/components/DescriptionList";
-import "@goauthentik/components/ak-status-label";
-import "@goauthentik/components/events/ObjectChangelog";
-import "@goauthentik/components/events/UserEvents";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
-import { WithCapabilitiesConfig } from "@goauthentik/elements/Interface/capabilitiesProvider";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ActionButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/oauth/UserAccessTokenList";
-import "@goauthentik/elements/oauth/UserRefreshTokenList";
-import "@goauthentik/elements/user/SessionList";
-import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/UserReputationList";
-import "@goauthentik/elements/user/sources/SourceSettings";
+import "#admin/groups/RelatedGroupList";
+import "#admin/providers/rac/ConnectionTokenList";
+import "#admin/rbac/ObjectPermissionsPage";
+import "#admin/users/UserActiveForm";
+import "#admin/users/UserApplicationTable";
+import "#admin/users/UserChart";
+import "#admin/users/UserForm";
+import "#admin/users/UserImpersonateForm";
+import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
+import "#admin/users/UserPasswordForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { PFSize } from "#common/enums";
+import { userTypeToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+import { me } from "#common/users";
+import "#components/DescriptionList";
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+import "#components/ak-page-header";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#components/events/UserEvents";
+import { AKElement } from "#elements/Base";
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/ModalForm";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+import "#elements/oauth/UserAccessTokenList";
+import "#elements/oauth/UserRefreshTokenList";
+import "#elements/user/SessionList";
+import "#elements/user/UserConsentList";
+import "#elements/user/UserReputationList";
+import "#elements/user/sources/SourceSettings";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
@@ -155,8 +149,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             [msg("Name"), user.name],
             [msg("Email"), user.email || "-"],
             [msg("Last login"), user.lastLogin
-                ? html`<div>${getRelativeTime(user.lastLogin)}</div>
+                ? html`<div>${formatElapsedTime(user.lastLogin)}</div>
                       <small>${user.lastLogin.toLocaleString()}</small>`
+                : html`${msg("-")}`],
+            [msg("Last password change"), user.passwordChangeDate
+                ? html`<div>${formatElapsedTime(user.passwordChangeDate)}</div>
+                      <small>${user.passwordChangeDate.toLocaleString()}</small>`
                 : html`${msg("-")}`],
             [msg("Active"), html`<ak-status-label type="warning" ?good=${user.isActive}></ak-status-label>`],
             [msg("Type"), userTypeToLabel(user.type)],
@@ -167,7 +165,9 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
 
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
-            <div class="pf-c-card__body">${renderDescriptionList(userInfo)}</div>
+            <div class="pf-c-card__body">
+                ${renderDescriptionList(userInfo, { twocolumn: true })}
+            </div>
         `;
     }
 
@@ -378,12 +378,12 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl"
                     >
                         ${this.renderUserCard()}
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl"
                     >
                         <div class="pf-c-card__title">
                             ${msg("Actions over the last week (per 8 hours)")}
@@ -458,7 +458,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreUser}
                 objectPk=${this.user.pk}
             >
             </ak-rbac-object-permission-page>

@@ -119,7 +119,7 @@ export class RACProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRacRacprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRacRacprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

@@ -59,7 +59,7 @@ def get_login_event(request_or_session: HttpRequest | AuthenticatedSession | Non
         session = request_or_session.session
     if isinstance(request_or_session, AuthenticatedSession):
         SessionStore = _session_engine.SessionStore
-        session = SessionStore(request_or_session.session_key)
+        session = SessionStore(request_or_session.session.session_key)
     return session.get(SESSION_LOGIN_EVENT, None)
 
 
@@ -106,9 +106,9 @@ def on_invitation_used(sender, request: HttpRequest, invitation: Invitation, **_
 
 
 @receiver(password_changed)
-def on_password_changed(sender, user: User, password: str, **_):
+def on_password_changed(sender, user: User, password: str, request: HttpRequest | None, **_):
     """Log password change"""
-    Event.new(EventAction.PASSWORD_SET).from_http(None, user=user)
+    Event.new(EventAction.PASSWORD_SET).from_http(request, user=user)
 
 
 @receiver(post_save, sender=Event)

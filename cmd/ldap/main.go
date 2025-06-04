@@ -10,6 +10,7 @@ import (
 
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ak/healthcheck"
@@ -24,7 +25,8 @@ Required environment variables:
 - AUTHENTIK_INSECURE: Skip SSL Certificate verification`
 
 var rootCmd = &cobra.Command{
-	Long: helpMessage,
+	Long:    helpMessage,
+	Version: constants.FullVersion(),
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		log.SetLevel(log.DebugLevel)
 		log.SetFormatter(&log.JSONFormatter{

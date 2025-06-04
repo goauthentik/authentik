@@ -1,3 +1,4 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
@@ -7,11 +8,6 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -64,7 +60,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.getFormFiles().icon;
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -105,7 +101,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -228,7 +224,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
@@ -334,7 +330,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.allowIdpInitiated, false)}
+                                ?checked=${this.instance?.allowIdpInitiated ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -358,37 +354,37 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     >
                         <select class="pf-c-form-control">
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatpersistent}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatpersistent}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatPersistent}
                             >
                                 ${msg("Persistent")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._11nameidFormatemailAddress}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._11nameidFormatemailAddress}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatEmailAddress}
                             >
                                 ${msg("Email address")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatWindowsDomainQualifiedName}
                             >
                                 ${msg("Windows")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._11nameidFormatX509SubjectName}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._11nameidFormatX509SubjectName}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml11NameidFormatX509SubjectName}
                             >
                                 ${msg("X509 Subject")}
                             </option>
                             <option
-                                value=${NameIdPolicyEnum._20nameidFormattransient}
+                                value=${NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
-                                NameIdPolicyEnum._20nameidFormattransient}
+                                NameIdPolicyEnum.UrnOasisNamesTcSaml20NameidFormatTransient}
                             >
                                 ${msg("Transient")}
                             </option>
@@ -397,10 +393,8 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
@@ -432,20 +426,20 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "SHA1",
-                                    value: DigestAlgorithmEnum._200009Xmldsigsha1,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200009Xmldsigsha1,
                                 },
                                 {
                                     label: "SHA256",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha256,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha256,
                                     default: true,
                                 },
                                 {
                                     label: "SHA384",
-                                    value: DigestAlgorithmEnum._200104XmldsigMoresha384,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104XmldsigMoresha384,
                                 },
                                 {
                                     label: "SHA512",
-                                    value: DigestAlgorithmEnum._200104Xmlencsha512,
+                                    value: DigestAlgorithmEnum.HttpWwwW3Org200104Xmlencsha512,
                                 },
                             ]}
                             .value=${this.instance?.digestAlgorithm}
@@ -461,24 +455,24 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             .options=${[
                                 {
                                     label: "RSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigrsaSha1,
                                 },
                                 {
                                     label: "RSA-SHA256",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha256,
                                     default: true,
                                 },
                                 {
                                     label: "RSA-SHA384",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha384,
                                 },
                                 {
                                     label: "RSA-SHA512",
-                                    value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200104XmldsigMorersaSha512,
                                 },
                                 {
                                     label: "DSA-SHA1",
-                                    value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
+                                    value: SignatureAlgorithmEnum.HttpWwwW3Org200009XmldsigdsaSha1,
                                 },
                             ]}
                             .value=${this.instance?.signatureAlgorithm}

@@ -18,6 +18,7 @@ from celery.signals import (
     task_prerun,
     worker_ready,
 )
+from celery.worker.control import inspect_command
 from django.conf import settings
 from django.db import ProgrammingError
 from django_tenants.utils import get_public_schema_name
@@ -25,6 +26,7 @@ from structlog.contextvars import STRUCTLOG_KEY_PREFIX
 from structlog.stdlib import get_logger
 from tenant_schemas_celery.app import CeleryApp as TenantAwareCeleryApp
 
+from authentik import get_full_version
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 
@@ -157,6 +159,12 @@ class LivenessProbe(bootsteps.StartStopStep):
     def update_heartbeat_file(self, worker: Worker):
         """Touch heartbeat file"""
         HEARTBEAT_FILE.touch()
+
+
+@inspect_command(default_timeout=0.2)
+def ping(state, **kwargs):
+    """Ping worker(s)."""
+    return {"ok": "pong", "version": get_full_version()}
 
 
 CELERY_APP.config_from_object(settings.CELERY)

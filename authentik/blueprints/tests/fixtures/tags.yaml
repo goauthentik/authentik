@@ -146,6 +146,10 @@ entries:
                   ]
               ]
               nested_context: !Context context2
+              at_index_sequence: !AtIndex [!Context sequence, 0]
+              at_index_sequence_default: !AtIndex [!Context sequence, 100, "non existent"]
+              at_index_mapping: !AtIndex [!Context mapping, "key2"]
+              at_index_mapping_default: !AtIndex [!Context mapping, "invalid", "non existent"]
       identifiers:
           name: test
       conditions:
