@@ -61,7 +61,7 @@ To support the integration of Tailscale with authentik, you need to create an ap
 
 ## Tailscale configuration
 
-1. Visit the [Tailscale sign up page](https://login.tailscale.com/start) and click **Sign up with OIDC**.
+1. Visit [Tailscale's sign up page](https://login.tailscale.com/start) and click **Sign up with OIDC**.
 2. Enter the administrator email, select `authentik` as the identity provider type, and click **Get OIDC Issuer**.
 3. Set the following configurations:
     - **Client ID**: enter the Client ID copied from authentik.
