@@ -2793,19 +2793,9 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
         <target>Ruta de usuario</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>DN de usuario adicional</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>DN de usuario adicional, antepuesto al DN base.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>DN de grupo de adición</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -9316,6 +9306,12 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
 </trans-unit>
     </body>
   </file>
