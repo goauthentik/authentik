@@ -59,6 +59,14 @@ class Schedule(SerializerModel):
     def __str__(self):
         return self.uid
 
+    @classmethod
+    def dispatch_by_actor(cls, actor: Actor):
+        """Dispatch a schedule by looking up its actor.
+        Only available for schedules without custom arguments."""
+        schedule = cls.objects.filter(actor_name=actor.actor_name, paused=False).first()
+        if schedule:
+            schedule.send()
+
     @property
     def serializer(self):
         from authentik.tasks.schedules.api import ScheduleSerializer

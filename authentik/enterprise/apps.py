@@ -31,9 +31,11 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.enterprise.tasks import enterprise_update_usage
+
         return [
             ScheduleSpec(
-                actor_name="authentik.enterprise.tasks.enterprise_update_usage",
+                actor_name=enterprise_update_usage.actor_name,
                 crontab=f"{fqdn_rand('enterprise_update_usage')} */2 * * *",
             ),
         ]
