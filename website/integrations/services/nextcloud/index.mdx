@@ -66,7 +66,7 @@ authentik already provides some default _scopes_ with _claims_, such as:
 
 ## Create property mapping _(optional)_
 
-If you do not need storage quota, group information, or to manage already existing users in Nextcloud, skip to the next section.
+If you do not need storage quota, group information, or to manage already existing users in Nextcloud, skip to the [next section](#create-an-application-and-provider-in-authentik).
 
 If you want to control user storage and designate Nextcloud administrators, you will need to create a property mapping.
 
@@ -364,12 +364,16 @@ This documentation lists only the settings that you need to change from their de
     - On the **Server** tab:
 
         - Click the **+** icon and enter the following settings:
-            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceded by `ldap://`
-            - **Port**: `389`
+            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceded by `ldap://` or `ldaps://`.
+            - **Port**: `389` or `636` for secure LDAP.
             - Under **Credentials**, enter the **Bind DN** of the authentik LDAP provider and the associated user password.
             - Under **Base DN**, enter the **Search base** of the authentik LDAP provider.
 
-    - On the **Users** tab: - Set **Only these object classes** to `Users`. - On the **LDAP/AD integration** tab:
+    - On the **Users** tab:
+
+        - Set **Only these object classes** to `Users`.
+
+    - On the **LDAP/AD integration** tab:
 
         - Uncheck **LDAP/AD Username**.
         - Set **Other Attributes** to `cn`.
