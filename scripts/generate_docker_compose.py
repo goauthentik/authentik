@@ -3,7 +3,7 @@ from yaml import safe_dump
 from authentik import authentik_version
 
 authentik_image = (
-    f"${{AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}}:${{AUTHENTIK_TAG:-{authentik_version}}}"
+    f"${{AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}}:${{AUTHENTIK_TAG:-{authentik_version()}}}"
 )
 
 base = {

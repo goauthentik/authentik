@@ -57,7 +57,7 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn:
-	cd lifecycle/aws && npm run aws-cfn
+	cd lifecycle/aws && npm i && npm run aws-cfn
 
 run:  ## Run the main authentik server process
 	uv run ak server
@@ -90,8 +90,10 @@ bump:
 	uv version $(version)
 	$(MAKE) gen-build
 	$(MAKE) gen-compose
-	npm version --no-git-tag-version $(version)
-	bumpversion --new-version $(version) minor --verbose -h
+	$(MAKE) aws-cfn
+	npm version --no-git-tag-version --allow-same-version $(version)
+	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	# bumpversion --new-version $(version) minor --verbose -h
 
 #########################
 ## API Schema
