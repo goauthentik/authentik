@@ -39,14 +39,22 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
-        outpost_controller.send(instance.pk.hex, action="down", from_cache=True)
+        outpost_controller.send_with_options(
+            args=(instance.pk.hex,),
+            kwargs={"action": "down", "from_cache": True},
+            rel_obj=instance,
+        )
 
 
 @receiver(m2m_changed, sender=Outpost.providers.through)
 def m2m_changed_update(sender, instance: Model, action: str, **_):
     """Update outpost on m2m change, when providers are added or removed"""
     if action in ["post_add", "post_remove", "post_clear"]:
-        outpost_post_save.send(class_to_path(instance.__class__), instance.pk)
+        outpost_post_save.send_with_options(
+            args=(class_to_path(instance.__class__), instance.pk),
+            # TODO: how do we get the outpost here, if it makes sense
+            rel_obj=None,
+        )
 
 
 @receiver(post_save)
@@ -64,7 +72,11 @@ def post_save_update(sender, instance: Model, created: bool, **_):
     if isinstance(instance, Outpost) and created:
         LOGGER.info("New outpost saved, ensuring initial token and user are created")
         _ = instance.token
-    outpost_post_save.send(class_to_path(instance.__class__), instance.pk)
+    outpost_post_save.send_with_options(
+        args=(class_to_path(instance.__class__), instance.pk),
+        # TODO: how do we get the outpost here, if it makes sense
+        rel_obj=None,
+    )
 
 
 @receiver(pre_delete, sender=Outpost)

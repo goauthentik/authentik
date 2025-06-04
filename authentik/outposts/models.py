@@ -152,7 +152,7 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
 
         state = cache.get(self.state_key, None)
         if not state:
-            outpost_service_connection_monitor.send(self.pk)
+            outpost_service_connection_monitor.send_with_options(args=(self.pk), rel_obj=self)
             return OutpostServiceConnectionState("", False)
         return state
 
@@ -165,9 +165,11 @@ class OutpostServiceConnection(ScheduledModel, models.Model):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_service_connection_monitor
+
         return [
             ScheduleSpec(
-                actor_name="authentik.outposts.tasks.outpost_service_connection_monitor",
+                actor_name=outpost_service_connection_monitor.actor_name,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab="3-59/15 * * * *",
@@ -315,9 +317,11 @@ class Outpost(ScheduledModel, SerializerModel, ManagedModel):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.outposts.tasks import outpost_controller
+
         return [
             ScheduleSpec(
-                actor_name="authentik.outposts.tasks.outpost_controller",
+                actor_name=outpost_controller.actor_name,
                 uid=self.pk,
                 args=(self.pk,),
                 kwargs={"action": "up", "from_cache": False},

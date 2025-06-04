@@ -104,7 +104,8 @@ def outpost_service_connection_monitor(connection_pk: Any):
 @actor
 def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = False):
     """Create/update/monitor/delete the deployment of an Outpost"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
+    self.set_uid(outpost_pk)
     logs = []
     if from_cache:
         outpost: Outpost = cache.get(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
@@ -125,11 +126,11 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
             logs = getattr(controller, f"{action}_with_logs")()
             LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
-        self.set_error(exc)
+        self.error(exc)
     else:
         if from_cache:
             cache.delete(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
-        self.set_status(TaskStatus.SUCCESSFUL, *logs)
+        self.info(*logs)
 
 
 @actor
@@ -137,15 +138,12 @@ def outpost_token_ensurer():
     """
     Periodically ensure that all Outposts have valid Service Accounts and Tokens
     """
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     all_outposts = Outpost.objects.all()
     for outpost in all_outposts:
         _ = outpost.token
         outpost.build_user_permissions(outpost.user)
-    self.set_status(
-        TaskStatus.SUCCESSFUL,
-        f"Successfully checked {len(all_outposts)} Outposts.",
-    )
+    self.info(f"Successfully checked {len(all_outposts)} Outposts.")
 
 
 @actor
