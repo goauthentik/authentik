@@ -2036,7 +2036,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-core"
-version = "1.3.3"
+version = "1.3.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx", extra = ["http2"] },
@@ -2044,9 +2044,9 @@ dependencies = [
     { name = "microsoft-kiota-authentication-azure" },
     { name = "microsoft-kiota-http" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/9a/f078f7d0ea8f55ba5c85fa53487bd6ffec2403542c117bf5b2a8b86f11a5/msgraph_core-1.3.3.tar.gz", hash = "sha256:a3226b08b4cf9b6dbb16b868be21d5f82d8ee514ae8e46d9f0cad896159ef8d3", size = 26198, upload-time = "2025-03-24T13:02:15.889Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e7/d4/913feb5b182037ef92adda32e56bf591256d87b53adebdd678058b2cbcfd/msgraph_core-1.3.4.tar.gz", hash = "sha256:27e0d95344d29b6f05cf6ceb24a28bac363f19f18d6efaed7af6457e9fe4d6a9", size = 26212, upload-time = "2025-06-02T14:52:14.75Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3c/9a/506335cbad42698b2c05e1da0b3e4c19f9cd04d379abc9758e822115ab12/msgraph_core-1.3.3-py3-none-any.whl", hash = "sha256:9dbbc0c88e174c1d5da1c17d286965d6b26ebaf24996c7af64a39e2069006cf6", size = 35050, upload-time = "2025-03-24T13:02:14.987Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/89/5cdc20dd414243464014afbc24362f9857dc6d6326babdd831e21d46a1e0/msgraph_core-1.3.4-py3-none-any.whl", hash = "sha256:bce306ce193f8f96b3dd32af8b6ffd28eaaaf0db7560bfac8a334158e616c821", size = 35064, upload-time = "2025-06-02T14:52:13.766Z" },
 ]
 
 [[package]]
