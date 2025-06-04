@@ -69,11 +69,23 @@ export class QLSearch extends AKElement {
                     font-family: monospace;
                     resize: vertical;
                 }
-                :host([theme="dark"]) .pf-c-search-input__text::before {
-                    border: 0;
-                }
                 .selected {
                     background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
+                }
+                :host([theme="dark"]) .pf-c-search-input__menu {
+                    --pf-c-search-input__menu--BackgroundColor: var(--ak-dark-background-light-ish);
+                    color: var(--ak-dark-foreground);
+                }
+                :host([theme="dark"]) .pf-c-search-input__menu-item {
+                    --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
+                }
+                :host([theme="dark"]) .pf-c-search-input__menu-list-item.selected {
+                    --pf-c-search-input__menu-item--hover--BackgroundColor: var(
+                        --ak-dark-background-lighter
+                    );
+                }
+                :host([theme="dark"]) .pf-c-search-input__text::before {
+                    border: 0;
                 }
                 .pf-c-search-input__menu {
                     position: fixed;
