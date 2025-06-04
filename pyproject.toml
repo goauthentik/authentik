@@ -5,7 +5,7 @@ description = ""
 authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
-    "argon2-cffi==23.1.0",
+    "argon2-cffi==25.1.0",
     "celery==5.5.3",
     "channels==4.2.2",
     "channels-redis==4.2.1",
