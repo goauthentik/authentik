@@ -75,6 +75,19 @@ You can optionally add other prompt fields such as `domain` (e.g. `connection_se
 4. Change **Authorization flow** to the newly created authorization flow.
 5. Click **Update** to save the change.
 
+## Update the RAC endpoint _(sometimes required)_
+
+Depending on the configuration of the RDP server that's being connected to, it is sometimes necessary to set the security type that's used for the connection. For many modern windows RDP servers, this needs to be set to `tls`.
+
+1. Log in to authentik as an administrator, and open the authentik Admin interface.
+2. Navigate to **Applications** > **Providers** and click the name of the RAC provider that you're using.
+3. Under **Endpoints**, click the **Edit** icon of the endpoint that you're using.
+4. Under **Advanced Settings** in the **Settings** box, enter `security: tls`
+5. Click **Update** to save the change.
+
+:::note
+Other options for the connection security type are: `any`, `nla`, `nla-ext`, `vmconnect`, and `rdp`. For more information see the [Guacamole RDP Authentication and Security Documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#authentication-and-security).
+
 ## Configuration verification
 
 Log in to authentik with a user account that has the required privilieges to access the RAC application. On the user dashboard click on the RAC application, you should then be redicted to the prompt stage and prompted for a username and password. Enter the credentials for the RAC endpoint and if the credentials are valid, the RDP/SSH/VNC connection should be established.
