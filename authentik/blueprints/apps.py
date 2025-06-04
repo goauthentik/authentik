@@ -135,12 +135,14 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     def blueprints_discovery(self):
         """Run blueprint discovery"""
         from authentik.tasks.schedules.models import Schedule
+        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 
         for schedule in Schedule.objects.filter(
             actor_name__in=(
-                "authentik.blueprints.v1.tasks.blueprints_discovery",
-                "authentik.blueprints.v1.tasks.clear_failed_blueprints",
+                blueprints_discovery.actor_name,
+                clear_failed_blueprints.actor_name,
             ),
+            paused=False,
         ):
             schedule.send()
 

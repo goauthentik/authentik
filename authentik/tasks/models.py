@@ -100,7 +100,12 @@ class Task(SerializerModel):
 
         return TaskSerializer
 
-    def log(self, status: TaskStatus, *messages: str | LogEvent | Exception, save=False):
+    def set_uid(self, uid: str, save: bool = False):
+        self.uid = uid
+        if save:
+            self.save()
+
+    def log(self, status: TaskStatus, *messages: str | LogEvent | Exception, save: bool = False):
         self.messages: list
         for msg in messages:
             message = msg
@@ -112,11 +117,11 @@ class Task(SerializerModel):
         if save:
             self.save()
 
-    def info(self, *messages: str | LogEvent | Exception, save=False):
+    def info(self, *messages: str | LogEvent | Exception, save: bool = False):
         self.log(TaskStatus.INFO, *messages, save=save)
 
-    def warning(self, *messages: str | LogEvent | Exception, save=False):
+    def warning(self, *messages: str | LogEvent | Exception, save: bool = False):
         self.log(TaskStatus.WARNING, *messages, save=save)
 
-    def error(self, *messages: str | LogEvent | Exception, save=False):
+    def error(self, *messages: str | LogEvent | Exception, save: bool = False):
         self.log(TaskStatus.ERROR, *messages, save=save)
