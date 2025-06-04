@@ -55,7 +55,6 @@ class AuthentikOutpostConfig(ManagedAppConfig):
                 managed=MANAGED_OUTPOST,
             )
             if created:
-                outpost.set_oauth_defaults()
                 if KubernetesServiceConnection.objects.exists():
                     outpost.service_connection = KubernetesServiceConnection.objects.first()
                 elif DockerServiceConnection.objects.exists():
