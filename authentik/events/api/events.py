@@ -8,12 +8,14 @@ from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
 from django.db.models.query_utils import Q
+from django_filters.rest_framework import DjangoFilterBackend
 from djangoql.schema import DateTimeField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import DictField, IntegerField
+from rest_framework.filters import OrderingFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -24,6 +26,7 @@ from authentik.api.search import ChoiceSearchField, JSONSearchField, QLSearch
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
+from authentik.rbac.filters import ObjectFilter
 
 
 class EventSerializer(ModelSerializer):
@@ -121,6 +124,9 @@ class EventViewSet(ModelViewSet):
     filterset_class = EventsFilter
     filter_backends = [
         QLSearch,
+        ObjectFilter,
+        DjangoFilterBackend,
+        OrderingFilter,
     ]
     pagination_class = AutocompletePagination
 
