@@ -73,7 +73,7 @@ export class QLSearch extends AKElement {
                     border: 0;
                 }
                 .selected {
-                    background-color: gray;
+                    background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
                 }
                 .pf-c-search-input__menu {
                     position: fixed;
@@ -169,13 +169,14 @@ export class QLSearch extends AKElement {
 
         this.cursorX = bcr.x + paddingLeft + relX;
         this.cursorY = bcr.y + paddingTop + relY * lineHeight;
-        console.debug(
-            `Position: idx=${this.searchElement.selectionStart} x=${this.cursorX} y=${this.cursorY} col=${col} line=${line} lw=${letterWidth} lpl=${lettersPerLine} relX=${relX} relY=${relY}`,
-        );
     }
 
     onKeyDown(ev: KeyboardEvent) {
         this.updateDropdownPosition();
+        if (ev.key === "Enter" && ev.metaKey && this.onSearch && this.searchElement) {
+            this.onSearch(this.searchElement?.value);
+            return;
+        }
         if (!this.menuOpen) return;
         switch (ev.key) {
             case "ArrowUp":
