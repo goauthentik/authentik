@@ -1,36 +1,27 @@
 """Event notification tasks"""
 
+from uuid import UUID
 from django.db.models.query_utils import Q
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
-from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.events.models import (
     Event,
     Notification,
     NotificationRule,
     NotificationTransport,
-    NotificationTransportError,
 )
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
 
 @actor
-def event_notification_handler(event_uuid: str):
-    """Start task for each trigger definition"""
-    for trigger in NotificationRule.objects.all():
-        event_trigger_handler.send(event_uuid, trigger.name)
-
-
-@actor
-def event_trigger_handler(event_uuid: str, trigger_name: str):
+def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
     event: Event = Event.objects.filter(event_uuid=event_uuid).first()
     if not event:
@@ -77,11 +68,14 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     for transport in trigger.transports.all():
         for user in trigger.group.users.all():
             LOGGER.debug("created notification")
-            notification_transport.send(
-                transport.pk,
-                event.pk,
-                user.pk,
-                trigger.pk,
+            notification_transport.send_with_options(
+                args=(
+                    transport.pk,
+                    event.pk,
+                    user.pk,
+                    trigger.pk,
+                ),
+                rel_obj=transport,
             )
             if transport.send_once:
                 break
@@ -90,30 +84,22 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
 @actor
 def notification_transport(transport_pk: int, event_pk: str, user_pk: int, trigger_pk: str):
     """Send notification over specified transport"""
-    self: Task = CurrentTask.get_task()
-    # TODO: fixme
-    # self.save_on_success = False
-    try:
-        event = Event.objects.filter(pk=event_pk).first()
-        if not event:
-            return
-        user = User.objects.filter(pk=user_pk).first()
-        if not user:
-            return
-        trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
-        if not trigger:
-            return
-        notification = Notification(
-            severity=trigger.severity, body=event.summary, event=event, user=user
-        )
-        transport = NotificationTransport.objects.filter(pk=transport_pk).first()
-        if not transport:
-            return
-        transport.send(notification)
-        self.set_status(TaskStatus.SUCCESSFUL)
-    except (NotificationTransportError, PropertyMappingExpressionException) as exc:
-        self.set_error(exc)
-        raise exc
+    event = Event.objects.filter(pk=event_pk).first()
+    if not event:
+        return
+    user = User.objects.filter(pk=user_pk).first()
+    if not user:
+        return
+    trigger = NotificationRule.objects.filter(pk=trigger_pk).first()
+    if not trigger:
+        return
+    notification = Notification(
+        severity=trigger.severity, body=event.summary, event=event, user=user
+    )
+    transport = NotificationTransport.objects.filter(pk=transport_pk).first()
+    if not transport:
+        return
+    transport.send(notification)
 
 
 @actor
@@ -127,9 +113,9 @@ def gdpr_cleanup(user_pk: int):
 @actor
 def notification_cleanup():
     """Cleanup seen notifications and notifications whose event expired."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     notifications = Notification.objects.filter(Q(event=None) | Q(seen=True))
     amount = notifications.count()
     notifications.delete()
     LOGGER.debug("Expired notifications", amount=amount)
-    self.set_status(TaskStatus.SUCCESSFUL, f"Expired {amount} Notifications")
+    self.info(f"Expired {amount} Notifications")

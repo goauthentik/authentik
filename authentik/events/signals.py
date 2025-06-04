@@ -13,8 +13,8 @@ from rest_framework.request import Request
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
 from authentik.events.apps import SYSTEM_TASK_STATUS
-from authentik.events.models import Event, EventAction, SystemTask
-from authentik.events.tasks import event_notification_handler, gdpr_cleanup
+from authentik.events.models import Event, EventAction, NotificationRule, SystemTask
+from authentik.events.tasks import event_trigger_handler, gdpr_cleanup
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
@@ -114,7 +114,8 @@ def on_password_changed(sender, user: User, password: str, request: HttpRequest 
 @receiver(post_save, sender=Event)
 def event_post_save_notification(sender, instance: Event, **_):
     """Start task to check if any policies trigger an notification on this event"""
-    event_notification_handler.send(instance.event_uuid.hex)
+    for trigger in NotificationRule.objects.all():
+        event_trigger_handler.send(instance.event_uuid, trigger.name)
 
 
 @receiver(pre_delete, sender=User)
