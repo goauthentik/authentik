@@ -104,14 +104,14 @@ wheels = [
 
 [[package]]
 name = "argon2-cffi"
-version = "23.1.0"
+version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "argon2-cffi-bindings" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/31/fa/57ec2c6d16ecd2ba0cf15f3c7d1c3c2e7b5fcb83555ff56d7ab10888ec8f/argon2_cffi-23.1.0.tar.gz", hash = "sha256:879c3e79a2729ce768ebb7d36d4609e3a78a4ca2ec3a9f12286ca057e3d0db08", size = 42798, upload-time = "2023-08-15T14:13:12.711Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/89/ce5af8a7d472a67cc819d5d998aa8c82c5d860608c4db9f46f1162d7dab9/argon2_cffi-25.1.0.tar.gz", hash = "sha256:694ae5cc8a42f4c4e2bf2ca0e64e51e23a040c6a517a85074683d3959e1346c1", size = 45706, upload-time = "2025-06-03T06:55:32.073Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a4/6a/e8a041599e78b6b3752da48000b14c8d1e8a04ded09c88c714ba047f34f5/argon2_cffi-23.1.0-py3-none-any.whl", hash = "sha256:c670642b78ba29641818ab2e68bd4e6a78ba53b7eff7b4c3815ae16abf91c7ea", size = 15124, upload-time = "2023-08-15T14:13:10.752Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/d3/a8b22fa575b297cd6e3e3b0155c7e25db170edf1c74783d6a31a2490b8d9/argon2_cffi-25.1.0-py3-none-any.whl", hash = "sha256:fdc8b074db390fccb6eb4a3604ae7231f219aa669a2652e0f20e16ba513d5741", size = 14657, upload-time = "2025-06-03T06:55:30.804Z" },
 ]
 
 [[package]]
@@ -164,7 +164,7 @@ wheels = [
 
 [[package]]
 name = "authentik"
-version = "2025.4.1"
+version = "2025.6.0"
 source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -266,8 +266,8 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "argon2-cffi", specifier = "==23.1.0" },
-    { name = "celery", specifier = "==5.5.2" },
+    { name = "argon2-cffi", specifier = "==25.1.0" },
+    { name = "celery", specifier = "==5.5.3" },
     { name = "channels", specifier = "==4.2.2" },
     { name = "channels-redis", specifier = "==4.2.1" },
     { name = "cryptography", specifier = "==45.0.3" },
@@ -297,7 +297,7 @@ requires-dist = [
     { name = "flower", specifier = "==2.0.1" },
     { name = "geoip2", specifier = "==5.1.0" },
     { name = "geopy", specifier = "==2.4.1" },
-    { name = "google-api-python-client", specifier = "==2.170.0" },
+    { name = "google-api-python-client", specifier = "==2.171.0" },
     { name = "gssapi", specifier = "==1.9.0" },
     { name = "gunicorn", specifier = "==23.0.0" },
     { name = "jsonpatch", specifier = "==1.33" },
@@ -305,7 +305,7 @@ requires-dist = [
     { name = "kubernetes", specifier = "==32.0.1" },
     { name = "ldap3", specifier = "==2.9.1" },
     { name = "lxml", specifier = "==5.4.0" },
-    { name = "msgraph-sdk", specifier = "==1.31.0" },
+    { name = "msgraph-sdk", specifier = "==1.32.0" },
     { name = "opencontainers", git = "https://github.com/vsoch/oci-python?rev=ceb4fcc090851717a3069d78e85ceb1e86c2740c" },
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==3.5.1" },
@@ -321,14 +321,14 @@ requires-dist = [
     { name = "sentry-sdk", specifier = "==2.29.1" },
     { name = "service-identity", specifier = "==24.2.0" },
     { name = "setproctitle", specifier = "==1.3.6" },
-    { name = "structlog", specifier = "==25.3.0" },
+    { name = "structlog", specifier = "==25.4.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
     { name = "tenant-schemas-celery", specifier = "==4.0.1" },
-    { name = "twilio", specifier = "==9.6.1" },
+    { name = "twilio", specifier = "==9.6.2" },
     { name = "ua-parser", specifier = "==1.0.1" },
     { name = "unidecode", specifier = "==1.4.0" },
     { name = "urllib3", specifier = "<3" },
-    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.2" },
+    { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
     { name = "watchdog", specifier = "==6.0.0" },
     { name = "webauthn", specifier = "==2.5.2" },
     { name = "wsproto", specifier = "==1.2.0" },
@@ -647,7 +647,7 @@ wheels = [
 
 [[package]]
 name = "celery"
-version = "5.5.2"
+version = "5.5.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "billiard" },
@@ -659,9 +659,9 @@ dependencies = [
     { name = "python-dateutil" },
     { name = "vine" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bf/03/5d9c6c449248958f1a5870e633a29d7419ff3724c452a98ffd22688a1a6a/celery-5.5.2.tar.gz", hash = "sha256:4d6930f354f9d29295425d7a37261245c74a32807c45d764bedc286afd0e724e", size = 1666892, upload-time = "2025-04-25T20:10:04.695Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/7d/6c289f407d219ba36d8b384b42489ebdd0c84ce9c413875a8aae0c85f35b/celery-5.5.3.tar.gz", hash = "sha256:6c972ae7968c2b5281227f01c3a3f984037d21c5129d07bf3550cc2afc6b10a5", size = 1667144, upload-time = "2025-06-01T11:08:12.563Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/04/94/8e825ac1cf59d45d20c4345d4461e6b5263ae475f708d047c3dad0ac6401/celery-5.5.2-py3-none-any.whl", hash = "sha256:54425a067afdc88b57cd8d94ed4af2ffaf13ab8c7680041ac2c4ac44357bdf4c", size = 438626, upload-time = "2025-04-25T20:10:01.383Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/af/0dcccc7fdcdf170f9a1585e5e96b6fb0ba1749ef6be8c89a6202284759bd/celery-5.5.3-py3-none-any.whl", hash = "sha256:0b5761a07057acee94694464ca482416b959568904c9dfa41ce8413a7d65d525", size = 438775, upload-time = "2025-06-01T11:08:09.94Z" },
 ]
 
 [[package]]
@@ -1410,7 +1410,7 @@ wheels = [
 
 [[package]]
 name = "google-api-python-client"
-version = "2.170.0"
+version = "2.171.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-api-core" },
@@ -1419,10 +1419,7 @@ dependencies = [
     { name = "httplib2" },
     { name = "uritemplate" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/db/86/1bd09aea2664a46bc65713cb7876381ec8949a4b1e71be97dfc359c79781/google_api_python_client-2.170.0.tar.gz", hash = "sha256:75f3a1856f11418ea3723214e0abc59d9b217fd7ed43dcf743aab7f06ab9e2b1", size = 12971933, upload-time = "2025-05-22T20:39:52.802Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/ca/ab/928fb4551ce9c791de96b0681924d46de9a5b50931394fd19850383a08a1/google_api_python_client-2.170.0-py3-none-any.whl", hash = "sha256:7bf518a0527ad23322f070fa69f4f24053170d5c766821dc970ff0571ec22748", size = 13490660, upload-time = "2025-05-22T20:39:49.834Z" },
-]
+sdist = { url = "https://files.pythonhosted.org/packages/35/99/237cd2510aecca9fabb54007e58553274cc43cb3c18512ee1ea574d11b87/google_api_python_client-2.171.0.tar.gz", hash = "sha256:057a5c08d28463c6b9eb89746355de5f14b7ed27a65c11fdbf1d06c66bb66b23", size = 13028937, upload-time = "2025-06-03T18:57:38.732Z" }
 
 [[package]]
 name = "google-auth"
@@ -2079,7 +2076,7 @@ wheels = [
 
 [[package]]
 name = "msgraph-sdk"
-version = "1.31.0"
+version = "1.32.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "azure-identity" },
@@ -2089,9 +2086,9 @@ dependencies = [
     { name = "microsoft-kiota-serialization-text" },
     { name = "msgraph-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d3/1c/5afdf21f92840c7029f0fdb6c2ead7373b1fcdc3c4279fe556a2fc3702a2/msgraph_sdk-1.31.0.tar.gz", hash = "sha256:7ae5f29152251f61c1fc19cca6389dd03b0120b179ddf39d8ab8cdfed7952dba", size = 6626610, upload-time = "2025-05-20T13:15:08.062Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/2a/a5d67f631f8a0a9daa9059eed0f6703002efdf75f1d7575a289e23aceb5e/msgraph_sdk-1.32.0.tar.gz", hash = "sha256:485b25420ec4b3bf9c9d7abea166f9c51da99d9aad1bd57c191f84569af35143", size = 6628831, upload-time = "2025-06-03T18:22:21.526Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/b9/099b28478575126ec26bd61ff0931fb291263ac813afb8baf4b4cc30c6fc/msgraph_sdk-1.31.0-py3-none-any.whl", hash = "sha256:bb2edfe17c377f37bbf2e155fc915171763d49e1cf93b665bafd721a85220dc5", size = 27185846, upload-time = "2025-05-20T13:15:05.307Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/59/7e0f170611eb1a213940816703522ecca47ddffc149ef8e001e4789ddf13/msgraph_sdk-1.32.0-py3-none-any.whl", hash = "sha256:d1256f1669706c2703963ef0103470ce7a1b8a06f555506fc6b5f1069847877b", size = 27190465, upload-time = "2025-06-03T18:22:18.944Z" },
 ]
 
 [[package]]
@@ -3098,11 +3095,11 @@ wheels = [
 
 [[package]]
 name = "structlog"
-version = "25.3.0"
+version = "25.4.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/ff/6a/b0b6d440e429d2267076c4819300d9929563b1da959cf1f68afbcd69fe45/structlog-25.3.0.tar.gz", hash = "sha256:8dab497e6f6ca962abad0c283c46744185e0c9ba900db52a423cb6db99f7abeb", size = 1367514, upload-time = "2025-04-25T16:00:39.167Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/79/b9/6e672db4fec07349e7a8a8172c1a6ae235c58679ca29c3f86a61b5e59ff3/structlog-25.4.0.tar.gz", hash = "sha256:186cd1b0a8ae762e29417095664adf1d6a31702160a46dacb7796ea82f7409e4", size = 1369138, upload-time = "2025-06-02T08:21:12.971Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f5/52/7a2c7a317b254af857464da3d60a0d3730c44f912f8c510c76a738a207fd/structlog-25.3.0-py3-none-any.whl", hash = "sha256:a341f5524004c158498c3127eecded091eb67d3a611e7a3093deca30db06e172", size = 68240, upload-time = "2025-04-25T16:00:37.295Z" },
+    { url = "https://files.pythonhosted.org/packages/a0/4a/97ee6973e3a73c74c8120d59829c3861ea52210667ec3e7a16045c62b64d/structlog-25.4.0-py3-none-any.whl", hash = "sha256:fe809ff5c27e557d14e613f45ca441aabda051d119ee5a0102aaba6ce40eed2c", size = 68720, upload-time = "2025-06-02T08:21:11.43Z" },
 ]
 
 [[package]]
@@ -3183,7 +3180,7 @@ wheels = [
 
 [[package]]
 name = "twilio"
-version = "9.6.1"
+version = "9.6.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiohttp" },
@@ -3191,9 +3188,9 @@ dependencies = [
     { name = "pyjwt" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/95/78/453ff0d35442c53490c22d077f580684a2352846c721d3e01f4c6dfa85bd/twilio-9.6.1.tar.gz", hash = "sha256:bb80b31d4d9e55c33872efef7fb99373149ed4093f21c56cf582797da45862f5", size = 987002, upload-time = "2025-05-13T09:56:55.183Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fa/c9/441a07f6552f2b504812501d56c41bd85b02afeef6c23ab8baf41ed6c70e/twilio-9.6.2.tar.gz", hash = "sha256:5da13bb497e39ece34cb9f2b3bc911f3288928612748f7688b3bda262c2767a1", size = 1041300, upload-time = "2025-05-29T12:25:04.59Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/f4/36fe2566a3ad7f71a89fd28ea2ebb6b2aa05c3a4d5a55b3ca6c358768c6b/twilio-9.6.1-py2.py3-none-any.whl", hash = "sha256:441fdab61b9a204eef770368380b962cbf08dc0fe9f757fe4b1d63ced37ddeed", size = 1859407, upload-time = "2025-05-13T09:56:53.094Z" },
+    { url = "https://files.pythonhosted.org/packages/67/91/382e83e5d205a7ae4325b66d40cd2fa6ce85526f2ed8fc553265e19abbe4/twilio-9.6.2-py2.py3-none-any.whl", hash = "sha256:8d4af6f42850734a921857df42940f7fed84e3e4a508d0d6bef5b9fb7dc08357", size = 1909253, upload-time = "2025-05-29T12:25:02.521Z" },
 ]
 
 [[package]]
@@ -3323,15 +3320,15 @@ socks = [
 
 [[package]]
 name = "uvicorn"
-version = "0.34.2"
+version = "0.34.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "h11" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a6/ae/9bbb19b9e1c450cf9ecaef06463e40234d98d95bf572fab11b4f19ae5ded/uvicorn-0.34.2.tar.gz", hash = "sha256:0e929828f6186353a80b58ea719861d2629d766293b6d19baf086ba31d4f3328", size = 76815, upload-time = "2025-04-19T06:02:50.101Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/de/ad/713be230bcda622eaa35c28f0d328c3675c371238470abdea52417f17a8e/uvicorn-0.34.3.tar.gz", hash = "sha256:35919a9a979d7a59334b6b10e05d77c1d0d574c50e0fc98b8b1a0f165708b55a", size = 76631, upload-time = "2025-06-01T07:48:17.531Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/4b/4cef6ce21a2aaca9d852a6e84ef4f135d99fcd74fa75105e2fc0c8308acd/uvicorn-0.34.2-py3-none-any.whl", hash = "sha256:deb49af569084536d269fe0a6d67e3754f104cf03aba7c11c40f01aadf33c403", size = 62483, upload-time = "2025-04-19T06:02:48.42Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/0d/8adfeaa62945f90d19ddc461c55f4a50c258af7662d34b6a3d5d1f8646f6/uvicorn-0.34.3-py3-none-any.whl", hash = "sha256:16246631db62bdfbf069b0645177d6e8a77ba950cfedbfd093acef9444e4d885", size = 62431, upload-time = "2025-06-01T07:48:15.664Z" },
 ]
 
 [package.optional-dependencies]

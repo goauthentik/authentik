@@ -2813,19 +2813,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Nutzerpfad</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>Zusatz Benutzer-DN</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>Zusätzlicher Benutzer-DN, dem Basis-DN vorangestellt.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>Zusatz Gruppen-DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -9106,9 +9096,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
 </trans-unit>
@@ -9246,6 +9233,24 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
 </trans-unit>
     </body>
   </file>
