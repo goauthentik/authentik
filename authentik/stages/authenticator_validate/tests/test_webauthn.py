@@ -151,9 +151,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             webauthn_user_verification=UserVerification.PREFERRED,
         )
         stage.webauthn_allowed_device_types.set(
-            WebAuthnDeviceType.objects.filter(
-                description="Android Authenticator with SafetyNet Attestation"
-            )
+            WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
@@ -339,9 +337,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
             device_classes=[DeviceClasses.WEBAUTHN],
         )
         stage.webauthn_allowed_device_types.set(
-            WebAuthnDeviceType.objects.filter(
-                description="Android Authenticator with SafetyNet Attestation"
-            )
+            WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)

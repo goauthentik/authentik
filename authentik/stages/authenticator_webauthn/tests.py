@@ -141,9 +141,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         """Test registration with restricted devices (fail)"""
         webauthn_mds_import.send(force=True)
         self.stage.device_type_restrictions.set(
-            WebAuthnDeviceType.objects.filter(
-                description="Android Authenticator with SafetyNet Attestation"
-            )
+            WebAuthnDeviceType.objects.filter(description="YubiKey 5 Series")
         )
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
