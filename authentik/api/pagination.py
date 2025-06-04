@@ -4,7 +4,7 @@ from djangoql.serializers import DjangoQLSchemaSerializer
 from rest_framework import pagination
 from rest_framework.response import Response
 
-from authentik.api.search import AUTOCOMPLETE_COMPONENT_NAME, QLSearch
+from authentik.api.ql import AUTOCOMPLETE_COMPONENT_NAME, QLSearch
 
 PAGINATION_COMPONENT_NAME = "Pagination"
 PAGINATION_SCHEMA = {

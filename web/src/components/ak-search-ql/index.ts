@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/buttons/Dropdown";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import DjangoQL from "@mrmarble/djangoql-completion";
+import DjangoQL, { Introspections } from "@mrmarble/djangoql-completion";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -53,7 +53,7 @@ export class QLSearch extends AKElement {
         if (!value || !value.autocomplete || !this.ql) {
             return;
         }
-        this.ql.loadIntrospections(value.autocomplete);
+        this.ql.loadIntrospections(value.autocomplete as unknown as Introspections);
     }
 
     static get styles(): CSSResult[] {

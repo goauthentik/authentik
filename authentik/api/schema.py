@@ -14,7 +14,7 @@ from rest_framework.settings import api_settings
 
 from authentik.api.apps import AuthentikAPIConfig
 from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
-from authentik.api.search import AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA
+from authentik.api.ql import AUTOCOMPLETE_COMPONENT_NAME, AUTOCOMPLETE_SCHEMA
 
 
 def build_standard_type(obj, **kwargs):

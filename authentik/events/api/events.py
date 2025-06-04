@@ -22,7 +22,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.pagination import AutocompletePagination
-from authentik.api.search import ChoiceSearchField, JSONSearchField, QLSearch
+from authentik.api.ql import ChoiceSearchField, JSONSearchField, QLSearch
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction

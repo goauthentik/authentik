@@ -1,6 +1,5 @@
 """DjangoQL search"""
 
-
 from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
@@ -14,7 +13,10 @@ from structlog.stdlib import get_logger
 
 LOGGER = get_logger()
 AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
-AUTOCOMPLETE_SCHEMA = {"type": "object", "additionalProperties": {}}
+AUTOCOMPLETE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": {},
+}
 
 
 class JSONSearchField(StrField):
