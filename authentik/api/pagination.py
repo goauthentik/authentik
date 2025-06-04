@@ -1,9 +1,10 @@
 """Pagination which includes total pages and current page"""
 
+from djangoql.serializers import DjangoQLSchemaSerializer
 from rest_framework import pagination
 from rest_framework.response import Response
 
-from authentik.api.search import AUTOCOMPLETE_COMPONENT_NAME, JSONDjangoQLSchemaSerializer, QLSearch
+from authentik.api.search import AUTOCOMPLETE_COMPONENT_NAME, QLSearch
 
 PAGINATION_COMPONENT_NAME = "Pagination"
 PAGINATION_SCHEMA = {
@@ -91,8 +92,8 @@ class AutocompletePagination(Pagination):
 
     def get_autocomplete(self):
         schema = QLSearch().get_schema(self.request, self.view)
-        introspections = JSONDjangoQLSchemaSerializer().serialize(
-            schema(self.page.paginator.object_list.model),
+        introspections = DjangoQLSchemaSerializer().serialize(
+            schema(self.page.paginator.object_list.model)
         )
         return introspections
 

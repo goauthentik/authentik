@@ -1,16 +1,13 @@
 """DjangoQL search"""
 
-from collections import OrderedDict
 
-from django.db import connection, models
+from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
 from djangoql.compat import text_type
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
 from djangoql.schema import DjangoQLSchema, StrField
-from djangoql.serializers import DjangoQLSchemaSerializer
-from orjson import loads
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
@@ -34,27 +31,6 @@ class JSONSearchField(StrField):
         op, invert = self.get_operator(operator)
         q = models.Q(**{f"{search}{op}": self.get_lookup_value(value)})
         return ~q if invert else q
-
-    def get_nested_options(self):
-        """Get keys of all nested objects to show autocomplete"""
-        with connection.cursor() as cursor:
-            cursor.execute(f"""SELECT key, jsonb_agg(DISTINCT value) AS values
-FROM (
-    SELECT key, value
-    FROM {self.model._meta.db_table}, jsonb_each("{self.name}")
-) AS extracted
-GROUP BY key;
-""")
-            row = cursor.fetchall()
-        fields = {}
-        for key, r_values in row:
-            values = loads(r_values)
-            fields[key] = {
-                "type": "str",
-                "nullable": False,
-                "options": values,
-            }
-        return fields
 
     def relation(self) -> str:
         return f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
@@ -95,28 +71,6 @@ class BaseSchema(DjangoQLSchema):
         return super().resolve_name(name)
 
 
-class JSONDjangoQLSchemaSerializer(DjangoQLSchemaSerializer):
-    def serialize(self, schema):
-        serialization = super().serialize(schema)
-        for _, fields in schema.models.items():
-            for _, field in fields.items():
-                if not isinstance(field, JSONSearchField):
-                    continue
-                nested_model = OrderedDict()
-                for nested_field_name, nested_field in field.get_nested_options().items():
-                    # Can't generate a temporary StrField instance here as that requires a
-                    # model, and we're only pretending there's a model
-                    nested_model[nested_field_name] = nested_field
-                serialization["models"][field.relation()] = nested_model
-        return serialization
-
-    def serialize_field(self, field):
-        result = super().serialize_field(field)
-        if isinstance(field, JSONSearchField):
-            result["relation"] = field.relation()
-        return result
-
-
 class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 
@@ -151,5 +105,5 @@ class QLSearch(SearchFilter):
         try:
             return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
-            LOGGER.warning(exc)
+            LOGGER.debug("Failed to parse search expression", exc=exc)
             return queryset
