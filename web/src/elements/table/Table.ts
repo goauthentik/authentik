@@ -109,6 +109,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
 
     private isLoading = false;
 
+    @property({ type: Boolean })
+    supportsQL: boolean = false;
+
     searchEnabled(): boolean {
         return false;
     }
@@ -183,10 +186,10 @@ export abstract class Table<T> extends AKElement implements TableLike {
             PFDropdown,
             PFPagination,
             css`
-                .pf-c-toolbar__group.pf-m-search-filter {
+                .pf-c-toolbar__group.pf-m-search-filter.ql {
                     flex-grow: 1;
                 }
-                ak-table-search {
+                ak-table-search.ql {
                     width: 100% !important;
                 }
                 .pf-c-table thead .pf-c-table__check {
@@ -481,10 +484,12 @@ export abstract class Table<T> extends AKElement implements TableLike {
 
         return !this.searchEnabled()
             ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            : html`<div
+                  class="pf-c-toolbar__group pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
+              >
                   <ak-table-search
-                      ?supportsQL=${true}
-                      class="pf-c-toolbar__item pf-m-search-filter"
+                      ?supportsQL=${this.supportsQL}
+                      class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}
                       .apiResponse=${this.data}
