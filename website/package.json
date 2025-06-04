@@ -72,9 +72,9 @@
         "typescript-eslint": "^8.32.1"
     },
     "optionalDependencies": {
-        "@rspack/binding-darwin-arm64": "1.3.11",
-        "@rspack/binding-linux-arm64-gnu": "1.3.11",
-        "@rspack/binding-linux-x64-gnu": "1.3.11",
+        "@rspack/binding-darwin-arm64": "1.3.13",
+        "@rspack/binding-linux-arm64-gnu": "1.3.13",
+        "@rspack/binding-linux-x64-gnu": "1.3.13",
         "@swc/core-darwin-arm64": "1.11.29",
         "@swc/core-linux-arm64-gnu": "1.11.29",
         "@swc/core-linux-x64-gnu": "1.11.29",
