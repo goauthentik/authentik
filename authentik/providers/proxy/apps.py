@@ -13,6 +13,8 @@ class AuthentikProviderProxyConfig(ManagedAppConfig):
 
     @ManagedAppConfig.reconcile_tenant
     def proxy_set_defaults(self):
-        from authentik.providers.proxy.tasks import proxy_set_defaults
+        from authentik.providers.proxy.models import ProxyProvider
 
-        proxy_set_defaults.send()
+        for provider in ProxyProvider.objects.all():
+            provider.set_oauth_defaults()
+            provider.save()

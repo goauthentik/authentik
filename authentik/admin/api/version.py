@@ -1,6 +1,7 @@
 """authentik administration overview"""
 
 from django.core.cache import cache
+from django_tenants.utils import get_public_schema_name
 from drf_spectacular.utils import extend_schema
 from packaging.version import parse
 from rest_framework.fields import SerializerMethodField
@@ -13,6 +14,7 @@ from authentik import __version__, get_build_hash
 from authentik.admin.tasks import VERSION_CACHE_KEY, VERSION_NULL, update_latest_version
 from authentik.core.api.utils import PassiveSerializer
 from authentik.outposts.models import Outpost
+from authentik.tenants.utils import get_current_tenant
 
 
 class VersionSerializer(PassiveSerializer):
@@ -35,6 +37,8 @@ class VersionSerializer(PassiveSerializer):
 
     def get_version_latest(self, _) -> str:
         """Get latest version from cache"""
+        if get_current_tenant().schema_name == get_public_schema_name():
+            return __version__
         version_in_cache = cache.get(VERSION_CACHE_KEY)
         if not version_in_cache:  # pragma: no cover
             update_latest_version.send()

@@ -17,17 +17,29 @@ class AuthentikAdminConfig(ManagedAppConfig):
     verbose_name = "authentik Admin"
     default = True
 
-    @ManagedAppConfig.reconcile_tenant
+    @ManagedAppConfig.reconcile_global
     def clear_update_notifications(self):
-        from authentik.admin.tasks import clear_update_notifications
+        """Clear update notifications on startup if the notification was for the version
+        we're running now."""
+        from packaging.version import parse
 
-        clear_update_notifications.send()
+        from authentik.admin.tasks import LOCAL_VERSION
+        from authentik.events.models import EventAction, Notification
+
+        for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
+            if "new_version" not in notification.event.context:
+                continue
+            notification_version = notification.event.context["new_version"]
+            if LOCAL_VERSION >= parse(notification_version):
+                notification.delete()
 
     @property
-    def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+    def global_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.admin.tasks import update_latest_version
+
         return [
             ScheduleSpec(
-                actor_name="authentik.admin.tasks.update_latest_version",
+                actor_name=update_latest_version.actor_name,
                 crontab=f"{fqdn_rand('admin_latest_version')} * * * *",
             ),
         ]

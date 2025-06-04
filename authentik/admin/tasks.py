@@ -1,7 +1,6 @@
 """authentik admin tasks"""
 
 from django.core.cache import cache
-from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
 from dramatiq import actor
 from packaging.version import parse
@@ -10,7 +9,7 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
-from authentik.events.models import Event, EventAction, Notification
+from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.tasks.middleware import CurrentTask
@@ -31,18 +30,6 @@ def _set_prom_info():
             "build_hash": get_build_hash(),
         }
     )
-
-
-@actor(queue_name="startup", throws=(DatabaseError, ProgrammingError, InternalError))
-def clear_update_notifications():
-    """Clear update notifications on startup if the notification was for the version
-    we're running now."""
-    for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
-        if "new_version" not in notification.event.context:
-            continue
-        notification_version = notification.event.context["new_version"]
-        if LOCAL_VERSION >= parse(notification_version):
-            notification.delete()
 
 
 @actor

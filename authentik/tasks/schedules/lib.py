@@ -23,6 +23,8 @@ class ScheduleSpec:
 
     send_on_save: bool = False
 
+    run_on_startup: bool = False
+
     def get_uid(self) -> str:
         if self.uid is not None:
             return f"{self.actor_name}:{self.uid}"

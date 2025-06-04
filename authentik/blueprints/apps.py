@@ -6,6 +6,7 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
+from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -93,6 +94,18 @@ class ManagedAppConfig(AppConfig):
         """Get a list of schedule specs that must exist in the default tenant"""
         return []
 
+    @property
+    def tenant_startup_tasks(self) -> list[Actor]:
+        """Get a list of actors to dispatch on startup in each tenant.
+        If an associated schedule is found and is paused, the actor is skipped."""
+        return []
+
+    @property
+    def global_startup_tasks(self) -> list[Actor]:
+        """Get a list of actors to dispatch on startup in the default tenant.
+        If an associated schedule is found and is paused, the actor is skipped."""
+        return []
+
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
@@ -125,30 +138,15 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
     verbose_name = "authentik Blueprints"
     default = True
 
+    def import_models(self):
+        super().import_models()
+        self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
+
     @ManagedAppConfig.reconcile_global
     def tasks_middlewares(self):
         from authentik.blueprints.v1.tasks import BlueprintWatcherMiddleware
 
         get_broker().add_middleware(BlueprintWatcherMiddleware())
-
-    @ManagedAppConfig.reconcile_tenant
-    def blueprints_discovery(self):
-        """Run blueprint discovery"""
-        from authentik.tasks.schedules.models import Schedule
-        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
-
-        for schedule in Schedule.objects.filter(
-            actor_name__in=(
-                blueprints_discovery.actor_name,
-                clear_failed_blueprints.actor_name,
-            ),
-            paused=False,
-        ):
-            schedule.send()
-
-    def import_models(self):
-        super().import_models()
-        self.import_module("authentik.blueprints.v1.meta.apply_blueprint")
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
@@ -156,9 +154,11 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
             ScheduleSpec(
                 actor_name="authentik.blueprints.v1.tasks.blueprints_discovery",
                 crontab=f"{fqdn_rand('blueprints_v1_discover')} * * * *",
+                run_on_startup=True,
             ),
             ScheduleSpec(
                 actor_name="authentik.blueprints.v1.tasks.clear_failed_blueprints",
                 crontab=f"{fqdn_rand('blueprints_v1_cleanup')} * * * *",
+                run_on_startup=True,
             ),
         ]
