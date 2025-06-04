@@ -2,7 +2,7 @@
 title: RAC Credentials Prompt
 ---
 
-## About RAC Credentials Prompt
+## About the RAC credentials prompt
 
 The RAC provider can be configured to prompt users for their credentials when connecting to RAC endpoints. This is particulalry useful for establishing RDP connections to modern Windows systems that often require credentials to establish a connection.
 
