@@ -87,7 +87,8 @@ Depending on the configuration of the RDP server that's being connected to, it i
 
 :::note
 Other options for the connection security type are: `any`, `nla`, `nla-ext`, `vmconnect`, and `rdp`. For more information see the [Guacamole RDP Authentication and Security Documentation](https://guacamole.apache.org/doc/gug/configuring-guacamole.html#authentication-and-security).
+:::
 
 ## Configuration verification
 
-Log in to authentik with a user account that has the required privileges to access the RAC application. Open the User interface, and on the **My applications** page click the RAC application. You should then be redirected to the prompt stage and prompted for a username and password. Enter the credentials for the RAC endpoint and if the credentials are valid, the RDP/SSH/VNC connection should be established.
+Log in to authentik with a user account that has the required privileges to access the RAC application. Open the User interface, and on the **My applications** page click the RAC application. You should then be redirected to the prompt stage and prompted for a username and password. Enter the credentials for the RAC endpoint and if the credentials are valid the RDP/SSH/VNC connection should be established.
