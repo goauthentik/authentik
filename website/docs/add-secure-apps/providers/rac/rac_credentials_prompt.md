@@ -77,7 +77,7 @@ You can optionally add other prompt fields such as `domain` (e.g. `connection_se
 
 ## Update the RAC endpoint _(sometimes required)_
 
-Depending on the configuration of the RDP server that's being connected to, it is sometimes necessary to set the security type that's used for the connection. For many modern windows RDP servers, this needs to be set to `tls`.
+Depending on the configuration of the RDP server that's being connected to, it is sometimes necessary to set the security type that's used for the connection. For many modern windows RDP servers, this often needs to be set to `tls`.
 
 1. Log in to authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the name of the RAC provider that you're using.
