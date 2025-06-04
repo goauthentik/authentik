@@ -1,7 +1,7 @@
 """test admin tasks"""
 
-from django.core.cache import cache
 from django.apps import apps
+from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 

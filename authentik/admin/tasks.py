@@ -1,7 +1,6 @@
 """authentik admin tasks"""
 
 from django.core.cache import cache
-from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.translation import gettext_lazy as _
 from packaging.version import parse
 from requests import RequestException
@@ -9,7 +8,7 @@ from structlog.stdlib import get_logger
 
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
-from authentik.events.models import Event, EventAction, Notification
+from authentik.events.models import Event, EventAction
 from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
