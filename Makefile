@@ -89,6 +89,7 @@ dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik 
 bump:
 	uv version $(version)
 	$(MAKE) gen-build
+	$(MAKE) gen-compose
 	npm version --no-git-tag-version $(version)
 	bumpversion --new-version $(version) minor --verbose -h
 
@@ -105,6 +106,9 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		uv run ak spectacular --file schema.yml
+
+gen-compose:
+	uv run scripts/generate_docker_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
