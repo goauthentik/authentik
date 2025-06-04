@@ -361,7 +361,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition User DN")}
+                        label=${msg("Additional User DN")}
                         name="additionalUserDn"
                     >
                         <input
@@ -374,7 +374,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition Group DN")}
+                        label=${msg("Additional Group DN")}
                         name="additionalGroupDn"
                     >
                         <input
