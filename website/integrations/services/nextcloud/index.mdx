@@ -134,8 +134,8 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Nextcloud configuration
 
-1. In Nextcloud, ensure the **OpenID Connect user backend** app is installed.
-2. Navigate to **Settings** > **OpenID Connect**.
+1. In Nextcloud, ensure that the **OpenID Connect user backend** app is installed.
+2. Log in to Nextcloud as an administrator and navigate to **Settings** > **OpenID Connect**.
 3. Click the **+** button and enter the following settings:
 
     - **Identifier**: `authentik`
@@ -169,7 +169,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Making OIDC the default login method
 
-Automatically redirect users to authentik when they access Nextcloud by running:
+Automatically redirect users to authentik when they access Nextcloud by running the following command on your Nextcloud instance:
 
     ```bash
     sudo -u www-data php var/www/nextcloud/occ config:app:set --value=0 user_oidc allow_multiple_user_backends
@@ -223,8 +223,9 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Nextcloud configuration
 
-1. In Nextcloud, ensure the **SSO & SAML Authentication** app is installed.
-2. Navigate to **Settings** > **SSO & SAML Authentication** and configure the following settings:
+1. In Nextcloud, ensure that the **SSO & SAML Authentication** app is installed.
+2. Log in to Nextcloud as an administrator.
+3. Navigate to **Settings** > **SSO & SAML Authentication** and configure the following settings:
 
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
 
@@ -311,8 +312,7 @@ This documentation lists only the settings that you need to change from their de
 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **LDAP** as the provider type.
-    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-        - TEMP
+    - **Configure the Provider**: provide a name (or accept the auto-provided name) and the bind flow to use for this provider
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -330,47 +330,46 @@ This documentation lists only the settings that you need to change from their de
 
 ## Nextcloud configuration
 
-1.  **Install the app**:
-    In Nextcloud, ensure the **LDAP user and group backend** app is installed. Then navigate to **Settings** > **LDAP user and group backend**.
+1. In Nextcloud, ensure that the **LDAP user and group backend** app is installed.
+2. Log in to Nextcloud as an administrator.
+3. Navigate to **Settings** > **LDAP user and group backend** and configure the following settings:
 
-2.  **Configure the following settings**:
+    - On the **Server** tab:
 
-- On the **Server** tab:
+        - Click the **+** icon and enter the following settings:
+            - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceeded by `ldap://`
+            - **Port**: `389`
+            - For **Credentials** enter the **Bind DN** of the authentik LDAP provider and the associated user password.
+            - For **Base DN** enter the **Search base** of the authentik LDAP provider.
 
-    - Click the **+** icon and enter the following settings:
-        - **Host**: enter the hostname/IP address of the authentik LDAP outpost preceeded by `ldap://`
-        - **Port**: `389`
-        - For **Credentials** enter the **Bind DN** of the authentik LDAP provider and the associated user password.
-        - For **Base DN** enter the **Search base** of the authentik LDAP provider.
+    - On the **Users** tab: - Set **Only these object classes** to `Users`. - On the **LDAP/AD integration** tab:
 
-- On the **Users** tab: - Set **Only these object classes** to `Users`. - On the **LDAP/AD integration** tab:
+        - Uncheck **LDAP/AD Username**.
+        - Set **Other Attributes** to `cn`.
+        - Click **Expert** in the top right corner and enter these settings:
+            - **Internal Username Attribute**: `uid`
+            - **UUID Attribute for Users**: `uid`
+            - **UUID Attribute for Groups**: `gidNumber`
+        - Click **Advanced** in the top right corner and enter these settings:
+            - Under **Connection Settings**:
+                - **Configuration Active**: checked
+            - Under **Directory Settings**:
+                - **User Display Name Field**: `name`
+                - **Base User Tree**: enter the **Search base** of the authentik LDAP provider.
+                - **Group Display Name Field**: `cn`
+                - **Base Group Tree**: enter the **Search base** of the authentik LDAP provider.
+                - **Group-Member Association**: `gidNumber`
+            - Under **Special Attributes**:
+                - **Email Field**: `mailPrimaryAddress`
 
-    - Uncheck **LDAP/AD Username**.
-    - Set **Other Attributes** to `cn`.
-    - Click **Expert** in the top right corner and enter these settings:
-        - **Internal Username Attribute**: `uid`
-        - **UUID Attribute for Users**: `uid`
-        - **UUID Attribute for Groups**: `gidNumber`
-    - Click **Advanced** in the top right corner and enter these settings:
-        - Under **Connection Settings**:
-            - **Configuration Active**: checked
-        - Under **Directory Settings**:
-            - **User Display Name Field**: `name`
-            - **Base User Tree**: enter the **Search base** of the authentik LDAP provider.
-            - **Group Display Name Field**: `cn`
-            - **Base Group Tree**: enter the **Search base** of the authentik LDAP provider.
-            - **Group-Member Association**: `gidNumber`
-        - Under **Special Attributes**:
-            - **Email Field**: `mailPrimaryAddress`
+    - On the **Groups** tab:
 
-- On the **Groups** tab:
+        - Set **Only these object classes** to `groups`.
+        - Select the authentik groups that require Nextcloud access.
 
-    - Set **Only these object classes** to `groups`.
-    - Select the authentik groups that require Nextcloud access.
-
-:::note
-If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
-:::
+    :::note
+    If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotocol' => 'https'` to the Nextcloud `config/config.php` file. See [this guide](https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/reverse_proxy_configuration.html#overwrite-parameters) for more details.
+    :::
 
 ## Configuration verification
 
