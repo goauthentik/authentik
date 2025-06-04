@@ -1,8 +1,8 @@
 from enum import StrEnum, auto
 from uuid import uuid4
 
-from django.contrib.contenttypes.fields import ContentType, GenericForeignKey
 import pgtrigger
+from django.contrib.contenttypes.fields import ContentType, GenericForeignKey
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _

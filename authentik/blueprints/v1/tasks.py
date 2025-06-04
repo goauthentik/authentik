@@ -10,7 +10,6 @@ from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.utils.text import slugify
 from django.utils.timezone import now
-from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import actor
 from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
@@ -29,7 +28,6 @@ from authentik.blueprints.models import (
     BlueprintInstanceStatus,
     BlueprintRetrievalFailed,
 )
-from authentik.tasks.schedules.models import Schedule
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
@@ -38,7 +36,7 @@ from authentik.events.logs import capture_logs
 from authentik.events.utils import sanitize_dict
 from authentik.lib.config import CONFIG
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
+from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
