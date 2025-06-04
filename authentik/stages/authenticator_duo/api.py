@@ -1,5 +1,6 @@
 """AuthenticatorDuoStage API Views"""
 
+from typing import Any
 from django.http import Http404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
@@ -15,6 +16,7 @@ from structlog.stdlib import get_logger
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import ModelSerializer
+from authentik.core.models import User
 from authentik.flows.api.stages import StageSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -159,8 +161,44 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
                 },
                 status=400,
             )
-        result = duo_import_devices.send(stage.pk).get_result()
+        result = self._duo_import_devices(stage)
         return Response(data=result, status=200 if result["error"] == "" else 400)
+
+    def _duo_import_devices(self, stage: AuthenticatorDuoStage) -> dict[str, Any]:
+        """
+        Import duo devices. This used to be a blocking task.
+        """
+        created = 0
+        if stage.admin_integration_key == "":
+            LOGGER.info("Stage does not have admin integration configured", stage=stage)
+            return {"error": "Stage does not have admin integration configured", "count": created}
+        client = stage.admin_client()
+        try:
+            for duo_user in client.get_users_iterator():
+                user_id = duo_user.get("user_id")
+                username = duo_user.get("username")
+
+                user = User.objects.filter(username=username).first()
+                if not user:
+                    LOGGER.debug("User not found", username=username)
+                    continue
+                device = DuoDevice.objects.filter(
+                    duo_user_id=user_id, user=user, stage=stage
+                ).first()
+                if device:
+                    LOGGER.debug("User already has a device with ID", id=user_id)
+                    continue
+                DuoDevice.objects.create(
+                    duo_user_id=user_id,
+                    user=user,
+                    stage=stage,
+                    name="Imported Duo Authenticator",
+                )
+                created += 1
+            return {"error": "", "count": created}
+        except RuntimeError as exc:
+            LOGGER.warning("failed to get users from duo", exc=exc)
+            return {"error": str(exc), "count": created}
 
 
 class DuoDeviceSerializer(ModelSerializer):
