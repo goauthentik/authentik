@@ -165,8 +165,6 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     If you are using a the `Nextcloud Profile` property mapping and want administrators to be able to log in, ensure that **Use unique user ID** is deselected. Otherwise, this setting will remove administrator users from the internal admin group and replace them with a hashed group ID named "admin", which lacks actual administrator access rights.
     :::
 
-4. Once configured, single sign-on (SSO) login via authentik becomes available. TEMP
-
 ## Making OIDC the default login method
 
 Automatically redirect users to authentik when they access Nextcloud by running the following command on your Nextcloud instance:
@@ -177,7 +175,7 @@ Automatically redirect users to authentik when they access Nextcloud by running 
 
 ## Configuration verification
 
-TEMP
+To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **OpenID Connect** option. You will be redirected to authentik to log in, if succesful you will then be redirected to the Nextcloud dashboard.
 
   </TabItem>
   <TabItem value="saml">
@@ -223,42 +221,72 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Configure group quotas _(optional)_
 
-1. Create a group for each storage quota level and assign a custom attribute (e.g., `nextcloud_quota`) with values like `15 GB`.
+To configure group quotas you'll need to create groups in authentik for each quota, and a property mapping.
 
-2. **Create a custom SAML property mapping**:
-   Name the mapping **SAML Nextcloud Quota** with:
+### Create group/s in authentik _(optional)_
 
-    - **SAML Attribute Name**: `nextcloud_quota`
-    - **Expression**:
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (e.g. `nextlcloud-15GB`), assign a custom attribute (e.g., `nextcloud_quota`), and click **Create**.
+4. Click the name of the newly created group and navigate to the **Users** tab.
+5. Click **Add existing user**, select the users that require this storage quota and click **Add**.
 
-        ```python
-        return user.group_attributes().get("nextcloud_quota", "1 GB")
-        ```
+### Create property mapping in authentik _(optional)_
 
-        (Here, `"1 GB"` is the default if no quota is set.)
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property mappings** and click **Create**.
 
-3. **Configure Nextcloud**:
-   In Nextcloud under **Settings** > **SSO & SAML Authentication**, set the **Attribute to map the quota to** as `nextcloud_quota`.
+    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
+    - **Create SAML Provider Property Mapping**:
 
-## Create admin group _(optional)_
+        - **Name**: Provide a name for the property mapping.
+        - **SAML Attribute Name**: `nextcloud_quota`
+        - **Expression**:
 
-To grant Nextcloud admin access to authentik users:
+            ```python
+            return user.group_attributes().get("nextcloud_quota", "1 GB")
+            ```
 
-1. **Create a custom SAML property mapping for admins**:
-   Configure a mapping with:
+            :::note
+            Where `"1 GB"` is the default if a quota is not set.
+            :::
 
-    - **SAML Attribute Name**: `http://schemas.xmlsoap.org/claims/Group`
-    - **Expression**:
+3. Click **Finish** to save the property mapping.
 
-        ```python
-        for group in request.user.all_groups():
-            yield group.name
-        if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
-            yield "admin"
-        ```
+### Configure quota attribute in Nextcloud _(optional)_
 
-2. **Update the Nextcloud provider**:
-   Replace the default Groups mapping with this custom mapping.
+1. Log in to Nextcloud as an administrator.
+2. Navigate to **Settings** > **SSO & SAML Authentication**.
+3. Set **Attribute to map the quota to** to `nextcloud_quota`.
+
+## Configure admin group _(optional)_
+
+To grant Nextcloud admin access to authentik users you will need to create a property mapping.
+
+### Create property mapping in authentik _(optional)_
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property mappings** and click **Create**.
+
+    - **Select type**: select **SAML Provider Property Mapping** as the property mapping type.
+    - **Create SAML Provider Property Mapping**:
+
+        - **Name**: Provide a name for the property mapping.
+        - **SAML Attribute Name**: `http://schemas.xmlsoap.org/claims/Group`
+        - **Expression**:
+
+            ```python
+            for group in request.user.all_groups():
+                yield group.name
+            if ak_is_group_member(request.user, name="<authentik nextcloud admin group's name>"):
+                yield "admin"
+            ```
+
+### Configure group attribute in Nextcloud _(optional)_
+
+1. Log in to Nextcloud as an administrator.
+2. Navigate to **Settings** > **SSO & SAML Authentication**.
+3. Set the groups mapping to `http://schemas.xmlsoap.org/claims/Group`.
 
 ## Nextcloud configuration
 
@@ -267,7 +295,6 @@ To grant Nextcloud admin access to authentik users:
 3. Navigate to **Settings** > **SSO & SAML Authentication** and configure the following settings:
 
     - **Attribute to map the UID to**: `http://schemas.goauthentik.io/2021/02/saml/uid`
-    - _(optional)_ **Attribute to map the quota to**: `nextcloud_quota` (leave blank if the `Nextcloud Profile` property mapping was skipped)
 
     :::danger
     Using the UID attribute as username is **not recommended** because of its mutable nature. If you map to the username instead, [disable username changing](https://docs.goauthentik.io/docs/sys-mgmt/settings#allow-users-to-change-username) and set the UID attribute to `http://schemas.goauthentik.io/2021/02/saml/username`.
@@ -289,7 +316,7 @@ If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotoco
 
 ## Configuration verification
 
-TEMP
+To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **SSO and SAML log in** option. You will be redirected to authentik to log in, if succesful you will then be redirected to the Nextcloud dashboard.
 
   </TabItem>
   <TabItem value="ldap">
@@ -373,7 +400,7 @@ This documentation lists only the settings that you need to change from their de
 
 ## Configuration verification
 
-TEMP
+To confirm that authentik is properly configured with Nextcloud, log out and log back in using LDAP credentials. If succesful you will then be redirected to the Nextcloud dashboard.
 
   </TabItem>
 </Tabs>
