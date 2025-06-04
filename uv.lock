@@ -1381,7 +1381,7 @@ wheels = [
 
 [[package]]
 name = "google-api-core"
-version = "2.24.2"
+version = "2.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "google-auth" },
@@ -1390,9 +1390,9 @@ dependencies = [
     { name = "protobuf" },
     { name = "requests" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/09/5c/085bcb872556934bb119e5e09de54daa07873f6866b8f0303c49e72287f7/google_api_core-2.24.2.tar.gz", hash = "sha256:81718493daf06d96d6bc76a91c23874dbf2fac0adbbf542831b805ee6e974696", size = 163516, upload-time = "2025-03-10T15:55:26.201Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/a2/8176b416ca08106b2ae30cd4a006c8176945f682c3a5b42f141c9173f505/google_api_core-2.25.0.tar.gz", hash = "sha256:9b548e688702f82a34ed8409fb8a6961166f0b7795032f0be8f48308dff4333a", size = 164914, upload-time = "2025-06-02T14:45:34.789Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/46/95/f472d85adab6e538da2025dfca9e976a0d125cc0af2301f190e77b76e51c/google_api_core-2.24.2-py3-none-any.whl", hash = "sha256:810a63ac95f3c441b7c0e43d344e372887f62ce9071ba972eacf32672e072de9", size = 160061, upload-time = "2025-03-10T15:55:24.386Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/ca/149e41a277bb0855e8ded85fd7579d7747c1223e253d82c5c0f1be236875/google_api_core-2.25.0-py3-none-any.whl", hash = "sha256:1db79d1281dcf9f3d10023283299ba38f3dc9f639ec41085968fd23e5bcf512e", size = 160668, upload-time = "2025-06-02T14:45:33.272Z" },
 ]
 
 [[package]]
