@@ -1,4 +1,3 @@
-/// <reference types="@wdio/globals/types" />
 /// <reference types="../types/webdriver.js" />
 
 /**

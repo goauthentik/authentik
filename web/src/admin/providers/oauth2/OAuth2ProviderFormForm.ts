@@ -124,7 +124,9 @@ export function renderForm(
     showClientSecretCallback: ShowClientSecret = defaultShowClientSecret,
 ) {
     return html` <ak-text-input
+            autocomplete="on"
             name="name"
+            placeholder=${msg("Provider name")}
             label=${msg("Name")}
             value=${ifDefined(provider?.name)}
             required

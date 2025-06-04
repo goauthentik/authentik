@@ -1,4 +1,3 @@
-/// <reference types="@wdio/globals/types" />
 import { randomId } from "#elements/utils/randomId";
 import ApplicationWizardView from "#tests/pageobjects/application-wizard.page";
 import { ApplicationsListPage } from "#tests/pageobjects/applications-list.page";
@@ -12,6 +11,7 @@ import {
 } from "#tests/utils/controls";
 import { ConsoleTestRunner } from "#tests/utils/logger";
 import { checkIfElementVisible, findElementsByTestID } from "#tests/utils/selectors";
+import { $, expect } from "@wdio/globals";
 
 import {
     completeForwardAuthDomainProxyProviderForm,

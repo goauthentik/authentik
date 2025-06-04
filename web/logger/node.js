@@ -1,7 +1,7 @@
 /**
  * Application logger.
  *
- * @import { LoggerOptions, Logger, Level } from "pino"
+ * @import { LoggerOptions, Logger, Level, ChildLoggerOptions } from "pino"
  * @import { PrettyOptions } from "pino-pretty"
  */
 import { pino } from "pino";
@@ -12,7 +12,7 @@ import { pino } from "pino";
  * Default options for creating a Pino logger.
  *
  * @category Logger
- * @satisfies {LoggerOptions}
+ * @satisfies {LoggerOptions<never, false>}
  */
 export const DEFAULT_PINO_LOGGER_OPTIONS = {
     enabled: true,
@@ -38,7 +38,33 @@ export function readLogLevel() {
 }
 
 /**
- * @typedef {Logger<never, boolean>} ConsoleLogger
+ * @typedef {Logger} FixtureLogger
+ */
+
+/**
+ * @this {Logger}
+ * @param {string} fixtureName
+ * @param {string} [testName]
+ * @param {ChildLoggerOptions} [options]
+ * @returns {FixtureLogger}
+ */
+function createFixtureLogger(fixtureName, testName, options) {
+    return this.child(
+        { name: fixtureName },
+        {
+            msgPrefix: `[${testName}] `,
+            ...options,
+        },
+    );
+}
+
+/**
+ * @typedef {object} CustomLoggerMethods
+ * @property {typeof createFixtureLogger} fixture
+ */
+
+/**
+ * @typedef {Logger & CustomLoggerMethods} ConsoleLogger
  */
 
 /**
@@ -53,10 +79,13 @@ export function readLogLevel() {
  * @runtime node
  * @type {ConsoleLogger}
  */
-export const ConsoleLogger = pino({
-    ...DEFAULT_PINO_LOGGER_OPTIONS,
-    level: readLogLevel(),
-});
+export const ConsoleLogger = Object.assign(
+    pino({
+        ...DEFAULT_PINO_LOGGER_OPTIONS,
+        level: readLogLevel(),
+    }),
+    { fixture: createFixtureLogger },
+);
 
 /**
  * @typedef {ReturnType<ConsoleLogger['child']>} ChildConsoleLogger

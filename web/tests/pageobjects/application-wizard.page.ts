@@ -1,4 +1,3 @@
-/// <reference types="@wdio/globals/types" />
 import AdminPage from "#tests/pageobjects/admin.page";
 import ApplicationForm from "#tests/pageobjects/forms/application.form";
 import ForwardProxyForm from "#tests/pageobjects/forms/forward-proxy.form";
@@ -9,6 +8,7 @@ import SAMLForm from "#tests/pageobjects/forms/saml.form";
 import SCIMForm from "#tests/pageobjects/forms/scim.form";
 import TransparentProxyForm from "#tests/pageobjects/forms/transparent-proxy.form";
 import { findOUIDComponent } from "#tests/utils/selectors";
+import { $ } from "@wdio/globals";
 
 export abstract class ApplicationWizardView extends AdminPage {
     //#region Selectors

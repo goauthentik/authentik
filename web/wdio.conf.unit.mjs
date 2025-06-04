@@ -3,6 +3,7 @@
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+// @ts-ignore
 import { addCommands } from "#tests/commands";
 import { cwd } from "process";
 import litCSS from "vite-plugin-lit-css";
@@ -43,8 +44,8 @@ if (!process.env.WDIO_SKIP_CHROME) {
             "headless",
             "disable-gpu",
             "no-sandbox",
-            "window-size=1280,672",
             "browser-test",
+            "window-size=1280,672",
         );
     }
 
@@ -75,7 +76,9 @@ const browserRunnerOptions = {
         },
         plugins: [
             // ---
+            // @ts-ignore
             litCSS(),
+            // @ts-ignore
             tsconfigPaths(),
         ],
     },
@@ -107,12 +110,12 @@ export const config = {
         ui: "bdd",
         timeout: 60000,
     },
-    /**
-     * @param {WebdriverIO.Browser} browser
-     */
-    before(_capabilities, _specs, browser) {
-        addCommands(browser);
-    },
+    // /**
+    //  * @param {WebdriverIO.Browser} browser
+    //  */
+    // before(_capabilities, _specs, browser) {
+    //     addCommands(browser);
+    // },
 
     // afterTest() {
     //     if (lemmeSee) return browser.pause(500);

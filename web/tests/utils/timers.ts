@@ -1,5 +1,5 @@
-/// <reference types="@wdio/globals/types" />
 import { ConsoleTestRunner } from "#tests/utils/logger";
+import { browser } from "@wdio/globals";
 
 const CLICK_TIME_DELAY = 250;
 

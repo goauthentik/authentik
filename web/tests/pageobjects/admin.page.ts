@@ -1,10 +1,9 @@
-/// <reference types="@wdio/globals/types" />
 import { navigateBrowser } from "#tests/utils/navigation";
 import { findElementByTestID } from "#tests/utils/selectors";
 
 export abstract class AdminPage {
     public static get $pageHeader() {
-        return findElementByTestID("page-header");
+        return findElementByTestID("page-navbar-heading");
     }
 
     public static async openApplicationsListPage() {

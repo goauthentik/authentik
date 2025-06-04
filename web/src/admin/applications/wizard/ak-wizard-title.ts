@@ -22,7 +22,7 @@ export class AkWizardTitle extends AKElement {
 
     render() {
         return html`<div class="ak-bottom-spacing pf-c-content">
-            <h3 data-test-id="wizard-title"><slot></slot></h3>
+            <h3 data-test-id="wizard-heading"><slot></slot></h3>
         </div>`;
     }
 }

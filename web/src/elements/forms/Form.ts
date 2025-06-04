@@ -2,12 +2,12 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -327,7 +327,7 @@ export abstract class Form<T> extends AKElement {
                         const elementName = element.name;
                         if (!elementName) return;
 
-                        const snakeProperty = camelToSnake(elementName);
+                        const snakeProperty = snakeCase(elementName);
 
                         if (snakeProperty in parsedError) {
                             element.errorMessages = parsedError[snakeProperty];

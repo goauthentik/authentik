@@ -243,9 +243,10 @@ export class Wizard extends ModalButton {
         };
 
         return html`<div class="pf-c-wizard">
-            <div class="pf-c-wizard__header">
+            <header class="pf-c-wizard__header">
                 ${this.canCancel
                     ? html`<button
+                          data-test-id="wizard-close"
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
                           aria-label="${msg("Close")}"
@@ -254,11 +255,12 @@ export class Wizard extends ModalButton {
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
                     : nothing}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title" data-test-id="wizard-title">
+                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title" data-test-id="wizard-heading">
                     ${this.header}
                 </h1>
                 <p class="pf-c-wizard__description">${this.description}</p>
-            </div>
+            </header>
+
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
                     <nav class="pf-c-wizard__nav">
@@ -295,7 +297,7 @@ export class Wizard extends ModalButton {
                         </div>
                     </main>
                 </div>
-                <footer class="pf-c-wizard__footer">
+                <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
                     <button
                         data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
@@ -347,7 +349,7 @@ export class Wizard extends ModalButton {
                               </button>
                           </div>`
                         : nothing}
-                </footer>
+                </nav>
             </div>
         </div>`;
     }

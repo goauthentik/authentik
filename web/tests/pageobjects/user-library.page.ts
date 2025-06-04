@@ -1,6 +1,8 @@
-/// <reference types="@wdio/globals/types" />
+import { $ } from "@wdio/globals";
 
 export abstract class UserLibraryPage {
+    public static readonly pathname = "/if/user/#/library";
+
     public static get $pageHeading() {
         return $('h1[aria-level="1"]');
     }

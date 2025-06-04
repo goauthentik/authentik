@@ -1,5 +1,5 @@
-/// <reference types="@wdio/globals/types" />
 import { searchSelect } from "#tests/utils/controls";
+import { $ } from "@wdio/globals";
 
 export abstract class ForwardProxyForm {
     public static setAuthorizationFlow(selector: string) {

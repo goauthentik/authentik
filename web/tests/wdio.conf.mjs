@@ -109,14 +109,11 @@ export const config = {
         ui: "bdd",
         timeout: 60000,
     },
-    /**
-     * @param {WebdriverIO.Browser} browser
-     */
-    before(_capabilities, _specs, browser) {
-        addCommands(browser);
-    },
-
-    afterTest() {
-        if (lemmeSee) return browser.pause(500);
-    },
+    baseUrl: "http://localhost:9000",
+    // /**
+    //  * @param {WebdriverIO.Browser} browser
+    //  */
+    // before(_capabilities, _specs, browser) {
+    //     addCommands(browser);
+    // },
 };

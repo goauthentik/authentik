@@ -1,20 +1,22 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { LandmarksFixture } from "#e2e/fixtures/landmarks";
-import { ProvidersListFixture } from "#e2e/fixtures/providers-list";
-import { SessionFixture } from "#e2e/fixtures/session";
-import { UserLibraryFixture } from "#e2e/fixtures/user-library";
+import { FormFixture } from "#e2e/fixtures/FormFixture";
+import { LandmarksFixture } from "#e2e/fixtures/LandmarksFixture";
+import { ProvidersFixture } from "#e2e/fixtures/ProvidersFixture";
+import { SessionFixture } from "#e2e/fixtures/SessionFixture";
+import { UserLibraryFixture } from "#e2e/fixtures/UserLibraryFixture";
+import { WizardFixture } from "#e2e/fixtures/WizardFixture";
 import { test as base } from "@playwright/test";
-
-import { TodoPage } from "./todo-page.js";
 
 export { expect } from "@playwright/test";
 
-type E2EFixtures = {
-    session: SessionFixture;
-    providersList: ProvidersListFixture;
-    userLibrary: UserLibraryFixture;
+interface E2EFixtures {
     landmarks: LandmarksFixture;
-};
+    session: SessionFixture;
+    providers: ProvidersFixture;
+    userLibrary: UserLibraryFixture;
+    wizard: WizardFixture;
+    form: FormFixture;
+}
 
 export const test = base.extend<E2EFixtures>({
     landmarks: async ({ page }, use, { title }) => {
@@ -25,7 +27,19 @@ export const test = base.extend<E2EFixtures>({
         await use(new SessionFixture(page, title));
     },
 
-    userLibrary: async ({ page }, use) => {
-        await use(new UserLibraryFixture(page));
+    wizard: async ({ page }, use, { title }) => {
+        await use(new WizardFixture(page, title));
+    },
+
+    form: async ({ page }, use, { title }) => {
+        await use(new FormFixture(page, title));
+    },
+
+    providers: async ({ page }, use, { title }) => {
+        await use(new ProvidersFixture(page, title));
+    },
+
+    userLibrary: async ({ page }, use, { title }) => {
+        await use(new UserLibraryFixture(page, title));
     },
 });

@@ -1,4 +1,3 @@
-/// <reference types="@wdio/globals/types" />
 import { ConsoleTestRunner } from "#tests/utils/logger";
 import {
     SelectorContext,
@@ -6,6 +5,7 @@ import {
     findElementByTestID,
     findElementByText,
 } from "#tests/utils/selectors";
+import { $, $$, browser, expect } from "@wdio/globals";
 import { type ChainablePromiseElement, Key, Selector } from "webdriverio";
 
 /**
@@ -223,7 +223,7 @@ export async function setSearchSelect(name: string, pattern: string | RegExp): P
                 .waitForExist({ timeout: 500 })
                 .then(() => searchSelectElement);
         })
-        .catch(() => $(`ak-search-selects-ez[name="${name}"]`).getElement())
+        .catch(() => $(`ak-search-select-ez[name="${name}"]`).getElement())
         .catch(() => null);
 
     if (!control) {

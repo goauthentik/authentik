@@ -1,6 +1,6 @@
-/// <reference types="@wdio/globals/types" />
 import AdminPage from "#tests/pageobjects/admin.page";
 import { navigateBrowser } from "#tests/utils/navigation";
+import { $, browser } from "@wdio/globals";
 import { Key } from "webdriverio";
 
 export abstract class ProvidersListPage extends AdminPage {

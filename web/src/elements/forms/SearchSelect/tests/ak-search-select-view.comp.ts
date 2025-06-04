@@ -1,4 +1,4 @@
-/// <reference types="@wdio/globals/types" />
+import { $ } from "@wdio/globals";
 import { ChainablePromiseElement } from "webdriverio";
 
 /**

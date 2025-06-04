@@ -1,6 +1,6 @@
-/// <reference types="@wdio/globals/types" />
 import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
 import { render } from "@goauthentik/elements/tests/utils.js";
+import { $, browser, expect } from "@wdio/globals";
 
 import { html } from "lit";
 

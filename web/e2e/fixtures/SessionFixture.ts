@@ -1,5 +1,5 @@
-import { ChildConsoleLogger, ConsoleLogger } from "#logger/node";
-import { Locator, Page, expect } from "@playwright/test";
+import { PageFixture } from "#e2e/fixtures/PageFixture";
+import { Page, expect } from "@playwright/test";
 
 export const GOOD_USERNAME = "test-admin@goauthentik.io";
 export const GOOD_PASSWORD = "test-runner";
@@ -13,75 +13,52 @@ export interface LoginInit {
     to?: URL | string;
 }
 
-export class SessionFixture {
+export class SessionFixture extends PageFixture {
+    static fixtureName = "Session";
+
     public static readonly pathname = "/if/flow/default-authentication-flow/";
-    #logger: ChildConsoleLogger;
 
     //#region Selectors
 
-    readonly $interfaceRoot: Locator;
+    public $interfaceRoot = this.page.getByTestId("interface-root");
 
-    public $identificationStage: Locator;
-    public $passwordStage: Locator;
+    public $identificationStage = this.page.locator("ak-stage-identification");
 
     /**
      * The username field on the login page.
      */
-    public $usernameField: Locator;
+    public $usernameField = this.$identificationStage.locator('input[name="uidField"]');
 
     /**
      * The button to continue with the login process,
      * typically to the password flow stage.
      */
-    public $submitUsernameStageButton: Locator;
+    public $submitUsernameStageButton = this.$identificationStage.locator('button[type="submit"]');
 
-    /**
-     * The password field on the login page.
-     */
-    public $passwordField: Locator;
-
+    public $passwordStage = this.page.locator("ak-stage-password");
+    public $passwordField = this.$passwordStage.locator('input[name="password"]');
     /**
      * The button to submit the the login flow,
      * typically redirecting to the authenticated interface.
      */
-    public $submitPasswordStageButton: Locator;
+    public $submitPasswordStageButton = this.$passwordStage.locator('button[type="submit"]');
 
     /**
      * A possible authentication failure message.
      */
-    public $authFailureMessage: Locator;
+    public $authFailureMessage = this.page.locator(".pf-m-error");
 
     //#endregion
 
-    constructor(
-        public readonly page: Page,
-        testName: string,
-    ) {
-        this.#logger = ConsoleLogger.child(
-            { name: "Session" },
-            {
-                msgPrefix: `[${testName}] `,
-            },
-        );
-
-        this.$interfaceRoot = this.page.getByTestId("interface-root");
-
-        this.$identificationStage = this.page.locator("ak-stage-identification");
-        this.$usernameField = this.$identificationStage.locator('input[name="uidField"]');
-        this.$submitUsernameStageButton =
-            this.$identificationStage.locator('button[type="submit"]');
-
-        this.$passwordStage = this.page.locator("ak-stage-password");
-        this.$passwordField = this.$passwordStage.locator('input[name="password"]');
-        this.$submitPasswordStageButton = this.$passwordStage.locator('button[type="submit"]');
-
-        this.$authFailureMessage = this.page.locator(".pf-m-error");
+    constructor(page: Page, testName: string) {
+        super({ page, testName });
     }
 
     //#region Specific interactions
 
     public async submitUsernameStage(username: string) {
-        this.#logger.info("Submitting username stage", username);
+        this.logger.info("Submitting username stage", username);
+
         await this.$usernameField.fill(username);
 
         await expect(this.$submitUsernameStageButton).toBeEnabled();
@@ -90,7 +67,8 @@ export class SessionFixture {
     }
 
     public async submitPasswordStage(password: string) {
-        this.#logger.info("Submitting password stage");
+        this.logger.info("Submitting password stage");
+
         await this.$passwordField.fill(password);
 
         await expect(this.$submitPasswordStageButton).toBeEnabled();
@@ -106,12 +84,12 @@ export class SessionFixture {
         password = GOOD_PASSWORD,
         to = SessionFixture.pathname,
     }: LoginInit = {}) {
-        this.#logger.info("Logging in...");
+        this.logger.info("Logging in...");
 
-        const currentURL = new URL(this.page.url());
+        const initialURL = new URL(this.page.url());
 
-        if (currentURL.pathname === SessionFixture.pathname) {
-            this.#logger.info("Skipping navigation because we're already in a authentication flow");
+        if (initialURL.pathname === SessionFixture.pathname) {
+            this.logger.info("Skipping navigation because we're already in a authentication flow");
         } else {
             await this.page.goto(to.toString());
         }
@@ -119,7 +97,14 @@ export class SessionFixture {
         await this.submitUsernameStage(username);
 
         await this.$passwordField.waitFor({ state: "visible" });
+
         await this.submitPasswordStage(password);
+
+        const expectedPathname = typeof to === "string" ? to : to.pathname;
+
+        await this.page.waitForURL(`**${expectedPathname}`);
+
+        const currentURL = new URL(this.page.url());
     }
 
     //#endregion
@@ -134,10 +119,10 @@ export class SessionFixture {
      * Log out of the application.
      */
     public async toLogoutPage() {
-        this.#logger.info("Logging out...");
+        this.logger.info("Logging out...");
         await this.page.goto("/flows/-/default/invalidation/");
 
-        this.#logger.info("Waiting for ak-interface-root to exist...");
+        this.logger.info("Waiting for ak-interface-root to exist...");
         await this.$interfaceRoot.waitFor();
     }
 }

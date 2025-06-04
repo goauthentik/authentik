@@ -6,14 +6,16 @@ import SessionPage, {
 } from "#tests/pageobjects/session.page";
 import UserLibraryPage from "#tests/pageobjects/user-library.page";
 import { navigateBrowser } from "#tests/utils/navigation";
+import { browser, expect } from "@wdio/globals";
 
 describe("Session management", () => {
-    beforeEach(async () => {
+    afterEach(async () => {
         await SessionPage.logout();
-        await navigateBrowser();
+        await navigateBrowser(SessionPage.pathname);
     });
 
     it("should login with valid credentials and reach the UserLibrary", async () => {
+        await browser.pause(5000);
         await SessionPage.login({ username: GOOD_USERNAME, password: GOOD_PASSWORD });
         await expect(UserLibraryPage.$pageHeading).resolves.toHaveText("My applications");
     });

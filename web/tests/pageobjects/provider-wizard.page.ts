@@ -1,7 +1,7 @@
-/// <reference types="@wdio/globals/types" />
 import AdminPage from "#tests/pageobjects/admin.page";
 import OAuthForm from "#tests/pageobjects/forms/oauth.form";
 import { findElementByTestID } from "#tests/utils/selectors";
+import { $ } from "@wdio/globals";
 
 export class ProviderWizardView extends AdminPage {
     public readonly OAuth = OAuthForm;

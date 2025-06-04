@@ -28,11 +28,6 @@ const inlineCSSPlugin = {
 };
 
 /**
- * @satisfies {InlineConfig}
- */
-// const viteFinal = ;
-
-/**
  * @satisfies {StorybookConfig}
  */
 const config = {

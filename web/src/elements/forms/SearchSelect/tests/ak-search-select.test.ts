@@ -1,8 +1,8 @@
-/// <reference types="@wdio/globals/types" />
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import { render } from "@goauthentik/elements/tests/utils.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { ChainablePromiseElement } from "webdriverio";
 

@@ -1,9 +1,9 @@
-/// <reference types="@wdio/globals/types" />
 import ProviderWizardView from "#tests/pageobjects/provider-wizard.page";
 import ProvidersListPage from "#tests/pageobjects/providers-list.page";
 import SessionPage from "#tests/pageobjects/session.page";
 import { ConsoleTestRunner } from "#tests/utils/logger";
 import { findElementByDataset } from "#tests/utils/selectors";
+import { $, expect } from "@wdio/globals";
 
 describe("Configure OAuth2 Providers", () => {
     it("Should configure a simple OAuth2 Application", async () => {

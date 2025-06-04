@@ -1,13 +1,13 @@
-/// <reference types="@wdio/globals/types" />
+import UserLibraryPage from "#tests/pageobjects/user-library.page";
 import { ConsoleTestRunner } from "#tests/utils/logger";
 import { navigateBrowser } from "#tests/utils/navigation";
-import { waitFor } from "#tests/utils/timers";
+import { $, browser } from "@wdio/globals";
 
-export const GOOD_USERNAME = process.env.AK_GOOD_USERNAME ?? "test-admin@goauthentik.io";
-export const GOOD_PASSWORD = process.env.AK_GOOD_PASSWORD ?? "test-runner";
+export const GOOD_USERNAME = "test-admin@goauthentik.io";
+export const GOOD_PASSWORD = "test-runner";
 
-export const BAD_USERNAME = process.env.AK_BAD_USERNAME ?? "bad-username@bad-login.io";
-export const BAD_PASSWORD = process.env.AK_BAD_PASSWORD ?? "-this-is-a-bad-password-";
+export const BAD_USERNAME = "bad-username@bad-login.io";
+export const BAD_PASSWORD = "-this-is-a-bad-password-";
 
 export interface LoginInit {
     username?: string;
@@ -16,7 +16,12 @@ export interface LoginInit {
 }
 
 export abstract class SessionPage {
+    public static readonly pathname = "/if/flow/default-authentication-flow/";
     //#region Selectors
+
+    public static get $interfaceRoot() {
+        return $("[data-ak-interface-root]");
+    }
 
     /**
      * The username field on the login page.
@@ -92,13 +97,13 @@ export abstract class SessionPage {
     public static async login({
         username = GOOD_USERNAME,
         password = GOOD_PASSWORD,
-        to = "/if/user/#/library",
+        to = SessionPage.pathname,
     }: LoginInit = {}) {
         ConsoleTestRunner.info("Session: Logging in...");
 
         const currentURL = new URL(await browser.getUrl());
 
-        if (currentURL.pathname === "/if/flow/default-authentication-flow/") {
+        if (currentURL.pathname === SessionPage.pathname) {
             ConsoleTestRunner.info(
                 "Skipping navigation because we're already in a authentication flow",
             );
@@ -115,9 +120,12 @@ export abstract class SessionPage {
     /**
      * Log out of the application.
      */
-    public static logout() {
+    public static async logout() {
         ConsoleTestRunner.info("Session: Logging out...");
-        return navigateBrowser("/flows/-/default/invalidation/").then(() => waitFor());
+        await navigateBrowser("/flows/-/default/invalidation/");
+
+        ConsoleTestRunner.info("Waiting for ak-interface-root to exist...");
+        await this.$interfaceRoot.waitForExist();
     }
 
     //#endregion

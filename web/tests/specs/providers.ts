@@ -1,10 +1,9 @@
-/// <reference types="@wdio/globals/types" />
 import ProviderWizardView from "#tests/pageobjects/provider-wizard.page";
 import ProvidersListPage from "#tests/pageobjects/providers-list.page";
 import SessionPage from "#tests/pageobjects/session.page";
 import { type TestAction, type TestSequence, runTestSequence } from "#tests/utils/controls";
 import { ConsoleTestRunner } from "#tests/utils/logger";
-import { waitFor } from "tests/utils/timers";
+import { $, browser, expect } from "@wdio/globals";
 
 import {
     completeForwardAuthDomainProxyProviderForm,

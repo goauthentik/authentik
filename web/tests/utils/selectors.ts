@@ -1,6 +1,6 @@
-/// <reference types="@wdio/globals/types" />
+import { $, browser } from "@wdio/globals";
 import { kebabCase } from "change-case";
-import { ChainablePromiseElement } from "webdriverio";
+import type { ChainablePromiseElement } from "webdriverio";
 
 /**
  * The context in which a selector is being evaluated.

@@ -1,5 +1,5 @@
-/// <reference types="@wdio/globals/types" />
 import { render } from "@goauthentik/elements/tests/utils.js";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 import { ChainablePromiseElement } from "webdriverio";
 

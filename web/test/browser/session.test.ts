@@ -1,5 +1,10 @@
 import { expect, test } from "#e2e";
-import { BAD_PASSWORD, BAD_USERNAME, GOOD_PASSWORD, GOOD_USERNAME } from "#e2e/fixtures/session";
+import {
+    BAD_PASSWORD,
+    BAD_USERNAME,
+    GOOD_PASSWORD,
+    GOOD_USERNAME,
+} from "#e2e/fixtures/SessionFixture";
 
 test.beforeEach(async ({ session }) => {
     await session.toLoginPage();

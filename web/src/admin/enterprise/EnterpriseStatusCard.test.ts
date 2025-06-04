@@ -1,5 +1,5 @@
-/// <reference types="@wdio/globals/types" />
 import { render } from "@goauthentik/elements/tests/utils.js";
+import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";

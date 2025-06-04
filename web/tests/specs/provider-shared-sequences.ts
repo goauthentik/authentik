@@ -14,8 +14,9 @@ import {
     setTypeCreate,
     toggleFormGroup,
 } from "#tests/utils/controls";
+import { IDGenerator } from "@goauthentik/core/id";
 
-const newObjectName = (prefix: string) => `${prefix} - ${randomId()}`;
+const newObjectName = (prefix: string) => `${prefix} - ${IDGenerator.next()}`;
 
 export const simpleOAuth2ProviderForm: TestSequence = () => [
     [setTypeCreate, "selectProviderType", "OAuth2/OpenID Provider"],

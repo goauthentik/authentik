@@ -31,10 +31,6 @@ export class Loading extends AKElement {
         applyDocumentTheme(globalAK().brand.uiTheme);
     }
 
-    public connectedCallback(): void {
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
-    }
-
     render(): TemplateResult {
         return html` <section
             class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl"

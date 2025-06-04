@@ -1,4 +1,4 @@
-/// <reference types="@wdio/globals/types" />
+import { $ } from "@wdio/globals";
 
 export abstract class ApplicationForm {
     public static get $name() {
