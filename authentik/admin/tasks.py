@@ -33,20 +33,6 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task(
-    throws=(DatabaseError, ProgrammingError, InternalError),
-)
-def clear_update_notifications():
-    """Clear update notifications on startup if the notification was for the version
-    we're running now."""
-    for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
-        if "new_version" not in notification.event.context:
-            continue
-        notification_version = notification.event.context["new_version"]
-        if LOCAL_VERSION >= parse(notification_version):
-            notification.delete()
-
-
 @CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
 def update_latest_version(self: SystemTask):
