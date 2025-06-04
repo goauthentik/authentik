@@ -93,7 +93,7 @@ bump:
 	$(MAKE) aws-cfn
 	npm version --no-git-tag-version --allow-same-version $(version)
 	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
-	# bumpversion --new-version $(version) minor --verbose -h
+	echo $(version) > ${PWD}/internal/constants/VERSION
 
 #########################
 ## API Schema
