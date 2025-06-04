@@ -4,7 +4,6 @@ from uuid import UUID
 from django.http import HttpRequest
 from django.utils.timezone import now
 from dramatiq.actor import actor
-from dramatiq.composition import group
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 

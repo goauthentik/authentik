@@ -1,6 +1,7 @@
 """Event notification tasks"""
 
 from uuid import UUID
+
 from django.db.models.query_utils import Q
 from dramatiq.actor import actor
 from guardian.shortcuts import get_anonymous_user

@@ -14,7 +14,6 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDeviceType,
 )
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 CACHE_KEY_MDS_NO = "goauthentik.io/stages/authenticator_webauthn/mds_no"
 AAGUID_BLOB_PATH = Path(__file__).parent / "mds" / "aaguid.json"
@@ -32,7 +31,7 @@ def mds_ca() -> bytes:
 @actor
 def webauthn_mds_import(force=False):
     """Background task to import FIDO Alliance MDS blob and AAGUIDs into database"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     with open(MDS_BLOB_PATH, mode="rb") as _raw_blob:
         blob = parse_blob(_raw_blob.read(), mds_ca())
     to_create_update = [
@@ -87,7 +86,4 @@ def webauthn_mds_import(force=False):
             unique_fields=["aaguid"],
         )
 
-    self.set_status(
-        TaskStatus.SUCCESSFUL,
-        "Successfully imported FIDO Alliance MDS blobs and AAGUIDs.",
-    )
+    self.info("Successfully imported FIDO Alliance MDS blobs and AAGUIDs.")

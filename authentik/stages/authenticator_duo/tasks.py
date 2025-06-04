@@ -1,5 +1,7 @@
 """duo tasks"""
 
+from uuid import UUID
+
 from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
@@ -10,7 +12,7 @@ LOGGER = get_logger()
 
 
 @actor(store_results=True)
-def duo_import_devices(stage_pk: str):
+def duo_import_devices(stage_pk: UUID):
     """Import duo devices"""
     created = 0
     stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=stage_pk).first()
