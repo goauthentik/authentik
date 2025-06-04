@@ -165,7 +165,7 @@ wheels = [
 
 [[package]]
 name = "authentik"
-version = "2025.4.1"
+version = "2025.4.2"
 source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
