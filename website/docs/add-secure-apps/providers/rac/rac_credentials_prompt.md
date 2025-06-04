@@ -47,7 +47,7 @@ This configurations requires:
 5. Click **Create** to save the prompt.
 
 :::note
-You can optionally add a other prompt fields such as `domain` (e.g. `connection_settings.domain`), which can be useful for Windows based RDP. There is also the option of adding another prompt field using the `Text (read-only)` type that includes explanatory text for the user (e.g. `please enter your RDP credentials`).
+You can optionally add other prompt fields such as `domain` (e.g. `connection_settings.domain`), which can be useful for Windows based RDP. There is also the option of adding a `Text (read-only)` type prompt field that includes explanatory text for the user (e.g. `please enter your RDP credentials`).
 :::
 
 ## Create and bind a prompt stage
