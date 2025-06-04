@@ -2818,19 +2818,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Путь пользователя</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>Дополнение User DN</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>Дополнительный DN пользователя, добавляемый к базовому DN.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>Дополнение Group DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -9643,6 +9633,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
 </trans-unit>
     </body>
   </file>
