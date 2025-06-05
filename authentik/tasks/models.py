@@ -112,23 +112,20 @@ class Task(SerializerModel):
         if save:
             self.save()
 
-    def log(self, status: TaskStatus, *messages: str | LogEvent | Exception, save: bool = False):
+    def log(self, status: TaskStatus, message: str | Exception, save: bool = False, **attributes):
         self.messages: list
-        for msg in messages:
-            message = msg
-            if isinstance(message, Exception):
-                message = exception_to_string(message)
-            if not isinstance(message, LogEvent):
-                message = LogEvent(message, logger=self.uid, log_level=status.value)
-            self.messages.append(sanitize_item(message))
+        if isinstance(message, Exception):
+            message = exception_to_string(message)
+        message = LogEvent(message, logger=self.uid, log_level=status.value, attributes=attributes)
+        self.messages.append(sanitize_item(message))
         if save:
             self.save()
 
-    def info(self, *messages: str | LogEvent | Exception, save: bool = False):
-        self.log(TaskStatus.INFO, *messages, save=save)
+    def info(self, message: str | Exception, save: bool = False, **attributes):
+        self.log(TaskStatus.INFO, message, save=save, **attributes)
 
-    def warning(self, *messages: str | LogEvent | Exception, save: bool = False):
-        self.log(TaskStatus.WARNING, *messages, save=save)
+    def warning(self, message: str | Exception, save: bool = False, **attributes):
+        self.log(TaskStatus.WARNING, message, save=save, **attributes)
 
-    def error(self, *messages: str | LogEvent | Exception, save: bool = False):
-        self.log(TaskStatus.ERROR, *messages, save=save)
+    def error(self, message: str | Exception, save: bool = False, **attributes):
+        self.log(TaskStatus.ERROR, message, save=save, **attributes)

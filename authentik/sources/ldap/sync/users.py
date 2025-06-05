@@ -39,7 +39,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_users:
-            self.message("User syncing is disabled for this Source")
+            self._task.info("User syncing is disabled for this Source")
             return iter(())
         return self.search_paginator(
             search_base=self.base_dn_users,
@@ -56,7 +56,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
-            self.message("User syncing is disabled for this Source")
+            self._task.info("User syncing is disabled for this Source")
             return -1
         user_count = 0
         for user in page_data:
@@ -64,7 +64,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 continue
             user_dn = flatten(user.get("entryDN", user.get("dn")))
             if not (uniq := self.get_identifier(attributes)):
-                self.message(
+                self._task.info(
                     f"Uniqueness field not found/not set in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
                     dn=user_dn,

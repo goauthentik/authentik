@@ -23,7 +23,7 @@ from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all, ldap_sync_page
+from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
 from authentik.sources.ldap.tests.mock_slapd import (
@@ -33,6 +33,7 @@ from authentik.sources.ldap.tests.mock_slapd import (
     user_in_slapd_cn,
     user_in_slapd_uid,
 )
+from authentik.tasks.models import Task
 
 LDAP_PASSWORD = generate_key()
 
@@ -74,7 +75,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             with self.assertRaises(StopSync):
                 user_sync.sync_full()
             self.assertFalse(User.objects.filter(username="user0_sn").exists())
@@ -105,7 +106,7 @@ class LDAPSyncTests(TestCase):
 
         # we basically just test that the mappings don't throw errors
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
 
     def test_sync_users_ad(self):
@@ -133,7 +134,7 @@ class LDAPSyncTests(TestCase):
         )
 
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             user = User.objects.filter(username="user0_sn").first()
             self.assertEqual(user.attributes["foo"], "bar")
@@ -152,7 +153,7 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
@@ -168,7 +169,7 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
@@ -193,11 +194,11 @@ class LDAPSyncTests(TestCase):
         )
         connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
 
             self.assertTrue(
@@ -230,9 +231,9 @@ class LDAPSyncTests(TestCase):
             parent_group = Group.objects.get(name=_user.username)
             self.source.sync_parent_group = parent_group
             self.source.save()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             group: Group = Group.objects.filter(name="test-group").first()
             self.assertIsNotNone(group)
@@ -256,9 +257,9 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             group = Group.objects.filter(name="group1")
             self.assertTrue(group.exists())
@@ -290,11 +291,11 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()
@@ -327,11 +328,11 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
-            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync = UserLDAPSynchronizer(self.source, Task())
             user_sync.sync_full()
-            group_sync = GroupLDAPSynchronizer(self.source)
+            group_sync = GroupLDAPSynchronizer(self.source, Task())
             group_sync.sync_full()
-            membership_sync = MembershipLDAPSynchronizer(self.source)
+            membership_sync = MembershipLDAPSynchronizer(self.source, Task())
             membership_sync.sync_full()
             # Test if membership mapping based on memberUid works.
             posix_group = Group.objects.filter(name="group-posix").first()

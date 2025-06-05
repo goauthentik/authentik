@@ -43,7 +43,6 @@ def kerberos_sync(pk: str):
                 return
             syncer = KerberosSync(source)
             syncer.sync()
-            self.info(*syncer.messages)
     except StopSync as exc:
         LOGGER.warning(exception_to_string(exc))
         self.error(exc)

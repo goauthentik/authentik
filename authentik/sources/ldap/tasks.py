@@ -72,14 +72,12 @@ def ldap_sync(source_pk: str):
         )
 
         # User and group sync can happen at once, they have no dependencies on each other
-        user_group_tasks.run().get_results(
-            block=True,
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
+        user_group_tasks.run().wait(
+            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
         )
         # Membership sync needs to run afterwards
-        membership_tasks.run().get_results(
-            block=True,
-            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
+        membership_tasks.run().wait(
+            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000
         )
         # Finally, deletions. What we'd really like to do here is something like
         # ```
@@ -96,7 +94,9 @@ def ldap_sync(source_pk: str):
         #    large chunks, and only queue the deletion step afterwards.
         # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
         #    small chunks.
-        deletion_tasks.run()  # no need to block here, we don't have anything else to do afterwards
+        deletion_tasks.run().wait(
+            timeout=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000,
+        )
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list[Message]:
@@ -139,9 +139,7 @@ def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
             return
         cache.touch(page_cache_key)
         count = sync_inst.sync(page)
-        messages = sync_inst.messages
-        messages.append(f"Synced {count} objects.")
-        self.info(*messages)
+        self.info(f"Synced {count} objects.")
         cache.delete(page_cache_key)
     except (LDAPException, StopSync) as exc:
         # No explicit event is created here as .set_status with an error will do that

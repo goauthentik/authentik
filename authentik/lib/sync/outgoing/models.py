@@ -45,11 +45,17 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def get_object_qs[T: User | Group](self, type: type[T]) -> QuerySet[T]:
         raise NotImplementedError
 
+    def get_paginator[T: User | Group](self, type: type[T]) -> Paginator:
+        return Paginator(self.get_object_qs(type), PAGE_SIZE)
+
+    def get_object_sync_time_limit[T: User | Group](self, type: type[T]) -> int:
+        num_pages: int = self.get_paginator(type).num_pages
+        return int(num_pages * PAGE_TIMEOUT * 1.5) * 1000
+
     def get_sync_time_limit(self) -> int:
-        users_paginator = Paginator(self.get_object_qs(User), PAGE_SIZE)
-        groups_paginator = Paginator(self.get_object_qs(Group), PAGE_SIZE)
-        time_limit = (users_paginator.num_pages + groups_paginator.num_pages) * PAGE_TIMEOUT * 1.5
-        return int(time_limit)
+        return int(
+            self.get_object_sync_time_limit(User) + self.get_object_sync_time_limit(Group) * 1.5
+        )
 
     @property
     def sync_lock(self) -> pglock.advisory:
@@ -72,7 +78,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 uid=self.pk,
                 args=(self.pk,),
                 options={
-                    "time_limit": self.get_sync_time_limit() * 1000,
+                    "time_limit": self.get_sync_time_limit(),
                 },
                 send_on_save=True,
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",

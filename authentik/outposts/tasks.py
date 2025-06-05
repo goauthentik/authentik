@@ -130,7 +130,8 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
     else:
         if from_cache:
             cache.delete(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
-        self.info(*logs)
+        for log in logs:
+            self.info(log)
 
 
 @actor

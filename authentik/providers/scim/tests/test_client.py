@@ -85,6 +85,6 @@ class SCIMClientTests(TestCase):
             self.assertEqual(mock.call_count, 1)
             self.assertEqual(mock.request_history[0].method, "GET")
 
-    def test_scim_sync_all(self):
-        """test scim_sync_all task"""
+    def test_scim_sync(self):
+        """test scim_sync task"""
         scim_sync.send(self.provider.pk).get_result()
