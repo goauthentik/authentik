@@ -114,7 +114,7 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 
 #### Local development
 
-authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
+authentik can be run locally, although depending on which part you want to work on, different pre-requisites are required.
 
 This is documented in the [developer docs](./setup/frontend-dev-environment.md).
 

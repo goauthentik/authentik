@@ -1,8 +1,8 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
 import "@goauthentik/elements/EmptyState.js";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
@@ -21,7 +21,7 @@ import { type LocalTypeCreate } from "./ProviderChoices.js";
 
 @customElement("ak-application-wizard-provider-choice-step")
 export class ApplicationWizardProviderChoiceStep extends WithLicenseSummary(ApplicationWizardStep) {
-    label = msg("Choose A Provider");
+    label = msg("Choose a Provider");
 
     @state()
     failureMessage = "";

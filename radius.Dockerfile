@@ -56,6 +56,7 @@ EXPOSE 1812/udp 9300
 
 USER 1000
 
-ENV GOFIPS=1
+ENV TMPDIR=/dev/shm/ \
+    GOFIPS=1
 
 ENTRYPOINT ["/radius"]
