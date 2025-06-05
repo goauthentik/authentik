@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
@@ -101,8 +102,10 @@ class SCIMProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
         return static("authentik/sources/scim.png")
 
     @property
-    def sync_task(self) -> str:
-        return "authentik.providers.scim.tasks.scim_sync"
+    def sync_actor(self) -> Actor:
+        from authentik.providers.scim.tasks import scim_sync
+
+        return scim_sync
 
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]

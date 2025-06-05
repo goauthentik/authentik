@@ -140,16 +140,18 @@ class KerberosSource(ScheduledModel, Source):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.kerberos.tasks import kerberos_sync, kerberos_connectivity_check
+
         return [
             ScheduleSpec(
-                actor_name="authentik.sources.kerberos.tasks.kerberos_sync",
+                actor=kerberos_sync,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('kerberos_sync/' + str(self.pk))} */2 * * *",
                 description=_(f"Sync Kerberos source '{self.name}'"),
             ),
             ScheduleSpec(
-                actor_name="authentik.sources.kerberos.tasks.kerberos_connectivity_check",
+                actor=kerberos_connectivity_check,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('kerberos_connectivity_check/' + str(self.pk))} * * * *",

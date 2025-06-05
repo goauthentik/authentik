@@ -150,14 +150,16 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
+
         return [
             ScheduleSpec(
-                actor_name="authentik.blueprints.v1.tasks.blueprints_discovery",
+                actor=blueprints_discovery,
                 crontab=f"{fqdn_rand('blueprints_v1_discover')} * * * *",
                 run_on_startup=True,
             ),
             ScheduleSpec(
-                actor_name="authentik.blueprints.v1.tasks.clear_failed_blueprints",
+                actor=clear_failed_blueprints,
                 crontab=f"{fqdn_rand('blueprints_v1_cleanup')} * * * *",
                 run_on_startup=True,
             ),

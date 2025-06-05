@@ -164,16 +164,18 @@ class LDAPSource(ScheduledModel, Source):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.ldap.tasks import ldap_sync, ldap_connectivity_check
+
         return [
             ScheduleSpec(
-                actor_name="authentik.sources.ldap.tasks.ldap_sync",
+                actor=ldap_sync,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('ldap_sync/' + str(self.pk))} */2 * * *",
                 description=_(f"Sync LDAP source '{self.name}'"),
             ),
             ScheduleSpec(
-                actor_name="authentik.sources.ldap.tasks.ldap_connectivity_check",
+                actor=ldap_connectivity_check,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand('ldap_connectivity_check/' + str(self.pk))} * * * *",

@@ -20,11 +20,11 @@ class AuthentikEnterprisePoliciesUniquePasswordConfig(EnterpriseConfig):
 
         return [
             ScheduleSpec(
-                actor_name=trim_password_histories.actor_name,
+                actor=trim_password_histories,
                 crontab=f"{fqdn_rand('policies_unique_password_trim')} */12 * * *",
             ),
             ScheduleSpec(
-                actor_name=check_and_purge_password_history.actor_name,
+                actor=check_and_purge_password_history,
                 crontab=f"{fqdn_rand('policies_unique_password_purge')} */24 * * *",
             ),
         ]

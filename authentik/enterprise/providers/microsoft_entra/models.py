@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
@@ -101,8 +102,10 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, ScheduledModel, BackchannelPr
     )
 
     @property
-    def sync_task(self) -> str:
-        return "authentik.enterprise.providers.microsoft_entra.tasks.microsoft_entra_sync"
+    def sync_actor(self) -> Actor:
+        from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
+
+        return microsoft_entra_sync
 
     def client_for_model(
         self,

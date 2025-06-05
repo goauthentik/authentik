@@ -77,9 +77,11 @@ class PlexSource(ScheduledModel, Source):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.plex.tasks import check_plex_token
+
         return [
             ScheduleSpec(
-                actor_name="authentik.sources.plex.tasks.check_plex_token",
+                actor=check_plex_token,
                 uid=self.pk,
                 args=(self.pk,),
                 crontab=f"{fqdn_rand(self.pk)} */3 * * *",

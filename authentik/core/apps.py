@@ -28,13 +28,15 @@ class AuthentikCoreConfig(ManagedAppConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.core.tasks import clean_expired_models, clean_temporary_users
+
         return [
             ScheduleSpec(
-                actor_name="authentik.core.tasks.clean_expired_models",
+                actor=clean_expired_models,
                 crontab="2-59/5 * * * *",
             ),
             ScheduleSpec(
-                actor_name="authentik.core.tasks.clean_temporary_users",
+                actor=clean_temporary_users,
                 crontab="9-59/5 * * * *",
             ),
         ]

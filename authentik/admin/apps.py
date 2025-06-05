@@ -39,7 +39,7 @@ class AuthentikAdminConfig(ManagedAppConfig):
 
         return [
             ScheduleSpec(
-                actor_name=update_latest_version.actor_name,
+                actor=update_latest_version,
                 crontab=f"{fqdn_rand('admin_latest_version')} * * * *",
             ),
         ]

@@ -3,13 +3,15 @@ from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any
 
+from dramatiq.actor import Actor
+
 if TYPE_CHECKING:
     from authentik.tasks.schedules.models import Schedule
 
 
 @dataclass
 class ScheduleSpec:
-    actor_name: str
+    actor: Actor
     crontab: str
     uid: str | None = None
 
@@ -27,8 +29,8 @@ class ScheduleSpec:
 
     def get_uid(self) -> str:
         if self.uid is not None:
-            return f"{self.actor_name}:{self.uid}"
-        return self.actor_name
+            return f"{self.actor.actor_name}:{self.uid}"
+        return self.actor.actor_name
 
     def get_args(self) -> bytes:
         return pickle.dumps(self.args)
@@ -47,7 +49,7 @@ class ScheduleSpec:
         }
         defaults = {
             **query,
-            "actor_name": self.actor_name,
+            "actor_name": self.actor.actor_name,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),
             "options": self.get_options(),

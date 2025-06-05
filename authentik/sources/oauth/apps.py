@@ -45,9 +45,11 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.sources.oauth.tasks import update_well_known_jwks
+
         return [
             ScheduleSpec(
-                actor_name="authentik.sources.oauth.tasks.update_well_known_jwks",
+                actor=update_well_known_jwks,
                 crontab=f"{fqdn_rand('update_well_known_jwks')} */3 * * *",
             ),
         ]

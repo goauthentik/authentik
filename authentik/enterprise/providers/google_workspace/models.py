@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from google.oauth2.service_account import Credentials
 from rest_framework.serializers import Serializer
 
@@ -112,8 +113,10 @@ class GoogleWorkspaceProvider(OutgoingSyncProvider, ScheduledModel, BackchannelP
     )
 
     @property
-    def sync_task(self) -> str:
-        return "authentik.enterprise.providers.google_workspace.tasks.google_workspace_sync"
+    def sync_actor(self) -> Actor:
+        from authentik.enterprise.providers.google_workspace.tasks import google_workspace_sync
+
+        return google_workspace_sync
 
     def client_for_model(
         self,

@@ -35,7 +35,7 @@ class AuthentikEnterpriseConfig(EnterpriseConfig):
 
         return [
             ScheduleSpec(
-                actor_name=enterprise_update_usage.actor_name,
+                actor=enterprise_update_usage,
                 crontab=f"{fqdn_rand('enterprise_update_usage')} */2 * * *",
             ),
         ]

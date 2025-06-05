@@ -90,13 +90,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
         LOGGER.debug("new blueprint file created, starting discovery")
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                schedule = Schedule.objects.filter(
-                    actor_name=blueprints_discovery.actor_name,
-                    paused=False,
-                ).first()
-                if schedule:
-                    schedule.send()
-                # Schedule was paused or doesn't exist, no dispatch
+                Schedule.dispatch_by_actor(blueprints_discovery)
 
     def on_modified(self, event: FileSystemEvent):
         """Process file modification"""

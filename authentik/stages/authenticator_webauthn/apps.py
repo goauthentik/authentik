@@ -15,9 +15,11 @@ class AuthentikStageAuthenticatorWebAuthnConfig(ManagedAppConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
+
         return [
             ScheduleSpec(
-                actor_name="authentik.stages.authenticator_webauthn.tasks.webauthn_mds_import",
+                actor=webauthn_mds_import,
                 crontab=f"{fqdn_rand('webauthn_mds_import')} {fqdn_rand('webauthn_mds_import', 24)} * * {fqdn_rand('webauthn_mds_import', 7)}",  # noqa: E501
             ),
         ]

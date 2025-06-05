@@ -1,5 +1,6 @@
 from typing import Any, Self
 
+from dramatiq.actor import Actor
 import pglock
 from django.core.paginator import Paginator
 from django.db import connection, models
@@ -60,14 +61,14 @@ class OutgoingSyncProvider(ScheduledModel, Model):
         )
 
     @property
-    def sync_task(self) -> str:
+    def sync_actor(self) -> Actor:
         raise NotImplementedError
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
         return [
             ScheduleSpec(
-                actor_name=self.sync_task,
+                actor=self.sync_actor,
                 uid=self.pk,
                 args=(self.pk,),
                 options={

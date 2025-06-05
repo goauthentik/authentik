@@ -69,7 +69,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
 
         return [
             ScheduleSpec(
-                actor_name=outpost_token_ensurer.actor_name,
+                actor=outpost_token_ensurer,
                 crontab=f"{fqdn_rand('outpost_token_ensurer')} */8 * * *",
             ),
         ]
@@ -80,7 +80,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
 
         return [
             ScheduleSpec(
-                actor_name=outpost_connection_discovery.actor_name,
+                actor=outpost_connection_discovery,
                 crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",
                 run_on_startup=True,
             ),

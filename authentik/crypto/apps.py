@@ -72,9 +72,11 @@ class AuthentikCryptoConfig(ManagedAppConfig):
 
     @property
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
+        from authentik.crypto.tasks import certificate_discovery
+
         return [
             ScheduleSpec(
-                actor_name="authentik.crypto.tasks.certificate_discovery",
+                actor=certificate_discovery,
                 crontab=f"{fqdn_rand('crypto_certificate_discovery')} * * * *",
             ),
         ]
