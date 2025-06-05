@@ -33,7 +33,7 @@ Home Assistant can use either [OIDC](#using-OIDC) or a [proxy-provider](#Using a
 
 ### authentik configuration for OIDC
 
-To support the integration of `Home Assistant` using `hass-openid` with authentik, you need to create an application/provider pair in authentik.
+To support the integration of Home Assistant with authentik, you need to create an application/provider pair in authentik.
 
 #### Create an application and provider in authentik
 
