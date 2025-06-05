@@ -8,25 +8,19 @@ from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, ExtractHour
 from django.db.models.query_utils import Q
-from django_filters.rest_framework import DjangoFilterBackend
-from djangoql.schema import DateTimeField, StrField
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import DictField, IntegerField
-from rest_framework.filters import OrderingFilter
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.api.pagination import AutocompletePagination
-from authentik.api.ql import ChoiceSearchField, JSONSearchField, QLSearch
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
-from authentik.rbac.filters import ObjectFilter
 
 
 class EventSerializer(ModelSerializer):
@@ -114,21 +108,28 @@ class EventViewSet(ModelViewSet):
     serializer_class = EventSerializer
     ordering = ["-created"]
     search_fields = [
-        JSONSearchField(Event, "user"),
-        ChoiceSearchField(Event, "action"),
-        StrField(Event, "app", suggest_options=True),
-        JSONSearchField(Event, "context"),
-        StrField(Event, "client_ip", suggest_options=True),
-        DateTimeField(Event, "created", suggest_options=True),
+        "event_uuid",
+        "user",
+        "action",
+        "app",
+        "context",
+        "client_ip",
     ]
     filterset_class = EventsFilter
-    filter_backends = [
-        QLSearch,
-        ObjectFilter,
-        DjangoFilterBackend,
-        OrderingFilter,
-    ]
-    pagination_class = AutocompletePagination
+
+    def get_ql_fields(self):
+        from djangoql.schema import DateTimeField, StrField
+
+        from authentik.enterprise.search.ql import ChoiceSearchField, JSONSearchField
+
+        return [
+            JSONSearchField(Event, "user"),
+            ChoiceSearchField(Event, "action"),
+            StrField(Event, "app", suggest_options=True),
+            JSONSearchField(Event, "context"),
+            StrField(Event, "client_ip", suggest_options=True),
+            DateTimeField(Event, "created", suggest_options=True),
+        ]
 
     @extend_schema(
         methods=["GET"],

@@ -1,3 +1,4 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import "@goauthentik/components/ak-search-ql";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -13,8 +14,10 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 @customElement("ak-table-search")
-export class TableSearch extends AKElement {
+export class TableSearch extends WithLicenseSummary(AKElement) {
     @property()
     value?: string;
 
@@ -46,7 +49,10 @@ export class TableSearch extends AKElement {
     }
 
     renderInput(): TemplateResult {
-        if (this.supportsQL) {
+        if (
+            this.supportsQL &&
+            this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed
+        ) {
             return html`<ak-search-ql
                 .apiResponse=${this.apiResponse}
                 .value=${this.value}

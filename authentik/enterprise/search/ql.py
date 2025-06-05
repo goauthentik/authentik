@@ -1,5 +1,5 @@
 """DjangoQL search"""
-
+from django.apps import apps
 from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
@@ -76,6 +76,10 @@ class BaseSchema(DjangoQLSchema):
 class QLSearch(SearchFilter):
     """rest_framework search filter which uses DjangoQL"""
 
+    @property
+    def enabled(self):
+        return apps.get_app_config("authentik_enterprise").enabled()
+
     def get_search_terms(self, request) -> str:
         """
         Search terms are set by a ?search=... query parameter,
@@ -86,26 +90,23 @@ class QLSearch(SearchFilter):
         return params
 
     def get_schema(self, request: Request, view) -> BaseSchema:
-        search_fields = self.get_search_fields(view, request)
+        ql_fields = []
+        if hasattr(view, "get_ql_fields"):
+            ql_fields = view.get_ql_fields()
 
         class InlineSchema(BaseSchema):
             def get_fields(self, model):
-                fields = []
-                if not search_fields:
-                    return fields
-                for field in search_fields:
-                    fields.append(field)
-                return fields
+                return ql_fields or []
 
         return InlineSchema
 
     def filter_queryset(self, request: Request, queryset: QuerySet, view) -> QuerySet:
         search_query = self.get_search_terms(request)
         schema = self.get_schema(request, view)
-        if len(search_query) == 0:
-            return SearchFilter().filter_queryset(request, queryset, view)
+        if len(search_query) == 0 or not self.enabled:
+            return super().filter_queryset(request, queryset, view)
         try:
             return apply_search(queryset, search_query, schema=schema)
         except DjangoQLError as exc:
             LOGGER.debug("Failed to parse search expression", exc=exc)
-            return queryset
+            return super().filter_queryset(request, queryset, view)

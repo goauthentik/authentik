@@ -1,3 +1,4 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import {
     APIError,
@@ -31,7 +32,7 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Pagination } from "@goauthentik/api";
+import { LicenseSummaryStatusEnum, Pagination } from "@goauthentik/api";
 
 export interface TableLike {
     order?: string;
@@ -101,7 +102,7 @@ export class TableColumn {
     }
 }
 
-export abstract class Table<T> extends AKElement implements TableLike {
+export abstract class Table<T> extends WithLicenseSummary(AKElement) implements TableLike {
     abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
     abstract columns(): TableColumn[];
     abstract row(item: T): SlottedTemplateResult[];
@@ -480,15 +481,14 @@ export abstract class Table<T> extends AKElement implements TableLike {
             });
             this.fetch();
         };
-
+        const isQL =
+            this.supportsQL && this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed;
         return !this.searchEnabled()
             ? html``
-            : html`<div
-                  class="pf-c-toolbar__group pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
-              >
+            : html`<div class="pf-c-toolbar__group pf-m-search-filter ${isQL ? "ql" : ""}">
                   <ak-table-search
                       ?supportsQL=${this.supportsQL}
-                      class="pf-c-toolbar__item pf-m-search-filter ${this.supportsQL ? "ql" : ""}"
+                      class="pf-c-toolbar__item pf-m-search-filter ${isQL ? "ql" : ""}"
                       value=${ifDefined(this.search)}
                       .onSearch=${runSearch}
                       .apiResponse=${this.data}

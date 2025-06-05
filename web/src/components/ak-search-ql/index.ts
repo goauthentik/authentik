@@ -68,6 +68,7 @@ export class QLSearch extends AKElement {
                 .ql.pf-c-form-control {
                     font-family: monospace;
                     resize: vertical;
+                    height: 2.25em;
                 }
                 .selected {
                     background-color: var(--pf-c-search-input__menu-item--hover--BackgroundColor);
