@@ -1,3 +1,19 @@
+import "#elements/CodeMirror";
+import "#elements/Tabs";
+import "#elements/buttons/ActionButton/ak-action-button";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/ModalForm";
+import "#elements/oauth/UserAccessTokenList";
+import "#elements/oauth/UserRefreshTokenList";
+import "#elements/user/SessionList";
+import "#elements/user/UserConsentList";
+import "#elements/user/UserReputationList";
+import "#elements/user/sources/SourceSettings";
+import "#components/DescriptionList";
+import "#components/ak-page-header";
+import "#components/ak-status-label";
+import "#components/events/ObjectChangelog";
+import "#components/events/UserEvents";
 import "#admin/groups/RelatedGroupList";
 import "#admin/providers/rac/ConnectionTokenList";
 import "#admin/rbac/ObjectPermissionsPage";
@@ -6,33 +22,30 @@ import "#admin/users/UserApplicationTable";
 import "#admin/users/UserChart";
 import "#admin/users/UserForm";
 import "#admin/users/UserImpersonateForm";
-import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
 import "#admin/users/UserPasswordForm";
+import "./UserDevicesTable.js";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
 import { PFSize } from "#common/enums";
 import { userTypeToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
 import { me } from "#common/users";
-import "#components/DescriptionList";
-import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
-import "#components/ak-page-header";
-import "#components/ak-status-label";
-import "#components/events/ObjectChangelog";
-import "#components/events/UserEvents";
+
 import { AKElement } from "#elements/Base";
-import "#elements/CodeMirror";
-import "#elements/Tabs";
-import "#elements/buttons/ActionButton/ak-action-button";
-import "#elements/buttons/SpinnerButton/ak-spinner-button";
-import "#elements/forms/ModalForm";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
-import "#elements/oauth/UserAccessTokenList";
-import "#elements/oauth/UserRefreshTokenList";
-import "#elements/user/SessionList";
-import "#elements/user/UserConsentList";
-import "#elements/user/UserReputationList";
-import "#elements/user/sources/SourceSettings";
+
+import { type DescriptionPair, renderDescriptionList } from "#components/DescriptionList";
+
+import { renderRecoveryEmailRequest, requestRecoveryLink } from "#admin/users/UserListPage";
+
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SessionUser,
+    User,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, css, html, nothing } from "lit";
@@ -49,16 +62,6 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
-
-import {
-    CapabilitiesEnum,
-    CoreApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SessionUser,
-    User,
-} from "@goauthentik/api";
-
-import "./UserDevicesTable";
 
 @customElement("ak-user-view")
 export class UserViewPage extends WithCapabilitiesConfig(AKElement) {

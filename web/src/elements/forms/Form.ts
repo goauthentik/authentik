@@ -1,13 +1,16 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+import { dateToUTC } from "#common/temporal";
+import { camelToSnake } from "#common/utils";
+
+import { AKElement } from "#elements/Base";
+import { HorizontalFormElement } from "#elements/forms/HorizontalFormElement";
+import { PreventFormSubmit } from "#elements/forms/helpers";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { formatSlug } from "#elements/router/utils";
+
+import { instanceOfValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -21,8 +24,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { instanceOfValidationError } from "@goauthentik/api";
 
 export interface KeyUnknown {
     [key: string]: unknown;

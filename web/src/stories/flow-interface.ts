@@ -1,6 +1,6 @@
-import { FlowExecutor } from "@goauthentik/flow/FlowExecutor";
-
 import { customElement } from "lit/decorators.js";
+
+import { FlowExecutor } from "../flow/FlowExecutor.js";
 
 @customElement("ak-storybook-interface-flow")
 export class StoryFlowInterface extends FlowExecutor {}

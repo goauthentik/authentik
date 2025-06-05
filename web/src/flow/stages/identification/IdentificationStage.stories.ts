@@ -1,13 +1,13 @@
+import "#stories/flow-interface";
+import "./IdentificationStage.js";
+
+import { FlowDesignationEnum, IdentificationChallenge, UiThemeEnum } from "@goauthentik/api";
+
 import type { StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
-
-import { FlowDesignationEnum, IdentificationChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./IdentificationStage";
 
 export default {
     title: "Flow / Stages / Identification",

@@ -1,13 +1,13 @@
+import "#stories/flow-interface";
+import "./AccessDeniedStage.js";
+
+import { AccessDeniedChallenge, UiThemeEnum } from "@goauthentik/api";
+
 import type { StoryObj } from "@storybook/web-components";
 
 import { html } from "lit";
 
 import "@patternfly/patternfly/components/Login/login.css";
-
-import { AccessDeniedChallenge, UiThemeEnum } from "@goauthentik/api";
-
-import "../../../stories/flow-interface";
-import "./AccessDeniedStage";
 
 export default {
     title: "Flow / Stages / AccessDeniedStage",

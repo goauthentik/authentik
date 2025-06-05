@@ -1,6 +1,8 @@
-import { globalAK } from "@goauthentik/common/global";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#flow/FormStatic";
+
+import { globalAK } from "#common/global";
+
+import { SessionEndChallenge } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html, nothing } from "lit";
@@ -14,7 +16,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SessionEndChallenge } from "@goauthentik/api";
+import { BaseStage } from "../stages/base.js";
 
 @customElement("ak-stage-session-end")
 export class SessionEnd extends BaseStage<SessionEndChallenge, unknown> {

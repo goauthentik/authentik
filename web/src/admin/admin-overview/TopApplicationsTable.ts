@@ -1,14 +1,16 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/Spinner";
+import "#elements/Spinner";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKElement } from "#elements/Base";
+
+import { EventTopPerUser, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
-
-import { EventTopPerUser, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-top-applications-table")
 export class TopApplicationsTable extends AKElement {

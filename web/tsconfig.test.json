@@ -19,17 +19,6 @@
             "DOM",
             "DOM.Iterable",
             "WebWorker"
-        ],
-        "paths": {
-            "@goauthentik/admin/*": ["./src/admin/*"],
-            "@goauthentik/common/*": ["./src/common/*"],
-            "@goauthentik/components/*": ["./src/components/*"],
-            "@goauthentik/elements/*": ["./src/elements/*"],
-            "@goauthentik/flow/*": ["./src/flow/*"],
-            "@goauthentik/locales/*": ["./src/locales/*"],
-            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
-            "@goauthentik/standalone/*": ["./src/standalone/*"],
-            "@goauthentik/user/*": ["./src/user/*"]
-        }
+        ]
     }
 }

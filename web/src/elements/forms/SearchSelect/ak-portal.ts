@@ -1,5 +1,6 @@
+import { randomId } from "#elements/utils/randomId";
+
 import { autoUpdate, computePosition, flip, hide } from "@floating-ui/dom";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { LitElement, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";

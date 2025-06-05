@@ -1,14 +1,14 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { groupBy } from "@goauthentik/common/utils";
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
-import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
-import { randomId } from "@goauthentik/elements/utils/randomId.js";
+import "./ak-search-select-loading-indicator.js";
+import "./ak-search-select-view.js";
+
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { groupBy } from "#common/utils";
+
+import { AkControlElement } from "#elements/AkControlElement";
+import { PreventFormSubmit } from "#elements/forms/helpers";
+import type { GroupedOptions, SelectGroup, SelectOption } from "#elements/types";
+import { randomId } from "#elements/utils/randomId";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, TemplateResult, html } from "lit";
@@ -17,8 +17,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./ak-search-select-loading-indicator.js";
-import "./ak-search-select-view.js";
 import { SearchSelectView } from "./ak-search-select-view.js";
 
 type Group<T> = [string, T[]];

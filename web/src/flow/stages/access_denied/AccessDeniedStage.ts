@@ -1,6 +1,7 @@
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/flow/FormStatic";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import "#elements/EmptyState";
+import "#flow/FormStatic";
+
+import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html, nothing } from "lit";
@@ -13,7 +14,7 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AccessDeniedChallenge, FlowChallengeResponseRequest } from "@goauthentik/api";
+import { BaseStage } from "../../stages/base.js";
 
 @customElement("ak-stage-access-denied")
 export class AccessDeniedStage extends BaseStage<

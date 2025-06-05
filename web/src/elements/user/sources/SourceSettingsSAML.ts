@@ -1,16 +1,18 @@
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
-import { MessageLevel } from "@goauthentik/common/messages";
-import "@goauthentik/elements/Spinner";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { BaseUserSettings } from "@goauthentik/elements/user/sources/BaseUserSettings";
+import "#elements/Spinner";
+
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { MessageLevel } from "#common/messages";
+
+import { showMessage } from "#elements/messages/MessageContainer";
+import { BaseUserSettings } from "#elements/user/sources/BaseUserSettings";
+
+import { SourcesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-user-settings-source-saml")
 export class SourceSettingsSAML extends BaseUserSettings {
@@ -65,7 +67,7 @@ export class SourceSettingsSAML extends BaseUserSettings {
             return html`<a
                 class="pf-c-button pf-m-primary"
                 href="${this.configureUrl}${AndNext(
-                    `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
+                    `/if/user/#/settings;$ON.stringify({ page: "page-sources" })}`,
                 )}"
             >
                 ${msg("Connect")}

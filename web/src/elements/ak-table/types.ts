@@ -1,6 +1,6 @@
 import { TemplateResult } from "lit";
 
-import { TableColumn } from "./TableColumn";
+import { TableColumn } from "./TableColumn.js";
 
 // authentik's standard tables (ak-simple-table, ak-select-table) all take a variety of types, the
 // simplest of which is just an array of tuples, one for each column, along with an tuple for

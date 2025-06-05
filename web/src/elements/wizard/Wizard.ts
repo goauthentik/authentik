@@ -1,6 +1,7 @@
-import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/wizard/ActionWizardPage";
-import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+import "#elements/wizard/ActionWizardPage";
+
+import { ModalButton } from "#elements/buttons/ModalButton";
+import { WizardPage } from "#elements/wizard/WizardPage";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";

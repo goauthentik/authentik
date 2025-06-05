@@ -1,5 +1,4 @@
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "@goauthentik/flow/stages/base";
+import { DeviceChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, css, html, nothing } from "lit";
@@ -12,7 +11,8 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { DeviceChallenge } from "@goauthentik/api";
+import { AuthenticatorValidateStage } from "../authenticator_validate/AuthenticatorValidateStage.js";
+import { BaseStage, FlowInfoChallenge, PendingUserChallenge } from "../base.js";
 
 export class BaseDeviceStage<
     Tin extends FlowInfoChallenge & PendingUserChallenge,

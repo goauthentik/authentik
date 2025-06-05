@@ -1,9 +1,11 @@
-import { render } from "@goauthentik/elements/tests/utils.js";
+import "../Alert.js";
+
+import { render } from "#elements/tests/utils";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
-import "../Alert.js";
 import { Level, akAlert } from "../Alert.js";
 
 describe("ak-alert", () => {

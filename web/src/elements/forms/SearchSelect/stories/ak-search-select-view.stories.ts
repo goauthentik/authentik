@@ -1,5 +1,7 @@
-import "@goauthentik/elements/forms/SearchSelect/ak-search-select-view.js";
-import { SearchSelectView } from "@goauthentik/elements/forms/SearchSelect/ak-search-select-view.js";
+import "#elements/forms/SearchSelect/ak-search-select-view";
+
+import { SearchSelectView } from "#elements/forms/SearchSelect/ak-search-select-view";
+
 import { Meta } from "@storybook/web-components";
 import { slug } from "github-slugger";
 

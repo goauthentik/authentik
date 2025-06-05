@@ -1,5 +1,9 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AKChart } from "#elements/charts/Chart";
+
+import { Coordinate, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
+
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
@@ -7,8 +11,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-import { Coordinate, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends AKChart<Coordinate[]> {

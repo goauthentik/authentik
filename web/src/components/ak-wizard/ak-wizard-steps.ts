@@ -1,14 +1,14 @@
-import { AKElement } from "@goauthentik/elements/Base.js";
-import { bound } from "@goauthentik/elements/decorators/bound";
+import { AKElement } from "#elements/Base";
+import { bound } from "#elements/decorators/bound";
 
 import { ContextProvider } from "@lit/context";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { wizardStepContext } from "./WizardContexts";
-import { type WizardStep } from "./WizardStep";
-import { NavigationEventInit, WizardNavigationEvent } from "./events";
-import { WizardStepState } from "./types";
+import { wizardStepContext } from "./WizardContexts.js";
+import { type WizardStep } from "./WizardStep.js";
+import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
+import { WizardStepState } from "./types.js";
 
 /**
  * @class WizardStepsManager

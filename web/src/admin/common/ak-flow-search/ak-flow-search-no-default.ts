@@ -1,11 +1,11 @@
-import "@goauthentik/elements/forms/SearchSelect";
+import "#elements/forms/SearchSelect/ak-search-select";
+
+import type { Flow } from "@goauthentik/api";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import type { Flow } from "@goauthentik/api";
-
-import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch";
+import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch.js";
 
 /**
  * @element ak-flow-search-no-default

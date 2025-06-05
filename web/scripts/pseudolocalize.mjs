@@ -7,8 +7,9 @@
  * @import { Locale } from "@lit/localize-tools/src/types/locale.js"
  */
 import { PackageRoot } from "#paths/node";
+
 import { readFileSync } from "node:fs";
-import path from "node:path";
+import * as path from "node:path";
 import pseudolocale from "pseudolocale";
 
 import { makeFormatter } from "@lit/localize-tools/lib/formatters/index.js";

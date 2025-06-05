@@ -1,13 +1,15 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import { Form } from "@goauthentik/elements/forms/Form";
-import "@goauthentik/elements/forms/HorizontalFormElement";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/HorizontalFormElement";
+
+import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { Form } from "#elements/forms/Form";
+
+import { CoreApi, UserPasswordSetRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { CoreApi, UserPasswordSetRequest } from "@goauthentik/api";
 
 @customElement("ak-user-password-form")
 export class UserPasswordForm extends Form<UserPasswordSetRequest> {
