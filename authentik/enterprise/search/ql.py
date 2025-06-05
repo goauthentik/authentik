@@ -1,4 +1,5 @@
 """DjangoQL search"""
+
 from django.apps import apps
 from django.db import models
 from django.db.models import QuerySet

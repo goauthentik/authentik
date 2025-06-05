@@ -442,6 +442,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         from djangoql.schema import BoolField, StrField
 
         from authentik.enterprise.search.ql import ChoiceSearchField, JSONSearchField
+
         return [
             StrField(User, "username"),
             StrField(User, "name"),
