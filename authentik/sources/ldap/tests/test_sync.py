@@ -23,7 +23,7 @@ from authentik.sources.ldap.sync.forward_delete_users import DELETE_CHUNK_SIZE
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
+from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all, ldap_sync_page
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
 from authentik.sources.ldap.tests.mock_slapd import (
@@ -54,7 +54,7 @@ class LDAPSyncTests(TestCase):
         """Test sync with missing page"""
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync.delay(str(self.source.pk), class_to_path(UserLDAPSynchronizer), "foo").get()
+            ldap_sync_page.send(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo")
         task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
         self.assertEqual(task.status, TaskStatus.ERROR)
 
@@ -348,7 +348,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
 
     def test_tasks_openldap(self):
         """Test Scheduled tasks"""
@@ -363,7 +363,7 @@ class LDAPSyncTests(TestCase):
         self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
 
     def test_user_deletion(self):
         """Test user deletion"""
@@ -378,7 +378,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertFalse(User.objects.filter(username="not-in-the-source").exists())
 
     def test_user_deletion_still_in_source(self):
@@ -396,7 +396,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(User.objects.filter(username=username).exists())
 
     def test_user_deletion_no_sync(self):
@@ -413,7 +413,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
 
     def test_user_deletion_no_delete(self):
@@ -428,7 +428,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(User.objects.filter(username="not-in-the-source").exists())
 
     def test_group_deletion(self):
@@ -444,7 +444,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertFalse(Group.objects.filter(name="not-in-the-source").exists())
 
     def test_group_deletion_still_in_source(self):
@@ -462,7 +462,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(Group.objects.filter(name=groupname).exists())
 
     def test_group_deletion_no_sync(self):
@@ -479,7 +479,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
 
     def test_group_deletion_no_delete(self):
@@ -494,7 +494,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
         self.assertTrue(Group.objects.filter(name="not-in-the-source").exists())
 
     def test_batch_deletion(self):
@@ -517,7 +517,7 @@ class LDAPSyncTests(TestCase):
 
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
-            ldap_sync_all.delay().get()
+            ldap_sync.send(self.source.pk)
 
         self.assertFalse(User.objects.filter(username__startswith="not-in-the-source").exists())
         self.assertFalse(Group.objects.filter(name__startswith="not-in-the-source").exists())
