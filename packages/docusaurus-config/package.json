@@ -23,7 +23,7 @@
         "@docusaurus/theme-common": "^3.7.0",
         "@docusaurus/theme-search-algolia": "^3.7.0",
         "@docusaurus/types": "^3.7.0",
-        "@goauthentik/prettier-config": "^1.0.1",
+        "@goauthentik/prettier-config": "^2.0.0",
         "@goauthentik/tsconfig": "^1.0.1",
         "@types/react": "^19.1.5",
         "@types/react-dom": "^19.1.5",
