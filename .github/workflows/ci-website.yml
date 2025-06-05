@@ -84,6 +84,8 @@ jobs:
       attestations: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.6.0
       - name: Set up Docker Buildx
