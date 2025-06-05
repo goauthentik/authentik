@@ -75,13 +75,14 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-        - Set a `Strict` redirect URI to `https://sso.bitwarden.com/oidc-signin`.
-            - or `https://sso.bitwarden.eu/oidc-signin` for EU based Bitwarden accounts.
-            - or `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
+        - Set a `Strict` redirect URI to:
+            - `https://sso.bitwarden.com/oidc-signin` for Non-EU based SaaS Bitwarden.
+            - `https://sso.bitwarden.eu/oidc-signin` for EU based SaaS Bitwarden.
+            - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
         - Select any available signing key.
         - Under **Advanced protocol settings**:
             - Remove `authentik default OAuth Mapping: OpenID 'profile'` from **Selected Scopes**.
-            - Add the scope mapping that you created (e.g. `Bitwarden Profile Scope`) to **Selected Scopes**.
+            - Add the scope mapping that you created to **Selected Scopes**.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -95,10 +96,10 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
     - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if using self-hosted Bitwarden, or if you have claimed a domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
     - **Type**: `OIDC`
     - Under **OpenID connect configuration**:
-        - **Authority**: `https://authentik.company/application/o/<application-slug>/`
+        - **Authority**: `https://authentik.company/application/o/<application_slug>/`
         - **Client ID**: Client ID from authentik.
         - **Client secret**: Client secret from authentik.
-        - **Metadata address**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
+        - **Metadata address**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
         - **OIDC redirect behavior**: `Redirect GET`
         - **Get claims from user info endpoint**: Checked.
 
@@ -128,9 +129,9 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 
 ### Download certificate file
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
-2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for bitwarden`).
-3. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
+2. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for Bitwarden`).
+3. Navigate to **Applications** > **Providers** and click on the name of the provider that you created in the previous section (e.g. `Provider for bitwarden`).
+4. Under **Related objects** > **Download signing certificate**, click on **Download**. This downloaded file is your certificate file and it will be required in the next section.
 
 ## Bitwarden configuration
 
