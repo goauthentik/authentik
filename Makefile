@@ -1,6 +1,6 @@
 .PHONY: gen dev-reset all clean test web website
 
-SHELL := /bin/bash
+SHELL := /usr/bin/env bash
 .SHELLFLAGS += ${SHELLFLAGS} -e -o pipefail
 PWD = $(shell pwd)
 UID = $(shell id -u)
