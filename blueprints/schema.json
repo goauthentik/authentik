@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2024.12.3 Blueprint schema",
+    "title": "authentik 2025.6.0 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -1209,6 +1209,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_rbac.initialpermissions"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_rbac.initialpermissions"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_kerberos.kerberossource"
                             },
                             "id": {
@@ -1438,6 +1478,86 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_sources_ldap.ldapsourcepropertymapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.userldapsourceconnection"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_sources_ldap.groupldapsourceconnection"
                             }
                         }
                     },
@@ -3529,6 +3649,46 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_policies_unique_password.uniquepasswordpolicy"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_google_workspace.googleworkspaceprovider"
                             },
                             "id": {
@@ -3758,6 +3918,46 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_mtls.mutualtlsstage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "permissions": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage_permissions"
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_mtls.mutualtlsstage"
                             }
                         }
                     },
@@ -4702,10 +4902,12 @@
                         "authentik.core",
                         "authentik.enterprise",
                         "authentik.enterprise.audit",
+                        "authentik.enterprise.policies.unique_password",
                         "authentik.enterprise.providers.google_workspace",
                         "authentik.enterprise.providers.microsoft_entra",
                         "authentik.enterprise.providers.ssf",
                         "authentik.enterprise.stages.authenticator_endpoint_gdtc",
+                        "authentik.enterprise.stages.mtls",
                         "authentik.enterprise.stages.source",
                         "authentik.events"
                     ],
@@ -4748,12 +4950,15 @@
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
                         "authentik_rbac.role",
+                        "authentik_rbac.initialpermissions",
                         "authentik_sources_kerberos.kerberossource",
                         "authentik_sources_kerberos.kerberossourcepropertymapping",
                         "authentik_sources_kerberos.userkerberossourceconnection",
                         "authentik_sources_kerberos.groupkerberossourceconnection",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldapsourcepropertymapping",
+                        "authentik_sources_ldap.userldapsourceconnection",
+                        "authentik_sources_ldap.groupldapsourceconnection",
                         "authentik_sources_oauth.oauthsource",
                         "authentik_sources_oauth.oauthsourcepropertymapping",
                         "authentik_sources_oauth.useroauthsourceconnection",
@@ -4806,12 +5011,14 @@
                         "authentik_core.applicationentitlement",
                         "authentik_core.token",
                         "authentik_enterprise.license",
+                        "authentik_policies_unique_password.uniquepasswordpolicy",
                         "authentik_providers_google_workspace.googleworkspaceprovider",
                         "authentik_providers_google_workspace.googleworkspaceprovidermapping",
                         "authentik_providers_microsoft_entra.microsoftentraprovider",
                         "authentik_providers_microsoft_entra.microsoftentraprovidermapping",
                         "authentik_providers_ssf.ssfprovider",
                         "authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage",
+                        "authentik_stages_mtls.mutualtlsstage",
                         "authentik_stages_source.sourcestage",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
@@ -6423,8 +6630,6 @@
                 },
                 "acs_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "ACS URL"
                 },
@@ -6461,6 +6666,11 @@
                     "type": "integer",
                     "title": "NameID Property Mapping",
                     "description": "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered"
+                },
+                "authn_context_class_ref_mapping": {
+                    "type": "integer",
+                    "title": "AuthnContextClassRef Property Mapping",
+                    "description": "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate."
                 },
                 "digest_algorithm": {
                     "type": "string",
@@ -6661,6 +6871,16 @@
                     "title": "Token",
                     "description": "Authentication token"
                 },
+                "compatibility_mode": {
+                    "type": "string",
+                    "enum": [
+                        "default",
+                        "aws",
+                        "slack"
+                    ],
+                    "title": "SCIM Compatibility Mode",
+                    "description": "Alter authentik behavior for vendor-specific SCIM implementations."
+                },
                 "exclude_users_service_account": {
                     "type": "boolean",
                     "title": "Exclude users service account"
@@ -6669,6 +6889,11 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Filter group"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -6943,6 +7168,14 @@
                             "authentik_policies_reputation.delete_reputationpolicy",
                             "authentik_policies_reputation.view_reputation",
                             "authentik_policies_reputation.view_reputationpolicy",
+                            "authentik_policies_unique_password.add_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.add_userpasswordhistory",
+                            "authentik_policies_unique_password.change_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.change_userpasswordhistory",
+                            "authentik_policies_unique_password.delete_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.delete_userpasswordhistory",
+                            "authentik_policies_unique_password.view_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.view_userpasswordhistory",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -7069,12 +7302,16 @@
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
+                            "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
+                            "authentik_rbac.change_initialpermissions",
                             "authentik_rbac.change_role",
+                            "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -7094,14 +7331,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
@@ -7274,6 +7519,11 @@
                             "authentik_stages_invitation.delete_invitationstage",
                             "authentik_stages_invitation.view_invitation",
                             "authentik_stages_invitation.view_invitationstage",
+                            "authentik_stages_mtls.add_mutualtlsstage",
+                            "authentik_stages_mtls.change_mutualtlsstage",
+                            "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.pass_outpost_certificate",
+                            "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
                             "authentik_stages_password.delete_passwordstage",
@@ -7342,6 +7592,64 @@
                             "change_role",
                             "delete_role",
                             "view_role"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_rbac.initialpermissions": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "user",
+                        "role"
+                    ],
+                    "title": "Mode"
+                },
+                "role": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Role"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Permissions"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.initialpermissions_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_initialpermissions",
+                            "change_initialpermissions",
+                            "delete_initialpermissions",
+                            "view_initialpermissions"
                         ]
                     },
                     "user": {
@@ -7839,6 +8147,12 @@
                     "title": "Group membership field",
                     "description": "Field which contains members of a group."
                 },
+                "user_membership_attribute": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User membership attribute",
+                    "description": "Attribute which matches the value of `group_membership_field`."
+                },
                 "object_uniqueness_field": {
                     "type": "string",
                     "minLength": 1,
@@ -7867,6 +8181,16 @@
                     "type": "string",
                     "format": "uuid",
                     "title": "Sync parent group"
+                },
+                "lookup_groups_from_user": {
+                    "type": "boolean",
+                    "title": "Lookup groups from user",
+                    "description": "Lookup group membership based on a user attribute instead of a group attribute. This allows nested group resolution on systems like FreeIPA and Active Directory"
+                },
+                "delete_not_found_objects": {
+                    "type": "boolean",
+                    "title": "Delete not found objects",
+                    "description": "Delete authentik users and groups which were previously supplied by this source, but are now missing from it."
                 }
             },
             "required": []
@@ -7937,6 +8261,107 @@
                             "change_ldapsourcepropertymapping",
                             "delete_ldapsourcepropertymapping",
                             "view_ldapsourcepropertymapping"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "user": {
+                    "type": "integer",
+                    "title": "User"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.userldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_userldapsourceconnection",
+                            "change_userldapsourceconnection",
+                            "delete_userldapsourceconnection",
+                            "view_userldapsourceconnection"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Group"
+                },
+                "source": {
+                    "type": "integer",
+                    "title": "Source"
+                },
+                "identifier": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_sources_ldap.groupldapsourceconnection_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_groupldapsourceconnection",
+                            "change_groupldapsourceconnection",
+                            "delete_groupldapsourceconnection",
+                            "view_groupldapsourceconnection"
                         ]
                     },
                     "user": {
@@ -8119,6 +8544,15 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Oidc jwks"
+                },
+                "authorization_code_auth_method": {
+                    "type": "string",
+                    "enum": [
+                        "basic_auth",
+                        "post_body"
+                    ],
+                    "title": "Authorization code auth method",
+                    "description": "How to perform authentication during an authorization_code token request flow"
                 }
             },
             "required": []
@@ -8213,7 +8647,6 @@
                 },
                 "identifier": {
                     "type": "string",
-                    "maxLength": 255,
                     "minLength": 1,
                     "title": "Identifier"
                 },
@@ -8713,8 +9146,6 @@
                 },
                 "sso_url": {
                     "type": "string",
-                    "format": "uri",
-                    "maxLength": 200,
                     "minLength": 1,
                     "title": "SSO URL",
                     "description": "URL that the initial Login request is sent to."
@@ -8724,8 +9155,6 @@
                         "string",
                         "null"
                     ],
-                    "format": "uri",
-                    "maxLength": 200,
                     "title": "SLO URL",
                     "description": "Optional URL if your IDP supports Single-Logout."
                 },
@@ -11364,11 +11793,10 @@
                     "title": "From address"
                 },
                 "token_expiry": {
-                    "type": "integer",
-                    "minimum": -2147483648,
-                    "maximum": 2147483647,
+                    "type": "string",
+                    "minLength": 1,
                     "title": "Token expiry",
-                    "description": "Time in minutes the token sent is valid."
+                    "description": "Time the token sent is valid (Format: hours=3,minutes=17,seconds=300)."
                 },
                 "subject": {
                     "type": "string",
@@ -11573,6 +12001,11 @@
                     "type": "boolean",
                     "title": "Pretend user exists",
                     "description": "When enabled, the stage will succeed and continue even when incorrect user info is entered."
+                },
+                "enable_remember_me": {
+                    "type": "boolean",
+                    "title": "Enable remember me",
+                    "description": "Show the user the 'Remember me on this device' toggle, allowing repeat users to skip straight to entering their password."
                 }
             },
             "required": []
@@ -12997,6 +13430,15 @@
                     "minLength": 1,
                     "title": "Branding favicon"
                 },
+                "branding_custom_css": {
+                    "type": "string",
+                    "title": "Branding custom css"
+                },
+                "branding_default_flow_background": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Branding default flow background"
+                },
                 "flow_authentication": {
                     "type": "string",
                     "format": "uuid",
@@ -13037,6 +13479,16 @@
                     "format": "uuid",
                     "title": "Web certificate",
                     "description": "Web Certificate used by the authentik Core webserver."
+                },
+                "client_certificates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Certificates used for client authentication."
+                    },
+                    "title": "Client certificates",
+                    "description": "Certificates used for client authentication."
                 },
                 "attributes": {
                     "type": "object",
@@ -13450,6 +13902,14 @@
                             "authentik_policies_reputation.delete_reputationpolicy",
                             "authentik_policies_reputation.view_reputation",
                             "authentik_policies_reputation.view_reputationpolicy",
+                            "authentik_policies_unique_password.add_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.add_userpasswordhistory",
+                            "authentik_policies_unique_password.change_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.change_userpasswordhistory",
+                            "authentik_policies_unique_password.delete_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.delete_userpasswordhistory",
+                            "authentik_policies_unique_password.view_uniquepasswordpolicy",
+                            "authentik_policies_unique_password.view_userpasswordhistory",
                             "authentik_providers_google_workspace.add_googleworkspaceprovider",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidergroup",
                             "authentik_providers_google_workspace.add_googleworkspaceprovidermapping",
@@ -13576,12 +14036,16 @@
                             "authentik_providers_ssf.view_stream",
                             "authentik_providers_ssf.view_streamevent",
                             "authentik_rbac.access_admin_interface",
+                            "authentik_rbac.add_initialpermissions",
                             "authentik_rbac.add_role",
                             "authentik_rbac.assign_role_permissions",
+                            "authentik_rbac.change_initialpermissions",
                             "authentik_rbac.change_role",
+                            "authentik_rbac.delete_initialpermissions",
                             "authentik_rbac.delete_role",
                             "authentik_rbac.edit_system_settings",
                             "authentik_rbac.unassign_role_permissions",
+                            "authentik_rbac.view_initialpermissions",
                             "authentik_rbac.view_role",
                             "authentik_rbac.view_system_info",
                             "authentik_rbac.view_system_settings",
@@ -13601,14 +14065,22 @@
                             "authentik_sources_kerberos.view_kerberossource",
                             "authentik_sources_kerberos.view_kerberossourcepropertymapping",
                             "authentik_sources_kerberos.view_userkerberossourceconnection",
+                            "authentik_sources_ldap.add_groupldapsourceconnection",
                             "authentik_sources_ldap.add_ldapsource",
                             "authentik_sources_ldap.add_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.add_userldapsourceconnection",
+                            "authentik_sources_ldap.change_groupldapsourceconnection",
                             "authentik_sources_ldap.change_ldapsource",
                             "authentik_sources_ldap.change_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.change_userldapsourceconnection",
+                            "authentik_sources_ldap.delete_groupldapsourceconnection",
                             "authentik_sources_ldap.delete_ldapsource",
                             "authentik_sources_ldap.delete_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.delete_userldapsourceconnection",
+                            "authentik_sources_ldap.view_groupldapsourceconnection",
                             "authentik_sources_ldap.view_ldapsource",
                             "authentik_sources_ldap.view_ldapsourcepropertymapping",
+                            "authentik_sources_ldap.view_userldapsourceconnection",
                             "authentik_sources_oauth.add_groupoauthsourceconnection",
                             "authentik_sources_oauth.add_oauthsource",
                             "authentik_sources_oauth.add_oauthsourcepropertymapping",
@@ -13781,6 +14253,11 @@
                             "authentik_stages_invitation.delete_invitationstage",
                             "authentik_stages_invitation.view_invitation",
                             "authentik_stages_invitation.view_invitationstage",
+                            "authentik_stages_mtls.add_mutualtlsstage",
+                            "authentik_stages_mtls.change_mutualtlsstage",
+                            "authentik_stages_mtls.delete_mutualtlsstage",
+                            "authentik_stages_mtls.pass_outpost_certificate",
+                            "authentik_stages_mtls.view_mutualtlsstage",
                             "authentik_stages_password.add_passwordstage",
                             "authentik_stages_password.change_passwordstage",
                             "authentik_stages_password.delete_passwordstage",
@@ -14122,6 +14599,61 @@
                 }
             }
         },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "execution_logging": {
+                    "type": "boolean",
+                    "title": "Execution logging",
+                    "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
+                },
+                "password_field": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Password field",
+                    "description": "Field key to check, field keys defined in Prompt stages are available."
+                },
+                "num_historical_passwords": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Num historical passwords",
+                    "description": "Number of passwords to check against."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_policies_unique_password.uniquepasswordpolicy_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "add_uniquepasswordpolicy",
+                            "change_uniquepasswordpolicy",
+                            "delete_uniquepasswordpolicy",
+                            "view_uniquepasswordpolicy"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_providers_google_workspace.googleworkspaceprovider": {
             "type": "object",
             "properties": {
@@ -14196,6 +14728,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Default group email domain"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14344,6 +14881,11 @@
                         "suspend"
                     ],
                     "title": "Group delete action"
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "title": "Dry run",
+                    "description": "When enabled, provider will not modify or create objects in the remote system."
                 }
             },
             "required": []
@@ -14619,6 +15161,161 @@
                 }
             }
         },
+        "model_authentik_stages_mtls.mutualtlsstage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "mode": {
+                    "type": "string",
+                    "enum": [
+                        "optional",
+                        "required"
+                    ],
+                    "title": "Mode"
+                },
+                "certificate_authorities": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid",
+                        "description": "Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
+                    },
+                    "title": "Certificate authorities",
+                    "description": "Configure certificate authorities to validate the certificate against. This option has a higher priority than the `client_certificate` option on `Brand`."
+                },
+                "cert_attribute": {
+                    "type": "string",
+                    "enum": [
+                        "subject",
+                        "common_name",
+                        "email"
+                    ],
+                    "title": "Cert attribute"
+                },
+                "user_attribute": {
+                    "type": "string",
+                    "enum": [
+                        "username",
+                        "email"
+                    ],
+                    "title": "User attribute"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_mtls.mutualtlsstage_permissions": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "permission"
+                ],
+                "properties": {
+                    "permission": {
+                        "type": "string",
+                        "enum": [
+                            "pass_outpost_certificate",
+                            "add_mutualtlsstage",
+                            "change_mutualtlsstage",
+                            "delete_mutualtlsstage",
+                            "view_mutualtlsstage"
+                        ]
+                    },
+                    "user": {
+                        "type": "integer"
+                    },
+                    "role": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "model_authentik_stages_source.sourcestage": {
             "type": "object",
             "properties": {
@@ -14868,9 +15565,15 @@
                     "type": "string",
                     "title": "Webhook url"
                 },
-                "webhook_mapping": {
+                "webhook_mapping_body": {
                     "type": "integer",
-                    "title": "Webhook mapping"
+                    "title": "Webhook mapping body",
+                    "description": "Customize the body of the request. Mapping should return data that is JSON-serializable."
+                },
+                "webhook_mapping_headers": {
+                    "type": "integer",
+                    "title": "Webhook mapping headers",
+                    "description": "Configure additional headers to be sent. Mapping should return a dictionary of key-value pairs"
                 },
                 "send_once": {
                     "type": "boolean",

@@ -45,9 +45,9 @@ const providerListArgs = (page: number, search = "") => ({
 });
 
 const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
-    const label = item.assignedBackchannelApplicationName
-        ? item.assignedBackchannelApplicationName
-        : item.assignedApplicationName;
+    const label =
+        item.assignedBackchannelApplicationName || item.assignedApplicationName || item.name;
+
     return [
         `${item.pk}`,
         html`<div class="selection-main">${label}</div>
@@ -129,11 +129,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
-                outpostRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+            outpostRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {

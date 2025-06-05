@@ -33,11 +33,10 @@ export class WorkersStatusCard extends AdminStatusCard<Worker[]> {
                 icon: "fa fa-times-circle pf-m-danger",
                 message: html`${msg("Worker with incorrect version connected.")}`,
             });
-        } else {
-            return Promise.resolve<AdminStatus>({
-                icon: "fa fa-check-circle pf-m-success",
-            });
         }
+        return Promise.resolve<AdminStatus>({
+            icon: "fa fa-check-circle pf-m-success",
+        });
     }
 
     renderValue() {

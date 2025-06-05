@@ -7,7 +7,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import { wizardStepContext } from "./WizardContexts";
 import { type WizardStep } from "./WizardStep";
-import { NavigationUpdate, WizardNavigationEvent } from "./events";
+import { NavigationEventInit, WizardNavigationEvent } from "./events";
 import { WizardStepState } from "./types";
 
 /**
@@ -108,7 +108,7 @@ export class WizardStepsManager extends AKElement {
     //   through the entire wizard," but since the user invalidated a prior, that shouldn't be
     //   unexpected.  None of the data will have been lost.
 
-    updateStepAvailability(details: NavigationUpdate) {
+    updateStepAvailability(details: NavigationEventInit) {
         const asArr = (v?: string[] | string) =>
             v === undefined ? [] : Array.isArray(v) ? v : [v];
         const enabled = asArr(details.enable);

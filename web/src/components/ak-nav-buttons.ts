@@ -95,7 +95,7 @@ export class NavigationButtons extends AKElement {
             );
         };
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
             <button class="pf-c-button pf-m-plain" type="button" @click=${onClick}>
                 <pf-tooltip position="top" content=${msg("Open API drawer")}>
                     <i class="fas fa-code" aria-hidden="true"></i>
@@ -116,7 +116,7 @@ export class NavigationButtons extends AKElement {
             );
         };
 
-        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg">
+        return html`<div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-xl">
             <button
                 class="pf-c-button pf-m-plain"
                 type="button"
@@ -156,9 +156,7 @@ export class NavigationButtons extends AKElement {
     }
 
     renderImpersonation() {
-        if (!this.me?.original) {
-            return nothing;
-        }
+        if (!this.me?.original) return nothing;
 
         const onClick = async () => {
             await new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve();
@@ -173,6 +171,14 @@ export class NavigationButtons extends AKElement {
                     </ak-action-button>
                 </div>
             </div>`;
+    }
+
+    renderAvatar() {
+        return html`<img
+            class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
+            src=${ifDefined(this.me?.user.avatar)}
+            alt="${msg("Avatar image")}"
+        />`;
     }
 
     get userDisplayName() {
@@ -205,18 +211,14 @@ export class NavigationButtons extends AKElement {
                 <slot name="extra"></slot>
             </div>
             ${this.renderImpersonation()}
-            ${this.userDisplayName != ""
-                ? html`<div class="pf-c-page__header-tools-group">
-                      <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
+            ${this.userDisplayName
+                ? html`<div class="pf-c-page__header-tools-group pf-m-hidden">
+                      <div class="pf-c-page__header-tools-item pf-m-visible-on-2xl">
                           ${this.userDisplayName}
                       </div>
                   </div>`
                 : nothing}
-            <img
-                class="pf-c-avatar"
-                src=${ifDefined(this.me?.user.avatar)}
-                alt="${msg("Avatar image")}"
-            />
+            ${this.renderAvatar()}
         </div>`;
     }
 }

@@ -1,17 +1,17 @@
-import "@goauthentik/admin/applications/ApplicationForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import MDApplication from "@goauthentik/docs/add-secure-apps/applications/index.md";
-import "@goauthentik/elements/AppIcon.js";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/applications/ApplicationForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#elements/AppIcon";
+import "#elements/ak-mdx/ak-mdx";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { getURLParam } from "#elements/router/RouteMatch";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -20,9 +20,9 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
-import "./ApplicationWizardHint";
+import "./ApplicationWizardHint.js";
 
 export const applicationListStyle = css`
     /* Fix alignment issues with images in tables */
@@ -50,7 +50,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
     pageDescription(): string {
         return msg(
-            str`External applications that use ${this.brand?.brandingTitle ?? "authentik"} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
+            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {
@@ -71,7 +71,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFCard, applicationListStyle);
+        return TablePage.styles.concat(PFCard, applicationListStyle);
     }
 
     columns(): TableColumn[] {
@@ -89,7 +89,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">
-                    <ak-markdown .md=${MDApplication} meta="applications/index.md"></ak-markdown>
+                    <ak-mdx .url=${MDApplication}></ak-mdx>
                 </div>
             </div>
         </div>`;
@@ -171,6 +171,29 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
                 <ak-application-form slot="form"> </ak-application-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>`;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html` ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${msg("Successfully cleared application cache")}
+                errorMessage=${msg("Failed to delete application cache")}
+                action=${msg("Clear cache")}
+                .onConfirm=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${msg("Clear Application cache")} </span>
+                <p slot="body">
+                    ${msg(
+                        "Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.",
+                    )}
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${msg("Clear cache")}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
     }
 }
 

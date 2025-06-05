@@ -44,7 +44,6 @@ if is_release:
         ]
         if not prerelease:
             image_tags += [
-                f"{name}:latest",
                 f"{name}:{version_family}",
             ]
 else:

@@ -1,9 +1,9 @@
 """RAC app config"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikProviderRAC(AppConfig):
+class AuthentikProviderRAC(ManagedAppConfig):
     """authentik rac app config"""
 
     name = "authentik.providers.rac"

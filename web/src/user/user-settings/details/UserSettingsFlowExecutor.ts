@@ -1,16 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
+import { refreshMe } from "#common/users";
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { StageHost } from "#flow/stages/base";
+import "#user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -26,7 +27,6 @@ import {
     FlowErrorChallenge,
     FlowsApi,
     RedirectChallenge,
-    ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -36,7 +36,7 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug?: string;
+    flowSlug = this.brand?.flowUserSettings;
 
     private _challenge?: ChallengeTypes;
 
@@ -73,8 +73,11 @@ export class UserSettingsFlowExecutor
                 this.challenge = data;
                 return !this.challenge.responseErrors;
             })
-            .catch((e: Error | ResponseError) => {
-                this.errorMessage(e);
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.errorMessage(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -83,12 +86,15 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("brand") && this.brand) {
-            this.flowSlug = this.brand?.flowUserSettings;
-            if (!this.flowSlug) {
-                return;
-            }
+    firstUpdated() {
+        if (this.flowSlug) {
+            this.nextChallenge();
+        }
+    }
+
+    updated(): void {
+        if (!this.flowSlug && this.brand) {
+            this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }
     }
@@ -109,16 +115,13 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async errorMessage(error: Error | Response): Promise<void> {
-        let body = "";
-        if (error instanceof Error) {
-            body = error.message;
-        }
+    async errorMessage(error: APIError): Promise<void> {
         const challenge: FlowErrorChallenge = {
             component: "ak-stage-flow-error",
-            error: body,
+            error: pluckErrorDetail(error),
             requestId: "",
         };
+
         this.challenge = challenge as ChallengeTypes;
     }
 
@@ -169,8 +172,7 @@ export class UserSettingsFlowExecutor
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
+                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
             default:
                 console.debug(
                     `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
@@ -191,8 +193,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }

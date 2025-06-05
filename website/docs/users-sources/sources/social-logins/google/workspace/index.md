@@ -137,7 +137,7 @@ Start by logging into your authentik instance as an administrator and navigating
 
 In the Admin interface, navigate to **Directory -> Federation & Social login** and press **Create**.
 
-In the **New source** modal, choose **SAML Source** and continue by filling in the following fields:
+In the **New source** box, choose **SAML Source** and continue by filling in the following fields:
 
 | Field | Value            |
 | ----- | ---------------- |
@@ -202,3 +202,7 @@ This may take a few minutes to propagate, so try logging in again after a short 
 - [Setting up SAML with Google Workspace](https://support.google.com/a/answer/6087519)
 - [SAML app error messages](https://support.google.com/a/answer/6301076)
 - [SAML authentication flow](https://infosec.mozilla.org/guidelines/iam/saml.html)
+
+:::note
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../../index.md#add-sources-to-default-login-page).
+:::

@@ -6,11 +6,15 @@ from urllib.parse import parse_qsl
 
 from django.utils.crypto import constant_time_compare, get_random_string
 from django.utils.translation import gettext as _
+from requests.auth import AuthBase, HTTPBasicAuth
 from requests.exceptions import RequestException
 from requests.models import Response
 from structlog.stdlib import get_logger
 
 from authentik.sources.oauth.clients.base import BaseOAuthClient
+from authentik.sources.oauth.models import (
+    AuthorizationCodeAuthMethod,
+)
 
 LOGGER = get_logger()
 SESSION_KEY_OAUTH_PKCE = "authentik/sources/oauth/pkce"
@@ -55,6 +59,30 @@ class OAuth2Client(BaseOAuthClient):
         """Get client secret"""
         return self.source.consumer_secret
 
+    def get_access_token_args(self, callback: str, code: str) -> dict[str, Any]:
+        args = {
+            "redirect_uri": callback,
+            "code": code,
+            "grant_type": "authorization_code",
+        }
+        if SESSION_KEY_OAUTH_PKCE in self.request.session:
+            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
+        if (
+            self.source.source_type.authorization_code_auth_method
+            == AuthorizationCodeAuthMethod.POST_BODY
+        ):
+            args["client_id"] = self.get_client_id()
+            args["client_secret"] = self.get_client_secret()
+        return args
+
+    def get_access_token_auth(self) -> AuthBase | None:
+        if (
+            self.source.source_type.authorization_code_auth_method
+            == AuthorizationCodeAuthMethod.BASIC_AUTH
+        ):
+            return HTTPBasicAuth(self.get_client_id(), self.get_client_secret())
+        return None
+
     def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """Fetch access token from callback request."""
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
@@ -67,15 +95,6 @@ class OAuth2Client(BaseOAuthClient):
             error = self.get_request_arg("error", None)
             error_desc = self.get_request_arg("error_description", None)
             return {"error": error_desc or error or _("No token received.")}
-        args = {
-            "client_id": self.get_client_id(),
-            "client_secret": self.get_client_secret(),
-            "redirect_uri": callback,
-            "code": code,
-            "grant_type": "authorization_code",
-        }
-        if SESSION_KEY_OAUTH_PKCE in self.request.session:
-            args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
             access_token_url = self.source.source_type.access_token_url or ""
             if self.source.source_type.urls_customizable and self.source.access_token_url:
@@ -83,8 +102,8 @@ class OAuth2Client(BaseOAuthClient):
             response = self.do_request(
                 "post",
                 access_token_url,
-                auth=(self.get_client_id(), self.get_client_secret()),
-                data=args,
+                auth=self.get_access_token_auth(),
+                data=self.get_access_token_args(callback, code),
                 headers=self._default_headers,
                 **request_kwargs,
             )

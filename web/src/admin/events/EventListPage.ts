@@ -1,14 +1,15 @@
 import "@goauthentik/admin/events/EventVolumeChart";
 import "@goauthentik/admin/events/EventMap";
-import { EventGeoText, EventUser } from "@goauthentik/admin/events/utils";
+import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -74,15 +75,15 @@ export class EventListPage extends TablePage<Event> {
         `;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-                <small>${EventGeoText(item)}</small>`,
+                <small>${EventGeo(item)}</small>`,
             html`<span>${item.brand?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <pf-tooltip position="top" content=${msg("Show details")}>

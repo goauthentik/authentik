@@ -3,8 +3,8 @@ import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/co
 import { globalAK } from "@goauthentik/common/global";
 import { actionToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
@@ -134,7 +134,7 @@ export class NotificationDrawer extends AKElement {
             <p class="pf-c-notification-drawer__list-item-description">${item.body}</p>
             <small class="pf-c-notification-drawer__list-item-timestamp"
                 ><pf-tooltip position="top" .content=${item.created?.toLocaleString()}>
-                    ${getRelativeTime(item.created!)}
+                    ${formatElapsedTime(item.created!)}
                 </pf-tooltip></small
             >
         </li>`;

@@ -28,15 +28,17 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return iter(())
+
+        # If we are looking up groups from users, we don't need to fetch the group membership field
+        attributes = [self._source.object_uniqueness_field, LDAP_DISTINGUISHED_NAME]
+        if not self._source.lookup_groups_from_user:
+            attributes.append(self._source.group_membership_field)
+
         return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
-            attributes=[
-                self._source.group_membership_field,
-                self._source.object_uniqueness_field,
-                LDAP_DISTINGUISHED_NAME,
-            ],
+            attributes=attributes,
             **kwargs,
         )
 
@@ -47,28 +49,37 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         membership_count = 0
         for group in page_data:
-            if "attributes" not in group:
-                continue
-            members = group.get("attributes", {}).get(self._source.group_membership_field, [])
+            if self._source.lookup_groups_from_user:
+                group_dn = group.get("dn", {})
+                group_filter = f"({self._source.group_membership_field}={group_dn})"
+                group_members = self._source.connection().extend.standard.paged_search(
+                    search_base=self.base_dn_users,
+                    search_filter=group_filter,
+                    search_scope=SUBTREE,
+                    attributes=[self._source.object_uniqueness_field],
+                )
+                members = []
+                for group_member in group_members:
+                    group_member_dn = group_member.get("dn", {})
+                    members.append(group_member_dn)
+            else:
+                if (attributes := self.get_attributes(group)) is None:
+                    continue
+                members = attributes.get(self._source.group_membership_field, [])
+
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
 
-            membership_mapping_attribute = LDAP_DISTINGUISHED_NAME
-            if self._source.group_membership_field == "memberUid":
-                # If memberships are based on the posixGroup's 'memberUid'
-                # attribute we use the RDN instead of the FDN to lookup members.
-                membership_mapping_attribute = LDAP_UNIQUENESS
-
             users = User.objects.filter(
-                Q(**{f"attributes__{membership_mapping_attribute}__in": members})
+                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
                 | Q(
                     **{
-                        f"attributes__{membership_mapping_attribute}__isnull": True,
+                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
                         "ak_groups__in": [ak_group],
                     }
                 )
-            )
+            ).distinct()
             membership_count += 1
             membership_count += users.count()
             ak_group.users.set(users)

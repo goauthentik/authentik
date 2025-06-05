@@ -38,7 +38,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{constants.OutpostUserAgent()},
+		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
 	dialer := websocket.Dialer{
@@ -148,7 +148,8 @@ func (ac *APIController) startWSHandler() {
 			"outpost_type": ac.Server.Type(),
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
-		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
+		switch wsMsg.Instruction {
+		case WebsocketInstructionTriggerUpdate:
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
@@ -163,7 +164,7 @@ func (ac *APIController) startWSHandler() {
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
-		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
+		case WebsocketInstructionProviderSpecific:
 			for _, h := range ac.wsHandlers {
 				h(context.Background(), wsMsg.Args)
 			}

@@ -20,6 +20,8 @@ class SettingsSerializer(ModelSerializer):
             "default_user_change_email",
             "default_user_change_username",
             "event_retention",
+            "reputation_lower_limit",
+            "reputation_upper_limit",
             "footer_links",
             "gdpr_compliance",
             "impersonation",

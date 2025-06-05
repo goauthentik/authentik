@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 

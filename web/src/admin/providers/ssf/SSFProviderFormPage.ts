@@ -5,7 +5,6 @@ import {
     oauth2ProvidersSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProvidersProvider";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
@@ -43,11 +42,10 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 id: this.instance.pk,
                 sSFProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
-                sSFProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersSsfCreate({
+            sSFProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -62,7 +60,11 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
             <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                    <ak-form-element-horizontal
+                        label=${msg("Signing Key")}
+                        name="signingKey"
+                        required
+                    >
                         <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
                             certificate=${ifDefined(provider?.signingKey ?? undefined)}
@@ -77,7 +79,7 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                     >
                         <input
                             type="text"
-                            value="${first(provider?.eventRetention, "days=30")}"
+                            value="${provider?.eventRetention ?? "days=30"}"
                             class="pf-c-form-control"
                             required
                         />

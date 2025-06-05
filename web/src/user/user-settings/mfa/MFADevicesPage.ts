@@ -1,8 +1,8 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { globalAK } from "@goauthentik/common/global";
 import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -133,11 +133,11 @@ export class MFADevicesPage extends Table<Device> {
             html`${deviceTypeName(item)}
             ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.created.getTime() > 0
-                ? html`<div>${getRelativeTime(item.created)}</div>
+                ? html`<div>${formatElapsedTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`
                 : html`-`}`,
             html`${item.lastUsed
-                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`
                 : html`-`}`,
             html`

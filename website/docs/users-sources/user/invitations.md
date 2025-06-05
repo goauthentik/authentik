@@ -31,7 +31,7 @@ At the top of the Flows page, click **Import**, and then select the `flows-enrol
 
 **Step 3. Create the invitation object**
 
-In the Admin UI, navigate to **Directory --> Invitations**, and then click **Create** to open the **Create Invitation** modal. Define the following fields:
+In the Admin UI, navigate to **Directory --> Invitations**, and then click **Create** to open the **Create Invitation** box. Define the following fields:
 
 - **Name**: provide a name for your invitation object.
 - **Expires**: select a date for when you want the invitation to expire.
@@ -42,7 +42,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
 
 - **Single use**: specify whether or not you want the invitation to expire after a single use.
 
-Click **Save** to save the new invitation and close the modal and return to the **Invitations** page.
+Click **Save** to save the new invitation and close the box and return to the **Invitations** page.
 
 **Step 3. Email the invitation**
 

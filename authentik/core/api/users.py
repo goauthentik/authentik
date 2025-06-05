@@ -6,8 +6,6 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import Permission
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.db.models.functions import ExtractHour
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -71,8 +69,8 @@ from authentik.core.middleware import (
 from authentik.core.models import (
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
-    AuthenticatedSession,
     Group,
+    Session,
     Token,
     TokenIntents,
     User,
@@ -86,6 +84,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
+from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -226,6 +225,7 @@ class UserSerializer(ModelSerializer):
             "name",
             "is_active",
             "last_login",
+            "date_joined",
             "is_superuser",
             "groups",
             "groups_obj",
@@ -240,6 +240,7 @@ class UserSerializer(ModelSerializer):
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
+            "date_joined": {"read_only": True},
             "password_change_date": {"read_only": True},
         }
 
@@ -373,7 +374,7 @@ class UsersFilter(FilterSet):
         method="filter_attributes",
     )
 
-    is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
+    is_superuser = BooleanFilter(field_name="ak_groups", method="filter_is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(field_name="path")
@@ -390,6 +391,11 @@ class UsersFilter(FilterSet):
         field_name="ak_groups",
         queryset=Group.objects.all().order_by("name"),
     )
+
+    def filter_is_superuser(self, queryset, name, value):
+        if value:
+            return queryset.filter(ak_groups__is_superuser=True).distinct()
+        return queryset.exclude(ak_groups__is_superuser=True).distinct()
 
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
@@ -446,7 +452,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self) -> tuple[str, Token]:
+    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand
@@ -468,12 +474,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             raise ValidationError(
                 {"non_field_errors": "Recovery flow not applicable to user"}
             ) from None
+        _plan = FlowToken.pickle(plan)
+        if for_email:
+            _plan = pickle_flow_token_for_email(plan)
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
                 "user": user,
                 "flow": flow,
-                "_plan": FlowToken.pickle(plan),
+                "_plan": _plan,
+                "revoke_on_execution": not for_email,
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -643,7 +653,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
             raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link()
+        link, token = self._create_recovery_link(for_email=True)
         # Lookup the email stage to assure the current user can access it
         stages = get_objects_for_user(
             request.user, "authentik_stages_email.view_emailstage"
@@ -767,9 +777,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         response = super().partial_update(request, *args, **kwargs)
         instance: User = self.get_object()
         if not instance.is_active:
-            sessions = AuthenticatedSession.objects.filter(user=instance)
-            session_ids = sessions.values_list("session_key", flat=True)
-            cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
-            sessions.delete()
+            Session.objects.filter(authenticatedsession__user=instance).delete()
             LOGGER.debug("Deleted user's sessions", user=instance.username)
         return response

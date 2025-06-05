@@ -28,8 +28,8 @@ def pytest_report_header(*_, **__):
 
 
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    current_id = int(environ.get("CI_RUN_ID", 0)) - 1
-    total_ids = int(environ.get("CI_TOTAL_RUNS", 0))
+    current_id = int(environ.get("CI_RUN_ID", "0")) - 1
+    total_ids = int(environ.get("CI_TOTAL_RUNS", "0"))
 
     if total_ids:
         num_tests = len(items)

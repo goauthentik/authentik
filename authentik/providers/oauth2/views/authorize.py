@@ -15,7 +15,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
 from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
@@ -254,10 +254,10 @@ class OAuthAuthorizationParams:
             raise AuthorizeError(self.redirect_uri, "invalid_scope", self.grant_type, self.state)
         if SCOPE_OFFLINE_ACCESS in self.scope:
             # https://openid.net/specs/openid-connect-core-1_0.html#OfflineAccess
-            if PROMPT_CONSENT not in self.prompt:
-                # Instead of ignoring the `offline_access` scope when `prompt`
-                # isn't set to `consent`, we set override it ourselves
-                self.prompt.add(PROMPT_CONSENT)
+            # Don't explicitly request consent with offline_access, as the spec allows for
+            # "other conditions for processing the request permitting offline access to the
+            # requested resources are in place"
+            # which we interpret as "the admin picks an authorization flow with or without consent"
             if self.response_type not in [
                 ResponseTypes.CODE,
                 ResponseTypes.CODE_TOKEN,
@@ -316,9 +316,7 @@ class OAuthAuthorizationParams:
             expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
-            session=AuthenticatedSession.objects.filter(
-                session_key=request.session.session_key
-            ).first(),
+            session=request.session["authenticatedsession"],
         )
 
         if self.code_challenge and self.code_challenge_method:
@@ -615,9 +613,7 @@ class OAuthFulfillmentStage(StageView):
             expires=access_token_expiry,
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
-            session=AuthenticatedSession.objects.filter(
-                session_key=self.request.session.session_key
-            ).first(),
+            session=self.request.session["authenticatedsession"],
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

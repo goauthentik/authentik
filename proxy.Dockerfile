@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build web
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:22 AS web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
 
 ENV NODE_ENV=production
 WORKDIR /static
@@ -17,7 +17,7 @@ COPY web .
 RUN npm run build-proxy
 
 # Stage 2: Build
-FROM --platform=${BUILDPLATFORM} mcr.microsoft.com/oss/go/microsoft/golang:1.23-fips-bookworm AS builder
+FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS builder
 
 ARG TARGETOS
 ARG TARGETARCH
@@ -43,7 +43,7 @@ COPY . .
 RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     --mount=type=cache,id=go-build-$TARGETARCH$TARGETVARIANT,sharing=locked,target=/root/.cache/go-build \
     if [ "$TARGETARCH" = "arm64" ]; then export CC=aarch64-linux-gnu-gcc && export CC_FOR_TARGET=gcc-aarch64-linux-gnu; fi && \
-    CGO_ENABLED=1 GOEXPERIMENT="systemcrypto" GOFLAGS="-tags=requirefips" GOARM="${TARGETVARIANT#v}" \
+    CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
@@ -76,6 +76,7 @@ EXPOSE 9000 9300 9443
 
 USER 1000
 
-ENV GOFIPS=1
+ENV TMPDIR=/dev/shm/ \
+    GOFIPS=1
 
 ENTRYPOINT ["/proxy"]

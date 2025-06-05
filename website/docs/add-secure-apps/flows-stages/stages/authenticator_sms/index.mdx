@@ -1,5 +1,5 @@
 ---
-title: SMS authenticator setup stage
+title: SMS Authenticator Setup stage
 ---
 
 This stage configures an SMS-based authenticator using either Twilio, or a generic HTTP endpoint.

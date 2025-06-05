@@ -57,7 +57,7 @@ To bind a stage to a flow, follow these steps:
 
 ## Bind users and groups to a flow's stage binding
 
-You can use bindings to determine whehther or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
+You can use bindings to determine whether or not a stage is presented to a single user or any users within a group. You do this by binding the user or group to a stage binding within a specific flow. For example, if you have a flow that contains a stage that prompts the user for multi-factor authentication, but you only want certain users to see this stage (and fulfill the MFA prompt), then you would bind the appropriate group (or single user) to the stage binding for that flow.
 
 To bind a user or a group to a stage binding for a specific flow, follow these steps:
 
@@ -70,8 +70,8 @@ To bind a user or a group to a stage binding for a specific flow, follow these s
 ![](./edit_stage_binding.png)
 
 6. In the expanded area, click **Bind existing policy/group/user**.
-7. In the **Create Binding** modal box, select either the tab for **Group** or **User**.
+7. In the **Create Binding** box, select either the tab for **Group** or **User**.
 8. In the drop-down list, select the group or user.
-9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the modal box.
+9. Optionally, configure additional settings for the binding, and then click **Create** to create the binding and close the box.
 
 Learn more about [bindings](../bindings/index.md) and [working with them](../bindings/work_with_bindings.md).

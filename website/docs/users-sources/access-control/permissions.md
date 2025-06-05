@@ -18,11 +18,15 @@ There are two main types of permissions in authentik:
 - [**Global permissions**](#global-permissions)
 - [**Object permissions**](#object-permissions)
 
+Additionally, authentik employs _initial permissions_ to streamline the process of granting object-level permissions when an object (user or role) is created. This feature enables an Admin to proactively assign specific rights to a user for object creation, as well as for viewing and managing those objects and other objects created by individuals in the same role. For more details, refer to [Initial permissions](./initial_permissions.mdx).
+
 ### Global permissions
 
 Global permissions define who can do what on a global level across the entire system. Some examples in authentik are the ability to add new [flows](../../add-secure-apps/flows-stages/flow/index.md) or to create a URL for users to recover their login credentials.
 
 You can assign _global permissions_ to individual [users](../user/index.mdx) or to [roles](../roles/index.md). The most common and best practice is to assign permissions to roles.
+
+An example of a global permission is [`Can view admin interface`](./manage_permissions#assign-can-view-admin-interface-permissions), which an administrator can assign to a non-administrator user or role to provide view access to the Admin interface.
 
 ### Object permissions
 
