@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
 from rest_framework.serializers import BaseSerializer
@@ -107,6 +108,10 @@ class PolicyBinding(SerializerModel):
     )
 
     order = models.IntegerField()
+    honor_order = models.BooleanField(
+        default=False,
+        help_text=_("Honor order when evaluating policies."),
+    )
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         """Check if request passes this PolicyBinding, check policy, group or user"""
@@ -168,6 +173,28 @@ class PolicyBinding(SerializerModel):
             models.Index(fields=["user"]),
             models.Index(fields=["target"]),
         ]
+        constraints = (
+            models.CheckConstraint(
+                condition=(
+                    (
+                        Q(policy_id__isnull=False)
+                        & Q(group_id__isnull=True)
+                        & Q(user_id__isnull=True)
+                    )
+                    | (
+                        Q(group_id__isnull=False)
+                        & Q(policy_id__isnull=True)
+                        & Q(user_id__isnull=True)
+                    )
+                    | (
+                        Q(user_id__isnull=False)
+                        & Q(policy_id__isnull=True)
+                        & Q(group_id__isnull=True)
+                    )
+                ),
+                name="%(app_label)s_%(class)s_only_one_type",
+            ),
+        )
 
 
 class Policy(SerializerModel, CreatedUpdatedModel):

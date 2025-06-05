@@ -12102,6 +12102,10 @@ paths:
         schema:
           type: boolean
       - in: query
+        name: honor_order
+        schema:
+          type: boolean
+      - in: query
         name: order
         schema:
           type: integer
@@ -54123,6 +54127,9 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+        honor_order:
+          type: boolean
+          description: Honor order when evaluating policies.
         timeout:
           type: integer
           maximum: 2147483647
@@ -55713,6 +55720,9 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+        honor_order:
+          type: boolean
+          description: Honor order when evaluating policies.
         timeout:
           type: integer
           maximum: 2147483647
@@ -55755,6 +55765,9 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+        honor_order:
+          type: boolean
+          description: Honor order when evaluating policies.
         timeout:
           type: integer
           maximum: 2147483647
@@ -60016,6 +60029,9 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+        honor_order:
+          type: boolean
+          description: Honor order when evaluating policies.
         timeout:
           type: integer
           maximum: 2147483647
