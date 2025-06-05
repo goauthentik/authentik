@@ -93,7 +93,6 @@ class ManagedAppConfig(AppConfig):
         """Get a list of schedule specs that must exist in the default tenant"""
         return []
 
-    @property
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
