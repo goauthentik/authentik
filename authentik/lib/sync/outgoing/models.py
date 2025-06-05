@@ -1,11 +1,11 @@
 from typing import Any, Self
 
-from dramatiq.actor import Actor
 import pglock
 from django.core.paginator import Paginator
 from django.db import connection, models
 from django.db.models import Model, QuerySet, TextChoices
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT

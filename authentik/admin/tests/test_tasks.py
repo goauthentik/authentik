@@ -29,9 +29,7 @@ class TestAdminTasks(TestCase):
     def test_version_valid_response(self):
         """Test Update checker with valid response"""
         with Mocker() as mocker, CONFIG.patch("disable_update_check", False):
-            mocker.get(
-                "https://version.goauthentik.io/version.json", json=RESPONSE_VALID
-            )
+            mocker.get("https://version.goauthentik.io/version.json", json=RESPONSE_VALID)
             update_latest_version.send()
             self.assertEqual(cache.get(VERSION_CACHE_KEY), "99999999.9999999")
             self.assertTrue(
@@ -79,9 +77,7 @@ class TestAdminTasks(TestCase):
             action=EventAction.UPDATE_AVAILABLE,
             context={"new_version": "99999999.9999999.9999999"},
         )
-        Event.objects.create(
-            action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"}
-        )
+        Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"})
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={})
         admin_config.clear_update_notifications()
         self.assertFalse(

@@ -164,7 +164,7 @@ class LDAPSource(ScheduledModel, Source):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.sources.ldap.tasks import ldap_sync, ldap_connectivity_check
+        from authentik.sources.ldap.tasks import ldap_connectivity_check, ldap_sync
 
         return [
             ScheduleSpec(

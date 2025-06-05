@@ -1,6 +1,7 @@
 """AuthenticatorDuoStage API Views"""
 
 from typing import Any
+
 from django.http import Http404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
@@ -21,7 +22,6 @@ from authentik.flows.api.stages import StageSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_duo.stage import SESSION_KEY_DUO_ENROLL
-from authentik.stages.authenticator_duo.tasks import duo_import_devices
 
 LOGGER = get_logger()
 

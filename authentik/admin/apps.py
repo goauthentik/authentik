@@ -26,9 +26,7 @@ class AuthentikAdminConfig(ManagedAppConfig):
         from authentik.admin.tasks import LOCAL_VERSION
         from authentik.events.models import EventAction, Notification
 
-        for notification in Notification.objects.filter(
-            event__action=EventAction.UPDATE_AVAILABLE
-        ):
+        for notification in Notification.objects.filter(event__action=EventAction.UPDATE_AVAILABLE):
             if "new_version" not in notification.event.context:
                 continue
             notification_version = notification.event.context["new_version"]

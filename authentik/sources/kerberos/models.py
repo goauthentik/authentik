@@ -140,7 +140,7 @@ class KerberosSource(ScheduledModel, Source):
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
-        from authentik.sources.kerberos.tasks import kerberos_sync, kerberos_connectivity_check
+        from authentik.sources.kerberos.tasks import kerberos_connectivity_check, kerberos_sync
 
         return [
             ScheduleSpec(
