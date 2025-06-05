@@ -96,7 +96,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
-          image-name: ghcr.io/goauthentik/docs
+          image-name: ghcr.io/goauthentik/dev-docs
       - name: Login to Container Registry
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
         uses: docker/login-action@v3
@@ -113,8 +113,8 @@ jobs:
           push: ${{ steps.ev.outputs.shouldPush == 'true' }}
           platforms: linux/amd64,linux/arm64
           context: .
-          cache-from: type=registry,ref=ghcr.io/goauthentik/docs:buildcache
-          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/docs:buildcache,mode=max' || '' }}
+          cache-from: type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache
+          cache-to: ${{ steps.ev.outputs.shouldPush == 'true' && 'type=registry,ref=ghcr.io/goauthentik/dev-docs:buildcache,mode=max' || '' }}
       - uses: actions/attest-build-provenance@v2
         id: attest
         if: ${{ steps.ev.outputs.shouldPush == 'true' }}
