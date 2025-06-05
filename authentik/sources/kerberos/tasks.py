@@ -10,7 +10,6 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.sync import KerberosSync
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 CACHE_KEY_STATUS = "goauthentik.io/sources/kerberos/status/"
@@ -31,7 +30,7 @@ def kerberos_connectivity_check(pk: str):
 @actor(time_limit=(60 * 60 * CONFIG.get_int("sources.kerberos.task_timeout_hours")) * 2.5 * 1000)
 def kerberos_sync(pk: str):
     """Sync a single source"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     source: KerberosSource = KerberosSource.objects.filter(enabled=True, pk=pk).first()
     if not source:
         return
@@ -44,7 +43,8 @@ def kerberos_sync(pk: str):
                 return
             syncer = KerberosSync(source)
             syncer.sync()
-            self.set_status(TaskStatus.SUCCESSFUL, *syncer.messages)
+            self.info(*syncer.messages)
     except StopSync as exc:
         LOGGER.warning(exception_to_string(exc))
-        self.set_error(exc)
+        self.error(exc)
+        raise exc

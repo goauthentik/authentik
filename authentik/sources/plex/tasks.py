@@ -8,13 +8,12 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.sources.plex.models import PlexSource
 from authentik.sources.plex.plex import PlexAuth
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 
 @actor
 def check_plex_token(source_pk: str):
     """Check the validity of a Plex source."""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     sources = PlexSource.objects.filter(pk=source_pk)
     if not sources.exists():
         return
@@ -22,13 +21,12 @@ def check_plex_token(source_pk: str):
     auth = PlexAuth(source, source.plex_token)
     try:
         auth.get_user_info()
-        self.set_status(TaskStatus.SUCCESSFUL, "Plex token is valid.")
+        self.info("Plex token is valid.")
     except RequestException as exc:
         error = exception_to_string(exc)
         if len(source.plex_token) > 0:
             error = error.replace(source.plex_token, "$PLEX_TOKEN")
-        self.set_status(
-            TaskStatus.ERROR,
+        self.error(
             "Plex token is invalid/an error occurred:",
             error,
         )

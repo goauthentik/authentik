@@ -9,7 +9,6 @@ from structlog.stdlib import get_logger
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.oauth.models import OAuthSource
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 
@@ -17,9 +16,8 @@ LOGGER = get_logger()
 @actor
 def update_well_known_jwks():
     """Update OAuth sources' config from well_known, and JWKS info from the configured URL"""
-    self: Task = CurrentTask.get_task()
+    self = CurrentTask.get_task()
     session = get_http_session()
-    messages = []
     for source in OAuthSource.objects.all().exclude(oidc_well_known_url=""):
         try:
             well_known_config = session.get(source.oidc_well_known_url)
@@ -27,7 +25,7 @@ def update_well_known_jwks():
         except RequestException as exc:
             text = exc.response.text if exc.response else str(exc)
             LOGGER.warning("Failed to update well_known", source=source, exc=exc, text=text)
-            messages.append(f"Failed to update OIDC configuration for {source.slug}")
+            self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
         config: dict = well_known_config.json()
         try:
@@ -52,7 +50,7 @@ def update_well_known_jwks():
                 source=source,
                 exc=exc,
             )
-            messages.append(f"Failed to update OIDC configuration for {source.slug}")
+            self.info(f"Failed to update OIDC configuration for {source.slug}")
             continue
         if dirty:
             LOGGER.info("Updating sources' OpenID Configuration", source=source)
@@ -65,11 +63,10 @@ def update_well_known_jwks():
         except RequestException as exc:
             text = exc.response.text if exc.response else str(exc)
             LOGGER.warning("Failed to update JWKS", source=source, exc=exc, text=text)
-            messages.append(f"Failed to update JWKS for {source.slug}")
+            self.info(f"Failed to update JWKS for {source.slug}")
             continue
         config = jwks_config.json()
         if dumps(source.oidc_jwks, sort_keys=True) != dumps(config, sort_keys=True):
             source.oidc_jwks = config
             LOGGER.info("Updating sources' JWKS", source=source)
             source.save()
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)
