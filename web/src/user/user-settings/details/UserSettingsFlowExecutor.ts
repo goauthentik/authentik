@@ -87,7 +87,7 @@ export class UserSettingsFlowExecutor
     }
 
     updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("brand") && this.brand) {
+        if (changedProperties.has("brand") || this.brand) {
             this.flowSlug = this.brand.flowUserSettings;
 
             if (!this.flowSlug) return;
