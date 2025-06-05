@@ -65,7 +65,10 @@ def task_postrun_hook(task_id: str, task, *args, retval=None, state=None, **kwar
     """Log task_id on worker"""
     CTX_TASK_ID.set(...)
     LOGGER.info(
-        "Task finished", task_id=task_id.replace("-", ""), task_name=task.__name__, state=state
+        "Task finished",
+        task_id=task_id.replace("-", ""),
+        task_name=task.__name__,
+        state=state,
     )
 
 
@@ -79,7 +82,9 @@ def task_error_hook(task_id: str, exception: Exception, traceback, *args, **kwar
     CTX_TASK_ID.set(...)
     if before_send({}, {"exc_info": (None, exception, None)}) is not None:
         Event.new(
-            EventAction.SYSTEM_EXCEPTION, message=exception_to_string(exception), task_id=task_id
+            EventAction.SYSTEM_EXCEPTION,
+            message=exception_to_string(exception),
+            task_id=task_id,
         ).save()
 
 

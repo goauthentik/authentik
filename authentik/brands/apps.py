@@ -13,3 +13,4 @@ class AuthentikBrandsConfig(ManagedAppConfig):
     mountpoints = {
         "authentik.brands.urls_root": "",
     }
+    default = True

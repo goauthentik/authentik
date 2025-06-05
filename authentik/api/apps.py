@@ -8,6 +8,6 @@ class AuthentikAPIConfig(ManagedAppConfig):
 
     name = "authentik.api"
     label = "authentik_api"
+    mountpoint = "api/"
     verbose_name = "authentik API"
     default = True
-    mountpoint = "api/"
