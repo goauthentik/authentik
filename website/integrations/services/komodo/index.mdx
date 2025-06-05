@@ -48,7 +48,7 @@ To support the integration of Komodo with authentik, you need to create an appli
 
 ```yaml
 KOMODO_OIDC_ENABLED=true
-KOMODO_OIDC_PROVIDER=https://authentik.company/application/o/authorize
+KOMODO_OIDC_PROVIDER=https://authentik.company/application/o/<application-slug>/
 KOMODO_OIDC_CLIENT_ID=<authentik_client_ID>
 KOMODO_OIDC_CLIENT_SECRET=<authentik client secret>
 ```
@@ -68,7 +68,7 @@ Komodo doesn't currently have a method to provision OIDC users, therefore OIDC a
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Komodo, log out and attempt to log back in by clicking the OIDC button. You should be redirected to authentik to login, if successful you will be redirected to the Komodo dashboard.
+To ensure that authentik is correctly integrated with Komodo, log out and then log back in by clicking **OIDC**. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Komodo dashboard.
 
 ## Resources
 
