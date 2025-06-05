@@ -95,17 +95,6 @@ class ManagedAppConfig(AppConfig):
         return []
 
     @property
-    def tenant_startup_tasks(self) -> list[Actor]:
-        """Get a list of actors to dispatch on startup in each tenant.
-        If an associated schedule is found and is paused, the actor is skipped."""
-        return []
-
-    @property
-    def global_startup_tasks(self) -> list[Actor]:
-        """Get a list of actors to dispatch on startup in the default tenant.
-        If an associated schedule is found and is paused, the actor is skipped."""
-        return []
-
     def _reconcile_tenant(self) -> None:
         """reconcile ourselves for tenanted methods"""
         from authentik.tenants.models import Tenant
