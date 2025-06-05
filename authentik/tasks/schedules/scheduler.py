@@ -39,9 +39,11 @@ class Scheduler:
                     "Failed to acquire lock for tasks scheduling, skipping",
                     tenant=tenant.schema_name,
                 )
+                return
             with transaction.atomic(using=router.db_for_write(Schedule)):
                 for schedule in Schedule.objects.select_for_update().filter(
-                    next_run__lt=now(), paused=False
+                    next_run__lt=now(),
+                    paused=False,
                 ):
                     self.process_schedule(schedule)
 
