@@ -122,6 +122,7 @@ const items = [
             "services/fortimanager/index",
             "services/gravity/index",
             "services/netbird/index",
+            "services/omada-controller/index",
             "services/opnsense/index",
             "services/pangolin/index",
             "services/pfsense/index",
