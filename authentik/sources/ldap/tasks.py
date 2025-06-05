@@ -47,7 +47,8 @@ def ldap_connectivity_check(pk: str | None = None):
     # We take the configured hours timeout time by 3.5 as we run user and
     # group in parallel and then membership, then deletions, so 3x is to cover the serial tasks,
     # and 0.5x on top of that to give some more leeway
-    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 3.5,
+    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
+    * 3.5,
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""

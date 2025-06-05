@@ -1,19 +1,14 @@
-from dataclasses import asdict
-
-from dramatiq.composition import group
 from django.core.paginator import Paginator
 from django.db.models import Model, QuerySet
 from django.db.models.query import Q
 from django.utils.text import slugify
-from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
+from dramatiq.composition import group
 from dramatiq.errors import Retry
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
-from authentik.events.logs import LogEvent
-from authentik.events.models import TaskStatus
 from authentik.events.utils import sanitize_item
 from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
 from authentik.lib.sync.outgoing.base import Direction
@@ -106,7 +101,7 @@ class SyncTasks:
                 group_tasks.run().wait(timeout=provider.get_object_sync_time_limit(Group))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
-                raise Retry from exc
+                raise Retry() from exc
             except StopSync as exc:
                 task.error(exc)
                 return
@@ -170,7 +165,8 @@ class SyncTasks:
             except TransientSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, user=obj)
                 task.warning(
-                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to transient error: {str(exc)}",
+                    f"Failed to sync {obj._meta.verbose_name} {str(obj)} due to "
+                    "transient error: {str(exc)}",
                     attributes={"obj": sanitize_item(obj)},
                 )
             except StopSync as exc:

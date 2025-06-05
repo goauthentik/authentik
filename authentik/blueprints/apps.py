@@ -6,7 +6,6 @@ from inspect import ismethod
 
 from django.apps import AppConfig
 from django.db import DatabaseError, InternalError, ProgrammingError
-from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
 from structlog.stdlib import BoundLogger, get_logger
 
