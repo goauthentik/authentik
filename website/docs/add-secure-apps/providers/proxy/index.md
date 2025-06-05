@@ -155,7 +155,7 @@ Afterwards, edit the _Proxy provider_ and add this new mapping. The expression i
 
 ## Host header:ak-version[2025.6.1]
 
-By default, the proxy provider will use forward the Host header used by the client to the upstream application. Starting with authentik 2025.6.1, it is possible to dynamically adjust the Host header with a property mapping.
+By default, the proxy provider will use forwarded Host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the Host header with a property mapping.
 
 ```python
 return {
