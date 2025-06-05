@@ -74,12 +74,6 @@ fi
 
 if [[ "$1" == "server" ]]; then
     set_mode "server"
-    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
-    # sync, so that we can sure the first start actually has working bootstrap
-    # credentials
-    if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
-        python -m manage bootstrap_tasks
-    fi
     run_authentik
 elif [[ "$1" == "worker" ]]; then
     set_mode "worker"
