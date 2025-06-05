@@ -1,4 +1,4 @@
-import { EventGeo } from "@goauthentik/admin/events/utils";
+import { EventWithContext } from "#common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/core/ol-map";
@@ -24,8 +24,12 @@ export class EventMap extends AKElement {
             PFBase,
             PFCard,
             css`
+                .pf-c-card,
                 ol-map {
-                    height: 25em;
+                    height: 24rem;
+                }
+                :host([theme="dark"]) ol-map {
+                    filter: invert(100%) hue-rotate(180deg);
                 }
             `,
         ];
@@ -33,27 +37,32 @@ export class EventMap extends AKElement {
 
     render(): TemplateResult {
         return html`<div class="pf-c-card">
-                <ol-map>
-                    <ol-layer-openstreetmap></ol-layer-openstreetmap>
-                    <ol-layer-vector>
-                        ${this.events
-                            ? html`
-                                  ${this.events.results
-                                      .filter((event) => {
-                                          return Object.hasOwn(event.context, "geo");
-                                      })
-                                      .map((event) => {
-                                          const geo = event.context.geo as unknown as EventGeo;
-                                          return html`<ol-marker-icon
-                                              src="https://openlayers-elements.netlify.app/assets/icon.png"
-                                              lon=${geo.long}
-                                              lat=${geo.lat}
-                                          ></ol-marker-icon>`;
-                                      })}
-                              `
-                            : nothing}
-                    </ol-layer-vector>
-                </ol-map>
+            <ol-map>
+                <ol-layer-openstreetmap></ol-layer-openstreetmap>
+                <ol-layer-vector>
+                    ${this.events
+                        ? this.events.results
+                              .filter((event) => {
+                                  if (!Object.hasOwn(event.context, "geo")) {
+                                      return false;
+                                  }
+                                  const geo = (event as EventWithContext).context.geo;
+                                  if (!geo?.lat || !geo.long) {
+                                      return false;
+                                  }
+                                  return true;
+                              })
+                              .map((event) => {
+                                  const geo = (event as EventWithContext).context.geo!;
+                                  return html`<ol-marker-icon
+                                      src="https://openlayers-elements.netlify.app/assets/icon.png"
+                                      lon=${geo.long!}
+                                      lat=${geo.lat!}
+                                  ></ol-marker-icon>`;
+                              })
+                        : nothing}
+                </ol-layer-vector>
+            </ol-map>
         </div>`;
     }
 }

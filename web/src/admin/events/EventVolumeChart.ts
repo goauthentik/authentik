@@ -12,10 +12,14 @@ import { Coordinate, EventsApi, EventsEventsListRequest } from "@goauthentik/api
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends AKChart<Coordinate[]> {
+    @property({ attribute: "with-map", type: Boolean })
+    withMap = false;
+
     _query?: EventsEventsListRequest;
 
     @property({ attribute: false })
     set query(value: EventsEventsListRequest | undefined) {
+        if (JSON.stringify(value) !== JSON.stringify(this._query)) return;
         this._query = value;
         this.refreshHandler();
     }
@@ -24,8 +28,8 @@ export class EventVolumeChart extends AKChart<Coordinate[]> {
         return super.styles.concat(
             PFCard,
             css`
-                .pf-c-card__body {
-                    height: 12rem;
+                :host([with-map]) .pf-c-card {
+                    height: 24rem;
                 }
             `,
         );
