@@ -1,12 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
-import { ChartData, Tick } from "chart.js";
+import { ChartData } from "chart.js";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import {
-    Coordinate,
     EventActions,
     EventVolume,
     EventsApi,
