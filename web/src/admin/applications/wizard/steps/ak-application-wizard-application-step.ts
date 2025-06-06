@@ -128,7 +128,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     ?invalid=${errors.slug ?? this.errors.has("slug")}
                     .errorMessages=${this.errorMessages("slug")}
                     help=${msg("Internal application name used in URLs.")}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-slug-input>
                 <ak-text-input
                     name="group"
@@ -138,7 +138,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     help=${msg(
                         "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                     )}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
                 <ak-radio-input
                     label=${msg("Policy engine mode")}
@@ -161,7 +161,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                             help=${msg(
                                 "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                             )}
-                            inputHint="code"
+                            input-hint="code"
                         ></ak-text-input>
                         <ak-switch-input
                             name="openInNewTab"
