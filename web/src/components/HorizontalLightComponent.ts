@@ -21,13 +21,13 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ type: String, reflect: true })
     name!: string;
 
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     label = "";
 
     @property({ type: Boolean, reflect: true })
     required = false;
 
-    @property({ type: String, reflect: true })
+    @property({ type: String })
     help = "";
 
     @property({ type: Object })
@@ -45,7 +45,7 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ attribute: false })
     value?: T;
 
-    @property({ type: String, reflect: true, attribute: "input-hint" })
+    @property({ type: String, attribute: "input-hint" })
     inputHint = "";
 
     renderControl() {
