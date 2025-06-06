@@ -2,6 +2,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -259,13 +260,11 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    <ak-private-text-input
                         label=${msg("Bind Password")}
-                        ?writeOnly=${this.instance !== undefined}
                         name="bindPassword"
-                    >
-                        <input type="text" value="" class="pf-c-form-control" />
-                    </ak-form-element-horizontal>
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
                     <ak-form-element-horizontal
                         label=${msg("Base DN")}
                         ?required=${true}

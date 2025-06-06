@@ -21,13 +21,13 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ type: String, reflect: true })
     name!: string;
 
-    @property({ type: String })
+    @property({ type: String, reflect: true })
     label = "";
 
     @property({ type: Boolean, reflect: true })
     required = false;
 
-    @property({ type: String })
+    @property({ type: String, reflect: true })
     help = "";
 
     @property({ type: Object })
