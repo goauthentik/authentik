@@ -1,26 +1,38 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import {
+    DataProvision,
+    DualSelectPair,
+    DualSelectPairSource,
+} from "#elements/ak-dual-select/types";
 
 import { CertificateKeyPair, CryptoApi } from "@goauthentik/api";
 
-const certToSelect = (s: CertificateKeyPair) => [s.pk, s.name, s.name, s];
+const certToSelect = (cert: CertificateKeyPair): DualSelectPair<CertificateKeyPair> => {
+    return [cert.pk, cert.name, cert.name, cert];
+};
 
-export async function certificateProvider(page = 1, search = "") {
-    const certificates = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsList({
-        ordering: "name",
-        pageSize: 20,
-        search: search.trim(),
-        page,
-        hasKey: undefined,
-    });
-    return {
-        pagination: certificates.pagination,
-        options: certificates.results.map(certToSelect),
-    };
+export async function certificateProvider(page = 1, search = ""): Promise<DataProvision> {
+    return new CryptoApi(DEFAULT_CONFIG)
+        .cryptoCertificatekeypairsList({
+            ordering: "name",
+            pageSize: 20,
+            search: search.trim(),
+            page,
+            hasKey: undefined,
+        })
+        .then(({ pagination, results }) => {
+            return {
+                pagination,
+                options: results.map(certToSelect),
+            };
+        });
 }
 
-export function certificateSelector(instanceMappings?: string[]) {
+export function certificateSelector(
+    instanceMappings?: string[],
+): DualSelectPairSource<CertificateKeyPair> {
     if (!instanceMappings) {
-        return [];
+        return () => Promise.resolve([]);
     }
 
     return async () => {

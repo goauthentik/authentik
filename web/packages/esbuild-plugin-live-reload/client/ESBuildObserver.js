@@ -28,6 +28,8 @@ const log = console.debug.bind(console, logPrefix);
  * ```
  *
  * @implements {Disposable}
+ * @category Plugin
+ * runtime browser
  */
 export class ESBuildObserver extends EventSource {
     /**

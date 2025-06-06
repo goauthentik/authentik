@@ -21,7 +21,7 @@ The following placeholders are used in this guide:
 
 ## Apple
 
-1. Log into your Apple developer account, and navigate to **Certificates, IDs & Profiles**, then click **Identifiers** in the sidebar.
+1. Log in to your Apple developer account, and navigate to **Certificates, IDs & Profiles**, then click **Identifiers** in the sidebar.
 2. Register a new Identifier with the type of **App IDs**, and the subtype **App**.
 3. Choose a name that users will recognise for the **Description** field.
 4. For your bundle ID, use the reverse domain of authentik, in this case `company.authentik`.
@@ -68,5 +68,5 @@ The following placeholders are used in this guide:
 Save, and you now have Apple as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.4.1
+  version: 2025.6.0
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -28474,6 +28474,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: delete_not_found_objects
+        schema:
+          type: boolean
+      - in: query
         name: enabled
         schema:
           type: boolean
@@ -28577,6 +28581,10 @@ paths:
         name: sync_users_password
         schema:
           type: boolean
+      - in: query
+        name: user_membership_attribute
+        schema:
+          type: string
       - in: query
         name: user_object_filter
         schema:
@@ -47889,6 +47897,9 @@ components:
         group_membership_field:
           type: string
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
@@ -47922,6 +47933,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
       required:
       - base_dn
       - component
@@ -48098,6 +48113,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -48123,6 +48142,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
       required:
       - base_dn
       - name
@@ -53431,6 +53454,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -53456,6 +53483,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
     PatchedLicenseRequest:
       type: object
       description: License Serializer

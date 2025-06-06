@@ -18,7 +18,6 @@ export const CURRENT_CLASS = "pf-m-current";
 
 //#region Application
 
-export const TITLE_DEFAULT = "authentik";
 /**
  * The delimiter used to parse the URL for the current route.
  *
