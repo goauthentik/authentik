@@ -4,15 +4,16 @@ from datetime import timedelta
 from json import loads
 
 import django_filters
-from django.db.models.aggregates import Count
+from django.db.models import Count
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import ExtractDay, ExtractHour
+from django.db.models.functions import ExtractDay, TruncDate
 from django.db.models.query_utils import Q
+from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import DictField, IntegerField
+from rest_framework.fields import CharField, DateField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -156,13 +157,29 @@ class EventViewSet(ModelViewSet):
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
-        responses={200: CoordinateSerializer(many=True)},
+        responses={
+            200: inline_serializer(
+                "EventVolume",
+                fields={
+                    "action": CharField(),
+                    "day": DateField(),
+                    "count": IntegerField(),
+                },
+                many=True,
+            )
+        },
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
     def volume(self, request: Request) -> Response:
         """Get event volume for specified filters and timeframe"""
         queryset = self.filter_queryset(self.get_queryset())
-        return Response(queryset.get_events_per(timedelta(days=7), ExtractHour, 7 * 3))
+        return Response(
+            queryset.filter(created__gte=now() - timedelta(days=14))
+            .annotate(day=TruncDate("created"))
+            .values("day", "action")
+            .annotate(count=Count("pk"))
+            .order_by("-day", "action")
+        )
 
     @extend_schema(
         responses={200: CoordinateSerializer(many=True)},

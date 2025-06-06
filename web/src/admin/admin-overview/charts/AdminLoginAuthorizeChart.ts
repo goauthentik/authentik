@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart, RGBAColor } from "@goauthentik/elements/charts/Chart";
+import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
@@ -18,8 +18,8 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
             datasets: [
                 {
                     label: msg("Authorizations"),
-                    backgroundColor: new RGBAColor(43, 154, 243, 0.5).toString(),
-                    borderColor: new RGBAColor(43, 154, 243, 1).toString(),
+                    backgroundColor: "rgba(43, 154, 243, 0.5)",
+                    borderColor: "rgba(43, 154, 243, 1)",
                     spanGaps: true,
                     fill: "origin",
                     cubicInterpolationMode: "monotone",
@@ -33,8 +33,8 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
                 },
                 {
                     label: msg("Failed Logins"),
-                    backgroundColor: new RGBAColor(201, 24, 11, 0.5).toString(),
-                    borderColor: new RGBAColor(201, 24, 11, 1).toString(),
+                    backgroundColor: "rgba(201, 24, 11, 0.5)",
+                    borderColor: "rgba(201, 24, 11, 1)",
                     spanGaps: true,
                     fill: "origin",
                     cubicInterpolationMode: "monotone",
@@ -48,8 +48,8 @@ export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
                 },
                 {
                     label: msg("Successful Logins"),
-                    backgroundColor: new RGBAColor(62, 134, 53, 0.5).toString(),
-                    borderColor: new RGBAColor(62, 134, 53, 1).toString(),
+                    backgroundColor: "rgba(62, 134, 53, 0.5)",
+                    borderColor: "rgba(62, 134, 53, 1)",
                     spanGaps: true,
                     fill: "origin",
                     cubicInterpolationMode: "monotone",

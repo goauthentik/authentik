@@ -7540,7 +7540,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Coordinate'
+                  $ref: '#/components/schemas/EventVolume'
           description: ''
         '400':
           content:
@@ -44986,6 +44986,20 @@ components:
       - application
       - counted_events
       - unique_users
+    EventVolume:
+      type: object
+      properties:
+        action:
+          type: string
+        day:
+          type: string
+          format: date
+        count:
+          type: integer
+      required:
+      - action
+      - count
+      - day
     EventsRequestedEnum:
       enum:
       - https://schemas.openid.net/secevent/caep/event-type/session-revoked
