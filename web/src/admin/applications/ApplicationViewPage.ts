@@ -99,7 +99,6 @@ export class ApplicationViewPage extends AKElement {
         return html`<ak-page-header
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
                 <ak-app-icon
                     size=${PFSize.Medium}

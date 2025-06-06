@@ -119,7 +119,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     "Enable this option to write password changes made in authentik back to Kerberos. Ignored if sync is disabled.",
                 )}
             ></ak-switch-input>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Realm settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-text-input
@@ -139,7 +139,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-textarea-input>
                     <ak-form-element-horizontal
                         label=${msg("User matching mode")}
-                        ?required=${true}
+                        required
                         name="userMatchingMode"
                     >
                         <select class="pf-c-form-control">
@@ -182,7 +182,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group matching mode")}
-                        ?required=${true}
+                        required
                         name="groupMatchingMode"
                     >
                         <select class="pf-c-form-control">
@@ -211,12 +211,12 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group .expanded=${false}>
+            <ak-form-group>
                 <span slot="header"> ${msg("Sync connection settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("KAdmin type")}
-                        ?required=${true}
+                        required
                         name="kadminType"
                     >
                         <ak-radio
@@ -274,7 +274,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group .expanded=${false}>
+            <ak-form-group>
                 <span slot="header"> ${msg("SPNEGO settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-text-input
@@ -303,7 +303,7 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                     ></ak-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${false}>
+            <ak-form-group>
                 <span slot="header"> ${msg("Kerberos Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
