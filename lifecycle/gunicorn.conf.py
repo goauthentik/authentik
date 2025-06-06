@@ -11,7 +11,7 @@ from cryptography.hazmat.backends.openssl.backend import backend
 from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
@@ -132,9 +132,9 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
                 json={
                     "domain": "authentik",
                     "name": "pageview",
-                    "referrer": get_full_version(),
+                    "referrer": authentik_full_version(),
                     "url": (
-                        f"http://localhost/{env}?utm_source={get_full_version()}&utm_medium={env}"
+                        f"http://localhost/{env}?utm_source={authentik_full_version()}&utm_medium={env}"
                     ),
                 },
                 headers={

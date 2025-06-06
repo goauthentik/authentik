@@ -7,7 +7,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.test import TestCase
 from requests_mock import Mocker
 
-from authentik import get_full_version
+from authentik import authentik_full_version
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import (
     Event,
@@ -118,7 +118,7 @@ class TestEventTransports(TestCase):
                                 {"short": True, "title": "Event user", "value": self.user.username},
                                 {"title": "foo", "value": "bar,"},
                             ],
-                            "footer": f"authentik {get_full_version()}",
+                            "footer": f"authentik {authentik_full_version()}",
                         }
                     ],
                 },

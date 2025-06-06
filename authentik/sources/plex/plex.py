@@ -6,7 +6,7 @@ from django.http.response import Http404
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger
 
-from authentik import __version__
+from authentik import authentik_version
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.utils.http import get_http_session
 from authentik.sources.plex.models import PlexSource, UserPlexSourceConnection
@@ -34,7 +34,7 @@ class PlexAuth:
         """Get common headers"""
         return {
             "X-Plex-Product": "authentik",
-            "X-Plex-Version": __version__,
+            "X-Plex-Version": authentik_version(),
             "X-Plex-Device-Vendor": "goauthentik.io",
         }
 

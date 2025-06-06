@@ -57,7 +57,7 @@ migrate: ## Run the Authentik Django server's migrations
 i18n-extract: core-i18n-extract web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 aws-cfn:
-	cd lifecycle/aws && npm run aws-cfn
+	cd lifecycle/aws && npm i && npm run aws-cfn
 
 run:  ## Run the main authentik server process
 	uv run ak server
@@ -86,6 +86,15 @@ dev-create-db:
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
 
+bump:
+	uv version $(version)
+	$(MAKE) gen-build
+	$(MAKE) gen-compose
+	$(MAKE) aws-cfn
+	npm version --no-git-tag-version --allow-same-version $(version)
+	cd ${PWD}/web && npm version --no-git-tag-version --allow-same-version $(version)
+	echo $(version) > ${PWD}/internal/constants/VERSION
+
 #########################
 ## API Schema
 #########################
@@ -99,6 +108,9 @@ gen-build:  ## Extract the schema from the database
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
 		uv run ak spectacular --file schema.yml
+
+gen-compose:
+	uv run scripts/generate_docker_compose.py
 
 gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md

@@ -2,7 +2,7 @@
 from lifecycle.migrate import BaseMigration
 from datetime import datetime
 
-from authentik import __version__, get_build_hash
+from authentik import authentik_version, authentik_build_hash
 
 
 class Migration(BaseMigration):
@@ -14,7 +14,7 @@ class Migration(BaseMigration):
                 ORDER BY "timestamp" DESC
                 LIMIT 1
         """,
-            (__version__, get_build_hash()),
+            (authentik_version(), authentik_build_hash()),
         )
         return not bool(self.cur.rowcount)
 
@@ -24,7 +24,7 @@ class Migration(BaseMigration):
             INSERT INTO authentik_version_history ("timestamp", version, build)
                 VALUES (%s, %s, %s)
         """,
-            (datetime.now(), __version__, get_build_hash()),
+            (datetime.now(), authentik_version(), authentik_build_hash()),
         )
         self.cur.execute(
             """
