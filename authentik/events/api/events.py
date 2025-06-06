@@ -1,12 +1,11 @@
 """Events API Views"""
 
 from datetime import timedelta
-from json import loads
 
 import django_filters
 from django.db.models import Count, QuerySet
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import ExtractDay, TruncDate
+from django.db.models.functions import TruncDate
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
@@ -18,7 +17,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
@@ -197,39 +195,6 @@ class EventViewSet(ModelViewSet):
             .values("day", "action")
             .annotate(count=Count("pk"))
             .order_by("-day", "action")
-        )
-
-    @extend_schema(
-        responses={200: CoordinateSerializer(many=True)},
-        filters=[],
-        parameters=[
-            OpenApiParameter(
-                "action",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-            OpenApiParameter(
-                "query",
-                type=OpenApiTypes.STR,
-                location=OpenApiParameter.QUERY,
-                required=False,
-            ),
-        ],
-    )
-    @action(detail=False, methods=["GET"], pagination_class=None)
-    def per_month(self, request: Request):
-        """Get the count of events per month"""
-        filtered_action = request.query_params.get("action", EventAction.LOGIN)
-        try:
-            query = loads(request.query_params.get("query", "{}"))
-        except ValueError:
-            return Response(status=400)
-        return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event")
-            .filter(action=filtered_action)
-            .filter(**query)
-            .get_events_per(timedelta(weeks=4), ExtractDay, 30)
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

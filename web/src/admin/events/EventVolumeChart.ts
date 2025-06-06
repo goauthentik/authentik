@@ -33,7 +33,7 @@ export class EventVolumeChart extends AKChart<EventVolume[]> {
     apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             historyDays: 14,
-            ...this._query
+            ...this._query,
         });
     }
 

@@ -7337,44 +7337,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /events/events/per_month/:
-    get:
-      operationId: events_events_per_month_list
-      description: Get the count of events per month
-      parameters:
-      - in: query
-        name: action
-        schema:
-          type: string
-      - in: query
-        name: query
-        schema:
-          type: string
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coordinate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -43576,19 +43538,6 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
-    Coordinate:
-      type: object
-      description: Coordinates for diagrams
-      properties:
-        x_cord:
-          type: integer
-          readOnly: true
-        y_cord:
-          type: integer
-          readOnly: true
-      required:
-      - x_cord
-      - y_cord
     CountryCodeEnum:
       enum:
       - AF
