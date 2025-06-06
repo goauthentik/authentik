@@ -44921,15 +44921,15 @@ components:
       properties:
         action:
           $ref: '#/components/schemas/EventActions'
-        day:
+        time:
           type: string
-          format: date
+          format: date-time
         count:
           type: integer
       required:
       - action
       - count
-      - day
+      - time
     EventsRequestedEnum:
       enum:
       - https://schemas.openid.net/secevent/caep/event-type/session-revoked

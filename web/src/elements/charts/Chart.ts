@@ -260,14 +260,14 @@ export abstract class AKChart<T> extends AKElement {
             const actionData: { x: number; y: number }[] = [];
             data.filter((v) => v.action === action).forEach((v) => {
                 actionData.push({
-                    x: v.day.getTime(),
+                    x: v.time.getTime(),
                     y: v.count,
                 });
             });
             // Check if we need to pad the data to reach a certain time window
             const earliestDate = data
                 .filter((v) => v.action === action)
-                .map((v) => v.day)
+                .map((v) => v.time)
                 .sort((a, b) => b.getTime() - a.getTime())
                 .reverse();
             if (earliestDate.length > 0 && options.padToDays) {

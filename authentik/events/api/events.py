@@ -3,16 +3,17 @@
 from datetime import timedelta
 
 import django_filters
-from django.db.models import Count, QuerySet
+from django.db.models import Count, ExpressionWrapper, F, QuerySet
+from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import TruncDate
+from django.db.models.functions import Cast, TruncHour
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import ChoiceField, DateField, DictField, IntegerField
+from rest_framework.fields import ChoiceField, DateTimeField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -26,7 +27,7 @@ class EventVolumeSerializer(PassiveSerializer):
     """Count of events of action created on day"""
 
     action = ChoiceField(choices=EventAction.choices)
-    day = DateField()
+    time = DateTimeField()
     count = IntegerField()
 
 
@@ -191,10 +192,16 @@ class EventViewSet(ModelViewSet):
             delta = timedelta(days=min(int(time_delta), 60))
         return Response(
             queryset.filter(created__gte=now() - delta)
-            .annotate(day=TruncDate("created"))
-            .values("day", "action")
+            .annotate(hour=TruncHour("created"))
+            .annotate(
+                time=ExpressionWrapper(
+                    F("hour") - (F("hour__hour") % 6) * timedelta(hours=1),
+                    output_field=DjangoDateTimeField(),
+                )
+            )
+            .values("time", "action")
             .annotate(count=Count("pk"))
-            .order_by("-day", "action")
+            .order_by("time", "action")
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
