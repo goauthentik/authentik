@@ -1,6 +1,5 @@
 """authentik administration metrics"""
 
-
 from rest_framework.fields import IntegerField
 
 from authentik.core.api.utils import PassiveSerializer
