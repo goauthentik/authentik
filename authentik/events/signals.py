@@ -12,13 +12,11 @@ from rest_framework.request import Request
 
 from authentik.core.models import AuthenticatedSession, User
 from authentik.core.signals import login_failed, password_changed
-from authentik.events.apps import SYSTEM_TASK_STATUS
-from authentik.events.models import Event, EventAction, NotificationRule, SystemTask
+from authentik.events.models import Event, EventAction, NotificationRule
 from authentik.events.tasks import event_trigger_handler, gdpr_cleanup
 from authentik.flows.models import Stage
 from authentik.flows.planner import PLAN_CONTEXT_OUTPOST, PLAN_CONTEXT_SOURCE, FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_PLAN
-from authentik.root.monitoring import monitoring_set
 from authentik.stages.invitation.models import Invitation
 from authentik.stages.invitation.signals import invitation_used
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
@@ -123,11 +121,3 @@ def event_user_pre_delete_cleanup(sender, instance: User, **_):
     """If gdpr_compliance is enabled, remove all the user's events"""
     if get_current_tenant().gdpr_compliance:
         gdpr_cleanup.send(instance.pk)
-
-
-@receiver(monitoring_set)
-def monitoring_system_task(sender, **_):
-    """Update metrics when task is saved"""
-    SYSTEM_TASK_STATUS.clear()
-    for task in SystemTask.objects.all():
-        task.update_metrics()

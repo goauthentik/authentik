@@ -8,8 +8,7 @@ from django.test import TestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
-from authentik.events.models import Event, EventAction, SystemTask
-from authentik.events.system_tasks import TaskStatus
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.sync.outgoing.exceptions import StopSync
 from authentik.lib.utils.reflection import class_to_path
@@ -56,8 +55,6 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync_page.send(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo")
-        task = SystemTask.objects.filter(name="ldap_sync", uid="ldap:users:foo").first()
-        self.assertEqual(task.status, TaskStatus.ERROR)
 
     def test_sync_error(self):
         """Test user sync"""

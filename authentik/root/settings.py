@@ -343,25 +343,6 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-CELERY = {
-    "task_soft_time_limit": 600,
-    "worker_max_tasks_per_child": 50,
-    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
-    "beat_schedule": {},
-    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
-    "task_create_missing_queues": True,
-    "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
-    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
-    "broker_transport_options": CONFIG.get_dict_from_b64_json(
-        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
-    ),
-    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
-        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
-    ),
-    "redis_retry_on_timeout": True,
-}
-
 # Sentry integration
 env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
@@ -436,7 +417,6 @@ _DISALLOWED_ITEMS = [
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
-    "CELERY",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -459,7 +439,6 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -468,7 +447,6 @@ def _update_settings(app_path: str):
 
 
 if DEBUG:
-    CELERY["task_always_eager"] = True
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )

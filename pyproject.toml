@@ -6,7 +6,6 @@ authors = [{ name = "authentik Team", email = "hello@goauthentik.io" }]
 requires-python = "==3.13.*"
 dependencies = [
     "argon2-cffi==25.1.0",
-    "celery==5.5.3",
     "channels==4.2.2",
     "channels-redis==4.2.1",
     "cron-converter==1.2.1",
@@ -35,7 +34,6 @@ dependencies = [
     "dumb-init==1.2.5.post1",
     "duo-client==5.5.0",
     "fido2==2.0.0",
-    "flower==2.0.1",
     "geoip2==5.1.0",
     "geopy==2.4.1",
     "google-api-python-client==2.171.0",
@@ -65,7 +63,6 @@ dependencies = [
     "structlog==25.4.0",
     "swagger-spec-validator==3.0.4",
     "tenacity==9.1.2",
-    "tenant-schemas-celery==3.0.0",
     "twilio==9.6.2",
     "ua-parser==1.0.1",
     "unidecode==1.4.0",
@@ -230,7 +227,7 @@ show_missing = true
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery -p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules --import-mode=importlib"
+addopts = "-p authentik.root.test_plugin --junitxml=unittest.xml -vv --full-trace --doctest-modules --import-mode=importlib"
 filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",

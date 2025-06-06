@@ -10,7 +10,7 @@ from smtplib import SMTPException
 from uuid import uuid4
 
 from django.apps import apps
-from django.db import connection, models
+from django.db import models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
 from django.db.models.functions import Extract
@@ -32,7 +32,6 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import ExpiringModel, Group, PropertyMapping, User
-from authentik.events.apps import GAUGE_TASKS, SYSTEM_TASK_STATUS, SYSTEM_TASK_TIME
 from authentik.events.context_processors.base import get_context_processors
 from authentik.events.utils import (
     cleanse_dict,
@@ -654,73 +653,3 @@ class NotificationWebhookMapping(PropertyMapping):
     class Meta:
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")
-
-
-class TaskStatus(models.TextChoices):
-    """Possible states of tasks"""
-
-    UNKNOWN = "unknown"
-    SUCCESSFUL = "successful"
-    WARNING = "warning"
-    ERROR = "error"
-
-
-class SystemTask(SerializerModel, ExpiringModel):
-    """Info about a system task running in the background along with details to restart the task"""
-
-    uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField()
-    uid = models.TextField(null=True)
-
-    start_timestamp = models.DateTimeField(default=now)
-    finish_timestamp = models.DateTimeField(default=now)
-    duration = models.FloatField(default=0)
-
-    status = models.TextField(choices=TaskStatus.choices)
-
-    description = models.TextField(null=True)
-    messages = models.JSONField()
-
-    task_call_module = models.TextField()
-    task_call_func = models.TextField()
-    task_call_args = models.JSONField(default=list)
-    task_call_kwargs = models.JSONField(default=dict)
-
-    @property
-    def serializer(self) -> type[Serializer]:
-        from authentik.events.api.tasks import SystemTaskSerializer
-
-        return SystemTaskSerializer
-
-    def update_metrics(self):
-        """Update prometheus metrics"""
-        # TODO: Deprecated metric - remove in 2024.2 or later
-        GAUGE_TASKS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).set(self.duration)
-        SYSTEM_TASK_TIME.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-        ).observe(self.duration)
-        SYSTEM_TASK_STATUS.labels(
-            tenant=connection.schema_name,
-            task_name=self.name,
-            task_uid=self.uid or "",
-            status=self.status.lower(),
-        ).inc()
-
-    def __str__(self) -> str:
-        return f"System Task {self.name}"
-
-    class Meta:
-        unique_together = (("name", "uid"),)
-        # Remove "add", "change" and "delete" permissions as those are not used
-        default_permissions = ["view"]
-        permissions = [("run_task", _("Run task"))]
-        verbose_name = _("System Task")
-        verbose_name_plural = _("System Tasks")
-        indexes = ExpiringModel.Meta.indexes

@@ -57,7 +57,6 @@ from authentik.enterprise.stages.authenticator_endpoint_gdtc.models import (
     EndpointDeviceConnection,
 )
 from authentik.events.logs import LogEvent, capture_logs
-from authentik.events.models import SystemTask
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
@@ -119,7 +118,6 @@ def excluded_models() -> list[type[Model]]:
         SCIMProviderGroup,
         SCIMProviderUser,
         Tenant,
-        SystemTask,
         Task,
         ConnectionToken,
         AuthorizationCode,

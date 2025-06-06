@@ -12,7 +12,6 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
-from authentik.events.api.tasks import SystemTaskSerializer
 from authentik.sources.kerberos.models import KerberosSource
 from authentik.sources.kerberos.tasks import CACHE_KEY_STATUS
 
@@ -56,7 +55,6 @@ class KerberosSyncStatusSerializer(PassiveSerializer):
     """Kerberos Source sync status"""
 
     is_running = BooleanField(read_only=True)
-    tasks = SystemTaskSerializer(many=True, read_only=True)
 
 
 class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
@@ -88,11 +86,7 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     ]
     ordering = ["name"]
 
-    @extend_schema(
-        responses={
-            200: KerberosSyncStatusSerializer(),
-        }
-    )
+    @extend_schema(responses={200: KerberosSyncStatusSerializer()})
     @action(
         methods=["GET"],
         detail=True,
@@ -103,15 +97,8 @@ class KerberosSourceViewSet(UsedByMixin, ModelViewSet):
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: KerberosSource = self.get_object()
-        tasks = list(
-            get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-                name="kerberos_sync",
-                uid__startswith=source.slug,
-            )
-        )
         with source.sync_lock as lock_acquired:
             status = {
-                "tasks": tasks,
                 "is_running": not lock_acquired,
             }
         return Response(KerberosSyncStatusSerializer(status).data)
