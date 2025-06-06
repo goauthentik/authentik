@@ -25,7 +25,7 @@ Use this JSON template for your WebFinger response:
 {
     "links": [
         {
-            "href": "https://authentik.company",
+            "href": "https://authentik.company/application/o/tailscale/",
             "rel": "http://openid.net/specs/connect/1.0/issuer"
         }
     ],
@@ -33,7 +33,7 @@ Use this JSON template for your WebFinger response:
 }
 ```
 
-**Important:** Replace `your@email.com` with the administrator email that you will use when creating your Tailnet. The domain in the email address must match; the domain where the WebFinger endpoint is served, and the domain you will use for Tailscale.
+**Important:** Replace `your@email.com` with the administrator email that you will use when creating your Tailnet. The domain in the email address must match; the domain where the WebFinger endpoint is served, and the domain you will use for Tailscale. Replace `tailscale` with the actual slug used in the application configuration below. 
 :::
 
 :::note
@@ -49,7 +49,7 @@ To support the integration of Tailscale with authentik, you need to create an ap
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Application**: provide a descriptive name, slug (used in the WebFinger JSON template) an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
     - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
         - Note the **Client ID** and **Client Secret** values because they will be required later.
