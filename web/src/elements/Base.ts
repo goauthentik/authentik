@@ -124,7 +124,7 @@ export class AKElement extends LitElement {
 
             this.activeTheme = UiThemeEnum.Dark;
         } else if (this.preferredColorScheme === "light") {
-            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet); 
+            applyUITheme(nextStyleRoot, UiThemeEnum.Light, this.#customCSSStyleSheet);
             this.activeTheme = UiThemeEnum.Light;
         } else if (this.preferredColorScheme === "auto") {
             createUIThemeEffect(
