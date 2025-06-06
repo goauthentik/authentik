@@ -343,7 +343,9 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
+
 # Sentry integration
+
 env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
@@ -466,10 +468,6 @@ try:
 except ImportError:
     pass
 
-# Import schedules after other apps since it relies on tasks and ScheduledModel being
-# registered for its startup.
-TENANT_APPS.append("authentik.tasks.schedules")
-
 
 # Load subapps's settings
 for _app in set(SHARED_APPS + TENANT_APPS):
@@ -477,6 +475,10 @@ for _app in set(SHARED_APPS + TENANT_APPS):
         continue
     _update_settings(f"{_app}.settings")
 _update_settings("data.user_settings")
+
+# Import schedules after other apps since it relies on tasks and ScheduledModel being
+# registered for its startup.
+TENANT_APPS.append("authentik.tasks.schedules")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

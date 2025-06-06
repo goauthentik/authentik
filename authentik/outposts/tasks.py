@@ -222,28 +222,26 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 @actor
 def outpost_connection_discovery():
     """Checks the local environment and create Service connections."""
-    self: Task = CurrentTask.get_task()
-    messages = []
+    self = CurrentTask.get_task()
     if not CONFIG.get_bool("outposts.discover"):
-        messages.append("Outpost integration discovery is disabled")
-        self.set_status(TaskStatus.SUCCESSFUL, *messages)
+        self.info("Outpost integration discovery is disabled")
         return
     # Explicitly check against token filename, as that's
     # only present when the integration is enabled
     if Path(SERVICE_TOKEN_FILENAME).exists():
-        messages.append("Detected in-cluster Kubernetes Config")
+        self.info("Detected in-cluster Kubernetes Config")
         if not KubernetesServiceConnection.objects.filter(local=True).exists():
-            messages.append("Created Service Connection for in-cluster")
+            self.info("Created Service Connection for in-cluster")
             KubernetesServiceConnection.objects.create(
                 name="Local Kubernetes Cluster", local=True, kubeconfig={}
             )
     # For development, check for the existence of a kubeconfig file
     kubeconfig_path = Path(KUBE_CONFIG_DEFAULT_LOCATION).expanduser()
     if kubeconfig_path.exists():
-        messages.append("Detected kubeconfig")
+        self.info("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
         if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
-            messages.append("Creating kubeconfig Service Connection")
+            self.info("Creating kubeconfig Service Connection")
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
@@ -252,12 +250,11 @@ def outpost_connection_discovery():
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
     if socket.exists() and access(socket, R_OK):
-        messages.append("Detected local docker socket")
+        self.info("Detected local docker socket")
         if len(DockerServiceConnection.objects.filter(local=True)) == 0:
-            messages.append("Created Service Connection for docker")
+            self.info("Created Service Connection for docker")
             DockerServiceConnection.objects.create(
                 name="Local Docker connection",
                 local=True,
                 url=unix_socket_path,
             )
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)

@@ -1,4 +1,5 @@
 import dramatiq
+from django.conf import settings
 from dramatiq.broker import Broker, get_broker
 from dramatiq.encoder import PickleEncoder
 from dramatiq.middleware import (
