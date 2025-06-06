@@ -1,5 +1,6 @@
 import { html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
@@ -8,7 +9,7 @@ export class AkTextareaInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
 
-    protected override renderControl() {
+    public override renderControl() {
         const code = this.inputHint === "code";
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as HTMLInputElement).value;

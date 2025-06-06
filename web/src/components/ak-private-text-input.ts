@@ -59,7 +59,7 @@ export class AkPrivateTextInput extends HorizontalLightComponent<string> {
         />`;
     }
 
-    protected override renderControl() {
+    public override renderControl() {
         return this.revealed ? this.renderVisibleInput() : this.#renderPrivateInput();
     }
 }
