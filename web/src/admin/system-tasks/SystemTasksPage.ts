@@ -1,7 +1,7 @@
+import "#components/ak-page-header";
 import "@goauthentik/admin/system-tasks/ScheduleList";
 import "@goauthentik/admin/system-tasks/TaskList";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
