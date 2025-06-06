@@ -25,7 +25,7 @@ Use this JSON template for your WebFinger response:
 {
     "links": [
         {
-            "href": "https://authentik.company",
+            "href": "https://authentik.company/application/o/<slug>/",
             "rel": "http://openid.net/specs/connect/1.0/issuer"
         }
     ],
