@@ -4,16 +4,16 @@ from datetime import timedelta
 from json import loads
 
 import django_filters
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay, TruncDate
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, DateField, DictField, IntegerField
+from rest_framework.fields import ChoiceField, DateField, DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -22,6 +22,14 @@ from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.core.api.object_types import TypeCreateSerializer
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
+
+
+class EventVolumeSerializer(PassiveSerializer):
+    """Count of events of action created on day"""
+
+    action = ChoiceField(choices=EventAction.choices)
+    day = DateField()
+    count = IntegerField()
 
 
 class EventSerializer(ModelSerializer):
@@ -78,6 +86,10 @@ class EventsFilter(django_filters.FilterSet):
     action = django_filters.CharFilter(
         field_name="action",
         lookup_expr="icontains",
+    )
+    actions = django_filters.MultipleChoiceFilter(
+        field_name="action",
+        choices=EventAction.choices,
     )
     brand_name = django_filters.CharFilter(
         field_name="brand",
@@ -157,24 +169,27 @@ class EventViewSet(ModelViewSet):
         return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
-        responses={
-            200: inline_serializer(
-                "EventVolume",
-                fields={
-                    "action": CharField(),
-                    "day": DateField(),
-                    "count": IntegerField(),
-                },
-                many=True,
-            )
-        },
+        responses={200: EventVolumeSerializer(many=True)},
+        parameters=[
+            OpenApiParameter(
+                "history_days",
+                type=OpenApiTypes.NUMBER,
+                location=OpenApiParameter.QUERY,
+                required=False,
+                default=7,
+            ),
+        ],
     )
     @action(detail=False, methods=["GET"], pagination_class=None)
     def volume(self, request: Request) -> Response:
         """Get event volume for specified filters and timeframe"""
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset: QuerySet[Event] = self.filter_queryset(self.get_queryset())
+        delta = timedelta(days=7)
+        time_delta = request.query_params.get("history_days", [])
+        if time_delta:
+            delta = timedelta(days=max(int(time_delta), 60))
         return Response(
-            queryset.filter(created__gte=now() - timedelta(days=14))
+            queryset.filter(created__gte=now() - delta)
             .annotate(day=TruncDate("created"))
             .values("day", "action")
             .annotate(count=Count("pk"))

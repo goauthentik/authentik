@@ -1,3 +1,4 @@
+import { actionToLabel } from "#common/labels";
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import {
     APIError,
@@ -11,6 +12,7 @@ import {
     Chart,
     ChartConfiguration,
     ChartData,
+    ChartDataset,
     ChartOptions,
     Filler,
     LineElement,
@@ -28,7 +30,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { EventActions, EventVolume, UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -235,5 +237,34 @@ export abstract class AKChart<T> extends AKElement {
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>
         `;
+    }
+
+    eventVolume(
+        data: EventVolume[],
+        optsMap?: Map<EventActions, Partial<ChartDataset>>,
+    ): ChartData {
+        const datasets: ChartData = {
+            datasets: [],
+        };
+        if (!optsMap) {
+            optsMap = new Map<EventActions, Partial<ChartDataset>>();
+        }
+        const actions = new Set(data.map((v) => v.action));
+        actions.forEach((action) => {
+            const actionData: { x: number; y: number }[] = [];
+            data.filter((v) => v.action === action).forEach((v) => {
+                actionData.push({
+                    x: v.day.getTime(),
+                    y: v.count,
+                });
+            });
+            datasets.datasets.push({
+                data: actionData,
+                label: actionToLabel(action),
+                backgroundColor: getColorFromString(action).toString(),
+                ...optsMap.get(action),
+            });
+        });
+        return datasets;
     }
 }

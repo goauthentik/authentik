@@ -1,68 +1,54 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
-import { ChartData } from "chart.js";
+import { ChartData, ChartDataset } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-import { AdminApi, LoginMetrics } from "@goauthentik/api";
+import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-charts-admin-login-authorization")
-export class AdminLoginAuthorizeChart extends AKChart<LoginMetrics> {
-    async apiRequest(): Promise<LoginMetrics> {
-        return new AdminApi(DEFAULT_CONFIG).adminMetricsRetrieve();
+export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
+    async apiRequest(): Promise<EventVolume[]> {
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
+            actions: [
+                EventActions.AuthorizeApplication,
+                EventActions.Login,
+                EventActions.LoginFailed,
+            ],
+        });
     }
 
-    getChartData(data: LoginMetrics): ChartData {
-        return {
-            datasets: [
-                {
-                    label: msg("Authorizations"),
-                    backgroundColor: "rgba(43, 154, 243, 0.5)",
-                    borderColor: "rgba(43, 154, 243, 1)",
-                    spanGaps: true,
-                    fill: "origin",
-                    cubicInterpolationMode: "monotone",
-                    tension: 0.4,
-                    data: data.authorizations.map((cord) => {
-                        return {
-                            x: cord.xCord,
-                            y: cord.yCord,
-                        };
-                    }),
-                },
-                {
-                    label: msg("Failed Logins"),
-                    backgroundColor: "rgba(201, 24, 11, 0.5)",
-                    borderColor: "rgba(201, 24, 11, 1)",
-                    spanGaps: true,
-                    fill: "origin",
-                    cubicInterpolationMode: "monotone",
-                    tension: 0.4,
-                    data: data.loginsFailed.map((cord) => {
-                        return {
-                            x: cord.xCord,
-                            y: cord.yCord,
-                        };
-                    }),
-                },
-                {
-                    label: msg("Successful Logins"),
-                    backgroundColor: "rgba(62, 134, 53, 0.5)",
-                    borderColor: "rgba(62, 134, 53, 1)",
-                    spanGaps: true,
-                    fill: "origin",
-                    cubicInterpolationMode: "monotone",
-                    tension: 0.4,
-                    data: data.logins.map((cord) => {
-                        return {
-                            x: cord.xCord,
-                            y: cord.yCord,
-                        };
-                    }),
-                },
-            ],
-        };
+    getChartData(data: EventVolume[]): ChartData {
+        const optsMap = new Map<EventActions, Partial<ChartDataset>>();
+        optsMap.set(EventActions.AuthorizeApplication, {
+            label: msg("Authorizations"),
+            backgroundColor: "rgba(43, 154, 243, 0.5)",
+            borderColor: "rgba(43, 154, 243, 1)",
+            spanGaps: true,
+            fill: "origin",
+            cubicInterpolationMode: "monotone",
+            tension: 0.4,
+        });
+        optsMap.set(EventActions.Login, {
+            label: msg("Successful Logins"),
+            backgroundColor: "rgba(62, 134, 53, 0.5)",
+            borderColor: "rgba(62, 134, 53, 1)",
+            spanGaps: true,
+            fill: "origin",
+            cubicInterpolationMode: "monotone",
+            tension: 0.4,
+        });
+        optsMap.set(EventActions.LoginFailed, {
+            label: msg("Failed Logins"),
+            backgroundColor: "rgba(201, 24, 11, 0.5)",
+            borderColor: "rgba(201, 24, 11, 1)",
+            spanGaps: true,
+            fill: "origin",
+            cubicInterpolationMode: "monotone",
+            tension: 0.4,
+        });
+        return this.eventVolume(data, optsMap);
     }
 }
 

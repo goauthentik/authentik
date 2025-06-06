@@ -38,33 +38,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /admin/metrics/:
-    get:
-      operationId: admin_metrics_retrieve
-      description: Login Metrics per 1h
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginMetrics'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -7113,6 +7086,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7484,6 +7493,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7512,6 +7557,11 @@ paths:
         schema:
           type: string
         description: Context Model Primary Key
+      - in: query
+        name: history_days
+        schema:
+          type: number
+          default: 7
       - name: ordering
         required: false
         in: query
@@ -44988,9 +45038,10 @@ components:
       - unique_users
     EventVolume:
       type: object
+      description: Count of events of action created on day
       properties:
         action:
-          type: string
+          $ref: '#/components/schemas/EventActions'
         day:
           type: string
           format: date
@@ -48311,29 +48362,6 @@ components:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
-    LoginMetrics:
-      type: object
-      description: Login Metrics per 1h
-      properties:
-        logins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        logins_failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        authorizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-      required:
-      - authorizations
-      - logins
-      - logins_failed
     LoginSource:
       type: object
       description: Serializer for Login buttons of sources
