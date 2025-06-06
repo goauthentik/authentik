@@ -70,7 +70,7 @@ class Pagination(pagination.PageNumberPagination):
         )
 
     def get_paginated_response_schema(self, schema):
-        return {
+        final_schema = {
             "type": "object",
             "properties": {
                 "pagination": {"$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"},
@@ -78,6 +78,7 @@ class Pagination(pagination.PageNumberPagination):
             },
             "required": ["pagination", "results"],
         }
+        return final_schema
 
 
 class SmallerPagination(Pagination):

@@ -20,6 +20,7 @@ import { Event, EventsApi } from "@goauthentik/api";
 @customElement("ak-event-list")
 export class EventListPage extends TablePage<Event> {
     expandable = true;
+    supportsQL = true;
 
     pageTitle(): string {
         return msg("Event Log");
