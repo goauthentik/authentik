@@ -20,9 +20,8 @@ export class ApplicationAuthorizeChart extends AKChart<EventVolume[]> {
     }
 
     getChartData(data: EventVolume[]): ChartData {
-        return this.eventVolume(
-            data,
-            new Map([
+        return this.eventVolume(data, {
+            optsMap: new Map([
                 [
                     EventActions.AuthorizeApplication,
                     {
@@ -32,7 +31,8 @@ export class ApplicationAuthorizeChart extends AKChart<EventVolume[]> {
                     },
                 ],
             ]),
-        );
+            padToDays: 7,
+        });
     }
 }
 

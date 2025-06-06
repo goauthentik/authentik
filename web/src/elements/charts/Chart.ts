@@ -241,13 +241,19 @@ export abstract class AKChart<T> extends AKElement {
 
     eventVolume(
         data: EventVolume[],
-        optsMap?: Map<EventActions, Partial<ChartDataset>>,
+        options?: {
+            optsMap?: Map<EventActions, Partial<ChartDataset>>;
+            padToDays?: number;
+        },
     ): ChartData {
         const datasets: ChartData = {
             datasets: [],
         };
-        if (!optsMap) {
-            optsMap = new Map<EventActions, Partial<ChartDataset>>();
+        if (!options) {
+            options = {};
+        }
+        if (!options.optsMap) {
+            options.optsMap = new Map<EventActions, Partial<ChartDataset>>();
         }
         const actions = new Set(data.map((v) => v.action));
         actions.forEach((action) => {
@@ -258,11 +264,31 @@ export abstract class AKChart<T> extends AKElement {
                     y: v.count,
                 });
             });
+            // Check if we need to pad the data to reach a certain time window
+            const earliestDate = data
+                .filter((v) => v.action === action)
+                .map((v) => v.day)
+                .sort((a, b) => b.getTime() - a.getTime())
+                .reverse();
+            if (earliestDate.length > 0 && options.padToDays) {
+                const earliestPadded = new Date(
+                    new Date().getTime() - options.padToDays * (1000 * 3600 * 24),
+                );
+                const daysDelta = Math.round(
+                    (earliestDate[0].getTime() - earliestPadded.getTime()) / (1000 * 3600 * 24),
+                );
+                if (daysDelta > 0) {
+                    actionData.push({
+                        x: earliestPadded.getTime(),
+                        y: 0,
+                    });
+                }
+            }
             datasets.datasets.push({
                 data: actionData,
                 label: actionToLabel(action),
                 backgroundColor: getColorFromString(action).toString(),
-                ...optsMap.get(action),
+                ...options.optsMap?.get(action),
             });
         });
         return datasets;

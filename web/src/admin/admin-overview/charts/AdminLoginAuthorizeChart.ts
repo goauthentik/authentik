@@ -48,7 +48,10 @@ export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
             cubicInterpolationMode: "monotone",
             tension: 0.4,
         });
-        return this.eventVolume(data, optsMap);
+        return this.eventVolume(data, {
+            optsMap: optsMap,
+            padToDays: 7,
+        });
     }
 }
 

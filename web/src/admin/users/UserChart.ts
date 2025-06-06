@@ -24,9 +24,8 @@ export class UserChart extends AKChart<EventVolume[]> {
     }
 
     getChartData(data: EventVolume[]): ChartData {
-        return this.eventVolume(
-            data,
-            new Map([
+        return this.eventVolume(data, {
+            optsMap: new Map([
                 [
                     EventActions.LoginFailed,
                     {
@@ -52,7 +51,8 @@ export class UserChart extends AKChart<EventVolume[]> {
                     },
                 ],
             ]),
-        );
+            padToDays: 7,
+        });
     }
 }
 

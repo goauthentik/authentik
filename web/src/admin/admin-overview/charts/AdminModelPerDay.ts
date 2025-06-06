@@ -27,14 +27,14 @@ export class AdminModelPerDay extends AKChart<EventVolume[]> {
     async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             action: this.action,
+            historyDays: 30,
             ...this.query,
         });
     }
 
     getChartData(data: EventVolume[]): ChartData {
-        return this.eventVolume(
-            data,
-            new Map([
+        return this.eventVolume(data, {
+            optsMap: new Map([
                 [
                     this.action,
                     {
@@ -44,7 +44,8 @@ export class AdminModelPerDay extends AKChart<EventVolume[]> {
                     },
                 ],
             ]),
-        );
+            padToDays: 30,
+        });
     }
 }
 

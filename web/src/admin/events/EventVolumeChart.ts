@@ -38,7 +38,9 @@ export class EventVolumeChart extends AKChart<EventVolume[]> {
     }
 
     getChartData(data: EventVolume[]): ChartData {
-        return this.eventVolume(data);
+        return this.eventVolume(data, {
+            padToDays: 14,
+        });
     }
 
     render(): TemplateResult {
