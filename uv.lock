@@ -322,7 +322,7 @@ requires-dist = [
     { name = "setproctitle", specifier = "==1.3.6" },
     { name = "structlog", specifier = "==25.4.0" },
     { name = "swagger-spec-validator", specifier = "==3.0.4" },
-    { name = "tenant-schemas-celery", specifier = "==3.0.0" },
+    { name = "tenant-schemas-celery", specifier = "==4.0.1" },
     { name = "twilio", specifier = "==9.6.2" },
     { name = "ua-parser", specifier = "==1.0.1" },
     { name = "unidecode", specifier = "==1.4.0" },
@@ -3087,14 +3087,14 @@ wheels = [
 
 [[package]]
 name = "tenant-schemas-celery"
-version = "3.0.0"
+version = "4.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "celery" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d0/fe/cfe19eb7cc3ad8e39d7df7b7c44414bf665b6ac6660c998eb498f89d16c6/tenant_schemas_celery-3.0.0.tar.gz", hash = "sha256:6be3ae1a5826f262f0f3dd343c6a85a34a1c59b89e04ae37de018f36562fed55", size = 15954, upload-time = "2024-05-19T11:16:41.837Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/f8/cf055bf171b5d83d6fe96f1840fba90d3d274be2b5c35cd21b873302b128/tenant_schemas_celery-4.0.1.tar.gz", hash = "sha256:8b8f055fcd82aa53274c09faf88653a935241518d93b86ab2d43a3df3b70c7f8", size = 18870, upload-time = "2025-04-22T18:23:51.061Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/2c/376e1e641ad08b374c75d896468a7be2e6906ce3621fd0c9f9dc09ff1963/tenant_schemas_celery-3.0.0-py3-none-any.whl", hash = "sha256:ca0f69e78ef698eb4813468231df5a0ab6a660c08e657b65f5ac92e16887eec8", size = 18108, upload-time = "2024-05-19T11:16:39.92Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/a8/fd663c461550d6fedfb24e987acc1557ae5b6615ca08fc6c70dbaaa88aa5/tenant_schemas_celery-4.0.1-py3-none-any.whl", hash = "sha256:d06a3ff6956db3a95168ce2051b7bff2765f9ce0d070e14df92f07a2b60ae0a0", size = 21364, upload-time = "2025-04-22T18:23:49.899Z" },
 ]
 
 [[package]]
