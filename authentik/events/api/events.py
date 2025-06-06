@@ -6,7 +6,7 @@ import django_filters
 from django.db.models import Count, ExpressionWrapper, F, QuerySet
 from django.db.models import DateTimeField as DjangoDateTimeField
 from django.db.models.fields.json import KeyTextTransform, KeyTransform
-from django.db.models.functions import Cast, TruncHour
+from django.db.models.functions import TruncHour
 from django.db.models.query_utils import Q
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes

@@ -23,7 +23,7 @@ import {
 import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
-import { LinearScale, TimeScale } from "chart.js";
+import { LinearScale, TimeScale, TimeSeriesScale } from "chart.js";
 import "chartjs-adapter-date-fns";
 
 import { msg } from "@lit/localize";
@@ -35,7 +35,7 @@ import { EventActions, EventVolume, UiThemeEnum } from "@goauthentik/api";
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
 Chart.register(ArcElement, BarElement, PointElement, LineElement);
-Chart.register(TimeScale, LinearScale, Filler);
+Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
@@ -186,7 +186,7 @@ export abstract class AKChart<T> extends AKElement {
             responsive: true,
             scales: {
                 x: {
-                    type: "time",
+                    type: "timeseries",
                     display: true,
                     ticks: {
                         callback: (tickValue: string | number, index: number, ticks: Tick[]) => {

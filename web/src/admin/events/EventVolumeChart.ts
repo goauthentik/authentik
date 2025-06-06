@@ -15,6 +15,7 @@ export class EventVolumeChart extends AKChart<EventVolume[]> {
 
     @property({ attribute: false })
     set query(value: EventsEventsListRequest | undefined) {
+        if (JSON.stringify(this._query) === JSON.stringify(value)) return;
         this._query = value;
         this.refreshHandler();
     }
