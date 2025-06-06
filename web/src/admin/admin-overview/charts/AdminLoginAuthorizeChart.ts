@@ -1,14 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData, ChartDataset } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
+import { EventChart } from "#elements/charts/EventChart";
 
 @customElement("ak-charts-admin-login-authorization")
-export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
+export class AdminLoginAuthorizeChart extends EventChart {
     async apiRequest(): Promise<EventVolume[]> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsVolumeList({
             actions: [
@@ -23,8 +23,6 @@ export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
         const optsMap = new Map<EventActions, Partial<ChartDataset>>();
         optsMap.set(EventActions.AuthorizeApplication, {
             label: msg("Authorizations"),
-            backgroundColor: "rgba(43, 154, 243, 0.5)",
-            borderColor: "rgba(43, 154, 243, 1)",
             spanGaps: true,
             fill: "origin",
             cubicInterpolationMode: "monotone",
@@ -32,8 +30,6 @@ export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
         });
         optsMap.set(EventActions.Login, {
             label: msg("Successful Logins"),
-            backgroundColor: "rgba(62, 134, 53, 0.5)",
-            borderColor: "rgba(62, 134, 53, 1)",
             spanGaps: true,
             fill: "origin",
             cubicInterpolationMode: "monotone",
@@ -41,8 +37,6 @@ export class AdminLoginAuthorizeChart extends AKChart<EventVolume[]> {
         });
         optsMap.set(EventActions.LoginFailed, {
             label: msg("Failed Logins"),
-            backgroundColor: "rgba(201, 24, 11, 0.5)",
-            borderColor: "rgba(201, 24, 11, 1)",
             spanGaps: true,
             fill: "origin",
             cubicInterpolationMode: "monotone",

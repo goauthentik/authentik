@@ -1,14 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
+import { EventChart } from "#elements/charts/EventChart";
 
 @customElement("ak-charts-application-authorize")
-export class ApplicationAuthorizeChart extends AKChart<EventVolume[]> {
+export class ApplicationAuthorizeChart extends EventChart {
     @property({ attribute: "application-id" })
     applicationId!: string;
 
@@ -26,7 +26,6 @@ export class ApplicationAuthorizeChart extends AKChart<EventVolume[]> {
                     EventActions.AuthorizeApplication,
                     {
                         label: msg("Authorizations"),
-                        backgroundColor: "rgba(189, 229, 184, .5)",
                         spanGaps: true,
                     },
                 ],

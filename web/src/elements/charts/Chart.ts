@@ -1,4 +1,3 @@
-import { actionToLabel } from "#common/labels";
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import {
     APIError,
@@ -30,7 +29,7 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { EventActions, EventVolume, UiThemeEnum } from "@goauthentik/api";
+import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -39,32 +38,6 @@ Chart.register(TimeScale, TimeSeriesScale, LinearScale, Filler);
 
 export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
-
-export class RGBAColor {
-    constructor(
-        public r: number,
-        public g: number,
-        public b: number,
-        public a: number = 1,
-    ) {}
-    toString(): string {
-        return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
-    }
-}
-
-export function getColorFromString(stringInput: string): RGBAColor {
-    let hash = 0;
-    for (let i = 0; i < stringInput.length; i++) {
-        hash = stringInput.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & hash;
-    }
-    const rgb = [0, 0, 0];
-    for (let i = 0; i < 3; i++) {
-        const value = (hash >> (i * 8)) & 255;
-        rgb[i] = value;
-    }
-    return new RGBAColor(rgb[0], rgb[1], rgb[2]);
-}
 
 export abstract class AKChart<T> extends AKElement {
     abstract apiRequest(): Promise<T>;
@@ -237,60 +210,5 @@ export abstract class AKChart<T> extends AKElement {
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>
         `;
-    }
-
-    eventVolume(
-        data: EventVolume[],
-        options?: {
-            optsMap?: Map<EventActions, Partial<ChartDataset>>;
-            padToDays?: number;
-        },
-    ): ChartData {
-        const datasets: ChartData = {
-            datasets: [],
-        };
-        if (!options) {
-            options = {};
-        }
-        if (!options.optsMap) {
-            options.optsMap = new Map<EventActions, Partial<ChartDataset>>();
-        }
-        const actions = new Set(data.map((v) => v.action));
-        actions.forEach((action) => {
-            const actionData: { x: number; y: number }[] = [];
-            data.filter((v) => v.action === action).forEach((v) => {
-                actionData.push({
-                    x: v.time.getTime(),
-                    y: v.count,
-                });
-            });
-            // Check if we need to pad the data to reach a certain time window
-            const earliestDate = data
-                .filter((v) => v.action === action)
-                .map((v) => v.time)
-                .sort((a, b) => b.getTime() - a.getTime())
-                .reverse();
-            if (earliestDate.length > 0 && options.padToDays) {
-                const earliestPadded = new Date(
-                    new Date().getTime() - options.padToDays * (1000 * 3600 * 24),
-                );
-                const daysDelta = Math.round(
-                    (earliestDate[0].getTime() - earliestPadded.getTime()) / (1000 * 3600 * 24),
-                );
-                if (daysDelta > 0) {
-                    actionData.push({
-                        x: earliestPadded.getTime(),
-                        y: 0,
-                    });
-                }
-            }
-            datasets.datasets.push({
-                data: actionData,
-                label: actionToLabel(action),
-                backgroundColor: getColorFromString(action).toString(),
-                ...options.optsMap?.get(action),
-            });
-        });
-        return datasets;
     }
 }

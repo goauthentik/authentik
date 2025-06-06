@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
@@ -11,9 +10,10 @@ import {
     EventsApi,
     EventsEventsVolumeListRequest,
 } from "@goauthentik/api";
+import { EventChart } from "#elements/charts/EventChart";
 
 @customElement("ak-charts-admin-model-per-day")
-export class AdminModelPerDay extends AKChart<EventVolume[]> {
+export class AdminModelPerDay extends EventChart {
     @property()
     action: EventActions = EventActions.ModelCreated;
 
@@ -38,7 +38,6 @@ export class AdminModelPerDay extends AKChart<EventVolume[]> {
                     this.action,
                     {
                         label: this.label || msg("Objects created"),
-                        backgroundColor: "rgba(189, 229, 184, .5)",
                         spanGaps: true,
                     },
                 ],

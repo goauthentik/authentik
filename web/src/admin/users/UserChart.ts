@@ -1,14 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
+import { EventChart } from "#elements/charts/EventChart";
 
 @customElement("ak-charts-user")
-export class UserChart extends AKChart<EventVolume[]> {
+export class UserChart extends EventChart {
     @property()
     username?: string;
 
@@ -30,7 +30,6 @@ export class UserChart extends AKChart<EventVolume[]> {
                     EventActions.LoginFailed,
                     {
                         label: msg("Failed Logins"),
-                        backgroundColor: "rgba(201, 25, 11, .5)",
                         spanGaps: true,
                     },
                 ],
@@ -38,7 +37,6 @@ export class UserChart extends AKChart<EventVolume[]> {
                     EventActions.Login,
                     {
                         label: msg("Successful Logins"),
-                        backgroundColor: "rgba(189, 229, 184, .5)",
                         spanGaps: true,
                     },
                 ],
@@ -46,7 +44,6 @@ export class UserChart extends AKChart<EventVolume[]> {
                     EventActions.AuthorizeApplication,
                     {
                         label: msg("Application authorizations"),
-                        backgroundColor: "rgba(43, 154, 243, .5)",
                         spanGaps: true,
                     },
                 ],
