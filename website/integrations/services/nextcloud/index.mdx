@@ -11,7 +11,7 @@ support_level: community
 > -- https://nextcloud.com/
 
 :::warning
-If you require [Server Side Encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**. Nextcloud Server-Side Encryption requires access to the user's cleartext password, which Nextcloud only has access to when using LDAP as the user enters their password directly into Nextcloud.
+If you require [server side encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**. Nextcloud server side encryption requires access to the user's cleartext password, which Nextcloud has access to only when using LDAP because the user enters their password directly into Nextcloud.
 :::
 
 :::caution
@@ -48,6 +48,10 @@ The following placeholders are used in this guide:
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::warning
+If you require [server side encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**.
 :::
 
 Let's start by considering which user attributes need to be available in Nextcloud:
@@ -139,8 +143,8 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 3. Click the **+** button and enter the following settings:
 
     - **Identifier**: `authentik`
-    - **Client ID**: Client ID from authentik.
-    - **Client secret**: Client secret from authentik.
+    - **Client ID**: Client ID from authentik
+    - **Client secret**: Client secret from authentik
     - **Discovery endpoint**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
     - **Scope**: `email profile openid`
     - Under **Attribute mappings**:
@@ -167,10 +171,10 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
 
 ## Making OIDC the default login method
 
-Automatically redirect users to authentik when they access Nextcloud by running the following command on your Nextcloud instance:
+Automatically redirect users to authentik when they access Nextcloud by running the following command on your Nextcloud docker host:
 
     ```bash
-    sudo -u www-data php var/www/nextcloud/occ config:app:set --value=0 user_oidc allow_multiple_user_backends
+    sudo docker exec --user www-data -it nextcloud-aio-nextcloud php occ config:app:set --value=0 user_oidc allow_multiple_user_backends
     ```
 
 ## Configuration verification
@@ -189,6 +193,10 @@ The following placeholders are used in this guide:
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+:::warning
+If you require [server side encryption](https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/encryption_configuration.html), you must use LDAP. OpenID and SAML will cause **irrevocable data loss**.
 :::
 
 ## Create an application and provider in authentik
@@ -210,18 +218,18 @@ This documentation lists only the settings that you need to change from their de
 3. Click **Submit** to save the new application and provider.
 
 :::note
-Depending on your Nextcloud configuration, you may need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`.
+Depending on your Nextcloud configuration, you might need to use `https://nextcloud.company/index.php/` instead of `https://nextcloud.company/`.
 :::
 
 ## Download the signing certificate
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Nextcloud provider.
-3. Under **Download signing certificate** click the **Download** button. The contents of this certificate will be required in the next section.
+3. Under **Download signing certificate** click **Download**. The contents of this certificate will be required in the next section.
 
 ## Configure group quotas _(optional)_
 
-To configure group quotas you'll need to create groups in authentik for each quota, and a property mapping.
+To configure group quotas you will need to create groups in authentik for each quota, and a property mapping.
 
 ### Create group/s in authentik _(optional)_
 
@@ -315,7 +323,7 @@ If Nextcloud is behind a reverse proxy, force HTTPS by adding `'overwriteprotoco
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **SSO and SAML log in** option. You will be redirected to authentik to log in, if successful you will then be redirected to the Nextcloud dashboard.
+To confirm that authentik is properly configured with Nextcloud, log out and log back in using the **SSO and SAML log in** option. You will be redirected to authentik to log in; if successful you will then be redirected to the Nextcloud dashboard.
 
   </TabItem>
   <TabItem value="ldap">
