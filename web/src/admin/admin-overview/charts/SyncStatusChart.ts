@@ -7,7 +7,8 @@ import { ChartData, ChartOptions } from "chart.js";
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-import { ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
+import { EventActions, ProvidersApi, SourcesApi, SyncStatus, SystemTaskStatusEnum } from "@goauthentik/api";
+import { actionToColor } from "#elements/charts/EventChart";
 
 export interface SummarizedSyncStatus {
     healthy: number;
@@ -136,7 +137,11 @@ export class SyncStatusChart extends AKChart<SummarizedSyncStatus[]> {
             labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {
                 return {
-                    backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],
+                    backgroundColor: [
+                        actionToColor(EventActions.Login),
+                        actionToColor(EventActions.SuspiciousRequest),
+                        actionToColor(EventActions.AuthorizeApplication),
+                    ],
                     spanGaps: true,
                     data: [d.healthy, d.failed, d.unsynced],
                     label: d.label,
