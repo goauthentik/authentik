@@ -389,7 +389,7 @@ export class UserViewPage extends WithCapabilitiesConfig(AKElement) {
                             ${msg("Actions over the last week (per 8 hours)")}
                         </div>
                         <div class="pf-c-card__body">
-                            <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
+                            <ak-charts-user username=${this.user.username}> </ak-charts-user>
                         </div>
                     </div>
                     <div

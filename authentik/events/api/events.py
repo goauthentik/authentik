@@ -62,7 +62,7 @@ class EventsFilter(django_filters.FilterSet):
     """Filter for events"""
 
     username = django_filters.CharFilter(
-        field_name="user", lookup_expr="username", label="Username"
+        field_name="user", label="Username", method="filter_username"
     )
     context_model_pk = django_filters.CharFilter(
         field_name="context",
@@ -96,6 +96,9 @@ class EventsFilter(django_filters.FilterSet):
         lookup_expr="name",
         label="Brand name",
     )
+
+    def filter_username(self, queryset, name, value):
+        return queryset.filter(Q(user__username=value) | Q(context__username=value))
 
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,

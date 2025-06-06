@@ -6,7 +6,6 @@ from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.models import Permission
-from django.db.models.functions import ExtractHour
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -52,7 +51,6 @@ from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
-from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.brands.models import Brand
 from authentik.core.api.used_by import UsedByMixin
@@ -317,53 +315,6 @@ class SessionUserSerializer(PassiveSerializer):
     original = UserSelfSerializer(required=False)
 
 
-class UserMetricsSerializer(PassiveSerializer):
-    """User Metrics"""
-
-    logins = SerializerMethodField()
-    logins_failed = SerializerMethodField()
-    authorizations = SerializerMethodField()
-
-    @extend_schema_field(CoordinateSerializer(many=True))
-    def get_logins(self, _):
-        """Get successful logins per 8 hours for the last 7 days"""
-        user = self.context["user"]
-        request = self.context["request"]
-        return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.LOGIN, user__pk=user.pk
-            )
-            # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
-        )
-
-    @extend_schema_field(CoordinateSerializer(many=True))
-    def get_logins_failed(self, _):
-        """Get failed logins per 8 hours for the last 7 days"""
-        user = self.context["user"]
-        request = self.context["request"]
-        return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.LOGIN_FAILED, context__username=user.username
-            )
-            # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
-        )
-
-    @extend_schema_field(CoordinateSerializer(many=True))
-    def get_authorizations(self, _):
-        """Get failed logins per 8 hours for the last 7 days"""
-        user = self.context["user"]
-        request = self.context["request"]
-        return (
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
-            )
-            # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
-        )
-
-
 class UsersFilter(FilterSet):
     """Filter for users"""
 
@@ -606,17 +557,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("Updating session hash after password change")
             update_session_auth_hash(self.request, user)
         return Response(status=204)
-
-    @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
-    @extend_schema(responses={200: UserMetricsSerializer(many=False)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
-    def metrics(self, request: Request, pk: int) -> Response:
-        """User metrics per 1h"""
-        user: User = self.get_object()
-        serializer = UserMetricsSerializer(instance={})
-        serializer.context["user"] = user
-        serializer.context["request"] = request
-        return Response(serializer.data)
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
