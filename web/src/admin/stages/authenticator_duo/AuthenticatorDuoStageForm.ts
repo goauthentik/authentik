@@ -1,6 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -94,21 +95,13 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Secret key")}
-                        required
-                        ?writeOnly=${this.instance !== undefined}
+                    <ak-private-text-input
                         name="clientSecret"
-                    >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
-                    </ak-form-element-horizontal>
+                        label=${msg("Secret key")}
+                        input-hint="code"
+                        required
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group>
@@ -132,19 +125,12 @@ export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoSta
                             spellcheck="false"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Secret key")}
-                        ?writeOnly=${this.instance !== undefined}
+                    <ak-private-text-input
                         name="adminSecretKey"
-                    >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                        />
-                    </ak-form-element-horizontal>
+                        label=${msg("Secret key")}
+                        input-hint="code"
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group expanded>

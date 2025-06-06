@@ -1,6 +1,7 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-number-input";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -68,26 +69,18 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Private Key")}
-                        required
-                        ?writeOnly=${this.instance !== undefined}
+
+                    <ak-private-text-input
                         name="privateKey"
-                    >
-                        <input
-                            type="text"
-                            value=""
-                            class="pf-c-form-control pf-m-monospace"
-                            autocomplete="off"
-                            spellcheck="false"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                        label=${msg("Private Key")}
+                        input-hint="code"
+                        required
+                        ?revealed=${this.instance === undefined}
+                        help=${msg(
+                            "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                        )}
+                    ></ak-private-text-input>
+
                     <ak-switch-input
                         name="interactive"
                         label=${msg("Interactive")}

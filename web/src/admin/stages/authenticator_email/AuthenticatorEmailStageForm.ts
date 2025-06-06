@@ -1,6 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -75,13 +76,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("SMTP Password")}
-                    ?writeOnly=${this.instance !== undefined}
+
+                <ak-private-text-input
                     name="password"
-                >
-                    <input type="text" value="" class="pf-c-form-control" />
-                </ak-form-element-horizontal>
+                    label=${msg("SMTP Password")}
+                    ?revealed=${this.instance === undefined}
+                ></ak-private-text-input>
+
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input
