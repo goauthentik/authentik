@@ -186,9 +186,9 @@ class EventViewSet(ModelViewSet):
         """Get event volume for specified filters and timeframe"""
         queryset: QuerySet[Event] = self.filter_queryset(self.get_queryset())
         delta = timedelta(days=7)
-        time_delta = request.query_params.get("history_days", [])
+        time_delta = request.query_params.get("history_days", 7)
         if time_delta:
-            delta = timedelta(days=max(int(time_delta), 60))
+            delta = timedelta(days=min(int(time_delta), 60))
         return Response(
             queryset.filter(created__gte=now() - delta)
             .annotate(day=TruncDate("created"))
