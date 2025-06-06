@@ -1,21 +1,17 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import {
-    APIError,
-    parseAPIResponseError,
-    pluckErrorDetail,
-} from "@goauthentik/common/errors/network";
-import { globalAK } from "@goauthentik/common/global";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
+import { refreshMe } from "#common/users";
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { StageHost } from "#flow/stages/base";
+import "#user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -40,7 +36,7 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug?: string;
+    flowSlug = this.brand?.flowUserSettings;
 
     private _challenge?: ChallengeTypes;
 
@@ -90,12 +86,15 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    updated(changedProperties: PropertyValues<this>): void {
-        if (changedProperties.has("brand") && this.brand) {
-            this.flowSlug = this.brand?.flowUserSettings;
-            if (!this.flowSlug) {
-                return;
-            }
+    firstUpdated() {
+        if (this.flowSlug) {
+            this.nextChallenge();
+        }
+    }
+
+    updated(): void {
+        if (!this.flowSlug && this.brand) {
+            this.flowSlug = this.brand.flowUserSettings;
             this.nextChallenge();
         }
     }

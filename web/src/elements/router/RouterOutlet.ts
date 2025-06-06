@@ -4,12 +4,13 @@ import { Route } from "@goauthentik/elements/router/Route";
 import { RouteMatch } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/router/Router404";
 import {
+    BrowserClient,
     SEMANTIC_ATTRIBUTE_SENTRY_SOURCE,
+    Span,
     getClient,
     startBrowserTracingNavigationSpan,
     startBrowserTracingPageLoadSpan,
 } from "@sentry/browser";
-import { Client, Span } from "@sentry/types";
 
 import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -60,7 +61,7 @@ export class RouterOutlet extends AKElement {
     @property({ attribute: false })
     routes: Route[] = [];
 
-    private sentryClient?: Client;
+    private sentryClient?: BrowserClient;
     private pageLoadSpan?: Span;
 
     static get styles(): CSSResult[] {
