@@ -74,6 +74,9 @@ updates:
       wdio:
         patterns:
           - "@wdio/*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
@@ -94,6 +97,9 @@ updates:
           - "swc-*"
           - "lightningcss*"
           - "@rspack/binding*"
+      goauthentik:
+        patterns:
+          - "@goauthentik/*"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:

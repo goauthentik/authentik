@@ -1,5 +1,5 @@
+import { WithLicenseSummary } from "#elements/mixins/license";
 import "@goauthentik/admin/common/ak-license-notice";
-import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { msg, str } from "@lit/localize";

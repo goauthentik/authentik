@@ -1,9 +1,12 @@
+import "#admin/AdminInterface/AboutModal";
+import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { ROUTES } from "#admin/Routes";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
 import { me } from "#common/users";
 import { WebsocketClient } from "#common/ws";
-import { AuthenticatedInterface } from "#elements/Interface/Interface";
-import { WithLicenseSummary } from "#elements/Interface/licenseSummaryProvider";
+import { SidebarToggleEventDetail } from "#components/ak-page-header";
+import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/EnterpriseStatusBanner";
@@ -11,16 +14,13 @@ import "#elements/banner/VersionBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
 import "#elements/messages/MessageContainer";
+import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
-import "@goauthentik/admin/AdminInterface/AboutModal";
-import type { AboutModal } from "@goauthentik/admin/AdminInterface/AboutModal";
-import { ROUTES } from "@goauthentik/admin/Routes";
-import { SidebarToggleEventDetail } from "@goauthentik/components/ak-page-header.js";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
@@ -45,7 +45,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
+export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterface) {
     //#region Properties
 
     @property({ type: Boolean })
@@ -198,7 +198,7 @@ export class AdminInterface extends WithLicenseSummary(AuthenticatedInterface) {
 
                 <ak-sidebar class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
-                    ${this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+                    ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
                         : nothing}
                 </ak-sidebar>

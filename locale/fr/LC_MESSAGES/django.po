@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-20 00:10+0000\n"
+"POT-Creation-Date: 2025-06-04 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2025\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -1056,14 +1056,17 @@ msgid "Starting full provider sync"
 msgstr "Démarrage d'une synchronisation complète du fournisseur"
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
-msgstr "Synchronisation de la page {page} d'utilisateurs"
+msgid "Syncing users"
+msgstr "Synchronisation des utilisateurs"
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
+msgstr "Synchronisation des groupes"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
-msgstr "Synchronisation de la page {page} de groupes"
+msgid "Syncing page {page} of {object_type}"
+msgstr "Synchronisation de la page {page} de {object_type}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
@@ -2473,6 +2476,10 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr "Les objets appliqués à ce filtre seront des utilisateurs."
 
 #: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "Attribut qui correspond à la valeur de `group_membership_field`."
+
+#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr "Champ qui contient les membres d'un groupe."
 
@@ -2509,6 +2516,14 @@ msgstr ""
 "imbriqués sur des systèmes tels que FreeIPA et Active Directory."
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+"Supprimer les utilisateurs et les groupes authentik qui étaient auparavant "
+"fournis par cette source, mais qui en sont maintenant absents."
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "Source LDAP"
 
@@ -2523,6 +2538,13 @@ msgstr "Mappage de propriété source LDAP"
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
 msgstr "Mappages de propriété source LDAP"
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
+msgstr ""
+"ID unique utilisé pour vérifier si cet objet existe toujours dans le "
+"répertoire."
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
@@ -2918,6 +2940,11 @@ msgstr "Connexion du groupe à la source SAML"
 msgid "Group SAML Source Connections"
 msgstr "Connexions du groupe à la source SAML"
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr "Continuer vers {source_name}"
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "Source SCIM"
@@ -3308,6 +3335,10 @@ msgstr "Consentement Utilisateur"
 msgid "User Consents"
 msgstr "Consentements Utilisateur"
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr "Jeton de consentement invalide, réaffichage de l'invite"
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "Étape de Refus"
@@ -3323,6 +3354,14 @@ msgstr "Étape factice"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "Étapes factices"
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr "Continuer pour confirmer cette adresse courriel."
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
+msgstr "Ce lien a déjà été utilisé, veuillez en demander un nouveau."
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"
@@ -3839,10 +3878,6 @@ msgstr "Étapes de connexion utilisateur"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "Pas d'utilisateurs en attente à connecter."
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
-msgstr "Connexion réussie !"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"

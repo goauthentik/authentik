@@ -1,3 +1,5 @@
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
@@ -11,11 +13,6 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
 import "@goauthentik/components/ak-status-label";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -295,7 +292,7 @@ export class RelatedUserList extends WithBrandConfig(WithCapabilitiesConfig(Tabl
                                             ${msg("Set password")}
                                         </button>
                                     </ak-forms-modal>
-                                    ${this.brand?.flowRecovery
+                                    ${this.brand.flowRecovery
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
