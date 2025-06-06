@@ -80,5 +80,5 @@ type WebConfig struct {
 }
 
 type WorkerConfig struct {
-	Embedded string `yaml:"embedded" env:"EMBEDDED, overwrite"`
+	Embedded bool `yaml:"embedded" env:"EMBEDDED, overwrite"`
 }

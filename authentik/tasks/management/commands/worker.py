@@ -12,6 +12,13 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            "--pid-file",
+            action="store",
+            default=None,
+            dest="pid_file",
+            help="PID file",
+        )
+        parser.add_argument(
             "--reload",
             action="store_true",
             dest="use_watcher",
@@ -44,13 +51,25 @@ class Command(BaseCommand):
         )
 
     def handle(
-        self, use_watcher, use_polling_watcher, use_gevent, processes, threads, verbosity, **options
+        self,
+        pid_file,
+        use_watcher,
+        use_polling_watcher,
+        use_gevent,
+        processes,
+        threads,
+        verbosity,
+        **options,
     ):
         executable_name = "dramatiq-gevent" if use_gevent else "dramatiq"
         executable_path = self._resolve_executable(executable_name)
-        watch_args = ["--watch", "."] if use_watcher else []
+        watch_args = ["--watch", "authentik"] if use_watcher else []
         if watch_args and use_polling_watcher:
             watch_args.append("--watch-use-polling")
+
+        pid_file_args = []
+        if pid_file is not None:
+            pid_file_args = ["--pid-file", pid_file]
 
         verbosity_args = ["-v"] * (verbosity - 1)
 
@@ -64,6 +83,7 @@ class Command(BaseCommand):
             "--threads",
             str(threads),
             *watch_args,
+            *pid_file_args,
             *verbosity_args,
             *tasks_modules,
         ]
