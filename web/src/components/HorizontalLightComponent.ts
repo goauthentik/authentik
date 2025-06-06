@@ -45,7 +45,7 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ attribute: false })
     value?: T;
 
-    @property({ type: String, reflect: true, attribute: "input-hint" })
+    @property({ type: String, attribute: "input-hint" })
     inputHint = "";
 
     renderControl() {
