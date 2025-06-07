@@ -25,8 +25,8 @@ def generate_local_config():
         "cert_discovery_dir": "./certs",
         "events": {
             "processors": {
-                "geoip": "tests/geoip/GeoLite2-City-Test.mmdb",
-                "asn": "tests/geoip/GeoLite2-ASN-Test.mmdb",
+                "geoip": "tests/GeoLite2-City-Test.mmdb",
+                "asn": "tests/GeoLite2-ASN-Test.mmdb",
             }
         },
         "storage": {
