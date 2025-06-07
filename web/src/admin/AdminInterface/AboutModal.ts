@@ -69,7 +69,12 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
             }}
         >
             <div class="pf-l-bullseye">
-                <div class="pf-c-about-modal-box" role="dialog" aria-modal="true">
+                <div
+                    class="pf-c-about-modal-box"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                >
                     <div class="pf-c-about-modal-box__brand">
                         <img
                             class="pf-c-about-modal-box__brand-image"
@@ -89,7 +94,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                         </button>
                     </div>
                     <div class="pf-c-about-modal-box__header">
-                        <h1 class="pf-c-title pf-m-4xl">${product}</h1>
+                        <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
                     </div>
                     <div class="pf-c-about-modal-box__hero"></div>
                     <div class="pf-c-about-modal-box__content">

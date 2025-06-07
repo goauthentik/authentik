@@ -1,7 +1,7 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, browser } from "@wdio/globals";
-import { expect } from "expect-webdriverio";
+import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
+import { ChainablePromiseElement } from "webdriverio";
 
 import { html } from "lit";
 
@@ -15,35 +15,31 @@ const content = nutritionDbUSDA.map(({ name, calories, sugar, fiber, protein }) 
 }));
 
 describe("Simple Table", () => {
-    let table: WebdriverIO.Element;
+    let table: ChainablePromiseElement;
 
     beforeEach(async () => {
-        await render(
-            html`<ak-simple-table .content=${content} .columns=${columns}> </ak-simple-table>`,
-            document.body,
-        );
-        // @ts-ignore
-        table = await $("ak-simple-table").$(">>>table");
+        render(html`<ak-simple-table .content=${content} .columns=${columns}> </ak-simple-table>`);
+        table = $("ak-simple-table").$(">>>table");
     });
 
     it("it should render a simple table", async () => {
-        expect(table).toBeDisplayed();
+        await expect(table).resolves.toBeDisplayed();
     });
 
     it("the table should have as many entries as the data source", async () => {
-        const tbody = await table.$(">>>tbody");
-        const rows = await tbody.$$(">>>tr");
-        expect(rows.length).toBe(content.length);
+        const tbody = table.$(">>>tbody");
+        const rows = tbody.$$(">>>tr");
+
+        await expect(rows.length).resolves.toBe(content.length);
     });
 
-    afterEach(async () => {
-        await browser.execute(() => {
+    afterEach(() =>
+        browser.execute(() => {
             document.body.querySelector("ak-simple-table")?.remove();
-            // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-            if (document.body._$litPart$) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
+
+            if ("_$litPart$" in document.body) {
                 delete document.body._$litPart$;
             }
-        });
-    });
+        }),
+    );
 });

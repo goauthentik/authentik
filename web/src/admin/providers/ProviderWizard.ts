@@ -82,7 +82,13 @@ export class ProviderWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
+                <button
+                    data-test-id="new-provider-button"
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                >
+                    ${this.createText}
+                </button>
             </ak-wizard>
         `;
     }

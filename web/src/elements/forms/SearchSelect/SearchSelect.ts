@@ -33,7 +33,10 @@ export interface ISearchSelectBase<T> {
     emptyOption: string;
 }
 
-export class SearchSelectBase<T> extends AkControlElement<string> implements ISearchSelectBase<T> {
+export abstract class SearchSelectBase<T>
+    extends AkControlElement<string>
+    implements ISearchSelectBase<T>
+{
     static get styles() {
         return [PFBase];
     }

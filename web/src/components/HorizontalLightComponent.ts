@@ -1,12 +1,12 @@
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/forms/HorizontalFormElement.js";
+import { AKElement } from "#elements/Base";
+import "#elements/forms/HorizontalFormElement";
+import { SlottedTemplateResult } from "#elements/types";
+import { IDGenerator } from "@goauthentik/core/id";
 
-import { TemplateResult, html, nothing } from "lit";
+import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 
-type HelpType = TemplateResult | typeof nothing;
-
-export class HorizontalLightComponent<T> extends AKElement {
+export abstract class HorizontalLightComponent<T> extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
     // we're not actually using that and, for the meantime, we need the form handlers to be able to
     // find the children of this component.
@@ -31,7 +31,7 @@ export class HorizontalLightComponent<T> extends AKElement {
     help = "";
 
     @property({ type: Object })
-    bighelp?: TemplateResult | TemplateResult[];
+    bighelp?: SlottedTemplateResult | SlottedTemplateResult[];
 
     @property({ type: Boolean, reflect: true })
     hidden = false;
@@ -48,14 +48,13 @@ export class HorizontalLightComponent<T> extends AKElement {
     @property({ type: String, attribute: "input-hint" })
     inputHint = "";
 
-    renderControl() {
-        throw new Error("Must be implemented in a subclass");
-    }
+    protected fieldID = IDGenerator.elementID().toString();
 
-    renderHelp(): HelpType[] {
-        const bigHelp: HelpType[] = Array.isArray(this.bighelp)
-            ? this.bighelp
-            : [this.bighelp ?? nothing];
+    abstract renderControl(): SlottedTemplateResult;
+
+    renderHelp(): SlottedTemplateResult[] {
+        const bigHelp = Array.isArray(this.bighelp) ? this.bighelp : [this.bighelp ?? nothing];
+
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
             ...bigHelp,
@@ -63,17 +62,16 @@ export class HorizontalLightComponent<T> extends AKElement {
     }
 
     render() {
-        // prettier-ignore
         return html`<ak-form-element-horizontal
+            fieldID=${this.fieldID}
             label=${this.label}
             ?required=${this.required}
             ?hidden=${this.hidden}
             name=${this.name}
             .errorMessages=${this.errorMessages}
             ?invalid=${this.invalid}
-            >
-              ${this.renderControl()}
-              ${this.renderHelp()}
+        >
+            ${this.renderControl()} ${this.renderHelp()}
         </ak-form-element-horizontal> `;
     }
 }

@@ -1,48 +1,46 @@
+import AdminPage from "#tests/pageobjects/admin.page";
+import { navigateBrowser } from "#tests/utils/navigation";
 import { $, browser } from "@wdio/globals";
 import { Key } from "webdriverio";
 
-import AdminPage from "./admin.page.js";
+export abstract class ProvidersListPage extends AdminPage {
+    static pathname = "/if/admin/#/core/providers";
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-class ApplicationsListPage extends AdminPage {
-    /**
-     * define selectors using getter methods
-     */
+    //#region Selectors
 
-    get startWizardButton() {
-        return $('>>>ak-wizard button[slot="trigger"]');
+    public static get $newProviderButton() {
+        return $('ak-wizard button[slot="trigger"]');
     }
 
-    get searchInput() {
-        return $('>>>ak-table-search input[name="search"]');
+    public static get $searchInput() {
+        return $('ak-table-search input[name="search"]');
     }
 
-    searchButton() {
-        return $('>>>ak-table-search button[type="submit"]');
+    public static get $searchButton() {
+        return $('ak-table-search button[type="submit"]');
     }
+
+    //#endregion
+
+    //#region Specific interactions
 
     // Sufficiently esoteric to justify having its own method
-    async clickSearchButton() {
-        await browser.execute(
-            function (searchButton: unknown) {
-                (searchButton as HTMLButtonElement).focus();
-            },
-            await $('>>>ak-table-search button[type="submit"]'),
-        );
+    public static async clickSearchButton() {
+        $('ak-table-search button[type="submit"]').focus();
 
-        return await browser.action("key").down(Key.Enter).up(Key.Enter).perform();
+        return browser.action("key").down(Key.Enter).up(Key.Enter).perform();
     }
 
     // Only use after a very precise search.  :-)
-    async findProviderRow() {
-        return await $(">>>ak-provider-list td a");
+    public static async findProviderRow() {
+        return $("ak-provider-list td a");
     }
 
-    async open() {
-        return await super.open("if/admin/#/core/providers");
+    public static async navigate() {
+        return navigateBrowser(ProvidersListPage.pathname);
     }
+
+    //#endregion
 }
 
-export default new ApplicationsListPage();
+export default ProvidersListPage;

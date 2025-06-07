@@ -1,6 +1,6 @@
 import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
 import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
@@ -14,17 +14,17 @@ const sampleItems: FooterLink[] = [
 ];
 
 describe("ak-array-input", () => {
-    afterEach(async () => {
-        await browser.execute(async () => {
-            await document.body.querySelector("ak-array-input")?.remove();
-            if (document.body._$litPart$) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body._$litPart$;
-            }
-        });
-    });
+    afterEach(() =>
+        browser.execute(() => {
+            document.body.querySelector("ak-array-input")?.remove();
 
-    const component = (items: FooterLink[] = []) =>
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
+            }
+        }),
+    );
+
+    const renderItems = (items: FooterLink[] = []) =>
         render(
             html` <ak-array-input
                 id="ak-array-input"
@@ -38,18 +38,21 @@ describe("ak-array-input", () => {
         );
 
     it("should render an empty control", async () => {
-        await component();
-        const link = await $("ak-array-input");
+        renderItems();
+
+        const link = $("ak-array-input");
         await browser.pause(500);
-        await expect(await link.getProperty("isValid")).toStrictEqual(true);
-        await expect(await link.getProperty("toJson")).toEqual([]);
+
+        await expect(link.getProperty("isValid")).resolves.toStrictEqual(true);
+        await expect(link.getProperty("toJson")).resolves.toEqual([]);
     });
 
     it("should render a populated component", async () => {
-        await component(sampleItems);
-        const link = await $("ak-array-input");
-        await browser.pause(500);
-        await expect(await link.getProperty("isValid")).toStrictEqual(true);
-        await expect(await link.getProperty("toJson")).toEqual(sampleItems);
+        renderItems(sampleItems);
+        const link = $("ak-array-input");
+        await browser.pause(1500);
+
+        await expect(link.getProperty("isValid")).resolves.toStrictEqual(true);
+        await expect(link.getProperty("toJson")).resolves.toEqual(sampleItems);
     });
 });

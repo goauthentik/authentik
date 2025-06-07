@@ -27,6 +27,6 @@ export abstract class Interface extends AKElement {
 
     public connectedCallback(): void {
         super.connectedCallback();
-        this.dataset.akInterfaceRoot = this.tagName.toLowerCase();
+        this.dataset.testId = "interface-root";
     }
 }

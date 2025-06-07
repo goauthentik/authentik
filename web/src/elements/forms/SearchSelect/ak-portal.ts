@@ -66,21 +66,25 @@ export class Portal extends LitElement implements IPortal {
         super.connectedCallback();
         this.setAttribute("data-ouia-component-type", "ak-portal");
         this.setAttribute("data-ouia-component-id", this.getAttribute("id") || randomId());
+
         this.dropdownContainer = document.createElement("div");
         this.dropdownContainer.dataset.managedBy = "ak-portal";
         if (this.name) {
             this.dropdownContainer.dataset.managedFor = this.name;
         }
+
         document.body.append(this.dropdownContainer);
+
         if (!this.anchor) {
             throw new Error("Tether entrance initialized incorrectly: missing anchor");
         }
+
         this.connected = true;
-        if (this.firstElementChild) {
-            this.content = this.firstElementChild as Element;
-        } else {
+
+        if (!this.firstElementChild) {
             throw new Error("No content to be portaled included in the tag");
         }
+        this.content = this.firstElementChild;
     }
 
     disconnectedCallback(): void {

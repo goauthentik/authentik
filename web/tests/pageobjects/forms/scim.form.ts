@@ -1,13 +1,13 @@
-import Page from "../page.js";
+import { $ } from "@wdio/globals";
 
-export class ScimForm extends Page {
-    get url() {
-        return $('>>>input[name="url"]');
+export abstract class SCIMForm {
+    public static get $urlInput() {
+        return $('input[name="url"]');
     }
 
-    get token() {
-        return $('>>>input[name="token"]');
+    public static get $tokenInput() {
+        return $('input[name="token"]');
     }
 }
 
-export default new ScimForm();
+export default SCIMForm;

@@ -358,6 +358,7 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
                     <div class="pf-c-select__toggle-wrapper" part="ak-search-select-wrapper">
                         <input
+                            aria-label="${this.placeholder}"
                             part="ak-search-select-toggle-typeahead"
                             autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"

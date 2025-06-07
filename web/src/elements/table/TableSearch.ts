@@ -48,6 +48,7 @@ export class TableSearch extends AKElement {
             }}
         >
             <input
+                data-test-id="table-search-input"
                 class="pf-c-form-control"
                 name="search"
                 type="search"
@@ -59,6 +60,7 @@ export class TableSearch extends AKElement {
                 }}
             />
             <button
+                data-test-id="table-search-reset"
                 class="pf-c-button pf-m-control"
                 type="reset"
                 @click=${() => {
@@ -68,7 +70,11 @@ export class TableSearch extends AKElement {
             >
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <button class="pf-c-button pf-m-control" type="submit">
+            <button
+                data-test-id="table-search-submit"
+                class="pf-c-button pf-m-control"
+                type="submit"
+            >
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>`;
