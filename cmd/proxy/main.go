@@ -28,7 +28,7 @@ var rootCmd = &cobra.Command{
 	Version:          constants.FullVersion(),
 	PersistentPreRun: common.PreRun,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := entrypoint.OutpostMain(proxyv2.NewProxyServer)
+		err := entrypoint.OutpostMain("authentik.outpost.proxy", proxyv2.NewProxyServer)
 		if err != nil {
 			fmt.Println(helpMessage)
 		}

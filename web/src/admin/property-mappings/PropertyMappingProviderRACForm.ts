@@ -46,11 +46,10 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                 pmUuid: this.instance.pk,
                 rACPropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
-                rACPropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderRacCreate({
+            rACPropertyMappingRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -63,7 +62,7 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("General settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

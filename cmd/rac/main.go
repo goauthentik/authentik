@@ -25,7 +25,7 @@ var rootCmd = &cobra.Command{
 	Version:          constants.FullVersion(),
 	PersistentPreRun: common.PreRun,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		err := entrypoint.OutpostMain(rac.NewServer)
+		err := entrypoint.OutpostMain("authentik.outpost.rac", rac.NewServer)
 		if err != nil {
 			fmt.Println(helpMessage)
 		}

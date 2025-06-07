@@ -24,11 +24,10 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                 policyUuid: this.instance.pk || "",
                 uniquePasswordPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordCreate({
-                uniquePasswordPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesUniquePasswordCreate({
+            uniquePasswordPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -37,7 +36,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
                     "Ensure that the user's new password is different from their previous passwords. The number of past passwords to check is configurable.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -67,7 +66,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Password field")}
-                ?required=${true}
+                required
                 name="passwordField"
             >
                 <input
@@ -82,7 +81,7 @@ export class UniquePasswordPolicyForm extends BasePolicyForm<UniquePasswordPolic
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Number of previous passwords to check")}
-                ?required=${true}
+                required
                 name="numHistoricalPasswords"
             >
                 <input

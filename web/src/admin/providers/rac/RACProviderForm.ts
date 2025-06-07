@@ -31,9 +31,8 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
         }
+        return msg("Successfully created provider.");
     }
 
     async send(data: RACProvider): Promise<RACProvider> {
@@ -42,16 +41,15 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 id: this.instance.pk,
                 rACProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
-                rACProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersRacCreate({
+            rACProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -63,7 +61,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -76,7 +74,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Connection expiry")}
-                ?required=${true}
+                required
                 name="connectionExpiry"
             >
                 <input
@@ -117,7 +115,7 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

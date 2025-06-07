@@ -21,11 +21,10 @@ export class PropertyMappingProviderSCIMForm extends BasePropertyMappingForm<SCI
                 pmUuid: this.instance.pk,
                 sCIMMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimCreate({
-                sCIMMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsProviderScimCreate({
+            sCIMMappingRequest: data,
+        });
     }
 }
 

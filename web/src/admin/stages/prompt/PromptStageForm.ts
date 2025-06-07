@@ -35,11 +35,10 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                 stageUuid: this.instance.pk || "",
                 promptStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
-                promptStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesCreate({
+            promptStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -48,7 +47,7 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                     "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -56,14 +55,10 @@ export class PromptStageForm extends BaseStageForm<PromptStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Fields")}
-                        ?required=${true}
-                        name="fields"
-                    >
+                    <ak-form-element-horizontal label=${msg("Fields")} required name="fields">
                         <ak-dual-select-dynamic-selected
                             .provider=${promptFieldsProvider}
                             .selector=${promptFieldsSelector(this.instance?.fields)}

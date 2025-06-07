@@ -19,7 +19,6 @@ import (
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
-	"goauthentik.io/internal/web/brand_tls"
 )
 
 var rootCmd = &cobra.Command{
@@ -28,7 +27,7 @@ var rootCmd = &cobra.Command{
 	Version:          constants.FullVersion(),
 	PersistentPreRun: common.PreRun,
 	Run: func(cmd *cobra.Command, args []string) {
-		debug.EnableDebugServer()
+		debug.EnableDebugServer("authentik.core")
 		l := log.WithField("logger", "authentik.root")
 
 		if config.Get().ErrorReporting.Enabled {
@@ -58,12 +57,12 @@ var rootCmd = &cobra.Command{
 		}
 
 		ws := web.NewWebServer()
-		ws.Core().HealthyCallback = func() {
+		ws.Core().AddHealthyCallback(func() {
 			if config.Get().Outposts.DisableEmbeddedOutpost {
 				return
 			}
 			go attemptProxyStart(ws, u)
-		}
+		})
 		ws.Start()
 		<-ex
 		l.Info("shutting down webserver")
@@ -86,19 +85,14 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		// Init brand_tls here too since it requires an API Client,
-		// so we just reuse the same one as the outpost uses
-		tw := brand_tls.NewWatcher(ac.Client)
-		go tw.Start()
-		ws.BrandTLS = tw
 		ac.AddRefreshHandler(func() {
-			tw.Check()
+			ws.BrandTLS.Check()
 		})
 
-		l.Debug("attempting to start outpost")
 		srv := proxyv2.NewProxyServer(ac)
 		ws.ProxyServer = srv.(*proxyv2.ProxyServer)
 		ac.Server = srv
+		l.Debug("attempting to start outpost")
 		err := ac.StartBackgroundTasks()
 		if err != nil {
 			l.WithError(err).Warning("outpost failed to start")

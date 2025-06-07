@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { rootInterface } from "@goauthentik/common/theme";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
@@ -94,7 +95,7 @@ export class UserSettingsPage extends AKElement {
             [];
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
-                <ak-tabs ?vertical="${true}">
+                <ak-tabs vertical>
                     <section
                         slot="page-details"
                         data-tab-title="${msg("User details")}"

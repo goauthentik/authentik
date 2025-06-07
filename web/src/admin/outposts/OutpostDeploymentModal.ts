@@ -65,7 +65,7 @@ export class OutpostDeploymentModal extends ModalButton {
                         </label>
                         <input class="pf-c-form-control" readonly type="text" value="true" />
                     </div>
-                    ${this.outpost?.type == OutpostTypeEnum.Proxy
+                    ${this.outpost?.type === OutpostTypeEnum.Proxy
                         ? html`
                               <h3>
                                   ${msg(

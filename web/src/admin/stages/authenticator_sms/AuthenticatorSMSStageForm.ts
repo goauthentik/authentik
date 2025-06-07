@@ -50,17 +50,16 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 stageUuid: this.instance.pk || "",
                 authenticatorSMSStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
-                authenticatorSMSStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsCreate({
+            authenticatorSMSStageRequest: data,
+        });
     }
 
     renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal
                 label=${msg("Twilio Account SID")}
-                ?required=${true}
+                required
                 name="accountSid"
             >
                 <input
@@ -75,11 +74,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("Get this value from https://console.twilio.com")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Twilio Auth Token")}
-                ?required=${true}
-                name="auth"
-            >
+            <ak-form-element-horizontal label=${msg("Twilio Auth Token")} required name="auth">
                 <input
                     type="text"
                     value="${this.instance?.auth ?? ""}"
@@ -102,7 +97,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     const current = (ev.target as HTMLInputElement).value;
                     this.authType = current as AuthTypeEnum;
                 }}
-                ?required=${true}
+                required
                 name="authType"
             >
                 <ak-radio
@@ -121,11 +116,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                 >
                 </ak-radio>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("External API URL")}
-                ?required=${true}
-                name="accountSid"
-            >
+            <ak-form-element-horizontal label=${msg("External API URL")} required name="accountSid">
                 <input
                     type="text"
                     value="${this.instance?.accountSid ?? ""}"
@@ -138,11 +129,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     ${msg("This is the full endpoint to send POST requests to.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Auth Username")}
-                ?required=${true}
-                name="auth"
-            >
+            <ak-form-element-horizontal label=${msg("API Auth Username")} required name="auth">
                 <input
                     type="text"
                     value="${this.instance?.auth ?? ""}"
@@ -197,7 +184,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     .selected=${(item: NotificationWebhookMapping): boolean => {
                         return this.instance?.mapping === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
@@ -211,7 +198,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
         return html` <span>
                 ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -235,14 +222,10 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Provider")}
-                        ?required=${true}
-                        name="provider"
-                    >
+                    <ak-form-element-horizontal label=${msg("Provider")} required name="provider">
                         <select
                             class="pf-c-form-control"
                             @change=${(ev: Event) => {
@@ -266,7 +249,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("From number")}
-                        ?required=${true}
+                        required
                         name="fromNumber"
                     >
                         <input
@@ -335,7 +318,7 @@ export class AuthenticatorSMSStageForm extends BaseStageForm<AuthenticatorSMSSta
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

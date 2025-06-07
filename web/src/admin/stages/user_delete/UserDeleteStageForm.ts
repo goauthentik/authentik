@@ -23,11 +23,10 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
                 stageUuid: this.instance.pk || "",
                 userDeleteStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
-                userDeleteStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteCreate({
+            userDeleteStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -36,7 +35,7 @@ export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {
                     "Delete the currently pending user. CAUTION, this stage does not ask for confirmation. Use a consent stage to ensure the user is aware of their actions.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

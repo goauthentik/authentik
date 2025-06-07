@@ -34,20 +34,14 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 inviteUuid: this.instance.pk || "",
                 invitationRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
-                invitationRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationInvitationsCreate({
+            invitationRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal
-                ?slugMode=${true}
-                label=${msg("Name")}
-                ?required=${true}
-                name="name"
-            >
+        return html` <ak-form-element-horizontal slugMode label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name || ""}"
@@ -56,7 +50,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     data-ak-slug="true"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Expires")} ?required=${true} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"

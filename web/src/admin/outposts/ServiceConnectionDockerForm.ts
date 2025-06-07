@@ -31,15 +31,14 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-                dockerServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+            dockerServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -67,7 +66,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Docker URL")} ?required=${true} name="url">
+            <ak-form-element-horizontal label=${msg("Docker URL")} required name="url">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
