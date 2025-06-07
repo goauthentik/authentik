@@ -194,7 +194,7 @@
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.33.0",
+        "typescript-eslint": "^8.33.1",
         "vite-plugin-lit-css": "^2.0.0",
         "vite-tsconfig-paths": "^5.0.1",
         "wireit": "^0.14.12"
