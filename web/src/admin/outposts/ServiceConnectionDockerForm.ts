@@ -1,5 +1,5 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -9,13 +9,7 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
-    DockerServiceConnection,
-    OutpostsApi,
-} from "@goauthentik/api";
+import { DockerServiceConnection, OutpostsApi } from "@goauthentik/api";
 
 @customElement("ak-service-connection-docker-form")
 export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnection, string> {
@@ -26,11 +20,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated integration.");
-        } else {
-            return msg("Successfully created integration.");
-        }
+        return this.instance
+            ? msg("Successfully updated integration.")
+            : msg("Successfully created integration.");
     }
 
     async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
@@ -39,16 +31,14 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-                dockerServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+            dockerServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -61,7 +51,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.local, false)}
+                        ?checked=${this.instance?.local ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -76,16 +66,21 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Docker URL")} ?required=${true} name="url">
+            <ak-form-element-horizontal label=${msg("Docker URL")} required name="url">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    inputmode="url"
                     required
                 />
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.",
+                        html`Can be in the format of <code>unix://</code> when connecting to a local
+                            docker daemon, using <code>ssh://</code> to connect via SSH, or
+                            <code>https://:2376</code> when connecting to a remote system.`,
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -93,33 +88,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Verification Certificate")}
                 name="tlsVerification"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<CertificateKeyPair[]> => {
-                        const args: CryptoCertificatekeypairsListRequest = {
-                            ordering: "name",
-                            hasKey: true,
-                            includeDetails: false,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const certificates = await new CryptoApi(
-                            DEFAULT_CONFIG,
-                        ).cryptoCertificatekeypairsList(args);
-                        return certificates.results;
-                    }}
-                    .renderElement=${(item: CertificateKeyPair): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
-                    .selected=${(item: CertificateKeyPair): boolean => {
-                        return this.instance?.tlsVerification === item.pk;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.tlsVerification}
+                ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "CA which the endpoint's Certificate is verified against. Can be left empty for no validation.",
@@ -130,33 +101,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 label=${msg("TLS Authentication Certificate/SSH Keypair")}
                 name="tlsAuthentication"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<CertificateKeyPair[]> => {
-                        const args: CryptoCertificatekeypairsListRequest = {
-                            ordering: "name",
-                            hasKey: true,
-                            includeDetails: false,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const certificates = await new CryptoApi(
-                            DEFAULT_CONFIG,
-                        ).cryptoCertificatekeypairsList(args);
-                        return certificates.results;
-                    }}
-                    .renderElement=${(item: CertificateKeyPair): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                        return item?.pk;
-                    }}
-                    .selected=${(item: CertificateKeyPair): boolean => {
-                        return this.instance?.tlsAuthentication === item.pk;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
+                <ak-crypto-certificate-search
+                    .certificate=${this.instance?.tlsAuthentication}
+                ></ak-crypto-certificate-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "Certificate/Key used for authentication. Can be left empty for no authentication.",
@@ -165,7 +112,12 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 <p class="pf-c-form__helper-text">
                     ${msg("When connecting via SSH, this keypair is used for authentication.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-service-connection-docker-form": ServiceConnectionDockerForm;
     }
 }

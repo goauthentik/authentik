@@ -1,133 +1,43 @@
-"""Outpost websocket handler"""
-from dataclasses import asdict, dataclass, field
-from datetime import datetime
-from enum import IntEnum
-from typing import Any, Optional
+"""Channels base classes"""
 
+from channels.db import database_sync_to_async
 from channels.exceptions import DenyConnection
-from dacite.core import from_dict
-from dacite.data import Data
-from guardian.shortcuts import get_objects_for_user
-from structlog.stdlib import BoundLogger, get_logger
+from rest_framework.exceptions import AuthenticationFailed
+from structlog.stdlib import get_logger
 
-from authentik.core.channels import AuthJsonConsumer
-from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
-from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
+from authentik.api.authentication import bearer_auth
+
+LOGGER = get_logger()
 
 
-class WebsocketMessageInstruction(IntEnum):
-    """Commands which can be triggered over Websocket"""
+class TokenOutpostMiddleware:
+    """Authorize a client with a token"""
 
-    # Simple message used by either side when a message is acknowledged
-    ACK = 0
+    def __init__(self, inner):
+        self.inner = inner
 
-    # Message used by outposts to report their alive status
-    HELLO = 1
+    async def __call__(self, scope, receive, send):
+        scope = dict(scope)
+        await self.auth(scope)
+        return await self.inner(scope, receive, send)
 
-    # Message sent by us to trigger an Update
-    TRIGGER_UPDATE = 2
-
-
-@dataclass
-class WebsocketMessage:
-    """Complete Websocket Message that is being sent"""
-
-    instruction: int
-    args: dict[str, Any] = field(default_factory=dict)
-
-
-class OutpostConsumer(AuthJsonConsumer):
-    """Handler for Outposts that connect over websockets for health checks and live updates"""
-
-    outpost: Optional[Outpost] = None
-    logger: BoundLogger
-
-    last_uid: Optional[str] = None
-
-    first_msg = False
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.logger = get_logger()
-
-    def connect(self):
-        super().connect()
-        uuid = self.scope["url_route"]["kwargs"]["pk"]
-        outpost = (
-            get_objects_for_user(self.user, "authentik_outposts.view_outpost")
-            .filter(pk=uuid)
-            .first()
-        )
-        if not outpost:
+    @database_sync_to_async
+    def auth(self, scope):
+        """Authenticate request from header"""
+        headers = dict(scope["headers"])
+        if b"authorization" not in headers:
+            LOGGER.warning("WS Request without authorization header")
             raise DenyConnection()
-        self.logger = self.logger.bind(outpost=outpost)
+
+        raw_header = headers[b"authorization"]
+
         try:
-            self.accept()
-        except RuntimeError as exc:
-            self.logger.warning("runtime error during accept", exc=exc)
-            raise DenyConnection()
-        self.outpost = outpost
-        self.last_uid = self.channel_name
+            user = bearer_auth(raw_header)
+            # user is only None when no header was given, in which case we deny too
+            if not user:
+                raise DenyConnection()
+        except AuthenticationFailed as exc:
+            LOGGER.warning("Failed to authenticate", exc=exc)
+            raise DenyConnection() from None
 
-    def disconnect(self, code):
-        if self.outpost and self.last_uid:
-            state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
-            if self.channel_name in state.channel_ids:
-                state.channel_ids.remove(self.channel_name)
-                state.save()
-            GAUGE_OUTPOSTS_CONNECTED.labels(
-                outpost=self.outpost.name,
-                uid=self.last_uid,
-                expected=self.outpost.config.kubernetes_replicas,
-            ).dec()
-        self.logger.debug(
-            "removed outpost instance from cache",
-            instance_uuid=self.last_uid,
-        )
-
-    def receive_json(self, content: Data):
-        msg = from_dict(WebsocketMessage, content)
-        uid = msg.args.get("uuid", self.channel_name)
-        self.last_uid = uid
-
-        if not self.outpost:
-            raise DenyConnection()
-
-        state = OutpostState.for_instance_uid(self.outpost, uid)
-        if self.channel_name not in state.channel_ids:
-            state.channel_ids.append(self.channel_name)
-        state.last_seen = datetime.now()
-        state.hostname = msg.args.get("hostname", "")
-
-        if not self.first_msg:
-            GAUGE_OUTPOSTS_CONNECTED.labels(
-                outpost=self.outpost.name,
-                uid=self.last_uid,
-                expected=self.outpost.config.kubernetes_replicas,
-            ).inc()
-            self.logger.debug(
-                "added outpost instance to cache",
-                instance_uuid=self.last_uid,
-            )
-            self.first_msg = True
-
-        if msg.instruction == WebsocketMessageInstruction.HELLO:
-            state.version = msg.args.get("version", None)
-            state.build_hash = msg.args.get("buildHash", "")
-        elif msg.instruction == WebsocketMessageInstruction.ACK:
-            return
-        GAUGE_OUTPOSTS_LAST_UPDATE.labels(
-            outpost=self.outpost.name,
-            uid=self.last_uid or "",
-            version=state.version or "",
-        ).set_to_current_time()
-        state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
-
-        response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
-        self.send_json(asdict(response))
-
-    def event_update(self, event):  # pragma: no cover
-        """Event handler which is called by post_save signals, Send update instruction"""
-        self.send_json(
-            asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
-        )
+        scope["user"] = user

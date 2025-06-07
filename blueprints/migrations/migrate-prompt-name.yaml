@@ -1,8 +1,8 @@
 version: 1
 metadata:
+  name: Migration - Remove old prompt fields
   labels:
     blueprints.goauthentik.io/description: Migrate to 2023.2, remove unused prompt fields
-  name: Migration - Remove old prompt fields
 entries:
   - model: authentik_stages_prompt.prompt
     identifiers:

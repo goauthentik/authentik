@@ -3,22 +3,43 @@ package application
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/url"
+	"time"
 
-	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"golang.org/x/oauth2"
 )
 
-func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Context) (*Claims, error) {
-	state := u.Query().Get("state")
-	a.log.WithFields(log.Fields{
-		"states":   savedState,
-		"expected": state,
-	}).Trace("tracing states")
-	if savedState != state {
-		return nil, fmt.Errorf("invalid state")
+func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
+	state := a.stateFromRequest(r)
+	if state == nil {
+		a.log.Warning("invalid state")
+		a.redirect(rw, r)
+		return
 	}
+	claims, err := a.redeemCallback(r.URL, r.Context())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to redeem code")
+		a.redirect(rw, r)
+		return
+	}
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Trace("failed to get session")
+	}
+	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
+	s.Values[constants.SessionClaims] = &claims
+	err = s.Save(r, rw)
+	if err != nil {
+		a.log.WithError(err).Warning("failed to save session")
+		rw.WriteHeader(400)
+		return
+	}
+	a.redirect(rw, r)
+}
 
+func (a *Application) redeemCallback(u *url.URL, c context.Context) (*Claims, error) {
 	code := u.Query().Get("code")
 	if code == "" {
 		return nil, fmt.Errorf("blank code")
@@ -31,16 +52,11 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 		return nil, err
 	}
 
-	// Extract the ID Token from OAuth2 token.
-	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
-	if !ok {
-		return nil, fmt.Errorf("missing id_token")
-	}
-
-	a.log.WithField("id_token", rawIDToken).Trace("id_token")
+	jwt := oauth2Token.AccessToken
+	a.log.WithField("jwt", jwt).Trace("access_token")
 
 	// Parse and verify ID Token payload.
-	idToken, err := a.tokenVerifier.Verify(ctx, rawIDToken)
+	idToken, err := a.tokenVerifier.Verify(ctx, jwt)
 	if err != nil {
 		return nil, err
 	}
@@ -53,6 +69,6 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 	if claims.Proxy == nil {
 		claims.Proxy = &ProxyClaims{}
 	}
-	claims.RawToken = rawIDToken
+	claims.RawToken = jwt
 	return claims, nil
 }

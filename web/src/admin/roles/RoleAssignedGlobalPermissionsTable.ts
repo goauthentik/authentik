@@ -1,0 +1,98 @@
+import "@goauthentik/admin/roles/RolePermissionForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/elements/forms/ModalForm";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import { Permission, RbacApi } from "@goauthentik/api";
+
+@customElement("ak-role-assigned-global-permissions-table")
+export class RoleAssignedGlobalPermissionsTable extends Table<Permission> {
+    @property()
+    roleUuid?: string;
+
+    searchEnabled(): boolean {
+        return true;
+    }
+
+    checkbox = true;
+    clearOnRefresh = true;
+
+    order = "content_type__app_label,content_type__model";
+
+    async apiEndpoint(): Promise<PaginatedResponse<Permission>> {
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
+            ...(await this.defaultEndpointConfig()),
+            role: this.roleUuid,
+        });
+    }
+
+    groupBy(items: Permission[]): [string, Permission[]][] {
+        return groupBy(items, (obj) => {
+            return obj.appLabelVerbose;
+        });
+    }
+
+    columns(): TableColumn[] {
+        return [
+            new TableColumn(msg("Model"), "model"),
+            new TableColumn(msg("Permission"), ""),
+            new TableColumn(""),
+        ];
+    }
+
+    renderObjectCreate(): TemplateResult {
+        return html`
+            <ak-forms-modal>
+                <span slot="submit"> ${msg("Assign")} </span>
+                <span slot="header"> ${msg("Assign permission to role")} </span>
+                <ak-role-permission-form roleUuid=${ifDefined(this.roleUuid)} slot="form">
+                </ak-role-permission-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">
+                    ${msg("Assign permission")}
+                </button>
+            </ak-forms-modal>
+        `;
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Permission(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: Permission) => {
+                return new RbacApi(
+                    DEFAULT_CONFIG,
+                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                    uuid: this.roleUuid || "",
+                    patchedPermissionAssignRequest: {
+                        permissions: [`${item.appLabel}.${item.codename}`],
+                    },
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
+    row(item: Permission): TemplateResult[] {
+        return [
+            html`${item.modelVerbose}`,
+            html`${item.name}`,
+            html`<i class="fas fa-check pf-m-success"></i>`,
+        ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-role-assigned-global-permissions-table": RoleAssignedGlobalPermissionsTable;
+    }
+}

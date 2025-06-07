@@ -1,22 +1,33 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { dateTimeLocal } from "@goauthentik/common/utils";
+import { dateTimeLocal } from "@goauthentik/common/temporal";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, UserServiceAccountRequest, UserServiceAccountResponse } from "@goauthentik/api";
+import {
+    CoreApi,
+    Group,
+    UserServiceAccountRequest,
+    UserServiceAccountResponse,
+} from "@goauthentik/api";
 
-@customElement("ak-user-service-account")
+@customElement("ak-user-service-account-form")
 export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
     @property({ attribute: false })
     result?: UserServiceAccountResponse;
 
+    @property({ attribute: false })
+    group?: Group;
+
     getSuccessMessage(): string {
+        if (this.group) {
+            return msg(str`Successfully created user and added to group ${this.group.name}`);
+        }
         return msg("Successfully created user.");
     }
 
@@ -26,6 +37,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         });
         this.result = result;
         (this.parentElement as ModalForm).showSubmitButton = false;
+        if (this.group) {
+            await new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
+                groupUuid: this.group.pk,
+                userAccountRequest: {
+                    pk: this.result.userPk,
+                },
+            });
+        }
         return result;
     }
 
@@ -34,17 +53,23 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = undefined;
     }
 
-    renderRequestForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Username")} ?required=${true} name="name">
-                <input type="text" value="" class="pf-c-form-control" required />
+    renderForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("Username")} required name="name">
+                <input
+                    type="text"
+                    value=""
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                />
                 <p class="pf-c-form__helper-text">
                     ${msg("User's primary identifier. 150 characters or fewer.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="createGroup">
                 <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <input class="pf-c-switch__input" type="checkbox" checked />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
@@ -60,7 +85,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <input class="pf-c-switch__input" type="checkbox" checked />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
@@ -81,8 +106,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
                     class="pf-c-form-control"
                 />
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 
     renderResponseForm(): TemplateResult {
@@ -116,10 +140,16 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderForm(): TemplateResult {
+    renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
-        return this.renderRequestForm();
+        return super.renderFormWrapper();
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-service-account-form": ServiceAccountForm;
     }
 }

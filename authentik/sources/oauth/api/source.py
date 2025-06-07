@@ -1,4 +1,5 @@
 """OAuth Source Serializer"""
+
 from django.urls.base import reverse_lazy
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
@@ -24,12 +25,14 @@ class SourceTypeSerializer(PassiveSerializer):
     """Serializer for SourceType"""
 
     name = CharField(required=True)
-    slug = CharField(required=True)
+    verbose_name = CharField(required=True)
     urls_customizable = BooleanField()
     request_token_url = CharField(read_only=True, allow_null=True)
     authorization_url = CharField(read_only=True, allow_null=True)
     access_token_url = CharField(read_only=True, allow_null=True)
     profile_url = CharField(read_only=True, allow_null=True)
+    oidc_well_known_url = CharField(read_only=True, allow_null=True)
+    oidc_jwks_url = CharField(read_only=True, allow_null=True)
 
 
 class OAuthSourceSerializer(SourceSerializer):
@@ -52,33 +55,48 @@ class OAuthSourceSerializer(SourceSerializer):
     @extend_schema_field(SourceTypeSerializer)
     def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
-        return SourceTypeSerializer(instance.type).data
+        return SourceTypeSerializer(instance.source_type).data
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
-        well_known = attrs.get("oidc_well_known_url")
+        source_type = registry.find_type(attrs["provider_type"])
+
+        well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
+        inferred_oidc_jwks_url = None
+
         if well_known and well_known != "":
             try:
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError({"oidc_well_known_url": text}) from None
             config = well_known_config.json()
-            try:
-                attrs["authorization_url"] = config["authorization_endpoint"]
-                attrs["access_token_url"] = config["token_endpoint"]
-                attrs["profile_url"] = config["userinfo_endpoint"]
-                attrs["oidc_jwks_url"] = config["jwks_uri"]
-            except (IndexError, KeyError) as exc:
-                raise ValidationError(f"Invalid well-known configuration: {exc}")
+            if "issuer" not in config:
+                raise ValidationError({"oidc_well_known_url": "Invalid well-known configuration"})
+            field_map = {
+                # authentik field to oidc field
+                "authorization_url": "authorization_endpoint",
+                "access_token_url": "token_endpoint",
+                "profile_url": "userinfo_endpoint",
+            }
+            for ak_key, oidc_key in field_map.items():
+                # Don't overwrite user-set values
+                if ak_key in attrs and attrs[ak_key]:
+                    continue
+                attrs[ak_key] = config.get(oidc_key, "")
+            inferred_oidc_jwks_url = config.get("jwks_uri", "")
 
-        jwks_url = attrs.get("oidc_jwks_url")
+        # Prefer user-entered URL to inferred URL to default URL
+        jwks_url = attrs.get("oidc_jwks_url") or inferred_oidc_jwks_url or source_type.oidc_jwks_url
         if jwks_url and jwks_url != "":
+            attrs["oidc_jwks_url"] = jwks_url
             try:
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError({"oidc_jwks_url": text}) from None
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
@@ -90,12 +108,15 @@ class OAuthSourceSerializer(SourceSerializer):
         ]:
             if getattr(provider_type, url, None) is None:
                 if url not in attrs:
-                    raise ValidationError(f"{url} is required for provider {provider_type.name}")
+                    raise ValidationError(
+                        f"{url} is required for provider {provider_type.verbose_name}"
+                    )
         return attrs
 
     class Meta:
         model = OAuthSource
         fields = SourceSerializer.Meta.fields + [
+            "group_matching_mode",
             "provider_type",
             "request_token_url",
             "authorization_url",
@@ -109,8 +130,15 @@ class OAuthSourceSerializer(SourceSerializer):
             "oidc_well_known_url",
             "oidc_jwks_url",
             "oidc_jwks",
+            "authorization_code_auth_method",
         ]
-        extra_kwargs = {"consumer_secret": {"write_only": True}}
+        extra_kwargs = {
+            "consumer_secret": {"write_only": True},
+            "request_token_url": {"allow_blank": True},
+            "authorization_url": {"allow_blank": True},
+            "access_token_url": {"allow_blank": True},
+            "profile_url": {"allow_blank": True},
+        }
 
 
 class OAuthSourceFilter(FilterSet):
@@ -125,6 +153,7 @@ class OAuthSourceFilter(FilterSet):
     class Meta:
         model = OAuthSource
         fields = [
+            "pbm_uuid",
             "name",
             "slug",
             "enabled",
@@ -132,6 +161,7 @@ class OAuthSourceFilter(FilterSet):
             "enrollment_flow",
             "policy_engine_mode",
             "user_matching_mode",
+            "group_matching_mode",
             "provider_type",
             "request_token_url",
             "authorization_url",

@@ -1,40 +1,43 @@
 """Outpost API Views"""
+
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from django_filters.filters import ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, DateTimeField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import BooleanField, CharField, DateTimeField, SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import JSONField, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik import get_build_hash
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer, is_dict
+from authentik.core.api.utils import JSONDictField, ModelSerializer, PassiveSerializer
 from authentik.core.models import Provider
+from authentik.enterprise.license import LicenseKey
+from authentik.lib.utils.time import timedelta_from_string, timedelta_string_validator
 from authentik.outposts.api.service_connections import ServiceConnectionSerializer
-from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.apps import MANAGED_OUTPOST, MANAGED_OUTPOST_NAME
 from authentik.outposts.models import (
     Outpost,
     OutpostConfig,
-    OutpostState,
     OutpostType,
     default_outpost_config,
 )
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.rac.models import RACProvider
 from authentik.providers.radius.models import RadiusProvider
 
 
 class OutpostSerializer(ModelSerializer):
     """Outpost Serializer"""
 
-    config = JSONField(validators=[is_dict], source="_config")
+    config = JSONDictField(source="_config")
     # Need to set allow_empty=True for the embedded outpost with no providers
     # is checked for other providers in the API Viewset
     providers = PrimaryKeyRelatedField(
@@ -46,6 +49,20 @@ class OutpostSerializer(ModelSerializer):
     service_connection_obj = ServiceConnectionSerializer(
         source="service_connection", read_only=True
     )
+    refresh_interval_s = SerializerMethodField()
+
+    def get_refresh_interval_s(self, obj: Outpost) -> int:
+        return int(timedelta_from_string(obj.config.refresh_interval).total_seconds())
+
+    def validate_name(self, name: str) -> str:
+        """Validate name (especially for embedded outpost)"""
+        if not self.instance:
+            return name
+        if self.instance.managed == MANAGED_OUTPOST and name != MANAGED_OUTPOST_NAME:
+            raise ValidationError("Embedded outpost's name cannot be changed")
+        if self.instance.name == MANAGED_OUTPOST_NAME:
+            self.instance.managed = MANAGED_OUTPOST
+        return name
 
     def validate_providers(self, providers: list[Provider]) -> list[Provider]:
         """Check that all providers match the type of the outpost"""
@@ -53,6 +70,7 @@ class OutpostSerializer(ModelSerializer):
             OutpostType.LDAP: LDAPProvider,
             OutpostType.PROXY: ProxyProvider,
             OutpostType.RADIUS: RadiusProvider,
+            OutpostType.RAC: RACProvider,
             None: Provider,
         }
         for provider in providers:
@@ -70,7 +88,8 @@ class OutpostSerializer(ModelSerializer):
     def validate_config(self, config) -> dict:
         """Check that the config has all required fields"""
         try:
-            from_dict(OutpostConfig, config)
+            parsed = from_dict(OutpostConfig, config)
+            timedelta_string_validator(parsed.refresh_interval)
         except DaciteError as exc:
             raise ValidationError(f"Failed to validate config: {str(exc)}") from exc
         return config
@@ -85,6 +104,7 @@ class OutpostSerializer(ModelSerializer):
             "providers_obj",
             "service_connection",
             "service_connection_obj",
+            "refresh_interval_s",
             "token_identifier",
             "config",
             "managed",
@@ -95,7 +115,7 @@ class OutpostSerializer(ModelSerializer):
 class OutpostDefaultConfigSerializer(PassiveSerializer):
     """Global default outpost config"""
 
-    config = JSONField(read_only=True)
+    config = JSONDictField(read_only=True)
 
 
 class OutpostHealthSerializer(PassiveSerializer):
@@ -104,14 +124,24 @@ class OutpostHealthSerializer(PassiveSerializer):
     uid = CharField(read_only=True)
     last_seen = DateTimeField(read_only=True)
     version = CharField(read_only=True)
-    version_should = CharField(read_only=True)
+    golang_version = CharField(read_only=True)
+    openssl_enabled = BooleanField(read_only=True)
+    openssl_version = CharField(read_only=True)
+    fips_enabled = SerializerMethodField()
 
+    version_should = CharField(read_only=True)
     version_outdated = BooleanField(read_only=True)
 
     build_hash = CharField(read_only=True, required=False)
     build_hash_should = CharField(read_only=True, required=False)
 
     hostname = CharField(read_only=True, required=False)
+
+    def get_fips_enabled(self, obj: dict) -> bool | None:
+        """Get FIPS enabled"""
+        if not LicenseKey.get_total().status().is_valid:
+            return None
+        return obj["fips_enabled"]
 
 
 class OutpostFilter(FilterSet):
@@ -151,7 +181,6 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
         outpost: Outpost = self.get_object()
         states = []
         for state in outpost.state:
-            state: OutpostState
             states.append(
                 {
                     "uid": state.uid,
@@ -160,6 +189,10 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
                     "version_should": state.version_should,
                     "version_outdated": state.version_outdated,
                     "build_hash": state.build_hash,
+                    "golang_version": state.golang_version,
+                    "openssl_enabled": state.openssl_enabled,
+                    "openssl_version": state.openssl_version,
+                    "fips_enabled": state.fips_enabled,
                     "hostname": state.hostname,
                     "build_hash_should": get_build_hash(),
                 }

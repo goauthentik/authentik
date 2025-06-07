@@ -1,32 +1,25 @@
 """authentik core tasks"""
+
 from datetime import datetime, timedelta
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    AuthenticatedSession,
     ExpiringModel,
     User,
 )
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def clean_expired_models(self: MonitoredTask):
+def clean_expired_models(self: SystemTask):
     """Remove expired objects"""
     messages = []
     for cls in ExpiringModel.__subclasses__():
@@ -39,27 +32,12 @@ def clean_expired_models(self: MonitoredTask):
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
-    # Special case
-    amount = 0
-    for session in AuthenticatedSession.objects.all():
-        cache_key = f"{KEY_PREFIX}{session.session_key}"
-        value = None
-        try:
-            value = cache.get(cache_key)
-        # pylint: disable=broad-except
-        except Exception as exc:
-            LOGGER.debug("Failed to get session from cache", exc=exc)
-        if not value:
-            session.delete()
-            amount += 1
-    LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
-    messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def clean_temporary_users(self: MonitoredTask):
+def clean_temporary_users(self: SystemTask):
     """Remove temporary users created by SAML Sources"""
     _now = datetime.now()
     messages = []
@@ -75,4 +53,4 @@ def clean_temporary_users(self: MonitoredTask):
             user.delete()
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")
-    self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
+    self.set_status(TaskStatus.SUCCESSFUL, *messages)

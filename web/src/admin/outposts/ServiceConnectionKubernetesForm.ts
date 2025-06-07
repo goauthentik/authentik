@@ -1,6 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
@@ -24,11 +24,9 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated integration.");
-        } else {
-            return msg("Successfully created integration.");
-        }
+        return this.instance
+            ? msg("Successfully updated integration.")
+            : msg("Successfully created integration.");
     }
 
     async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
@@ -37,16 +35,14 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-                kubernetesServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+            kubernetesServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -59,7 +55,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.local, false)}
+                        ?checked=${this.instance?.local ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -76,8 +72,8 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
+                    mode=${CodeMirrorMode.YAML}
+                    value="${YAML.stringify(this.instance?.kubeconfig ?? {})}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
@@ -89,7 +85,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.verifySsl, true)}
+                        ?checked=${this.instance?.verifySsl ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -100,7 +96,12 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                         >${msg("Verify Kubernetes API SSL Certificate")}</span
                     >
                 </label>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-service-connection-kubernetes-form": ServiceConnectionKubernetesForm;
     }
 }

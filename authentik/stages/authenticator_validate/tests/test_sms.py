@@ -1,4 +1,5 @@
 """Test validator stage"""
+
 from unittest.mock import MagicMock, patch
 
 from django.test.client import RequestFactory
@@ -106,6 +107,7 @@ class AuthenticatorValidateStageSMSTests(FlowTestCase):
                         "device_class": "sms",
                         "device_uid": str(device.pk),
                         "challenge": {},
+                        "last_used": None,
                     },
                 },
             )

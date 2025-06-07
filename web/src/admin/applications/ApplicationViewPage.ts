@@ -1,17 +1,21 @@
-import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
-import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
+import "#admin/applications/ApplicationAuthorizeChart";
+import "#admin/applications/ApplicationCheckAccessForm";
+import "#admin/applications/ApplicationForm";
+import "#admin/applications/entitlements/ApplicationEntitlementPage";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { PFSize } from "#common/enums";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import "#elements/AppIcon";
+import { AKElement } from "#elements/Base";
+import "#elements/EmptyState";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -25,41 +29,20 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Application, CoreApi, OutpostsApi } from "@goauthentik/api";
+import {
+    Application,
+    CoreApi,
+    OutpostsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
-    @property()
-    set applicationSlug(value: string) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreApplicationsRetrieve({
-                slug: value,
-            })
-            .then((app) => {
-                this.application = app;
-                if (
-                    app.providerObj &&
-                    [
-                        "authentik_providers_proxy.proxyprovider",
-                        "authentik_providers_ldap.ldapprovider",
-                    ].includes(app.providerObj.metaModelName)
-                ) {
-                    new OutpostsApi(DEFAULT_CONFIG)
-                        .outpostsInstancesList({
-                            providersByPk: [app.provider || 0],
-                            pageSize: 1,
-                        })
-                        .then((outposts) => {
-                            if (outposts.pagination.count < 1) {
-                                this.missingOutpost = true;
-                            }
-                        });
-                }
-            });
-    }
+    @property({ type: String })
+    applicationSlug?: string;
 
-    @property({ attribute: false })
-    application!: Application;
+    @state()
+    application?: Application;
 
     @state()
     missingOutpost = false;
@@ -78,21 +61,58 @@ export class ApplicationViewPage extends AKElement {
         ];
     }
 
+    fetchIsMissingOutpost(providersByPk: Array<number>) {
+        new OutpostsApi(DEFAULT_CONFIG)
+            .outpostsInstancesList({
+                providersByPk,
+                pageSize: 1,
+            })
+            .then((outposts) => {
+                if (outposts.pagination.count < 1) {
+                    this.missingOutpost = true;
+                }
+            });
+    }
+
+    fetchApplication(slug: string) {
+        new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({ slug }).then((app) => {
+            this.application = app;
+            if (
+                app.providerObj &&
+                [
+                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersProxyProxyprovider.toString(),
+                    RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider.toString(),
+                ].includes(app.providerObj.metaModelName)
+            ) {
+                this.fetchIsMissingOutpost([app.provider || 0]);
+            }
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("applicationSlug") && this.applicationSlug) {
+            this.fetchApplication(this.applicationSlug);
+        }
+    }
+
     render(): TemplateResult {
         return html`<ak-page-header
-                icon=${this.application?.metaIcon || ""}
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
-                .iconImage=${true}
             >
+                <ak-app-icon
+                    size=${PFSize.Medium}
+                    name=${ifDefined(this.application?.name || undefined)}
+                    icon=${ifDefined(this.application?.metaIcon || undefined)}
+                    slot="icon"
+                ></ak-app-icon>
             </ak-page-header>
             ${this.renderApp()}`;
     }
 
     renderApp(): TemplateResult {
         if (!this.application) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html`<ak-tabs>
             ${this.missingOutpost
@@ -281,6 +301,28 @@ export class ApplicationViewPage extends AKElement {
                 </div>
             </section>
             <section
+                slot="page-app-entitlements"
+                data-tab-title="${msg("Application entitlements")}"
+            >
+                <div slot="header" class="pf-c-banner pf-m-info">
+                    ${msg("Application entitlements are in preview.")}
+                    <a href="mailto:hello+feature/app-ent@goauthentik.io"
+                        >${msg("Send us feedback!")}</a
+                    >
+                </div>
+                <div class="pf-c-page__main-section pf-m-no-padding-mobile">
+                    <div class="pf-c-card">
+                        <div class="pf-c-card__title">
+                            ${msg(
+                                "These entitlements can be used to configure user access in this application.",
+                            )}
+                        </div>
+                        <ak-application-entitlements-list .app=${this.application.pk}>
+                        </ak-application-entitlements-list>
+                    </div>
+                </div>
+            </section>
+            <section
                 slot="page-policy-bindings"
                 data-tab-title="${msg("Policy / Group / User Bindings")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
@@ -293,6 +335,18 @@ export class ApplicationViewPage extends AKElement {
                     </ak-bound-policies-list>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikCoreApplication}
+                objectPk=${this.application.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-view": ApplicationViewPage;
     }
 }

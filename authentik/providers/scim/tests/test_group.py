@@ -1,8 +1,8 @@
 """SCIM Group tests"""
+
 from json import loads
 
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from jsonschema import validate
 from requests_mock import Mocker
 
@@ -19,7 +19,7 @@ class SCIMGroupTests(TestCase):
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
         # which will cause errors with multiple users
-        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        User.objects.all().exclude_anonymous().delete()
         Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
@@ -61,7 +61,11 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertJSONEqual(
             mock.request_history[1].body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
 
     @Mocker()
@@ -96,7 +100,11 @@ class SCIMGroupTests(TestCase):
             validate(body, loads(schema.read()))
         self.assertEqual(
             body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
         group.save()
         self.assertEqual(mock.call_count, 4)
@@ -119,7 +127,7 @@ class SCIMGroupTests(TestCase):
                 "id": scim_id,
             },
         )
-        mock.delete("https://localhost/Groups", status_code=204)
+        mock.delete(f"https://localhost/Groups/{scim_id}", status_code=204)
         uid = generate_id()
         group = Group.objects.create(
             name=uid,
@@ -129,7 +137,11 @@ class SCIMGroupTests(TestCase):
         self.assertEqual(mock.request_history[1].method, "POST")
         self.assertJSONEqual(
             mock.request_history[1].body,
-            {"externalId": str(group.pk), "displayName": group.name},
+            {
+                "schemas": ["urn:ietf:params:scim:schemas:core:2.0:Group"],
+                "externalId": str(group.pk),
+                "displayName": group.name,
+            },
         )
         group.delete()
         self.assertEqual(mock.call_count, 4)

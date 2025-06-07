@@ -1,4 +1,5 @@
 """debug view"""
+
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import View
 

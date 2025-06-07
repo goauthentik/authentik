@@ -1,50 +1,33 @@
+// @file TSConfig used by the web package during development.
 {
+    "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "strict": true,
-        "paths": {
-            "@goauthentik/admin/*": ["src/admin/*"],
-            "@goauthentik/common/*": ["src/common/*"],
-            "@goauthentik/docs/*": ["../website/docs/*"],
-            "@goauthentik/elements/*": ["src/elements/*"],
-            "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/standalone/*": ["src/standalone/*"],
-            "@goauthentik/user/*": ["src/user/*"]
-        },
-        "baseUrl": ".",
-        "esModuleInterop": true,
-        "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
+        "checkJs": true,
+        "allowJs": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "emitDeclarationOnly": true,
         "experimentalDecorators": true,
-        "sourceMap": true,
+        // See https://lit.dev/docs/components/properties/
+        "useDefineForClassFields": false,
         "target": "esnext",
         "module": "esnext",
-        "moduleResolution": "node",
-        "lib": [
-            "ES5",
-            "ES2015",
-            "ES2016",
-            "ES2017",
-            "ES2018",
-            "ES2019",
-            "ES2020",
-            "ESNext",
-            "DOM",
-            "DOM.Iterable",
-            "WebWorker"
-        ],
-        "noUnusedLocals": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "strictBindCallApply": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "allowUnreachableCode": false,
-        "allowUnusedLabels": false,
-        "useDefineForClassFields": false,
-        "alwaysStrict": true,
-        "noImplicitAny": true,
+        "moduleResolution": "bundler",
+        "baseUrl": ".",
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        // TODO: We should enable this when when we're ready to enforce it.
+        "noUncheckedIndexedAccess": false,
+        "paths": {
+            "@goauthentik/admin/*": ["./src/admin/*"],
+            "@goauthentik/common/*": ["./src/common/*"],
+            "@goauthentik/components/*": ["./src/components/*"],
+            "@goauthentik/elements/*": ["./src/elements/*"],
+            "@goauthentik/flow/*": ["./src/flow/*"],
+            "@goauthentik/locales/*": ["./src/locales/*"],
+            "@goauthentik/polyfill/*": ["./src/polyfill/*"],
+            "@goauthentik/standalone/*": ["./src/standalone/*"],
+            "@goauthentik/user/*": ["./src/user/*"]
+        },
         "plugins": [
             {
                 "name": "ts-lit-plugin",
@@ -52,9 +35,28 @@
                 "rules": {
                     "no-unknown-tag-name": "off",
                     "no-missing-import": "off",
-                    "no-incompatible-type-binding": "warn"
+                    "no-incompatible-type-binding": "off",
+                    "no-unknown-property": "off",
+                    "no-unknown-attribute": "off"
+                }
+            },
+            {
+                "name": "@genesiscommunitysuccess/custom-elements-lsp",
+                "designSystemPrefix": "ak-",
+                "parser": {
+                    "timeout": 2000
                 }
             }
         ]
-    }
+    },
+    "exclude": [
+        // ---
+        "**/out/**/*",
+        "**/dist/**/*",
+        "src/**/*.test.ts",
+        "./tests",
+
+        // TODO: Remove after monorepo cleanup.
+        "src/**/*.comp.ts"
+    ]
 }

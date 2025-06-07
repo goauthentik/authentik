@@ -2,12 +2,12 @@ import {
     CSRFMiddleware,
     EventMiddleware,
     LoggingMiddleware,
-} from "@goauthentik/common/api/middleware";
-import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
-import { activateLocale } from "@goauthentik/common/ui/locale";
+} from "@goauthentik/common/api/middleware.js";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants.js";
+import { globalAK } from "@goauthentik/common/global.js";
+import { SentryMiddleware } from "@goauthentik/common/sentry/middleware";
 
-import { Config, Configuration, CoreApi, CurrentTenant, RootApi } from "@goauthentik/api";
+import { Config, Configuration, CoreApi, CurrentBrand, RootApi } from "@goauthentik/api";
 
 let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
@@ -17,7 +17,7 @@ export function config(): Promise<Config> {
     return globalConfigPromise;
 }
 
-export function tenantSetFavicon(tenant: CurrentTenant) {
+export function brandSetFavicon(brand: CurrentBrand) {
     /**
      *  <link rel="icon" href="/static/dist/assets/icons/icon.png">
      *  <link rel="shortcut icon" href="/static/dist/assets/icons/icon.png">
@@ -30,47 +30,45 @@ export function tenantSetFavicon(tenant: CurrentTenant) {
             relIcon.rel = rel;
             document.getElementsByTagName("head")[0].appendChild(relIcon);
         }
-        relIcon.href = tenant.brandingFavicon;
+        relIcon.href = brand.brandingFavicon;
     });
 }
 
-export function tenantSetLocale(tenant: CurrentTenant) {
-    if (tenant.defaultLocale === "") {
+export function brandSetLocale(brand: CurrentBrand) {
+    if (brand.defaultLocale === "") {
         return;
     }
-    console.debug("authentik/locale: setting locale from tenant default");
-    activateLocale(tenant.defaultLocale);
+    console.debug("authentik/locale: setting locale from brand default");
+    window.dispatchEvent(
+        new CustomEvent(EVENT_LOCALE_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail: { locale: brand.defaultLocale },
+        }),
+    );
 }
 
-let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(globalAK().tenant);
-export function tenant(): Promise<CurrentTenant> {
-    if (!globalTenantPromise) {
-        globalTenantPromise = new CoreApi(DEFAULT_CONFIG)
-            .coreTenantsCurrentRetrieve()
-            .then((tenant) => {
-                tenantSetFavicon(tenant);
-                tenantSetLocale(tenant);
-                return tenant;
+let globalBrandPromise: Promise<CurrentBrand> | undefined = Promise.resolve(globalAK().brand);
+export function brand(): Promise<CurrentBrand> {
+    if (!globalBrandPromise) {
+        globalBrandPromise = new CoreApi(DEFAULT_CONFIG)
+            .coreBrandsCurrentRetrieve()
+            .then((brand) => {
+                brandSetFavicon(brand);
+                brandSetLocale(brand);
+                return brand;
             });
     }
-    return globalTenantPromise;
-}
-
-export function getMetaContent(key: string): string {
-    const metaEl = document.querySelector<HTMLMetaElement>(`meta[name=${key}]`);
-    if (!metaEl) return "";
-    return metaEl.content;
+    return globalBrandPromise;
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: process.env.AK_API_BASE_PATH + "/api/v3",
-    headers: {
-        "sentry-trace": getMetaContent("sentry-trace"),
-    },
+    basePath: `${globalAK().api.base}api/v3`,
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
-        new LoggingMiddleware(globalAK().tenant),
+        new LoggingMiddleware(globalAK().brand),
+        new SentryMiddleware(),
     ],
 });
 
@@ -81,13 +79,6 @@ export function AndNext(url: string): string {
     return `?next=${encodeURIComponent(url)}`;
 }
 
-window.addEventListener(EVENT_REFRESH, () => {
-    // Upon global refresh, disregard whatever was pre-hydrated and
-    // actually load info from API
-    globalConfigPromise = undefined;
-    globalTenantPromise = undefined;
-    config();
-    tenant();
-});
-
-console.debug(`authentik(early): version ${VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`);
+console.debug(
+    `authentik(early): version ${import.meta.env.AK_VERSION}, apiBase ${DEFAULT_CONFIG.basePath}`,
+);

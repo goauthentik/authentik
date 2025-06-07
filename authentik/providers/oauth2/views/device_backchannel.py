@@ -1,5 +1,5 @@
 """Device flow views"""
-from typing import Optional
+
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -11,10 +11,11 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.throttling import AnonRateThrottle
 from structlog.stdlib import get_logger
 
+from authentik.core.models import Application
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider
-from authentik.providers.oauth2.views.device_init import QS_KEY_CODE, get_application
+from authentik.providers.oauth2.views.device_init import QS_KEY_CODE
 
 LOGGER = get_logger()
 
@@ -27,7 +28,7 @@ class DeviceView(View):
     provider: OAuth2Provider
     scopes: list[str] = []
 
-    def parse_request(self) -> Optional[HttpResponse]:
+    def parse_request(self) -> HttpResponse | None:
         """Parse incoming request"""
         client_id = self.request.POST.get("client_id", None)
         if not client_id:
@@ -37,7 +38,9 @@ class DeviceView(View):
         ).first()
         if not provider:
             return HttpResponseBadRequest()
-        if not get_application(provider):
+        try:
+            _ = provider.application
+        except Application.DoesNotExist:
             return HttpResponseBadRequest()
         self.provider = provider
         self.client_id = client_id
@@ -46,7 +49,7 @@ class DeviceView(View):
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         throttle = AnonRateThrottle()
-        throttle.rate = CONFIG.y("throttle.providers.oauth2.device", "20/hour")
+        throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
         throttle.num_requests, throttle.duration = throttle.parse_rate(throttle.rate)
         if not throttle.allow_request(request, self):
             return HttpResponse(status=429)

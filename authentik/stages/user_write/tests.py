@@ -1,11 +1,19 @@
 """write tests"""
+
 from unittest.mock import patch
 
 from django.urls import reverse
 
-from authentik.core.models import USER_ATTRIBUTE_SOURCES, Group, Source, User, UserSourceConnection
+from authentik.core.models import (
+    USER_ATTRIBUTE_SOURCES,
+    Group,
+    Source,
+    User,
+    UserSourceConnection,
+)
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
@@ -58,11 +66,33 @@ class TestUserWriteStage(FlowTestCase):
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
-        self.assertTrue(user_qs.first().check_password(password))
-        self.assertEqual(
-            list(user_qs.first().ak_groups.order_by("name")), [self.other_group, self.group]
+        user = user_qs.first()
+        self.assertTrue(user.check_password(password))
+        self.assertEqual(list(user.ak_groups.order_by("name")), [self.other_group, self.group])
+        self.assertEqual(user.attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
+
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.MODEL_CREATED,
+                context__model={
+                    "app": "authentik_core",
+                    "model_name": "user",
+                    "pk": user.pk,
+                    "name": "name",
+                },
+            )
         )
-        self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.MODEL_UPDATED,
+                context__model={
+                    "app": "authentik_core",
+                    "model_name": "user",
+                    "pk": user.pk,
+                    "name": "name",
+                },
+            )
+        )
 
     def test_user_update(self):
         """Test update of existing user"""
@@ -95,6 +125,47 @@ class TestUserWriteStage(FlowTestCase):
         self.assertTrue(user_qs.first().check_password(new_password))
         self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
+        self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
+
+    def test_user_update_source(self):
+        """Test update of existing user with a source"""
+        new_password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
+            username="unittest",
+            email="test@goauthentik.io",
+            attributes={
+                USER_ATTRIBUTE_SOURCES: [
+                    self.source.name,
+                ]
+            },
+        )
+        plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "test-user-new",
+            "password": new_password,
+            "attributes.some.custom-attribute": "test",
+            "attributes": {
+                "foo": "bar",
+            },
+            "some_ignored_attribute": "bar",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
+        self.assertTrue(user_qs.exists())
+        self.assertTrue(user_qs.first().check_password(new_password))
+        self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
+        self.assertEqual(user_qs.first().attributes["foo"], "bar")
+        self.assertEqual(user_qs.first().attributes[USER_ATTRIBUTE_SOURCES], [self.source.name])
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
     @patch(

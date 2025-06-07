@@ -1,25 +1,30 @@
 """Avatar utils"""
+
 from base64 import b64encode
 from functools import cache as funccache
-from hashlib import md5
-from typing import TYPE_CHECKING, Optional
+from hashlib import md5, sha256
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.core.cache import cache
+from django.http import HttpRequest, HttpResponseNotFound
 from django.templatetags.static import static
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
-from requests.exceptions import RequestException
+from requests.exceptions import ConnectionError, HTTPError, RequestException, Timeout
 
-from authentik.lib.config import CONFIG, get_path_from_dict
+from authentik.lib.utils.dict import get_path_from_dict
 from authentik.lib.utils.http import get_http_session
-
-GRAVATAR_URL = "https://secure.gravatar.com"
-DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
-CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
+from authentik.tenants.utils import get_current_tenant
 
 if TYPE_CHECKING:
     from authentik.core.models import User
+
+GRAVATAR_URL = "https://www.gravatar.com"
+DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
+CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
+CACHE_KEY_GRAVATAR_AVAILABLE = "goauthentik.io/lib/avatars/gravatar_available"
+GRAVATAR_STATUS_TTL_SECONDS = 60 * 60 * 8  # 8 Hours
 
 SVG_XML_NS = "http://www.w3.org/2000/svg"
 SVG_NS_MAP = {None: SVG_XML_NS}
@@ -34,23 +39,25 @@ SVG_FONTS = [
 ]
 
 
-def avatar_mode_none(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_none(user: "User", mode: str) -> str | None:
     """No avatar"""
     return DEFAULT_AVATAR
 
 
-def avatar_mode_attribute(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_attribute(user: "User", mode: str) -> str | None:
     """Avatars based on a user attribute"""
     avatar = get_path_from_dict(user.attributes, mode[11:], default=None)
     return avatar
 
 
-def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     """Gravatar avatars"""
-    # gravatar uses md5 for their URLs, so md5 can't be avoided
-    mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
-    parameters = [("size", "158"), ("rating", "g"), ("default", "404")]
-    gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
+    if not cache.get(CACHE_KEY_GRAVATAR_AVAILABLE, True):
+        return None
+
+    mail_hash = sha256(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    parameters = {"size": "158", "rating": "g", "default": "404"}
+    gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters)}"
 
     full_key = CACHE_KEY_GRAVATAR + mail_hash
     if cache.has_key(full_key):
@@ -62,10 +69,12 @@ def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
         # (HEAD since we don't need the body)
         # so if that returns a 404, move onto the next mode
         res = get_http_session().head(gravatar_url, timeout=5)
-        if res.status_code == 404:
+        if res.status_code == HttpResponseNotFound.status_code:
             cache.set(full_key, None)
             return None
         res.raise_for_status()
+    except (Timeout, ConnectionError, HTTPError):
+        cache.set(CACHE_KEY_GRAVATAR_AVAILABLE, False, timeout=GRAVATAR_STATUS_TTL_SECONDS)
     except RequestException:
         return gravatar_url
     cache.set(full_key, gravatar_url)
@@ -74,7 +83,9 @@ def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
 
 def generate_colors(text: str) -> tuple[str, str]:
     """Generate colours based on `text`"""
-    color = int(md5(text.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF  # nosec
+    color = (
+        int(md5(text.lower().encode("utf-8"), usedforsecurity=False).hexdigest(), 16) % 0xFFFFFF
+    )  # nosec
 
     # Get a (somewhat arbitrarily) reduced scope of colors
     # to avoid too dark or light backgrounds
@@ -83,12 +94,13 @@ def generate_colors(text: str) -> tuple[str, str]:
     red = min(max((color >> 16) & 0xFF, 55), 200)
     bg_hex = f"{red:02x}{green:02x}{blue:02x}"
     # Contrasting text color (https://stackoverflow.com/a/3943023)
-    text_hex = "000" if (red * 0.299 + green * 0.587 + blue * 0.114) > 186 else "fff"
+    text_hex = (
+        "000" if (red * 0.299 + green * 0.587 + blue * 0.114) > 186 else "fff"  # noqa: PLR2004
+    )
     return bg_hex, text_hex
 
 
 @funccache
-# pylint: disable=too-many-arguments,too-many-locals
 def generate_avatar_from_name(
     name: str,
     length: int = 2,
@@ -104,7 +116,7 @@ def generate_avatar_from_name(
     """
     name_parts = name.split()
     # Only abbreviate first and last name
-    if len(name_parts) > 2:
+    if len(name_parts) > 2:  # noqa: PLR2004
         name_parts = [name_parts[0], name_parts[-1]]
 
     if len(name_parts) == 1:
@@ -152,15 +164,23 @@ def generate_avatar_from_name(
     return etree.tostring(root_element).decode()
 
 
-def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_generated(user: "User", mode: str) -> str | None:
     """Wrapper that converts generated avatar to base64 svg"""
-    svg = generate_avatar_from_name(user.name if user.name.strip() != "" else "a k")
+    # By default generate based off of user's display name
+    name = user.name.strip()
+    if name == "":
+        # Fallback to username
+        name = user.username.strip()
+    # If we still don't have anything, fallback to `a k`
+    if name == "":
+        name = "a k"
+    svg = generate_avatar_from_name(name)
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
-def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_url(user: "User", mode: str) -> str | None:
     """Format url"""
-    mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    mail_hash = md5(user.email.lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec
     return mode % {
         "username": user.username,
         "mail_hash": mail_hash,
@@ -168,14 +188,19 @@ def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
     }
 
 
-def get_avatar(user: "User") -> str:
+def get_avatar(user: "User", request: HttpRequest | None = None) -> str:
     """Get avatar with configured mode"""
     mode_map = {
         "none": avatar_mode_none,
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    modes: str = CONFIG.y("avatars", "none")
+    tenant = None
+    if request:
+        tenant = request.tenant
+    else:
+        tenant = get_current_tenant()
+    modes: str = tenant.avatars
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

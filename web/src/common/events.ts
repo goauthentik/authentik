@@ -5,15 +5,13 @@ export interface EventUser {
     email?: string;
     username: string;
     on_behalf_of?: EventUser;
+    is_anonymous?: boolean;
 }
 
-export interface EventContext {
-    [key: string]: EventContext | EventModel | string | number | string[];
-}
-
-export interface EventWithContext extends Event {
-    user: EventUser;
-    context: EventContext;
+export interface EventGeo {
+    city?: string;
+    country?: string;
+    continent?: string;
 }
 
 export interface EventModel {
@@ -26,4 +24,17 @@ export interface EventModel {
 export interface EventRequest {
     path: string;
     method: string;
+}
+
+export type EventContextProperty = EventModel | EventGeo | string | number | string[] | undefined;
+
+// TODO: Events should have more specific types.
+export interface EventContext {
+    [key: string]: EventContext | EventContextProperty;
+    geo?: EventGeo;
+}
+
+export interface EventWithContext extends Event {
+    user: EventUser;
+    context: EventContext;
 }

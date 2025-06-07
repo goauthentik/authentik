@@ -1,4 +1,8 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { globalAK } from "@goauthentik/common/global";
+import { deviceTypeName } from "@goauthentik/common/labels";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -6,31 +10,17 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
-export function stageToAuthenticatorName(stage: UserSetting): string {
-    if (stage.title) {
-        return stage.title;
-    }
-    return `Invalid stage component ${stage.component}`;
-}
-
-export function deviceTypeName(device: Device): string {
-    switch (device.type) {
-        case "otp_static.StaticDevice":
-            return msg("Static tokens");
-        case "otp_totp.TOTPDevice":
-            return msg("TOTP Device");
-        default:
-            return device.verboseName;
-    }
-}
+export const stageToAuthenticatorName = (stage: UserSetting) =>
+    stage.title ?? `Invalid stage component ${stage.component}`;
 
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
@@ -38,6 +28,7 @@ export class MFADevicesPage extends Table<Device> {
     userSettings?: UserSetting[];
 
     checkbox = true;
+    clearOnRefresh = true;
 
     async apiEndpoint(): Promise<PaginatedResponse<Device>> {
         const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
@@ -48,13 +39,22 @@ export class MFADevicesPage extends Table<Device> {
                 totalPages: 1,
                 startIndex: 1,
                 endIndex: devices.length,
+                next: 0,
+                previous: 0,
             },
             results: devices,
         };
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("Type")), new TableColumn("")];
+        // prettier-ignore
+        return [
+            msg("Name"),
+            msg("Type"),
+            msg("Created at"),
+            msg("Last used at"),
+            ""
+        ].map((th) => new TableColumn(th, ""));
     }
 
     renderToolbar(): TemplateResult {
@@ -74,7 +74,7 @@ export class MFADevicesPage extends Table<Device> {
                         return html`<li>
                             <a
                                 href="${ifDefined(stage.configureUrl)}${AndNext(
-                                    `/if/user/#/settings;${JSON.stringify({
+                                    `${globalAK().api.relBase}if/user/#/settings;${JSON.stringify({
                                         page: "page-mfa",
                                     })}`,
                                 )}"
@@ -90,29 +90,25 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
+        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const id = { id: parseInt(device.pk, 10) };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsDuoDestroy(id);
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsEmailDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsSmsDestroy({
-                    id: device.pk,
-                });
-            case "otp_totp.TOTPDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpDestroy({
-                    id: device.pk,
-                });
-            case "otp_static.StaticDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsSmsDestroy(id);
+            case "authentik_stages_authenticator_totp.TOTPDevice":
+                return api.authenticatorsTotpDestroy(id);
+            case "authentik_stages_authenticator_static.StaticDevice":
+                return api.authenticatorsStaticDestroy(id);
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsWebauthnDestroy(id);
             default:
-                break;
+                throw new SentryIgnoredError(
+                    msg(str`Device type ${device.verboseName} cannot be deleted`),
+                );
         }
     }
 
@@ -134,7 +130,16 @@ export class MFADevicesPage extends Table<Device> {
     row(item: Device): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${deviceTypeName(item)}`,
+            html`${deviceTypeName(item)}
+            ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
+            html`${item.created.getTime() > 0
+                ? html`<div>${formatElapsedTime(item.created)}</div>
+                      <small>${item.created.toLocaleString()}</small>`
+                : html`-`}`,
+            html`${item.lastUsed
+                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
+                      <small>${item.lastUsed.toLocaleString()}</small>`
+                : html`-`}`,
             html`
                 <ak-forms-modal>
                     <span slot="submit">${msg("Update")}</span>
@@ -142,10 +147,18 @@ export class MFADevicesPage extends Table<Device> {
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
             `,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-mfa": MFADevicesPage;
     }
 }

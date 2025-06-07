@@ -2,15 +2,21 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+import { DataProvider, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
+import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { map } from "lit/directives/map.js";
 
 import {
     Outpost,
@@ -18,12 +24,69 @@ import {
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
-    PaginatedLDAPProviderList,
-    PaginatedProxyProviderList,
-    PaginatedRadiusProviderList,
     ProvidersApi,
     ServiceConnection,
 } from "@goauthentik/api";
+
+interface ProviderBase {
+    pk: number;
+    name: string;
+    assignedBackchannelApplicationName?: string;
+    assignedApplicationName?: string;
+}
+
+const api = () => new ProvidersApi(DEFAULT_CONFIG);
+const providerListArgs = (page: number, search = "") => ({
+    ordering: "name",
+    applicationIsnull: false,
+    pageSize: 20,
+    search: search.trim(),
+    page,
+});
+
+const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
+    const label =
+        item.assignedBackchannelApplicationName || item.assignedApplicationName || item.name;
+
+    return [
+        `${item.pk}`,
+        html`<div class="selection-main">${label}</div>
+            <div class="selection-desc">${item.name}</div>`,
+        label,
+    ];
+};
+
+const provisionMaker = (results: PaginatedResponse<ProviderBase>) => ({
+    pagination: results.pagination,
+    options: results.results.map(dualSelectPairMaker),
+});
+
+const proxyListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersProxyList(providerListArgs(page, search)));
+
+const ldapListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersLdapList(providerListArgs(page, search)));
+
+const radiusListFetch = async (page: number, search = "") =>
+    provisionMaker(await api().providersRadiusList(providerListArgs(page, search)));
+
+const racListProvider = async (page: number, search = "") =>
+    provisionMaker(await api().providersRacList(providerListArgs(page, search)));
+
+function providerProvider(type: OutpostTypeEnum): DataProvider {
+    switch (type) {
+        case OutpostTypeEnum.Proxy:
+            return proxyListFetch;
+        case OutpostTypeEnum.Ldap:
+            return ldapListFetch;
+        case OutpostTypeEnum.Radius:
+            return radiusListFetch;
+        case OutpostTypeEnum.Rac:
+            return racListProvider;
+        default:
+            throw new Error(`Unrecognized OutputType: ${type}`);
+    }
+}
 
 @customElement("ak-outpost-form")
 export class OutpostForm extends ModelForm<Outpost, string> {
@@ -34,10 +97,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?:
-        | PaginatedProxyProviderList
-        | PaginatedLDAPProviderList
-        | PaginatedRadiusProviderList;
+    providers: DataProvider = providerProvider(this.type);
 
     defaultConfig?: OutpostDefaultConfig;
 
@@ -46,6 +106,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(o.type);
         return o;
     }
 
@@ -53,36 +114,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         this.defaultConfig = await new OutpostsApi(
             DEFAULT_CONFIG,
         ).outpostsInstancesDefaultSettingsRetrieve();
-        switch (this.type) {
-            case OutpostTypeEnum.Proxy:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersProxyList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.Ldap:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersLdapList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.Radius:
-                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersRadiusList({
-                    ordering: "name",
-                    applicationIsnull: false,
-                });
-                break;
-            case OutpostTypeEnum.UnknownDefaultOpenApi:
-                this.providers = undefined;
-        }
+        this.providers = providerProvider(this.type);
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated outpost.");
-        } else {
-            return msg("Successfully created outpost.");
-        }
+        return this.instance
+            ? msg("Successfully updated outpost.")
+            : msg("Successfully created outpost.");
     }
 
     async send(data: Outpost): Promise<Outpost> {
@@ -91,16 +129,21 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
-                outpostRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+            outpostRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        const typeOptions = [
+            [OutpostTypeEnum.Proxy, msg("Proxy")],
+            [OutpostTypeEnum.Ldap, msg("LDAP")],
+            [OutpostTypeEnum.Radius, msg("Radius")],
+            [OutpostTypeEnum.Rac, msg("RAC")],
+        ];
+
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -108,7 +151,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${(ev: Event) => {
@@ -117,24 +160,16 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         this.load();
                     }}
                 >
-                    <option
-                        value=${OutpostTypeEnum.Proxy}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Proxy}
-                    >
-                        ${msg("Proxy")}
-                    </option>
-                    <option
-                        value=${OutpostTypeEnum.Ldap}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Ldap}
-                    >
-                        ${msg("LDAP")}
-                    </option>
-                    <option
-                        value=${OutpostTypeEnum.Radius}
-                        ?selected=${this.instance?.type === OutpostTypeEnum.Radius}
-                    >
-                        ${msg("Radius")}
-                    </option>
+                    ${map(
+                        typeOptions,
+                        ([instanceType, label]) =>
+                            html` <option
+                                value=${instanceType}
+                                ?selected=${this.instance?.type === instanceType}
+                            >
+                                ${label}
+                            </option>`,
+                    )}
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Integration")} name="serviceConnection">
@@ -167,7 +202,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         }
                         return selected;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
@@ -176,9 +211,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    See
-                    <a target="_blank" href="${docLink("/docs/outposts?utm_source=authentik")}"
-                        >documentation</a
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="${docLink("/docs/add-secure-apps/outposts?utm_source=authentik")}"
+                        >${msg("See documentation")}</a
                     >.
                 </p>
             </ak-form-element-horizontal>
@@ -187,46 +224,45 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 ?required=${!this.embedded}
                 name="providers"
             >
-                <select class="pf-c-form-control" multiple>
-                    ${this.providers?.results.map((provider) => {
-                        const selected = Array.from(this.instance?.providers || []).some((sp) => {
-                            return sp == provider.pk;
-                        });
-                        let appName = provider.assignedApplicationName;
-                        if (provider.assignedBackchannelApplicationName) {
-                            appName = provider.assignedBackchannelApplicationName;
-                        }
-                        return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>
-                            ${appName} (${provider.name})
-                        </option>`;
-                    })}
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("You can only select providers that match the type of the outpost.")}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Hold control/command to select multiple items.")}
-                </p>
+                <ak-dual-select-provider
+                    .provider=${this.providers}
+                    .selected=${(this.instance?.providersObj ?? []).map(dualSelectPairMaker)}
+                    available-label="${msg("Available Applications")}"
+                    selected-label="${msg("Selected Applications")}"
+                ></ak-dual-select-provider>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Configuration")} name="config">
-                <ak-codemirror
-                    mode="yaml"
-                    value="${YAML.stringify(
-                        this.instance ? this.instance.config : this.defaultConfig?.config,
-                    )}"
-                ></ak-codemirror>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Set custom attributes using YAML or JSON.")}
-                </p>
-                <p class="pf-c-form__helper-text">
-                    ${msg("See more here:")}&nbsp;
-                    <a
-                        target="_blank"
-                        href="${docLink("/docs/outposts?utm_source=authentik#configuration")}"
-                        >${msg("Documentation")}</a
-                    >
-                </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            <ak-form-group aria-label=${msg("Advanced settings")}>
+                <span slot="header"> ${msg("Advanced settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Configuration")} name="config">
+                        <ak-codemirror
+                            mode=${CodeMirrorMode.YAML}
+                            value="${YAML.stringify(
+                                this.instance ? this.instance.config : this.defaultConfig?.config,
+                            )}"
+                        ></ak-codemirror>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Set custom attributes using YAML or JSON.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("See more here:")}&nbsp;
+                            <a
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                href="${docLink(
+                                    "/docs/add-secure-apps/outposts?utm_source=authentik#configuration",
+                                )}"
+                                >${msg("Documentation")}</a
+                            >
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-form": OutpostForm;
     }
 }

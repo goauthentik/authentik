@@ -1,4 +1,5 @@
 """invitation stage models"""
+
 from uuid import uuid4
 
 from django.db import models
@@ -31,7 +32,7 @@ class InvitationStage(Stage):
         return InvitationStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.invitation.stage import InvitationStageView
 
         return InvitationStageView
@@ -73,13 +74,14 @@ class Invitation(SerializerModel, ExpiringModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.stages.consent.api import UserConsentSerializer
+        from authentik.stages.invitation.api import InvitationSerializer
 
-        return UserConsentSerializer
+        return InvitationSerializer
 
     def __str__(self):
-        return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"
+        return f"Invitation {str(self.invite_uuid)} created by {self.created_by_id}"
 
     class Meta:
         verbose_name = _("Invitation")
         verbose_name_plural = _("Invitations")
+        indexes = ExpiringModel.Meta.indexes

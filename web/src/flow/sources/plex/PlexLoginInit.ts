@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
@@ -10,6 +10,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -19,7 +20,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     PlexAuthenticationChallenge,
     PlexAuthenticationChallengeResponseRequest,
-    ResponseError,
 } from "@goauthentik/api";
 import { SourcesApi } from "@goauthentik/api";
 
@@ -32,7 +32,7 @@ export class PlexLoginInit extends BaseStage<
     authUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, PFDivider];
     }
 
     async firstUpdated(): Promise<void> {
@@ -48,19 +48,17 @@ export class PlexLoginInit extends BaseStage<
                     },
                     slug: this.challenge?.slug || "",
                 })
-                .then((r) => {
-                    window.location.assign(r.to);
+                .then((redirectChallenge) => {
+                    window.location.assign(redirectChallenge.to);
                 })
-                .catch((r: ResponseError) => {
-                    r.response.json().then((body: { detail: string }) => {
-                        showMessage({
-                            level: MessageLevel.error,
-                            message: body.detail,
+                .catch(async (error: unknown) => {
+                    return parseAPIResponseError(error)
+                        .then(showAPIErrorMessage)
+                        .then(() => {
+                            setTimeout(() => {
+                                window.location.assign("/");
+                            }, 5000);
                         });
-                        setTimeout(() => {
-                            window.location.assign("/");
-                        }, 5000);
-                    });
                 });
         });
     }
@@ -71,12 +69,9 @@ export class PlexLoginInit extends BaseStage<
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
-                    <ak-empty-state
-                        ?loading="${true}"
-                        header=${msg("Waiting for authentication...")}
-                    >
+                    <ak-empty-state loading header=${msg("Waiting for authentication...")}>
                     </ak-empty-state>
-                    <hr />
+                    <hr class="pf-c-divider" />
                     <p>${msg("If no Plex popup opens, click the button below.")}</p>
                     <button
                         class="pf-c-button pf-m-block pf-m-primary"
@@ -92,5 +87,11 @@ export class PlexLoginInit extends BaseStage<
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-source-plex": PlexLoginInit;
     }
 }

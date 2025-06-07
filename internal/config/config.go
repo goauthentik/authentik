@@ -1,67 +1,104 @@
 package config
 
 import (
+	"context"
+	_ "embed"
 	"errors"
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
-	env "github.com/Netflix/go-env"
+	env "github.com/sethvargo/go-envconfig"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
+
+	"goauthentik.io/authentik/lib"
 )
 
 var cfg *Config
 
+const defaultConfigPath = "./authentik/lib/default.yml"
+
+func getConfigPaths() []string {
+	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
+	globConfigPaths, _ := filepath.Glob("/etc/authentik/config.d/*.yml")
+	configPaths = append(configPaths, globConfigPaths...)
+
+	environment := "local"
+	if v, ok := os.LookupEnv("AUTHENTIK_ENV"); ok {
+		environment = v
+	}
+
+	computedConfigPaths := []string{}
+
+	for _, path := range configPaths {
+		path, err := filepath.Abs(path)
+		if err != nil {
+			continue
+		}
+		if stat, err := os.Stat(path); err == nil {
+			if !stat.IsDir() {
+				computedConfigPaths = append(computedConfigPaths, path)
+			} else {
+				envPaths := []string{
+					filepath.Join(path, environment+".yml"),
+					filepath.Join(path, environment+".env.yml"),
+				}
+				for _, envPath := range envPaths {
+					if stat, err = os.Stat(envPath); err == nil && !stat.IsDir() {
+						computedConfigPaths = append(computedConfigPaths, envPath)
+					}
+				}
+			}
+		}
+	}
+
+	return computedConfigPaths
+}
+
 func Get() *Config {
 	if cfg == nil {
-		c := defaultConfig()
-		c.Setup("./authentik/lib/default.yml", "/etc/authentik/config.yml", "./local.env.yml")
+		c := &Config{}
+		c.Setup(getConfigPaths()...)
 		cfg = c
 	}
 	return cfg
 }
 
-func defaultConfig() *Config {
-	return &Config{
-		Debug: false,
-		Listen: ListenConfig{
-			HTTP:    "0.0.0.0:9000",
-			HTTPS:   "0.0.0.0:9443",
-			LDAP:    "0.0.0.0:3389",
-			LDAPS:   "0.0.0.0:6636",
-			Radius:  "0.0.0.0:1812",
-			Metrics: "0.0.0.0:9300",
-			Debug:   "0.0.0.0:9900",
-		},
-		Paths: PathsConfig{
-			Media: "./media",
-		},
-		LogLevel: "info",
-		ErrorReporting: ErrorReportingConfig{
-			Enabled:    false,
-			SampleRate: 1,
-		},
-	}
-}
-
 func (c *Config) Setup(paths ...string) {
+	// initially try to load the default config which is compiled in
+	err := c.LoadConfig(lib.DefaultConfig())
+	// this should never fail
+	if err != nil {
+		panic(fmt.Errorf("failed to load inbuilt config: %v", err))
+	}
+	log.WithField("path", "inbuilt-default").Debug("Loaded config")
 	for _, path := range paths {
-		err := c.LoadConfig(path)
+		err := c.LoadConfigFromFile(path)
 		if err != nil {
 			log.WithError(err).Info("failed to load config, skipping")
 		}
 	}
-	err := c.fromEnv()
+	err = c.fromEnv()
 	if err != nil {
 		log.WithError(err).Info("failed to load env vars")
 	}
 	c.configureLogger()
 }
 
-func (c *Config) LoadConfig(path string) error {
+func (c *Config) LoadConfig(raw []byte) error {
+	err := yaml.Unmarshal(raw, c)
+	if err != nil {
+		return fmt.Errorf("failed to parse YAML: %w", err)
+	}
+	c.walkScheme(c)
+	return nil
+}
+
+func (c *Config) LoadConfigFromFile(path string) error {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -69,17 +106,17 @@ func (c *Config) LoadConfig(path string) error {
 		}
 		return fmt.Errorf("failed to load config file: %w", err)
 	}
-	err = yaml.Unmarshal(raw, c)
+	err = c.LoadConfig(raw)
 	if err != nil {
-		return fmt.Errorf("failed to parse YAML: %w", err)
+		return err
 	}
-	c.walkScheme(c)
 	log.WithField("path", path).Debug("Loaded config")
 	return nil
 }
 
 func (c *Config) fromEnv() error {
-	_, err := env.UnmarshalFromEnviron(c)
+	ctx := context.Background()
+	err := env.Process(ctx, c)
 	if err != nil {
 		return fmt.Errorf("failed to load environment variables: %w", err)
 	}
@@ -125,13 +162,14 @@ func (c *Config) parseScheme(rawVal string) string {
 	if err != nil {
 		return rawVal
 	}
-	if u.Scheme == "env" {
+	switch u.Scheme {
+	case "env":
 		e, ok := os.LookupEnv(u.Host)
 		if ok {
 			return e
 		}
 		return u.RawQuery
-	} else if u.Scheme == "file" {
+	case "file":
 		d, err := os.ReadFile(u.Path)
 		if err != nil {
 			return u.RawQuery

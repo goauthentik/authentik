@@ -1,4 +1,5 @@
 """Docker SSH helper"""
+
 import os
 from pathlib import Path
 from tempfile import gettempdir
@@ -80,7 +81,7 @@ class DockerInlineSSH:
         """Cleanup when we're done"""
         try:
             os.unlink(self.key_path)
-            with open(self.config_path, "r", encoding="utf-8") as ssh_config:
+            with open(self.config_path, encoding="utf-8") as ssh_config:
                 start = 0
                 end = 0
                 lines = ssh_config.readlines()

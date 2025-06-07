@@ -10,7 +10,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import {
     CoreApi,
-    CoreUsersRecoveryEmailRetrieveRequest,
+    CoreUsersRecoveryEmailCreateRequest,
     Stage,
     StagesAllListRequest,
     StagesApi,
@@ -18,7 +18,7 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-user-reset-email-form")
-export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveRequest> {
+export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailCreateRequest> {
     @property({ attribute: false })
     user!: User;
 
@@ -26,41 +26,45 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
         return msg("Successfully sent email.");
     }
 
-    async send(data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> {
+    async send(data: CoreUsersRecoveryEmailCreateRequest): Promise<void> {
         data.id = this.user.pk;
-        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailRetrieve(data);
+        return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailCreate(data);
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
-                label=${msg("Email stage")}
-                ?required=${true}
-                name="emailStage"
+        return html`<ak-form-element-horizontal
+            label=${msg("Email stage")}
+            required
+            name="emailStage"
+        >
+            <ak-search-select
+                .fetchObjects=${async (query?: string): Promise<Stage[]> => {
+                    const args: StagesAllListRequest = {
+                        ordering: "name",
+                    };
+                    if (query !== undefined) {
+                        args.search = query;
+                    }
+                    const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
+                    return stages.results;
+                }}
+                .groupBy=${(items: Stage[]) => {
+                    return groupBy(items, (stage) => stage.verboseNamePlural);
+                }}
+                .renderElement=${(stage: Stage): string => {
+                    return stage.name;
+                }}
+                .value=${(stage: Stage | undefined): string | undefined => {
+                    return stage?.pk;
+                }}
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Stage[]> => {
-                        const args: StagesAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const stages = await new StagesApi(DEFAULT_CONFIG).stagesEmailList(args);
-                        return stages.results;
-                    }}
-                    .groupBy=${(items: Stage[]) => {
-                        return groupBy(items, (stage) => stage.verboseNamePlural);
-                    }}
-                    .renderElement=${(stage: Stage): string => {
-                        return stage.name;
-                    }}
-                    .value=${(stage: Stage | undefined): string | undefined => {
-                        return stage?.pk;
-                    }}
-                >
-                </ak-search-select>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-search-select>
+        </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-reset-email-form": UserResetEmailForm;
     }
 }

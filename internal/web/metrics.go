@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 
@@ -13,16 +14,15 @@ import (
 	"goauthentik.io/internal/utils/sentry"
 )
 
-var (
-	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
-		Name: "authentik_main_requests",
-		Help: "The total number of configured providers",
-	}, []string{"dest"})
-)
+var Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
+	Name: "authentik_main_request_duration_seconds",
+	Help: "API request latencies in seconds",
+}, []string{"dest"})
 
-func RunMetricsServer() {
-	m := mux.NewRouter()
+func (ws *WebServer) runMetricsServer() {
 	l := log.WithField("logger", "authentik.router.metrics")
+
+	m := mux.NewRouter()
 	m.Use(sentry.SentryNoSampleMiddleware)
 	m.Path("/metrics").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		promhttp.InstrumentMetricHandler(
@@ -32,13 +32,13 @@ func RunMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", "http://localhost:8000/-/metrics/", nil)
+		re, err := http.NewRequest("GET", fmt.Sprintf("%s%s-/metrics/", ws.upstreamURL.String(), config.Get().Web.Path), nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return
 		}
-		re.SetBasicAuth("monitor", config.Get().SecretKey)
-		res, err := http.DefaultClient.Do(re)
+		re.Header.Set("Authorization", fmt.Sprintf("Bearer %s", ws.metricsKey))
+		res, err := ws.upstreamHttpClient().Do(re)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return

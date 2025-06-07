@@ -1,8 +1,10 @@
 package ak
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
+	"maps"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -15,15 +17,28 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
+func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, query url.Values) *url.URL {
+	wsUrl := &url.URL{}
+	wsUrl.Scheme = strings.ReplaceAll(akURL.Scheme, "http", "ws")
+	wsUrl.Host = akURL.Host
+	_p, _ := url.JoinPath(akURL.Path, "ws/outpost/", outpostUUID, "/")
+	wsUrl.Path = _p
+	v := url.Values{}
+	maps.Insert(v, maps.All(akURL.Query()))
+	maps.Insert(v, maps.All(query))
+	wsUrl.RawQuery = v.Encode()
+	return wsUrl
+}
+
 func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
-	pathTemplate := "%s://%s/ws/outpost/%s/?%s"
-	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
+	query := akURL.Query()
+	query.Set("instance_uuid", ac.instanceUUID.String())
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
 
 	header := http.Header{
 		"Authorization": []string{authHeader},
-		"User-Agent":    []string{constants.OutpostUserAgent()},
+		"User-Agent":    []string{constants.UserAgentOutpost()},
 	}
 
 	dialer := websocket.Dialer{
@@ -34,7 +49,9 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		},
 	}
 
-	ws, _, err := dialer.Dial(fmt.Sprintf(pathTemplate, scheme, akURL.Host, outpostUUID, akURL.Query().Encode()), header)
+	wsu := ac.getWebsocketURL(akURL, outpostUUID, query).String()
+	ac.logger.WithField("url", wsu).Debug("connecting to websocket")
+	ws, _, err := dialer.Dial(wsu, header)
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to connect websocket")
 		return err
@@ -44,7 +61,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	// Send hello message with our version
 	msg := websocketMessage{
 		Instruction: WebsocketInstructionHello,
-		Args:        ac.getWebsocketArgs(),
+		Args:        ac.getWebsocketPingArgs(),
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
@@ -52,7 +69,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		return err
 	}
 	ac.lastWsReconnect = time.Now()
-	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Debug("Successfully connected websocket")
+	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Info("Successfully connected websocket")
 	return nil
 }
 
@@ -80,6 +97,7 @@ func (ac *APIController) reconnectWS() {
 	u := url.URL{
 		Host:   ac.Client.GetConfig().Host,
 		Scheme: ac.Client.GetConfig().Scheme,
+		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
 	}
 	attempt := 1
 	for {
@@ -130,7 +148,8 @@ func (ac *APIController) startWSHandler() {
 			"outpost_type": ac.Server.Type(),
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
-		if wsMsg.Instruction == WebsocketInstructionTriggerUpdate {
+		switch wsMsg.Instruction {
+		case WebsocketInstructionTriggerUpdate:
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
@@ -142,8 +161,12 @@ func (ac *APIController) startWSHandler() {
 					"outpost_type": ac.Server.Type(),
 					"uuid":         ac.instanceUUID.String(),
 					"version":      constants.VERSION,
-					"build":        constants.BUILD("tagged"),
+					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
+			}
+		case WebsocketInstructionProviderSpecific:
+			for _, h := range ac.wsHandlers {
+				h(context.Background(), wsMsg.Args)
 			}
 		}
 	}
@@ -152,23 +175,19 @@ func (ac *APIController) startWSHandler() {
 func (ac *APIController) startWSHealth() {
 	ticker := time.NewTicker(time.Second * 10)
 	for ; true; <-ticker.C {
-		aliveMsg := websocketMessage{
-			Instruction: WebsocketInstructionHello,
-			Args:        ac.getWebsocketArgs(),
-		}
 		if ac.wsConn == nil {
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.wsConn.WriteJSON(aliveMsg)
-		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
+		err := ac.SendWSHello(map[string]interface{}{})
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		} else {
+			ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
@@ -180,7 +199,19 @@ func (ac *APIController) startWSHealth() {
 
 func (ac *APIController) startIntervalUpdater() {
 	logger := ac.logger.WithField("loop", "interval-updater")
-	ticker := time.NewTicker(5 * time.Minute)
+	getInterval := func() time.Duration {
+		// Ensure timer interval is not negative or 0
+		// for 0 we assume migration or unconfigured, so default to 5 minutes
+		if ac.Outpost.RefreshIntervalS <= 0 {
+			return 5 * time.Minute
+		}
+		// Clamp interval to be at least 30 seconds
+		if ac.Outpost.RefreshIntervalS < 30 {
+			return 30 * time.Second
+		}
+		return time.Duration(ac.Outpost.RefreshIntervalS) * time.Second
+	}
+	ticker := time.NewTicker(getInterval())
 	for ; true; <-ticker.C {
 		logger.Debug("Running interval update")
 		err := ac.OnRefresh()
@@ -192,8 +223,26 @@ func (ac *APIController) startIntervalUpdater() {
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 				"version":      constants.VERSION,
-				"build":        constants.BUILD("tagged"),
+				"build":        constants.BUILD(""),
 			}).SetToCurrentTime()
 		}
+		ticker.Reset(getInterval())
 	}
+}
+
+func (a *APIController) AddWSHandler(handler WSHandler) {
+	a.wsHandlers = append(a.wsHandlers, handler)
+}
+
+func (a *APIController) SendWSHello(args map[string]interface{}) error {
+	allArgs := a.getWebsocketPingArgs()
+	for key, value := range args {
+		allArgs[key] = value
+	}
+	aliveMsg := websocketMessage{
+		Instruction: WebsocketInstructionHello,
+		Args:        allArgs,
+	}
+	err := a.wsConn.WriteJSON(aliveMsg)
+	return err
 }

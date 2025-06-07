@@ -1,23 +1,19 @@
 <!--
-👋 Hello there! Welcome.
+👋 Hi there! Welcome.
 
-Please check the [Contributing guidelines](https://goauthentik.io/developer-docs/#how-can-i-contribute).
+Please check the Contributing guidelines: https://docs.goauthentik.io/docs/developer-docs/#how-can-i-contribute
 -->
 
 ## Details
 
--   **Does this resolve an issue?**
-    Resolves #
+<!--
+Explain what this PR changes, what the rationale behind the change is, if any new requirements are introduced or any breaking changes caused by this PR.
 
-## Changes
+Ideally also link an Issue for context that this PR will close using `closes #`
+-->
+REPLACE ME
 
-### New Features
-
--   Adds feature which does x, y, and z.
-
-### Breaking Changes
-
--   Adds breaking change which causes \<issue\>.
+---
 
 ## Checklist
 
@@ -31,7 +27,6 @@ If an API change has been made
 If changes to the frontend have been made
 
 -   [ ] The code has been formatted (`make web`)
--   [ ] The translation files have been updated (`make i18n-extract`)
 
 If applicable
 

@@ -1,4 +1,5 @@
 """Event Matcher models"""
+
 from itertools import chain
 
 from django.apps import apps
@@ -42,23 +43,24 @@ class EventMatcherPolicy(Policy):
 
     action = models.TextField(
         choices=EventAction.choices,
-        blank=True,
+        null=True,
+        default=None,
         help_text=_(
             "Match created events with this action type. "
             "When left empty, all action types will be matched."
         ),
     )
     app = models.TextField(
-        blank=True,
-        default="",
+        null=True,
+        default=None,
         help_text=_(
             "Match events created by selected application. "
             "When left empty, all applications are matched."
         ),
     )
     model = models.TextField(
-        blank=True,
-        default="",
+        null=True,
+        default=None,
         help_text=_(
             "Match events created by selected model. "
             "When left empty, all models are matched. When an app is selected, "
@@ -66,7 +68,8 @@ class EventMatcherPolicy(Policy):
         ),
     )
     client_ip = models.TextField(
-        blank=True,
+        null=True,
+        default=None,
         help_text=_(
             "Matches Event's Client IP (strict matching, "
             "for network matching use an Expression Policy)"
@@ -99,13 +102,13 @@ class EventMatcherPolicy(Policy):
             result = checker(request, event)
             if result is None:
                 continue
-            LOGGER.info(
+            LOGGER.debug(
                 "Event matcher check result",
                 checker=checker.__name__,
                 result=result,
             )
             matches.append(result)
-        passing = any(x.passing for x in matches)
+        passing = all(x.passing for x in matches)
         messages = chain(*[x.messages for x in matches])
         result = PolicyResult(passing, *messages)
         result.source_results = matches
@@ -113,25 +116,25 @@ class EventMatcherPolicy(Policy):
 
     def passes_action(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.action` matches"""
-        if self.action == "":
+        if self.action is None:
             return None
         return PolicyResult(self.action == event.action, "Action matched.")
 
     def passes_client_ip(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.client_ip` matches"""
-        if self.client_ip == "":
+        if self.client_ip is None:
             return None
         return PolicyResult(self.client_ip == event.client_ip, "Client IP matched.")
 
     def passes_app(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.app` matches"""
-        if self.app == "":
+        if self.app is None:
             return None
         return PolicyResult(self.app == event.app, "App matched.")
 
     def passes_model(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.model` is set, and pass if it matches the event's model"""
-        if self.model == "":
+        if self.model is None:
             return None
         event_model_info = event.context.get("model", {})
         event_model = f"{event_model_info.get('app')}.{event_model_info.get('model_name')}"

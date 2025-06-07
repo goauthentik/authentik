@@ -1,3 +1,4 @@
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
@@ -34,10 +35,12 @@ export class OutpostHealthElement extends AKElement {
         }
         let versionString = this.outpostHealth.version;
         if (this.outpostHealth.buildHash) {
-            versionString = `${versionString} (build ${this.outpostHealth.buildHash.substring(
-                0,
-                8,
-            )})`;
+            versionString = msg(
+                str`${versionString} (build ${this.outpostHealth.buildHash.substring(0, 8)})`,
+            );
+        }
+        if (this.outpostHealth.fipsEnabled) {
+            versionString = msg(str`${versionString} (FIPS)`);
         }
         return html`<dl class="pf-c-description-list pf-m-compact">
             <div class="pf-c-description-list__group">
@@ -46,8 +49,10 @@ export class OutpostHealthElement extends AKElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <ak-label color=${PFColor.Green} ?compact=${true}>
-                            ${this.outpostHealth.lastSeen?.toLocaleTimeString()}
+                        <ak-label color=${PFColor.Green} compact>
+                            ${msg(
+                                str`${formatElapsedTime(this.outpostHealth.lastSeen)} (${this.outpostHealth.lastSeen?.toLocaleTimeString()})`,
+                            )}
                         </ak-label>
                     </div>
                 </dd>
@@ -59,12 +64,12 @@ export class OutpostHealthElement extends AKElement {
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
                         ${this.outpostHealth.versionOutdated
-                            ? html`<ak-label color=${PFColor.Red} ?compact=${true}
+                            ? html`<ak-label color=${PFColor.Red} compact
                                   >${msg(
                                       str`${this.outpostHealth.version}, should be ${this.outpostHealth.versionShould}`,
                                   )}
                               </ak-label>`
-                            : html`<ak-label color=${PFColor.Green} ?compact=${true}
+                            : html`<ak-label color=${PFColor.Green} compact
                                   >${versionString}
                               </ak-label>`}
                     </div>
@@ -79,5 +84,11 @@ export class OutpostHealthElement extends AKElement {
                 </dd>
             </div>
         </dl> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-health": OutpostHealthElement;
     }
 }

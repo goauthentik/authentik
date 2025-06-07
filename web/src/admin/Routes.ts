@@ -52,9 +52,9 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/tokens/TokenListPage");
         return html`<ak-token-list></ak-token-list>`;
     }),
-    new Route(new RegExp("^/core/tenants$"), async () => {
-        await import("@goauthentik/admin/tenants/TenantListPage");
-        return html`<ak-tenant-list></ak-tenant-list>`;
+    new Route(new RegExp("^/core/brands"), async () => {
+        await import("@goauthentik/admin/brands/BrandListPage");
+        return html`<ak-brand-list></ak-brand-list>`;
     }),
     new Route(new RegExp("^/policy/policies$"), async () => {
         await import("@goauthentik/admin/policies/PolicyListPage");
@@ -79,6 +79,18 @@ export const ROUTES: Route[] = [
     new Route(new RegExp(`^/identity/users/(?<id>${ID_REGEX})$`), async (args) => {
         await import("@goauthentik/admin/users/UserViewPage");
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
+    }),
+    new Route(new RegExp("^/identity/roles$"), async () => {
+        await import("@goauthentik/admin/roles/RoleListPage");
+        return html`<ak-role-list></ak-role-list>`;
+    }),
+    new Route(new RegExp("^/identity/initial-permissions$"), async () => {
+        await import("@goauthentik/admin/rbac/InitialPermissionsListPage");
+        return html`<ak-initial-permissions-list></ak-initial-permissions-list>`;
+    }),
+    new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
+        await import("@goauthentik/admin/roles/RoleViewPage");
+        return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
     }),
     new Route(new RegExp("^/flow/stages/invitations$"), async () => {
         await import("@goauthentik/admin/stages/invitation/InvitationListPage");
@@ -128,6 +140,10 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;
     }),
+    new Route(new RegExp("^/admin/settings$"), async () => {
+        await import("@goauthentik/admin/admin-settings/AdminSettingsPage");
+        return html`<ak-admin-settings></ak-admin-settings>`;
+    }),
     new Route(new RegExp("^/blueprints/instances$"), async () => {
         await import("@goauthentik/admin/blueprints/BlueprintListPage");
         return html`<ak-blueprint-list></ak-blueprint-list>`;
@@ -135,5 +151,9 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/debug$"), async () => {
         await import("@goauthentik/admin/DebugPage");
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
+    }),
+    new Route(new RegExp("^/enterprise/licenses$"), async () => {
+        await import("@goauthentik/admin/enterprise/EnterpriseLicenseListPage");
+        return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
     }),
 ];

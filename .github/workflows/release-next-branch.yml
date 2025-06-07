@@ -6,14 +6,16 @@ on:
   workflow_dispatch:
 
 permissions:
+  # Needed to be able to push to the next branch
   contents: write
 
 jobs:
   update-next:
+    if: ${{ github.repository != 'goauthentik/authentik-internal' }}
     runs-on: ubuntu-latest
     environment: internal-production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           ref: main
       - run: |

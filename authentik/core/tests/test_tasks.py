@@ -1,4 +1,5 @@
 """Test tasks"""
+
 from time import mktime
 
 from django.utils.timezone import now
@@ -12,7 +13,10 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
-from authentik.core.tasks import clean_expired_models, clean_temporary_users
+from authentik.core.tasks import (
+    clean_expired_models,
+    clean_temporary_users,
+)
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 

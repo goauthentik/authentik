@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -36,11 +35,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     showWebhook = false;
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated transport.");
-        } else {
-            return msg("Successfully created transport.");
-        }
+        return this.instance
+            ? msg("Successfully updated transport.")
+            : msg("Successfully created transport.");
     }
 
     async send(data: NotificationTransport): Promise<NotificationTransport> {
@@ -49,11 +46,10 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 uuid: this.instance.pk || "",
                 notificationTransportRequest: data,
             });
-        } else {
-            return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
-                notificationTransportRequest: data,
-            });
         }
+        return new EventsApi(DEFAULT_CONFIG).eventsTransportsCreate({
+            notificationTransportRequest: data,
+        });
     }
 
     onModeChange(mode: string | undefined): void {
@@ -68,8 +64,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -77,10 +72,10 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} required name="mode">
                 <ak-radio
-                    @change=${(ev: CustomEvent<NotificationTransportModeEnum>) => {
-                        this.onModeChange(ev.detail);
+                    @change=${(ev: CustomEvent<{ value: NotificationTransportModeEnum }>) => {
+                        this.onModeChange(ev.detail.value);
                     }}
                     .options=${[
                         {
@@ -109,7 +104,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 ?hidden=${!this.showWebhook}
                 label=${msg("Webhook URL")}
                 name="webhookUrl"
-                ?required=${true}
+                required
             >
                 <input
                     type="text"
@@ -119,8 +114,8 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${msg("Webhook Mapping")}
-                name="webhookMapping"
+                label=${msg("Webhook Body Mapping")}
+                name="webhookMappingBody"
             >
                 <ak-search-select
                     .fetchObjects=${async (
@@ -144,9 +139,42 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         return item?.pk;
                     }}
                     .selected=${(item: NotificationWebhookMapping): boolean => {
-                        return this.instance?.webhookMapping === item.pk;
+                        return this.instance?.webhookMappingBody === item.pk;
                     }}
-                    ?blankable=${true}
+                    blankable
+                >
+                </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                ?hidden=${!this.showWebhook}
+                label=${msg("Webhook Header Mapping")}
+                name="webhookMappingHeaders"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (
+                        query?: string,
+                    ): Promise<NotificationWebhookMapping[]> => {
+                        const args: PropertymappingsNotificationListRequest = {
+                            ordering: "name",
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const items = await new PropertymappingsApi(
+                            DEFAULT_CONFIG,
+                        ).propertymappingsNotificationList(args);
+                        return items.results;
+                    }}
+                    .renderElement=${(item: NotificationWebhookMapping): string => {
+                        return item.name;
+                    }}
+                    .value=${(item: NotificationWebhookMapping | undefined): string | undefined => {
+                        return item?.pk;
+                    }}
+                    .selected=${(item: NotificationWebhookMapping): boolean => {
+                        return this.instance?.webhookMappingHeaders === item.pk;
+                    }}
+                    blankable
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
@@ -155,7 +183,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.sendOnce, false)}
+                        ?checked=${this.instance?.sendOnce ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -169,7 +197,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                         "Only send notification once, for example when sending a webhook into a chat channel.",
                     )}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-transport-form": TransportForm;
     }
 }

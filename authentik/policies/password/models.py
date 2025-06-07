@@ -1,4 +1,5 @@
 """password policy"""
+
 import re
 from hashlib import sha1
 
@@ -86,9 +87,12 @@ class PasswordPolicy(Policy):
                 return zxcvbn_result
         return PolicyResult(True)
 
-    # pylint: disable=too-many-return-statements
     def passes_static(self, password: str, request: PolicyRequest) -> PolicyResult:
         """Check static rules"""
+        error_message = self.error_message
+        if error_message == "":
+            error_message = _("Invalid password.")
+
         if len(password) < self.length_min:
             LOGGER.debug("password failed", check="static", reason="length")
             return PolicyResult(False, self.error_message)
@@ -131,7 +135,7 @@ class PasswordPolicy(Policy):
         LOGGER.debug("got hibp result", count=final_count, hash=pw_hash[:5])
         if final_count > self.hibp_allowed_count:
             LOGGER.debug("password failed", check="hibp", count=final_count)
-            message = _("Password exists on %(count)d online lists." % {"count": final_count})
+            message = _("Password exists on {count} online lists.".format(count=final_count))
             return PolicyResult(False, message)
         return PolicyResult(True)
 
@@ -143,11 +147,11 @@ class PasswordPolicy(Policy):
             user_inputs.append(request.user.name)
             user_inputs.append(request.user.email)
         if request.http_request:
-            user_inputs.append(request.http_request.tenant.branding_title)
-        # Only calculate result for the first 100 characters, as with over 100 char
+            user_inputs.append(request.http_request.brand.branding_title)
+        # Only calculate result for the first 72 characters, as with over 100 char
         # long passwords we can be reasonably sure that they'll surpass the score anyways
         # See https://github.com/dropbox/zxcvbn#runtime-latency
-        results = zxcvbn(password[:100], user_inputs)
+        results = zxcvbn(password[:72], user_inputs)
         LOGGER.debug("password failed", check="zxcvbn", score=results["score"])
         result = PolicyResult(results["score"] > self.zxcvbn_score_threshold)
         if not result.passing:

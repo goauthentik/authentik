@@ -2,18 +2,19 @@ package config
 
 type Config struct {
 	// Core specific config
-	Paths          PathsConfig          `yaml:"paths"`
-	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
-	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
-	Redis          RedisConfig          `yaml:"redis"`
-	Outposts       OutpostConfig        `yaml:"outposts"`
+	Storage        StorageConfig        `yaml:"storage"`
+	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
+	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
+	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
+	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
 
 	// Config for core and embedded outpost
-	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY"`
+	SecretKey string `yaml:"secret_key" env:"AUTHENTIK_SECRET_KEY, overwrite"`
 
 	// Config for both core and outposts
-	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG"`
-	Listen ListenConfig `yaml:"listen"`
+	Debug  bool         `yaml:"debug" env:"AUTHENTIK_DEBUG, overwrite"`
+	Listen ListenConfig `yaml:"listen" env:", prefix=AUTHENTIK_LISTEN__"`
+	Web    WebConfig    `yaml:"web" env:", prefix=AUTHENTIK_WEB__"`
 
 	// Outpost specific config
 	// These are only relevant for proxy/ldap outposts, and cannot be set via YAML
@@ -25,42 +26,54 @@ type Config struct {
 }
 
 type RedisConfig struct {
-	Host                   string `yaml:"host" env:"AUTHENTIK_REDIS__HOST"`
-	Port                   int    `yaml:"port" env:"AUTHENTIK_REDIS__PORT"`
-	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"`
-	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"`
-	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"`
-	DB                     int    `yaml:"cache_db" env:"AUTHENTIK_REDIS__DB"`
-	CacheTimeout           int    `yaml:"cache_timeout" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT"`
-	CacheTimeoutFlows      int    `yaml:"cache_timeout_flows" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS"`
-	CacheTimeoutPolicies   int    `yaml:"cache_timeout_policies" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES"`
-	CacheTimeoutReputation int    `yaml:"cache_timeout_reputation" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION"`
+	Host      string `yaml:"host" env:"HOST, overwrite"`
+	Port      int    `yaml:"port" env:"PORT, overwrite"`
+	DB        int    `yaml:"db" env:"DB, overwrite"`
+	Username  string `yaml:"username" env:"USERNAME, overwrite"`
+	Password  string `yaml:"password" env:"PASSWORD, overwrite"`
+	TLS       bool   `yaml:"tls" env:"TLS, overwrite"`
+	TLSReqs   string `yaml:"tls_reqs" env:"TLS_REQS, overwrite"`
+	TLSCaCert string `yaml:"tls_ca_certs" env:"TLS_CA_CERT, overwrite"`
 }
 
 type ListenConfig struct {
-	HTTP    string `yaml:"listen_http" env:"AUTHENTIK_LISTEN__HTTP"`
-	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
-	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
-	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
-	Radius  string `yaml:"listen_radius" env:"AUTHENTIK_LISTEN__RADIUS"`
-	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
-	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
+	HTTP              string   `yaml:"listen_http" env:"HTTP, overwrite"`
+	HTTPS             string   `yaml:"listen_https" env:"HTTPS, overwrite"`
+	LDAP              string   `yaml:"listen_ldap" env:"LDAP, overwrite"`
+	LDAPS             string   `yaml:"listen_ldaps" env:"LDAPS, overwrite"`
+	Radius            string   `yaml:"listen_radius" env:"RADIUS, overwrite"`
+	Metrics           string   `yaml:"listen_metrics" env:"METRICS, overwrite"`
+	Debug             string   `yaml:"listen_debug" env:"DEBUG, overwrite"`
+	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"TRUSTED_PROXY_CIDRS, overwrite"`
 }
 
-type PathsConfig struct {
-	Media string `yaml:"media"`
+type StorageConfig struct {
+	Media StorageMediaConfig `yaml:"media"`
+}
+
+type StorageMediaConfig struct {
+	Backend string            `yaml:"backend" env:"AUTHENTIK_STORAGE__MEDIA__BACKEND"`
+	File    StorageFileConfig `yaml:"file"`
+}
+
+type StorageFileConfig struct {
+	Path string `yaml:"path" env:"AUTHENTIK_STORAGE__MEDIA__FILE__PATH"`
 }
 
 type ErrorReportingConfig struct {
-	Enabled     bool    `yaml:"enabled" env:"AUTHENTIK_ERROR_REPORTING__ENABLED"`
-	SentryDSN   string  `yaml:"sentry_dsn" env:"AUTHENTIK_ERROR_REPORTING__SENTRY_DSN"`
-	Environment string  `yaml:"environment" env:"AUTHENTIK_ERROR_REPORTING__ENVIRONMENT"`
-	SendPII     bool    `yaml:"send_pii" env:"AUTHENTIK_ERROR_REPORTING__SEND_PII"`
-	SampleRate  float64 `yaml:"sample_rate" env:"AUTHENTIK_ERROR_REPORTING__SAMPLE_RATE"`
+	Enabled     bool    `yaml:"enabled" env:"ENABLED, overwrite"`
+	SentryDSN   string  `yaml:"sentry_dsn" env:"SENTRY_DSN, overwrite"`
+	Environment string  `yaml:"environment" env:"ENVIRONMENT, overwrite"`
+	SendPII     bool    `yaml:"send_pii" env:"SEND_PII, overwrite"`
+	SampleRate  float64 `yaml:"sample_rate" env:"SAMPLE_RATE, overwrite"`
 }
 
 type OutpostConfig struct {
-	ContainerImageBase     string `yaml:"container_image_base" env:"AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE"`
-	Discover               bool   `yaml:"discover" env:"AUTHENTIK_OUTPOSTS__DISCOVER"`
-	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST"`
+	ContainerImageBase     string `yaml:"container_image_base" env:"CONTAINER_IMAGE_BASE, overwrite"`
+	Discover               bool   `yaml:"discover" env:"DISCOVER, overwrite"`
+	DisableEmbeddedOutpost bool   `yaml:"disable_embedded_outpost" env:"DISABLE_EMBEDDED_OUTPOST, overwrite"`
+}
+
+type WebConfig struct {
+	Path string `yaml:"path" env:"PATH, overwrite"`
 }

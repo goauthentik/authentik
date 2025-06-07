@@ -1,8 +1,8 @@
-import { EVENT_REQUEST_POST } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
+import { EVENT_REQUEST_POST } from "@goauthentik/common/constants.js";
+import { getCookie } from "@goauthentik/common/utils.js";
 
 import {
-    CurrentTenant,
+    CurrentBrand,
     FetchParams,
     Middleware,
     RequestContext,
@@ -12,29 +12,38 @@ import {
 export const CSRFHeaderName = "X-authentik-CSRF";
 
 export interface RequestInfo {
+    time: number;
     method: string;
     path: string;
     status: number;
 }
 
 export class LoggingMiddleware implements Middleware {
-    tenant: CurrentTenant;
-    constructor(tenant: CurrentTenant) {
-        this.tenant = tenant;
+    brand: CurrentBrand;
+    constructor(brand: CurrentBrand) {
+        this.brand = brand;
     }
 
     post(context: ResponseContext): Promise<Response | void> {
-        let msg = `authentik/api[${this.tenant.matchedDomain}]: `;
-        msg += `${context.response.status} ${context.init.method} ${context.url}`;
-        console.debug(msg);
+        let msg = `authentik/api[${this.brand.matchedDomain}]: `;
+        // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
+        msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
+        let style = "";
+        if (context.response.status >= 400) {
+            style = "color: red; font-weight: bold;";
+        }
+        console.debug(msg, style, "");
         return Promise.resolve(context.response);
     }
 }
 
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
-        // @ts-ignore
-        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
+        context.init.headers = {
+            ...context.init.headers,
+            [CSRFHeaderName]: getCookie("authentik_csrf"),
+        };
+
         return Promise.resolve(context);
     }
 }
@@ -42,6 +51,7 @@ export class CSRFMiddleware implements Middleware {
 export class EventMiddleware implements Middleware {
     post?(context: ResponseContext): Promise<Response | void> {
         const request: RequestInfo = {
+            time: new Date().getTime(),
             method: (context.init.method || "GET").toUpperCase(),
             path: context.url,
             status: context.response.status,

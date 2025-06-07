@@ -1,29 +1,47 @@
-import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/wizard/ApplicationWizard";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import MDApplication from "@goauthentik/docs/core/applications.md";
-import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/forms/DeleteBulkForm";
-import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "#admin/applications/ApplicationForm";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#elements/AppIcon";
+import "#elements/ak-mdx/ak-mdx";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import "#elements/forms/DeleteBulkForm";
+import "#elements/forms/ModalForm";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { getURLParam } from "#elements/router/RouteMatch";
+import { PaginatedResponse } from "#elements/table/Table";
+import { TableColumn } from "#elements/table/Table";
+import { TablePage } from "#elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
+
+import "./ApplicationWizardHint.js";
+
+export const applicationListStyle = css`
+    /* Fix alignment issues with images in tables */
+    .pf-c-table tbody > tr > * {
+        vertical-align: middle;
+    }
+    tr td:first-child {
+        width: auto;
+        min-width: 0px;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
+        margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+    }
+`;
 
 @customElement("ak-application-list")
-export class ApplicationListPage extends TablePage<Application> {
+export class ApplicationListPage extends WithBrandConfig(TablePage<Application>) {
     searchEnabled(): boolean {
         return true;
     }
@@ -32,7 +50,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
     pageDescription(): string {
         return msg(
-            "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+            str`External applications that use ${this.brandingTitle} as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`,
         );
     }
     pageIcon(): string {
@@ -40,40 +58,20 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Application>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Application>> {
         return new CoreApi(DEFAULT_CONFIG).coreApplicationsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             superuserFullList: true,
         });
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFAvatar,
-            PFCard,
-            css`
-                /* Fix alignment issues with images in tables */
-                .pf-c-table tbody > tr > * {
-                    vertical-align: middle;
-                }
-                tr td:first-child {
-                    width: auto;
-                    min-width: 0px;
-                    text-align: center;
-                    vertical-align: middle;
-                }
-                .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
-                    margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
-                }
-            `,
-        );
+        return TablePage.styles.concat(PFCard, applicationListStyle);
     }
 
     columns(): TableColumn[] {
@@ -88,19 +86,13 @@ export class ApplicationListPage extends TablePage<Application> {
     }
 
     renderSidebarAfter(): TemplateResult {
-        // Rendering the wizard with .open here, as if we set the attribute in
-        // renderObjectCreate() it'll open two wizards, since that function gets called twice
-        return html`<ak-application-wizard
-                .open=${getURLParam("createWizard", false)}
-                .showButton=${false}
-            ></ak-application-wizard>
-            <div class="pf-c-sidebar__panel pf-m-width-25">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDApplication}></ak-markdown>
-                    </div>
+        return html`<div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__body">
+                    <ak-mdx .url=${MDApplication}></ak-mdx>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -125,24 +117,12 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderIcon(item: Application): TemplateResult {
-        if (item?.metaIcon) {
-            if (item.metaIcon.startsWith("fa://")) {
-                const icon = item.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
-            }
-            return html`<img
-                class="app-icon pf-c-avatar"
-                src="${ifDefined(item.metaIcon)}"
-                alt="${msg("Application Icon")}"
-            />`;
-        }
-        return html`<i class="fas fa-share-square"></i>`;
-    }
-
     row(item: Application): TemplateResult[] {
         return [
-            this.renderIcon(item),
+            html`<ak-app-icon
+                name=${item.name}
+                icon=${ifDefined(item.metaIcon || undefined)}
+            ></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
@@ -160,23 +140,65 @@ export class ApplicationListPage extends TablePage<Application> {
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <i class="fas fa-share-square"></i>
+                          <pf-tooltip position="top" content=${msg("Open")}>
+                              <i class="fas fa-share-square"></i>
+                          </pf-tooltip>
                       </a>`
                     : html``}`,
         ];
     }
 
     renderObjectCreate(): TemplateResult {
-        return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${msg("Create")} </span>
-            <span slot="header"> ${msg("Create Application")} </span>
-            <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
-        </ak-forms-modal>`;
+        return html` <ak-application-wizard .open=${getURLParam("createWizard", false)}>
+                <button
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                    data-ouia-component-id="start-application-wizard"
+                >
+                    ${msg("Create with Provider")}
+                </button>
+            </ak-application-wizard>
+            <ak-forms-modal .open=${getURLParam("createForm", false)}>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Application")} </span>
+                <ak-application-form slot="form"> </ak-application-form>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+            </ak-forms-modal>`;
+    }
+
+    renderToolbar(): TemplateResult {
+        return html` ${super.renderToolbar()}
+            <ak-forms-confirm
+                successMessage=${msg("Successfully cleared application cache")}
+                errorMessage=${msg("Failed to delete application cache")}
+                action=${msg("Clear cache")}
+                .onConfirm=${() => {
+                    return new PoliciesApi(DEFAULT_CONFIG).policiesAllCacheClearCreate();
+                }}
+            >
+                <span slot="header"> ${msg("Clear Application cache")} </span>
+                <p slot="body">
+                    ${msg(
+                        "Are you sure you want to clear the application cache? This will cause all policies to be re-evaluated on their next usage.",
+                    )}
+                </p>
+                <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
+                    ${msg("Clear cache")}
+                </button>
+                <div slot="modal"></div>
+            </ak-forms-confirm>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-list": ApplicationListPage;
     }
 }

@@ -1,13 +1,15 @@
-import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
+import { EventGeo, EventUser } from "#admin/events/utils";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+import "#components/ak-event-info";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -16,26 +18,30 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EventsApi } from "@goauthentik/api";
+import { EventToJSON, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
-    @property()
-    set eventID(value: string) {
-        new EventsApi(DEFAULT_CONFIG)
-            .eventsEventsRetrieve({
-                eventUuid: value,
-            })
-            .then((ev) => {
-                this.event = ev as EventWithContext;
-            });
-    }
+    @property({ type: String })
+    eventID?: string;
 
-    @property({ attribute: false })
+    @state()
     event!: EventWithContext;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFGrid, PFDescriptionList, PFPage, PFContent, PFCard];
+    }
+
+    fetchEvent(eventUuid: string) {
+        new EventsApi(DEFAULT_CONFIG).eventsEventsRetrieve({ eventUuid }).then((ev) => {
+            this.event = ev as EventWithContext;
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("eventID") && this.eventID) {
+            this.fetchEvent(this.eventID);
+        }
     }
 
     render(): TemplateResult {
@@ -62,7 +68,7 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${ActionToLabel(this.event.action)}
+                                            ${actionToLabel(this.event.action)}
                                         </div>
                                     </dd>
                                 </div>
@@ -86,27 +92,7 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.user?.username
-                                                ? html`<div>
-                                                          <a
-                                                              href="#/identity/users/${this.event
-                                                                  .user.pk}"
-                                                              >${this.event.user?.username}</a
-                                                          >
-                                                      </div>
-                                                      ${this.event.user.on_behalf_of
-                                                          ? html`<small>
-                                                                <a
-                                                                    href="#/identity/users/${this
-                                                                        .event.user.on_behalf_of
-                                                                        .pk}"
-                                                                    >${msg(
-                                                                        str`On behalf of ${this.event.user.on_behalf_of.username}`,
-                                                                    )}</a
-                                                                >
-                                                            </small>`
-                                                          : html``}`
-                                                : html`-`}
+                                            ${EventUser(this.event)}
                                         </div>
                                     </dd>
                                 </div>
@@ -118,7 +104,8 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.created?.toLocaleString()}
+                                            <div>${formatElapsedTime(this.event.created)}</div>
+                                            <small>${this.event.created.toLocaleString()}</small>
                                         </div>
                                     </dd>
                                 </div>
@@ -138,12 +125,12 @@ export class EventViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${msg("Tenant")}</span
+                                            >${msg("Brand")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.tenant?.name || msg("-")}
+                                            ${this.event.brand?.name || msg("-")}
                                         </div>
                                     </dd>
                                 </div>
@@ -153,7 +140,19 @@ export class EventViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl">
                         <ak-event-info .event=${this.event}></ak-event-info>
                     </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Raw event info")}</div>
+                        <div class="pf-c-card__body">
+                            <pre>${JSON.stringify(EventToJSON(this.event), null, 4)}</pre>
+                        </div>
+                    </div>
                 </div>
             </section>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-view": EventViewPage;
     }
 }

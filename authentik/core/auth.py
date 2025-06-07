@@ -1,6 +1,6 @@
 """Authenticate with tokens"""
 
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth.backends import ModelBackend
 from django.http.request import HttpRequest
@@ -16,23 +16,33 @@ class InbuiltBackend(ModelBackend):
     """Inbuilt backend"""
 
     def authenticate(
-        self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
-    ) -> Optional[User]:
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
         user = super().authenticate(request, username=username, password=password, **kwargs)
         if not user:
             return None
         self.set_method("password", request)
         return user
 
-    def set_method(self, method: str, request: Optional[HttpRequest], **kwargs):
+    async def aauthenticate(
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
+        user = await super().aauthenticate(request, username=username, password=password, **kwargs)
+        if not user:
+            return None
+        self.set_method("password", request)
+        return user
+
+    def set_method(self, method: str, request: HttpRequest | None, **kwargs):
         """Set method data on current flow, if possbiel"""
         if not request:
             return
         # Since we can't directly pass other variables to signals, and we want to log the method
         # and the token used, we assume we're running in a flow and set a variable in the context
         flow_plan: FlowPlan = request.session.get(SESSION_KEY_PLAN, FlowPlan(""))
-        flow_plan.context[PLAN_CONTEXT_METHOD] = method
-        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(sanitize_dict(kwargs))
+        flow_plan.context.setdefault(PLAN_CONTEXT_METHOD, method)
+        flow_plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
+        flow_plan.context[PLAN_CONTEXT_METHOD_ARGS].update(cleanse_dict(sanitize_dict(kwargs)))
         request.session[SESSION_KEY_PLAN] = flow_plan
 
 
@@ -40,16 +50,17 @@ class TokenBackend(InbuiltBackend):
     """Authenticate with token"""
 
     def authenticate(
-        self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
-    ) -> Optional[User]:
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
         try:
             user = User._default_manager.get_by_natural_key(username)
+
         except User.DoesNotExist:
             # Run the default password hasher once to reduce the timing
             # difference between an existing and a nonexistent user (#20760).
-            User().set_password(password)
+            User().set_password(password, request=request)
             return None
-        # pylint: disable=no-member
+
         tokens = Token.filter_not_expired(
             user=user, key=password, intent=TokenIntents.INTENT_APP_PASSWORD
         )

@@ -1,5 +1,4 @@
 """SMS Setup stage"""
-from typing import Optional
 
 from django.db.models import Q
 from django.http import HttpRequest, HttpResponse
@@ -11,8 +10,6 @@ from rest_framework.fields import BooleanField, CharField, IntegerField
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
-    ErrorDetailSerializer,
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
@@ -24,6 +21,7 @@ from authentik.stages.authenticator_sms.models import (
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
 
 SESSION_KEY_SMS_DEVICE = "authentik/stages/authenticator_sms/sms_device"
+PLAN_CONTEXT_PHONE = "phone"
 
 
 class AuthenticatorSMSChallenge(WithUserInfoChallenge):
@@ -48,6 +46,8 @@ class AuthenticatorSMSChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict) -> dict:
         """Check"""
         if "code" not in attrs:
+            if "phone_number" not in attrs:
+                raise ValidationError("phone_number required")
             self.device.phone_number = attrs["phone_number"]
             self.stage.validate_and_send(attrs["phone_number"])
             return super().validate(attrs)
@@ -73,11 +73,11 @@ class AuthenticatorSMSStageView(ChallengeStageView):
         device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
         stage.send(device.token, device)
 
-    def _has_phone_number(self) -> Optional[str]:
+    def _has_phone_number(self) -> str | None:
         context = self.executor.plan.context
-        if "phone" in context.get(PLAN_CONTEXT_PROMPT, {}):
+        if PLAN_CONTEXT_PHONE in context.get(PLAN_CONTEXT_PROMPT, {}):
             self.logger.debug("got phone number from plan context")
-            return context.get(PLAN_CONTEXT_PROMPT, {}).get("phone")
+            return context.get(PLAN_CONTEXT_PROMPT, {}).get(PLAN_CONTEXT_PHONE)
         if SESSION_KEY_SMS_DEVICE in self.request.session:
             self.logger.debug("got phone number from device in session")
             device: SMSDevice = self.request.session[SESSION_KEY_SMS_DEVICE]
@@ -89,7 +89,6 @@ class AuthenticatorSMSStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AuthenticatorSMSChallenge(
             data={
-                "type": ChallengeTypes.NATIVE.value,
                 "phone_number_required": self._has_phone_number() is None,
             }
         )
@@ -113,10 +112,17 @@ class AuthenticatorSMSStageView(ChallengeStageView):
                 try:
                     self.validate_and_send(phone_number)
                 except ValidationError as exc:
-                    response = AuthenticatorSMSChallengeResponse()
-                    response._errors.setdefault("phone_number", [])
-                    response._errors["phone_number"].append(ErrorDetailSerializer(exc.detail))
-                    return self.challenge_invalid(response)
+                    # We had a phone number given already (at this point only possible from flow
+                    # context), but an error occurred while sending a number (most likely)
+                    # due to a duplicate device, so delete the number we got given, reset the state
+                    # (ish) and retry
+                    device.phone_number = ""
+                    self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).pop(
+                        PLAN_CONTEXT_PHONE, None
+                    )
+                    self.request.session.pop(SESSION_KEY_SMS_DEVICE, None)
+                    self.logger.warning("failed to send SMS message to pre-set number", exc=exc)
+                    return self.get(request, *args, **kwargs)
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:

@@ -1,10 +1,10 @@
 import "@goauthentik/admin/sources/SourceWizard";
+import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import "@goauthentik/admin/sources/plex/PlexSourceForm";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -12,6 +12,7 @@ import "@goauthentik/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -23,7 +24,7 @@ import { Source, SourcesApi } from "@goauthentik/api";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     pageTitle(): string {
-        return msg("Federation & Social login");
+        return msg("Federation and Social login");
     }
     pageDescription(): string | undefined {
         return msg(
@@ -38,17 +39,13 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Source>> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Source>> {
+        return new SourcesApi(DEFAULT_CONFIG).sourcesAllList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -60,10 +57,13 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled =
+            this.selectedElements.length < 1 ||
+            this.selectedElements.some((item) => item.component === "");
+        const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Source(s)")}
-            .objects=${this.selectedElements}
+            .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
                     slug: item.slug,
@@ -90,7 +90,7 @@ export class SourceListPage extends TablePage<Source> {
                 <div>${item.name}</div>
                 ${item.enabled
                     ? html``
-                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Orange} compact>
                           ${msg("Disabled")}</ak-label
                       >`}
             </a>`,
@@ -107,7 +107,9 @@ export class SourceListPage extends TablePage<Source> {
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];
@@ -117,7 +119,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} ?compact=${true}> ${msg("Built-in")}</ak-label>
+                <ak-label color=${PFColor.Grey} compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             html``,
@@ -126,5 +128,11 @@ export class SourceListPage extends TablePage<Source> {
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-source-wizard> </ak-source-wizard> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-source-list": SourceListPage;
     }
 }

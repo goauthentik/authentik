@@ -1,21 +1,26 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { randomId } from "../utils/randomId";
+
 export interface RadioOption<T> {
     label: string;
     description?: TemplateResult;
-    default: boolean;
+    default?: boolean;
     value: T;
+    disabled?: boolean;
 }
 
 @customElement("ak-radio")
-export class Radio<T> extends AKElement {
+export class Radio<T> extends CustomEmitterElement(AKElement) {
     @property({ attribute: false })
     options: RadioOption<T>[] = [];
 
@@ -24,6 +29,8 @@ export class Radio<T> extends AKElement {
 
     @property({ attribute: false })
     value?: T;
+
+    internalId: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -36,44 +43,80 @@ export class Radio<T> extends AKElement {
                         var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
                     );
                 }
+                .pf-c-radio label,
+                .pf-c-radio span {
+                    user-select: none;
+                }
             `,
         ];
     }
 
-    render(): TemplateResult {
+    constructor() {
+        super();
+        this.renderRadio = this.renderRadio.bind(this);
+        this.buildChangeHandler = this.buildChangeHandler.bind(this);
+        this.internalId = this.name || `radio-${randomId(8)}`;
+    }
+
+    // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
+    // not trigger an element update.
+    willUpdate() {
         if (!this.value) {
-            const def = this.options.filter((opt) => opt.default);
-            if (def.length > 0) {
-                this.value = def[0].value;
+            const maybeDefault = this.options.filter((opt) => opt.default);
+            if (maybeDefault.length > 0) {
+                this.value = maybeDefault[0].value;
             }
         }
+    }
+
+    // When a user clicks on `type="radio"`, *two* events happen in rapid succession: the original
+    // radio loses its setting, and the selected radio gains its setting. We want radio buttons to
+    // present a unified event interface, so we prevent the event from triggering if the value is
+    // already set.
+    buildChangeHandler(option: RadioOption<T>) {
+        return (ev: Event) => {
+            // This is a controlled input. Stop the native event from escaping or affecting the
+            // value.  We'll do that ourselves.
+            ev.stopPropagation();
+            if (option.disabled) {
+                return;
+            }
+            this.value = option.value;
+            this.dispatchCustomEvent("change", { value: option.value });
+            this.dispatchCustomEvent("input", { value: option.value });
+        };
+    }
+
+    renderRadio(option: RadioOption<T>, index: number) {
+        const elId = `${this.internalId}-${index}`;
+        const handler = this.buildChangeHandler(option);
+        return html`<div class="pf-c-radio" @click=${handler}>
+            <input
+                class="pf-c-radio__input"
+                type="radio"
+                name="${this.name}"
+                id=${elId}
+                .checked=${option.value === this.value}
+                .disabled=${option.disabled}
+            />
+            <label class="pf-c-radio__label" for=${elId}>${option.label}</label>
+            ${option.description
+                ? html`<span class="pf-c-radio__description">${option.description}</span>`
+                : nothing}
+        </div>`;
+    }
+
+    render() {
         return html`<div class="pf-c-form__group-control pf-m-stack">
-            ${this.options.map((opt) => {
-                const elId = `${this.name}-${opt.value}`;
-                return html`<div class="pf-c-radio">
-                    <input
-                        class="pf-c-radio__input"
-                        type="radio"
-                        name="${this.name}"
-                        id=${elId}
-                        @change=${() => {
-                            this.value = opt.value;
-                            this.dispatchEvent(
-                                new CustomEvent("change", {
-                                    bubbles: true,
-                                    composed: true,
-                                    detail: opt.value,
-                                }),
-                            );
-                        }}
-                        .checked=${opt.value === this.value}
-                    />
-                    <label class="pf-c-radio__label" for=${elId}>${opt.label}</label>
-                    ${opt.description
-                        ? html`<span class="pf-c-radio__description">${opt.description}</span>`
-                        : html``}
-                </div>`;
-            })}
+            ${map(this.options, this.renderRadio)}
         </div>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-radio": Radio<unknown>;
+    }
+}
+
+export default Radio;

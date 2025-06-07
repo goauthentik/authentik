@@ -1,6 +1,6 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -10,19 +10,11 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { DenyStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-deny-form")
-export class DenyStageForm extends ModelForm<DenyStage, string> {
+export class DenyStageForm extends BaseStageForm<DenyStage> {
     loadInstance(pk: string): Promise<DenyStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesDenyRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: DenyStage): Promise<DenyStage> {
@@ -31,21 +23,20 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
                 stageUuid: this.instance.pk || "",
                 denyStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
-                denyStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesDenyCreate({
+            denyStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html`
+            <span>
                 ${msg(
-                    "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.",
+                    "Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.",
                 )}
-            </div>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -53,6 +44,28 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
                     required
                 />
             </ak-form-element-horizontal>
-        </form>`;
+            <ak-form-group expanded>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Deny message")} name="denyMessage">
+                        <input
+                            type="text"
+                            value="${ifDefined(this.instance?.denyMessage || "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Message shown when this stage is run.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+        `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-deny-form": DenyStageForm;
     }
 }

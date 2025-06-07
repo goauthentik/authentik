@@ -1,5 +1,6 @@
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -13,7 +14,11 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { PoliciesApi, Reputation } from "@goauthentik/api";
+import {
+    PoliciesApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    Reputation,
+} from "@goauthentik/api";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
@@ -36,13 +41,11 @@ export class ReputationListPage extends TablePage<Reputation> {
     order = "identifier";
 
     checkbox = true;
+    clearOnRefresh = true;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Reputation>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Reputation>> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
         });
     }
 
@@ -52,6 +55,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             new TableColumn(msg("IP"), "ip"),
             new TableColumn(msg("Score"), "score"),
             new TableColumn(msg("Updated"), "updated"),
+            new TableColumn(msg("Actions")),
         ];
     }
 
@@ -85,7 +89,21 @@ export class ReputationListPage extends TablePage<Reputation> {
                 : html``}
             ${item.ip}`,
             html`${item.score}`,
-            html`${item.updated.toLocaleString()}`,
+            html`<div>${formatElapsedTime(item.updated)}</div>
+                <small>${item.updated.toLocaleString()}</small>`,
+            html`
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesReputationReputationpolicy}
+                    objectPk=${item.pk || ""}
+                >
+                </ak-rbac-object-permission-modal>
+            `,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-reputation-list": ReputationListPage;
     }
 }

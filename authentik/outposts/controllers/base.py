@@ -1,11 +1,11 @@
 """Base Controller"""
+
 from dataclasses import dataclass
-from typing import Optional
 
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
 from authentik import __version__, get_build_hash
+from authentik.events.logs import LogEvent, capture_logs
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import (
@@ -28,7 +28,7 @@ class DeploymentPort:
     port: int
     name: str
     protocol: str
-    inner_port: Optional[int] = None
+    inner_port: int | None = None
 
 
 class BaseClient:
@@ -59,26 +59,25 @@ class BaseController:
         self.logger = get_logger()
         self.deployment_ports = []
 
-    # pylint: disable=invalid-name
     def up(self):
         """Called by scheduled task to reconcile deployment/service/etc"""
         raise NotImplementedError
 
-    def up_with_logs(self) -> list[str]:
+    def up_with_logs(self) -> list[LogEvent]:
         """Call .up() but capture all log output and return it."""
         with capture_logs() as logs:
             self.up()
-        return [x["event"] for x in logs]
+        return logs
 
     def down(self):
         """Handler to delete everything we've created"""
         raise NotImplementedError
 
-    def down_with_logs(self) -> list[str]:
+    def down_with_logs(self) -> list[LogEvent]:
         """Call .down() but capture all log output and return it."""
         with capture_logs() as logs:
             self.down()
-        return [x["event"] for x in logs]
+        return logs
 
     def __enter__(self):
         return self
@@ -97,7 +96,7 @@ class BaseController:
         if self.outpost.config.container_image is not None:
             return self.outpost.config.container_image
 
-        image_name_template: str = CONFIG.y("outposts.container_image_base")
+        image_name_template: str = CONFIG.get("outposts.container_image_base")
         return image_name_template % {
             "type": self.outpost.type,
             "version": __version__,

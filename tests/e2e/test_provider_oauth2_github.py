@@ -1,8 +1,6 @@
 """test OAuth Provider flow"""
-from sys import platform
+
 from time import sleep
-from typing import Any, Optional
-from unittest.case import skipUnless
 
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
@@ -14,11 +12,15 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id, generate_key
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import ClientTypes, OAuth2Provider
+from authentik.providers.oauth2.models import (
+    ClientTypes,
+    OAuth2Provider,
+    RedirectURI,
+    RedirectURIMatchingMode,
+)
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderOAuth2Github(SeleniumTestCase):
     """test OAuth Provider flow"""
 
@@ -26,20 +28,17 @@ class TestProviderOAuth2Github(SeleniumTestCase):
         self.client_id = generate_id()
         self.client_secret = generate_key()
         super().setUp()
-
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
-        """Setup client grafana container which we test OAuth against"""
-        return {
-            "image": "grafana/grafana:7.1.0",
-            "detach": True,
-            "network_mode": "host",
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
+        self.run_container(
+            image="grafana/grafana:7.1.0",
+            ports={
+                "3000": "3000",
+            },
+            healthcheck=Healthcheck(
                 test=["CMD", "wget", "--spider", "http://localhost:3000"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
+                interval=5 * 1_000 * 1_000_000,
+                start_period=1 * 1_000 * 1_000_000,
             ),
-            "environment": {
+            environment={
                 "GF_AUTH_GITHUB_ENABLED": "true",
                 "GF_AUTH_GITHUB_ALLOW_SIGN_UP": "true",
                 "GF_AUTH_GITHUB_CLIENT_ID": self.client_id,
@@ -54,7 +53,7 @@ class TestProviderOAuth2Github(SeleniumTestCase):
                 "GF_AUTH_GITHUB_API_URL": self.url("authentik_providers_oauth2_root:github-user"),
                 "GF_LOG_LEVEL": "debug",
             },
-        }
+        )
 
     @retry()
     @apply_blueprint(
@@ -75,16 +74,18 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-implicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
         )
         Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -130,16 +131,18 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 
@@ -201,16 +204,18 @@ class TestProviderOAuth2Github(SeleniumTestCase):
             slug="default-provider-authorization-explicit-consent"
         )
         provider = OAuth2Provider.objects.create(
-            name="grafana",
+            name=generate_id(),
             client_id=self.client_id,
             client_secret=self.client_secret,
             client_type=ClientTypes.CONFIDENTIAL,
-            redirect_uris="http://localhost:3000/login/github",
+            redirect_uris=[
+                RedirectURI(RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/github")
+            ],
             authorization_flow=authorization_flow,
         )
         app = Application.objects.create(
-            name="Grafana",
-            slug="grafana",
+            name=generate_id(),
+            slug=generate_id(),
             provider=provider,
         )
 

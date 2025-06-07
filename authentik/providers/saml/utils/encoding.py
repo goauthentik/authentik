@@ -1,4 +1,5 @@
 """Wrappers to de/encode and de/inflate strings"""
+
 import base64
 import zlib
 

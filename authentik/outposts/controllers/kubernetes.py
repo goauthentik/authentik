@@ -1,4 +1,5 @@
 """Kubernetes deployment controller"""
+
 from io import StringIO
 
 from kubernetes.client import VersionApi, VersionInfo
@@ -8,10 +9,10 @@ from kubernetes.client.exceptions import OpenApiException
 from kubernetes.config.config_exception import ConfigException
 from kubernetes.config.incluster_config import load_incluster_config
 from kubernetes.config.kube_config import load_kube_config_from_dict
-from structlog.testing import capture_logs
 from urllib3.exceptions import HTTPError
 from yaml import dump_all
 
+from authentik.events.logs import LogEvent, capture_logs
 from authentik.outposts.controllers.base import BaseClient, BaseController, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
@@ -60,27 +61,42 @@ class KubernetesController(BaseController):
     client: KubernetesClient
     connection: KubernetesServiceConnection
 
-    def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection) -> None:
+    def __init__(
+        self,
+        outpost: Outpost,
+        connection: KubernetesServiceConnection,
+        client: KubernetesClient | None = None,
+    ) -> None:
         super().__init__(outpost, connection)
-        self.client = KubernetesClient(connection)
+        self.client = client if client else KubernetesClient(connection)
         self.reconcilers = {
-            "secret": SecretReconciler,
-            "deployment": DeploymentReconciler,
-            "service": ServiceReconciler,
-            "prometheus servicemonitor": PrometheusServiceMonitorReconciler,
+            SecretReconciler.reconciler_name(): SecretReconciler,
+            DeploymentReconciler.reconciler_name(): DeploymentReconciler,
+            ServiceReconciler.reconciler_name(): ServiceReconciler,
+            PrometheusServiceMonitorReconciler.reconciler_name(): (
+                PrometheusServiceMonitorReconciler
+            ),
         }
-        self.reconcile_order = ["secret", "deployment", "service", "prometheus servicemonitor"]
+        self.reconcile_order = [
+            SecretReconciler.reconciler_name(),
+            DeploymentReconciler.reconciler_name(),
+            ServiceReconciler.reconciler_name(),
+            PrometheusServiceMonitorReconciler.reconciler_name(),
+        ]
 
     def up(self):
         try:
             for reconcile_key in self.reconcile_order:
-                reconciler = self.reconcilers[reconcile_key](self)
+                reconciler_cls = self.reconcilers.get(reconcile_key)
+                if not reconciler_cls:
+                    continue
+                reconciler = reconciler_cls(self)
                 reconciler.up()
 
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
             raise ControllerException(str(exc)) from exc
 
-    def up_with_logs(self) -> list[str]:
+    def up_with_logs(self) -> list[LogEvent]:
         try:
             all_logs = []
             for reconcile_key in self.reconcile_order:
@@ -88,9 +104,14 @@ class KubernetesController(BaseController):
                     all_logs += [f"{reconcile_key.title()}: Disabled"]
                     continue
                 with capture_logs() as logs:
-                    reconciler = self.reconcilers[reconcile_key](self)
+                    reconciler_cls = self.reconcilers.get(reconcile_key)
+                    if not reconciler_cls:
+                        continue
+                    reconciler = reconciler_cls(self)
                     reconciler.up()
-                all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
+                for log in logs:
+                    log.logger = reconcile_key.title()
+                all_logs.extend(logs)
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
             raise ControllerException(str(exc)) from exc
@@ -98,14 +119,17 @@ class KubernetesController(BaseController):
     def down(self):
         try:
             for reconcile_key in self.reconcile_order:
-                reconciler = self.reconcilers[reconcile_key](self)
+                reconciler_cls = self.reconcilers.get(reconcile_key)
+                if not reconciler_cls:
+                    continue
+                reconciler = reconciler_cls(self)
                 self.logger.debug("Tearing down object", name=reconcile_key)
                 reconciler.down()
 
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
             raise ControllerException(str(exc)) from exc
 
-    def down_with_logs(self) -> list[str]:
+    def down_with_logs(self) -> list[LogEvent]:
         try:
             all_logs = []
             for reconcile_key in self.reconcile_order:
@@ -113,9 +137,14 @@ class KubernetesController(BaseController):
                     all_logs += [f"{reconcile_key.title()}: Disabled"]
                     continue
                 with capture_logs() as logs:
-                    reconciler = self.reconcilers[reconcile_key](self)
+                    reconciler_cls = self.reconcilers.get(reconcile_key)
+                    if not reconciler_cls:
+                        continue
+                    reconciler = reconciler_cls(self)
                     reconciler.down()
-                all_logs += [f"{reconcile_key.title()}: {x['event']}" for x in logs]
+                for log in logs:
+                    log.logger = reconcile_key.title()
+                all_logs.extend(logs)
             return all_logs
         except (OpenApiException, HTTPError, ServiceConnectionInvalid) as exc:
             raise ControllerException(str(exc)) from exc
@@ -123,7 +152,10 @@ class KubernetesController(BaseController):
     def get_static_deployment(self) -> str:
         documents = []
         for reconcile_key in self.reconcile_order:
-            reconciler = self.reconcilers[reconcile_key](self)
+            reconciler_cls = self.reconcilers.get(reconcile_key)
+            if not reconciler_cls:
+                continue
+            reconciler = reconciler_cls(self)
             if reconciler.noop:
                 continue
             documents.append(reconciler.get_reference_object().to_dict())

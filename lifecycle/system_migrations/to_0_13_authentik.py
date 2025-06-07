@@ -92,8 +92,8 @@ ALTER SEQUENCE passbook_stages_prompt_promptstage_validation_policies_id_seq REN
 
 UPDATE django_migrations SET app = replace(app, 'passbook', 'authentik');
 UPDATE django_content_type SET app_label = replace(app_label, 'passbook', 'authentik');
-
-END TRANSACTION;"""
+COMMIT;
+"""
 
 
 class Migration(BaseMigration):
@@ -104,18 +104,19 @@ class Migration(BaseMigration):
         return bool(self.cur.rowcount)
 
     def run(self):
-        self.cur.execute(SQL_STATEMENT)
-        self.con.commit()
-        # We also need to clean the cache to make sure no pickeled objects still exist
-        for db in [
-            CONFIG.y("redis.message_queue_db"),
-            CONFIG.y("redis.cache_db"),
-            CONFIG.y("redis.ws_db"),
-        ]:
-            redis = Redis(
-                host=CONFIG.y("redis.host"),
-                port=6379,
-                db=db,
-                password=CONFIG.y("redis.password"),
-            )
-            redis.flushall()
+        with self.con.transaction():
+            self.cur.execute(SQL_STATEMENT)
+            # We also need to clean the cache to make sure no pickeled objects still exist
+            for db in [
+                CONFIG.get("redis.message_queue_db"),
+                CONFIG.get("redis.cache_db"),
+                CONFIG.get("redis.ws_db"),
+            ]:
+                redis = Redis(
+                    host=CONFIG.get("redis.host"),
+                    port=6379,
+                    db=db,
+                    username=CONFIG.get("redis.username"),
+                    password=CONFIG.get("redis.password"),
+                )
+                redis.flushall()

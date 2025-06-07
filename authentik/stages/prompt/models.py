@@ -1,5 +1,6 @@
 """prompt models"""
-from typing import Any, Optional, Type
+
+from typing import Any, Type  # noqa: UP035
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
@@ -22,8 +23,8 @@ from rest_framework.fields import (
 from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
-from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.expression.evaluator import PropertyMappingEvaluator
+from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
@@ -37,7 +38,7 @@ LOGGER = get_logger()
 class FieldTypes(models.TextChoices):
     """Field types an Prompt can be"""
 
-    # update website/docs/flow/stages/prompt/index.md
+    # update website/docs/add-secure-apps/flows-stages/stages/prompt/index.md
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
@@ -142,7 +143,7 @@ class Prompt(SerializerModel):
     initial_value_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> Type[BaseSerializer]:
+    def serializer(self) -> Type[BaseSerializer]:  # noqa: UP006
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
@@ -152,8 +153,8 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
-    ) -> Optional[tuple[dict[str, Any]]]:
+        dry_run: bool | None = False,
+    ) -> tuple[dict[str, Any]] | None:
         """Get fully interpolated list of choices"""
         if self.type not in CHOICE_FIELDS:
             return None
@@ -169,7 +170,7 @@ class Prompt(SerializerModel):
             try:
                 raw_choices = evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt choices",
                     exc=wrapped,
@@ -177,7 +178,7 @@ class Prompt(SerializerModel):
                 if dry_run:
                     raise wrapped from exc
 
-        if isinstance(raw_choices, (list, tuple, set)):
+        if isinstance(raw_choices, list | tuple | set):
             choices = raw_choices
         else:
             choices = [raw_choices]
@@ -192,7 +193,7 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
+        dry_run: bool | None = False,
     ) -> str:
         """Get fully interpolated placeholder"""
         if self.type in CHOICE_FIELDS:
@@ -207,7 +208,7 @@ class Prompt(SerializerModel):
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt placeholder",
                     exc=wrapped,
@@ -221,7 +222,7 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
+        dry_run: bool | None = False,
     ) -> str:
         """Get fully interpolated initial value"""
 
@@ -236,7 +237,7 @@ class Prompt(SerializerModel):
             try:
                 value = evaluator.evaluate(self.initial_value)
             except Exception as exc:  # pylint:disable=broad-except
-                wrapped = PropertyMappingExpressionException(str(exc))
+                wrapped = PropertyMappingExpressionException(exc, None)
                 LOGGER.warning(
                     "failed to evaluate prompt initial value",
                     exc=wrapped,
@@ -257,50 +258,52 @@ class Prompt(SerializerModel):
 
         return value
 
-    def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
+    def field(self, default: Any | None, choices: list[Any] | None = None) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
             "required": self.required,
         }
-        if self.type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
-            kwargs["trim_whitespace"] = False
-            kwargs["allow_blank"] = not self.required
-        if self.type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
-            field_class = ReadOnlyField
-            # required can't be set for ReadOnlyField
-            kwargs["required"] = False
-        if self.type == FieldTypes.EMAIL:
-            field_class = EmailField
-            kwargs["allow_blank"] = not self.required
-        if self.type == FieldTypes.NUMBER:
-            field_class = IntegerField
-        if self.type == FieldTypes.CHECKBOX:
-            field_class = BooleanField
-            kwargs["required"] = False
+        match self.type:
+            case FieldTypes.TEXT | FieldTypes.TEXT_AREA:
+                kwargs["trim_whitespace"] = False
+                kwargs["allow_blank"] = not self.required
+            case FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY:
+                field_class = ReadOnlyField
+                # required can't be set for ReadOnlyField
+                kwargs["required"] = False
+            case FieldTypes.EMAIL:
+                field_class = EmailField
+                kwargs["allow_blank"] = not self.required
+            case FieldTypes.NUMBER:
+                field_class = IntegerField
+            case FieldTypes.CHECKBOX:
+                field_class = BooleanField
+                kwargs["required"] = False
+            case FieldTypes.DATE:
+                field_class = DateField
+            case FieldTypes.DATE_TIME:
+                field_class = DateTimeField
+            case FieldTypes.FILE:
+                field_class = InlineFileField
+            case FieldTypes.SEPARATOR:
+                kwargs["required"] = False
+                kwargs["label"] = ""
+            case FieldTypes.HIDDEN:
+                field_class = HiddenField
+                kwargs["required"] = False
+                kwargs["default"] = self.placeholder
+            case FieldTypes.STATIC:
+                kwargs["default"] = self.placeholder
+                kwargs["required"] = False
+                kwargs["label"] = ""
+
+            case FieldTypes.AK_LOCALE:
+                kwargs["allow_blank"] = True
+
         if self.type in CHOICE_FIELDS:
             field_class = ChoiceField
             kwargs["choices"] = choices or []
-        if self.type == FieldTypes.DATE:
-            field_class = DateField
-        if self.type == FieldTypes.DATE_TIME:
-            field_class = DateTimeField
-        if self.type == FieldTypes.FILE:
-            field_class = InlineFileField
-        if self.type == FieldTypes.SEPARATOR:
-            kwargs["required"] = False
-            kwargs["label"] = ""
-        if self.type == FieldTypes.HIDDEN:
-            field_class = HiddenField
-            kwargs["required"] = False
-            kwargs["default"] = self.placeholder
-        if self.type == FieldTypes.STATIC:
-            kwargs["default"] = self.placeholder
-            kwargs["required"] = False
-            kwargs["label"] = ""
-
-        if self.type == FieldTypes.AK_LOCALE:
-            kwargs["allow_blank"] = True
 
         if default:
             kwargs["default"] = default
@@ -336,7 +339,7 @@ class PromptStage(Stage):
         return PromptStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.prompt.stage import PromptStageView
 
         return PromptStageView

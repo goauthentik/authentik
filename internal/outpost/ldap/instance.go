@@ -5,7 +5,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/go-openapi/strfmt"
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
@@ -27,21 +26,21 @@ type ProviderInstance struct {
 
 	appSlug                string
 	authenticationFlowSlug string
-	invalidationFlowSlug   string
+	invalidationFlowSlug   *string
 	s                      *LDAPServer
 	log                    *log.Entry
 
-	tlsServerName       *string
-	cert                *tls.Certificate
-	certUUID            string
-	outpostName         string
-	outpostPk           int32
-	searchAllowedGroups []*strfmt.UUID
-	boundUsersMutex     *sync.RWMutex
-	boundUsers          map[string]*flags.UserFlags
+	tlsServerName   *string
+	cert            *tls.Certificate
+	certUUID        string
+	outpostName     string
+	providerPk      int32
+	boundUsersMutex *sync.RWMutex
+	boundUsers      map[string]*flags.UserFlags
 
 	uidStartNumber int32
 	gidStartNumber int32
+	mfaSupport     bool
 }
 
 func (pi *ProviderInstance) GetAPIClient() *api.APIClient {
@@ -66,6 +65,10 @@ func (pi *ProviderInstance) GetBaseUserDN() string {
 
 func (pi *ProviderInstance) GetOutpostName() string {
 	return pi.outpostName
+}
+
+func (pi *ProviderInstance) GetMFASupport() bool {
+	return pi.mfaSupport
 }
 
 func (pi *ProviderInstance) GetFlags(dn string) *flags.UserFlags {
@@ -96,12 +99,12 @@ func (pi *ProviderInstance) GetAuthenticationFlowSlug() string {
 	return pi.authenticationFlowSlug
 }
 
-func (pi *ProviderInstance) GetInvalidationFlowSlug() string {
+func (pi *ProviderInstance) GetInvalidationFlowSlug() *string {
 	return pi.invalidationFlowSlug
 }
 
-func (pi *ProviderInstance) GetSearchAllowedGroups() []*strfmt.UUID {
-	return pi.searchAllowedGroups
+func (pi *ProviderInstance) GetProviderID() int32 {
+	return pi.providerPk
 }
 
 func (pi *ProviderInstance) GetNeededObjects(scope int, baseDN string, filterOC string) (bool, bool) {

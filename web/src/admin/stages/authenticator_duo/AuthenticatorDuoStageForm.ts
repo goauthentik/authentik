@@ -1,9 +1,9 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -21,19 +21,11 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-duo-form")
-export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, string> {
+export class AuthenticatorDuoStageForm extends BaseStageForm<AuthenticatorDuoStage> {
     loadInstance(pk: string): Promise<AuthenticatorDuoStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
@@ -42,24 +34,22 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                 stageUuid: this.instance.pk || "",
                 patchedAuthenticatorDuoStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
-                authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoCreate({
+            authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
                 )}
-            </div>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    value="${first(this.instance?.name, "")}"
+                    value="${this.instance?.name ?? ""}"
                     class="pf-c-form-control"
                     required
                 />
@@ -71,7 +61,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.friendlyName, "")}"
+                    value="${this.instance?.friendlyName ?? ""}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -80,41 +70,38 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("API Hostname")}
-                ?required=${true}
-                name="apiHostname"
-            >
+            <ak-form-element-horizontal label=${msg("API Hostname")} required name="apiHostname">
                 <input
                     type="text"
-                    value="${first(this.instance?.apiHostname, "")}"
-                    class="pf-c-form-control"
+                    value="${this.instance?.apiHostname ?? ""}"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Duo Auth API")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Integration key")}
-                        ?required=${true}
+                        required
                         name="clientId"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, "")}"
+                            value="${this.instance?.clientId ?? ""}"
                             class="pf-c-form-control"
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Secret key")}
-                        ?required=${true}
-                        ?writeOnly=${this.instance !== undefined}
+                    <ak-private-text-input
                         name="clientSecret"
-                    >
-                        <input type="text" value="" class="pf-c-form-control" required />
-                    </ak-form-element-horizontal>
+                        label=${msg("Secret key")}
+                        input-hint="code"
+                        required
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
                 </div>
             </ak-form-group>
             <ak-form-group>
@@ -132,20 +119,21 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.adminIntegrationKey, "")}"
-                            class="pf-c-form-control"
+                            value="${this.instance?.adminIntegrationKey ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Secret key")}
-                        ?writeOnly=${this.instance !== undefined}
+                    <ak-private-text-input
                         name="adminSecretKey"
-                    >
-                        <input type="text" value="" class="pf-c-form-control" />
-                    </ak-form-element-horizontal>
+                        label=${msg("Secret key")}
+                        input-hint="code"
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
                 </div>
             </ak-form-group>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -179,7 +167,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -189,7 +177,12 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-duo-form": AuthenticatorDuoStageForm;
     }
 }

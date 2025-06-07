@@ -1,6 +1,6 @@
-import "@goauthentik/elements/PageHeader";
-import { updateURLParams } from "@goauthentik/elements/router/RouteMatch";
-import { Table } from "@goauthentik/elements/table/Table";
+import "#components/ak-page-header";
+import { updateURLParams } from "#elements/router/RouteMatch";
+import { Table } from "#elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
@@ -25,6 +25,16 @@ export abstract class TablePage<T> extends Table<T> {
     }
 
     renderSidebarAfter(): TemplateResult {
+        return html``;
+    }
+
+    // Optionally render section above the table
+    renderSectionBefore(): TemplateResult {
+        return html``;
+    }
+
+    // Optionally render section below the table
+    renderSectionAfter(): TemplateResult {
         return html``;
     }
 
@@ -60,14 +70,6 @@ export abstract class TablePage<T> extends Table<T> {
         </button>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html``;
-    }
-
-    renderToolbar(): TemplateResult {
-        return html`${this.renderObjectCreate()}${super.renderToolbar()}`;
-    }
-
     render(): TemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
@@ -75,6 +77,7 @@ export abstract class TablePage<T> extends Table<T> {
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>
+            ${this.renderSectionBefore()}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
@@ -85,6 +88,7 @@ export abstract class TablePage<T> extends Table<T> {
                         ${this.renderSidebarAfter()}
                     </div>
                 </div>
-            </section>`;
+            </section>
+            ${this.renderSectionAfter()}`;
     }
 }

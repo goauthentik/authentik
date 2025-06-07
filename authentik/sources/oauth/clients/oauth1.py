@@ -1,5 +1,6 @@
 """OAuth 1 Clients"""
-from typing import Any, Optional
+
+from typing import Any
 from urllib.parse import parse_qsl
 
 from requests.exceptions import RequestException
@@ -20,7 +21,7 @@ class OAuthClient(BaseOAuthClient):
         "Accept": "application/json",
     }
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """Fetch access token from callback request."""
         raw_token = self.request.session.get(self.session_key, None)
         verifier = self.request.GET.get("oauth_verifier", None)
@@ -28,8 +29,8 @@ class OAuthClient(BaseOAuthClient):
         if raw_token is not None and verifier is not None:
             token = self.parse_raw_token(raw_token)
             try:
-                access_token_url = self.source.type.access_token_url or ""
-                if self.source.type.urls_customizable and self.source.access_token_url:
+                access_token_url = self.source.source_type.access_token_url or ""
+                if self.source.source_type.urls_customizable and self.source.access_token_url:
                     access_token_url = self.source.access_token_url
                 response = self.do_request(
                     "post",
@@ -54,8 +55,8 @@ class OAuthClient(BaseOAuthClient):
         """Fetch the OAuth request token. Only required for OAuth 1.0."""
         callback = self.request.build_absolute_uri(self.callback)
         try:
-            request_token_url = self.source.type.request_token_url or ""
-            if self.source.type.urls_customizable and self.source.request_token_url:
+            request_token_url = self.source.source_type.request_token_url or ""
+            if self.source.source_type.urls_customizable and self.source.request_token_url:
                 request_token_url = self.source.request_token_url
             response = self.do_request(
                 "post",

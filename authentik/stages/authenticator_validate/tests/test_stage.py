@@ -1,26 +1,23 @@
 """Test validator stage"""
+
 from unittest.mock import MagicMock, patch
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from rest_framework.exceptions import ValidationError
+from django.utils.timezone import now
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
-from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.tests.utils import dummy_get_response
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
+from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDigits
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from authentik.stages.authenticator_validate.stage import (
-    SESSION_KEY_DEVICE_CHALLENGES,
-    AuthenticatorValidationChallengeResponse,
-)
+from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -33,11 +30,14 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
     def test_not_configured_action(self):
         """Test not_configured_action"""
-        conf_stage = IdentificationStage.objects.create(
+        ident_stage = IdentificationStage.objects.create(
             name=generate_id(),
             user_fields=[
                 UserFields.USERNAME,
             ],
+        )
+        conf_stage = AuthenticatorStaticStage.objects.create(
+            name=generate_id(),
         )
         stage = AuthenticatorValidateStage.objects.create(
             name=generate_id(),
@@ -45,9 +45,13 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         )
         stage.configuration_stages.set([conf_stage])
         flow = create_test_flow()
-        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {"uid_field": self.user.username},
@@ -60,12 +64,63 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         self.assertStageResponse(
             response,
             flow,
-            component="ak-stage-identification",
-            password_fields=False,
-            primary_action="Continue",
-            user_fields=["username"],
-            sources=[],
-            show_source_labels=False,
+            component="ak-stage-authenticator-static",
+        )
+
+    def test_not_configured_action_multiple(self):
+        """Test not_configured_action"""
+        ident_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        conf_stage = AuthenticatorStaticStage.objects.create(
+            name=generate_id(),
+        )
+        conf_stage2 = AuthenticatorTOTPStage.objects.create(
+            name=generate_id(), digits=TOTPDigits.SIX
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+        )
+        stage.configuration_stages.set([conf_stage, conf_stage2])
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=ident_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        # Get initial identification stage
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        # Answer initial identification stage
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        # Get list of all configuration stages
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        # Select stage
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"selected_stage": conf_stage.pk},
+        )
+        self.assertEqual(response.status_code, 302)
+        # get actual identification stage response
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-authenticator-static",
         )
 
     def test_stage_validation(self):
@@ -86,38 +141,69 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
     def test_validate_selected_challenge(self):
         """Test validate_selected_challenge"""
-        # Prepare request with session
-        request = self.request_factory.get("/")
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.STATIC, DeviceClasses.TOTP],
+        )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session[SESSION_KEY_DEVICE_CHALLENGES] = [
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": "static",
                 "device_uid": "1",
+                "challenge": {},
+                "last_used": now(),
             },
             {
                 "device_class": "totp",
                 "device_uid": "2",
+                "challenge": {},
+                "last_used": now(),
             },
         ]
-        request.session.save()
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
 
-        res = AuthenticatorValidationChallengeResponse()
-        res.stage = StageView(FlowExecutorView())
-        res.stage.request = request
-        with self.assertRaises(ValidationError):
-            res.validate_selected_challenge(
-                {
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "selected_challenge": {
                     "device_class": "baz",
                     "device_uid": "quox",
+                    "challenge": {},
+                    "last_used": None,
                 }
-            )
-        res.validate_selected_challenge(
-            {
-                "device_class": "static",
-                "device_uid": "1",
-            }
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            response_errors={
+                "selected_challenge": [{"string": "invalid challenge selected", "code": "invalid"}]
+            },
+            component="ak-stage-authenticator-validate",
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "selected_challenge": {
+                    "device_class": "static",
+                    "device_uid": "1",
+                    "challenge": {},
+                    "last_used": None,
+                },
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            response_errors={"non_field_errors": [{"string": "Empty response", "code": "invalid"}]},
+            component="ak-stage-authenticator-validate",
         )
 
     @patch(

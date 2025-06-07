@@ -1,4 +1,5 @@
 """NotificationTransport API Views"""
+
 from typing import Any
 
 from drf_spectacular.types import OpenApiTypes
@@ -8,12 +9,10 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import (
     Event,
     Notification,
@@ -23,6 +22,7 @@ from authentik.events.models import (
     TransportMode,
 )
 from authentik.events.utils import get_user
+from authentik.rbac.decorators import permission_required
 
 
 class NotificationTransportSerializer(ModelSerializer):
@@ -39,7 +39,7 @@ class NotificationTransportSerializer(ModelSerializer):
         mode = attrs.get("mode")
         if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
             if "webhook_url" not in attrs or attrs.get("webhook_url", "") == "":
-                raise ValidationError("Webhook URL may not be empty.")
+                raise ValidationError({"webhook_url": "Webhook URL may not be empty."})
         return attrs
 
     class Meta:
@@ -50,7 +50,8 @@ class NotificationTransportSerializer(ModelSerializer):
             "mode",
             "mode_verbose",
             "webhook_url",
-            "webhook_mapping",
+            "webhook_mapping_body",
+            "webhook_mapping_headers",
             "send_once",
         ]
 
@@ -86,7 +87,6 @@ class NotificationTransportViewSet(UsedByMixin, ModelViewSet):
         event = Event.new(
             action="notification_test",
             user=get_user(request.user),
-            app=self.__class__.__module__,
             context={"foo": "bar"},
         )
         event.save()

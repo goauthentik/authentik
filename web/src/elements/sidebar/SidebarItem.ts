@@ -80,10 +80,10 @@ export class SidebarItem extends AKElement {
     isActive = false;
 
     @property({ type: Boolean })
-    isAbsoluteLink?: boolean;
+    isAbsoluteLink = false;
 
     @property({ type: Boolean })
-    highlight?: boolean;
+    highlight = false;
 
     parent?: SidebarItem;
 
@@ -117,19 +117,11 @@ export class SidebarItem extends AKElement {
         if (!this.path) {
             return false;
         }
-        if (this.path) {
-            const ourPath = this.path.split(";")[0];
-            if (new RegExp(`^${ourPath}$`).exec(path)) {
-                return true;
-            }
-        }
-        return this.activeMatchers.some((v) => {
-            const match = v.exec(path);
-            if (match !== null) {
-                return true;
-            }
-            return false;
-        });
+
+        const ourPath = this.path.split(";")[0];
+        const pathIsWholePath = new RegExp(`^${ourPath}$`).test(path);
+        const pathIsAnActivePath = this.activeMatchers.some((v) => v.test(path));
+        return pathIsWholePath || pathIsAnActivePath;
     }
 
     expandParentRecursive(activePath: string, item: SidebarItem): void {
@@ -144,47 +136,90 @@ export class SidebarItem extends AKElement {
         return this.renderInner();
     }
 
-    renderInner(): TemplateResult {
-        if (this.childItems.length > 0) {
-            return html`<li
-                class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+    renderWithChildren() {
+        return html`<li
+            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+        >
+            <button
+                class="pf-c-nav__link"
+                aria-expanded="true"
+                @click=${() => {
+                    this.expanded = !this.expanded;
+                }}
             >
-                <button
-                    class="pf-c-nav__link"
-                    aria-expanded="true"
-                    @click=${() => {
-                        this.expanded = !this.expanded;
-                    }}
-                >
-                    <slot name="label"></slot>
-                    <span class="pf-c-nav__toggle">
-                        <span class="pf-c-nav__toggle-icon">
-                            <i class="fas fa-angle-right" aria-hidden="true"></i>
-                        </span>
+                <slot name="label"></slot>
+                <span class="pf-c-nav__toggle">
+                    <span class="pf-c-nav__toggle-icon">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
                     </span>
-                </button>
-                <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
-                    <ul class="pf-c-nav__list">
-                        <slot></slot>
-                    </ul>
-                </section>
-            </li>`;
-        }
-        return html`<li class="pf-c-nav__item">
-            ${this.path
-                ? html`
-                      <a
-                          href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
-                          class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
-                      >
-                          <slot name="label"></slot>
-                      </a>
-                  `
-                : html`
-                      <span class="pf-c-nav__link">
-                          <slot name="label"></slot>
-                      </span>
-                  `}
+                </span>
+            </button>
+            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
+                <ul class="pf-c-nav__list">
+                    <slot></slot>
+                </ul>
+            </section>
         </li>`;
+    }
+
+    renderWithPathAndChildren() {
+        return html`<li
+            class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+        >
+            <slot name="label"></slot>
+            <button
+                class="pf-c-nav__link"
+                aria-expanded="true"
+                @click=${() => {
+                    this.expanded = !this.expanded;
+                }}
+            >
+                <span class="pf-c-nav__toggle">
+                    <span class="pf-c-nav__toggle-icon">
+                        <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </span>
+                </span>
+            </button>
+            <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
+                <ul class="pf-c-nav__list">
+                    <slot></slot>
+                </ul>
+            </section>
+        </li>`;
+    }
+
+    renderWithPath() {
+        return html`
+            <a
+                href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
+                class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
+            >
+                <slot name="label"></slot>
+            </a>
+        `;
+    }
+
+    renderWithLabel() {
+        return html`
+            <span class="pf-c-nav__link">
+                <slot name="label"></slot>
+            </span>
+        `;
+    }
+
+    renderInner() {
+        if (this.childItems.length > 0) {
+            return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
+        }
+
+        return html`<li class="pf-c-nav__item">
+            ${this.path ? this.renderWithPath() : this.renderWithLabel()}
+        </li>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-sidebar-item": SidebarItem;
     }
 }

@@ -1,5 +1,7 @@
 import * as base64js from "base64-js";
 
+import { msg } from "@lit/localize";
+
 export function b64enc(buf: Uint8Array): string {
     return base64js.fromByteArray(buf).replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
@@ -14,6 +16,16 @@ export function u8arr(input: string): Uint8Array {
     );
 }
 
+export function checkWebAuthnSupport() {
+    if ("credentials" in navigator) {
+        return;
+    }
+    if (window.location.protocol === "http:" && window.location.hostname !== "localhost") {
+        throw new Error(msg("WebAuthn requires this page to be accessed via HTTPS."));
+    }
+    throw new Error(msg("WebAuthn not supported by browser."));
+}
+
 /**
  * Transforms items in the credentialCreateOptions generated on the server
  * into byte arrays expected by the navigator.credentials.create() call
@@ -26,16 +38,15 @@ export function transformCredentialCreateOptions(
     // Because json can't contain raw bytes, the server base64-encodes the User ID
     // So to get the base64 encoded byte array, we first need to convert it to a regular
     // string, then a byte array, re-encode it and wrap that in an array.
-    const stringId = decodeURIComponent(escape(window.atob(userId)));
+    const stringId = decodeURIComponent(window.atob(userId));
     user.id = u8arr(b64enc(u8arr(stringId)));
     const challenge = u8arr(credentialCreateOptions.challenge.toString());
 
-    const transformedCredentialCreateOptions = Object.assign({}, credentialCreateOptions, {
+    return {
+        ...credentialCreateOptions,
         challenge,
         user,
-    });
-
-    return transformedCredentialCreateOptions;
+    };
 }
 
 export interface Assertion {
@@ -86,12 +97,11 @@ export function transformCredentialRequestOptions(
         },
     );
 
-    const transformedCredentialRequestOptions = Object.assign({}, credentialRequestOptions, {
+    return {
+        ...credentialRequestOptions,
         challenge,
         allowCredentials,
-    });
-
-    return transformedCredentialRequestOptions;
+    };
 }
 
 export interface AuthAssertion {

@@ -1,4 +1,5 @@
 """CaptchaStage API Views"""
+
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -11,7 +12,16 @@ class CaptchaStageSerializer(StageSerializer):
 
     class Meta:
         model = CaptchaStage
-        fields = StageSerializer.Meta.fields + ["public_key", "private_key", "js_url", "api_url"]
+        fields = StageSerializer.Meta.fields + [
+            "public_key",
+            "private_key",
+            "js_url",
+            "api_url",
+            "interactive",
+            "score_min_threshold",
+            "score_max_threshold",
+            "error_on_invalid_score",
+        ]
         extra_kwargs = {"private_key": {"write_only": True}}
 
 

@@ -1,6 +1,6 @@
 """Test Controllers"""
-from typing import Optional
 
+import pytest
 import yaml
 from django.test import TestCase
 from structlog.stdlib import get_logger
@@ -19,19 +19,14 @@ LOGGER = get_logger()
 class TestProxyKubernetes(TestCase):
     """Test Controllers"""
 
-    controller: Optional[KubernetesController]
+    controller: KubernetesController | None
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.controller = None
 
-    def tearDown(self) -> None:
-        if self.controller:
-            for log in self.controller.down_with_logs():
-                LOGGER.info(log)
-        return super().tearDown()
-
+    @pytest.mark.timeout(120)
     def test_kubernetes_controller_static(self):
         """Test Kubernetes Controller"""
         provider: ProxyProvider = ProxyProvider.objects.create(
@@ -53,6 +48,7 @@ class TestProxyKubernetes(TestCase):
         manifest = self.controller.get_static_deployment()
         self.assertEqual(len(list(yaml.load_all(manifest, Loader=yaml.SafeLoader))), 4)
 
+    @pytest.mark.timeout(120)
     def test_kubernetes_controller_ingress(self):
         """Test Kubernetes Controller's Ingress"""
         provider: ProxyProvider = ProxyProvider.objects.create(

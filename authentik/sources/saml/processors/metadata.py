@@ -1,5 +1,6 @@
 """SAML Service Provider Metadata Processor"""
-from typing import Iterator, Optional
+
+from typing import Optional
 
 from django.http import HttpRequest
 from lxml.etree import Element, SubElement, tostring  # nosec
@@ -11,11 +12,6 @@ from authentik.sources.saml.processors.constants import (
     NS_SAML_METADATA,
     NS_SIGNATURE,
     SAML_BINDING_POST,
-    SAML_NAME_ID_FORMAT_EMAIL,
-    SAML_NAME_ID_FORMAT_PERSISTENT,
-    SAML_NAME_ID_FORMAT_TRANSIENT,
-    SAML_NAME_ID_FORMAT_WINDOWS,
-    SAML_NAME_ID_FORMAT_X509,
 )
 
 
@@ -29,7 +25,8 @@ class MetadataProcessor:
         self.source = source
         self.http_request = request
 
-    def get_signing_key_descriptor(self) -> Optional[Element]:
+    # Using type unions doesn't work with cython types (which is what lxml is)
+    def get_signing_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
         """Get Signing KeyDescriptor, if enabled for the source"""
         if self.source.signing_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
@@ -43,19 +40,24 @@ class MetadataProcessor:
             return key_descriptor
         return None
 
-    def get_name_id_formats(self) -> Iterator[Element]:
-        """Get compatible NameID Formats"""
-        formats = [
-            SAML_NAME_ID_FORMAT_EMAIL,
-            SAML_NAME_ID_FORMAT_PERSISTENT,
-            SAML_NAME_ID_FORMAT_X509,
-            SAML_NAME_ID_FORMAT_WINDOWS,
-            SAML_NAME_ID_FORMAT_TRANSIENT,
-        ]
-        for name_id_format in formats:
-            element = Element(f"{{{NS_SAML_METADATA}}}NameIDFormat")
-            element.text = name_id_format
-            yield element
+    def get_encryption_key_descriptor(self) -> Optional[Element]:  # noqa: UP007
+        """Get Encryption KeyDescriptor, if enabled for the source"""
+        if self.source.encryption_kp:
+            key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
+            key_descriptor.attrib["use"] = "encryption"
+            key_info = SubElement(key_descriptor, f"{{{NS_SIGNATURE}}}KeyInfo")
+            x509_data = SubElement(key_info, f"{{{NS_SIGNATURE}}}X509Data")
+            x509_certificate = SubElement(x509_data, f"{{{NS_SIGNATURE}}}X509Certificate")
+            x509_certificate.text = strip_pem_header(
+                self.source.encryption_kp.certificate_data.replace("\r", "")
+            ).replace("\n", "")
+            return key_descriptor
+        return None
+
+    def get_name_id_format(self) -> Element:
+        element = Element(f"{{{NS_SAML_METADATA}}}NameIDFormat")
+        element.text = self.source.name_id_policy
+        return element
 
     def build_entity_descriptor(self) -> str:
         """Build full EntityDescriptor"""
@@ -63,16 +65,19 @@ class MetadataProcessor:
         entity_descriptor.attrib["entityID"] = self.source.get_issuer(self.http_request)
 
         sp_sso_descriptor = SubElement(entity_descriptor, f"{{{NS_SAML_METADATA}}}SPSSODescriptor")
-        sp_sso_descriptor.attrib[
-            "protocolSupportEnumeration"
-        ] = "urn:oasis:names:tc:SAML:2.0:protocol"
+        sp_sso_descriptor.attrib["protocolSupportEnumeration"] = (
+            "urn:oasis:names:tc:SAML:2.0:protocol"
+        )
 
         signing_descriptor = self.get_signing_key_descriptor()
         if signing_descriptor is not None:
             sp_sso_descriptor.append(signing_descriptor)
 
-        for name_id_format in self.get_name_id_formats():
-            sp_sso_descriptor.append(name_id_format)
+        encryption_descriptor = self.get_encryption_key_descriptor()
+        if encryption_descriptor is not None:
+            sp_sso_descriptor.append(encryption_descriptor)
+
+        sp_sso_descriptor.append(self.get_name_id_format())
 
         assertion_consumer_service = SubElement(
             sp_sso_descriptor, f"{{{NS_SAML_METADATA}}}AssertionConsumerService"

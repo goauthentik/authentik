@@ -1,4 +1,5 @@
 """User Write Stage API Views"""
+
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -15,6 +16,7 @@ class UserWriteStageSerializer(StageSerializer):
             "user_creation_mode",
             "create_users_as_inactive",
             "create_users_group",
+            "user_type",
             "user_path_template",
         ]
 

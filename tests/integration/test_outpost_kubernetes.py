@@ -1,6 +1,8 @@
 """outpost tests"""
+
 from unittest.mock import MagicMock, patch
 
+import pytest
 from django.test import TestCase
 from kubernetes.client import AppsV1Api
 from kubernetes.client.exceptions import OpenApiException
@@ -8,6 +10,7 @@ from kubernetes.client.exceptions import OpenApiException
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
@@ -21,7 +24,7 @@ class OutpostKubernetesTests(TestCase):
     def setUp(self):
         super().setUp()
         # Ensure that local connection have been created
-        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
+        outpost_connection_discovery()
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",
@@ -35,8 +38,22 @@ class OutpostKubernetesTests(TestCase):
             service_connection=self.service_connection,
         )
         self.outpost.providers.add(self.provider)
+        self.outpost.config.kubernetes_json_patches = {
+            "deployment": [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "2000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "4000m", "memory": "8000Mi"},
+                    },
+                }
+            ]
+        }
+        self.outpost.providers.add(self.provider)
         self.outpost.save()
 
+    @pytest.mark.timeout(120)
     def test_deployment_reconciler(self):
         """test that deployment requires update"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -46,6 +63,18 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
+        config.kubernetes_json_patches = {
+            "deployment": [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "1000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "2000m", "memory": "4000Mi"},
+                    },
+                }
+            ]
+        }
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):
@@ -63,6 +92,36 @@ class OutpostKubernetesTests(TestCase):
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
 
+    @pytest.mark.timeout(120)
+    def test_service_reconciler(self):
+        """test that service requires update"""
+        controller = ProxyKubernetesController(self.outpost, self.service_connection)
+        service_reconciler = ServiceReconciler(controller)
+
+        self.assertIsNotNone(service_reconciler.retrieve())
+
+        config = self.outpost.config
+        config.kubernetes_service_type = "NodePort"
+        config.kubernetes_json_patches = {
+            "service": [
+                {
+                    "op": "add",
+                    "path": "/spec/ipFamilyPolicy",
+                    "value": "PreferDualStack",
+                }
+            ]
+        }
+        self.outpost.config = config
+
+        with self.assertRaises(NeedsUpdate):
+            service_reconciler.reconcile(
+                service_reconciler.retrieve(),
+                service_reconciler.get_reference_object(),
+            )
+
+        service_reconciler.delete(service_reconciler.get_reference_object())
+
+    @pytest.mark.timeout(120)
     def test_controller_rename(self):
         """test that objects get deleted and re-created with new names"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)
@@ -75,6 +134,7 @@ class OutpostKubernetesTests(TestCase):
             apps.read_namespaced_deployment("test", self.outpost.config.kubernetes_namespace)
         controller.down()
 
+    @pytest.mark.timeout(120)
     def test_controller_full_update(self):
         """Test an update that triggers all objects"""
         controller = ProxyKubernetesController(self.outpost, self.service_connection)

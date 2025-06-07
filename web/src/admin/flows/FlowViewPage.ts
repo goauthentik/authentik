@@ -1,17 +1,20 @@
-import "@goauthentik/admin/flows/BoundStagesList";
-import "@goauthentik/admin/flows/FlowDiagram";
-import "@goauthentik/admin/flows/FlowForm";
-import "@goauthentik/admin/policies/BoundPoliciesList";
-import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
+import "#admin/flows/BoundStagesList";
+import "#admin/flows/FlowDiagram";
+import "#admin/flows/FlowForm";
+import { DesignationToLabel } from "#admin/flows/utils";
+import "#admin/policies/BoundPoliciesList";
+import "#admin/rbac/ObjectPermissionsPage";
+import { AndNext, DEFAULT_CONFIG } from "#common/api/config";
+import { isResponseErrorLike } from "#common/errors/network";
+import "#components/ak-page-header";
+import "#components/events/ObjectChangelog";
+import { AKElement } from "#elements/Base";
+import "#elements/Tabs";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -21,35 +24,37 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi, ResponseError } from "@goauthentik/api";
+import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
-    @property()
-    set flowSlug(value: string) {
-        new FlowsApi(DEFAULT_CONFIG)
-            .flowsInstancesRetrieve({
-                slug: value,
-            })
-            .then((flow) => {
-                this.flow = flow;
-            });
-    }
+    @property({ type: String })
+    flowSlug?: string;
 
-    @property({ attribute: false })
+    @state()
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(
-            css`
-                img.pf-icon {
-                    max-height: 24px;
-                }
-                ak-tabs {
-                    height: 100%;
-                }
-            `,
-        );
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
+            img.pf-icon {
+                max-height: 24px;
+            }
+            ak-tabs {
+                height: 100%;
+            }
+        `);
+    }
+
+    fetchFlow(slug: string) {
+        new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({ slug }).then((flow) => {
+            this.flow = flow;
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("flowSlug") && this.flowSlug) {
+            this.fetchFlow(this.flowSlug);
+        }
     }
 
     render(): TemplateResult {
@@ -72,13 +77,43 @@ export class FlowViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                         >
-                            <div class="pf-c-card__title">${msg("Related actions")}</div>
+                            <div class="pf-c-card__title">${msg("Flow Info")}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${msg("Edit")}</span
+                                                >${msg("Name")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${this.flow.name}
+                                            </div>
+                                        </dd>
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Slug")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                <code>${this.flow.slug}</code>
+                                            </div>
+                                        </dd>
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Designation")}</span
+                                            >
+                                        </dt>
+                                        <dd class="pf-c-description-list__description">
+                                            <div class="pf-c-description-list__text">
+                                                ${DesignationToLabel(this.flow.designation)}
+                                            </div>
+                                        </dd>
+                                        <dt class="pf-c-description-list__term">
+                                            <span class="pf-c-description-list__text"
+                                                >${msg("Related actions")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -152,17 +187,19 @@ export class FlowViewPage extends AKElement {
                                                                 const finalURL = `${
                                                                     link.link
                                                                 }?${encodeURI(
-                                                                    `inspector&next=/#${window.location.hash}`,
+                                                                    `inspector=open&next=/#${window.location.hash}`,
                                                                 )}`;
                                                                 window.open(finalURL, "_blank");
                                                             })
-                                                            .catch((exc: ResponseError) => {
-                                                                // This request can return a HTTP 400 when a flow
-                                                                // is not applicable.
-                                                                window.open(
-                                                                    exc.response.url,
-                                                                    "_blank",
-                                                                );
+                                                            .catch(async (error: unknown) => {
+                                                                if (isResponseErrorLike(error)) {
+                                                                    // This request can return a HTTP 400 when a flow
+                                                                    // is not applicable.
+                                                                    window.open(
+                                                                        error.response.url,
+                                                                        "_blank",
+                                                                    );
+                                                                }
                                                             });
                                                     }}
                                                 >
@@ -238,6 +275,18 @@ export class FlowViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <ak-rbac-object-permission-page
+                    slot="page-permissions"
+                    data-tab-title="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlow}
+                    objectPk=${this.flow.pk}
+                ></ak-rbac-object-permission-page>
             </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-view": FlowViewPage;
     }
 }

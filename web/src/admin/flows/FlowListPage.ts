@@ -2,7 +2,6 @@ import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/flows/FlowImportForm";
 import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ConfirmationForm";
@@ -11,6 +10,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -36,17 +36,13 @@ export class FlowListPage extends TablePage<Flow> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "slug";
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Flow>> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Flow>> {
+        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(await this.defaultEndpointConfig());
     }
 
     groupBy(items: Flow[]): [string, Flow[]][] {
@@ -103,7 +99,9 @@ export class FlowListPage extends TablePage<Flow> {
                     <span slot="header"> ${msg("Update Flow")} </span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <button
@@ -115,10 +113,14 @@ export class FlowListPage extends TablePage<Flow> {
                         window.open(finalURL, "_blank");
                     }}
                 >
-                    <i class="fas fa-play"></i>
+                    <pf-tooltip position="top" content=${msg("Execute")}>
+                        <i class="fas fa-play" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </button>
                 <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
-                    <i class="fas fa-download"></i>
+                    <pf-tooltip position="top" content=${msg("Export")}>
+                        <i class="fas fa-download"></i>
+                    </pf-tooltip>
                 </a>`,
         ];
     }
@@ -164,5 +166,11 @@ export class FlowListPage extends TablePage<Flow> {
                 <div slot="modal"></div>
             </ak-forms-confirm>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-list": FlowListPage;
     }
 }

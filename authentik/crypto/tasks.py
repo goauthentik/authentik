@@ -1,4 +1,5 @@
 """Crypto tasks"""
+
 from glob import glob
 from pathlib import Path
 
@@ -9,12 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.monitored_tasks import (
-    MonitoredTask,
-    TaskResult,
-    TaskResultStatus,
-    prefill_task,
-)
+from authentik.events.models import TaskStatus
+from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.root.celery import CELERY_APP
 
@@ -39,14 +36,14 @@ def ensure_certificate_valid(body: str):
     return body
 
 
-@CELERY_APP.task(bind=True, base=MonitoredTask)
+@CELERY_APP.task(bind=True, base=SystemTask)
 @prefill_task
-def certificate_discovery(self: MonitoredTask):
+def certificate_discovery(self: SystemTask):
     """Discover, import and update certificates from the filesystem"""
     certs = {}
     private_keys = {}
     discovered = 0
-    for file in glob(CONFIG.y("cert_discovery_dir") + "/**", recursive=True):
+    for file in glob(CONFIG.get("cert_discovery_dir") + "/**", recursive=True):
         path = Path(file)
         if not path.exists():
             continue
@@ -61,7 +58,7 @@ def certificate_discovery(self: MonitoredTask):
         else:
             cert_name = path.name.replace(path.suffix, "")
         try:
-            with open(path, "r", encoding="utf-8") as _file:
+            with open(path, encoding="utf-8") as _file:
                 body = _file.read()
                 if "PRIVATE KEY" in body:
                     private_keys[cert_name] = ensure_private_key_valid(body)
@@ -88,8 +85,5 @@ def certificate_discovery(self: MonitoredTask):
         if dirty:
             cert.save()
     self.set_status(
-        TaskResult(
-            TaskResultStatus.SUCCESSFUL,
-            messages=[_("Successfully imported %(count)d files." % {"count": discovered})],
-        )
+        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=discovered))
     )

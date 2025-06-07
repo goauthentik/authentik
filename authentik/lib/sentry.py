@@ -1,6 +1,7 @@
 """authentik sentry integration"""
+
 from asyncio.exceptions import CancelledError
-from typing import Any, Optional
+from typing import Any
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
@@ -16,7 +17,7 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
-from sentry_sdk import HttpTransport
+from sentry_sdk import HttpTransport, get_current_scope
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.argv import ArgvIntegration
@@ -26,6 +27,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.socket import SocketIntegration
 from sentry_sdk.integrations.stdlib import StdlibIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
+from sentry_sdk.tracing import BAGGAGE_HEADER_NAME, SENTRY_TRACE_HEADER_NAME
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
@@ -35,6 +37,7 @@ from authentik.lib.utils.http import authentik_user_agent
 from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
+_root_path = CONFIG.get("web.path", "/")
 
 
 class SentryIgnoredException(Exception):
@@ -51,22 +54,23 @@ class SentryTransport(HttpTransport):
 
 def sentry_init(**sentry_init_kwargs):
     """Configure sentry SDK"""
-    sentry_env = CONFIG.y("error_reporting.environment", "customer")
+    sentry_env = CONFIG.get("error_reporting.environment", "customer")
     kwargs = {
         "environment": sentry_env,
-        "send_default_pii": CONFIG.y_bool("error_reporting.send_pii", False),
+        "send_default_pii": CONFIG.get_bool("error_reporting.send_pii", False),
         "_experiments": {
-            "profiles_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.1)),
+            "profiles_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.1)),
         },
+        **sentry_init_kwargs,
+        **CONFIG.get_dict_from_b64_json("error_reporting.extra_args", {}),
     }
-    kwargs.update(**sentry_init_kwargs)
-    # pylint: disable=abstract-class-instantiated
+
     sentry_sdk_init(
-        dsn=CONFIG.y("error_reporting.sentry_dsn"),
+        dsn=CONFIG.get("error_reporting.sentry_dsn"),
         integrations=[
             ArgvIntegration(),
             StdlibIntegration(),
-            DjangoIntegration(transaction_style="function_name"),
+            DjangoIntegration(transaction_style="function_name", cache_spans=True),
             CeleryIntegration(),
             RedisIntegration(),
             ThreadingIntegration(propagate_hub=True),
@@ -88,17 +92,19 @@ def traces_sampler(sampling_context: dict) -> float:
     path = sampling_context.get("asgi_scope", {}).get("path", "")
     _type = sampling_context.get("asgi_scope", {}).get("type", "")
     # Ignore all healthcheck routes
-    if path.startswith("/-/health") or path.startswith("/-/metrics"):
+    if path.startswith(f"{_root_path}-/health") or path.startswith(f"{_root_path}-/metrics"):
         return 0
     if _type == "websocket":
         return 0
-    return float(CONFIG.y("error_reporting.sample_rate", 0.1))
+    if CONFIG.get_bool("debug"):
+        return 1
+    return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
-def before_send(event: dict, hint: dict) -> Optional[dict]:
+def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
-    # pylint: disable=no-name-in-module
-    from psycopg2.errors import Error
+
+    from psycopg.errors import Error
 
     ignored_classes = (
         # Inbuilt types
@@ -164,3 +170,14 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
     if settings.DEBUG:
         return None
     return event
+
+
+def get_http_meta():
+    """Get sentry-related meta key-values"""
+    scope = get_current_scope()
+    meta = {
+        SENTRY_TRACE_HEADER_NAME: scope.get_traceparent() or "",
+    }
+    if bag := scope.get_baggage():
+        meta[BAGGAGE_HEADER_NAME] = bag.serialize()
+    return meta

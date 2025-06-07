@@ -1,4 +1,5 @@
 """Kubernetes Service Reconciler"""
+
 from typing import TYPE_CHECKING
 
 from kubernetes.client import CoreV1Api, V1Service, V1ServicePort, V1ServiceSpec
@@ -20,6 +21,10 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "service"
+
     def reconcile(self, current: V1Service, reference: V1Service):
         compare_ports(current.spec.ports, reference.spec.ports)
         # run the base reconcile last, as that will probably raise NeedsUpdate
@@ -27,6 +32,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         # the update, so this causes the service to be re-created with higher
         # priority than being updated.
         if current.spec.selector != reference.spec.selector:
+            raise NeedsUpdate()
+        if current.spec.type != reference.spec.type:
             raise NeedsUpdate()
         super().reconcile(current, reference)
 

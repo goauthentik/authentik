@@ -1,20 +1,23 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import renderDescriptionList from "@goauthentik/components/DescriptionList";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,10 +35,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
     CryptoApi,
     ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
+    User,
 } from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
@@ -48,37 +55,10 @@ interface SAMLPreviewAttribute {
 
 @customElement("ak-provider-saml-view")
 export class SAMLProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersSamlRetrieve({
-                id: value,
-            })
-            .then((prov) => {
-                this.provider = prov;
-                if (prov.signingKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.signingKp,
-                        })
-                        .then((kp) => (this.signer = kp));
-                }
-                if (prov.verificationKp) {
-                    new CryptoApi(DEFAULT_CONFIG)
-                        .cryptoCertificatekeypairsRetrieve({
-                            kpUuid: prov.verificationKp,
-                        })
-                        .then((kp) => (this.verifier = kp));
-                }
-            });
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: SAMLProvider;
 
     @state()
@@ -92,6 +72,9 @@ export class SAMLProviderViewPage extends AKElement {
 
     @state()
     verifier?: CertificateKeyPair;
+
+    @state()
+    previewUser?: User;
 
     static get styles(): CSSResult[] {
         return [
@@ -117,61 +100,106 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
+    fetchPreview(): void {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersSamlPreviewUserRetrieve({
+                id: this.provider?.pk || 0,
+                forUser: this.previewUser?.pk,
+            })
+            .then((preview) => {
+                this.preview = preview.preview as SAMLPreviewAttribute;
+            });
+    }
+
+    fetchCertificate(kpUuid: string) {
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({ kpUuid });
+    }
+
+    fetchSigningCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.signer = kp));
+    }
+
+    fetchVerificationCertificate(kpUuid: string) {
+        this.fetchCertificate(kpUuid).then((kp) => (this.verifier = kp));
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG).providersSamlRetrieve({ id }).then((prov) => {
+            this.provider = prov;
+            if (this.provider.signingKp) {
+                this.fetchSigningCertificate(this.provider.signingKp);
+            }
+            if (this.provider.verificationKp) {
+                this.fetchVerificationCertificate(this.provider.verificationKp);
+            }
+        });
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
     renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
-            relatedObjects.push(html`<div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Metadata")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            target="_blank"
-                            href=${ifDefined(this.provider?.urlDownloadMetadata)}
-                        >
-                            ${msg("Download")}
-                        </a>
-                        <ak-action-button
-                            class="pf-m-secondary"
-                            .apiRequest=${() => {
-                                if (!navigator.clipboard) {
-                                    return Promise.resolve(
-                                        showMessage({
-                                            level: MessageLevel.info,
-                                            message: this.provider?.urlDownloadMetadata || "",
-                                        }),
+            relatedObjects.push(
+                html`<div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Metadata")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                target="_blank"
+                                href=${ifDefined(this.provider?.urlDownloadMetadata)}
+                            >
+                                ${msg("Download")}
+                            </a>
+                            <ak-action-button
+                                class="pf-m-secondary"
+                                .apiRequest=${() => {
+                                    if (!navigator.clipboard) {
+                                        return Promise.resolve(
+                                            showMessage({
+                                                level: MessageLevel.info,
+                                                message: this.provider?.urlDownloadMetadata || "",
+                                            }),
+                                        );
+                                    }
+                                    return navigator.clipboard.writeText(
+                                        this.provider?.urlDownloadMetadata || "",
                                     );
-                                }
-                                return navigator.clipboard.writeText(
-                                    this.provider?.urlDownloadMetadata || "",
-                                );
-                            }}
-                        >
-                            ${msg("Copy download URL")}
-                        </ak-action-button>
-                    </div>
-                </dd>
-            </div>`);
+                                }}
+                            >
+                                ${msg("Copy download URL")}
+                            </ak-action-button>
+                        </div>
+                    </dd>
+                </div>`,
+            );
         }
         if (this.signer) {
-            relatedObjects.push(html`<div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text"
-                        >${msg("Download signing certificate")}</span
-                    >
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            href=${this.signer.certificateDownloadUrl}
-                            >${msg("Download")}</a
+            relatedObjects.push(
+                html`<div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text"
+                            >${msg("Download signing certificate")}</span
                         >
-                    </div>
-                </dd>
-            </div>`);
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                href=${this.signer.certificateDownloadUrl}
+                                >${msg("Download")}</a
+                            >
+                        </div>
+                    </dd>
+                </div>`,
+            );
         }
         return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
             <div class="pf-c-card__title">${msg("Related objects")}</div>
@@ -196,13 +224,7 @@ export class SAMLProviderViewPage extends AKElement {
                 slot="page-preview"
                 data-tab-title="${msg("Preview")}"
                 @activate=${() => {
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersSamlPreviewUserRetrieve({
-                            id: this.provider?.pk || 0,
-                        })
-                        .then((preview) => {
-                            this.preview = preview.preview as SAMLPreviewAttribute;
-                        });
+                    this.fetchPreview();
                 }}
             >
                 ${this.renderTabPreview()}
@@ -222,6 +244,12 @@ export class SAMLProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersSamlSamlprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 
@@ -460,8 +488,8 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode="xml"
-                                      ?readOnly=${true}
+                                      mode=${CodeMirrorMode.XML}
+                                      readOnly
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
                               </div>
@@ -474,13 +502,54 @@ export class SAMLProviderViewPage extends AKElement {
 
     renderTabPreview(): TemplateResult {
         if (!this.preview) {
-            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading></ak-empty-state>`;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
         >
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("Example SAML attributes")}</div>
+                <div class="pf-c-card__body">
+                    ${renderDescriptionList([
+                        [
+                            msg("Preview for user"),
+                            html`
+                                <ak-search-select
+                                    .fetchObjects=${async (query?: string): Promise<User[]> => {
+                                        const args: CoreUsersListRequest = {
+                                            ordering: "username",
+                                        };
+                                        if (query !== undefined) {
+                                            args.search = query;
+                                        }
+                                        const users = await new CoreApi(
+                                            DEFAULT_CONFIG,
+                                        ).coreUsersList(args);
+                                        return users.results;
+                                    }}
+                                    .renderElement=${(user: User): string => {
+                                        return user.username;
+                                    }}
+                                    .renderDescription=${(user: User): TemplateResult => {
+                                        return html`${user.name}`;
+                                    }}
+                                    .value=${(user: User | undefined): number | undefined => {
+                                        return user?.pk;
+                                    }}
+                                    .selected=${(user: User): boolean => {
+                                        return user.pk === this.previewUser?.pk;
+                                    }}
+                                    blankable
+                                    @ak-change=${(ev: CustomEvent) => {
+                                        this.previewUser = ev.detail.value;
+                                        this.fetchPreview();
+                                    }}
+                                >
+                                </ak-search-select>
+                            `,
+                        ],
+                    ])}
+                </div>
                 <div class="pf-c-card__body">
                     <dl class="pf-c-description-list pf-m-2-col-on-lg">
                         <div class="pf-c-description-list__group">
@@ -519,5 +588,11 @@ export class SAMLProviderViewPage extends AKElement {
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-view": SAMLProviderViewPage;
     }
 }

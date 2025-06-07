@@ -1,18 +1,16 @@
 ---
-title: Node-RED
+title: Integrate with Node-RED
+sidebar_label: Node-RED
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Node-RED
 
-From https://nodered.org/
-
-:::note
-Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
-
-It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.
-:::
+> Node-RED is a programming tool for wiring together hardware devices, APIs and online services in new and interesting ways.
+>
+> It provides a browser-based editor that makes it easy to wire together flows using the wide range of nodes in the palette that can be deployed to its runtime in a single-click.
+>
+> -- https://nodered.org/
 
 :::caution
 This requires modification of the Node-RED settings.js and installing additional Passport-js packages, see [Securing Node-RED](https://nodered.org/docs/user-guide/runtime/securing-node-red#oauthopenid-based-authentication) documentation for further details.
@@ -20,47 +18,37 @@ This requires modification of the Node-RED settings.js and installing additional
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of authentik.
--   `nodred.company` is the FQDN of Node-RED.
+- `authentik.company` is the FQDN of authentik.
+- `nodred.company` is the FQDN of Node-RED.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
+
+## authentik configuration
+
+To support the integration of Node-RED with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>nodered.company</em>/auth/strategy/callback/</kbd>.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## Note-RED configuration
 
 ### Step 1
-
-In authentik, create an _OAuth2/OpenID Provider_ (under _Resources/Providers_) with these settings:
-
-:::note
-Only settings that have been modified from default have been listed.
-:::
-
--   Name: Node-RED
-
-**Protocol Settings**
-
--   Redirect URIs/Origins (RegEx): https://nodred.company/auth/strategy/callback/
--   Signing Key: Select any available key
-
-:::note
-Take note of the `Client ID` and `Client Secret`, you'll need to give them to Node-RED in _Step 3_.
-:::
-
-### Step 2
-
-In authentik, create an application (under _Resources/Applications_) which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-
-:::note
-Only settings that have been modified from default have been listed.
-:::
-
--   Name: Node-RED
--   Slug: nodered-slug
--   Provider: Node-RED
-
-Optionally you can link directly to the authentication strategy
-
--   Launch URL: https://nodred.company/auth/strategy/
-
-### Step 3
 
 :::note
 Group based permissions are not implemented in the below example
@@ -72,7 +60,7 @@ Navigate to the node-red `node_modules` directory, this is dependent on your cho
 
 Run the command `npm install passport-openidconnect`
 
-### Step 4
+### Step 2
 
 Edit the node-red settings.js file `/data/settings.js` to use the external authentication source via passport-openidconnect.
 

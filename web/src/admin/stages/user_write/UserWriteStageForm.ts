@@ -1,9 +1,8 @@
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
@@ -12,22 +11,21 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, CoreGroupsListRequest, Group, StagesApi, UserWriteStage } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    StagesApi,
+    UserTypeEnum,
+    UserWriteStage,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-user-write-form")
-export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
+export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
     loadInstance(pk: string): Promise<UserWriteStage> {
         return new StagesApi(DEFAULT_CONFIG).stagesUserWriteRetrieve({
             stageUuid: pk,
         });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated stage.");
-        } else {
-            return msg("Successfully created stage.");
-        }
     }
 
     async send(data: UserWriteStage): Promise<UserWriteStage> {
@@ -36,22 +34,20 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 stageUuid: this.instance.pk || "",
                 userWriteStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-                userWriteStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
+            userWriteStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     `Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
         is pending, a new user is created, and data is written to them.`,
                 )}
-            </div>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -59,7 +55,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
@@ -97,7 +93,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.createUsersAsInactive, true)}
+                                ?checked=${this.instance?.createUsersAsInactive ?? true}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -112,14 +108,49 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             ${msg("Mark newly created users as inactive.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("User type")} name="userType">
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: msg("Internal"),
+                                    value: UserTypeEnum.Internal,
+                                    default: true,
+                                    description: html`${msg(
+                                        "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("External"),
+                                    value: UserTypeEnum.External,
+                                    description: html`${msg(
+                                        "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                                    )}`,
+                                },
+                                {
+                                    label: msg("Service account"),
+                                    value: UserTypeEnum.ServiceAccount,
+                                    description: html`${msg(
+                                        "Service accounts should be used for machine-to-machine authentication or other automations.",
+                                    )}`,
+                                },
+                            ]}
+                            .value=${this.instance?.userType}
+                        >
+                        </ak-radio>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("User type used for newly created users.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("User path template")}
                         name="userPathTemplate"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.userPathTemplate, "")}"
-                            class="pf-c-form-control"
+                            value="${this.instance?.userPathTemplate ?? ""}"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -133,6 +164,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
                                     ordering: "name",
+                                    includeUsers: false,
                                 };
                                 if (query !== undefined) {
                                     args.search = query;
@@ -151,7 +183,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.createUsersGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -161,7 +193,12 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-user-write-form": UserWriteStageForm;
     }
 }

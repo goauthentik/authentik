@@ -1,16 +1,14 @@
 ---
-title: Paperless-ng
+title: Integrate with Paperless-ng
+sidebar_label: Paperless-ng
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Paperless-ng
 
-Modified from https://github.com/jonaswinkler/paperless-ng
-
-:::note
-Paperless-ng is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from the original Paperless that is no longer maintained.
-:::
+> Paperless-ng is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from the original Paperless that is no longer maintained.
+>
+> -- https://github.com/jonaswinkler/paperless-ng
 
 :::caution
 This setup uses HTTP headers to log you in simply by providing your username as a header. Your authentik username and Paperless username MUST match. If you intend for this to be accessed externally, this requires careful setup of your reverse proxy server to not forward these headers from other sources.
@@ -20,9 +18,13 @@ The author of Paperless-ng recommends you do not expose Paperless outside your n
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `paperless.company` is the FQDN of the Paperless-ng install.
+- `paperless.company` is the FQDN of the Paperless-ng installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Also set up your proxy server to use forward auth with paperless.company: https://goauthentik.io/docs/providers/proxy/forward_auth
 
@@ -38,7 +40,7 @@ PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME=HTTP_X_AUTHENTIK_USERNAME
 Authentik automatically sets this header when we use a proxy outpost.
 
 Now restart your container:
-`docker-compose down && docker-compose up -d`
+`docker compose down && docker compose up -d`
 
 ## authentik
 

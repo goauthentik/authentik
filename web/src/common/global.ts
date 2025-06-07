@@ -1,4 +1,4 @@
-import { Config, ConfigFromJSON, CurrentTenant, CurrentTenantFromJSON } from "@goauthentik/api";
+import { Config, ConfigFromJSON, CurrentBrand, CurrentBrandFromJSON } from "@goauthentik/api";
 
 export interface GlobalAuthentik {
     _converted?: boolean;
@@ -7,10 +7,14 @@ export interface GlobalAuthentik {
         layout: string;
     };
     config: Config;
-    tenant: CurrentTenant;
+    brand: CurrentBrand;
     versionFamily: string;
     versionSubdomain: string;
     build: string;
+    api: {
+        base: string;
+        relBase: string;
+    };
 }
 
 export interface AuthentikWindow {
@@ -21,20 +25,25 @@ export function globalAK(): GlobalAuthentik {
     const ak = (window as unknown as AuthentikWindow).authentik;
     if (ak && !ak._converted) {
         ak._converted = true;
-        ak.tenant = CurrentTenantFromJSON(ak.tenant);
+        ak.brand = CurrentBrandFromJSON(ak.brand);
         ak.config = ConfigFromJSON(ak.config);
     }
+    const apiBase = new URL(process.env.AK_API_BASE_PATH || window.location.origin);
     if (!ak) {
         return {
             config: ConfigFromJSON({
                 capabilities: [],
             }),
-            tenant: CurrentTenantFromJSON({
+            brand: CurrentBrandFromJSON({
                 ui_footer_links: [],
             }),
             versionFamily: "",
             versionSubdomain: "",
             build: "",
+            api: {
+                base: apiBase.toString(),
+                relBase: apiBase.pathname,
+            },
         };
     }
     return ak;

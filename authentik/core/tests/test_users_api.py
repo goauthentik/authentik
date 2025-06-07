@@ -1,24 +1,29 @@
 """Test Users API"""
 
 from datetime import datetime
+from json import loads
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
+from authentik.brands.models import Brand
 from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
+    Session,
     Token,
     User,
+    UserTypes,
 )
-from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
+from authentik.core.tests.utils import (
+    create_test_admin_user,
+    create_test_brand,
+    create_test_flow,
+    create_test_user,
+)
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
 from authentik.stages.email.models import EmailStage
-from authentik.tenants.models import Tenant
 
 
 class TestUsersAPI(APITestCase):
@@ -26,7 +31,55 @@ class TestUsersAPI(APITestCase):
 
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
-        self.user = User.objects.create(username="test-user")
+        self.user = create_test_user()
+
+    def test_filter_type(self):
+        """Test API filtering by type"""
+        self.client.force_login(self.admin)
+        user = create_test_admin_user(type=UserTypes.EXTERNAL)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "type": UserTypes.EXTERNAL,
+                "username": user.username,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_filter_is_superuser(self):
+        """Test API filtering by superuser status"""
+        User.objects.all().delete()
+        admin = create_test_admin_user()
+        self.client.force_login(admin)
+        # Test superuser
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": True,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1)
+        self.assertEqual(body["results"][0]["username"], admin.username)
+        # Test non-superuser
+        user = create_test_user()
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "is_superuser": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content)
+        self.assertEqual(len(body["results"]), 1, body)
+        self.assertEqual(body["results"][0]["username"], user.username)
+
+    def test_list_with_groups(self):
+        """Test listing with groups"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
+        self.assertEqual(response.status_code, 200)
 
     def test_metrics(self):
         """Test user's metrics"""
@@ -47,10 +100,11 @@ class TestUsersAPI(APITestCase):
     def test_recovery_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
     def test_set_password(self):
         """Test Direct password set"""
@@ -67,11 +121,11 @@ class TestUsersAPI(APITestCase):
     def test_recovery(self):
         """Test user recovery link (no recovery flow set)"""
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 200)
@@ -79,44 +133,51 @@ class TestUsersAPI(APITestCase):
     def test_recovery_email_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)
-        response = self.client.get(
+        self.user.email = ""
+        self.user.save()
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(
+            response.content, {"non_field_errors": "User does not have an email address set."}
+        )
         self.user.email = "foo@bar.baz"
         self.user.save()
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "No recovery flow set."})
 
     def test_recovery_email_no_stage(self):
         """Test user recovery link (no email stage)"""
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(designation=FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse("authentik_api:user-recovery-email", kwargs={"pk": self.user.pk})
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 400)
+        self.assertJSONEqual(response.content, {"non_field_errors": "Email stage does not exist."})
 
     def test_recovery_email(self):
         """Test user recovery link"""
         self.user.email = "foo@bar.baz"
         self.user.save()
         flow = create_test_flow(FlowDesignation.RECOVERY)
-        tenant: Tenant = create_test_tenant()
-        tenant.flow_recovery = flow
-        tenant.save()
+        brand: Brand = create_test_brand()
+        brand.flow_recovery = flow
+        brand.save()
 
         stage = EmailStage.objects.create(name="email")
 
         self.client.force_login(self.admin)
-        response = self.client.get(
+        response = self.client.post(
             reverse(
                 "authentik_api:user-recovery-email",
                 kwargs={"pk": self.user.pk},
@@ -141,7 +202,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -166,7 +228,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: False, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: False},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -192,7 +255,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -218,7 +282,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -244,7 +309,14 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-paths"),
         )
         self.assertEqual(response.status_code, 200)
-        self.assertJSONEqual(response.content.decode(), {"paths": ["users"]})
+        expected = list(
+            User.objects.all()
+            .values("path")
+            .distinct()
+            .order_by("path")
+            .values_list("path", flat=True)
+        )
+        self.assertJSONEqual(response.content.decode(), {"paths": expected})
 
     def test_path_valid(self):
         """Test path"""
@@ -308,12 +380,15 @@ class TestUsersAPI(APITestCase):
         """Ensure sessions are deleted when a user is deactivated"""
         user = create_test_admin_user()
         session_id = generate_id()
-        AuthenticatedSession.objects.create(
-            user=user,
+        session = Session.objects.create(
             session_key=session_id,
-            last_ip="",
+            last_ip="255.255.255.255",
+            last_user_agent="",
         )
-        cache.set(KEY_PREFIX + session_id, "foo")
+        AuthenticatedSession.objects.create(
+            session=session,
+            user=user,
+        )
 
         self.client.force_login(self.admin)
         response = self.client.patch(
@@ -324,5 +399,7 @@ class TestUsersAPI(APITestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        self.assertIsNone(cache.get(KEY_PREFIX + session_id))
-        self.assertFalse(AuthenticatedSession.objects.filter(session_key=session_id).exists())
+        self.assertFalse(Session.objects.filter(session_key=session_id).exists())
+        self.assertFalse(
+            AuthenticatedSession.objects.filter(session__session_key=session_id).exists()
+        )

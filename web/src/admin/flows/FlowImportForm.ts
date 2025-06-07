@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
-import { PFColor } from "@goauthentik/elements/Label";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/events/LogViewer";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -26,7 +27,7 @@ export class FlowImportForm extends Form<Flow> {
     }
 
     async send(): Promise<FlowImportResult> {
-        const file = this.getFormFiles()["flow"];
+        const file = this.getFormFiles().flow;
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
@@ -46,9 +47,7 @@ export class FlowImportForm extends Form<Flow> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
-                            <ak-label color=${this.result?.success ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.success ? msg("Yes") : msg("No")}
-                            </ak-label>
+                            <ak-status-label ?good=${this.result?.success}></ak-status-label>
                         </span>
                     </div>
                 </div>
@@ -57,28 +56,7 @@ export class FlowImportForm extends Form<Flow> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <dl class="pf-c-description-list pf-m-horizontal">
-                            ${(this.result?.logs || []).length > 0
-                                ? this.result?.logs?.map((m) => {
-                                      return html`<div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
-                                                  >${m.log_level}</span
-                                              >
-                                          </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  ${m.event}
-                                              </div>
-                                          </dd>
-                                      </div>`;
-                                  })
-                                : html`<div class="pf-c-description-list__group">
-                                      <dt class="pf-c-description-list__term">
-                                          <span class="pf-c-description-list__text"
-                                              >${msg("No log messages.")}</span
-                                          >
-                                      </dt>
-                                  </div>`}
+                            <ak-log-viewer .logs=${this.result?.logs}></ak-log-viewer>
                         </dl>
                     </div>
                 </div>
@@ -87,8 +65,7 @@ export class FlowImportForm extends Form<Flow> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
+        return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -96,7 +73,12 @@ export class FlowImportForm extends Form<Flow> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}
-        </form>`;
+            ${this.result ? this.renderResult() : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-import-form": FlowImportForm;
     }
 }

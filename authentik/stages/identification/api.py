@@ -1,4 +1,5 @@
 """Identification Stage API Views"""
+
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
@@ -26,6 +27,7 @@ class IdentificationStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "user_fields",
             "password_stage",
+            "captcha_stage",
             "case_insensitive_matching",
             "show_matched_user",
             "enrollment_flow",
@@ -33,6 +35,8 @@ class IdentificationStageSerializer(StageSerializer):
             "passwordless_flow",
             "sources",
             "show_source_labels",
+            "pretend_user_exists",
+            "enable_remember_me",
         ]
 
 
@@ -44,6 +48,7 @@ class IdentificationStageViewSet(UsedByMixin, ModelViewSet):
     filterset_fields = [
         "name",
         "password_stage",
+        "captcha_stage",
         "case_insensitive_matching",
         "show_matched_user",
         "enrollment_flow",

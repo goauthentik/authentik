@@ -61,7 +61,6 @@ class ServerErrorView(TemplateView):
     response_class = ServerErrorTemplateResponse
     template_name = "if/error.html"
 
-    # pylint: disable=useless-super-delegation
     def dispatch(self, *args, **kwargs):  # pragma: no cover
         """Little wrapper so django accepts this function"""
         return super().dispatch(*args, **kwargs)

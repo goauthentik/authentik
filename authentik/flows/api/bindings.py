@@ -1,11 +1,12 @@
 """Flow Binding API Views"""
+
 from typing import Any
 
 from rest_framework.exceptions import ValidationError
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.flows.api.stages import StageSerializer
 from authentik.flows.models import FlowStageBinding
 
@@ -45,3 +46,5 @@ class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
     search_fields = ["stage__name"]
+    ordering = ["order"]
+    ordering_fields = ["order", "stage__name"]

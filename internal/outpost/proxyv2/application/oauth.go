@@ -1,13 +1,10 @@
 package application
 
 import (
-	"encoding/base64"
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 
-	"github.com/gorilla/securecookie"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
@@ -18,99 +15,59 @@ const (
 	LogoutSignature   = "X-authentik-logout"
 )
 
-func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
-	rd := r.URL.Query().Get(redirectParam)
-	if rd == "" {
-		return "", false
-	}
-	u, err := url.Parse(rd)
+func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request, fwd string) {
+	state, err := a.createState(r, fwd)
 	if err != nil {
-		a.log.WithError(err).Warning("Failed to parse redirect URL")
-		return "", false
+		a.log.WithError(err).Warning("failed to create state")
+		return
 	}
-	// Check to make sure we only redirect to allowed places
-	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-		ext, err := url.Parse(a.proxyConfig.ExternalHost)
-		if err != nil {
-			return "", false
-		}
-		ext.Scheme = ""
-		if !strings.Contains(u.String(), ext.String()) {
-			a.log.WithField("url", u.String()).WithField("ext", ext.String()).Warning("redirect URI did not contain external host")
-			return "", false
-		}
-	} else {
-		if !strings.HasSuffix(u.Host, *a.proxyConfig.CookieDomain) {
-			a.log.WithField("host", u.Host).WithField("dom", *a.proxyConfig.CookieDomain).Warning("redirect URI Host was not included in cookie domain")
-			return "", false
-		}
-	}
-	return u.String(), true
-}
-
-func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
-	newState := base64.RawURLEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
 	s, _ := a.sessions.Get(r, a.SessionName())
-	// Check if we already have a state in the session,
-	// and if we do we don't do anything here
-	currentState, ok := s.Values[constants.SessionOAuthState].(string)
-	if ok {
-		claims, err := a.checkAuth(rw, r)
-		if err != nil && claims != nil {
-			a.log.Trace("auth start request with existing authenticated session")
-			a.redirect(rw, r)
-			return
-		}
-		a.log.Trace("session already has state, sending redirect to current state")
-		http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(currentState), http.StatusFound)
-		return
-	}
-	rd, ok := a.checkRedirectParam(r)
-	if ok {
-		s.Values[constants.SessionRedirect] = rd
-		a.log.WithField("rd", rd).Trace("Setting redirect")
-	}
-	s.Values[constants.SessionOAuthState] = newState
-	err := s.Save(r, rw)
-	if err != nil {
-		a.log.WithError(err).Warning("failed to save session")
-	}
-	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(newState), http.StatusFound)
-}
-
-func (a *Application) handleAuthCallback(rw http.ResponseWriter, r *http.Request) {
-	s, err := a.sessions.Get(r, a.SessionName())
-	if err != nil {
-		a.log.WithError(err).Trace("failed to get session")
-	}
-	state, ok := s.Values[constants.SessionOAuthState]
-	if !ok {
-		a.log.Warning("No state saved in session")
-		a.redirect(rw, r)
-		return
-	}
-	claims, err := a.redeemCallback(state.(string), r.URL, r.Context())
-	if err != nil {
-		a.log.WithError(err).Warning("failed to redeem code")
-		rw.WriteHeader(400)
-		// To prevent the user from just refreshing and cause more errors, delete
-		// the state from the session
-		delete(s.Values, constants.SessionOAuthState)
-		err := s.Save(r, rw)
-		if err != nil {
-			a.log.WithError(err).Warning("failed to save session")
-			rw.WriteHeader(400)
-			return
-		}
-		return
-	}
-	s.Options.MaxAge = int(time.Until(time.Unix(int64(claims.Exp), 0)).Seconds())
-	s.Values[constants.SessionClaims] = &claims
 	err = s.Save(r, rw)
 	if err != nil {
 		a.log.WithError(err).Warning("failed to save session")
-		rw.WriteHeader(400)
-		return
 	}
-	a.redirect(rw, r)
+	http.Redirect(rw, r, a.oauthConfig.AuthCodeURL(state), http.StatusFound)
+}
+
+func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
+	s, err := a.sessions.Get(r, a.SessionName())
+	if err != nil {
+		a.log.WithError(err).Warning("failed to decode session")
+	}
+	if r.Header.Get(constants.HeaderAuthorization) != "" && *a.proxyConfig.InterceptHeaderAuth {
+		rw.WriteHeader(401)
+		er := a.errorTemplates.Execute(rw, ErrorPageData{
+			Title:       "Unauthenticated",
+			Message:     "Due to 'Receive header authentication' being set, no redirect is performed.",
+			ProxyPrefix: "/outpost.goauthentik.io",
+		})
+		if er != nil {
+			http.Error(rw, "Internal Server Error", http.StatusInternalServerError)
+		}
+	}
+
+	redirectUrl := urlJoin(a.proxyConfig.ExternalHost, r.URL.Path)
+
+	if a.Mode() == api.PROXYMODE_FORWARD_DOMAIN {
+		dom := strings.TrimPrefix(*a.proxyConfig.CookieDomain, ".")
+		// In forward_domain we only check that the current URL's host
+		// ends with the cookie domain (remove the leading period if set)
+		if !strings.HasSuffix(r.URL.Hostname(), dom) {
+			a.log.WithField("url", r.URL.String()).WithField("cd", dom).Warning("Invalid redirect found")
+			redirectUrl = a.proxyConfig.ExternalHost
+		}
+	}
+	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
+		s.Values[constants.SessionRedirect] = redirectUrl
+		err = s.Save(r, rw)
+		if err != nil {
+			a.log.WithError(err).Warning("failed to save session before redirect")
+		}
+	}
+
+	urlArgs := url.Values{
+		redirectParam: []string{redirectUrl},
+	}
+	authUrl := urlJoin(a.proxyConfig.ExternalHost, "/outpost.goauthentik.io/start")
+	http.Redirect(rw, r, authUrl+"?"+urlArgs.Encode(), http.StatusFound)
 }

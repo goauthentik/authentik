@@ -1,0 +1,59 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as EmptyStateStories from "./EmptyState.stories";
+
+<Meta of={EmptyStateStories} />
+
+# EmptyState
+
+The EmptyState is an in-page element to indicate that something is either loading or unavailable.
+When "loading" is true it displays a spinner, otherwise it displays a static icon. The default
+icon is a question mark in a circle.
+
+It has two named slots, `body` and `primary`, to communicate further details about the current state
+this element is meant to display.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/EmptyState.js";
+```
+
+Note that the content of an alert _must_ be a valid HTML component; plain text does not work here.
+
+```html
+<ak-empty-state icon="fa-eject"
+    ><span slot="primary">This would display in the "primary" slot</span></ak-empty-state
+>
+```
+
+## Demo
+
+### Default: Loading
+
+The default state is _loading_
+
+<Story of={EmptyStateStories.DefaultStory} />
+
+### Done
+
+<Story of={EmptyStateStories.DefaultAndLoadingDone} />
+
+### Alternative "Done" Icon
+
+This also shows the "header" attribute filled, which is rendered in a large, dark typeface.
+
+<Story of={EmptyStateStories.DoneWithAlternativeIcon} />
+
+### The Body Slot Filled
+
+The body content slot is rendered in a lighter typeface at default size.
+
+<Story of={EmptyStateStories.WithBodySlotFilled} />
+
+### The Body and Primary Slot Filled
+
+The primary content is rendered in the normal dark typeface at default size. It is also spaced
+significantly below the spinner itself.
+
+<Story of={EmptyStateStories.WithBodyAndPrimarySlotsFilled} />

@@ -1,4 +1,5 @@
 """k8s utils"""
+
 from pathlib import Path
 
 from kubernetes.client.models.v1_container_port import V1ContainerPort
@@ -12,7 +13,7 @@ def get_namespace() -> str:
     """Get the namespace if we're running in a pod, otherwise default to default"""
     path = Path(SERVICE_TOKEN_FILENAME.replace("token", "namespace"))
     if path.exists():
-        with open(path, "r", encoding="utf8") as _namespace_file:
+        with open(path, encoding="utf8") as _namespace_file:
             return _namespace_file.read()
     return "default"
 
@@ -37,9 +38,12 @@ def compare_port(
 
 
 def compare_ports(
-    current: list[V1ServicePort | V1ContainerPort], reference: list[V1ServicePort | V1ContainerPort]
+    current: list[V1ServicePort | V1ContainerPort] | None,
+    reference: list[V1ServicePort | V1ContainerPort] | None,
 ):
     """Compare ports of a list"""
+    if not current or not reference:
+        raise NeedsRecreate()
     if len(current) != len(reference):
         raise NeedsRecreate()
     for port in reference:

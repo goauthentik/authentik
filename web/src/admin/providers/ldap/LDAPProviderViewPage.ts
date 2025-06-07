@@ -1,17 +1,18 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -27,25 +28,19 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPProvider, ProvidersApi, SessionUser } from "@goauthentik/api";
+import {
+    LDAPProvider,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SessionUser,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-ldap-view")
 export class LDAPProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersLdapRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: LDAPProvider;
 
     @state()
@@ -78,6 +73,18 @@ export class LDAPProviderViewPage extends AKElement {
         });
     }
 
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersLdapRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
+    }
+
     render(): TemplateResult {
         if (!this.provider) {
             return html``;
@@ -101,6 +108,12 @@ export class LDAPProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersLdapLdapprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 
@@ -206,7 +219,7 @@ export class LDAPProviderViewPage extends AKElement {
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value="Your authentik password"
+                                    value=${msg("Your authentik password")}
                                 />
                             </div>
                             <div class="pf-c-form__group">
@@ -225,5 +238,11 @@ export class LDAPProviderViewPage extends AKElement {
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-ldap-view": LDAPProviderViewPage;
     }
 }

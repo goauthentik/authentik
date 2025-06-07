@@ -5,7 +5,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -32,14 +32,16 @@ export class AuthenticatorDuoStage extends BaseStage<
         return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
-    firstUpdated(): void {
-        const i = setInterval(() => {
-            this.checkEnrollStatus().then((shouldStop) => {
-                if (shouldStop) {
-                    clearInterval(i);
-                }
-            });
-        }, 3000);
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            const i = setInterval(() => {
+                this.checkEnrollStatus().then((shouldStop) => {
+                    if (shouldStop) {
+                        clearInterval(i);
+                    }
+                });
+            }, 3000);
+        }
     }
 
     async checkEnrollStatus(): Promise<boolean> {
@@ -63,8 +65,7 @@ export class AuthenticatorDuoStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -114,5 +115,11 @@ export class AuthenticatorDuoStage extends BaseStage<
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-duo": AuthenticatorDuoStage;
     }
 }

@@ -1,4 +1,10 @@
 import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import {
+    APIError,
+    parseAPIResponseError,
+    pluckErrorDetail,
+} from "@goauthentik/common/errors/network";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -16,9 +22,9 @@ import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
-import "chartjs-adapter-moment";
+import "chartjs-adapter-date-fns";
 
-import { msg, str } from "@lit/localize";
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
@@ -33,7 +39,12 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export class RGBAColor {
-    constructor(public r: number, public g: number, public b: number, public a: number = 1) {}
+    constructor(
+        public r: number,
+        public g: number,
+        public b: number,
+        public a: number = 1,
+    ) {}
     toString(): string {
         return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
     }
@@ -60,6 +71,9 @@ export abstract class AKChart<T> extends AKElement {
     @state()
     chart?: Chart;
 
+    @state()
+    error?: APIError;
+
     @property()
     centerText?: string;
 
@@ -70,6 +84,8 @@ export abstract class AKChart<T> extends AKElement {
             css`
                 .container {
                     height: 100%;
+                    width: 100%;
+
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -83,6 +99,7 @@ export abstract class AKChart<T> extends AKElement {
                     width: 100px;
                     height: 100px;
                     z-index: 1;
+                    cursor: crosshair;
                 }
             `,
         ];
@@ -124,19 +141,28 @@ export abstract class AKChart<T> extends AKElement {
     }
 
     firstUpdated(): void {
-        this.apiRequest().then((r) => {
-            const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
-            if (!canvas) {
-                console.warn("Failed to get canvas element");
-                return;
-            }
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.warn("failed to get 2d context");
-                return;
-            }
-            this.chart = this.configureChart(r, ctx);
-        });
+        this.apiRequest()
+            .then((r) => {
+                const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
+
+                if (!canvas) {
+                    console.warn("Failed to get canvas element");
+                    return;
+                }
+
+                const ctx = canvas.getContext("2d");
+
+                if (!ctx) {
+                    console.warn("failed to get 2d context");
+                    return;
+                }
+
+                this.chart = this.configureChart(r, ctx);
+            })
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+                this.error = parsedError;
+            });
     }
 
     getChartType(): string {
@@ -149,14 +175,13 @@ export abstract class AKChart<T> extends AKElement {
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
         const valueStamp = ticks[index];
-        const delta = Date.now() - valueStamp.value;
-        const ago = Math.round(delta / 1000 / 3600);
-        return msg(str`${ago} hour(s) ago`);
+        return formatElapsedTime(new Date(valueStamp.value));
     }
 
     getOptions(): ChartOptions {
         return {
             maintainAspectRatio: false,
+            responsive: true,
             scales: {
                 x: {
                     type: "time",
@@ -199,7 +224,13 @@ export abstract class AKChart<T> extends AKElement {
     render(): TemplateResult {
         return html`
             <div class="container">
-                ${this.chart ? html`` : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}
+                ${this.error
+                    ? html`
+                          <ak-empty-state header="${msg("Failed to fetch data.")}" icon="fa-times">
+                              <p slot="body">${pluckErrorDetail(this.error)}</p>
+                          </ak-empty-state>
+                      `
+                    : html`${this.chart ? html`` : html`<ak-empty-state loading></ak-empty-state>`}`}
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>

@@ -1,31 +1,27 @@
 """root settings for authentik"""
 
 import importlib
-import logging
-import os
+from collections import OrderedDict
 from hashlib import sha512
 from pathlib import Path
-from urllib.parse import quote_plus
 
-import structlog
+import orjson
 from celery.schedules import crontab
 from sentry_sdk import set_tag
+from xmlsec import enable_debug_trace
 
-from authentik import ENV_GIT_HASH_KEY, __version__
-from authentik.lib.config import CONFIG
-from authentik.lib.logging import add_process_id
+from authentik import __version__
+from authentik.lib.config import CONFIG, django_db_config, redis_url
+from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
 
-LOGGER = structlog.get_logger()
-
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
-STATICFILES_DIRS = [BASE_DIR / Path("web")]
-MEDIA_ROOT = BASE_DIR / Path("media")
 
-DEBUG = CONFIG.y_bool("debug")
-SECRET_KEY = CONFIG.y("secret_key")
+DEBUG = CONFIG.get_bool("debug")
+SECRET_KEY = CONFIG.get("secret_key")
 
 INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
@@ -36,14 +32,16 @@ LOGIN_URL = "authentik_flows:default-authentication"
 # Custom user model
 AUTH_USER_MODEL = "authentik_core.User"
 
+CSRF_COOKIE_PATH = LANGUAGE_COOKIE_PATH = SESSION_COOKIE_PATH = CONFIG.get("web.path", "/")
+
 CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
-SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
+SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
+APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
-    "django.contrib.auth.backends.ModelBackend",
     BACKEND_INBUILT,
     BACKEND_APP_PASSWORD,
     BACKEND_LDAP,
@@ -53,40 +51,56 @@ AUTHENTICATION_BACKENDS = [
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 # Application definition
-INSTALLED_APPS = [
-    "daphne",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
+SHARED_APPS = [
+    "django_tenants",
+    "authentik.tenants",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.humanize",
+    "rest_framework",
+    "django_filters",
+    "drf_spectacular",
+    "django_prometheus",
+    "django_countries",
+    "pgactivity",
+    "pglock",
+    "channels",
+]
+TENANT_APPS = [
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
-    "authentik.events",
     "authentik.flows",
-    "authentik.lib",
     "authentik.outposts",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",
     "authentik.policies.expiry",
     "authentik.policies.expression",
+    "authentik.policies.geoip",
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
+    "authentik.providers.rac",
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
+    "authentik.rbac",
     "authentik.recovery",
+    "authentik.sources.kerberos",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.sources.scim",
+    "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
+    "authentik.stages.authenticator_email",
     "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
     "authentik.stages.authenticator_totp",
@@ -101,21 +115,24 @@ INSTALLED_APPS = [
     "authentik.stages.invitation",
     "authentik.stages.password",
     "authentik.stages.prompt",
+    "authentik.stages.redirect",
     "authentik.stages.user_delete",
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
-    "authentik.tenants",
+    "authentik.brands",
     "authentik.blueprints",
-    "rest_framework",
-    "django_filters",
-    "drf_spectacular",
     "guardian",
-    "django_prometheus",
-    "channels",
 ]
 
-GUARDIAN_MONKEY_PATCH = False
+TENANT_MODEL = "authentik_tenants.Tenant"
+TENANT_DOMAIN_MODEL = "authentik_tenants.Domain"
+
+TENANT_CREATION_FAKES_MIGRATIONS = True
+TENANT_BASE_SCHEMA = "template"
+PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
+
+GUARDIAN_MONKEY_PATCH_USER = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -138,16 +155,23 @@ SPECTACULAR_SETTINGS = {
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",
     },
     "ENUM_NAME_OVERRIDES": {
+        "CountryCodeEnum": "django_countries.countries",
         "EventActions": "authentik.events.models.EventAction",
-        "ChallengeChoices": "authentik.flows.challenge.ChallengeTypes",
         "FlowDesignationEnum": "authentik.flows.models.FlowDesignation",
+        "FlowLayoutEnum": "authentik.flows.models.FlowLayout",
         "PolicyEngineMode": "authentik.policies.models.PolicyEngineMode",
         "ProxyMode": "authentik.providers.proxy.models.ProxyMode",
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "UserTypeEnum": "authentik.core.models.UserTypes",
+        "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
+    "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
+    "PREPROCESSING_HOOKS": [
+        "authentik.api.schema.preprocess_schema_exclude_non_api",
+    ],
     "POSTPROCESSING_HOOKS": [
         "authentik.api.schema.postprocess_schema_responses",
         "drf_spectacular.hooks.postprocess_schema_enums",
@@ -158,74 +182,75 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
-        "rest_framework_guardian.filters.ObjectPermissionsFilter",
+        "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
     ],
-    "DEFAULT_PARSER_CLASSES": [
-        "rest_framework.parsers.JSONParser",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
+    "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_RENDERER_CLASSES": [
-        "rest_framework.renderers.JSONRenderer",
+        "drf_orjson_renderer.renderers.ORJSONRenderer",
+    ],
+    "ORJSON_RENDERER_OPTIONS": [
+        orjson.OPT_NON_STR_KEYS,
+        orjson.OPT_UTC_Z,
+    ],
+    "DEFAULT_PARSER_CLASSES": [
+        "drf_orjson_renderer.parsers.ORJSONParser",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": CONFIG.y("throttle.default"),
+        "anon": CONFIG.get("throttle.default"),
     },
 }
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-REDIS_CELERY_TLS_REQUIREMENTS = ""
-if CONFIG.y_bool("redis.tls", False):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
-    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
-_redis_url = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
-    f"{int(CONFIG.y('redis.port'))}"
-)
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"{_redis_url}/{CONFIG.y('redis.db')}",
-        "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "LOCATION": CONFIG.get("cache.url") or redis_url(CONFIG.get("redis.db")),
+        "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
         "KEY_PREFIX": "authentik_cache",
+        "KEY_FUNCTION": "django_tenants.cache.make_key",
+        "REVERSE_KEY_FUNCTION": "django_tenants.cache.reverse_key",
     }
 }
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
-SESSION_SERIALIZER = "django.contrib.sessions.serializers.PickleSerializer"
-SESSION_CACHE_ALIAS = "default"
+SESSION_ENGINE = "authentik.core.sessions"
 # Configured via custom SessionMiddleware
 # SESSION_COOKIE_SAMESITE = "None"
 # SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_AGE = timedelta_from_string(
+    CONFIG.get("sessions.unauthenticated_age", "days=1")
+).total_seconds()
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 MESSAGE_STORAGE = "authentik.root.messages.storage.ChannelsStorage"
 
 MIDDLEWARE = [
+    "django_tenants.middleware.default.DefaultTenantMiddleware",
     "authentik.root.middleware.LoggingMiddleware",
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
-    "authentik.root.middleware.SessionMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "authentik.root.middleware.ClientIPMiddleware",
+    "authentik.stages.user_login.middleware.BoundSessionMiddleware",
+    "authentik.core.middleware.AuthenticationMiddleware",
     "authentik.core.middleware.RequestIDMiddleware",
-    "authentik.tenants.middleware.TenantMiddleware",
+    "authentik.brands.middleware.BrandMiddleware",
     "authentik.events.middleware.AuditMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "authentik.root.middleware.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
@@ -237,7 +262,7 @@ ROOT_URLCONF = "authentik.root.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [CONFIG.y("email.template_dir")],
+        "DIRS": [CONFIG.get("email.template_dir")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -245,7 +270,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "authentik.tenants.utils.context_processor",
+                "authentik.brands.utils.context_processor",
             ],
         },
     },
@@ -255,10 +280,10 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "BACKEND": "channels_redis.pubsub.RedisPubSubChannelLayer",
         "CONFIG": {
-            "hosts": [f"{_redis_url}/{CONFIG.y('redis.db')}"],
-            "prefix": "authentik_channels",
+            "hosts": [CONFIG.get("channel.url") or redis_url(CONFIG.get("redis.db"))],
+            "prefix": "authentik_channels_",
         },
     },
 }
@@ -267,36 +292,26 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
-        "HOST": CONFIG.y("postgresql.host"),
-        "NAME": CONFIG.y("postgresql.name"),
-        "USER": CONFIG.y("postgresql.user"),
-        "PASSWORD": CONFIG.y("postgresql.password"),
-        "PORT": int(CONFIG.y("postgresql.port")),
-        "SSLMODE": CONFIG.y("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.y("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.y("postgresql.sslcert"),
-        "SSLKEY": CONFIG.y("postgresql.sslkey"),
-    }
-}
+ORIGINAL_BACKEND = "django_prometheus.db.backends.postgresql"
+DATABASES = django_db_config()
 
-if CONFIG.y_bool("postgresql.use_pgbouncer", False):
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
-    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
+DATABASE_ROUTERS = (
+    "authentik.tenants.db.FailoverRouter",
+    "django_tenants.routers.TenantSyncRouter",
+)
 
 # Email
-EMAIL_HOST = CONFIG.y("email.host")
-EMAIL_PORT = int(CONFIG.y("email.port"))
-EMAIL_HOST_USER = CONFIG.y("email.username")
-EMAIL_HOST_PASSWORD = CONFIG.y("email.password")
-EMAIL_USE_TLS = CONFIG.y_bool("email.use_tls", False)
-EMAIL_USE_SSL = CONFIG.y_bool("email.use_ssl", False)
-EMAIL_TIMEOUT = int(CONFIG.y("email.timeout"))
-DEFAULT_FROM_EMAIL = CONFIG.y("email.from")
+# These values should never actually be used, emails are only sent from email stages, which
+# loads the config directly from CONFIG
+# See authentik/stages/email/models.py, line 105
+EMAIL_HOST = CONFIG.get("email.host")
+EMAIL_PORT = CONFIG.get_int("email.port")
+EMAIL_HOST_USER = CONFIG.get("email.username")
+EMAIL_HOST_PASSWORD = CONFIG.get("email.password")
+EMAIL_USE_TLS = CONFIG.get_bool("email.use_tls", False)
+EMAIL_USE_SSL = CONFIG.get_bool("email.use_ssl", False)
+EMAIL_TIMEOUT = CONFIG.get_int("email.timeout")
+DEFAULT_FROM_EMAIL = CONFIG.get("email.from")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[authentik] "
 
@@ -326,136 +341,122 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-# Celery settings
-# Add a 10 minute timeout to all Celery tasks.
-CELERY_TASK_SOFT_TIME_LIMIT = 600
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 50
-CELERY_WORKER_CONCURRENCY = 2
-CELERY_BEAT_SCHEDULE = {
-    "clean_expired_models": {
-        "task": "authentik.core.tasks.clean_expired_models",
-        "schedule": crontab(minute="2-59/5"),
-        "options": {"queue": "authentik_scheduled"},
+CELERY = {
+    "task_soft_time_limit": 600,
+    "worker_max_tasks_per_child": 50,
+    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
+    "beat_schedule": {
+        "clean_expired_models": {
+            "task": "authentik.core.tasks.clean_expired_models",
+            "schedule": crontab(minute="2-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
+        "user_cleanup": {
+            "task": "authentik.core.tasks.clean_temporary_users",
+            "schedule": crontab(minute="9-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
     },
-    "user_cleanup": {
-        "task": "authentik.core.tasks.clean_temporary_users",
-        "schedule": crontab(minute="9-59/5"),
-        "options": {"queue": "authentik_scheduled"},
-    },
+    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
+    "task_create_missing_queues": True,
+    "task_default_queue": "authentik",
+    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
+    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
+    "broker_transport_options": CONFIG.get_dict_from_b64_json(
+        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
+        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
+    ),
+    "redis_retry_on_timeout": True,
 }
-CELERY_TASK_CREATE_MISSING_QUEUES = True
-CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
-CELERY_RESULT_BACKEND = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 
 # Sentry integration
 env = get_env()
-_ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
+_ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
-    sentry_env = CONFIG.y("error_reporting.environment", "customer")
-    sentry_init()
+    sentry_env = CONFIG.get("error_reporting.environment", "customer")
+    sentry_init(spotlight=DEBUG)
     set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
+STATICFILES_DIRS = [BASE_DIR / Path("web")]
+STATIC_URL = CONFIG.get("web.path", "/") + "static/"
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+
+# Media files
+if CONFIG.get("storage.media.backend", "file") == "s3":
+    STORAGES["default"] = {
+        "BACKEND": "authentik.root.storages.S3Storage",
+        "OPTIONS": {
+            # How to talk to S3
+            "session_profile": CONFIG.get("storage.media.s3.session_profile", None),
+            "access_key": CONFIG.get("storage.media.s3.access_key", None),
+            "secret_key": CONFIG.get("storage.media.s3.secret_key", None),
+            "security_token": CONFIG.get("storage.media.s3.security_token", None),
+            "region_name": CONFIG.get("storage.media.s3.region", None),
+            "use_ssl": CONFIG.get_bool("storage.media.s3.use_ssl", True),
+            "endpoint_url": CONFIG.get("storage.media.s3.endpoint", None),
+            "bucket_name": CONFIG.get("storage.media.s3.bucket_name"),
+            "default_acl": "private",
+            "querystring_auth": True,
+            "signature_version": "s3v4",
+            "file_overwrite": False,
+            "location": "media",
+            "url_protocol": (
+                "https:" if CONFIG.get("storage.media.s3.secure_urls", True) else "http:"
+            ),
+            "custom_domain": CONFIG.get("storage.media.s3.custom_domain", None),
+        },
+    }
+# Fallback on file storage backend
+else:
+    STORAGES["default"] = {
+        "BACKEND": "authentik.root.storages.FileStorage",
+        "OPTIONS": {
+            "location": Path(CONFIG.get("storage.media.file.path")),
+            "base_url": CONFIG.get("web.path", "/") + "media/",
+        },
+    }
+    # Compatibility for apps not supporting top-level STORAGES
+    # such as django-tenants
+    MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
+    MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-# We can't check TEST here as its set later by the test runner
-LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
-# We could add a custom level to stdlib logging and structlog, but it's not easy or clean
-# https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
-# Additionally, the entire code uses debug as highest level so that would have to be re-written too
-if LOG_LEVEL == "TRACE":
-    LOG_LEVEL = "DEBUG"
 
-structlog.configure_once(
-    processors=[
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.add_logger_name,
-        structlog.contextvars.merge_contextvars,
-        add_process_id,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso", utc=False),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.dict_tracebacks,
-        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.make_filtering_bound_logger(
-        getattr(logging, LOG_LEVEL, logging.WARNING)
-    ),
-    cache_logger_on_first_use=True,
-)
-
-LOG_PRE_CHAIN = [
-    # Add the log level and a timestamp to the event_dict if the log entry
-    # is not from structlog.
-    structlog.stdlib.add_log_level,
-    structlog.stdlib.add_logger_name,
-    structlog.processors.TimeStamper(),
-    structlog.processors.StackInfoRenderer(),
-]
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(sort_keys=True),
-            "foreign_pre_chain": LOG_PRE_CHAIN,
-        },
-        "console": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
-            "foreign_pre_chain": LOG_PRE_CHAIN,
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "console" if DEBUG else "json",
-        },
-    },
-    "loggers": {},
-}
-
-_LOGGING_HANDLER_MAP = {
-    "": LOG_LEVEL,
-    "authentik": LOG_LEVEL,
-    "django": "WARNING",
-    "django.request": "ERROR",
-    "celery": "WARNING",
-    "selenium": "WARNING",
-    "docker": "WARNING",
-    "urllib3": "WARNING",
-    "websockets": "WARNING",
-    "daphne": "WARNING",
-    "kubernetes": "INFO",
-    "asyncio": "WARNING",
-    "redis": "WARNING",
-    "silk": "INFO",
-    "fsevents": "WARNING",
-}
-for handler_name, level in _LOGGING_HANDLER_MAP.items():
-    LOGGING["loggers"][handler_name] = {
-        "handlers": ["console"],
-        "level": level,
-        "propagate": False,
-    }
+structlog_configure()
+LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [
+    "SHARED_APPS",
+    "TENANT_APPS",
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
-    "CELERY_BEAT_SCHEDULE",
+    "CELERY",
+]
+
+SILENCED_SYSTEM_CHECKS = [
+    # We use our own subclass of django.middleware.csrf.CsrfViewMiddleware
+    "security.W003",
+    # We don't set SESSION_COOKIE_SECURE since we use a custom SessionMiddleware subclass
+    "security.W010",
+    # HSTS: This is configured in reverse proxies/the go proxy, not in django
+    "security.W004",
+    # https redirect: This is configured in reverse proxies/the go proxy, not in django
+    "security.W008",
 ]
 
 
@@ -463,10 +464,11 @@ def _update_settings(app_path: str):
     try:
         settings_module = importlib.import_module(app_path)
         CONFIG.log("debug", "Loaded app settings", path=app_path)
-        INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
+        SHARED_APPS.extend(getattr(settings_module, "SHARED_APPS", []))
+        TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY_BEAT_SCHEDULE.update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
+        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -474,21 +476,15 @@ def _update_settings(app_path: str):
         pass
 
 
-# Load subapps's settings
-for _app in INSTALLED_APPS:
-    if not _app.startswith("authentik"):
-        continue
-    _update_settings(f"{_app}.settings")
-_update_settings("data.user_settings")
-
 if DEBUG:
-    CELERY_TASK_ALWAYS_EAGER = True
-    os.environ[ENV_GIT_HASH_KEY] = "dev"
-    INSTALLED_APPS.append("silk")
-    SILKY_PYTHON_PROFILER = True
-    MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+    CELERY["task_always_eager"] = True
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
+    SHARED_APPS.insert(SHARED_APPS.index("django.contrib.staticfiles"), "daphne")
+    enable_debug_trace(True)
 
-INSTALLED_APPS.append("authentik.core")
+TENANT_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
 
@@ -496,7 +492,22 @@ CONFIG.log("info", "Booting authentik", version=__version__)
 try:
     importlib.import_module("authentik.enterprise.apps")
     CONFIG.log("info", "Enabled authentik enterprise")
-    INSTALLED_APPS.append("authentik.enterprise")
+    TENANT_APPS.append("authentik.enterprise")
     _update_settings("authentik.enterprise.settings")
 except ImportError:
     pass
+
+# Import events after other apps since it relies on tasks and other things from all apps
+# being imported for @prefill_task
+TENANT_APPS.append("authentik.events")
+
+
+# Load subapps's settings
+for _app in set(SHARED_APPS + TENANT_APPS):
+    if not _app.startswith("authentik"):
+        continue
+    _update_settings(f"{_app}.settings")
+_update_settings("data.user_settings")
+
+SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
+INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.consent.api import ConsentStageViewSet, UserConsentViewSet
 
 api_urlpatterns = [

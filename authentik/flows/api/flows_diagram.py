@@ -1,6 +1,6 @@
 """Flows Diagram API"""
+
 from dataclasses import dataclass, field
-from typing import Optional
 
 from django.utils.translation import gettext as _
 from guardian.shortcuts import get_objects_for_user
@@ -17,13 +17,14 @@ class DiagramElement:
 
     identifier: str
     description: str
-    action: Optional[str] = None
-    source: Optional[list["DiagramElement"]] = None
+    action: str | None = None
+    source: list["DiagramElement"] | None = None
 
     style: list[str] = field(default_factory=lambda: ["[", "]"])
 
     def __str__(self) -> str:
-        element = f'{self.identifier}{self.style[0]}"{self.description}"{self.style[1]}'
+        description = self.description.replace('"', "#quot;")
+        element = f'{self.identifier}{self.style[0]}"{description}"{self.style[1]}'
         if self.action is not None:
             if self.action != "":
                 element = f"--{self.action}--> {element}"
@@ -64,10 +65,10 @@ class FlowDiagram:
         ):
             element = DiagramElement(
                 f"flow_policy_{p_index}",
-                _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                _("Policy ({type})".format_map({"type": policy_binding.policy._meta.verbose_name}))
                 + "\n"
                 + policy_binding.policy.name,
-                _("Binding %(order)d" % {"order": policy_binding.order}),
+                _("Binding {order}".format_map({"order": policy_binding.order})),
                 parent_elements,
                 style=["{{", "}}"],
             )
@@ -90,7 +91,7 @@ class FlowDiagram:
         ):
             element = DiagramElement(
                 f"stage_{stage_index}_policy_{p_index}",
-                _("Policy (%(type)s)" % {"type": policy_binding.policy._meta.verbose_name})
+                _("Policy ({type})".format_map({"type": policy_binding.policy._meta.verbose_name}))
                 + "\n"
                 + policy_binding.policy.name,
                 "",
@@ -118,7 +119,7 @@ class FlowDiagram:
 
             element = DiagramElement(
                 f"stage_{s_index}",
-                _("Stage (%(type)s)" % {"type": stage_binding.stage._meta.verbose_name})
+                _("Stage ({type})".format_map({"type": stage_binding.stage._meta.verbose_name}))
                 + "\n"
                 + stage_binding.stage.name,
                 action,

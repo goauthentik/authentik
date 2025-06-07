@@ -1,5 +1,4 @@
 """password stage models"""
-from typing import Optional
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -9,7 +8,12 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, Stage
-from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
+from authentik.stages.password import (
+    BACKEND_APP_PASSWORD,
+    BACKEND_INBUILT,
+    BACKEND_KERBEROS,
+    BACKEND_LDAP,
+)
 
 
 def get_authentication_backends():
@@ -26,6 +30,10 @@ def get_authentication_backends():
         (
             BACKEND_LDAP,
             _("User database + LDAP password"),
+        ),
+        (
+            BACKEND_KERBEROS,
+            _("User database + Kerberos password"),
         ),
     ]
 
@@ -44,6 +52,12 @@ class PasswordStage(ConfigurableStage, Stage):
             "To lock the user out, use a reputation policy and a user_write stage."
         ),
     )
+    allow_show_password = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, provides a 'show password' button with the password input field."
+        ),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -52,7 +66,7 @@ class PasswordStage(ConfigurableStage, Stage):
         return PasswordStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.password.stage import PasswordStageView
 
         return PasswordStageView
@@ -61,7 +75,7 @@ class PasswordStage(ConfigurableStage, Stage):
     def component(self) -> str:
         return "ak-stage-password-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         if not self.configure_flow:
             return None
         return UserSettingSerializer(

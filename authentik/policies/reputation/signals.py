@@ -1,39 +1,56 @@
 """authentik reputation request signals"""
+
 from django.contrib.auth.signals import user_logged_in
-from django.core.cache import cache
+from django.db import transaction
 from django.dispatch import receiver
 from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.core.signals import login_failed
-from authentik.lib.config import CONFIG
-from authentik.lib.utils.http import get_client_ip
-from authentik.policies.reputation.models import CACHE_KEY_PREFIX
-from authentik.policies.reputation.tasks import save_reputation
+from authentik.events.context_processors.asn import ASN_CONTEXT_PROCESSOR
+from authentik.events.context_processors.geoip import GEOIP_CONTEXT_PROCESSOR
+from authentik.policies.reputation.models import Reputation, reputation_expiry
+from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.identification.signals import identification_failed
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
-CACHE_TIMEOUT = int(CONFIG.y("redis.cache_timeout_reputation"))
+
+
+def clamp(value, min, max):
+    return sorted([min, value, max])[1]
 
 
 def update_score(request: HttpRequest, identifier: str, amount: int):
     """Update score for IP and User"""
-    remote_ip = get_client_ip(request)
+    remote_ip = ClientIPMiddleware.get_client_ip(request)
+    tenant = get_current_tenant()
+    new_score = clamp(amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit)
 
-    try:
-        # We only update the cache here, as its faster than writing to the DB
-        score = cache.get_or_set(
-            CACHE_KEY_PREFIX + remote_ip + "/" + identifier,
-            {"ip": remote_ip, "identifier": identifier, "score": 0},
-            CACHE_TIMEOUT,
+    with transaction.atomic():
+        reputation, created = Reputation.objects.select_for_update().get_or_create(
+            ip=remote_ip,
+            identifier=identifier,
+            defaults={
+                "score": clamp(
+                    amount, tenant.reputation_lower_limit, tenant.reputation_upper_limit
+                ),
+                "ip_geo_data": GEOIP_CONTEXT_PROCESSOR.city_dict(remote_ip) or {},
+                "ip_asn_data": ASN_CONTEXT_PROCESSOR.asn_dict(remote_ip) or {},
+                "expires": reputation_expiry(),
+            },
         )
-        score["score"] += amount
-        cache.set(CACHE_KEY_PREFIX + remote_ip + "/" + identifier, score)
-    except ValueError as exc:
-        LOGGER.warning("failed to set reputation", exc=exc)
 
-    LOGGER.debug("Updated score", amount=amount, for_user=identifier, for_ip=remote_ip)
-    save_reputation.delay()
+        if not created:
+            new_score = clamp(
+                reputation.score + amount,
+                tenant.reputation_lower_limit,
+                tenant.reputation_upper_limit,
+            )
+            reputation.score = new_score
+            reputation.save()
+
+    LOGGER.info("Updated score", amount=new_score, for_user=identifier, for_ip=remote_ip)
 
 
 @receiver(login_failed)

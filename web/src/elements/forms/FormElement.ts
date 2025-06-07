@@ -6,13 +6,20 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ErrorDetail } from "@goauthentik/api";
+
+/**
+ * This is used in two places outside of Flow, and in both cases is used primarily to
+ * display content, not take input.  It displays the TOTP QR code, and the static
+ * recovery tokens.  But it's used a lot in Flow.
+ */
 
 @customElement("ak-form-element")
 export class FormElement extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFForm, PFFormControl];
+        return [PFBase, PFForm, PFFormControl];
     }
 
     @property()
@@ -22,7 +29,16 @@ export class FormElement extends AKElement {
     required = false;
 
     @property({ attribute: false })
-    errors?: ErrorDetail[];
+    set errors(value: ErrorDetail[] | undefined) {
+        this._errors = value;
+        const hasError = (value || []).length > 0;
+        this.querySelectorAll("input").forEach((input) => {
+            input.setAttribute("aria-invalid", hasError.toString());
+        });
+        this.requestUpdate();
+    }
+
+    _errors?: ErrorDetail[];
 
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
@@ -39,9 +55,19 @@ export class FormElement extends AKElement {
                     : html``}
             </label>
             <slot></slot>
-            ${(this.errors || []).map((error) => {
-                return html`<p class="pf-c-form__helper-text pf-m-error">${error.string}</p>`;
+            ${(this._errors || []).map((error) => {
+                return html`<p class="pf-c-form__helper-text pf-m-error">
+                    <span class="pf-c-form__helper-text-icon">
+                        <i class="fas fa-exclamation-circle" aria-hidden="true"></i> </span
+                    >${error.string}
+                </p>`;
             })}
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-element": FormElement;
     }
 }

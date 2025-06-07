@@ -1,4 +1,5 @@
 """Docker controller tests"""
+
 from django.test import TestCase
 from docker.models.containers import Container
 

@@ -1,4 +1,5 @@
 """proxy provider tests"""
+
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
@@ -23,6 +24,7 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
                 "basic_auth_enabled": True,
@@ -40,6 +42,7 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
                 "basic_auth_enabled": True,
@@ -63,13 +66,14 @@ class ProxyProviderTests(APITestCase):
                 "name": generate_id(),
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
             },
         )
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"non_field_errors": ["Internal host cannot be empty when forward auth is disabled."]},
+            {"internal_host": ["Internal host cannot be empty when forward auth is disabled."]},
         )
 
     def test_create_defaults(self):
@@ -81,6 +85,7 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },
@@ -98,6 +103,7 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },
@@ -113,6 +119,7 @@ class ProxyProviderTests(APITestCase):
                 "name": name,
                 "mode": ProxyMode.PROXY,
                 "authorization_flow": create_test_flow().pk.hex,
+                "invalidation_flow": create_test_flow().pk.hex,
                 "external_host": "http://localhost",
                 "internal_host": "http://localhost",
             },

@@ -1,8 +1,7 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/utils";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import { rootInterface } from "@goauthentik/elements/Base";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -14,17 +13,16 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CapabilitiesEnum,
     DeniedActionEnum,
     Flow,
     FlowDesignationEnum,
+    FlowLayoutEnum,
     FlowsApi,
-    LayoutEnum,
     PolicyEngineMode,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-form")
-export class FlowForm extends ModelForm<Flow, string> {
+export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
     async loadInstance(pk: string): Promise<Flow> {
         const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
@@ -34,11 +32,9 @@ export class FlowForm extends ModelForm<Flow, string> {
     }
 
     getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated flow.");
-        } else {
-            return msg("Successfully created flow.");
-        }
+        return this.instance
+            ? msg("Successfully updated flow.")
+            : msg("Successfully created flow.");
     }
 
     @property({ type: Boolean })
@@ -56,9 +52,9 @@ export class FlowForm extends ModelForm<Flow, string> {
                 flowRequest: data,
             });
         }
-        const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["background"];
+
+        if (this.can(CapabilitiesEnum.CanSaveMedia)) {
+            const icon = this.getFormFiles().background;
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
                     slug: flow.slug,
@@ -78,8 +74,7 @@ export class FlowForm extends ModelForm<Flow, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -87,7 +82,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Title")} ?required=${true} name="title">
+            <ak-form-element-horizontal label=${msg("Title")} required name="title">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.title)}"
@@ -96,20 +91,18 @@ export class FlowForm extends ModelForm<Flow, string> {
                 />
                 <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                 />
                 <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Designation")}
-                ?required=${true}
-                name="designation"
-            >
+            <ak-form-element-horizontal label=${msg("Designation")} required name="designation">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>
                         ---------
@@ -168,7 +161,7 @@ export class FlowForm extends ModelForm<Flow, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication")}
-                ?required=${true}
+                required
                 name="authentication"
             >
                 <select class="pf-c-form-control">
@@ -190,14 +183,28 @@ export class FlowForm extends ModelForm<Flow, string> {
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireUnauthenticated}
                     >
-                        ${msg("Require no authentication.")}
+                        ${msg("Require no authentication")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireSuperuser}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireSuperuser}
                     >
-                        ${msg("Require superuser.")}
+                        ${msg("Require superuser")}
+                    </option>
+                    <option
+                        value=${AuthenticationEnum.RequireRedirect}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireRedirect}
+                    >
+                        ${msg("Require being redirected from another flow")}
+                    </option>
+                    <option
+                        value=${AuthenticationEnum.RequireOutpost}
+                        ?selected=${this.instance?.authentication ===
+                        AuthenticationEnum.RequireOutpost}
+                    >
+                        ${msg("Require Outpost (flow can only be executed from an outpost)")}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">
@@ -212,7 +219,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.compatibilityMode, false)}
+                                ?checked=${this.instance?.compatibilityMode ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -229,7 +236,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Denied action")}
-                        ?required=${true}
+                        required
                         name="deniedAction"
                     >
                         <ak-radio
@@ -268,7 +275,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Policy engine mode")}
-                        ?required=${true}
+                        required
                         name="policyEngineMode"
                     >
                         <ak-radio
@@ -298,45 +305,41 @@ export class FlowForm extends ModelForm<Flow, string> {
             <ak-form-group>
                 <span slot="header"> ${msg("Appearance settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Layout")}
-                        ?required=${true}
-                        name="layout"
-                    >
+                    <ak-form-element-horizontal label=${msg("Layout")} required name="layout">
                         <select class="pf-c-form-control">
                             <option
-                                value=${LayoutEnum.Stacked}
-                                ?selected=${this.instance?.layout === LayoutEnum.Stacked}
+                                value=${FlowLayoutEnum.Stacked}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.Stacked}
                             >
-                                ${LayoutToLabel(LayoutEnum.Stacked)}
+                                ${LayoutToLabel(FlowLayoutEnum.Stacked)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentLeft}
+                                value=${FlowLayoutEnum.ContentLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.ContentRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.ContentRight}
+                                value=${FlowLayoutEnum.ContentRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.ContentRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.ContentRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.ContentRight)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarLeft}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarLeft}
+                                value=${FlowLayoutEnum.SidebarLeft}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarLeft}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarLeft)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarLeft)}
                             </option>
                             <option
-                                value=${LayoutEnum.SidebarRight}
-                                ?selected=${this.instance?.layout === LayoutEnum.SidebarRight}
+                                value=${FlowLayoutEnum.SidebarRight}
+                                ?selected=${this.instance?.layout === FlowLayoutEnum.SidebarRight}
                             >
-                                ${LayoutToLabel(LayoutEnum.SidebarRight)}
+                                ${LayoutToLabel(FlowLayoutEnum.SidebarRight)}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
+                    ${this.can(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-form-element-horizontal
                                   label=${msg("Background")}
                                   name="background"
@@ -392,7 +395,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                           >
                               <input
                                   type="text"
-                                  value="${first(this.instance?.background, "")}"
+                                  value="${this.instance?.background ?? ""}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
@@ -400,7 +403,12 @@ export class FlowForm extends ModelForm<Flow, string> {
                               </p>
                           </ak-form-element-horizontal>`}
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-flow-form": FlowForm;
     }
 }

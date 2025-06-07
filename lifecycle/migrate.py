@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """System Migration handler"""
-import os
+
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
+from os import environ, system
 from pathlib import Path
 from typing import Any
 
-from psycopg2 import connect
+from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -16,15 +17,32 @@ ADV_LOCK_UID = 1000
 LOCKED = False
 
 
+class CommandError(Exception):
+    """Error raised when a system_crit command fails"""
+
+
 class BaseMigration:
     """Base System Migration"""
 
-    cur: Any
-    con: Any
+    cur: Cursor
+    con: Connection
 
     def __init__(self, cur: Any, con: Any):
         self.cur = cur
         self.con = con
+
+    def system_crit(self, command: str):
+        """Run system command"""
+        LOGGER.debug("Running system_crit command", command=command)
+        retval = system(command)  # nosec
+        if retval != 0:
+            raise CommandError("Migration error")
+
+    def fake_migration(self, *app_migration: tuple[str, str]):
+        """Fake apply a list of migrations, arguments are
+        expected to be tuples of (app_label, migration_name)"""
+        for app, _migration in app_migration:
+            self.system_crit(f"./manage.py migrate {app} {_migration} --fake")
 
     def needs_migration(self) -> bool:
         """Return true if Migration needs to be run"""
@@ -34,38 +52,43 @@ class BaseMigration:
         """Run the actual migration"""
 
 
-def wait_for_lock():
+def wait_for_lock(cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
+    global LOCKED  # noqa: PLW0603
     LOGGER.info("waiting to acquire database lock")
-    curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
-    # pylint: disable=global-statement
-    global LOCKED
+    cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     LOCKED = True
 
 
-def release_lock():
+def release_lock(cursor: Cursor):
     """Release database lock"""
+    global LOCKED  # noqa: PLW0603
     if not LOCKED:
         return
-    curr.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    LOGGER.info("releasing database lock")
+    cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    LOCKED = False
 
 
-if __name__ == "__main__":
+def run_migrations():
     conn = connect(
-        dbname=CONFIG.y("postgresql.name"),
-        user=CONFIG.y("postgresql.user"),
-        password=CONFIG.y("postgresql.password"),
-        host=CONFIG.y("postgresql.host"),
-        port=int(CONFIG.y("postgresql.port")),
-        sslmode=CONFIG.y("postgresql.sslmode"),
-        sslrootcert=CONFIG.y("postgresql.sslrootcert"),
-        sslcert=CONFIG.y("postgresql.sslcert"),
-        sslkey=CONFIG.y("postgresql.sslkey"),
+        dbname=CONFIG.get("postgresql.name"),
+        user=CONFIG.get("postgresql.user"),
+        password=CONFIG.get("postgresql.password"),
+        host=CONFIG.get("postgresql.host"),
+        port=CONFIG.get_int("postgresql.port"),
+        sslmode=CONFIG.get("postgresql.sslmode"),
+        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
+        sslcert=CONFIG.get("postgresql.sslcert"),
+        sslkey=CONFIG.get("postgresql.sslkey"),
     )
     curr = conn.cursor()
     try:
-        for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
-            spec = spec_from_file_location("lifecycle.system_migrations", migration)
+        wait_for_lock(curr)
+        for migration_path in sorted(
+            Path(__file__).parent.absolute().glob("system_migrations/*.py")
+        ):
+            spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
             mod = module_from_spec(spec)
@@ -76,14 +99,11 @@ if __name__ == "__main__":
                     continue
                 migration = sub(curr, conn)
                 if migration.needs_migration():
-                    wait_for_lock()
-                    LOGGER.info("Migration needs to be applied", migration=sub)
+                    LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
-                    LOGGER.info("Migration finished applying", migration=sub)
-                    release_lock()
+                    LOGGER.info("Migration finished applying", migration=migration_path.name)
         LOGGER.info("applying django migrations")
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-        wait_for_lock()
+        environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
         try:
             from django.core.management import execute_from_command_line
         except ImportError as exc:
@@ -92,6 +112,17 @@ if __name__ == "__main__":
                 "available on your PYTHONPATH environment variable? Did you "
                 "forget to activate a virtual environment?"
             ) from exc
-        execute_from_command_line(["", "migrate"])
+        execute_from_command_line(["", "migrate_schemas"])
+        if CONFIG.get_bool("tenants.enabled", False):
+            execute_from_command_line(["", "migrate_schemas", "--schema", "template", "--tenant"])
+        execute_from_command_line(
+            ["", "check"] + ([] if CONFIG.get_bool("debug") else ["--deploy"])
+        )
     finally:
-        release_lock()
+        release_lock(curr)
+        curr.close()
+        conn.close()
+
+
+if __name__ == "__main__":
+    run_migrations()

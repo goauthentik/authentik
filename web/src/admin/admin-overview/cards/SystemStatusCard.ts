@@ -8,10 +8,10 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
+import { AdminApi, OutpostsApi, SystemInfo } from "@goauthentik/api";
 
 @customElement("ak-admin-status-system")
-export class SystemStatusCard extends AdminStatusCard<System> {
+export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
     now?: Date;
 
     icon = "pf-icon pf-icon-server";
@@ -19,13 +19,17 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     @state()
     statusSummary?: string;
 
-    async getPrimaryValue(): Promise<System> {
+    async getPrimaryValue(): Promise<SystemInfo> {
         this.now = new Date();
         let status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
-        if (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http")) {
+        if (
+            !status.embeddedOutpostDisabled &&
+            (status.embeddedOutpostHost === "" || !status.embeddedOutpostHost.includes("http"))
+        ) {
             // First install, ensure the embedded outpost host is set
             // also run when outpost host does not contain http
             // (yes it's called host and requires a URL, i know)
+            // TODO: Improve this in OOB flow
             await this.setOutpostHost();
             status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
         }
@@ -42,15 +46,15 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             return;
         }
         const outpost = outposts.results[0];
-        outpost.config["authentik_host"] = window.location.origin;
+        outpost.config.authentik_host = window.location.origin;
         await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
             uuid: outpost.pk,
             outpostRequest: outpost,
         });
     }
 
-    getStatus(value: System): Promise<AdminStatus> {
-        if (value.embeddedOutpostHost === "") {
+    getStatus(value: SystemInfo): Promise<AdminStatus> {
+        if (!value.embeddedOutpostDisabled && value.embeddedOutpostHost === "") {
             this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
@@ -86,5 +90,11 @@ export class SystemStatusCard extends AdminStatusCard<System> {
 
     renderValue(): TemplateResult {
         return html`${this.statusSummary}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-status-system": SystemStatusCard;
     }
 }

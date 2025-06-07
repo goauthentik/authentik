@@ -1,70 +1,111 @@
 ---
-title: MinIO
+title: Integrate with MinIO
+sidebar_label: MinIO
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is MinIO
 
-From https://en.wikipedia.org/wiki/MinIO
-
-:::note
-MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
-:::
+> MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
+>
+> -- https://en.wikipedia.org/wiki/MinIO
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `minio.company` is the FQDN of the MinIO install.
--   `authentik.company` is the FQDN of the authentik install.
+- `minio.company` is the FQDN of the MinIO installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-### Mapping to MinIO policies
+:::warning
+MinIO has recently limited SSO to its [Enterprise offering (AIStor)](https://min.io/pricing). **`RELEASE.2025-04-22T22-12-26Z`** is the last version where this feature is available for free. While it’s technically possible to continue using that release, we **do not** recommend reverting due to potential security and stability risks.
+:::
 
-The primary way to manage access in MinIO is via [policies](https://min.io/docs/minio/linux/administration/identity-access-management/policy-based-access-control.html#minio-policy). We need to configure authentik to return a list of which MinIO policies should be applied to a user.
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
-Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it a name like "OIDC-Scope-minio". Set the scope name to `minio` and the expression to the following
+## authentik configuration
 
-```python
-return {
-    "policy": "readwrite",
-}
-```
+To support the integration of MinIO with authentik, you need to create an application/provider pair in authentik.
 
-This mapping will result in the default MinIO `readwrite` policy being applied to all users. If you want to create a more granular mapping based on authentik groups, use an expression like this
+### Create property mappings
 
-```python
-if ak_is_group_member(request.user, name="Minio admins"):
-  return {
-      "policy": "consoleAdmin",
-}
-elif ak_is_group_member(request.user, name="Minio users"):
-  return {
-      "policy": ["readonly", "my-custom-policy"]
-}
-return None
-```
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **Scope Mapping** with the following settings:
 
-Note that you can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, resulting in no access to the MinIO instance. For more information on writing expressions, see [Expressions](../../../docs/property-mappings/expression) and [User](../../../docs/user-group/user#object-attributes) docs.
+- **Name**: Set an appropriate name
+- **Scope Name**: `minio`
+- **Description**: Set an appropriate description, if desired
+- **Expression**:
+  The following expression gives read and write permissions to all users:
 
-### Creating application and provider
+    ```python
+    return {
+      "policy": "readwrite",
+    }
+    ```
 
-Create an application in authentik. Create an _OAuth2/OpenID Provider_ with the following parameters:
+    If you wish to create a more granular mapping based on the user's groups in authentik, you can use an expression similar to:
 
--   Client Type: `Confidential`
--   Scopes: OpenID, Email, Profile and the scope you created above
--   Signing Key: Select any available key
--   Redirect URIs: `https://minio.company/oauth_callback`
+    ```python
+    if ak_is_group_member(request.user, name="Minio admins"):
+      return {
+        "policy": "consoleAdmin",
+    }
+    elif ak_is_group_member(request.user, name="Minio users"):
+      return {
+        "policy": ["readonly", "my-custom-policy"]
+    }
+    return None
+    ```
 
-Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
+You can assign multiple policies to a user by returning a list, and returning `None` will map no policies to the user, which will stop the user from accessing the MinIO instance. For more information on writing expressions, see [Expressions](/docs/add-secure-apps/providers/property-mappings/expression) and [User](/docs/users-sources/user/user_ref#object-properties) docs.
 
-## MinIO
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to <kbd>https://<em>minio.company</em>/oauth_callback</kbd>.
+    - Select any available signing key.
+    - Under **Advanced protocol settings**, add the **Scope** you just created to the list of selected scopes.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
+
+## MinIO configuration
+
+You can set up OpenID in two different ways: via the web interface or the command line.
+
+### From the web interface
+
+From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
+
+- Name: MinIO
+- Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
+- Client ID: Your client ID from the previous step
+- Client Secret: Your client secret from the previous step
+- Scopes: `openid, email, profile, minio`
+- Redirect URI: `https://minio.company/oauth_callback`
+
+Finally, click **Save** and follow the instructions in the popup to restart your instance.
+
+### Using the command line
+
+You must install the MinIO binaries from [here](https://min.io/docs/minio/linux/reference/minio-mc.html). You then need to create an alias for your instance using: `mc alias set myminio https://minio.company <access key> <secret key>`. You can follow [this StackOverflow answer](https://stackoverflow.com/a/77645374) to create a secret key and access key.
+
+After that is done, run the following command to configure the OpenID provider:
 
 ```
 ~ mc admin config set myminio identity_openid \
-  config_url="https://authentik.company/application/o/<applicaiton-slug>/.well-known/openid-configuration" \
-  client_id="<client id from above>" \
-  client_secret="<client secret from above>" \
+  config_url="https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration" \
+  client_id="<client id>" \
+  client_secret="<client secret>" \
   scopes="openid,profile,email,minio"
 ```
 

@@ -14,8 +14,10 @@ import (
 	webutils "goauthentik.io/internal/utils/web"
 )
 
-var initialSetup = false
-var tlsTransport *http.RoundTripper = nil
+var (
+	initialSetup                    = false
+	tlsTransport *http.RoundTripper = nil
+)
 
 func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	l := log.WithField("logger", "authentik.outpost")
@@ -46,20 +48,20 @@ func doGlobalSetup(outpost api.Outpost, globalConfig *api.Config) {
 	if globalConfig.ErrorReporting.Enabled {
 		if !initialSetup {
 			l.WithField("env", globalConfig.ErrorReporting.Environment).Debug("Error reporting enabled")
-		}
-		err := sentry.Init(sentry.ClientOptions{
-			Dsn:           globalConfig.ErrorReporting.SentryDsn,
-			Environment:   globalConfig.ErrorReporting.Environment,
-			EnableTracing: true,
-			TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
-			Release:       fmt.Sprintf("authentik@%s", constants.VERSION),
-			HTTPTransport: webutils.NewUserAgentTransport(constants.OutpostUserAgent(), http.DefaultTransport),
-			IgnoreErrors: []string{
-				http.ErrAbortHandler.Error(),
-			},
-		})
-		if err != nil {
-			l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			err := sentry.Init(sentry.ClientOptions{
+				Dsn:           globalConfig.ErrorReporting.SentryDsn,
+				Environment:   globalConfig.ErrorReporting.Environment,
+				EnableTracing: true,
+				TracesSampler: sentryutils.SamplerFunc(float64(globalConfig.ErrorReporting.TracesSampleRate)),
+				Release:       fmt.Sprintf("authentik@%s", constants.VERSION),
+				HTTPTransport: webutils.NewUserAgentTransport(constants.UserAgentOutpost(), http.DefaultTransport),
+				IgnoreErrors: []string{
+					http.ErrAbortHandler.Error(),
+				},
+			})
+			if err != nil {
+				l.WithField("env", globalConfig.ErrorReporting.Environment).WithError(err).Warning("Failed to initialise sentry")
+			}
 		}
 	}
 

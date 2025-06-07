@@ -1,4 +1,5 @@
 """Test blueprints v1 tasks"""
+
 from hashlib import sha512
 from tempfile import NamedTemporaryFile, mkdtemp
 
@@ -53,7 +54,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             file.seek(0)
             file_hash = sha512(file.read().encode()).hexdigest()
             file.flush()
-            blueprints_discovery()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()
             instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
             self.assertEqual(instance.last_applied_hash, file_hash)
             self.assertEqual(
@@ -81,7 +82,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discovery()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()
             blueprint = BlueprintInstance.objects.filter(name="foo").first()
             self.assertEqual(
                 blueprint.last_applied_hash,
@@ -106,7 +107,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discovery()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()
             blueprint.refresh_from_db()
             self.assertEqual(
                 blueprint.last_applied_hash,
@@ -148,7 +149,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 instance.status,
                 BlueprintInstanceStatus.UNKNOWN,
             )
-            apply_blueprint(instance.pk)  # pylint: disable=no-value-for-parameter
+            apply_blueprint(instance.pk)
             instance.refresh_from_db()
             self.assertEqual(instance.last_applied_hash, "")
             self.assertEqual(

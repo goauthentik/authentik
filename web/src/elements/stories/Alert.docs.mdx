@@ -1,0 +1,46 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as AlertStories from "./Alert.stories";
+
+<Meta of={AlertStories} />
+
+# Alerts
+
+Alerts are in-page elements intended to draw the user's attention and alert them to important
+details. Alerts are used alongside form elements to warn users of potential mistakes they can
+make, as well as in in-line documentation.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/Alert.js";
+```
+
+Note that the content of an alert _must_ be a valid HTML component; plain text does not work here.
+
+```html
+<ak-alert><p>This is the content of your alert!</p></ak-alert>
+```
+
+## Demo
+
+### Default
+
+The default state of an alert is _warning_.
+
+<Story of={AlertStories.DefaultStory} />
+
+### Info
+
+The icon can be changed via the `icon` attribute. It takes the name of a valid `fas`-class Font
+Awesome icon. Changing the icon can be helpful, as not everyone can see the color changes.
+
+<Story of={AlertStories.InfoAlert} />
+
+### Success
+
+<Story of={AlertStories.SuccessAlert} />
+
+### Danger
+
+<Story of={AlertStories.DangerAlert} />

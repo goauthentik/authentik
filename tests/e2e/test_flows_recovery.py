@@ -1,7 +1,7 @@
 """Test recovery flow"""
+
 from time import sleep
 
-from django.test import override_settings
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -10,6 +10,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
@@ -47,7 +48,7 @@ class TestFlowsRecovery(SeleniumTestCase):
     @apply_blueprint(
         "example/flows-recovery-email-verification.yaml",
     )
-    @override_settings(EMAIL_PORT=1025)
+    @CONFIG.patch("email.port", 1025)
     def test_recover_email(self):
         """Test recovery with Email verification"""
         # Attach recovery flow to identification stage
@@ -83,6 +84,14 @@ class TestFlowsRecovery(SeleniumTestCase):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
         sleep(2)
+
+        flow_executor = self.get_shadow_root("ak-flow-executor")
+        consent_stage = self.get_shadow_root("ak-stage-consent", flow_executor)
+        consent_stage.find_element(
+            By.CSS_SELECTOR,
+            "[type=submit]",
+        ).click()
+
         # We can now enter the new password
         flow_executor = self.get_shadow_root("ak-flow-executor")
         prompt_stage = self.get_shadow_root("ak-stage-prompt", flow_executor)
@@ -96,13 +105,9 @@ class TestFlowsRecovery(SeleniumTestCase):
             new_password
         )
         prompt_stage.find_element(By.CSS_SELECTOR, ".pf-c-button").click()
+        sleep(2)
 
         # We're now logged in
-        wait = WebDriverWait(self.get_shadow_root("ak-interface-user"), self.wait_timeout)
-
-        wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-page__header")))
-        self.driver.get(self.if_user_url("/settings"))
-
         self.assert_user(user)
         user.refresh_from_db()
         self.assertTrue(user.check_password(new_password))

@@ -1,23 +1,25 @@
 ---
-title: Google Workspace
+title: Integrate with Google Workspace
+sidebar_label: Google Workspace
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Google Workspace
 
-From https://en.wikipedia.org/wiki/Google_Workspace
-
-:::note
-Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
-:::
+> Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
+>
+> -- https://en.wikipedia.org/wiki/Google_Workspace
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `authentik.company` is the FQDN of the authentik install.
--   `example.com` is the default E-mail address configured in Google workspace.
+- `authentik.company` is the FQDN of the authentik installation.
+- `example.com` is the default E-mail address configured in Google workspace.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 ## authentik Configuration
 
@@ -25,10 +27,10 @@ Create an application in authentik and note the slug, as this will be used later
 
 Create a SAML provider with the following parameters:
 
--   ACS URL: `https://www.google.com/a/example.com/acs`
--   Issuer: `google.com/a/example.com`
--   Binding: `Post`
--   Audience: `google.com/a/example.com`
+- ACS URL: `https://www.google.com/a/example.com/acs`
+- Issuer: `google.com/a/example.com`
+- Binding: `Post`
+- Audience: `google.com/a/example.com`
 
 Under _Advanced protocol settings_, set the option _NameID Property Mapping_ to the default E-mail property mapping called _authentik default SAML Mapping: Email_. Also make sure a _Signing Certificate_ is selected in the same section.
 

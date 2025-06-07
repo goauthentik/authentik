@@ -2,7 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -23,8 +23,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -36,6 +35,7 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
                         this.submitForm(e);
                     }}
                 >
+                    <p>${msg(str`Stage name: ${this.challenge.name}`)}</p>
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
@@ -46,5 +46,11 @@ export class DummyStage extends BaseStage<DummyChallenge, DummyChallengeResponse
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-dummy": DummyStage;
     }
 }

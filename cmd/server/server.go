@@ -9,37 +9,25 @@ import (
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
-	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web"
-	"goauthentik.io/internal/web/tenant_tls"
 )
 
-var running = true
-
 var rootCmd = &cobra.Command{
-	Use:     "authentik",
-	Short:   "Start authentik instance",
-	Version: constants.FullVersion(),
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-			DisableHTMLEscape: true,
-		})
-	},
+	Use:              "authentik",
+	Short:            "Start authentik instance",
+	Version:          constants.FullVersion(),
+	PersistentPreRun: common.PreRun,
 	Run: func(cmd *cobra.Command, args []string) {
-		debug.EnableDebugServer()
+		debug.EnableDebugServer("authentik.core")
 		l := log.WithField("logger", "authentik.root")
 
 		if config.Get().ErrorReporting.Enabled {
@@ -63,38 +51,23 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, _ := url.Parse("http://localhost:8000")
-
-		g := gounicorn.New()
-		defer func() {
-			l.Info("shutting down gunicorn")
-			g.Kill()
-		}()
-		ws := web.NewWebServer(g)
-		g.HealthyCallback = func() {
-			if !config.Get().Outposts.DisableEmbeddedOutpost {
-				go attemptProxyStart(ws, u)
-			}
+		u, err := url.Parse(fmt.Sprintf("http://%s%s", config.Get().Listen.HTTP, config.Get().Web.Path))
+		if err != nil {
+			panic(err)
 		}
-		go web.RunMetricsServer()
-		go attemptStartBackend(g)
+
+		ws := web.NewWebServer()
+		ws.Core().AddHealthyCallback(func() {
+			if config.Get().Outposts.DisableEmbeddedOutpost {
+				return
+			}
+			go attemptProxyStart(ws, u)
+		})
 		ws.Start()
 		<-ex
-		running = false
 		l.Info("shutting down webserver")
 		go ws.Shutdown()
-
 	},
-}
-
-func attemptStartBackend(g *gounicorn.GoUnicorn) {
-	for {
-		if !running {
-			return
-		}
-		err := g.Start()
-		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
-	}
 }
 
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {
@@ -112,17 +85,12 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			}
 			continue
 		}
-		// Init tenant_tls here too since it requires an API Client,
-		// so we just re-use the same one as the outpost uses
-		tw := tenant_tls.NewWatcher(ac.Client)
-		go tw.Start()
-		ws.TenantTLS = tw
 		ac.AddRefreshHandler(func() {
-			tw.Check()
+			ws.BrandTLS.Check()
 		})
 
 		srv := proxyv2.NewProxyServer(ac)
-		ws.ProxyServer = srv
+		ws.ProxyServer = srv.(*proxyv2.ProxyServer)
 		ac.Server = srv
 		l.Debug("attempting to start outpost")
 		err := ac.StartBackgroundTasks()

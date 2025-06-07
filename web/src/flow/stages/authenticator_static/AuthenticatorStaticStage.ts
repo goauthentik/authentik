@@ -40,11 +40,11 @@ export class AuthenticatorStaticStage extends BaseStage<
                     columns: 2;
                     -webkit-columns: 2;
                     -moz-columns: 2;
+                    column-width: 1em;
                     margin-left: var(--pf-global--spacer--xs);
                 }
                 ul li {
                     font-size: var(--pf-global--FontSize--2xl);
-                    font-family: monospace;
                     margin: 0 2rem;
                 }
             `,
@@ -53,8 +53,7 @@ export class AuthenticatorStaticStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -80,7 +79,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                     <ak-form-element label="" class="pf-c-form__group">
                         <ul>
                             ${this.challenge.codes.map((token) => {
-                                return html`<li>${token}</li>`;
+                                return html`<li class="pf-m-monospace">${token}</li>`;
                             })}
                         </ul>
                     </ak-form-element>
@@ -96,5 +95,11 @@ export class AuthenticatorStaticStage extends BaseStage<
             <footer class="pf-c-login__main-footer">
                 <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-static": AuthenticatorStaticStage;
     }
 }

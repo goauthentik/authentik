@@ -1,8 +1,10 @@
+import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
+import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";
 import { Table } from "@goauthentik/elements/table/Table";
 
+import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -19,7 +21,18 @@ export abstract class TableModal<T> extends Table<T> {
     size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    open = false;
+    set open(value: boolean) {
+        this._open = value;
+        if (value) {
+            this.fetch();
+        }
+    }
+
+    get open(): boolean {
+        return this._open;
+    }
+
+    _open = false;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(
@@ -33,14 +46,16 @@ export abstract class TableModal<T> extends Table<T> {
         );
     }
 
-    constructor() {
-        super();
-        window.addEventListener("keyup", (e) => {
-            if (e.code === "Escape") {
-                this.resetForms();
-                this.open = false;
-            }
-        });
+    public async fetch(): Promise<void> {
+        if (!this.open) {
+            return;
+        }
+        return super.fetch();
+    }
+
+    closeModal() {
+        this.resetForms();
+        this.open = false;
     }
 
     resetForms(): void {
@@ -53,6 +68,7 @@ export abstract class TableModal<T> extends Table<T> {
 
     onClick(): void {
         this.open = true;
+        this.dispatchEvent(new ModalShowEvent(this));
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as AKElement).requestUpdate();
@@ -77,7 +93,7 @@ export abstract class TableModal<T> extends Table<T> {
                         @click=${() => (this.open = false)}
                         class="pf-c-button pf-m-plain"
                         type="button"
-                        aria-label="Close dialog"
+                        aria-label=${msg("Close dialog")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>

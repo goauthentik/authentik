@@ -3,6 +3,8 @@ package ak
 import (
 	"context"
 	"crypto/tls"
+	"crypto/x509"
+	"encoding/pem"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
@@ -38,7 +40,6 @@ func (cs *CryptoStore) AddKeypair(uuid string) error {
 	if err != nil {
 		return err
 	}
-	cs.fingerprints[uuid] = cs.getFingerprint(uuid)
 	return nil
 }
 
@@ -54,7 +55,7 @@ func (cs *CryptoStore) getFingerprint(uuid string) string {
 func (cs *CryptoStore) Fetch(uuid string) error {
 	cfp := cs.getFingerprint(uuid)
 	if cfp == cs.fingerprints[uuid] {
-		cs.log.WithField("uuid", uuid).Info("Fingerprint hasn't changed, not fetching cert")
+		cs.log.WithField("uuid", uuid).Debug("Fingerprint hasn't changed, not fetching cert")
 		return nil
 	}
 	cs.log.WithField("uuid", uuid).Info("Fetching certificate and private key")
@@ -68,15 +69,34 @@ func (cs *CryptoStore) Fetch(uuid string) error {
 		return err
 	}
 
-	x509cert, err := tls.X509KeyPair([]byte(cert.Data), []byte(key.Data))
-	if err != nil {
-		return err
+	var tcert tls.Certificate
+	if key.Data != "" {
+		x509cert, err := tls.X509KeyPair([]byte(cert.Data), []byte(key.Data))
+		if err != nil {
+			return err
+		}
+		tcert = x509cert
+	} else {
+		p, _ := pem.Decode([]byte(cert.Data))
+		x509cert, err := x509.ParseCertificate(p.Bytes)
+		if err != nil {
+			return err
+		}
+		tcert = tls.Certificate{
+			Certificate: [][]byte{x509cert.Raw},
+			Leaf:        x509cert,
+		}
 	}
-	cs.certificates[uuid] = &x509cert
+	cs.certificates[uuid] = &tcert
+	cs.fingerprints[uuid] = cfp
 	return nil
 }
 
 func (cs *CryptoStore) Get(uuid string) *tls.Certificate {
+	c, ok := cs.certificates[uuid]
+	if ok {
+		return c
+	}
 	err := cs.Fetch(uuid)
 	if err != nil {
 		cs.log.WithError(err).Warning("failed to fetch certificate")

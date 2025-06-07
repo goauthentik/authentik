@@ -1,8 +1,7 @@
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -20,42 +19,36 @@ import {
 } from "@goauthentik/api";
 
 @customElement("ak-policy-event-matcher-form")
-export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
+export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
     loadInstance(pk: string): Promise<EventMatcherPolicy> {
         return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherRetrieve({
             policyUuid: pk,
         });
     }
 
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated policy.");
-        } else {
-            return msg("Successfully created policy.");
-        }
-    }
-
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+        if (data.action?.toString() === "") data.action = null;
+        if (data.clientIp?.toString() === "") data.clientIp = null;
+        if (data.app?.toString() === "") data.app = null;
+        if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
                 eventMatcherPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
-                eventMatcherPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherCreate({
+            eventMatcherPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+        return html` <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
-            </div>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            </span>
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -68,7 +61,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.executionLogging, false)}
+                        ?checked=${this.instance?.executionLogging ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -83,7 +76,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
@@ -105,7 +98,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                             .selected=${(item: TypeCreate): boolean => {
                                 return this.instance?.action === item.component;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -118,11 +111,13 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.clientIp || "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy.",
+                                "Matches Event's Client IP (strict matching, for network matching use an Expression Policy).",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -143,7 +138,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                             .selected=${(item: App): boolean => {
                                 return this.instance?.app === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -173,7 +168,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                             .selected=${(item: App): boolean => {
                                 return this.instance?.model === item.name;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -183,7 +178,12 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-policy-event-matcher-form": EventMatcherPolicyForm;
     }
 }

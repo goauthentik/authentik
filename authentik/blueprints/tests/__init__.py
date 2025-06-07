@@ -1,6 +1,7 @@
 """Blueprint helpers"""
+
+from collections.abc import Callable
 from functools import wraps
-from typing import Callable
 
 from django.apps import apps
 
@@ -20,7 +21,7 @@ def apply_blueprint(*files: str):
         def wrapper(*args, **kwargs):
             for file in files:
                 content = BlueprintInstance(path=file).retrieve()
-                Importer(content).apply()
+                Importer.from_string(content).apply()
             return func(*args, **kwargs)
 
         return wrapper
@@ -38,7 +39,7 @@ def reconcile_app(app_name: str):
         def wrapper(*args, **kwargs):
             config = apps.get_app_config(app_name)
             if isinstance(config, ManagedAppConfig):
-                config.reconcile()
+                config._on_startup_callback(None)
             return func(*args, **kwargs)
 
         return wrapper

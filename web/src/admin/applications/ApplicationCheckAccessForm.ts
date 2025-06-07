@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
+import "@goauthentik/elements/events/LogViewer";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -57,9 +58,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
-                            <ak-label color=${this.result?.passing ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.passing ? msg("Yes") : msg("No")}
-                            </ak-label>
+                            <ak-status-label ?good=${this.result?.passing}></ak-status-label>
                         </span>
                     </div>
                 </div>
@@ -85,28 +84,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <dl class="pf-c-description-list pf-m-horizontal">
-                            ${(this.result?.logMessages || []).length > 0
-                                ? this.result?.logMessages?.map((m) => {
-                                      return html`<div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
-                                                  >${m.log_level}</span
-                                              >
-                                          </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  ${m.event}
-                                              </div>
-                                          </dd>
-                                      </div>`;
-                                  })
-                                : html`<div class="pf-c-description-list__group">
-                                      <dt class="pf-c-description-list__term">
-                                          <span class="pf-c-description-list__text"
-                                              >${msg("No log messages.")}</span
-                                          >
-                                      </dt>
-                                  </div>`}
+                            <ak-log-viewer .logs=${this.result?.logMessages}></ak-log-viewer>
                         </dl>
                     </div>
                 </div>
@@ -115,8 +93,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="forUser">
+        return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -143,7 +120,12 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}
-        </form>`;
+            ${this.result ? this.renderResult() : html``}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-application-check-access-form": ApplicationCheckAccessForm;
     }
 }

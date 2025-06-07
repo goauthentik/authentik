@@ -1,17 +1,18 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -21,28 +22,20 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    RadiusProvider,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
-    @property()
-    set args(value: { [key: string]: number }) {
-        this.providerID = value.id;
-    }
-
     @property({ type: Number })
-    set providerID(value: number) {
-        new ProvidersApi(DEFAULT_CONFIG)
-            .providersRadiusRetrieve({
-                id: value,
-            })
-            .then((prov) => (this.provider = prov));
-    }
+    providerID?: number;
 
-    @property({ attribute: false })
+    @state()
     provider?: RadiusProvider;
 
     static get styles(): CSSResult[] {
@@ -50,7 +43,6 @@ export class RadiusProviderViewPage extends AKElement {
             PFBase,
             PFButton,
             PFPage,
-            PFFlex,
             PFDisplay,
             PFGallery,
             PFContent,
@@ -66,6 +58,18 @@ export class RadiusProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
+    }
+
+    fetchProvider(id: number) {
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersRadiusRetrieve({ id })
+            .then((prov) => (this.provider = prov));
+    }
+
+    willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("providerID") && this.providerID) {
+            this.fetchProvider(this.providerID);
+        }
     }
 
     render(): TemplateResult {
@@ -162,6 +166,18 @@ export class RadiusProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikProvidersRadiusRadiusprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-radius-view": RadiusProviderViewPage;
     }
 }

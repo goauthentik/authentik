@@ -1,16 +1,25 @@
 """Base Kubernetes Reconciler"""
-from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
+import re
+from dataclasses import asdict
+from json import dumps
+from typing import TYPE_CHECKING, Generic, TypeVar
+
+from dacite.core import from_dict
+from django.http import HttpResponseNotFound
 from django.utils.text import slugify
-from kubernetes.client import V1ObjectMeta
+from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
+from kubernetes.client import ApiClient, V1ObjectMeta
 from kubernetes.client.exceptions import ApiException, OpenApiException
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
+from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__
 from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
 
 if TYPE_CHECKING:
@@ -34,10 +43,22 @@ class KubernetesObjectReconciler(Generic[T]):
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)
 
+    def get_patch(self):
+        """Get any patches that apply to this CRD"""
+        patches = self.controller.outpost.config.kubernetes_json_patches
+        if not patches:
+            return None
+        return patches.get(self.reconciler_name(), None)
+
     @property
     def is_embedded(self) -> bool:
         """Return true if the current outpost is embedded"""
         return self.controller.outpost.managed == MANAGED_OUTPOST
+
+    @staticmethod
+    def reconciler_name() -> str:
+        """A name this reconciler is identified by in the configuration"""
+        raise NotImplementedError
 
     @property
     def noop(self) -> bool:
@@ -47,7 +68,8 @@ class KubernetesObjectReconciler(Generic[T]):
     @property
     def name(self) -> str:
         """Get the name of the object this reconciler manages"""
-        return (
+
+        base_name = (
             self.controller.outpost.config.object_naming_template
             % {
                 "name": slugify(self.controller.outpost.name),
@@ -55,20 +77,54 @@ class KubernetesObjectReconciler(Generic[T]):
             }
         ).lower()
 
-    # pylint: disable=invalid-name
+        formatted = slugify(base_name)
+        formatted = re.sub(r"[^a-z0-9-]", "-", formatted)
+        formatted = re.sub(r"-+", "-", formatted)
+        formatted = formatted[:63]
+
+        if not formatted:
+            formatted = f"outpost-{self.controller.outpost.uuid.hex}"[:63]
+
+        return formatted
+
+    def get_patched_reference_object(self) -> T:
+        """Get patched reference object"""
+        reference = self.get_reference_object()
+        patch = self.get_patch()
+        try:
+            json = ApiClient().sanitize_for_serialization(reference)
+        # Custom objects will not be known to the clients openapi types
+        except AttributeError:
+            json = asdict(reference)
+        try:
+            ref = json
+            if patch is not None:
+                ref = apply_patch(json, patch)
+        except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
+            raise ControllerException(f"JSON Patch failed: {exc}") from exc
+        mock_response = Response()
+        mock_response.data = dumps(ref)
+
+        try:
+            result = ApiClient().deserialize(mock_response, reference.__class__.__name__)
+        # Custom objects will not be known to the clients openapi types
+        except AttributeError:
+            result = from_dict(reference.__class__, data=ref)
+
+        return result
+
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None
         if self.noop:
             self.logger.debug("Object is noop")
             return
-        reference = self.get_reference_object()
+        reference = self.get_patched_reference_object()
         try:
             try:
                 current = self.retrieve()
             except (OpenApiException, HTTPError) as exc:
-                # pylint: disable=no-member
-                if isinstance(exc, ApiException) and exc.status == 404:
+                if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                     self.logger.debug("Failed to get current, triggering recreate")
                     raise NeedsRecreate from exc
                 self.logger.debug("Other unhandled error", exc=exc)
@@ -79,8 +135,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 self.update(current, reference)
                 self.logger.debug("Updating")
             except (OpenApiException, HTTPError) as exc:
-                # pylint: disable=no-member
-                if isinstance(exc, ApiException) and exc.status == 422:
+                if isinstance(exc, ApiException) and exc.status == 422:  # noqa: PLR2004
                     self.logger.debug("Failed to update current, triggering re-create")
                     self._recreate(current=current, reference=reference)
                     return
@@ -91,7 +146,7 @@ class KubernetesObjectReconciler(Generic[T]):
         else:
             self.logger.debug("Object is up-to-date.")
 
-    def _recreate(self, reference: T, current: Optional[T] = None):
+    def _recreate(self, reference: T, current: T | None = None):
         """Recreate object"""
         self.logger.debug("Recreate requested")
         if current:
@@ -112,8 +167,7 @@ class KubernetesObjectReconciler(Generic[T]):
             self.delete(current)
             self.logger.debug("Removing")
         except (OpenApiException, HTTPError) as exc:
-            # pylint: disable=no-member
-            if isinstance(exc, ApiException) and exc.status == 404:
+            if isinstance(exc, ApiException) and exc.status == HttpResponseNotFound.status_code:
                 self.logger.debug("Failed to get current, assuming non-existent")
                 return
             self.logger.debug("Other unhandled error", exc=exc)
@@ -128,6 +182,16 @@ class KubernetesObjectReconciler(Generic[T]):
         ReconcileTrigger"""
         if current.metadata.labels != reference.metadata.labels:
             raise NeedsUpdate()
+
+        patch = self.get_patch()
+        if patch is not None:
+            current_json = ApiClient().sanitize_for_serialization(current)
+
+            try:
+                if apply_patch(current_json, patch) != current_json:
+                    raise NeedsUpdate()
+            except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
+                raise ControllerException(f"JSON Patch failed: {exc}") from exc
 
     def create(self, reference: T):
         """API Wrapper to create object"""
@@ -153,7 +217,7 @@ class KubernetesObjectReconciler(Generic[T]):
                 "app.kubernetes.io/instance": slugify(self.controller.outpost.name),
                 "app.kubernetes.io/managed-by": "goauthentik.io",
                 "app.kubernetes.io/name": f"authentik-{self.controller.outpost.type.lower()}",
-                "app.kubernetes.io/version": get_version(),
+                "app.kubernetes.io/version": get_version().replace("+", "-"),
                 "goauthentik.io/outpost-name": slugify(self.controller.outpost.name),
                 "goauthentik.io/outpost-type": str(self.controller.outpost.type),
                 "goauthentik.io/outpost-uuid": self.controller.outpost.uuid.hex,

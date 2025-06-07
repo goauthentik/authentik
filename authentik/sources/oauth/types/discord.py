@@ -1,4 +1,5 @@
 """Discord OAuth Views"""
+
 from typing import Any
 
 from authentik.sources.oauth.types.registry import SourceType, registry
@@ -19,16 +20,6 @@ class DiscordOAuthRedirect(OAuthRedirect):
 class DiscordOAuth2Callback(OAuthCallback):
     """Discord OAuth2 Callback"""
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("username"),
-            "email": info.get("email", None),
-            "name": info.get("username"),
-        }
-
 
 @registry.register()
 class DiscordType(SourceType):
@@ -36,9 +27,16 @@ class DiscordType(SourceType):
 
     callback_view = DiscordOAuth2Callback
     redirect_view = DiscordOAuthRedirect
-    name = "Discord"
-    slug = "discord"
+    verbose_name = "Discord"
+    name = "discord"
 
     authorization_url = "https://discord.com/api/oauth2/authorize"
     access_token_url = "https://discord.com/api/oauth2/token"  # nosec
     profile_url = "https://discord.com/api/users/@me"
+
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("username"),
+            "email": info.get("email", None),
+            "name": info.get("username"),
+        }

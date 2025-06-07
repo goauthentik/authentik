@@ -1,11 +1,13 @@
 """Events API Views"""
+
 from datetime import timedelta
 from json import loads
 
 import django_filters
 from django.db.models.aggregates import Count
-from django.db.models.fields.json import KeyTextTransform
-from django.db.models.functions import ExtractDay
+from django.db.models.fields.json import KeyTextTransform, KeyTransform
+from django.db.models.functions import ExtractDay, ExtractHour
+from django.db.models.query_utils import Q
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -13,11 +15,11 @@ from rest_framework.decorators import action
 from rest_framework.fields import DictField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.admin.api.metrics import CoordinateSerializer
-from authentik.core.api.utils import PassiveSerializer, TypeCreateSerializer
+from authentik.core.api.object_types import TypeCreateSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.events.models import Event, EventAction
 
 
@@ -35,7 +37,7 @@ class EventSerializer(ModelSerializer):
             "client_ip",
             "created",
             "expires",
-            "tenant",
+            "brand",
         ]
 
 
@@ -76,10 +78,10 @@ class EventsFilter(django_filters.FilterSet):
         field_name="action",
         lookup_expr="icontains",
     )
-    tenant_name = django_filters.CharFilter(
-        field_name="tenant",
+    brand_name = django_filters.CharFilter(
+        field_name="brand",
         lookup_expr="name",
-        label="Tenant name",
+        label="Brand name",
     )
 
     def filter_context_model_pk(self, queryset, name, value):
@@ -87,7 +89,12 @@ class EventsFilter(django_filters.FilterSet):
         we need to remove the dashes that a client may send. We can't use a
         UUIDField for this, as some models might not have a UUID PK"""
         value = str(value).replace("-", "")
-        return queryset.filter(context__model__pk=value)
+        query = Q(context__model__pk=value)
+        try:
+            query |= Q(context__model__pk=int(value))
+        except ValueError:
+            pass
+        return queryset.filter(query)
 
     class Meta:
         model = Event
@@ -134,11 +141,11 @@ class EventViewSet(ModelViewSet):
         """Get the top_n events grouped by user count"""
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = int(request.query_params.get("top_n", "15"))
-        return Response(
+        events = (
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .exclude(context__authorized_application=None)
-            .annotate(application=KeyTextTransform("authorized_application", "context"))
+            .annotate(application=KeyTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
             .values("application")
             .annotate(counted_events=Count("application"))
@@ -146,9 +153,18 @@ class EventViewSet(ModelViewSet):
             .values("unique_users", "application", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
+        return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
-        methods=["GET"],
+        responses={200: CoordinateSerializer(many=True)},
+    )
+    @action(detail=False, methods=["GET"], pagination_class=None)
+    def volume(self, request: Request) -> Response:
+        """Get event volume for specified filters and timeframe"""
+        queryset = self.filter_queryset(self.get_queryset())
+        return Response(queryset.get_events_per(timedelta(days=7), ExtractHour, 7 * 3))
+
+    @extend_schema(
         responses={200: CoordinateSerializer(many=True)},
         filters=[],
         parameters=[

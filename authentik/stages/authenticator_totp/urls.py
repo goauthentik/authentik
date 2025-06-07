@@ -1,4 +1,5 @@
 """API URLs"""
+
 from authentik.stages.authenticator_totp.api import (
     AuthenticatorTOTPStageViewSet,
     TOTPAdminDeviceViewSet,

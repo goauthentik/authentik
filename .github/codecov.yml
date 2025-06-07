@@ -6,5 +6,5 @@ coverage:
         # adjust accordingly based on how flaky your tests are
         # this allows a 1% drop from the previous base commit coverage
         threshold: 1%
-  notify:
-    after_n_builds: 3
+comment:
+  after_n_builds: 3

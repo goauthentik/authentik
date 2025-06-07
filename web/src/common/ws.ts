@@ -1,4 +1,5 @@
 import { EVENT_MESSAGE, EVENT_WS_MESSAGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { MessageLevel } from "@goauthentik/common/messages";
 
 import { msg } from "@lit/localize";
@@ -21,16 +22,15 @@ export class WebsocketClient {
 
     connect(): void {
         if (navigator.webdriver) return;
-        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
-            window.location.host
-        }/ws/client/`;
+        const apiURL = new URL(globalAK().api.base);
+        const wsUrl = `${window.location.protocol.replace("http", "ws")}//${apiURL.host}${apiURL.pathname}ws/client/`;
         this.messageSocket = new WebSocket(wsUrl);
         this.messageSocket.addEventListener("open", () => {
             console.debug(`authentik/ws: connected to ${wsUrl}`);
             this.retryDelay = 200;
         });
         this.messageSocket.addEventListener("close", (e) => {
-            console.debug(`authentik/ws: closed ws connection: ${e}`);
+            console.debug("authentik/ws: closed ws connection", e);
             if (this.retryDelay > 6000) {
                 window.dispatchEvent(
                     new CustomEvent(EVENT_MESSAGE, {

@@ -1,4 +1,5 @@
 """authentik password_expiry_policy Models"""
+
 from datetime import timedelta
 
 from django.db import models
@@ -42,8 +43,9 @@ class PasswordExpiryPolicy(Policy):
                 request.user.set_unusable_password()
                 request.user.save()
                 message = _(
-                    "Password expired %(days)d days ago. Please update your password."
-                    % {"days": days_since_expiry}
+                    "Password expired {days} days ago. Please update your password.".format(
+                        days=days_since_expiry
+                    )
                 )
                 return PolicyResult(False, message)
             return PolicyResult(False, _("Password has expired."))

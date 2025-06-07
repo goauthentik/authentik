@@ -1,16 +1,17 @@
 """authentik consent stage"""
-from typing import Optional
+
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
-    PermissionSerializer,
     WithUserInfoChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
@@ -25,12 +26,19 @@ PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
 SESSION_KEY_CONSENT_TOKEN = "authentik/stages/consent/token"  # nosec
 
 
+class ConsentPermissionSerializer(PassiveSerializer):
+    """Permission used for consent"""
+
+    name = CharField(allow_blank=True)
+    id = CharField()
+
+
 class ConsentChallenge(WithUserInfoChallenge):
     """Challenge info for consent screens"""
 
     header_text = CharField(required=False)
-    permissions = PermissionSerializer(many=True)
-    additional_permissions = PermissionSerializer(many=True)
+    permissions = ConsentPermissionSerializer(many=True)
+    additional_permissions = ConsentPermissionSerializer(many=True)
     component = CharField(default="ak-stage-consent")
     token = CharField(required=True)
 
@@ -40,6 +48,11 @@ class ConsentChallengeResponse(ChallengeResponse):
 
     component = CharField(default="ak-stage-consent")
     token = CharField(required=True)
+
+    def validate_token(self, token: str):
+        if token != self.stage.executor.request.session[SESSION_KEY_CONSENT_TOKEN]:
+            raise ValidationError(_("Invalid consent token, re-showing prompt"))
+        return token
 
 
 class ConsentStageView(ChallengeStageView):
@@ -51,7 +64,6 @@ class ConsentStageView(ChallengeStageView):
         token = str(uuid4())
         self.request.session[SESSION_KEY_CONSENT_TOKEN] = token
         data = {
-            "type": ChallengeTypes.NATIVE.value,
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
                 PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS, []
@@ -91,7 +103,7 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        consent: Optional[UserConsent] = UserConsent.filter_not_expired(
+        consent: UserConsent | None = UserConsent.filter_not_expired(
             user=user, application=application
         ).first()
         self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent
@@ -115,9 +127,6 @@ class ConsentStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        if response.data["token"] != self.request.session[SESSION_KEY_CONSENT_TOKEN]:
-            self.logger.info("Invalid consent token, re-showing prompt")
-            return self.get(self.request)
         if self.should_always_prompt():
             return self.executor.stage_ok()
         current_stage: ConsentStage = self.executor.current_stage

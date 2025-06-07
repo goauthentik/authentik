@@ -13,11 +13,11 @@ entries:
   model: authentik_flows.flow
 - attrs:
     order: 100
-    placeholder: Welcome to authentik! Please set a password for the default admin
+    initial_value:
+      Welcome to authentik! Please set a password and email address for the default admin
       user, akadmin.
     placeholder_expression: false
     required: true
-    sub_text: ''
     type: static
     field_key: oobe-header-text
     label: oobe-header-text
@@ -30,7 +30,6 @@ entries:
     placeholder: Admin email
     placeholder_expression: false
     required: true
-    sub_text: ''
     type: email
     field_key: email
     label: Email
@@ -43,7 +42,6 @@ entries:
     placeholder: Password
     placeholder_expression: false
     required: true
-    sub_text: ''
     type: password
     field_key: password
     label: Password
@@ -56,7 +54,6 @@ entries:
     placeholder: Password (repeat)
     placeholder_expression: false
     required: true
-    sub_text: ''
     type: password
     field_key: password_repeat
     label: Password (repeat)
@@ -86,12 +83,24 @@ entries:
     name: default-oobe-password-usable
   model: authentik_policies_expression.expressionpolicy
 - attrs:
+    expression: |
+      # This policy ensures that the setup flow can only be
+      # used one time
+      from authentik.flows.models import Flow, FlowAuthenticationRequirement
+      Flow.objects.filter(slug="initial-setup").update(
+          authentication=FlowAuthenticationRequirement.REQUIRE_SUPERUSER,
+      )
+      return True
+  id: policy-default-oobe-flow-set-authentication
+  identifiers:
+    name: default-oobe-flow-set-authentication
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
     fields:
     - !KeyOf prompt-field-header
     - !KeyOf prompt-field-email
     - !KeyOf prompt-field-password
     - !KeyOf prompt-field-password-repeat
-    validation_policies: []
   id: stage-default-oobe-password
   identifiers:
     name: stage-default-oobe-password
@@ -129,6 +138,7 @@ entries:
     evaluate_on_plan: true
     invalid_response_action: retry
     re_evaluate_policies: false
+  id: binding-login
   identifiers:
     order: 100
     stage: !KeyOf stage-default-authentication-login
@@ -143,4 +153,9 @@ entries:
     order: 0
     policy: !KeyOf policy-default-oobe-prefill-user
     target: !KeyOf binding-password-write
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-flow-set-authentication
+    target: !KeyOf binding-login
   model: authentik_policies.policybinding

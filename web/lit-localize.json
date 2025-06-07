@@ -3,15 +3,20 @@
     "sourceLocale": "en",
     "targetLocales": [
         "en",
-        "pseudo-LOCALE",
-        "fr_FR",
-        "tr",
+        "de",
         "es",
+        "fr",
+        "it",
+        "ko",
+        "nl",
         "pl",
-        "zh_TW",
+        "ru",
+        "tr",
         "zh-Hans",
         "zh-Hant",
-        "de"
+        "zh-CN",
+        "zh_TW",
+        "pseudo-LOCALE"
     ],
     "tsConfig": "./tsconfig.json",
     "output": {

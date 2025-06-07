@@ -1,4 +1,5 @@
 """Generic models"""
+
 import re
 
 from django.core.validators import URLValidator
@@ -11,13 +12,22 @@ from rest_framework.serializers import BaseSerializer
 class SerializerModel(models.Model):
     """Base Abstract Model which has a serializer"""
 
+    class Meta:
+        abstract = True
+
     @property
     def serializer(self) -> type[BaseSerializer]:
         """Get serializer for this model"""
-        raise NotImplementedError
+        # Special handling for built-in source
+        if (
+            hasattr(self, "managed")
+            and hasattr(self, "MANAGED_INBUILT")
+            and self.managed == self.MANAGED_INBUILT
+        ):
+            from authentik.core.api.sources import SourceSerializer
 
-    class Meta:
-        abstract = True
+            return SourceSerializer
+        raise NotImplementedError
 
 
 class CreatedUpdatedModel(models.Model):
@@ -61,7 +71,7 @@ class DomainlessURLValidator(URLValidator):
             r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
             r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
             r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
-            r"(?::\d{2,5})?"  # port
+            r"(?::\d{1,5})?"  # port
             r"(?:[/?#][^\s]*)?"  # resource path
             r"\Z",
             re.IGNORECASE,
@@ -87,7 +97,7 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
             r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
             r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
             r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
-            r"(?::\d{2,5})?"  # port
+            r"(?::\d{1,5})?"  # port
             r"(?:[/?#][^\s]*)?"  # resource path
             r"\Z",
             re.IGNORECASE,

@@ -1,8 +1,8 @@
-import { convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
+import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -12,8 +12,40 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
+ *
+ * Horizontal Form Element Container.
+ *
+ * This element provides the interface between elements of our forms and the
+ * form itself.
  * @custom-element ak-form-element-horizontal
  */
+
+/* TODO
+
+ * 1. Replace the "probe upward for a parent object to event" with an event handler on the parent
+ *    group.
+ * 2. Updated() has a lot of that slug code again. Really, all you want is for the slug input object
+ *    to update itself if its content seems to have been tracking some other key element.
+ * 3. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
+ *    it being written on-demand when the child is written? Because it's slotted... despite there
+ *    being very few unique uses.
+ */
+
+const isAkControl = (el: unknown): boolean =>
+    el instanceof HTMLElement &&
+    "dataset" in el &&
+    el.dataset instanceof DOMStringMap &&
+    "akControl" in el.dataset;
+
+const nameables = new Set([
+    "input",
+    "textarea",
+    "select",
+    "ak-codemirror",
+    "ak-chip-group",
+    "ak-search-select",
+    "ak-radio",
+]);
 
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
@@ -42,20 +74,17 @@ export class HorizontalFormElement extends AKElement {
     @property({ type: Boolean })
     required = false;
 
-    @property({ type: Boolean })
-    writeOnly = false;
-
-    @property({ type: Boolean })
-    writeOnlyActivated = false;
-
     @property({ attribute: false })
-    errorMessages: string[] = [];
+    errorMessages: string[] | string[][] = [];
 
     @property({ type: Boolean })
     slugMode = false;
 
     _invalid = false;
 
+    /* If this property changes, we want to make sure the parent control is "opened" so
+     * that users can see the change.[1]
+     */
     @property({ type: Boolean })
     set invalid(v: boolean) {
         this._invalid = v;
@@ -83,33 +112,20 @@ export class HorizontalFormElement extends AKElement {
         if (this.name === "slug" || this.slugMode) {
             this.querySelectorAll<HTMLInputElement>("input[type='text']").forEach((input) => {
                 input.addEventListener("keyup", () => {
-                    input.value = convertToSlug(input.value);
+                    input.value = formatSlug(input.value);
                 });
             });
         }
         this.querySelectorAll("*").forEach((input) => {
-            switch (input.tagName.toLowerCase()) {
-                case "input":
-                case "textarea":
-                case "select":
-                case "ak-codemirror":
-                case "ak-chip-group":
-                case "ak-search-select":
-                case "ak-radio":
-                    input.setAttribute("name", this.name);
-                    break;
-                default:
-                    return;
+            if (isAkControl(input) && !input.getAttribute("name")) {
+                input.setAttribute("name", this.name);
+                return;
             }
-            if (this.writeOnly && !this.writeOnlyActivated) {
-                const i = input as HTMLInputElement;
-                i.setAttribute("hidden", "true");
-                const handler = () => {
-                    i.removeAttribute("hidden");
-                    this.writeOnlyActivated = true;
-                    i.parentElement?.removeEventListener("click", handler);
-                };
-                i.parentElement?.addEventListener("click", handler);
+
+            if (nameables.has(input.tagName.toLowerCase())) {
+                input.setAttribute("name", this.name);
+            } else {
+                return;
             }
         });
     }
@@ -126,24 +142,19 @@ export class HorizontalFormElement extends AKElement {
                 </label>
             </div>
             <div class="pf-c-form__group-control">
-                ${this.writeOnly && !this.writeOnlyActivated
-                    ? html`<div class="pf-c-form__horizontal-group">
-                          <input
-                              class="pf-c-form-control"
-                              type="password"
-                              disabled
-                              value="**************"
-                          />
-                      </div>`
-                    : html``}
                 <slot class="pf-c-form__horizontal-group"></slot>
                 <div class="pf-c-form__horizontal-group">
-                    ${this.writeOnly
-                        ? html`<p class="pf-c-form__helper-text" aria-live="polite">
-                              ${msg("Click to change value")}
-                          </p>`
-                        : html``}
                     ${this.errorMessages.map((message) => {
+                        if (message instanceof Object) {
+                            return html`${Object.entries(message).map(([field, errMsg]) => {
+                                return html`<p
+                                    class="pf-c-form__helper-text pf-m-error"
+                                    aria-live="polite"
+                                >
+                                    ${msg(str`${field}: ${errMsg}`)}
+                                </p>`;
+                            })}`;
+                        }
                         return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
                             ${message}
                         </p>`;
@@ -151,5 +162,11 @@ export class HorizontalFormElement extends AKElement {
                 </div>
             </div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-form-element-horizontal": HorizontalFormElement;
     }
 }

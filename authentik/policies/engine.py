@@ -1,15 +1,19 @@
 """authentik policy engine"""
+
+from collections.abc import Iterator
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from typing import Iterator, Optional
+from time import perf_counter
 
 from django.core.cache import cache
 from django.http import HttpRequest
-from sentry_sdk.hub import Hub
+from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
+from authentik.lib.utils.reflection import class_to_path
+from authentik.policies.apps import HIST_POLICIES_ENGINE_TOTAL_TIME, HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.process import PolicyProcess, cache_key
@@ -23,7 +27,7 @@ class PolicyProcessInfo:
 
     process: PolicyProcess
     connection: Connection
-    result: Optional[PolicyResult]
+    result: PolicyResult | None
     binding: PolicyBinding
 
     def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):
@@ -64,7 +68,7 @@ class PolicyEngine:
         self.use_cache = True
         self.__expected_result_count = 0
 
-    def _iter_bindings(self) -> Iterator[PolicyBinding]:
+    def iterate_bindings(self) -> Iterator[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
         return (
             PolicyBinding.objects.filter(target=self.__pbm, enabled=True)
@@ -77,31 +81,53 @@ class PolicyEngine:
         if binding.policy is not None and binding.policy.__class__ == Policy:
             raise PolicyEngineException(f"Policy '{binding.policy}' is root type")
 
+    def _check_cache(self, binding: PolicyBinding):
+        if not self.use_cache:
+            return False
+        before = perf_counter()
+        key = cache_key(binding, self.request)
+        cached_policy = cache.get(key, None)
+        duration = max(perf_counter() - before, 0)
+        if not cached_policy:
+            return False
+        self.logger.debug(
+            "P_ENG: Taking result from cache",
+            binding=binding,
+            cache_key=key,
+            request=self.request,
+        )
+        HIST_POLICIES_EXECUTION_TIME.labels(
+            binding_order=binding.order,
+            binding_target_type=binding.target_type,
+            binding_target_name=binding.target_name,
+            object_pk=str(self.request.obj.pk),
+            object_type=class_to_path(self.request.obj.__class__),
+            mode="cache_retrieve",
+        ).observe(duration)
+        # It's a bit silly to time this, but
+        self.__cached_policies.append(cached_policy)
+        return True
+
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
         with (
-            Hub.current.start_span(
+            start_span(
                 op="authentik.policy.engine.build",
-                description=self.__pbm,
+                name=self.__pbm,
             ) as span,
+            HIST_POLICIES_ENGINE_TOTAL_TIME.labels(
+                obj_type=class_to_path(self.__pbm.__class__),
+                obj_pk=str(self.__pbm.pk),
+            ).time(),
         ):
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
-            for binding in self._iter_bindings():
+            for binding in self.iterate_bindings():
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)
-                key = cache_key(binding, self.request)
-                cached_policy = cache.get(key, None)
-                if cached_policy and self.use_cache:
-                    self.logger.debug(
-                        "P_ENG: Taking result from cache",
-                        binding=binding,
-                        cache_key=key,
-                        request=self.request,
-                    )
-                    self.__cached_policies.append(cached_policy)
+                if self._check_cache(binding):
                     continue
                 self.logger.debug("P_ENG: Evaluating policy", binding=binding, request=self.request)
                 our_end, task_end = Pipe(False)

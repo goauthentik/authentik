@@ -18,7 +18,7 @@ class UserDeleteStage(Stage):
         return UserDeleteStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.user_delete.stage import UserDeleteStageView
 
         return UserDeleteStageView

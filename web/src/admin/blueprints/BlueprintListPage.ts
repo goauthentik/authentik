@@ -1,8 +1,9 @@
 import "@goauthentik/admin/blueprints/BlueprintForm";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -10,6 +11,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -17,7 +19,12 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { BlueprintInstance, BlueprintInstanceStatusEnum, ManagedApi } from "@goauthentik/api";
+import {
+    BlueprintInstance,
+    BlueprintInstanceStatusEnum,
+    ManagedApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     if (!blueprint) return "";
@@ -51,6 +58,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
 
     expandable = true;
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -59,13 +67,10 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
-        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<BlueprintInstance>> {
+        return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList(
+            await this.defaultEndpointConfig(),
+        );
     }
 
     columns(): TableColumn[] {
@@ -136,18 +141,25 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<div>${item.name}</div>
                 ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
-            html`${item.lastApplied.toLocaleString()}`,
-            html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
-                ${item.enabled ? msg("Yes") : msg("No")}
-            </ak-label>`,
-            html` <ak-forms-modal>
+            html`<div>${formatElapsedTime(item.lastApplied)}</div>
+                <small>${item.lastApplied.toLocaleString()}</small>`,
+            html`<ak-status-label ?good=${item.enabled}></ak-status-label>`,
+            html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Blueprint")} </span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
-                    </button> </ak-forms-modal
-                ><ak-action-button
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikBlueprintsBlueprintinstance}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
+                <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {
                         return new ManagedApi(DEFAULT_CONFIG)
@@ -164,7 +176,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                             });
                     }}
                 >
-                    <i class="fas fa-play" aria-hidden="true"></i>
+                    <pf-tooltip position="top" content=${msg("Apply")}>
+                        <i class="fas fa-play" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </ak-action-button>`,
         ];
     }
@@ -178,5 +192,11 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-blueprint-list": BlueprintListPage;
     }
 }

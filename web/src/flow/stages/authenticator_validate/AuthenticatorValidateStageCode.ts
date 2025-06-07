@@ -1,65 +1,73 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
-import "@goauthentik/flow/FormStatic";
-import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import { BaseStage } from "@goauthentik/flow/stages/base";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFForm from "@patternfly/patternfly/components/Form/form.css";
-import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
-import PFLogin from "@patternfly/patternfly/components/Login/login.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { customElement } from "lit/decorators.js";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
-    DeviceChallenge,
     DeviceClassesEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-code")
-export class AuthenticatorValidateStageWebCode extends BaseStage<
+export class AuthenticatorValidateStageWebCode extends BaseDeviceStage<
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest
 > {
-    @property({ attribute: false })
-    deviceChallenge?: DeviceChallenge;
-
-    @property({ type: Boolean })
-    showBackButton = false;
-
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            css`
-                .icon-description {
-                    display: flex;
-                }
-                .icon-description i {
-                    font-size: 2em;
-                    padding: 0.25em;
-                    padding-right: 0.5em;
-                }
-            `,
-        ];
+        return super.styles.concat(css`
+            .icon-description {
+                display: flex;
+            }
+            .icon-description i {
+                font-size: 2em;
+                padding: 0.25em;
+                padding-right: 0.5em;
+            }
+        `);
+    }
+
+    deviceMessage(): string {
+        switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email: {
+                const email = this.deviceChallenge.challenge?.email;
+                return msg(str`A code has been sent to you via email${email ? ` ${email}` : ""}`);
+            }
+            case DeviceClassesEnum.Sms:
+                return msg("A code has been sent to you via SMS.");
+            case DeviceClassesEnum.Totp:
+                return msg(
+                    "Open your two-factor authenticator app to view your authentication code.",
+                );
+            case DeviceClassesEnum.Static:
+                return msg("Enter a one-time recovery code for this user.");
+        }
+
+        return msg("Enter the code from your authenticator device.");
+    }
+
+    deviceIcon(): string {
+        switch (this.deviceChallenge?.deviceClass) {
+            case DeviceClassesEnum.Email:
+                return "fa-envelope-o";
+            case DeviceClassesEnum.Sms:
+                return "fa-mobile-alt";
+            case DeviceClassesEnum.Totp:
+                return "fa-clock";
+            case DeviceClassesEnum.Static:
+                return "fa-key";
+        }
+
+        return "fa-mobile-alt";
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading> </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
                 <form
@@ -68,39 +76,18 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                         this.submitForm(e);
                     }}
                 >
-                    <ak-form-static
-                        class="pf-c-form__group"
-                        userAvatar="${this.challenge.pendingUserAvatar}"
-                        user=${this.challenge.pendingUser}
-                    >
-                        <div slot="link">
-                            <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${msg("Not you?")}</a
-                            >
-                        </div>
-                    </ak-form-static>
+                    ${this.renderUserInfo()}
                     <div class="icon-description">
-                        <i
-                            class="fa ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                                ? "fa-key"
-                                : "fa-mobile-alt"}"
-                            aria-hidden="true"
-                        ></i>
-                        ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                            ? html`<p>${msg("A code has been sent to you via SMS.")}</p>`
-                            : html`<p>
-                                  ${msg(
-                                      "Open your two-factor authenticator app to view your authentication code.",
-                                  )}
-                              </p>`}
+                        <i class="fa ${this.deviceIcon()}" aria-hidden="true"></i>
+                        <p>${this.deviceMessage()}</p>
                     </div>
                     <ak-form-element
                         label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
                             ? msg("Static token")
                             : msg("Authentication code")}"
-                        ?required="${true}"
+                        required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                        .errors=${(this.challenge?.responseErrors || {}).code}
                     >
                         <!-- @ts-ignore -->
                         <input
@@ -127,27 +114,18 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
+                        ${this.renderReturnToDevicePicker()}
                     </div>
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
-                    ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
-                              <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
-                                  @click=${() => {
-                                      if (!this.host) return;
-                                      (
-                                          this.host as AuthenticatorValidateStage
-                                      ).selectedDeviceChallenge = undefined;
-                                  }}
-                              >
-                                  ${msg("Return to device picker")}
-                              </button>
-                          </li>`
-                        : html``}
-                </ul>
+                <ul class="pf-c-login__main-footer-links"></ul>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-code": AuthenticatorValidateStageWebCode;
     }
 }

@@ -1,3 +1,4 @@
+---
 name: authentik-on-tag
 
 on:
@@ -10,30 +11,22 @@ jobs:
     name: Create Release from Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Pre-release test
         run: |
-          echo "PG_PASS=$(openssl rand -base64 32)" >> .env
-          echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
-          docker buildx install
-          docker build -t testing:latest .
-          echo "AUTHENTIK_IMAGE=testing" >> .env
-          echo "AUTHENTIK_TAG=latest" >> .env
-          docker-compose up --no-start
-          docker-compose start postgresql redis
-          docker-compose run -u root server test-all
+          make test-docker
       - id: generate_token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
-      - name: Extract version number
-        id: get_version
-        uses: actions/github-script@v6
+      - name: prepare variables
+        uses: ./.github/actions/docker-push-variables
+        id: ev
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         with:
-          github-token: ${{ steps.generate_token.outputs.token }}
-          script: |
-            return context.payload.ref.replace(/\/refs\/tags\/version\//, '');
+          image-name: ghcr.io/goauthentik/server
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
@@ -41,6 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.get_version.outputs.result }}
+          release_name: Release ${{ steps.ev.outputs.version }}
           draft: true
-          prerelease: false
+          prerelease: ${{ steps.ev.outputs.prerelease == 'true' }}

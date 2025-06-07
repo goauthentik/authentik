@@ -1,25 +1,60 @@
 """OAuth2Provider API Views"""
+
+from copy import copy
+from re import compile
+from re import error as RegexError
+
 from django.urls import reverse
 from django.utils import timezone
-from drf_spectacular.utils import OpenApiResponse, extend_schema
+from django.utils.translation import gettext_lazy as _
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import CharField
+from rest_framework.exceptions import ValidationError
+from rest_framework.fields import CharField, ChoiceField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    OAuth2Provider,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
+from authentik.rbac.decorators import permission_required
+
+
+class RedirectURISerializer(PassiveSerializer):
+    """A single allowed redirect URI entry"""
+
+    matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
+    url = CharField()
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
+
+    redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+
+    def validate_redirect_uris(self, data: list) -> list:
+        for entry in data:
+            if entry.get("matching_mode") == RedirectURIMatchingMode.REGEX:
+                url = entry.get("url")
+                try:
+                    compile(url)
+                except RegexError:
+                    raise ValidationError(
+                        _("Invalid Regex Pattern: {url}".format(url=url))
+                    ) from None
+        return data
 
     class Meta:
         model = OAuth2Provider
@@ -33,11 +68,13 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "include_claims_in_id_token",
             "signing_key",
+            "encryption_key",
             "redirect_uris",
             "sub_mode",
             "property_mappings",
             "issuer_mode",
-            "jwks_sources",
+            "jwt_federation_sources",
+            "jwt_federation_providers",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -72,7 +109,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "refresh_token_validity",
         "include_claims_in_id_token",
         "signing_key",
-        "redirect_uris",
         "sub_mode",
         "property_mappings",
         "issuer_mode",
@@ -129,7 +165,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                     kwargs={"application_slug": provider.application.slug},
                 )
             )
-        except Provider.application.RelatedObjectDoesNotExist:  # pylint: disable=no-member
+        except Provider.application.RelatedObjectDoesNotExist:
             pass
         return Response(data)
 
@@ -141,23 +177,45 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             200: PropertyMappingPreviewSerializer(),
             400: OpenApiResponse(description="Bad request"),
         },
+        parameters=[
+            OpenApiParameter(
+                name="for_user",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+            )
+        ],
     )
     @action(detail=True, methods=["GET"])
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: OAuth2Provider = self.get_object()
+        for_user = request.user
+        if "for_user" in request.query_params:
+            try:
+                for_user = (
+                    get_objects_for_user(request.user, "authentik_core.preview_user")
+                    .filter(pk=request.query_params.get("for_user"))
+                    .first()
+                )
+                if not for_user:
+                    raise ValidationError({"for_user": "User not found"})
+            except ValueError:
+                raise ValidationError({"for_user": "input must be numerical"}) from None
+
         scope_names = ScopeMapping.objects.filter(provider=provider).values_list(
             "scope_name", flat=True
         )
+        new_request = copy(request._request)
+        new_request.user = for_user
         temp_token = IDToken.new(
             provider,
             AccessToken(
-                user=request.user,
+                user=for_user,
                 provider=provider,
                 _scope=" ".join(scope_names),
                 auth_time=timezone.now(),
             ),
-            request,
+            new_request,
         )
         serializer = PropertyMappingPreviewSerializer(instance={"preview": temp_token.to_dict()})
         return Response(serializer.data)

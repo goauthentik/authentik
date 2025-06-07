@@ -1,9 +1,11 @@
 """email tests"""
+
 from unittest.mock import MagicMock, PropertyMock, patch
 
 from django.core import mail
 from django.core.mail.backends.locmem import EmailBackend
 from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
+from django.test import RequestFactory
 from django.urls import reverse
 from django.utils.http import urlencode
 
@@ -12,9 +14,12 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN
+from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN, FlowExecutorView
+from authentik.lib.config import CONFIG
+from authentik.lib.generators import generate_id
+from authentik.stages.consent.stage import SESSION_KEY_CONSENT_TOKEN
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE
+from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, EmailStageView
 
 
 class TestEmailStage(FlowTestCase):
@@ -22,8 +27,8 @@ class TestEmailStage(FlowTestCase):
 
     def setUp(self):
         super().setUp()
+        self.factory = RequestFactory()
         self.user = create_test_admin_user()
-
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
         self.stage = EmailStage.objects.create(
             name="email",
@@ -91,7 +96,7 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
-        self.assertEqual(mail.outbox[0].to, [self.user.email])
+        self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <{self.user.email}>"])
 
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",
@@ -111,7 +116,7 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
-        self.assertEqual(mail.outbox[0].to, ["foo@bar.baz"])
+        self.assertEqual(mail.outbox[0].to, [f"{self.user.name} <foo@bar.baz>"])
 
     @patch(
         "authentik.stages.email.models.EmailStage.backend_class",
@@ -120,7 +125,7 @@ class TestEmailStage(FlowTestCase):
     def test_use_global_settings(self):
         """Test use_global_settings"""
         host = "some-unique-string"
-        with self.settings(EMAIL_HOST=host):
+        with CONFIG.patch("email.host", host):
             self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
 
     def test_token(self):
@@ -156,6 +161,17 @@ class TestEmailStage(FlowTestCase):
                     kwargs={"flow_slug": self.flow.slug},
                 )
             )
+            self.assertStageResponse(response, self.flow, component="ak-stage-consent")
+            response = self.client.post(
+                reverse(
+                    "authentik_api:flow-executor",
+                    kwargs={"flow_slug": self.flow.slug},
+                ),
+                data={
+                    "token": self.client.session[SESSION_KEY_CONSENT_TOKEN],
+                },
+                follow=True,
+            )
 
             self.assertEqual(response.status_code, 200)
             self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
@@ -178,6 +194,7 @@ class TestEmailStage(FlowTestCase):
         # Set flow token user to a different user
         token: FlowToken = FlowToken.objects.get(user=self.user)
         token.user = create_test_admin_user()
+        token.revoke_on_execution = True
         token.save()
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
@@ -204,3 +221,69 @@ class TestEmailStage(FlowTestCase):
 
             self.assertEqual(response.status_code, 200)
             self.assertStageResponse(response, component="ak-stage-access-denied")
+
+    def test_url_no_params(self):
+        """Test generation of the URL in the EMail"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        self.assertEqual(stage_view.get_full_url(), f"http://testserver/if/flow/{self.flow.slug}/")
+
+    def test_url_our_params(self):
+        """Test that all of our parameters are passed to the URL correctly"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        token = generate_id()
+        self.assertEqual(
+            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
+            f"http://testserver/if/flow/{self.flow.slug}/?flow_token={token}",
+        )
+
+    def test_url_existing_params(self):
+        """Test to ensure that URL params are preserved in the URL being sent"""
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        url += "?query=" + urlencode({"foo": "bar"})
+        request = self.factory.get(url)
+        stage_view = EmailStageView(
+            FlowExecutorView(
+                request=request,
+                flow=self.flow,
+            ),
+            request=request,
+        )
+        token = generate_id()
+        self.assertEqual(
+            stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
+            f"http://testserver/if/flow/{self.flow.slug}/?foo=bar&flow_token={token}",
+        )

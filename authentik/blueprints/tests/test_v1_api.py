@@ -1,4 +1,5 @@
 """Test blueprints v1 api"""
+
 from json import loads
 from tempfile import NamedTemporaryFile, mkdtemp
 
@@ -77,5 +78,5 @@ class TestBlueprintsV1API(APITestCase):
         self.assertEqual(res.status_code, 400)
         self.assertJSONEqual(
             res.content.decode(),
-            {"content": ["Failed to validate blueprint: Invalid blueprint version"]},
+            {"content": ["Failed to validate blueprint", "- Invalid blueprint version"]},
         )

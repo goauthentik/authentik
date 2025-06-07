@@ -1,4 +1,5 @@
 """outpost tests"""
+
 from django.apps import apps
 from django.contrib.auth.management import create_permissions
 from django.test import TestCase

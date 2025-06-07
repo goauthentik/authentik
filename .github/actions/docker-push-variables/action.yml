@@ -1,64 +1,67 @@
+---
 name: "Prepare docker environment variables"
 description: "Prepare docker environment variables"
 
+inputs:
+  image-name:
+    required: true
+    description: "Docker image prefix"
+  image-arch:
+    required: false
+    description: "Docker image arch"
+  release:
+    required: true
+    description: "True if this is a release build, false if this is a dev/PR build"
+
 outputs:
-  shouldBuild:
-    description: "Whether to build image or not"
-    value: ${{ steps.ev.outputs.shouldBuild }}
-  branchName:
-    description: "Branch name"
-    value: ${{ steps.ev.outputs.branchName }}
-  branchNameContainer:
-    description: "Branch name (for containers)"
-    value: ${{ steps.ev.outputs.branchNameContainer }}
-  timestamp:
-    description: "Timestamp"
-    value: ${{ steps.ev.outputs.timestamp }}
+  shouldPush:
+    description: "Whether to push the image or not"
+    value: ${{ steps.ev.outputs.shouldPush }}
+
   sha:
     description: "sha"
     value: ${{ steps.ev.outputs.sha }}
-  shortHash:
-    description: "shortHash"
-    value: ${{ steps.ev.outputs.shortHash }}
+
   version:
-    description: "version"
+    description: "Version"
     value: ${{ steps.ev.outputs.version }}
-  versionFamily:
-    description: "versionFamily"
-    value: ${{ steps.ev.outputs.versionFamily }}
+  prerelease:
+    description: "Prerelease"
+    value: ${{ steps.ev.outputs.prerelease }}
+
+  imageTags:
+    description: "Docker image tags"
+    value: ${{ steps.ev.outputs.imageTags }}
+  imageTagsJSON:
+    description: "Docker image tags, as a JSON array"
+    value: ${{ steps.ev.outputs.imageTagsJSON }}
+  attestImageNames:
+    description: "Docker image names used for attestation"
+    value: ${{ steps.ev.outputs.attestImageNames }}
+  cacheTo:
+    description: "cache-to value for the docker build step"
+    value: ${{ steps.ev.outputs.cacheTo }}
+  imageMainTag:
+    description: "Docker image main tag"
+    value: ${{ steps.ev.outputs.imageMainTag }}
+  imageMainName:
+    description: "Docker image main name"
+    value: ${{ steps.ev.outputs.imageMainName }}
+  imageBuildArgs:
+    description: "Docker image build args"
+    value: ${{ steps.ev.outputs.imageBuildArgs }}
 
 runs:
   using: "composite"
   steps:
     - name: Generate config
       id: ev
-      shell: python
+      shell: bash
+      env:
+        IMAGE_NAME: ${{ inputs.image-name }}
+        IMAGE_ARCH: ${{ inputs.image-arch }}
+        RELEASE: ${{ inputs.release }}
+        PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        REF: ${{ github.ref }}
       run: |
-        """Helper script to get the actual branch name, docker safe"""
-        import configparser
-        import os
-        from time import time
-
-        parser = configparser.ConfigParser()
-        parser.read(".bumpversion.cfg")
-
-        branch_name = os.environ["GITHUB_REF"]
-        if os.environ.get("GITHUB_HEAD_REF", "") != "":
-            branch_name = os.environ["GITHUB_HEAD_REF"]
-
-        should_build = str(os.environ.get("DOCKER_USERNAME", "") != "").lower()
-        version = parser.get("bumpversion", "current_version")
-        version_family = ".".join(version.split(".")[:-1])
-        safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
-
-        sha = os.environ["GITHUB_SHA"] if not "${{ github.event.pull_request.head.sha }}" else "${{ github.event.pull_request.head.sha }}"
-
-        with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
-            print("branchName=%s" % branch_name, file=_output)
-            print("branchNameContainer=%s" % safe_branch_name, file=_output)
-            print("timestamp=%s" % int(time()), file=_output)
-            print("sha=%s" % sha, file=_output)
-            print("shortHash=%s" % sha[:7], file=_output)
-            print("shouldBuild=%s" % should_build, file=_output)
-            print("version=%s" % version, file=_output)
-            print("versionFamily=%s" % version_family, file=_output)
+        python3 ${{ github.action_path }}/push_vars.py

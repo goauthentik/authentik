@@ -1,12 +1,21 @@
-import "@goauthentik/admin/property-mappings/PropertyMappingLDAPForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingNotification";
-import "@goauthentik/admin/property-mappings/PropertyMappingSAMLForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingSCIMForm";
-import "@goauthentik/admin/property-mappings/PropertyMappingScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderGoogleWorkspaceForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderMicrosoftEntraForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRACForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderRadiusForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderSCIMForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingProviderScopeForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceKerberosForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceLDAPForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceOAuthForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
+import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -14,6 +23,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -38,6 +48,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     }
 
     checkbox = true;
+    clearOnRefresh = true;
 
     @property()
     order = "name";
@@ -45,12 +56,9 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @state()
     hideManaged = getURLParam<boolean>("hideManaged", true);
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<PropertyMapping>> {
+    async apiEndpoint(): Promise<PaginatedResponse<PropertyMapping>> {
         return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             managedIsnull: this.hideManaged ? true : undefined,
         });
     }
@@ -101,16 +109,22 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${msg("Test")} </span>
                     <span slot="header"> ${msg("Test Property Mapping")} </span>
                     <ak-property-mapping-test-form slot="form" .mapping=${item}>
                     </ak-property-mapping-test-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-vial" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Test")}>
+                            <i class="fas fa-vial" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`,
         ];
@@ -149,5 +163,11 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                     </div>
                 </div>
             </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-property-mapping-list": PropertyMappingListPage;
     }
 }

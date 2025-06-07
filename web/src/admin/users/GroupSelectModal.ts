@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -32,12 +31,10 @@ export class GroupSelectModal extends TableModal<Group> {
         return super.styles.concat(PFBanner);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
+            includeUsers: false,
         });
     }
 
@@ -54,9 +51,7 @@ export class GroupSelectModal extends TableModal<Group> {
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
-                ${item.isSuperuser ? msg("Yes") : msg("No")}
-            </ak-label>`,
+            html` <ak-status-label type="info" ?good=${item.isSuperuser}></ak-status-label>`,
             html`${(item.users || []).length}`,
         ];
     }
@@ -102,5 +97,11 @@ export class GroupSelectModal extends TableModal<Group> {
                     ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-group-select-table": GroupSelectModal;
     }
 }

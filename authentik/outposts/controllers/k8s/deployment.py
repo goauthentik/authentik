@@ -1,4 +1,5 @@
 """Kubernetes Deployment Reconciler"""
+
 from typing import TYPE_CHECKING
 
 from django.utils.text import slugify
@@ -43,6 +44,14 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
+    @property
+    def noop(self) -> bool:
+        return self.is_embedded
+
+    @staticmethod
+    def reconciler_name() -> str:
+        return "deployment"
+
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
         compare_ports(
             current.spec.template.spec.containers[0].ports,
@@ -85,7 +94,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         meta = self.get_object_meta(name=self.name)
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
-        version = get_full_version()
+        version = get_full_version().replace("+", "-")
         return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(

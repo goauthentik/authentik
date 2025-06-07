@@ -56,7 +56,7 @@ func TestProxy_Redirect_Subdirectory(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(
 		t,
-		"https://ext.t.goauthentik.io/subdir/outpost.goauthentik.io/start?rd=https%3A%2F%2Fext.t.goauthentik.io%2Ffoo",
+		"https://ext.t.goauthentik.io/subdir/outpost.goauthentik.io/start?rd=https%3A%2F%2Fext.t.goauthentik.io%2Fsubdir%2Ffoo",
 		loc.String(),
 	)
 }

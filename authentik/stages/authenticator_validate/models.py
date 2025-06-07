@@ -20,6 +20,7 @@ class DeviceClasses(models.TextChoices):
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")
     SMS = "sms", _("SMS")
+    EMAIL = "email", _("Email")
 
 
 def default_device_classes() -> list:
@@ -30,6 +31,7 @@ def default_device_classes() -> list:
         DeviceClasses.WEBAUTHN,
         DeviceClasses.DUO,
         DeviceClasses.SMS,
+        DeviceClasses.EMAIL,
     ]
 
 
@@ -71,6 +73,9 @@ class AuthenticatorValidateStage(Stage):
         choices=UserVerification.choices,
         default=UserVerification.PREFERRED,
     )
+    webauthn_allowed_device_types = models.ManyToManyField(
+        "authentik_stages_authenticator_webauthn.WebAuthnDeviceType", blank=True
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -79,7 +84,7 @@ class AuthenticatorValidateStage(Stage):
         return AuthenticatorValidateStageSerializer
 
     @property
-    def type(self) -> type[View]:
+    def view(self) -> type[View]:
         from authentik.stages.authenticator_validate.stage import AuthenticatorValidateStageView
 
         return AuthenticatorValidateStageView

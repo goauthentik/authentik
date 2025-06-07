@@ -2,85 +2,91 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "authentik[core]: format & test",
-            "command": "poetry",
-            "args": [
-                "run",
-                "make"
-            ],
-            "group": "build",
-        },
-        {
-            "label": "authentik[core]: run",
-            "command": "poetry",
+            "label": "authentik/core: make",
+            "command": "uv",
             "args": [
                 "run",
                 "make",
+                "lint-fix",
+                "lint"
+            ],
+            "presentation": {
+                "panel": "new"
+            },
+            "group": "test"
+        },
+        {
+            "label": "authentik/core: run",
+            "command": "uv",
+            "args": [
                 "run",
+                "ak",
+                "server"
             ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
                 "group": "running"
-            },
+            }
         },
         {
-            "label": "authentik[web]: format",
+            "label": "authentik/web: make",
             "command": "make",
-            "args": ["web"],
-            "group": "build",
+            "args": [
+                "web"
+            ],
+            "group": "build"
         },
         {
-            "label": "authentik[web]: watch",
+            "label": "authentik/web: watch",
             "command": "make",
-            "args": ["web-watch"],
+            "args": [
+                "web-watch"
+            ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
                 "group": "running"
-            },
+            }
         },
         {
             "label": "authentik: install",
             "command": "make",
-            "args": ["install"],
-            "group": "build",
-        },
-        {
-            "label": "authentik: i18n-extract",
-            "command": "poetry",
             "args": [
-                "run",
-                "make",
-                "i18n-extract"
+                "install",
+                "-j4"
             ],
-            "group": "build",
+            "group": "build"
         },
         {
-            "label": "authentik[website]: format",
+            "label": "authentik/website: make",
             "command": "make",
-            "args": ["website"],
-            "group": "build",
+            "args": [
+                "website"
+            ],
+            "group": "build"
         },
         {
-            "label": "authentik[website]: watch",
+            "label": "authentik/website: watch",
             "command": "make",
-            "args": ["website-watch"],
+            "args": [
+                "website-watch"
+            ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
                 "group": "running"
-            },
+            }
         },
         {
-            "label": "authentik[api]: generate",
-            "command": "poetry",
+            "label": "authentik/api: generate",
+            "command": "uv",
             "args": [
                 "run",
                 "make",
                 "gen"
             ],
             "group": "build"
-        },
+        }
     ]
 }

@@ -1,6 +1,6 @@
 """authentik core dataclasses"""
+
 from dataclasses import dataclass
-from typing import Optional
 
 from rest_framework.fields import CharField
 
@@ -8,7 +8,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import Challenge
 
 
-@dataclass
+@dataclass(slots=True)
 class UILoginButton:
     """Dataclass for Source's ui_login_button"""
 
@@ -19,7 +19,7 @@ class UILoginButton:
     challenge: Challenge
 
     # Icon URL, used as-is
-    icon_url: Optional[str] = None
+    icon_url: str | None = None
 
 
 class UserSettingSerializer(PassiveSerializer):

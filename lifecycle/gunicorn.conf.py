@@ -1,87 +1,64 @@
 """Gunicorn config"""
+
 import os
 from hashlib import sha512
-from multiprocessing import cpu_count
 from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-import structlog
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
+from authentik.lib.debug import start_debug_server
+from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from lifecycle.migrate import run_migrations
+from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
+    from gunicorn.app.wsgiapp import WSGIApplication
     from gunicorn.arbiter import Arbiter
 
-bind = "127.0.0.1:8000"
+    from authentik.root.asgi import AuthentikAsgi
+
+defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
+
+wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
 prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
+makedirs(worker_tmp_dir, exist_ok=True)
+makedirs(prometheus_tmp_dir, exist_ok=True)
+
+bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
-makedirs(worker_tmp_dir, exist_ok=True)
-makedirs(prometheus_tmp_dir, exist_ok=True)
+preload_app = True
 
 max_requests = 1000
 max_requests_jitter = 50
 
-_debug = CONFIG.y_bool("DEBUG", False)
+logconfig_dict = get_logger_config()
 
-logconfig_dict = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(),
-            "foreign_pre_chain": [
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.add_logger_name,
-                structlog.processors.TimeStamper(),
-                structlog.processors.StackInfoRenderer(),
-            ],
-        },
-        "console": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(colors=True),
-            "foreign_pre_chain": [
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.add_logger_name,
-                structlog.processors.TimeStamper(),
-                structlog.processors.StackInfoRenderer(),
-            ],
-        },
-    },
-    "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "json" if _debug else "console"},
-    },
-    "loggers": {
-        "uvicorn": {"handlers": ["console"], "level": "WARNING", "propagate": False},
-        "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
-    },
-}
+default_workers = 2
 
-# if we're running in kubernetes, use fixed workers because we can scale with more pods
-# otherwise (assume docker-compose), use as much as we can
-if SERVICE_HOST_ENV_NAME in os.environ:
-    default_workers = 2
-else:
-    default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
-
-workers = int(CONFIG.y("web.workers", default_workers))
-threads = int(CONFIG.y("web.threads", 4))
+workers = CONFIG.get_int("web.workers", default_workers)
+threads = CONFIG.get_int("web.threads", 4)
 
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
@@ -99,7 +76,7 @@ def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
 
 
 def on_starting(server: "Arbiter"):
-    """Attach a set of IDs that can be temporarily re-used.
+    """Attach a set of IDs that can be temporarily reused.
     Used on reloads when each worker exists twice."""
     server._worker_id_overload = set()
 
@@ -113,7 +90,7 @@ def nworkers_changed(server: "Arbiter", new_value, old_value):
 
 
 def _next_worker_id(server: "Arbiter"):
-    """If there are IDs open for re-use, take one.  Else look for a free one."""
+    """If there are IDs open for reuse, take one.  Else look for a free one."""
     if server._worker_id_overload:
         return server._worker_id_overload.pop()
 
@@ -124,7 +101,7 @@ def _next_worker_id(server: "Arbiter"):
 
 
 def on_reload(server: "Arbiter"):
-    """Add a full set of ids into overload so it can be re-used once."""
+    """Add a full set of ids into overload so it can be reused once."""
     server._worker_id_overload = set(range(1, server.cfg.workers + 1))
 
 
@@ -133,7 +110,19 @@ def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     worker._worker_id = _next_worker_id(server)
 
 
-if not CONFIG.y_bool("disable_startup_analytics", False):
+def post_worker_init(worker: DjangoUvicornWorker):
+    """Notify ASGI app that its started up"""
+    # Only trigger startup DB logic on first worker
+    # Startup code that imports code or is otherwise needed in every worker
+    # does not use this signal, so we can skip this safely
+    if worker._worker_id != 1:
+        return
+    app: WSGIApplication = worker.app
+    root_app: AuthentikAsgi = app.callable
+    root_app.call_startup()
+
+
+if not CONFIG.get_bool("disable_startup_analytics", False):
     env = get_env()
     should_send = env not in ["dev", "ci"]
     if should_send:
@@ -154,6 +143,9 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
                 },
                 timeout=5,
             )
-        # pylint: disable=broad-exception-caught
+
         except Exception:  # nosec
             pass
+
+start_debug_server()
+run_migrations()
