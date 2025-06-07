@@ -6,8 +6,7 @@ support_level: community
 
 ## What is Seafile
 
-> Seafile is an open-source, cross-platform file-hosting software system. Files are stored on a central server and can be synchronized with personal computers and mobile devices through apps. Files on the Seafile server can also be accessed directly via the server's web interface.
->
+> Seafile is a file server that lets users upload, download, and synchronize files between devices.
 > -- https://seafile.com
 
 ## Preparation
