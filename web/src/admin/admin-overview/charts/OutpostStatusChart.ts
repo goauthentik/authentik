@@ -1,5 +1,3 @@
-import { AKElement } from "#elements/Base";
-import { actionToColor } from "#elements/charts/EventChart";
 import { SummarizedSyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
@@ -7,104 +5,78 @@ import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
 import { msg } from "@lit/localize";
-import { css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
-
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
+import { customElement } from "lit/decorators.js";
 
 import { EventActions, OutpostsApi } from "@goauthentik/api";
-
-export type OutpostState = "healthy" | "outdated" | "unhealthy";
-
-export interface OutpostStatus {
-    state: OutpostState;
-    label: string;
-}
+import { actionToColor } from "#elements/charts/EventChart";
 
 @customElement("ak-admin-status-chart-outpost")
-export class OutpostStatusChart extends AKElement {
-    @state()
-    data?: OutpostStatus[];
-
-    static get styles() {
-        return [
-            PFBase,
-            css`
-                :host {
-                    --square-size: 3rem;
-                    --square-border: 1px;
-                }
-                .container {
-                }
-                .grid {
-                    display: grid;
-                    grid-template-columns: repeat(
-                        auto-fill,
-                        calc(var(--square-size) + var(--square-border))
-                    );
-                }
-                .square {
-                    width: var(--square-size);
-                    height: var(--square-size);
-                    margin: var(--square-border);
-                    margin-top: 0;
-                }
-                .healthy {
-                    background-color: #4cb140;
-                }
-                .outdated {
-                    background-color: #0060c0;
-                }
-                .unhealthy {
-                    background-color: #c46100;
-                }
-            `,
-        ];
+export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
+    getChartType(): string {
+        return "doughnut";
     }
 
-    async apiRequest(): Promise<OutpostStatus[]> {
+    getOptions(): ChartOptions {
+        return {
+            plugins: {
+                legend: {
+                    display: false,
+                },
+            },
+            maintainAspectRatio: false,
+        };
+    }
+
+    async apiRequest(): Promise<SummarizedSyncStatus[]> {
         const api = new OutpostsApi(DEFAULT_CONFIG);
         const outposts = await api.outpostsInstancesList({});
-        const outpostStats: OutpostStatus[] = [];
+        const outpostStats: SummarizedSyncStatus[] = [];
         await Promise.all(
             outposts.results.map(async (element) => {
                 const health = await api.outpostsInstancesHealthList({
-                    uuid: element.pk,
+                    uuid: element.pk || "",
                 });
+                const singleStats: SummarizedSyncStatus = {
+                    unsynced: 0,
+                    healthy: 0,
+                    failed: 0,
+                    total: health.length,
+                    label: element.name,
+                };
+                if (health.length === 0) {
+                    singleStats.unsynced += 1;
+                }
                 health.forEach((h) => {
-                    const singleStats: OutpostStatus = {
-                        label: `${element.name} - ${h.hostname}`,
-                        state: "unhealthy",
-                    };
                     if (h.versionOutdated) {
-                        singleStats.state = "outdated";
-                    } else if (h.lastSeen.getTime() <= new Date().getTime() - 60 * 10 * 1000) {
-                        singleStats.state = "unhealthy";
+                        singleStats.failed += 1;
                     } else {
-                        singleStats.state = "healthy";
+                        singleStats.healthy += 1;
                     }
-                    outpostStats.push(singleStats);
                 });
+                outpostStats.push(singleStats);
             }),
         );
-
+        this.centerText = outposts.pagination.count.toString();
         outpostStats.sort((a, b) => a.label.localeCompare(b.label));
         return outpostStats;
     }
 
-    firstUpdated() {
-        this.apiRequest().then((data) => (this.data = data));
-    }
-
-    render() {
-        if (!this.data) {
-            return nothing;
-        }
-        return html`<div class="container"><div class="grid">
-            ${this.data.map((d) => {
-                return html`<div class="square ${d.state}"></div>`;
-            })}
-        </div></div>`;
+    getChartData(data: SummarizedSyncStatus[]): ChartData {
+        return {
+            labels: [msg("Healthy outposts"), msg("Outdated outposts"), msg("Unhealthy outposts")],
+            datasets: data.map((d) => {
+                return {
+                    backgroundColor: [
+                        actionToColor(EventActions.Login),
+                        actionToColor(EventActions.SuspiciousRequest),
+                        actionToColor(EventActions.AuthorizeApplication),
+                    ],
+                    spanGaps: true,
+                    data: [d.healthy, d.failed, d.unsynced],
+                    label: d.label,
+                };
+            }),
+        };
     }
 }
 
