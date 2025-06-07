@@ -1,11 +1,11 @@
 """authentik policy engine"""
 
-from collections.abc import Iterator
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from time import perf_counter
 
 from django.core.cache import cache
+from django.db.models import Q, QuerySet
 from django.http import HttpRequest
 from sentry_sdk import start_span
 from sentry_sdk.tracing import Span
@@ -25,12 +25,17 @@ CURRENT_PROCESS = current_process()
 class PolicyProcessInfo:
     """Dataclass to hold all information and communication channels to a process"""
 
-    process: PolicyProcess
-    connection: Connection
+    process: PolicyProcess | None
+    connection: Connection | None
     result: PolicyResult | None
     binding: PolicyBinding
 
-    def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):
+    def __init__(
+        self,
+        process: PolicyProcess | None,
+        connection: Connection | None,
+        binding: PolicyBinding,
+    ):
         self.process = process
         self.connection = connection
         self.binding = binding
@@ -68,13 +73,9 @@ class PolicyEngine:
         self.use_cache = True
         self.__expected_result_count = 0
 
-    def iterate_bindings(self) -> Iterator[PolicyBinding]:
+    def bindings(self) -> QuerySet[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
-        return (
-            PolicyBinding.objects.filter(target=self.__pbm, enabled=True)
-            .order_by("order")
-            .iterator()
-        )
+        return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by("order")
 
     def _check_policy_type(self, binding: PolicyBinding):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
@@ -108,6 +109,26 @@ class PolicyEngine:
         self.__cached_policies.append(cached_policy)
         return True
 
+    def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
+        all_groups = self.request.user.all_groups()
+        matched_bindings = bindings.filter(
+            Q(
+                Q(user=self.request.user) | Q(group__in=all_groups),
+                negate=False,
+            )
+            | Q(
+                Q(~Q(user=self.request.user), user__isnull=False)
+                | Q(~Q(group__in=all_groups), group__isnull=False),
+                negate=True,
+            ),
+            enabled=True,
+        ).order_by("order")
+        for binding in matched_bindings:
+            self.__expected_result_count += 1
+            pi = PolicyProcessInfo(process=None, connection=None, binding=binding)
+            pi.result = PolicyResult(True)
+            self.__processes.append(pi)
+
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
         with (
@@ -123,7 +144,9 @@ class PolicyEngine:
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
-            for binding in self.iterate_bindings():
+            bindings = self.bindings()
+            self.compute_static_bindings(bindings)
+            for binding in [x for x in bindings if x.policy]:
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)
@@ -153,6 +176,7 @@ class PolicyEngine:
     @property
     def result(self) -> PolicyResult:
         """Get policy-checking result"""
+        self.__processes.sort(key=lambda x: x.binding.order)
         process_results: list[PolicyResult] = [x.result for x in self.__processes if x.result]
         all_results = list(process_results + self.__cached_policies)
         if len(all_results) < self.__expected_result_count:  # pragma: no cover
