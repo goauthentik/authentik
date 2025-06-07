@@ -2,12 +2,14 @@ import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
-import LayerVector from "ol/layer/Vector";
 import "@openlayers-elements/core/ol-map";
 import type OlMap from "@openlayers-elements/core/ol-map";
 import "@openlayers-elements/maps/ol-control";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
-import "@openlayers-elements/maps/ol-marker-icon";
+import OlMarkerIcon from "@openlayers-elements/maps/ol-marker-icon";
+import "@openlayers-elements/maps/ol-select";
+import type Feature from "ol/Feature";
+import { Point } from "ol/geom";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
@@ -17,6 +19,21 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { PaginatedEventList } from "@goauthentik/api";
 
+@customElement("ak-map-element")
+export class OLMarker extends OlMarkerIcon {
+    createFeature(map: OlMap | undefined): Feature<Point> {
+        const feature = super.createFeature(map);
+        feature.setId(this.id);
+        return feature;
+    }
+}
+
+/**
+ *
+ * @event {select-event} - Fired when an event is selected on the map. ID of the event is contained
+ *      in the `Event.detail` field.
+ *
+ */
 @customElement("ak-events-map")
 export class EventMap extends AKElement {
     @property({ attribute: false })
@@ -41,31 +58,23 @@ export class EventMap extends AKElement {
         ];
     }
 
-    registered = false
-
-    updated() {
-        if (this.registered) {return}
-        if (!this.map?.map) {return}
-        this.map.map.on("click", (ev) => {
-            this.map?.map.forEachFeatureAtPixel(
-                ev.pixel,
-                (feature) => {
-                    console.log(feature);
-                    return;
-                },
-                {
-                    layerFilter: (layer) => {
-                        return layer instanceof LayerVector;
-                    },
-                },
-            );
-        });
-        this.registered = true;
-    }
-
     render(): TemplateResult {
         return html`<div class="pf-c-card">
             <ol-map>
+                <ol-select
+                    @feature-selected=${(ev: CustomEvent<{ feature: Feature }>) => {
+                        const eventId = ev.detail.feature.getId();
+                        this.dispatchEvent(
+                            new CustomEvent("select-event", {
+                                composed: true,
+                                bubbles: true,
+                                detail: {
+                                    eventId: eventId,
+                                },
+                            }),
+                        );
+                    }}
+                ></ol-select>
                 <ol-layer-openstreetmap></ol-layer-openstreetmap>
                 <ol-layer-vector>
                     ${this.events
@@ -82,13 +91,14 @@ export class EventMap extends AKElement {
                               })
                               .map((event) => {
                                   const geo = (event as EventWithContext).context.geo!;
-                                  return html`<ol-marker-icon
+                                  return html`<ak-map-element
                                       src="${globalAK().api
                                           .base}static/dist/assets/images/map_pin.svg"
                                       lon=${geo.long!}
                                       lat=${geo.lat!}
                                       anchor-y=${1}
-                                  ></ol-marker-icon>`;
+                                      id=${event.pk}
+                                  ></ak-map-element>`;
                               })
                         : nothing}
                 </ol-layer-vector>

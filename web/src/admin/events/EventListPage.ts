@@ -1,5 +1,6 @@
 import "#elements/Tabs";
 import { WithLicenseSummary } from "#elements/mixins/license";
+import { updateURLParams } from "#elements/router/RouteMatch";
 import "@goauthentik/admin/events/EventMap";
 import "@goauthentik/admin/events/EventVolumeChart";
 import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
@@ -85,6 +86,15 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                 <ak-events-map
                     class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
                     .events=${this.data}
+                    @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
+                        this.search = ev.detail.eventId;
+                        this.page = 1;
+                        updateURLParams({
+                            search: this.search,
+                            tablePage: this.page,
+                        });
+                        this.fetch();
+                    }}
                 ></ak-events-map>
             </div>`;
         }
