@@ -4,6 +4,7 @@ go 1.24.0
 
 require (
 	beryju.io/ldap v0.1.0
+	github.com/avast/retry-go/v4 v4.6.1
 	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/getsentry/sentry-go v0.33.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
