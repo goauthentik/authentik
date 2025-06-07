@@ -7,12 +7,14 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
+from authentik.tasks.schedules.models import ScheduledModel
 
 
 class SCIMProviderUser(SerializerModel):
@@ -67,7 +69,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     SLACK = "slack", _("Slack")
 
 
-class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)
@@ -98,6 +100,12 @@ class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     @property
     def icon_url(self) -> str | None:
         return static("authentik/sources/scim.png")
+
+    @property
+    def sync_actor(self) -> Actor:
+        from authentik.providers.scim.tasks import scim_sync
+
+        return scim_sync
 
     def client_for_model(
         self, model: type[User | Group | SCIMProviderUser | SCIMProviderGroup]

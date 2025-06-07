@@ -3,13 +3,11 @@
 from json import loads
 
 from django.test import TestCase
-from django.utils.text import slugify
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group, User
-from authentik.events.models import SystemTask
 from authentik.lib.generators import generate_id
 from authentik.lib.sync.outgoing.base import SAFE_METHODS
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -433,9 +431,10 @@ class SCIMUserTests(TestCase):
             self.assertEqual(mock.call_count, 3)
             for request in mock.request_history:
                 self.assertIn(request.method, SAFE_METHODS)
-        task = SystemTask.objects.filter(uid=slugify(self.provider.name)).first()
-        self.assertIsNotNone(task)
-        drop_msg = task.messages[3]
+        drop_msg = {}
+        # task = Task.objects.filter(uid=slugify(self.provider.name)).first()
+        # self.assertIsNotNone(task)
+        # drop_msg = task.messages[3]
         self.assertEqual(drop_msg["event"], "Dropping mutating request due to dry run")
         self.assertIsNotNone(drop_msg["attributes"]["url"])
         self.assertIsNotNone(drop_msg["attributes"]["body"])

@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import QuerySet
 from django.templatetags.static import static
 from django.utils.translation import gettext_lazy as _
+from dramatiq.actor import Actor
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import (
@@ -20,6 +21,7 @@ from authentik.core.models import (
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
+from authentik.tasks.schedules.models import ScheduledModel
 
 
 class MicrosoftEntraProviderUser(SerializerModel):
@@ -74,7 +76,7 @@ class MicrosoftEntraProviderGroup(SerializerModel):
         return f"Microsoft Entra Provider Group {self.group_id} to {self.provider_id}"
 
 
-class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
+class MicrosoftEntraProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
     client_id = models.TextField()
@@ -98,6 +100,12 @@ class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
     )
+
+    @property
+    def sync_actor(self) -> Actor:
+        from authentik.enterprise.providers.microsoft_entra.tasks import microsoft_entra_sync
+
+        return microsoft_entra_sync
 
     def client_for_model(
         self,
