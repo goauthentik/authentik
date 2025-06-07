@@ -282,7 +282,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
