@@ -189,7 +189,7 @@ class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
             try:
                 driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
-                    options=webdriver.ChromeOptions(),
+                    options=opts,
                 )
                 driver.maximize_window()
                 return driver
