@@ -10,7 +10,7 @@ export function actionToColor(action: EventActions): string {
         case EventActions.AuthorizeApplication:
             return "#0060c0";
         case EventActions.ConfigurationError:
-            return "#4cb140";
+            return "#23511e";
         case EventActions.EmailSent:
             return "#009596";
         case EventActions.FlowExecution:
@@ -22,7 +22,7 @@ export function actionToColor(action: EventActions): string {
         case EventActions.InvitationUsed:
             return "#8bc1f7";
         case EventActions.Login:
-            return "#23511e";
+            return "#4cb140";
         case EventActions.LoginFailed:
             return "#ec7a08";
         case EventActions.Logout:

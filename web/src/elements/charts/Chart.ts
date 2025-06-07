@@ -11,7 +11,6 @@ import {
     Chart,
     ChartConfiguration,
     ChartData,
-    ChartDataset,
     ChartOptions,
     Filler,
     LineElement,
