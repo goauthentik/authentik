@@ -36,6 +36,8 @@ require (
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
 )
 
+replace beryju.io/ldap => github.com/Nopey/go-ldap v0.0.0-20231111012941-bccbd4746e74
+
 require (
 	github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358 // indirect
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
