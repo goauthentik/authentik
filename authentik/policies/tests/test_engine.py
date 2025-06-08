@@ -1,8 +1,11 @@
 """policy engine tests"""
 
 from django.core.cache import cache
+from django.db import connections
 from django.test import TestCase
+from django.test.utils import CaptureQueriesContext
 
+from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
@@ -127,3 +130,32 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
         self.assertEqual(engine.build().passing, False)
         self.assertEqual(len(cache.keys(f"{CACHE_PREFIX}{binding.policy_binding_uuid.hex}*")), 1)
+
+    def test_engine_static_bindings(self):
+        """Test static bindings"""
+        group = Group.objects.create(name=generate_id())
+
+        pbm = PolicyBindingModel.objects.create()
+        for x in range(1000):
+            PolicyBinding.objects.create(target=pbm, group=group, order=x)
+        engine = PolicyEngine(pbm, self.user)
+        engine.use_cache = False
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            engine.build()
+        self.assertLess(ctx.final_queries, 1000)
+        self.assertEqual(engine.result.passing, False)
+
+    def test_engine_static_bindings_matching(self):
+        """Test static bindings"""
+        group = Group.objects.create(name=generate_id())
+        group.users.add(self.user)
+
+        pbm = PolicyBindingModel.objects.create()
+        for x in range(1000):
+            PolicyBinding.objects.create(target=pbm, group=group, order=x)
+        engine = PolicyEngine(pbm, self.user)
+        engine.use_cache = False
+        with CaptureQueriesContext(connections["default"]) as ctx:
+            engine.build()
+        self.assertLess(ctx.final_queries, 1000)
+        self.assertEqual(engine.result.passing, False)
