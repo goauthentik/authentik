@@ -27,7 +27,7 @@ This documentation lists only the settings that you need to change from their de
 
 
 
-Home Assistant can use either [OIDC](#using-OIDC) or a [proxy-provider](#Using a proxy provider). See the relevant instructions for each below.
+Home Assistant can use either [OIDC](#using-oidc) or a [proxy-provider](#using-a-proxy-provider). See the relevant instructions for each below.
 
 ## Using OIDC
 
