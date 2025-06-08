@@ -3,7 +3,6 @@
 from collections.abc import Iterable
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
-from time import perf_counter
 
 from django.core.cache import cache
 from django.db.models import Count, Q, QuerySet
@@ -82,27 +81,25 @@ class PolicyEngine:
     def _check_cache(self, binding: PolicyBinding):
         if not self.use_cache:
             return False
-        before = perf_counter()
-        key = cache_key(binding, self.request)
-        cached_policy = cache.get(key, None)
-        duration = max(perf_counter() - before, 0)
-        if not cached_policy:
-            return False
-        self.logger.debug(
-            "P_ENG: Taking result from cache",
-            binding=binding,
-            cache_key=key,
-            request=self.request,
-        )
-        HIST_POLICIES_EXECUTION_TIME.labels(
+        # It's a bit silly to time this, but
+        with HIST_POLICIES_EXECUTION_TIME.labels(
             binding_order=binding.order,
             binding_target_type=binding.target_type,
             binding_target_name=binding.target_name,
             object_pk=str(self.request.obj.pk),
             object_type=class_to_path(self.request.obj.__class__),
             mode="cache_retrieve",
-        ).observe(duration)
-        # It's a bit silly to time this, but
+        ).time():
+            key = cache_key(binding, self.request)
+            cached_policy = cache.get(key, None)
+            if not cached_policy:
+                return False
+        self.logger.debug(
+            "P_ENG: Taking result from cache",
+            binding=binding,
+            cache_key=key,
+            request=self.request,
+        )
         self.__cached_policies.append(cached_policy)
         return True
 
