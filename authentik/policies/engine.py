@@ -1,5 +1,6 @@
 """authentik policy engine"""
 
+from collections.abc import Iterable
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from time import perf_counter
@@ -69,7 +70,7 @@ class PolicyEngine:
         self.__expected_result_count = 0
         self.__static_result: PolicyResult | None = None
 
-    def bindings(self) -> QuerySet[PolicyBinding]:
+    def bindings(self) -> QuerySet[PolicyBinding] | Iterable[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
         return PolicyBinding.objects.filter(target=self.__pbm, enabled=True).order_by("order")
 
@@ -106,6 +107,7 @@ class PolicyEngine:
         return True
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
+        """Check static bindings if possible"""
         aggrs = {
             "total": Count(
                 "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
@@ -158,8 +160,11 @@ class PolicyEngine:
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
             bindings = self.bindings()
-            self.compute_static_bindings(bindings)
-            for binding in [x for x in bindings if x.policy]:
+            policy_bindings = bindings
+            if isinstance(bindings, QuerySet):
+                self.compute_static_bindings(bindings)
+                policy_bindings = [x for x in bindings if x.policy]
+            for binding in policy_bindings:
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)
