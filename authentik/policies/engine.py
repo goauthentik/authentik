@@ -106,16 +106,15 @@ class PolicyEngine:
         return True
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
-        if self.request.user.is_anonymous:
-            # If the user is anonymous it cannot be in a group or used as a binding target
-            return
-        all_groups = self.request.user.all_groups()
         self.logger.debug("P_ENG: Checking static bindings")
-        matched_bindings = bindings.aggregate(
-            total=Count(
+        aggrs = {
+            "total": Count(
                 "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
             ),
-            passing=Count(
+        }
+        if not self.request.user.is_anonymous:
+            all_groups = self.request.user.all_groups()
+            aggrs["passing"] = Count(
                 "pk",
                 filter=Q(
                     Q(
@@ -129,17 +128,17 @@ class PolicyEngine:
                     ),
                     enabled=True,
                 ),
-            ),
-        )
+            )
+        matched_bindings = bindings.aggregate(**aggrs)
         passing = False
         self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
-        if matched_bindings["total"] == 0 and matched_bindings["passing"] == 0:
+        if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
             # If we didn't find any static bindings, do nothing
             return
-        if matched_bindings["passing"] > 0:
+        if matched_bindings.get("passing", 0) > 0:
             # Any passing static binding -> passing
             passing = True
-        elif matched_bindings["total"] > 0 and matched_bindings["passing"] < 1:
+        elif matched_bindings["total"] > 0 and matched_bindings.get("passing", 0) < 1:
             # No matching static bindings but at least one is configured -> not passing
             passing = False
         self.__static_result = PolicyResult(passing)
