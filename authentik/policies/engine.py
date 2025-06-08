@@ -106,6 +106,9 @@ class PolicyEngine:
         return True
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
+        if self.request.user.is_anonymous:
+            # If the user is anonymous it cannot be in a group or used as a binding target
+            return
         all_groups = self.request.user.all_groups()
         self.logger.debug("P_ENG: Checking static bindings")
         matched_bindings = bindings.aggregate(
