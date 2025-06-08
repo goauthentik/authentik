@@ -46466,6 +46466,11 @@ components:
           items:
             $ref: '#/components/schemas/Role'
           readOnly: true
+        children:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
       - num_pk
@@ -46790,6 +46795,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string
@@ -53681,6 +53691,11 @@ components:
           type: object
           additionalProperties: {}
         roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        children:
           type: array
           items:
             type: string

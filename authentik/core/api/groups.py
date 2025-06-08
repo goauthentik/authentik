@@ -61,7 +61,6 @@ class GroupSerializer(ModelSerializer):
         required=False,
     )
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
-
     num_pk = IntegerField(read_only=True)
 
     @property
@@ -126,9 +125,14 @@ class GroupSerializer(ModelSerializer):
             "attributes",
             "roles",
             "roles_obj",
+            "children",
         ]
         extra_kwargs = {
             "users": {
+                "default": list,
+            },
+            "children": {
+                "required": False,
                 "default": list,
             },
             # TODO: This field isn't unique on the database which is hard to backport
@@ -194,7 +198,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
+        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles", "children")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
             base_qs = base_qs.prefetch_related("users")
