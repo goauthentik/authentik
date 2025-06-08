@@ -52,7 +52,7 @@ func FromAPIGroup(g api.Group, si server.LDAPServerInstance) *LDAPGroup {
 		CN:             g.Name,
 		Uid:            string(g.Pk),
 		GidNumber:      si.GetGroupGidNumber(g),
-		Member:         si.UsersForGroup(g),
+		Member:         si.MembersForGroup(g),
 		IsVirtualGroup: false,
 		IsSuperuser:    *g.IsSuperuser,
 		Attributes:     g.Attributes,
