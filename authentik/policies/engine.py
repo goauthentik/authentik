@@ -67,7 +67,7 @@ class PolicyEngine:
         self.__processes: list[PolicyProcessInfo] = []
         self.use_cache = True
         self.__expected_result_count = 0
-        self.__static_result = None
+        self.__static_result: PolicyResult | None = None
 
     def bindings(self) -> QuerySet[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
@@ -107,11 +107,12 @@ class PolicyEngine:
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
         all_groups = self.request.user.all_groups()
+        self.logger.debug("P_ENG: Checking static bindings")
         matched_bindings = bindings.aggregate(
             total=Count(
                 "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
             ),
-            matching=Count(
+            passing=Count(
                 "pk",
                 filter=Q(
                     Q(
@@ -128,9 +129,15 @@ class PolicyEngine:
             ),
         )
         passing = False
-        if matched_bindings["matching"] > 0:
+        self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
+        if matched_bindings["total"] == 0 and matched_bindings["passing"] == 0:
+            # If we didn't find any static bindings, do nothing
+            return
+        if matched_bindings["passing"] > 0:
+            # Any passing static binding -> passing
             passing = True
-        elif matched_bindings["total"] > 0 and matched_bindings["matching"] < 1:
+        elif matched_bindings["total"] > 0 and matched_bindings["passing"] < 1:
+            # No matching static bindings but at least one is configured -> not passing
             passing = False
         self.__static_result = PolicyResult(passing)
 
