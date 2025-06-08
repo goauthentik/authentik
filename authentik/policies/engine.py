@@ -106,13 +106,12 @@ class PolicyEngine:
         return True
 
     def compute_static_bindings(self, bindings: QuerySet[PolicyBinding]):
-        self.logger.debug("P_ENG: Checking static bindings")
         aggrs = {
             "total": Count(
                 "pk", filter=Q(Q(group__isnull=False) | Q(user__isnull=False), policy=None)
             ),
         }
-        if not self.request.user.is_anonymous:
+        if self.request.user.pk:
             all_groups = self.request.user.all_groups()
             aggrs["passing"] = Count(
                 "pk",
@@ -131,10 +130,10 @@ class PolicyEngine:
             )
         matched_bindings = bindings.aggregate(**aggrs)
         passing = False
-        self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
         if matched_bindings["total"] == 0 and matched_bindings.get("passing", 0) == 0:
             # If we didn't find any static bindings, do nothing
             return
+        self.logger.debug("P_ENG: Found static bindings", **matched_bindings)
         if matched_bindings.get("passing", 0) > 0:
             # Any passing static binding -> passing
             passing = True
