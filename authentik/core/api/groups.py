@@ -49,6 +49,22 @@ class GroupMemberSerializer(ModelSerializer):
         ]
 
 
+class GroupChildSerializer(ModelSerializer):
+    """Stripped down group serializer to show relevant children for groups"""
+
+    attributes = JSONDictField(required=False)
+
+    class Meta:
+        model = Group
+        fields = [
+            "pk",
+            "name",
+            "is_superuser",
+            "attributes",
+            "group_uuid",
+        ]
+
+
 class GroupSerializer(ModelSerializer):
     """Group Serializer"""
 
@@ -61,6 +77,12 @@ class GroupSerializer(ModelSerializer):
         required=False,
     )
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
+    children_obj = ListSerializer(
+        child=GroupChildSerializer(),
+        read_only=True,
+        source="children",
+        required=False
+    )
     num_pk = IntegerField(read_only=True)
 
     @property
@@ -126,6 +148,7 @@ class GroupSerializer(ModelSerializer):
             "roles",
             "roles_obj",
             "children",
+            "children_obj",
         ]
         extra_kwargs = {
             "users": {

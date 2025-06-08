@@ -46471,13 +46471,59 @@ components:
           items:
             type: string
             format: uuid
+        children_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/GroupChild'
+          readOnly: true
       required:
+      - children_obj
       - name
       - num_pk
       - parent_name
       - pk
       - roles_obj
       - users_obj
+    GroupChild:
+      type: object
+      description: Stripped down group serializer to show relevant children for groups
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Group uuid
+        name:
+          type: string
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+        group_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+      required:
+      - group_uuid
+      - name
+      - pk
+    GroupChildRequest:
+      type: object
+      description: Stripped down group serializer to show relevant children for groups
+      properties:
+        name:
+          type: string
+          minLength: 1
+        is_superuser:
+          type: boolean
+          description: Users added to this group will be superusers.
+        attributes:
+          type: object
+          additionalProperties: {}
+      required:
+      - name
     GroupKerberosSourceConnection:
       type: object
       description: Group Source Connection
