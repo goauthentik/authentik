@@ -27,6 +27,17 @@ func (pi *ProviderInstance) MembersForGroup(group api.Group) []string {
 	return append(users, children...)
 }
 
+func (pi *ProviderInstance) MemberOfForGroup(group api.Group) []string {
+	if group.ParentName.IsSet() {
+		parent := group.ParentName.Get()
+		if parent != nil {
+			return []string{pi.GetGroupDN(*group.ParentName.Get())}
+		}
+	}
+
+	return []string{}
+}
+
 func (pi *ProviderInstance) GetUserDN(user string) string {
 	return fmt.Sprintf("cn=%s,%s", user, pi.UserDN)
 }

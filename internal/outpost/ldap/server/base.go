@@ -33,6 +33,7 @@ type LDAPServerInstance interface {
 	GetGroupGidNumber(api.Group) string
 
 	MembersForGroup(api.Group) []string
+	MemberOfForGroup(api.Group) []string
 
 	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags *flags.UserFlags)
