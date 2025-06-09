@@ -48,7 +48,7 @@ CSRF_TRUSTED_ORIGINS = ["https://seafile.company"]
 
 ENABLE_OAUTH = True
 
-# If create new user when he/she logs in Seafile for the first time, default `True`.
+# Automatically creates a user in Seafile when they log in for the first time. Defaults to True.
 OAUTH_CREATE_UNKNOWN_USER = True
 
 # Automatically activate Seafile users when they log in for the first time. Defaults to True.
