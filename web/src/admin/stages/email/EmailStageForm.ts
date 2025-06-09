@@ -1,5 +1,6 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
@@ -49,7 +50,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         return html`<ak-form-group>
             <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -57,7 +58,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
                     <input
                         type="number"
                         value="${this.instance?.port ?? 25}"
@@ -72,13 +73,11 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
+                <ak-private-text-input
                     label=${msg("SMTP Password")}
-                    ?writeOnly=${this.instance !== undefined}
                     name="password"
-                >
-                    <input type="text" value="" class="pf-c-form-control" />
-                </ak-form-element-horizontal>
+                    ?revealed=${this.instance === undefined}
+                ></ak-private-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input
@@ -109,11 +108,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         <span class="pf-c-switch__label">${msg("Use SSL")}</span>
                     </label>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Timeout")}
-                    ?required=${true}
-                    name="timeout"
-                >
+                <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
                         value="${this.instance?.timeout ?? 30}"
@@ -123,7 +118,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("From address")}
-                    ?required=${true}
+                    required
                     name="fromAddress"
                 >
                     <input
@@ -143,7 +138,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -151,7 +146,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
@@ -202,7 +197,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token expiration")}
-                        ?required=${true}
+                        required
                         name="tokenExpiry"
                     >
                         <input
@@ -216,11 +211,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Subject")}
-                        ?required=${true}
-                        name="subject"
-                    >
+                    <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"
                             value="${this.instance?.subject ?? "authentik"}"
@@ -228,11 +219,7 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Template")}
-                        ?required=${true}
-                        name="template"
-                    >
+                    <ak-form-element-horizontal label=${msg("Template")} required name="template">
                         <select name="users" class="pf-c-form-control">
                             ${this.templates?.map((template) => {
                                 const selected = this.instance?.template === template.name;
