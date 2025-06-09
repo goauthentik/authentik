@@ -102,7 +102,7 @@ def send_mail(
 
         # Add the logo if it is used in the email body (we can't add it in the
         # previous message since MIMEImage can't be converted to json)
-        body = (get_email_body(message_object),)
+        body = get_email_body(message_object)
         if "cid:logo" in body:
             message_object.attach(logo_data())
 
