@@ -56,7 +56,7 @@ Set the following values in the Firezone UI:
 - **Response type**: Keep the default value: `code`
 - **Client ID**: Use the Client ID from authentik
 - **Client Secret**: Use the Client Secret from authentik
-- **Discovery Document URI**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/.well-known/openid-configuration</kbd>
+- **Discovery Document URI**: <kbd>https://<em>authentik.company</em>/application/o/<em>application_slug</em>/.well-known/openid-configuration</kbd>
 - **Redirect URI**: <kbd>https://<em>firezone.company</em>/auth/oidc/authentik/callback/</kbd>
 - **Auth-create Users**: Turn this on
 

@@ -56,7 +56,7 @@ To support the integration of Actual Budget with authentik, you need to create a
   You can configure OpenID Connect with Actual Budget by adding the following variables to your `.env` file.
 
     ```yaml showLineNumbers
-    ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<your-application-slug>/
+    ACTUAL_OPENID_DISCOVERY_URL=https://authentik.company/application/o/<application_slug>/
     ACTUAL_OPENID_CLIENT_ID=Your Client ID from authentik
     ACTUAL_OPENID_CLIENT_SECRET=Your Client Secret from authentik
     ACTUAL_OPENID_SERVER_HOSTNAME=https://actual.company
@@ -69,7 +69,7 @@ You can configure Actual Budget to authenticate users with OpenID Connect by mod
 
 ```json showLineNumbers title="/data/config.json"
   "openId": {
-          "issuer": "https://authentik.company/application/o/<your-application-slug>/",
+          "issuer": "https://authentik.company/application/o/<application_slug>/",
           "client_id": "<Client ID from authentik>",
           "client_secret": "<Client Secret from authentik>",
           "server_hostname": "https://actual.company",
@@ -89,7 +89,7 @@ Alternatively, it is possible to configure OpenID Connect via the UI.
       5. Scroll up and click **Start using OpenID** under the **Authentication method** section.
       6. Fill in the following values:
           - **OpenID Provider**: authentik
-          - **OpenID provider URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/</kbd>
+          - **OpenID provider URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>application_slug</em>/</kbd>
           - **Client ID**: Enter the **Client ID** from authentik
           - **Client Secret**: Enter the **Client Secret** from authentik
 

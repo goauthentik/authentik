@@ -44,7 +44,7 @@ To support the integration of Budibase with authentik, you need to create an app
 
 From the main page of your Budibase installation, add the following values under the **Auth** section of the builder:
 
-- **Config URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/.well-known/openid-configuration</kbd>
+- **Config URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>application_slug</em>/.well-known/openid-configuration</kbd>
 - **Client ID**: <kbd>Client ID from authentik</kbd>
 - **Client Secret**: <kbd>Client Secret from authentik</kbd>
 - **Callback URL**: <kbd>https://<em>budibase.company</em>/api/global/auth/oidc/callback/</kbd>
