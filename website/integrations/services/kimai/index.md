@@ -34,9 +34,9 @@ To support the integration of Kimai with authentik, you need to create an applic
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>kimai.company</em>/auth/saml/acs</kbd>.
-    - Set the **Audience** to <kbd>https://<em>kimai.company</em>auth/saml</kbd>.
-    - Set the **Issuer** to <kbd>https://<em>authentik.company</em></kbd>.
+    - Set the **ACS URL** to `https://kimai.company/auth/saml/acs`.
+    - Set the **Audience** to `https://kimai.companyauth/saml`.
+    - Set the **Issuer** to `https://authentik.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
