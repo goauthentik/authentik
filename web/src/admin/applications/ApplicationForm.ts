@@ -4,6 +4,7 @@ import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -125,19 +126,21 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
+                id="ak-admin-application-name"
                 value=${ifDefined(this.instance?.name)}
                 label=${msg("Name")}
                 required
                 help=${msg("Application's display Name.")}
             ></ak-text-input>
-            <ak-text-input
+            <ak-slug-input
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
+                source="#ak-admin-application-name"
                 required
                 help=${msg("Internal application name used in URLs.")}
                 input-hint="code"
-            ></ak-text-input>
+            ></ak-slug-input>
             <ak-text-input
                 name="group"
                 value=${ifDefined(this.instance?.group)}

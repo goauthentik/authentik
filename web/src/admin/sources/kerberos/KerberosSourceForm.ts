@@ -9,6 +9,7 @@ import {
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/components/ak-private-textarea-input.js";
+import "@goauthentik/components/ak-slug-input.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -83,16 +84,19 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
     renderForm(): TemplateResult {
         return html` <ak-text-input
                 name="name"
+                id="ak-admin-source-kerberos-name"
                 label=${msg("Name")}
                 value=${ifDefined(this.instance?.name)}
                 required
             ></ak-text-input>
-            <ak-text-input
+            <ak-slug-input
                 name="slug"
-                label=${msg("Slug")}
                 value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                source="#ak-admin-source-kerberos-name"
                 required
-            ></ak-text-input>
+                input-hint="code"
+            ></ak-slug-input>
             <ak-switch-input
                 name="enabled"
                 ?checked=${this.instance?.enabled ?? true}
