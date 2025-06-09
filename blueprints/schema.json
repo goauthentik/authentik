@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema",
     "$id": "https://goauthentik.io/blueprints/schema.json",
     "type": "object",
-    "title": "authentik 2025.4.1 Blueprint schema",
+    "title": "authentik 2025.6.1 Blueprint schema",
     "required": [
         "version",
         "entries"
@@ -8146,6 +8146,12 @@
                     "minLength": 1,
                     "title": "Group membership field",
                     "description": "Field which contains members of a group."
+                },
+                "user_membership_attribute": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "User membership attribute",
+                    "description": "Attribute which matches the value of `group_membership_field`."
                 },
                 "object_uniqueness_field": {
                     "type": "string",

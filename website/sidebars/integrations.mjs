@@ -86,6 +86,7 @@ const items = [
             "services/hashicorp-vault/index",
             "services/jenkins/index",
             "services/knocknoc/index",
+            "services/komodo/index",
             "services/meshcentral/index",
             "services/minio/index",
             "services/netbox/index",
@@ -124,6 +125,7 @@ const items = [
             "services/opnsense/index",
             "services/pangolin/index",
             "services/pfsense/index",
+            "services/tailscale/index",
         ],
     },
     {

@@ -73,7 +73,7 @@ export class MFADeviceForm extends ModelForm<Device, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
             <input
                 type="text"
                 value="${ifDefined(this.instance?.name)}"

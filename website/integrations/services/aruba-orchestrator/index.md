@@ -30,9 +30,9 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SAML Provider Property Mapping** with the following settings:
     - **Name**: Set an appropriate name
-    - **SAML Attribute Name**: <kbd>sp-roles</kbd>
+    - **SAML Attribute Name**: `sp-roles`
     - **Friendly Name**: Leave blank
-    - **Expression**: (You can modify the <kbd>authentik Admins</kbd> group as needed)
+    - **Expression**: (You can modify the `authentik Admins` group as needed)
         ```python
         if ak_is_group_member(request.user, name="authentik Admins"):
             result = "superAdmin"
@@ -47,7 +47,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** and **Issuer** to <kbd>https://<em>arubaorchestrator.company</em>/gms/rest/authentication/saml2/consume</kbd>.
+    - Set the **ACS URL** and **Issuer** to `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
     - Under **Advanced protocol settings**, add the newly created property mapping under **Property Mappings**.

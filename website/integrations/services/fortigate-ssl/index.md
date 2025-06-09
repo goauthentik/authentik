@@ -49,14 +49,14 @@ To support the integration of FortiGate SSLVPN with authentik, you need to creat
 - **Choose a Provider type**: select **SAML Provider from metadata** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
     - Upload the metadata file from FortiGate (you will get this in the FortiGate configuration steps)
-    - Set the **ACS URL** to <kbd>https://<em>fortigate.company</em>/remote/saml/login</kbd>
-    - Set the **Audience** to <kbd>http://<em>fortigate.company</em>/remote/saml/metadata/</kbd>
+    - Set the **ACS URL** to `https://fortigate.company/remote/saml/login`
+    - Set the **Audience** to `http://fortigate.company/remote/saml/metadata/`
     - Select your signing certificate
     - Under **Advanced Protocol Settings**:
-        - Set **Assertion valid not before** to <kbd>minutes=5</kbd>
-        - Set **Assertion valid not on or after** to <kbd>minutes=5</kbd>
-        - Set **Digest algorithm** to <kbd>sha256</kbd>
-        - Set **Signature algorithm** to <kbd>sha256</kbd>
+        - Set **Assertion valid not before** to `minutes=5`
+        - Set **Assertion valid not on or after** to `minutes=5`
+        - Set **Digest algorithm** to `sha256`
+        - Set **Signature algorithm** to `sha256`
 - **Configure Bindings**: create a binding to the user group you created earlier to manage access to the SSLVPN.
 
 3. Click **Submit** to save the new application and provider.
@@ -110,7 +110,7 @@ Remember to map the user group to a portal in the 'SSL-VPN Settings' page and ad
 
 ### Download SAML metadata
 
-1. Navigate to your FortiGate web interface at <kbd>https://<em>fortigate.company</em></kbd>
+1. Navigate to your FortiGate web interface at `https://fortigate.company`
 2. Go to **User & Authentication** > **SAML** > **Single Sign-On Server**
 3. Click on the "authentik-sso" server you created
 4. Click **Download** to get the SAML metadata file
@@ -120,7 +120,7 @@ Remember to map the user group to a portal in the 'SSL-VPN Settings' page and ad
 
 To verify the integration:
 
-1. Navigate to your FortiGate SSLVPN portal at <kbd>https://<em>fortigate.company</em></kbd>
+1. Navigate to your FortiGate SSLVPN portal at `https://fortigate.company`
 2. You should be redirected to authentik to authenticate
 3. After successful authentication, you should be redirected back to the FortiGate SSLVPN portal
 4. Verify that you can establish a VPN connection

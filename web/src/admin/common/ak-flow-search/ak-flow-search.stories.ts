@@ -110,7 +110,7 @@ export const Default = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search
@@ -124,7 +124,7 @@ export const WithInitialValue = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search
