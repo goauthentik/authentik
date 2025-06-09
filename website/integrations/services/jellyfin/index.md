@@ -11,11 +11,7 @@ support_level: community
 > -- https://jellyfin.org
 
 :::note
-Jellyfin does not have any native external authentication support as of the writing of this page.
-:::
-
-:::note
-Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
+Jellyfin does not have any native external authentication support as of the writing of this page. Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
 :::
 
 :::caution
