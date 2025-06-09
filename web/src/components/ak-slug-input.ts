@@ -9,7 +9,30 @@ import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
 const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
 
-const isValidEvent = (ev: Event) => ev && ev.target && ev.target instanceof HTMLInputElement;
+/**
+ * @element ak-slug-input
+ * @class AkSlugInput
+ *
+ * A wrapper around `ak-form-element-horizontal` and a text input control that listens for input on
+ * a peer text input control and automatically mirrors that control's value, transforming the value
+ * into a slug and displaying it separately.
+ *
+ * If the user manually changes the slug, mirroring and transformation stop. If, after that, both
+ * fields are cleared manually, mirroring and transformation resume.
+ *
+ * ## Limitations:
+ *
+ * Both the source text field and the slug field must be rendered in the same render pass (i.e.,
+ * part of the same singular call to a `render` function) so that the slug field can find its
+ * source.
+ *
+ * For the same reason, both the source text field and the slug field must share the same immediate
+ * parent DOM object.
+ *
+ * Since we expect the source text field and the slug to be part of the same form and rendered not
+ * just in the same form but in the same form group, these are not considered burdensome
+ * restrictions.
+ */
 
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {
