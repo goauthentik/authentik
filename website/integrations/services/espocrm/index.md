@@ -53,13 +53,13 @@ Configure the following fields:
 
 - **Client ID**: The Client ID from authentik
 - **Client Secret**: The Client Secret from authentik
-- **Authorization Redirect URI**: <kbd>https://<em>espocrm.company</em>/oauth-callback.php</kbd>
+- **Authorization Redirect URI**: `https://espocrm.company/oauth-callback.php`
 - **Fallback Login**: Toggle this option if you wish to have the option to use EspoCRM's integrated login as a fallback.
 - **Allow OIDC login for admin users**: Toggle this option if you wish to allow administrator users to log in with OIDC.
-- **Authorization Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize</kbd>
-- **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token</kbd>
-- **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>application_slug</em>/jwks</kbd>
-- **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>application_slug</em>/end_session</kbd>
+- **Authorization Endpoint**: `https://authentik.company/application/o/authorize`
+- **Token Endpoint**: `https://authentik.company/application/o/token`
+- **JSON Web Key Set Endpoint**: `https://authentik.company/application/o/<application_slug>/jwks`
+- **Logout URL**: `https://authentik.company/application/o/<application_slug>/end_session`
 
 ## Configuration verification
 
