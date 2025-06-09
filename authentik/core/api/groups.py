@@ -70,6 +70,7 @@ class GroupSerializer(ModelSerializer):
 
     attributes = JSONDictField(required=False)
     users_obj = SerializerMethodField(allow_null=True)
+    children_obj = SerializerMethodField(allow_null=True)
     roles_obj = ListSerializer(
         child=RoleSerializer(),
         read_only=True,
@@ -77,12 +78,6 @@ class GroupSerializer(ModelSerializer):
         required=False,
     )
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
-    children_obj = ListSerializer(
-        child=GroupChildSerializer(),
-        read_only=True,
-        source="children",
-        required=False
-    )
     num_pk = IntegerField(read_only=True)
 
     @property
@@ -92,11 +87,24 @@ class GroupSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_users", "true")).lower() == "true"
 
+    @property
+    def _should_include_children(self) -> bool:
+        request: Request = self.context.get("request", None)
+        if not request:
+            return True
+        return str(request.query_params.get("include_children", "true")).lower() == "true"
+
     @extend_schema_field(GroupMemberSerializer(many=True))
     def get_users_obj(self, instance: Group) -> list[GroupMemberSerializer] | None:
         if not self._should_include_users:
             return None
         return GroupMemberSerializer(instance.users, many=True).data
+
+    @extend_schema_field(GroupChildSerializer(many=True))
+    def get_children_obj(self, instance: Group) -> list[GroupChildSerializer] | None:
+        if not self._should_include_children:
+            return None
+        return GroupChildSerializer(instance.children, many=True).data
 
     def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
@@ -221,7 +229,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     ordering = ["name"]
 
     def get_queryset(self):
-        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles", "children")
+        base_qs = Group.objects.all().select_related("parent").prefetch_related("roles")
 
         if self.serializer_class(context={"request": self.request})._should_include_users:
             base_qs = base_qs.prefetch_related("users")
@@ -230,11 +238,15 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
                 Prefetch("users", queryset=User.objects.all().only("id"))
             )
 
+        if self.serializer_class(context={"request": self.request})._should_include_children:
+            base_qs = base_qs.prefetch_related("children")
+
         return base_qs
 
     @extend_schema(
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
+            OpenApiParameter("include_children", bool, default=True),
         ]
     )
     def list(self, request, *args, **kwargs):
@@ -243,6 +255,7 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         parameters=[
             OpenApiParameter("include_users", bool, default=True),
+            OpenApiParameter("include_children", bool, default=True),
         ]
     )
     def retrieve(self, request, *args, **kwargs):
