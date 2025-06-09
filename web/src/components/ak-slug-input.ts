@@ -36,11 +36,14 @@ const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
 
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {
-    @property({ type: String, reflect: true })
-    value = "";
-
+    /**
+     * A selector indicating the (must be unique) source text input control.
+     */
     @property({ type: String })
     source = "";
+
+    @property({ type: String, reflect: true })
+    value = "";
 
     origin?: HTMLInputElement | null;
 
