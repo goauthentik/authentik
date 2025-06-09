@@ -140,7 +140,7 @@ To support the integration of Bitwarden with authentik, you need to create an ap
     - **SSO Identifier**: enter a globally unique SSO identifier (this is not required if using self-hosted Bitwarden, or if you have claimed a domain, see the [Bitwarden Claimed Domains documentation](https://bitwarden.com/help/claimed-domains/)).
     - **Type**: `SAML 2.0`
     - Under **SAML service provider configuration**:
-        - **Expect signed assertions**: Checked.
+        - **Expect signed assertions**: Select this option.
     - Under **SAML identity provider configuration**:
         - **Entity ID**: `authentik`
         - **Single sign-on service URL**: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
