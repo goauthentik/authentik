@@ -23,7 +23,7 @@ type RACServer struct {
 	conns map[string]connection.Connection
 }
 
-func NewServer(ac *ak.APIController) *RACServer {
+func NewServer(ac *ak.APIController) ak.Outpost {
 	rs := &RACServer{
 		log:   log.WithField("logger", "authentik.outpost.rac"),
 		ac:    ac,
