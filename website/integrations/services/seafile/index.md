@@ -24,7 +24,6 @@ This documentation lists only the settings that you need to change from their de
 
 To support the integration of Seafile with authentik, you need to create an application/provider pair in authentik.
 
-
 ### Create an application and provider in authentik
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
