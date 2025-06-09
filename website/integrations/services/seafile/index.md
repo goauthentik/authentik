@@ -76,7 +76,7 @@ OAUTH_ATTRIBUTE_MAP = {
 
 ## Configuration verification
 
-To confirm that authentik is properly configured with `seafile`, log out of authentik and seafile and navigate to the seafile login page. You should see a "log in using sso" button. Clicking this button will lead you to the default authentik sign in page.
+To confirm that authentik is properly configured with Seafile, log out of Seafile. Then, navigate to the Seafile login page, and click **Log in using SSO**. You should be redirected to authentik to log in, and if the process is successful, you'll be taken to the Seafile dashboard.
 
 ## Resources
 
