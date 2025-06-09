@@ -40,7 +40,7 @@ You can configure Bitwarden to use either OIDC or SAML; this guide explains both
 
 To support the integration of Bitwarden with authentik, you need to create a property mapping and an application/provider pair in authentik.
 
-### Create a scope mapping
+### Create a property mapping
 
 Bitwarden requires a first and last name for every user. However, authentik, by default, only supplies a full name as a single string. As a result, a property mapping must be created to separate and provide first and last names to Bitwarden.
 
@@ -81,7 +81,7 @@ Bitwarden requires a first and last name for every user. However, authentik, by 
             - `https://bitwarden.company/oidc-signin` for self-hosted Bitwarden.
         - Select any available signing key.
         - Under **Advanced protocol settings**, **Selected Scopes**:
-            - Remove `authentik default OAuth Mapping: OpenID 'profile'` and add the scope mapping that you created.
+            - Remove `authentik default OAuth Mapping: OpenID 'profile'` and add the property mapping that you created.
     - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -161,12 +161,6 @@ To support the integration of Bitwarden with authentik, you need to create an ap
 </TabItem>
 </Tabs>
 
-## Resources
-
-- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
-- [Bitwarden Help - SAML 2.0 Configuration](https://bitwarden.com/help/configure-sso-saml/)
-- [Bitwarden Help - Claimed Domains](https://bitwarden.com/help/claimed-domains/)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Bitwarden, log out and go to the [Bitwarden login page](https://vault.bitwarden.com/#/login) (select `Accessing: bitwarden.eu` for EU based Bitwarden accounts or use `https://bitwarden.company/#/login` for self-hosted Bitwarden).
@@ -176,3 +170,9 @@ Enter the email address of a Bitwarden account and click **Use single sign-on**.
 :::note
 Depending on your `Member decryption options` setting, which is set in Bitwarden via **Admin Console** > **Settings** > **Single sign-on**, you may still be required to enter your master password after signing in via SSO.
 :::
+
+## Resources
+
+- [Bitwarden Help - OIDC Configuration](https://bitwarden.com/help/configure-sso-oidc/)
+- [Bitwarden Help - SAML 2.0 Configuration](https://bitwarden.com/help/configure-sso-saml/)
+- [Bitwarden Help - Claimed Domains](https://bitwarden.com/help/claimed-domains/)
