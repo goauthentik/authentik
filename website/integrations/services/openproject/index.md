@@ -62,7 +62,7 @@ OpenProject requires a first and last name for each user. By default authentik o
     - **Protocol settings**:
         - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
         - **Redirect URI**:
-            - Strict: <kbd>https://<em>openproject.company</em>/auth/oidc-<em>authentik</em>/callback</kbd>
+            - Strict: `https://openproject.company/auth/oidc-authentik/callback`
         - **Signing key**: select any available signing key.
     - **Advanced protocol settings**:
         - **Scopes**:
@@ -80,7 +80,7 @@ To support the integration of authentik with OpenProject, you need to configure 
 2. Navigate to **Authentication** > **OpenID providers**.
 3. Provide a display name (e.g. `Authentik`) and click **Save**.
 4. Click on **I have a discover endpoint URL** and enter:
-   <kbd>https://<em>authentik.company</em>/application/o/<em>openproject</em>/.well-known/openid-configuration</kbd>
+   `https://authentik.company/application/o/openproject/.well-known/openid-configuration`
 5. Under **Advanced configuration** > **Metadata** the values should be automatically populated based on your discovery endpoint URL. If not, these values can be copied from the **Overview** page of the OpenProject provider in authentik.
 6. Under **Advanced configuration** > **Client details** enter your authentik client ID and client secret.
 7. Under **Optional configuration** > **Attribute mapping** enter the following required configurations:

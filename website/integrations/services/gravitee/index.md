@@ -36,7 +36,7 @@ To support the integration of Gravitee with authentik, you need to create an app
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Add two `Strict` redirect URI and set them to <kbd>https://<em>gravitee.company</em>/user/login</kbd> and <kbd>https://<em>gravitee.company</em>/console/</kbd>. Ensure a trailing slash is present at the end of the second redirect URI.
+    - Add two `Strict` redirect URI and set them to `https://gravitee.company/user/login` and `https://gravitee.company/console/`. Ensure a trailing slash is present at the end of the second redirect URI.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -53,8 +53,8 @@ Only settings that have been modified from default have been listed.
 - **Allow portal authentication to use this identity provider**: enable this
 - **Client ID**: Enter the Client ID from authentik that you noted in step 1
 - **Client Secret**: Enter the Client Secret from authentik that you noted in step 1
-- **Token Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-- **Authorize Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-- **Userinfo Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
-- **Userinfo Logout Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>application-slug</em>/end-session/</kbd>
+- **Token Endpoint**: `https://authentik.company/application/o/token/`
+- **Authorize Endpoint**: `https://authentik.company/application/o/authorize/`
+- **Userinfo Endpoint**: `https://authentik.company/application/o/userinfo/`
+- **Userinfo Logout Endpoint**: `https://authentik.company/application/o/application-slug/end-session/`
 - **Scopes**: `email openid profile`

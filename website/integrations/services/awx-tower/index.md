@@ -37,9 +37,9 @@ To support the integration of AWX Tower with authentik, you need to create an ap
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>awx.company</em>/sso/complete/saml/</kbd>.
-    - Set the **Audience** to <kbd>awx</kbd>.
-    - Set the **Issuer** to <kbd>https://<em>awx.company</em>/sso/metadata/saml/</kbd>.
+    - Set the **ACS URL** to `https://awx.company/sso/complete/saml/`.
+    - Set the **Audience** to `awx`.
+    - Set the **Issuer** to `https://awx.company/sso/metadata/saml/`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
