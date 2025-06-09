@@ -44,7 +44,7 @@ To support the integration of AWS with authentik using the classic IAM method, y
     - **Role Mapping:**
 
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>https://aws.amazon.com/SAML/Attributes/Role</kbd>
+        - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/Role`
         - **Friendly Name**: Leave blank
         - **Expression**: Choose one of these options:
 
@@ -73,9 +73,9 @@ To support the integration of AWS with authentik using the classic IAM method, y
 
     - **Session Name Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>https://aws.amazon.com/SAML/Attributes/RoleSessionName</kbd>
+        - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
         - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return user.username</kbd>
+        - **Expression**: `return user.username`
 
 #### Create an application and provider in authentik
 
@@ -85,8 +85,8 @@ To support the integration of AWS with authentik using the classic IAM method, y
 - **Application**: provide a descriptive name (e.g. "AWS"), an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `aws-slug` placeholder defined earlier.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Set the **ACS URL** to <kbd>https://signin.aws.amazon.com/saml</kbd>
-    - Set the **Audience** to <kbd>urn:amazon:webservices</kbd>
+    - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
+    - Set the **Audience** to `urn:amazon:webservices`
     - Under **Advanced protocol settings**, add both property mappings you created in the previous section
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 

@@ -47,7 +47,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
         is pending, a new user is created, and data is written to them.`,
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -55,7 +55,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
@@ -183,7 +183,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.createUsersGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

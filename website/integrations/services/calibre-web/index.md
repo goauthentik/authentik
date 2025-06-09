@@ -69,17 +69,17 @@ Add the user that require access to the newly created group.
 1. Navigate to **Admin** > **Edit Basic Configuration** and click on **Feature Configuration** and set the following options:
 
 - Login Type: `Use LDAP Authentication`
-- LDAP Server: `<em>authentik.company</em>`
+- LDAP Server: `authentik.company`
 - LDAP Server Port: `389`
 - LDAP Encryption: `None`
 - LDAP Authentication: `Simple`
-- LDAP Administrator Username: `cn=<em><authentik_administrator_username></em>,ou=users,dc=goauthentik,dc=io` (e.g. `cn=akadmin,ou=users,dc=goauthentik,dc=io`)
-- LDAP Administrator Password: `<em><authentik_administrator_password></em>`
+- LDAP Administrator Username: `cn=<authentik_administrator_username>,ou=users,dc=goauthentik,dc=io` (e.g. `cn=akadmin,ou=users,dc=goauthentik,dc=io`)
+- LDAP Administrator Password: `<authentik_administrator_password>`
 - LDAP Distinguished Name (DN): `dc=ldap,dc=goauthentik,dc=io`
 - LDAP User Object Filter: `(&(objectclass=user)(cn=%s))`
 - LDAP Server is OpenLDAP?: `true`
 - LDAP Group Object Filter: `(&(objectclass=group)(cn=%s))`
-- LDAP Group Name: `<em><group_name></em>` (e.g. `Calibre-Web`)
+- LDAP Group Name: `<group_name>` (e.g. `Calibre-Web`)
 - LDAP Group Members Field: `member`
 - LDAP Member User Filter Detection: `Autodetect`
 

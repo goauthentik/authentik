@@ -1,13 +1,13 @@
 services:
   chrome:
     platform: linux/x86_64
-    image: docker.io/selenium/standalone-chrome:136.0
+    image: docker.io/selenium/standalone-chrome:137.0
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
     restart: always
   mailpit:
-    image: docker.io/axllent/mailpit:v1.25.1
+    image: docker.io/axllent/mailpit:v1.26.0
     ports:
       - 1025:1025
       - 8025:8025

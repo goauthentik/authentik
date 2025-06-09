@@ -32,7 +32,7 @@ To support the integration of Weblate with authentik, you need to create an appl
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create four **SAML Provider Property Mapping**s with the following settings:
     - **Full Name Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>urn:oid:2.5.4.3</kbd>
+        - **SAML Attribute Name**: `urn:oid:2.5.4.3`
         - **Friendly Name**: Leave blank
         - **Expression**:
         ```python
@@ -40,7 +40,7 @@ To support the integration of Weblate with authentik, you need to create an appl
         ```
     - **OID_USERID Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>urn:oid:0.9.2342.19200300.100.1.1</kbd>
+        - **SAML Attribute Name**: `urn:oid:0.9.2342.19200300.100.1.1`
         - **Friendly Name**: Leave blank
         - **Expression**:
         ```python
@@ -48,7 +48,7 @@ To support the integration of Weblate with authentik, you need to create an appl
         ```
     - **Username Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>username</kbd>
+        - **SAML Attribute Name**: `username`
         - **Friendly Name**: Leave blank
         - **Expression**:
         ```python
@@ -56,7 +56,7 @@ To support the integration of Weblate with authentik, you need to create an appl
         ```
     - **Email Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>email</kbd>
+        - **SAML Attribute Name**: `email`
         - **Friendly Name**: Leave blank
         - **Expression**:
         ```python
@@ -71,9 +71,9 @@ To support the integration of Weblate with authentik, you need to create an appl
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>weblate.company</em>/accounts/complete/saml/</kbd>.
-    - Set the **Audience** to <kbd>https://<em>weblate.company</em>/accounts/metadata/saml/</kbd>.
-    - Set the **Issuer** to <kbd>https://<em>authentik.company</em>/application/saml/<em>application-slug</em>/sso/binding/redirect/</kbd>.
+    - Set the **ACS URL** to `https://weblate.company/accounts/complete/saml/`.
+    - Set the **Audience** to `https://weblate.company/accounts/metadata/saml/`.
+    - Set the **Issuer** to `https://authentik.company/application/saml/application-slug/sso/binding/redirect/`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate. Then, under **Property mappings**, add the ones you just created.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

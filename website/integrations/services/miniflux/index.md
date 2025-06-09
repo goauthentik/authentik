@@ -37,7 +37,7 @@ To support the integration of Miniflux with authentik, you need to create an app
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
     - **Redirect URI**:
-        - Strict: <kbd>https://<em>miniflux.company</em>/oauth2/oidc/callback</kbd>
+        - Strict: `https://miniflux.company/oauth2/oidc/callback`
 
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -52,7 +52,7 @@ OAUTH2_PROVIDER=oidc
 OAUTH2_CLIENT_ID=<Client ID from authentik>
 OAUTH2_CLIENT_SECRET=<Client Secret from authentik>
 OAUTH2_REDIRECT_URL=https://miniflux.company/oauth2/oidc/callback
-OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company</em>/application/o/<application slug>/
+OAUTH2_OIDC_DISCOVERY_ENDPOINT=https://authentik.company/application/o/<application slug>/
 OAUTH2_USER_CREATION=1
 ```
 
