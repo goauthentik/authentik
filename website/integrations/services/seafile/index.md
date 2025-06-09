@@ -41,7 +41,6 @@ To support the integration of Seafile with authentik, you need to create an appl
 ## Seafile configuration
 
 1. Locate the `seahub_settings.py` file. Location differs based on installation method. see [seahub docs](https://manual.seafile.com/13.0/config/seahub_settings_py/).
-
 To support the integration of Seafile with authentik, you'll need to update the `seahub_settings.py` file of your Seafile deployment (The location may vary depending on your installation and deployment methods):
 
 ```yaml showLineNumbers title="seahub_settings.py"
