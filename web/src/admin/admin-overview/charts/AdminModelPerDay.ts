@@ -1,3 +1,4 @@
+import { EventChart } from "#elements/charts/EventChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ChartData } from "chart.js";
 
@@ -10,7 +11,6 @@ import {
     EventsApi,
     EventsEventsVolumeListRequest,
 } from "@goauthentik/api";
-import { EventChart } from "#elements/charts/EventChart";
 
 @customElement("ak-charts-admin-model-per-day")
 export class AdminModelPerDay extends EventChart {

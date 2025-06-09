@@ -1,3 +1,4 @@
+import { actionToColor } from "#elements/charts/EventChart";
 import { SummarizedSyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
@@ -8,7 +9,6 @@ import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { EventActions, OutpostsApi } from "@goauthentik/api";
-import { actionToColor } from "#elements/charts/EventChart";
 
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {

@@ -4,7 +4,6 @@ import { ChartData, ChartDataset } from "chart.js";
 
 import { EventActions, EventVolume } from "@goauthentik/api";
 
-
 export function actionToColor(action: EventActions): string {
     switch (action) {
         case EventActions.AuthorizeApplication:
@@ -62,7 +61,6 @@ export function actionToColor(action: EventActions): string {
     }
     return "";
 }
-
 
 export abstract class EventChart extends AKChart<EventVolume[]> {
     eventVolume(
