@@ -581,7 +581,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Policy engine mode")}
-                        ?required=${true}
+                        required
                         name="policyEngineMode"
                     >
                         <ak-radio

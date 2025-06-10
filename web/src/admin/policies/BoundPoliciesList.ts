@@ -249,17 +249,17 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
             </ak-forms-modal> `;
     }
 
-    renderPolicyEngineMode(): TemplateResult {
+    renderPolicyEngineMode() {
         const policyEngineMode = policyEngineModes.find(
             (pem) => pem.value === this.policyEngineMode,
         );
         if (policyEngineMode === undefined) {
-            return html``;
+            return nothing;
         }
-        return html`<div class="pf-c-content pf-u-pl-xl">
-            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}.`)}
+        return html`<p>
+            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
             ${policyEngineMode.description}
-        </div>`;
+        </p>`;
     }
 
     renderToolbarContainer(): TemplateResult {
