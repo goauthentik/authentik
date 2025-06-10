@@ -100,7 +100,7 @@ certs/
 
 ## Web certificates
 
-Since authentik 2021.12.4, you can configure the certificate used by authentik's core webserver. While most deployments use reverse proxies, this feature enables compact and self-contained authentik installations.
+You can configure the certificate used by authentik's core webserver, which allows for compact and self-contained authentik installations, even though most deployments use reverse proxies.
 
 ### Let's Encrypt integration
 
