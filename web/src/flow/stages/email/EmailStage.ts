@@ -25,7 +25,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
     @state()
     private attempts = 0;
 
-    private cooldownInterval?: number;
+    private cooldownInterval?: ReturnType<typeof setInterval>;
     private readonly COOLDOWN_DURATION = 60; // 60 seconds
     private readonly MAX_ATTEMPTS = 5; // Maximum attempts before longer cooldown
     private readonly EXTENDED_COOLDOWN = 300; // 5 minutes for excessive attempts
@@ -48,25 +48,29 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
     }
 
     private restoreCooldownState() {
-        const lastAttempt = sessionStorage.getItem('ak-email-stage-last-attempt');
-        const storedAttempts = sessionStorage.getItem('ak-email-stage-attempts');
-        
+        const lastAttempt = sessionStorage.getItem("ak-email-stage-last-attempt");
+        const storedAttempts = sessionStorage.getItem("ak-email-stage-attempts");
+
         if (lastAttempt && storedAttempts) {
             const timeSinceLastAttempt = Date.now() - parseInt(lastAttempt, 10);
             this.attempts = parseInt(storedAttempts, 10);
-            
-            const cooldownDuration = this.attempts >= this.MAX_ATTEMPTS ? 
-                this.EXTENDED_COOLDOWN : this.COOLDOWN_DURATION;
-            
+
+            const cooldownDuration =
+                this.attempts >= this.MAX_ATTEMPTS
+                    ? this.EXTENDED_COOLDOWN
+                    : this.COOLDOWN_DURATION;
+
             if (timeSinceLastAttempt < cooldownDuration * 1000) {
-                this.cooldownTimer = Math.ceil((cooldownDuration * 1000 - timeSinceLastAttempt) / 1000);
+                this.cooldownTimer = Math.ceil(
+                    (cooldownDuration * 1000 - timeSinceLastAttempt) / 1000,
+                );
                 this.startCooldownTimer();
             } else {
                 // Cooldown expired, reset attempts if enough time has passed
                 if (timeSinceLastAttempt > this.EXTENDED_COOLDOWN * 1000) {
                     this.attempts = 0;
-                    sessionStorage.removeItem('ak-email-stage-attempts');
-                    sessionStorage.removeItem('ak-email-stage-last-attempt');
+                    sessionStorage.removeItem("ak-email-stage-attempts");
+                    sessionStorage.removeItem("ak-email-stage-last-attempt");
                 }
             }
         }
@@ -76,7 +80,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
         if (this.cooldownInterval) {
             clearInterval(this.cooldownInterval);
         }
-        
+
         this.cooldownInterval = setInterval(() => {
             this.cooldownTimer--;
             if (this.cooldownTimer <= 0) {
@@ -89,19 +93,19 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
     private trackAttempt() {
         this.attempts++;
         const now = Date.now();
-        sessionStorage.setItem('ak-email-stage-last-attempt', now.toString());
-        sessionStorage.setItem('ak-email-stage-attempts', this.attempts.toString());
-        
-        const cooldownDuration = this.attempts >= this.MAX_ATTEMPTS ? 
-            this.EXTENDED_COOLDOWN : this.COOLDOWN_DURATION;
-        
+        sessionStorage.setItem("ak-email-stage-last-attempt", now.toString());
+        sessionStorage.setItem("ak-email-stage-attempts", this.attempts.toString());
+
+        const cooldownDuration =
+            this.attempts >= this.MAX_ATTEMPTS ? this.EXTENDED_COOLDOWN : this.COOLDOWN_DURATION;
+
         this.cooldownTimer = cooldownDuration;
         this.startCooldownTimer();
     }
 
     async submitForm(e: Event, defaults?: EmailChallengeResponseRequest): Promise<boolean> {
         e.preventDefault();
-        
+
         if (this.isLoading || this.cooldownTimer > 0) {
             return false;
         }
@@ -114,7 +118,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
             return result;
         } catch (error) {
             // Handle any errors
-            console.error('Email send failed:', error);
+            console.error("Email send failed:", error);
             return false;
         } finally {
             this.isLoading = false;
@@ -124,8 +128,8 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
     onSubmitSuccess(): void {
         // Reset attempts on successful submission
         this.attempts = 0;
-        sessionStorage.removeItem('ak-email-stage-attempts');
-        sessionStorage.removeItem('ak-email-stage-last-attempt');
+        sessionStorage.removeItem("ak-email-stage-attempts");
+        sessionStorage.removeItem("ak-email-stage-last-attempt");
         super.onSubmitSuccess();
     }
 
@@ -189,7 +193,7 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                         this.submitForm(e);
                     }}
                 >
-                    <div class="pf-c-form__group">
+                    <div class="pf-c-form__group email-verification-message">
                         <span class="email-icon">📧</span>
                         <p>${msg("Check your Inbox for a verification email.")}</p>
                     </div>
@@ -197,9 +201,9 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                     ${this.renderWarningMessage()}
 
                     <div class="pf-c-form__group pf-m-action">
-                        <button 
-                            type="submit" 
-                            class="pf-c-button pf-m-primary pf-m-block"
+                        <button
+                            type="submit"
+                            class="pf-c-button pf-m-primary pf-m-block email-send-button"
                             ?disabled=${this.getButtonDisabled()}
                             aria-label=${this.getButtonText()}
                         >
