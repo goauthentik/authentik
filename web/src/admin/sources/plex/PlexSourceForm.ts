@@ -178,7 +178,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-source-plex-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -189,7 +188,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-source-plex-name"
                 required
                 input-hint="code"
             ></ak-slug-input>

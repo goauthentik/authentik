@@ -78,7 +78,6 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-form-flow-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -98,7 +97,6 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-form-flow-name"
                 required
                 help=${msg("Visible in the URL.")}
                 input-hint="code"

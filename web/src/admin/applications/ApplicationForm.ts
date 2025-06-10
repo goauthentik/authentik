@@ -126,7 +126,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
             ${this.instance ? nothing : html`<ak-alert level="pf-m-info">${alertMsg}</ak-alert>`}
             <ak-text-input
                 name="name"
-                id="ak-admin-application-name"
                 value=${ifDefined(this.instance?.name)}
                 label=${msg("Name")}
                 required
@@ -136,7 +135,6 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-application-name"
                 required
                 help=${msg("Internal application name used in URLs.")}
                 input-hint="code"

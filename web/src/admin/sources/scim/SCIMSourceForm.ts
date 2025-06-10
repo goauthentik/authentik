@@ -44,7 +44,6 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
             <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-source-scim-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -55,7 +54,6 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-source-scim-name"
                 required
                 input-hint="code"
             ></ak-slug-input>

@@ -84,7 +84,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-source-saml-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -95,7 +94,6 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-source-saml-name"
                 required
                 input-hint="code"
             ></ak-slug-input>

@@ -262,7 +262,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-source-oauth-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -272,7 +271,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-source-oauth-name"
                 required
                 input-hint="code"
             ></ak-slug-input>

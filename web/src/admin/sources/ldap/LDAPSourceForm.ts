@@ -50,7 +50,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
         return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
-                    id="ak-admin-source-ldap-name"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                     required
@@ -61,7 +60,6 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
-                source="#ak-admin-source-ldap-name"
                 required
                 input-hint="code"
             ></ak-slug-input>
