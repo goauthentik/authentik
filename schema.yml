@@ -38,33 +38,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /admin/metrics/:
-    get:
-      operationId: admin_metrics_retrieve
-      description: Login Metrics per 1h
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginMetrics'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /admin/models/:
     get:
       operationId: admin_models_list
@@ -4136,42 +4109,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/applications/{slug}/metrics/:
-    get:
-      operationId: core_applications_metrics_list
-      description: Metrics for application logins
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coordinate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /core/applications/{slug}/set_icon/:
     post:
       operationId: core_applications_set_icon_create
@@ -6071,40 +6008,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/users/{id}/metrics/:
-    get:
-      operationId: core_users_metrics_retrieve
-      description: User metrics per 1h
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserMetrics'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -7113,6 +7016,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7398,44 +7337,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /events/events/per_month/:
-    get:
-      operationId: events_events_per_month_list
-      description: Get the count of events per month
-      parameters:
-      - in: query
-        name: action
-        schema:
-          type: string
-      - in: query
-        name: query
-        schema:
-          type: string
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coordinate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -7484,6 +7385,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7512,6 +7449,11 @@ paths:
         schema:
           type: string
         description: Context Model Primary Key
+      - in: query
+        name: history_days
+        schema:
+          type: number
+          default: 7
       - name: ordering
         required: false
         in: query
@@ -7540,7 +7482,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Coordinate'
+                  $ref: '#/components/schemas/EventVolume'
           description: ''
         '400':
           content:
@@ -43596,19 +43538,6 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
-    Coordinate:
-      type: object
-      description: Coordinates for diagrams
-      properties:
-        x_cord:
-          type: integer
-          readOnly: true
-        y_cord:
-          type: integer
-          readOnly: true
-      required:
-      - x_cord
-      - y_cord
     CountryCodeEnum:
       enum:
       - AF
@@ -44986,6 +44915,21 @@ components:
       - application
       - counted_events
       - unique_users
+    EventVolume:
+      type: object
+      description: Count of events of action created on day
+      properties:
+        action:
+          $ref: '#/components/schemas/EventActions'
+        time:
+          type: string
+          format: date-time
+        count:
+          type: integer
+      required:
+      - action
+      - count
+      - time
     EventsRequestedEnum:
       enum:
       - https://schemas.openid.net/secevent/caep/event-type/session-revoked
@@ -48297,29 +48241,6 @@ components:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
-    LoginMetrics:
-      type: object
-      description: Login Metrics per 1h
-      properties:
-        logins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        logins_failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        authorizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-      required:
-      - authorizations
-      - logins
-      - logins_failed
     LoginSource:
       type: object
       description: Serializer for Login buttons of sources
@@ -60729,29 +60650,6 @@ components:
       - username_link
       - username_deny
       type: string
-    UserMetrics:
-      type: object
-      description: User Metrics
-      properties:
-        logins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        logins_failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        authorizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-      required:
-      - authorizations
-      - logins
-      - logins_failed
     UserOAuthSourceConnection:
       type: object
       description: User source connection
