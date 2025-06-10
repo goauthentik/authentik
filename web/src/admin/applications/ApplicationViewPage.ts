@@ -282,7 +282,7 @@ export class ApplicationViewPage extends AKElement {
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
-                                applicationSlug=${this.application.slug}
+                                application-id=${this.application.pk}
                             >
                             </ak-charts-application-authorize>`}
                         </div>
@@ -331,7 +331,10 @@ export class ApplicationViewPage extends AKElement {
                     <div class="pf-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
-                    <ak-bound-policies-list .target=${this.application.pk}>
+                    <ak-bound-policies-list
+                        .target=${this.application.pk}
+                        .policyEngineMode=${this.application.policyEngineMode}
+                    >
                     </ak-bound-policies-list>
                 </div>
             </section>

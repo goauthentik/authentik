@@ -1,6 +1,7 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
@@ -25,7 +26,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Application, CoreApi, Provider } from "@goauthentik/api";
 
-import { policyOptions } from "./PolicyOptions.js";
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";
 
@@ -174,7 +174,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Policy engine mode")}
                 required
                 name="policyEngineMode"
-                .options=${policyOptions}
+                .options=${policyEngineModes}
                 .value=${this.instance?.policyEngineMode}
             ></ak-radio-input>
             <ak-form-group>
