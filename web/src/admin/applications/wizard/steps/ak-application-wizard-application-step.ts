@@ -1,6 +1,6 @@
-import { policyOptions } from "@goauthentik/admin/applications/PolicyOptions.js";
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
@@ -144,7 +144,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     label=${msg("Policy engine mode")}
                     required
                     name="policyEngineMode"
-                    .options=${policyOptions}
+                    .options=${policyEngineModes}
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
