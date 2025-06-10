@@ -13,7 +13,7 @@ from authentik.tenants.utils import get_current_tenant
 
 
 class TaskSerializer(ModelSerializer):
-    messages = LogEventSerializer(many=True)
+    messages = LogEventSerializer(many=True, source="_messages")
 
     class Meta:
         model = Task
@@ -23,6 +23,8 @@ class TaskSerializer(ModelSerializer):
             "actor_name",
             "state",
             "mtime",
+            "rel_obj_content_type",
+            "rel_obj_id",
             "uid",
             "messages",
         ]

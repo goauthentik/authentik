@@ -43,7 +43,6 @@ from authentik.providers.rac.controllers.kubernetes import RACKubernetesControll
 from authentik.providers.radius.controllers.docker import RadiusDockerController
 from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
 from authentik.tasks.middleware import CurrentTask
-from authentik.tasks.models import Task, TaskStatus
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
@@ -86,9 +85,7 @@ def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
 def outpost_service_connection_monitor(connection_pk: Any):
     """Update cached state of a service connection"""
     connection: OutpostServiceConnection = (
-        OutpostServiceConnection.objects.filter(pk=connection_pk)
-        .select_subclasses()
-        .first()
+        OutpostServiceConnection.objects.filter(pk=connection_pk).select_subclasses().first()
     )
     if not connection:
         return
@@ -130,13 +127,9 @@ def outpost_controller(outpost_pk: str, action: str = "up", from_cache: bool = F
         if not controller_type:
             return
         with controller_type(outpost, outpost.service_connection) as controller:
-            LOGGER.debug(
-                "---------------Outpost Controller logs starting----------------"
-            )
+            LOGGER.debug("---------------Outpost Controller logs starting----------------")
             logs = getattr(controller, f"{action}_with_logs")()
-            LOGGER.debug(
-                "-----------------Outpost Controller logs end-------------------"
-            )
+            LOGGER.debug("-----------------Outpost Controller logs end-------------------")
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.error(exc)
     else:
@@ -178,9 +171,7 @@ def outpost_post_save(model_class: str, model_pk: Any):
             schedule.send()
 
     if isinstance(instance, OutpostModel | Outpost):
-        LOGGER.debug(
-            "triggering outpost update from outpostmodel/outpost", instance=instance
-        )
+        LOGGER.debug("triggering outpost update from outpostmodel/outpost", instance=instance)
         outpost_send_update(instance)
 
     if isinstance(instance, OutpostServiceConnection):
@@ -254,9 +245,7 @@ def outpost_connection_discovery():
     if kubeconfig_path.exists():
         self.info("Detected kubeconfig")
         kubeconfig_local_name = f"k8s-{gethostname()}"
-        if not KubernetesServiceConnection.objects.filter(
-            name=kubeconfig_local_name
-        ).exists():
+        if not KubernetesServiceConnection.objects.filter(name=kubeconfig_local_name).exists():
             self.info("Creating kubeconfig Service Connection")
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(

@@ -30,14 +30,6 @@ class TaskState(models.TextChoices):
     DONE = "done"
 
 
-class TaskStatus(models.TextChoices):
-    """Task soft-state. Self-reported by the task"""
-
-    INFO = "info"
-    WARNING = "warning"
-    ERROR = "error"
-
-
 class Task(SerializerModel):
     message_id = models.UUIDField(primary_key=True, default=uuid4)
     queue_name = models.TextField(default="default", help_text=_("Queue name"))
@@ -64,7 +56,9 @@ class Task(SerializerModel):
     rel_obj = GenericForeignKey("rel_obj_content_type", "rel_obj_id")
 
     _uid = models.TextField(blank=True, null=True)
-    messages = models.JSONField(default=list)
+    _messages = models.JSONField(default=list)
+
+    aggregated_status = models.TextField()
 
     class Meta:
         verbose_name = _("Task")
@@ -94,6 +88,19 @@ class Task(SerializerModel):
     def __str__(self):
         return str(self.message_id)
 
+    def update_aggregated_status(self):
+        if self.state != TaskState.DONE:
+            self.aggregated_status = self.state
+            return
+        status = "info"
+        for message in self._messages:
+            message_level = message["log_level"]
+            if status == "info" and message_level in ("warning", "error"):
+                status = message_level
+            if status == "warning" and message_level == "error":
+                status = message_level
+        self.aggregated_status = status
+
     @property
     def uid(self) -> str:
         uid = str(self.actor_name)
@@ -112,20 +119,21 @@ class Task(SerializerModel):
         if save:
             self.save()
 
-    def log(self, status: TaskStatus, message: str | Exception, save: bool = False, **attributes):
-        self.messages: list
+    def log(self, log_level: str, message: str | Exception, save: bool = False, **attributes):
+        self._messages: list
         if isinstance(message, Exception):
             message = exception_to_string(message)
-        message = LogEvent(message, logger=self.uid, log_level=status.value, attributes=attributes)
-        self.messages.append(sanitize_item(message))
+        log = LogEvent(message, logger=self.uid, log_level=status.value, attributes=attributes)
+        self._messages.append(sanitize_item(log))
+        self.update_aggregated_status()
         if save:
             self.save()
 
     def info(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(TaskStatus.INFO, message, save=save, **attributes)
+        self.log("info", message, save=save, **attributes)
 
     def warning(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(TaskStatus.WARNING, message, save=save, **attributes)
+        self.log("warning", message, save=save, **attributes)
 
     def error(self, message: str | Exception, save: bool = False, **attributes):
-        self.log(TaskStatus.ERROR, message, save=save, **attributes)
+        self.log("error", message, save=save, **attributes)
