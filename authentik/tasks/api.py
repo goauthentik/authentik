@@ -41,6 +41,7 @@ class TaskViewSet(
         "queue_name",
         "actor_name",
         "state",
+        "_uid",
         "aggregated_status",
     )
     filterset_fields = (

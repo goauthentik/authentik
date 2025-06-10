@@ -86,23 +86,33 @@ class Task(SerializerModel):
                     RETURN NEW;
                 """,  # noqa: E501
             ),
+            pgtrigger.Trigger(
+                name="update_aggregated_status",
+                operation=pgtrigger.Insert | pgtrigger.Update,
+                when=pgtrigger.After,
+                timing=pgtrigger.Immediate,
+                declare=[("aggregated_status", "TEXT"), ("max_log_level", "TEXT")],
+                func=f"""
+                    NEW.aggregated_status := CASE
+                        WHEN NEW.status != '{TaskState.DONE.value}' THEN NEW.status
+                        ELSE COALESCE((
+                            SELECT CASE
+                                WHEN bool_or(msg->'log_level' = 'error') THEN 'error'
+                                WHEN bool_or(msg->'log_level' = 'warning') THEN 'warning'
+                                WHEN bool_or(msg->'log_level' = 'info') THEN 'info'
+                                ELSE '{TaskState.DONE.value}'
+                            END
+                            FROM jsonb_array_elements(NEW._messages) AS msg
+                        ), '{TaskState.DONE.value}')
+                    END;
+
+                    RETURN NEW;
+                """,
+            ),
         )
 
     def __str__(self):
         return str(self.message_id)
-
-    def update_aggregated_status(self):
-        if self.state != TaskState.DONE:
-            self.aggregated_status = self.state
-            return
-        status = "info"
-        for message in self._messages:
-            message_level = message["log_level"]
-            if status == "info" and message_level in ("warning", "error"):
-                status = message_level
-            if status == "warning" and message_level == "error":
-                status = message_level
-        self.aggregated_status = status
 
     @property
     def uid(self) -> str:
@@ -126,9 +136,8 @@ class Task(SerializerModel):
         self._messages: list
         if isinstance(message, Exception):
             message = exception_to_string(message)
-        log = LogEvent(message, logger=self.uid, log_level=status.value, attributes=attributes)
+        log = LogEvent(message, logger=self.uid, log_level=log_level, attributes=attributes)
         self._messages.append(sanitize_item(log))
-        self.update_aggregated_status()
         if save:
             self.save()
 
