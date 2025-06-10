@@ -10,11 +10,6 @@
 const items = [
     {
         type: "category",
-        label: "Device Management",
-        items: ["services/apple/index", "services/fleet/index"],
-    },
-    {
-        type: "category",
         label: "Chat, Communication & Collaboration",
         items: [
             "services/espocrm/index",
@@ -39,6 +34,11 @@ const items = [
             "services/writefreely/index",
             "services/zulip/index",
         ],
+    },
+    {
+        type: "category",
+        label: "Device Management",
+        items: ["services/apple/index", "services/fleet/index"],
     },
     {
         type: "category",
@@ -240,7 +240,7 @@ const integrationsSidebar = {
                 type: "doc",
                 id: "services/index",
             },
-            items,
+            items: items.sort((a, b) => a.label.localeCompare(b.label)),
         },
     ],
 };
