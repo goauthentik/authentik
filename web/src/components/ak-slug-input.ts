@@ -33,54 +33,56 @@ const slugify = (s: string) => kebabCase(s, { suffixCharacters: "-" });
  * just in the same form but in the same form group, these are not considered burdensome
  * restrictions.
  */
-
 @customElement("ak-slug-input")
 export class AkSlugInput extends HorizontalLightComponent<string> {
     /**
-     * A selector indicating the (must be unique) source text input control.
+     * A selector indicating the source text input control. Must be unique within the whole DOM
+     * context of the slug and source controls.
      */
     @property({ type: String })
-    source = "";
+    public source = "";
 
     @property({ type: String, reflect: true })
-    value = "";
-
-    origin?: HTMLInputElement | null;
+    public value = "";
 
     @query("input")
-    input!: HTMLInputElement;
+    private input!: HTMLInputElement;
 
-    touched: boolean = false;
+    #origin?: HTMLInputElement | null;
+
+    #touched: boolean = false;
 
     // Do not stop propagation of this event; it must be sent up the tree so that a parent
     // component, such as a custom forms manager, may receive it.
-    handleTouch(ev: Event) {
+    protected handleTouch(ev: Event) {
         this.value = this.input.value = slugify(this.input.value);
 
         // Reset 'touched' status if the slug & target have been reset
-        if (this.origin && this.origin.value === "" && this.input.value === "") {
-            this.touched = false;
+        if (this.#origin && this.#origin.value === "" && this.input.value === "") {
+            this.#touched = false;
             return;
         }
 
         if (ev && ev.target && ev.target instanceof HTMLInputElement) {
-            this.touched = true;
+            this.#touched = true;
         }
     }
 
     @bound
-    slugify(ev: Event) {
+    protected slugify(ev: Event) {
         if (!(ev && ev.target && ev.target instanceof HTMLInputElement)) {
             return;
         }
 
         // Reset 'touched' status if the slug & target have been reset
         if (ev.target.value === "" && this.input.value === "") {
-            this.touched = false;
+            this.#touched = false;
         }
 
-        // Don't proceed if the user has hand-modified the slug
-        if (this.touched) {
+        // Don't proceed if the user has hand-modified the slug. (Note the order of statements: if
+        // the user hand modified the slug to be empty as part of resetting the slug/source
+        // relationship, that's a "not-touched" condition and falls through.)
+        if (this.#touched) {
             return;
         }
 
@@ -112,14 +114,14 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         );
     }
 
-    disconnectedCallback() {
-        if (this.origin) {
-            this.origin.removeEventListener("input", this.slugify);
+    public override disconnectedCallback() {
+        if (this.#origin) {
+            this.#origin.removeEventListener("input", this.slugify);
         }
         super.disconnectedCallback();
     }
 
-    renderControl() {
+    public override renderControl() {
         return html`<input
             @input=${(ev: Event) => this.handleTouch(ev)}
             type="text"
@@ -129,17 +131,17 @@ export class AkSlugInput extends HorizontalLightComponent<string> {
         />`;
     }
 
-    firstUpdated() {
+    public override firstUpdated() {
         if (!this.source) {
             return;
         }
 
         const rootNode = this.getRootNode();
         if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
-            this.origin = rootNode.querySelector(this.source);
+            this.#origin = rootNode.querySelector(this.source);
         }
-        if (this.origin) {
-            this.origin.addEventListener("input", this.slugify);
+        if (this.#origin) {
+            this.#origin.addEventListener("input", this.slugify);
         }
     }
 }
