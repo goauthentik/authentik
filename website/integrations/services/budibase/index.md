@@ -30,13 +30,13 @@ To support the integration of Budibase with authentik, you need to create an app
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
-- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
-- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
-- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to `https://budibase.company/api/global/auth/oidc/callback`.
-    - Select any available signing key.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+    - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+    - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+    - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+        - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+        - Set a `Strict` redirect URI to `https://budibase.company/api/global/auth/oidc/callback`.
+        - Select any available signing key.
+    - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
@@ -44,7 +44,7 @@ To support the integration of Budibase with authentik, you need to create an app
 
 From the main page of your Budibase installation, add the following values under the **Auth** section of the builder:
 
-- **Config URL**: `https://authentik.company/application/o/your-application-slug/.well-known/openid-configuration`
+- **Config URL**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 - **Client ID**: `Client ID from authentik`
 - **Client Secret**: `Client Secret from authentik`
 - **Callback URL**: `https://budibase.company/api/global/auth/oidc/callback/`

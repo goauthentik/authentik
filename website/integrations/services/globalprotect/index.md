@@ -33,7 +33,7 @@ To support the integration of GlobalProtect with authentik, you need to create a
 
 ### Create an Application and Provider in authentik
 
-1. Log in to authentik as an admin and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
     - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: Select **SAML Provider**.
@@ -46,7 +46,7 @@ To support the integration of GlobalProtect with authentik, you need to create a
 
 ### Download the metadata
 
-1. Log in to authentik as an admin and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** > **_Provider Name_** and download the SAML metadata.
 
 ## GlobalProtect configuration

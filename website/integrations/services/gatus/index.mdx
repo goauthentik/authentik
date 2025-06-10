@@ -56,7 +56,7 @@ Gatus automatically updates its configuration approximately every 30 seconds. If
     ```yaml showLineNumbers title="config.yaml"
     security:
         oidc:
-            issuer-url: https://authentik.company/application/o/<your-application-slug>/
+            issuer-url: https://authentik.company/application/o/<application_slug>/
             client-id: $\{OIDC_CLIENT_ID}
             client-secret: $\{OIDC_CLIENT_SECRET}
             redirect-url: https://gatus.company/authorization-code/callback
