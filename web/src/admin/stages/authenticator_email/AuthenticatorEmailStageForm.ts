@@ -50,9 +50,8 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
         if (!this.showConnectionSettings) {
             return html``;
         }
-        return html`<ak-form-group expanded>
-            <span slot="header"> ${msg("Connection settings")} </span>
-            <div slot="body" class="pf-c-form">
+        return html`<ak-form-group open label="${msg("Connection settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
@@ -191,9 +190,8 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </p>
             </ak-form-element-horizontal>
             ${this.renderConnectionSettings()}
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"

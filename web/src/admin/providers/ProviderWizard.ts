@@ -82,11 +82,7 @@ export class ProviderWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button
-                    data-test-id="new-provider-button"
-                    slot="trigger"
-                    class="pf-c-button pf-m-primary"
-                >
+                <button data-test-id="provider-new" slot="trigger" class="pf-c-button pf-m-primary">
                     ${this.createText}
                 </button>
             </ak-wizard>
@@ -97,5 +93,13 @@ export class ProviderWizard extends AKElement {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-provider-wizard": ProviderWizard;
+    }
+
+    interface ProviderTestIDMap {
+        new: HTMLButtonElement;
+    }
+
+    interface TestIDSelectorMap {
+        provider: ProviderTestIDMap;
     }
 }

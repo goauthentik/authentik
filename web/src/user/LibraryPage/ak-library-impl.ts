@@ -194,3 +194,13 @@ export class LibraryPage extends AKElement {
         </main>`;
     }
 }
+
+declare global {
+    interface PageTestIDMap {
+        heading: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        page: PageTestIDMap;
+    }
+}

@@ -55,9 +55,8 @@ export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<Authentica
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Google Verified Access API")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Google Verified Access API")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
                         required

@@ -423,4 +423,16 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-page-navbar": AKPageNavbar;
     }
+
+    interface PageNavbarTestIDMap {
+        heading: HTMLHeadingElement;
+    }
+
+    interface PageTestIDMap {
+        navbar: PageNavbarTestIDMap;
+    }
+
+    interface TestIDSelectorMap {
+        page: PageTestIDMap;
+    }
 }

@@ -1,5 +1,7 @@
+import type { DeepLocatorProxy } from "#e2e/elements/proxy";
 import { ConsoleLogger, FixtureLogger } from "#logger/node";
-import { Locator, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
+import { kebabCase } from "change-case";
 
 export interface PageFixtureOptions {
     page: Page;
@@ -17,6 +19,16 @@ export abstract class PageFixture {
     protected readonly logger: FixtureLogger;
     protected readonly page: Page;
     protected readonly testName: string;
+
+    /**
+     * A proxy to retreive elements by test ID.
+     *
+     * ```ts
+     * const $button = this.$.button;
+     * ```
+     */
+    // public readonly $: DeepLocatorProxy<TestIDSelectorMap>;
+    //#region Public Methods
 
     constructor({ page, testName }: PageFixtureOptions) {
         this.page = page;

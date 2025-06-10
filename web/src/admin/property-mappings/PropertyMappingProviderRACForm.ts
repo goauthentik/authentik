@@ -62,9 +62,8 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("General settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("General settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Username")}
                         name="staticSettings.username"
@@ -89,9 +88,8 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("RDP settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("RDP settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Ignore server certificate")}
                         name="staticSettings.ignore-cert"
@@ -134,9 +132,8 @@ export class PropertyMappingProviderRACForm extends BasePropertyMappingForm<RACP
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Expression")}
                         required

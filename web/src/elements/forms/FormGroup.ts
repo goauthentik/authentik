@@ -22,57 +22,86 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-form-group")
 export class FormGroup extends AKElement {
     @property({ type: Boolean, reflect: true })
-    expanded = false;
+    public open = false;
 
-    @property({ type: String, attribute: "aria-label", reflect: true })
-    ariaLabel = msg("Details");
+    @property({ type: String, reflect: true })
+    public label = msg("Details");
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFForm,
-            PFButton,
-            PFFormControl,
-            css`
-                /**
-                 * Workaround to trigger the hover effect on the button when the header is hovered.
-                 *
-                 * Alternatively, we group the expander button and header, but the grid would have to be
-                 * restructured to allow for this.
-                 */
-                .pf-c-form__field-group:has(.pf-c-form__field-group-header:hover) .pf-c-button {
-                    color: var(--pf-c-button--m-plain--hover--Color) !important;
-                }
+    @property({ type: String, reflect: true })
+    public description?: string;
 
-                /**
-                 * Transition ensuring a smooth animation when the body is expanded/collapsed.
-                 */
-                slot[name="body"] {
-                    transition-behavior: allow-discrete;
-                    transition-property: opacity, display, transform;
+    static styles: CSSResult[] = [
+        PFBase,
+        PFForm,
+        PFButton,
+        PFFormControl,
+
+        css`
+            :host {
+                --marker-color: var(--pf-global--Color--200);
+                --marker-color-hover: var(--pf-global--Color--100);
+            }
+
+            .pf-c-form__field-group-header-description {
+                text-wrap: balance;
+            }
+
+            details {
+                &::details-content {
+                    height: 0;
+                    overflow: clip;
+                    transition-behavior: normal, allow-discrete;
                     transition-duration: var(--pf-global--TransitionDuration);
                     transition-timing-function: var(--pf-global--TimingFunction);
-                    display: block;
-                    opacity: 1;
-                    transform: scaleY(1);
-                    transform-origin: top left;
-                    will-change: opacity, display, transform;
-                }
+                    transition-property: height, content-visibility;
 
-                slot[name="body"][hidden] {
-                    opacity: 0 !important;
-                    display: none !important;
-                    transform: scaleY(0) !important;
-                }
-
-                @media (prefers-reduced-motion) {
-                    slot[name="body"] {
-                        transition-duration: 0s;
+                    @media (prefers-reduced-motion) {
+                        transition-duration: 0;
                     }
                 }
-            `,
-        ];
-    }
+
+                @supports (interpolate-size: allow-keywords) {
+                    interpolate-size: allow-keywords;
+
+                    &[open]::details-content {
+                        height: auto;
+                    }
+                }
+
+                &::details-content {
+                    padding-inline-start: var(
+                        --pf-c-form__field-group--GridTemplateColumns--toggle
+                    );
+                }
+
+                & > summary {
+                    list-style-position: outside;
+                    margin-inline-start: 2em;
+                    padding-inline-start: calc(var(--pf-global--spacer--md) + 0.25rem);
+                    padding: var(--pf-global--spacer--md);
+                    list-style-type: "\\f105";
+                    cursor: pointer;
+                    user-select: none;
+
+                    &::marker {
+                        color: var(--marker-color);
+                        transition: var(--pf-c-form__field-group-toggle-icon--Transition);
+                        font-family: "Font Awesome 5 Free";
+                        font-weight: 900;
+                    }
+
+                    &:hover::marker {
+                        outline: 1px dashed red;
+                        color: var(--marker-color-hover);
+                    }
+                }
+
+                &[open] summary {
+                    list-style-type: "\\f107";
+                }
+            }
+        `,
+    ];
 
     formRef = createRef<HTMLFormElement>();
 
@@ -87,65 +116,56 @@ export class FormGroup extends AKElement {
     /**
      * Toggle the open state of the form group.
      */
-    public toggle = (): void => {
+    public toggle = (event: Event): void => {
+        event.preventDefault();
         cancelAnimationFrame(this.scrollAnimationFrame);
 
-        this.expanded = !this.expanded;
+        this.open = !this.open;
 
-        if (this.expanded) {
+        if (this.open) {
             this.scrollAnimationFrame = requestAnimationFrame(this.scrollIntoView);
         }
     };
 
-    render(): TemplateResult {
-        return html`<div class="pf-c-form" ${ref(this.formRef)}>
-            <div class="pf-c-form__field-group ${this.expanded ? "pf-m-expanded" : ""}">
-                <div class="pf-c-form__field-group-toggle">
-                    <div class="pf-c-form__field-group-toggle-button">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            aria-expanded="${this.expanded}"
-                            aria-label=${this.ariaLabel}
-                            @click=${this.toggle}
-                            data-test-id="form-group-toggle-button"
-                        >
-                            <span class="pf-c-form__field-group-toggle-icon">
-                                <i class="fas fa-angle-right" aria-hidden="true"></i>
-                            </span>
-                        </button>
-                    </div>
-                </div>
-                <div
-                    class="pf-c-form__field-group-header pf-m-pressable"
-                    @click=${this.toggle}
-                    aria-expanded=${this.expanded}
-                    aria-role="button"
-                >
+    public render(): TemplateResult {
+        return html`
+            <details
+                ${ref(this.formRef)}
+                ?open=${this.open}
+                ?aria-expanded="${this.open}"
+                role="presentation"
+                aria-owns="form-group-expandable-content"
+                aria-describedby="form-group-expandable-content-description"
+            >
+                <summary @click=${this.toggle}>
                     <div class="pf-c-form__field-group-header-main">
-                        <div class="pf-c-form__field-group-header-title">
+                        <header class="pf-c-form__field-group-header-title">
                             <div
                                 class="pf-c-form__field-group-header-title-text"
                                 data-test-id="form-group-header-title"
+                                role="heading"
+                                aria-level="3"
                             >
+                                ${this.label}
                                 <slot name="header"></slot>
                             </div>
-                        </div>
+                        </header>
+
                         <div
                             class="pf-c-form__field-group-header-description"
                             data-test-id="form-group-header-description"
+                            id="form-group-expandable-content-description"
                         >
+                            ${this.description}
                             <slot name="description"></slot>
                         </div>
                     </div>
+                </summary>
+                <div role="group" id="form-group-expandable-content">
+                    <slot></slot>
                 </div>
-                <slot
-                    ?hidden=${!this.expanded}
-                    class="pf-c-form__field-group-body"
-                    name="body"
-                ></slot>
-            </div>
-        </div>`;
+            </details>
+        `;
     }
 }
 

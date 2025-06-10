@@ -33,4 +33,12 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard-title": AkWizardTitle;
     }
+
+    interface WizardTestIDMap {
+        heading: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
+    }
 }

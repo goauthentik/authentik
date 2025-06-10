@@ -20,8 +20,6 @@ export class SessionFixture extends PageFixture {
 
     //#region Selectors
 
-    public $interfaceRoot = this.page.getByTestId("interface-root");
-
     public $identificationStage = this.page.locator("ak-stage-identification");
 
     /**
@@ -103,8 +101,6 @@ export class SessionFixture extends PageFixture {
         const expectedPathname = typeof to === "string" ? to : to.pathname;
 
         await this.page.waitForURL(`**${expectedPathname}`);
-
-        const currentURL = new URL(this.page.url());
     }
 
     //#endregion
@@ -113,16 +109,5 @@ export class SessionFixture extends PageFixture {
 
     public async toLoginPage() {
         await this.page.goto(SessionFixture.pathname);
-    }
-
-    /**
-     * Log out of the application.
-     */
-    public async toLogoutPage() {
-        this.logger.info("Logging out...");
-        await this.page.goto("/flows/-/default/invalidation/");
-
-        this.logger.info("Waiting for ak-interface-root to exist...");
-        await this.$interfaceRoot.waitFor();
     }
 }

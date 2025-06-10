@@ -11,10 +11,10 @@ test.beforeEach(async ({ session }) => {
 });
 
 test.describe("Session management", () => {
-    test("Login with valid credentials", async ({ session, userLibrary }) => {
+    test("Login with valid credentials", async ({ session, $ }) => {
         await session.login({ username: GOOD_USERNAME, password: GOOD_PASSWORD });
 
-        await expect(userLibrary.$pageHeading).toHaveText("My applications");
+        await $.page.heading.expect.toHaveText("My applications");
     });
 
     test("Reject bad username", async ({ session }) => {

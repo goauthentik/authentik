@@ -31,24 +31,26 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     internalId: string;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFRadio,
-            PFForm,
-            css`
-                .pf-c-form__group-control {
-                    padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
-                    );
-                }
-                .pf-c-radio label,
-                .pf-c-radio span {
-                    user-select: none;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFRadio,
+        PFForm,
+        css`
+            .pf-c-form__group-control {
+                padding-top: calc(
+                    var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                );
+            }
+            .pf-c-radio label,
+            .pf-c-radio span {
+                user-select: none;
+            }
+
+            .pf-c-radio__description {
+                text-wrap: balance;
+            }
+        `,
+    ];
 
     constructor() {
         super();

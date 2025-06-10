@@ -317,3 +317,18 @@ export abstract class WizardStep extends AKElement {
             : nothing;
     }
 }
+
+declare global {
+    interface WizardNavigationTestIDMap {
+        abort: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+        title: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
+    }
+}

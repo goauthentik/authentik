@@ -361,4 +361,18 @@ declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard": Wizard;
     }
+
+    interface WizardNavigationTestIDMap {
+        next: HTMLButtonElement;
+        previous: HTMLButtonElement;
+        cancel: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
+    }
 }
