@@ -25,7 +25,7 @@ For SAML use-cases, you can generate a certificate with a longer validity period
 
 To download a certificate for SAML configuration:
 
-1. Log into authentik as an admin, and open the authentik Admin interface.
+1. Log into authentik as an administrator, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the provider.
 3. Click the **Download** button found under **Download signing certificate**. The contents of this certificate will be required when configuring the service provider.
 
