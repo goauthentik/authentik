@@ -1,7 +1,5 @@
 """authentik URL Configuration"""
 
-from channels.auth import AuthMiddleware
-from channels.sessions import CookieMiddleware
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import path
@@ -13,7 +11,11 @@ from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
-from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
+from authentik.core.api.sources import (
+    GroupSourceConnectionViewSet,
+    SourceViewSet,
+    UserSourceConnectionViewSet,
+)
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
 from authentik.core.api.users import UserViewSet
@@ -25,7 +27,7 @@ from authentik.core.views.interface import (
     RootRedirectView,
 )
 from authentik.flows.views.interface import FlowInterfaceView
-from authentik.root.asgi_middleware import SessionMiddleware
+from authentik.root.asgi_middleware import AuthMiddlewareStack
 from authentik.root.messages.consumer import MessageConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
@@ -81,6 +83,7 @@ api_urlpatterns = [
     ("core/tokens", TokenViewSet),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
+    ("sources/group_connections/all", GroupSourceConnectionViewSet),
     ("providers/all", ProviderViewSet),
     ("propertymappings/all", PropertyMappingViewSet),
     ("authenticators/all", DeviceViewSet, "device"),
@@ -94,9 +97,7 @@ api_urlpatterns = [
 websocket_urlpatterns = [
     path(
         "ws/client/",
-        ChannelsLoggingMiddleware(
-            CookieMiddleware(SessionMiddleware(AuthMiddleware(MessageConsumer.as_asgi())))
-        ),
+        ChannelsLoggingMiddleware(AuthMiddlewareStack(MessageConsumer.as_asgi())),
     ),
 ]
 

@@ -1,11 +1,12 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { rootInterface } from "@goauthentik/common/theme";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 import "@goauthentik/elements/user/sources/SourceSettings";
-import { UserInterface } from "@goauthentik/user/UserInterface";
+import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
@@ -59,6 +60,10 @@ export class UserSettingsPage extends AKElement {
                 :host([theme="dark"]) .pf-c-page__main-section {
                     --pf-c-page__main-section--BackgroundColor: transparent;
                 }
+                .pf-c-page__main {
+                    min-height: 100vh;
+                    overflow-y: auto;
+                }
                 @media screen and (min-width: 1200px) {
                     :host {
                         width: 90rem;
@@ -90,7 +95,7 @@ export class UserSettingsPage extends AKElement {
             [];
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
-                <ak-tabs ?vertical="${true}">
+                <ak-tabs vertical>
                     <section
                         slot="page-details"
                         data-tab-title="${msg("User details")}"

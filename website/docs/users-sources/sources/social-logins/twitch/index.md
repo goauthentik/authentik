@@ -1,8 +1,7 @@
 ---
 title: Twitch
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 Allows users to authenticate using their Twitch credentials
 
@@ -56,5 +55,5 @@ Here is an example of a complete authentik Twitch OAuth Source
 Save, and you now have Twitch as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../../index.md#add-sources-to-default-login-page).
+For instructions on how to display the new source on the authentik login page, refer to the [Add sources to default login page documentation](../../index.md#add-sources-to-default-login-page).
 :::

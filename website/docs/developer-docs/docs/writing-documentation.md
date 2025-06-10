@@ -22,7 +22,7 @@ Adhering to the following guidelines will help us get your PRs merged much easie
 
 Requirements:
 
-- Node.js 20 (or greater, we use Node.js 22)
+- Node.js 20 (or greater, we use Node.js 24)
 
 The docs and the code are in the same Github repo, at https://github.com/goauthentik/authentik, so if you have cloned the repo, you already have the docs.
 

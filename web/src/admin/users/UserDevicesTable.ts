@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { deviceTypeName } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -58,6 +58,8 @@ export class UserDeviceTable extends Table<Device> {
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 return api.authenticatorsAdminDuoDestroy({ id: parseInt(device.pk, 10) });
+            case "authentik_stages_authenticator_email.EmailDevice":
+                return api.authenticatorsAdminEmailDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_sms.SMSDevice":
                 return api.authenticatorsAdminSmsDestroy({ id: parseInt(device.pk, 10) });
             case "authentik_stages_authenticator_totp.TOTPDevice":
@@ -106,15 +108,15 @@ export class UserDeviceTable extends Table<Device> {
             ${item.extraDescription ? ` - ${item.extraDescription}` : ""}`,
             html`${item.confirmed ? msg("Yes") : msg("No")}`,
             html`${item.created.getTime() > 0
-                ? html`<div>${getRelativeTime(item.created)}</div>
+                ? html`<div>${formatElapsedTime(item.created)}</div>
                       <small>${item.created.toLocaleString()}</small>`
                 : html`-`}`,
             html`${item.lastUpdated
-                ? html`<div>${getRelativeTime(item.lastUpdated)}</div>
+                ? html`<div>${formatElapsedTime(item.lastUpdated)}</div>
                       <small>${item.lastUpdated.toLocaleString()}</small>`
                 : html`-`}`,
             html`${item.lastUsed
-                ? html`<div>${getRelativeTime(item.lastUsed)}</div>
+                ? html`<div>${formatElapsedTime(item.lastUsed)}</div>
                       <small>${item.lastUsed.toLocaleString()}</small>`
                 : html`-`}`,
         ];

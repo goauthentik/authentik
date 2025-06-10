@@ -86,7 +86,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
                     font-size: var(--pf-global--FontSize--sm);
                 }
                 .pf-c-card__body {
-                    overflow-x: scroll;
+                    overflow-x: auto;
                     padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
                     padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
                 }

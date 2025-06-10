@@ -1,7 +1,6 @@
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -33,16 +32,15 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                 slug: this.instance.slug,
                 patchedSCIMSourceRequest: data,
             });
-        } else {
-            return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
-                sCIMSourceRequest: data as unknown as SCIMSourceRequest,
-            });
         }
+        return new SourcesApi(DEFAULT_CONFIG).sourcesScimCreate({
+            sCIMSourceRequest: data as unknown as SCIMSourceRequest,
+        });
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -50,7 +48,7 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -63,12 +61,12 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <input
                         type="checkbox"
                         class="pf-c-check__input"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("SCIM Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -111,10 +109,8 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>

@@ -1,9 +1,6 @@
 ---
 title: Configure Entra ID
----
-
-<span class="badge badge--primary">Enterprise</span>
-
+authentik_enterprise: true
 ---
 
 The configuration of your Microsoft Entra ID environment must be completed before you [add the new provider](./add-entra-provider.md) in authentik.
@@ -12,7 +9,7 @@ For detailed instructions, refer to Microsoft Entra ID documentation.
 
 ## Configure Entra ID
 
-1. Log into the Azure portal and on the Home page, under Azure services, click on or search for **App registrations**.
+1. Log in to the Azure portal and on the Home page, under Azure services, click on or search for **App registrations**.
 2. On the **App registrations** page, click **New registration**.
 3. On the **Register an application** page, define the **Name** of the app, and under **Supported account types** select **Accounts in this organizational directory only**. Leave **Redirect URI** empty.
 4. Click **Register**.

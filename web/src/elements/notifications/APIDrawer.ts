@@ -1,7 +1,7 @@
 import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
@@ -79,7 +79,7 @@ export class APIDrawer extends AKElement {
                 >${item.path}</a
             >
             <div class="pf-c-notification-drawer__list-item-timestamp">
-                ${getRelativeTime(new Date(item.time))}
+                ${formatElapsedTime(new Date(item.time))}
             </div>
         </li>`;
     }

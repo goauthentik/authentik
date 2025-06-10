@@ -57,10 +57,13 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     renderToolbarSelected(): TemplateResult {
-        const disabled = this.selectedElements.length < 1;
+        const disabled =
+            this.selectedElements.length < 1 ||
+            this.selectedElements.some((item) => item.component === "");
+        const nonBuiltInSources = this.selectedElements.filter((item) => item.component !== "");
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Source(s)")}
-            .objects=${this.selectedElements}
+            .objects=${nonBuiltInSources}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
                     slug: item.slug,
@@ -87,7 +90,7 @@ export class SourceListPage extends TablePage<Source> {
                 <div>${item.name}</div>
                 ${item.enabled
                     ? html``
-                    : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
+                    : html`<ak-label color=${PFColor.Orange} compact>
                           ${msg("Disabled")}</ak-label
                       >`}
             </a>`,
@@ -116,7 +119,7 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} ?compact=${true}> ${msg("Built-in")}</ak-label>
+                <ak-label color=${PFColor.Grey} compact> ${msg("Built-in")}</ak-label>
             </div>`,
             html`${msg("Built-in")}`,
             html``,

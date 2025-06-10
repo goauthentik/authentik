@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH_ENTERPRISE } from "@goauthentik/common/constants";
+import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -51,14 +52,23 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
     }
 
     renderForm(): TemplateResult {
-        // prettier-ignore
-        return html`
-            <ak-form-element-horizontal label=${msg("Install ID")}>
-                <input class="pf-c-form-control" readonly type="text" value="${ifDefined(this.installID)}" />
+        return html` <ak-form-element-horizontal label=${msg("Install ID")}>
+                <input
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
+                    readonly
+                    type="text"
+                    value="${ifDefined(this.installID)}"
+                />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal name="key" ?writeOnly=${this.instance !== undefined} label=${msg("License key")}>
-                <textarea class="pf-c-form-control"></textarea>
-            </ak-form-element-horizontal>`;
+            <ak-private-textarea-input
+                name="key"
+                ?revealed=${this.instance === undefined}
+                label=${msg("License key")}
+                input-hint="code"
+            >
+            </ak-private-textarea-input>`;
     }
 }
 

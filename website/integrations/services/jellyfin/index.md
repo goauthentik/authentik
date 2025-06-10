@@ -1,11 +1,8 @@
 ---
 title: Integrate with Jellyfin
 sidebar_label: Jellyfin
+support_level: community
 ---
-
-# Integrate with Jellyfin
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is Jellyfin
 
@@ -14,11 +11,7 @@ sidebar_label: Jellyfin
 > -- https://jellyfin.org
 
 :::note
-Jellyfin does not have any native external authentication support as of the writing of this page.
-:::
-
-:::note
-Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
+Jellyfin does not have any native external authentication support as of the writing of this page. Currently, there are two plugins for Jellyfin that provide external authentication, an OIDC plugin and an LDAP plugin.
 :::
 
 :::caution
@@ -50,7 +43,7 @@ No additional authentik configuration needs to be configured. Follow the LDAP ou
 1. If you don't have one already, create an LDAP bind user before starting these steps.
     - Ideally, this user doesn't have any permissions other than the ability to view other users. However, some functions do require an account with permissions.
     - This user must be part of the group that is specified in the "Search group" in the LDAP outpost.
-2. Navigate to your Jellyfin installation and log in with the admin account or currently configured local admin.
+2. Navigate to your Jellyfin installation and log in with the administrator account or currently configured local admin.
 3. Open the **Administrator dashboard** and go to the **Plugins** section.
 4. Click **Catalog** at the top of the page, and locate the "LDAP Authentication Plugin"
 5. Install the plugin. You may need to restart Jellyfin to finish installation.
@@ -125,9 +118,9 @@ Set the launch URL to `https://jellyfin.company/sso/OID/start/authentik`
 
 ### Jellyfin Configuration
 
-1. Log in to Jellyfin with an admin account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
-2. Go to **Dashboard > Plugins > Catalog**.
-3. Click the gear icon in the top left, then click **+** to add a new repository. Use the following URL and name it "SSO-Auth":
+1. Log in to Jellyfin with an administrator account and navigate to the **Admin Dashboard** by selecting your profile icon in the top right, then clicking **Dashboard**.
+2. Go to **Dashboard > Plugins > Repositories**.
+3. Click the **+** in the top left to add a new repository. Use the following URL and name it "SSO-Auth":
 
 ```
 https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manifest.json
@@ -149,7 +142,7 @@ https://raw.githubusercontent.com/9p4/jellyfin-plugin-sso/manifest-release/manif
 9. If you want to use the role claim then also fill out these:
 
     - Roles: roles to look for when authorizing access (should be done through authentik instead)
-    - Admin Roles: roles to look for when giving admin privilege
+    - Admin Roles: roles to look for when giving administrator privilege
     - Role Claim: `groups`
 
 10. Hit **Save** at the bottom.

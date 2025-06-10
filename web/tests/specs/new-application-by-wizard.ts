@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 // ^^^^^^^^^^^ Because TSC cannot handle metaprogramming, and metaprogramming
 // via `defineProperties` is how we installed the OUID finders for the various
@@ -89,7 +88,7 @@ export async function findWizardTitle() {
 async function passByPoliciesAndCommit() {
     const title = await findWizardTitle();
     // Expect to be on the Bindings panel
-    await expect(await title.getText()).toEqual("Configure Policy Bindings");
+    await expect(await title.getText()).toEqual("Configure Policy/User/Group Bindings");
     await (await ApplicationWizardView.nextButton()).click();
     await ApplicationWizardView.pause();
     await (await ApplicationWizardView.submitPage()).waitForDisplayed();

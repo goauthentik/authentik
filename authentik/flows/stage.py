@@ -99,9 +99,10 @@ class ChallengeStageView(StageView):
             self.logger.debug("Got StageInvalidException", exc=exc)
             return self.executor.stage_invalid()
         if not challenge.is_valid():
-            self.logger.warning(
+            self.logger.error(
                 "f(ch): Invalid challenge",
                 errors=challenge.errors,
+                challenge=challenge.data,
             )
         return HttpChallengeResponse(challenge)
 
@@ -184,7 +185,7 @@ class ChallengeStageView(StageView):
                 flow_info = ContextualFlowInfo(
                     data={
                         "title": self.format_title(),
-                        "background": self.executor.flow.background_url,
+                        "background": self.executor.flow.background_url(self.request),
                         "cancel_url": reverse("authentik_flows:cancel"),
                         "layout": self.executor.flow.layout,
                     }

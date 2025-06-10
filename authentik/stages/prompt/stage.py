@@ -171,7 +171,8 @@ def username_field_validator_factory() -> Callable[[PromptChallengeResponse, str
 
 
 def password_single_validator_factory() -> Callable[[PromptChallengeResponse, str], Any]:
-    """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
+    """Return a `clean_` method for `field`. Clean method checks if the password meets configured
+    PasswordPolicy."""
 
     def password_single_clean(self: PromptChallengeResponse, value: str) -> Any:
         """Send password validation signals for e.g. LDAP Source"""

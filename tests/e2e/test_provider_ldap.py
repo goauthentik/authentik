@@ -2,6 +2,7 @@
 
 from dataclasses import asdict
 from time import sleep
+from unittest.mock import patch
 
 from guardian.shortcuts import assign_perm
 from ldap3 import ALL, ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE, Connection, Server
@@ -15,10 +16,12 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
+from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
+@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TestProviderLDAP(SeleniumTestCase):
     """LDAP and Outpost e2e tests"""
 

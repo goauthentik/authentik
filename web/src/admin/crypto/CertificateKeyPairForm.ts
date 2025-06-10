@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -30,15 +31,14 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 kpUuid: this.instance.pk || "",
                 patchedCertificateKeyPairRequest: data,
             });
-        } else {
-            return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
-                certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
-            });
         }
+        return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsCreate({
+            certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
+        return html` <ak-form-element-horizontal label=${msg("Name")} name="name" required>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -46,27 +46,24 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
+            <ak-private-textarea-input
                 label=${msg("Certificate")}
                 name="certificateData"
-                ?writeOnly=${this.instance !== undefined}
-                ?required=${true}
-            >
-                <textarea class="pf-c-form-control" required></textarea>
-                <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="keyData"
-                ?writeOnly=${this.instance !== undefined}
+                input-hint="code"
+                placeholder="-----BEGIN CERTIFICATE-----"
+                required
+                ?revealed=${this.instance === undefined}
+                help=${msg("PEM-encoded Certificate data.")}
+            ></ak-private-textarea-input>
+            <ak-private-textarea-input
                 label=${msg("Private Key")}
-            >
-                <textarea class="pf-c-form-control"></textarea>
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Optional Private Key. If this is set, you can use this keypair for encryption.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+                name="keyData"
+                input-hint="code"
+                ?revealed=${this.instance === undefined}
+                help=${msg(
+                    "Optional Private Key. If this is set, you can use this keypair for encryption.",
+                )}
+            ></ak-private-textarea-input>`;
     }
 }
 

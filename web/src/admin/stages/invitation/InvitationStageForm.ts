@@ -1,6 +1,5 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -24,18 +23,17 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                 stageUuid: this.instance.pk || "",
                 invitationStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-                invitationStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
+            invitationStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
         return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name || ""}"
@@ -43,7 +41,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
@@ -51,10 +49,7 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(
-                                    this.instance?.continueFlowWithoutInvitation,
-                                    false,
-                                )}
+                                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

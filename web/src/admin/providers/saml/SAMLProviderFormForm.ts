@@ -50,7 +50,7 @@ function renderHasSigningKp(provider?: Partial<SAMLProvider>) {
             name="signResponse"
             label=${msg("Sign responses")}
             ?checked=${provider?.signResponse ?? false}
-            help=${msg("When enabled, the assertion element of the SAML response will be signed.")}
+            help=${msg("When enabled, the SAML response will be signed.")}
         >
         </ak-switch-input>`;
 }
@@ -84,7 +84,7 @@ export function renderForm(
             </p>
         </ak-form-element-horizontal>
 
-        <ak-form-group .expanded=${true}>
+        <ak-form-group expanded>
             <span slot="header"> ${msg("Protocol settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-text-input
@@ -127,7 +127,6 @@ export function renderForm(
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
-                    ?required=${false}
                     name="authenticationFlow"
                 >
                     <ak-flow-search
@@ -236,12 +235,47 @@ export function renderForm(
                         .selected=${(item: SAMLPropertyMapping): boolean => {
                             return provider?.nameIdMapping === item.pk;
                         }}
-                        ?blankable=${true}
+                        blankable
                     >
                     </ak-search-select>
                     <p class="pf-c-form__helper-text">
                         ${msg(
                             "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.",
+                        )}
+                    </p>
+                </ak-form-element-horizontal>
+                <ak-form-element-horizontal
+                    label=${msg("AuthnContextClassRef Property Mapping")}
+                    name="authnContextClassRefMapping"
+                >
+                    <ak-search-select
+                        .fetchObjects=${async (query?: string): Promise<SAMLPropertyMapping[]> => {
+                            const args: PropertymappingsProviderSamlListRequest = {
+                                ordering: "saml_name",
+                            };
+                            if (query !== undefined) {
+                                args.search = query;
+                            }
+                            const items = await new PropertymappingsApi(
+                                DEFAULT_CONFIG,
+                            ).propertymappingsProviderSamlList(args);
+                            return items.results;
+                        }}
+                        .renderElement=${(item: SAMLPropertyMapping): string => {
+                            return item.name;
+                        }}
+                        .value=${(item: SAMLPropertyMapping | undefined): string | undefined => {
+                            return item?.pk;
+                        }}
+                        .selected=${(item: SAMLPropertyMapping): boolean => {
+                            return provider?.authnContextClassRefMapping === item.pk;
+                        }}
+                        blankable
+                    >
+                    </ak-search-select>
+                    <p class="pf-c-form__helper-text">
+                        ${msg(
+                            "Configure how the AuthnContextClassRef value will be created. When left empty, the AuthnContextClassRef will be set based on which authentication methods the user used to authenticate.",
                         )}
                     </p>
                 </ak-form-element-horizontal>

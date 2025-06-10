@@ -14,7 +14,12 @@ from authentik.core.models import User
 from authentik.core.sources.mapper import SourceMapper
 from authentik.events.models import Event, EventAction
 from authentik.lib.sync.outgoing.exceptions import StopSync
-from authentik.sources.ldap.models import LDAP_UNIQUENESS, LDAPSource, flatten
+from authentik.sources.ldap.models import (
+    LDAP_UNIQUENESS,
+    LDAPSource,
+    UserLDAPSourceConnection,
+    flatten,
+)
 from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
@@ -55,18 +60,16 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             return -1
         user_count = 0
         for user in page_data:
-            if "attributes" not in user:
+            if (attributes := self.get_attributes(user)) is None:
                 continue
-            attributes = user.get("attributes", {})
             user_dn = flatten(user.get("entryDN", user.get("dn")))
-            if not attributes.get(self._source.object_uniqueness_field):
+            if not (uniq := self.get_identifier(attributes)):
                 self.message(
                     f"Uniqueness field not found/not set in attributes: '{user_dn}'",
                     attributes=attributes.keys(),
                     dn=user_dn,
                 )
                 continue
-            uniq = flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = {
                     k: flatten(v)
@@ -85,6 +88,12 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = User.update_or_create_attributes(
                     {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+                if not UserLDAPSourceConnection.objects.filter(
+                    source=self._source, identifier=uniq
+                ):
+                    UserLDAPSourceConnection.objects.create(
+                        source=self._source, user=ak_user, identifier=uniq
+                    )
             except PropertyMappingExpressionException as exc:
                 raise StopSync(exc, None, exc.mapping) from exc
             except SkipObjectException:

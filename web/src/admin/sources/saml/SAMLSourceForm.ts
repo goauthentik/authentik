@@ -1,3 +1,4 @@
+import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
@@ -8,11 +9,6 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
-import {
-    CapabilitiesEnum,
-    WithCapabilitiesConfig,
-} from "@goauthentik/elements/Interface/capabilitiesProvider";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -65,7 +61,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
         }
         const c = await config();
         if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
-            const icon = this.getFormFiles()["icon"];
+            const icon = this.getFormFiles().icon;
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
                     slug: source.slug,
@@ -85,7 +81,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -93,7 +89,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -106,7 +102,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.enabled, true)}
+                        ?checked=${this.instance?.enabled ?? true}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -118,7 +114,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                ?required=${true}
+                required
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -161,7 +157,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                ?required=${true}
+                required
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -229,20 +225,16 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
-                          value="${first(this.instance?.icon, "")}"
+                          value="${this.instance?.icon ?? ""}"
                           class="pf-c-form-control"
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("SSO URL")}
-                        ?required=${true}
-                        name="ssoUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("SSO URL")} required name="ssoUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
@@ -275,7 +267,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Binding Type")}
-                        ?required=${true}
+                        required
                         name="bindingType"
                     >
                         <ak-radio
@@ -335,7 +327,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.allowIdpInitiated, false)}
+                                ?checked=${this.instance?.allowIdpInitiated ?? false}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -354,7 +346,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("NameID Policy")}
-                        ?required=${true}
+                        required
                         name="nameIdPolicy"
                     >
                         <select class="pf-c-form-control">
@@ -398,17 +390,15 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
-                            value="${first(
-                                this.instance?.userPathTemplate,
-                                "goauthentik.io/sources/%(slug)s",
-                            )}"
+                            value="${this.instance?.userPathTemplate ??
+                            "goauthentik.io/sources/%(slug)s"}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delete temporary users after")}
-                        ?required=${true}
+                        required
                         name="temporaryUserDeleteAfter"
                     >
                         <input
@@ -426,7 +416,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
-                        ?required=${true}
+                        required
                         name="digestAlgorithm"
                     >
                         <ak-radio
@@ -455,7 +445,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Signature algorithm")}
-                        ?required=${true}
+                        required
                         name="signatureAlgorithm"
                     >
                         <ak-radio
@@ -501,7 +491,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("SAML Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -543,7 +533,7 @@ export class SAMLSourceForm extends WithCapabilitiesConfig(BaseSourceForm<SAMLSo
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Pre-authentication flow")}
-                        ?required=${true}
+                        required
                         name="preAuthenticationFlow"
                     >
                         <ak-source-flow-search

@@ -2,7 +2,7 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -10,6 +10,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, TemplateResult, html } from "lit";
@@ -68,11 +69,11 @@ export class ObjectChangelog extends Table<Event> {
         }
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
 

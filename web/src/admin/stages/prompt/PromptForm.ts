@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { parseAPIError } from "@goauthentik/common/errors";
-import { first } from "@goauthentik/common/utils";
+import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -21,9 +20,8 @@ import {
     Prompt,
     PromptChallenge,
     PromptTypeEnum,
-    ResponseError,
     StagesApi,
-    ValidationError,
+    instanceOfValidationError,
 } from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
@@ -56,11 +54,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 promptUuid: this.instance.pk || "",
                 promptRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
-                promptRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsCreate({
+            promptRequest: data,
+        });
     }
 
     async loadInstance(pk: string): Promise<Prompt> {
@@ -78,15 +75,22 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 return;
             }
         }
-        try {
-            this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
+
+        return new StagesApi(DEFAULT_CONFIG)
+            .stagesPromptPromptsPreviewCreate({
                 promptRequest: prompt,
+            })
+            .then((nextPreview) => {
+                this.preview = nextPreview;
+                this.previewError = undefined;
+            })
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.previewError = instanceOfValidationError(parsedError)
+                    ? parsedError.nonFieldErrors
+                    : [pluckErrorDetail(parsedError, msg("Failed to preview prompt"))];
             });
-            this.previewError = undefined;
-        } catch (exc) {
-            const errorMessage = parseAPIError(exc as ResponseError);
-            this.previewError = (errorMessage as ValidationError).nonFieldErrors;
-        }
     }
 
     getSuccessMessage(): string {
@@ -199,7 +203,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderEditForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -213,11 +217,13 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg("Unique name of this field, used for selecting fields in prompt stages.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Field Key")} ?required=${true} name="fieldKey">
+            <ak-form-element-horizontal label=${msg("Field Key")} required name="fieldKey">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
-                    class="pf-c-form-control"
+                    class="pf-c-form-control pf-m-monospace"
+                    autocomplete="off"
+                    spellcheck="false"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;
@@ -232,7 +238,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Label")} ?required=${true} name="label">
+            <ak-form-element-horizontal label=${msg("Label")} required name="label">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.label)}"
@@ -246,7 +252,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     ${msg("Label shown next to/above the prompt.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
@@ -261,7 +267,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.required, false)}
+                        ?checked=${this.instance?.required ?? false}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
@@ -279,7 +285,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.placeholderExpression, false)}
+                        ?checked=${this.instance?.placeholderExpression ?? false}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
@@ -322,7 +328,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.initialValueExpression, false)}
+                        ?checked=${this.instance?.initialValueExpression ?? false}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -365,10 +371,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} required name="order">
                 <input
                     type="number"
-                    value="${first(this.instance?.order, 0)}"
+                    value="${this.instance?.order ?? 0}"
                     class="pf-c-form-control"
                     required
                 />

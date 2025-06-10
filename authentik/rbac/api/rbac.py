@@ -2,7 +2,7 @@
 
 from django.apps import apps
 from django.contrib.auth.models import Permission
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -18,7 +18,6 @@ from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.core.models import User
 from authentik.lib.validators import RequiredTogetherValidator
@@ -100,19 +99,20 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     filterset_class = PermissionFilter
     permission_classes = [IsAuthenticated]
     search_fields = [
+        "name",
         "codename",
         "content_type__model",
         "content_type__app_label",
     ]
 
     def get_queryset(self) -> QuerySet:
-        query = Q()
-        for model in excluded_models():
-            query |= Q(
-                content_type__app_label=model._meta.app_label,
-                content_type__model=model._meta.model_name,
+        return (
+            Permission.objects.all()
+            .select_related("content_type")
+            .filter(
+                content_type__app_label__startswith="authentik",
             )
-        return Permission.objects.all().select_related("content_type").exclude(query)
+        )
 
 
 class PermissionAssignSerializer(PassiveSerializer):
