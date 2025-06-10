@@ -96,7 +96,7 @@ export class EventMap extends AKElement {
                                           .base}static/dist/assets/images/map_pin.svg"
                                       lon=${geo.long!}
                                       lat=${geo.lat!}
-                                      anchor-y=${1}
+                                      anchor-y="1"
                                       id=${event.pk}
                                   ></ak-map-element>`;
                               })
