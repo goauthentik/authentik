@@ -40643,10 +40643,9 @@ paths:
         schema:
           type: string
       - in: query
-        name: exclude_scheduled
+        name: aggregated_status
         schema:
-          type: boolean
-          default: false
+          type: string
       - name: ordering
         required: false
         in: query
@@ -59850,6 +59849,12 @@ components:
           type: string
           format: date-time
           description: Task last modified time
+        rel_obj_content_type:
+          type: integer
+          nullable: true
+        rel_obj_id:
+          type: string
+          nullable: true
         uid:
           type: string
           readOnly: true
@@ -59857,8 +59862,11 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LogEvent'
+        aggregated_status:
+          type: string
       required:
       - actor_name
+      - aggregated_status
       - messages
       - uid
     Tenant:

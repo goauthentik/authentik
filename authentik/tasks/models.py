@@ -64,6 +64,9 @@ class Task(SerializerModel):
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
         default_permissions = ("view",)
+        permissions = [
+            ("retrigger_task", _("Restart failed task")),
+        ]
         indexes = (
             models.Index(fields=("state", "mtime")),
             models.Index(fields=("rel_obj_content_type", "rel_obj_id")),
