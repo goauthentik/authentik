@@ -89,17 +89,15 @@ class Task(SerializerModel):
             pgtrigger.Trigger(
                 name="update_aggregated_status",
                 operation=pgtrigger.Insert | pgtrigger.Update,
-                when=pgtrigger.After,
-                timing=pgtrigger.Immediate,
-                declare=[("aggregated_status", "TEXT"), ("max_log_level", "TEXT")],
+                when=pgtrigger.Before,
                 func=f"""
                     NEW.aggregated_status := CASE
-                        WHEN NEW.status != '{TaskState.DONE.value}' THEN NEW.status
+                        WHEN NEW.state != '{TaskState.DONE.value}' THEN NEW.state
                         ELSE COALESCE((
                             SELECT CASE
-                                WHEN bool_or(msg->'log_level' = 'error') THEN 'error'
-                                WHEN bool_or(msg->'log_level' = 'warning') THEN 'warning'
-                                WHEN bool_or(msg->'log_level' = 'info') THEN 'info'
+                                WHEN bool_or(msg->>'log_level' = 'error') THEN 'error'
+                                WHEN bool_or(msg->>'log_level' = 'warning') THEN 'warning'
+                                WHEN bool_or(msg->>'log_level' = 'info') THEN 'info'
                                 ELSE '{TaskState.DONE.value}'
                             END
                             FROM jsonb_array_elements(NEW._messages) AS msg
