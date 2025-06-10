@@ -33,14 +33,14 @@ In order to use GitHub Enterprise Server, SCIM must also be set up.
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>github.company</em>/saml/consume</kbd>.
-    - Set the **Audience** and **Issuer** to <kbd>https://<em>github.company</em></kbd>.
+    - Set the **ACS URL** to `https://github.company/saml/consume`.
+    - Set the **Audience** and **Issuer** to `https://github.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -55,7 +55,7 @@ After creating the groups, select a group, navigate to the **Users** tab, and ma
 
 ## SAML Configuration
 
-If you are planning to use SCIM, (available from GHES 3.14.0) you should create a first admin user on your instance and go to your personal access tokens at `https://github.company/settings/tokens/new`, click _Generate new token_ and click _Generate new token (classic)_. Your token should have a descriptive name and ideally, no expiration date. For permission scopes, you need to select _admin:enterprise_. Click _Generate token_ and store the resulting token in a safe location.
+If you are planning to use SCIM, (available from GHES 3.14.0) you should create a first administrator user on your instance and go to your personal access tokens at `https://github.company/settings/tokens/new`, click _Generate new token_ and click _Generate new token (classic)_. Your token should have a descriptive name and ideally, no expiration date. For permission scopes, you need to select _admin:enterprise_. Click _Generate token_ and store the resulting token in a safe location.
 
 To enable SAML, navigate to your appliance maintenance settings. These are found at `https://github.company:8443`. Here, sign in with an administrator user and go to the Authentication section.
 
@@ -66,7 +66,7 @@ On this page:
 - For _Issuer_, use the _Audience_ you set in authentik.
 - Verify that the _Signature method_ and _Digest method_ match your SAML provider settings in authentik.
 - For _Validation certificate_, upload the signing certificate you downloaded after creating the provider.
-- If you plan to enable SCIM, select _Allow creation of accounts with built-in authentication_ and _Disable administrator demotion/promotion_ options. These are selected so you can use your admin user as an emergency non-SSO account, as well as create machine users, and to ensure users are not promoted outside your IdP.
+- If you plan to enable SCIM, select _Allow creation of accounts with built-in authentication_ and _Disable administrator demotion/promotion_ options. These are selected so you can use your administrator user as an emergency non-SSO account, as well as create machine users, and to ensure users are not promoted outside your IdP.
 - In the _User attributes_ section, enter `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` in the _Username_ field to ensure the emails become normalized into usernames in GitHub.
 - Press Save settings on the left-hand side and wait for the changes to apply.
 
@@ -78,7 +78,7 @@ Once the appliance has saved the settings and reloaded the services, you should 
 
 This section only applies if you have taken the steps prior to prepare the instance for SCIM enablement.
 
-After enabling SAML, log into your initial admin account again. Click the user portrait in tee top right, click _Enterprise settings_, click _Settigs_ in the left-hand sidebar, click _Authentication security_. On this page you have to check _Enable SCIM configuration_ and press _Save_. After which you should get a message reading _SCIM Enabled_.
+After enabling SAML, log into your initial administrator account again. Click the user portrait in tee top right, click _Enterprise settings_, click _Settigs_ in the left-hand sidebar, click _Authentication security_. On this page you have to check _Enable SCIM configuration_ and press _Save_. After which you should get a message reading _SCIM Enabled_.
 
 Before we create a SCIM provider, we have to create a new Property Mapping. In authentik, go to _Customization_, then _Property Mappings_. Here, click _Create_, select _SCIM Provider Mapping_. Name the mapping something memorable and paste the following code in the _Expression_ field:
 

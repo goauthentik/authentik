@@ -38,7 +38,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -54,7 +54,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 ### Download the signing certificate
 
-1. Log into authentik as an admin, and open the authentik Admin interface.
+1. Log into authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click on the name of the newly created Atlassian Cloud provider.
 3. Under **Download signing certificate** click the **Download** button. The contents of this certificate will be required in the next section.
 
@@ -77,18 +77,18 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 ## Reconfigure authentik provider
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Atlassian Cloud provider.
-3. Under **Protocol settgins**, set the following required configurations:
-    - **ACS URL**: set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
-    - **Audience**: set the audience to the copied **Service provider entity URL** (e.g. https://auth.atlassian.com/saml/example).
+3. Under **Protocol settings**, set the following required configurations:
+    - **ACS URL**: set to the **Service provider assertion consumer service URL** from Atlassian Cloud (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
+    - **Audience**: set to the **Service provider entity URL** from Atlassian Cloud (e.g. https://auth.atlassian.com/saml/example).
 4. Click **Update**
 
 ## Enabling SSO in Atlassian Cloud
 
 ### Internal users
 
-1. Log into the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization admin.
+1. Log in to the [Atlassian administrator portal](https://admin.atlassian.com) as an Atlassian Cloud organization admin.
 2. Navigate to **Security** > **Authentication policies**.
 3. Click **Add policy** at the top right.
 4. Select the `authentik` directory and provide a name for the policy.

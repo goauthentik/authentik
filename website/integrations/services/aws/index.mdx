@@ -30,7 +30,7 @@ import Tabs from "@theme/Tabs";
 ### Prerequisites
 
 - An AWS account with permissions to create IAM roles and identity providers
-- An authentik instance with admin access
+- An authentik instance with administrator access
 
 ### authentik configuration
 
@@ -38,13 +38,13 @@ To support the integration of AWS with authentik using the classic IAM method, y
 
 #### Create property mappings
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
 
     - **Role Mapping:**
 
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>https://aws.amazon.com/SAML/Attributes/Role</kbd>
+        - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/Role`
         - **Friendly Name**: Leave blank
         - **Expression**: Choose one of these options:
 
@@ -73,20 +73,20 @@ To support the integration of AWS with authentik using the classic IAM method, y
 
     - **Session Name Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>https://aws.amazon.com/SAML/Attributes/RoleSessionName</kbd>
+        - **SAML Attribute Name**: `https://aws.amazon.com/SAML/Attributes/RoleSessionName`
         - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return user.username</kbd>
+        - **Expression**: `return user.username`
 
 #### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name (e.g. "AWS"), an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `aws-slug` placeholder defined earlier.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), and configure the following required settings:
-    - Set the **ACS URL** to <kbd>https://signin.aws.amazon.com/saml</kbd>
-    - Set the **Audience** to <kbd>urn:amazon:webservices</kbd>
+    - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
+    - Set the **Audience** to `urn:amazon:webservices`
     - Under **Advanced protocol settings**, add both property mappings you created in the previous section
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -111,7 +111,7 @@ To support the integration of AWS with authentik using the classic IAM method, y
 ### Prerequisites
 
 - An AWS account with IAM Identity Center enabled
-- An authentik instance with admin access
+- An authentik instance with administrator access
 - A certificate for signing SAML assertions (you can use authentik's default or provide your own)
 
 ### authentik configuration
@@ -120,7 +120,7 @@ To support the integration of AWS with authentik using IAM Identity Center, you 
 
 #### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name (e.g. "AWS Identity Center"), an optional group for the type of application, the policy engine mode, and optional UI settings. The **slug** will be used in URLs and should match the `aws-slug` placeholder defined earlier.
@@ -152,8 +152,8 @@ To support the integration of AWS with authentik using IAM Identity Center, you 
 ### Prerequisites
 
 - Completed either Classic IAM or IAM Identity Center setup
-- AWS Identity Center enabled with admin access
-- authentik instance with admin access
+- AWS Identity Center enabled with administrator access
+- authentik instance with administrator access
 
 ### authentik configuration
 
@@ -161,7 +161,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 
 #### Create property mappings
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create a **SCIM Mapping** with the following settings:
     - **Name**: Choose a name lexically lower than `authentik default` (e.g. `AWS SCIM User mapping`)
     - **Expression**:
@@ -175,7 +175,7 @@ To support the integration of AWS with authentik using SCIM, you need to create 
 
 #### Create a SCIM provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Providers** > **Providers** and click **Create**.
 3. Select **SCIM Provider** as the provider type.
 4. Configure the provider with the following settings:

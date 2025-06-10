@@ -3,6 +3,7 @@ package application
 type ProxyClaims struct {
 	UserAttributes  map[string]interface{} `json:"user_attributes"`
 	BackendOverride string                 `json:"backend_override"`
+	HostHeader      string                 `json:"host_header"`
 	IsSuperuser     bool                   `json:"is_superuser"`
 }
 

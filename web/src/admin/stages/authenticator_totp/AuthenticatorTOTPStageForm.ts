@@ -45,7 +45,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -69,14 +69,10 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Digits")}
-                        ?required=${true}
-                        name="digits"
-                    >
+                    <ak-form-element-horizontal label=${msg("Digits")} required name="digits">
                         <select name="users" class="pf-c-form-control">
                             <option
                                 value="${DigitsEnum._6}"
@@ -125,7 +121,7 @@ export class AuthenticatorTOTPStageForm extends BaseStageForm<AuthenticatorTOTPS
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
