@@ -1,7 +1,5 @@
 """authentik events models"""
 
-import time
-from collections import Counter
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
@@ -123,60 +121,6 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
-class EventQuerySet(QuerySet):
-    """Custom events query set with helper functions"""
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Get event count by hour in the last day, fill with zeros"""
-        _now = now()
-        max_since = timedelta(days=60)
-        # Allow maximum of 60 days to limit load
-        if time_since.total_seconds() > max_since.total_seconds():
-            time_since = max_since
-        date_from = _now - time_since
-        result = (
-            self.filter(created__gte=date_from)
-            .annotate(age=ExpressionWrapper(_now - F("created"), output_field=DurationField()))
-            .annotate(age_interval=extract("age"))
-            .values("age_interval")
-            .annotate(count=Count("pk"))
-            .order_by("age_interval")
-        )
-        data = Counter({int(d["age_interval"]): d["count"] for d in result})
-        results = []
-        interval_delta = time_since / data_points
-        for interval in range(1, -data_points, -1):
-            results.append(
-                {
-                    "x_cord": time.mktime((_now + (interval_delta * interval)).timetuple()) * 1000,
-                    "y_cord": data[interval * -1],
-                }
-            )
-        return results
-
-
-class EventManager(Manager):
-    """Custom helper methods for Events"""
-
-    def get_queryset(self) -> QuerySet:
-        """use custom queryset"""
-        return EventQuerySet(self.model, using=self._db)
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Wrap method from queryset"""
-        return self.get_queryset().get_events_per(time_since, extract, data_points)
-
-
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -191,8 +135,6 @@ class Event(SerializerModel, ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
-
-    objects = EventManager()
 
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
@@ -255,15 +197,21 @@ class Event(SerializerModel, ExpiringModel):
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
-                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
+                original_user = request.session.get(
+                    SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None
+                )
             self.user = get_user(request.user, original_user)
         if user:
             self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
-                self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
-                self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
+                self.user = get_user(
+                    request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
+                )
+                self.user["on_behalf_of"] = get_user(
+                    request.session[SESSION_KEY_IMPERSONATE_USER]
+                )
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
@@ -312,7 +260,8 @@ class Event(SerializerModel, ExpiringModel):
             models.Index(fields=["created"]),
             models.Index(fields=["client_ip"]),
             models.Index(
-                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+                models.F("context__authorized_application"),
+                name="authentik_e_ctx_app__idx",
             ),
         ]
 
@@ -396,8 +345,12 @@ class NotificationTransport(SerializerModel):
             "user_username": notification.user.username,
         }
         if notification.event and notification.event.user:
-            default_body["event_user_email"] = notification.event.user.get("email", None)
-            default_body["event_user_username"] = notification.event.user.get("username", None)
+            default_body["event_user_email"] = notification.event.user.get(
+                "email", None
+            )
+            default_body["event_user_username"] = notification.event.user.get(
+                "username", None
+            )
         headers = {}
         if self.webhook_mapping_body:
             default_body = sanitize_item(
@@ -508,7 +461,9 @@ class NotificationTransport(SerializerModel):
             "title": "",
         }
         if notification.event and notification.event.user:
-            context["key_value"]["event_user_email"] = notification.event.user.get("email", None)
+            context["key_value"]["event_user_email"] = notification.event.user.get(
+                "email", None
+            )
             context["key_value"]["event_user_username"] = notification.event.user.get(
                 "username", None
             )
@@ -542,7 +497,9 @@ class NotificationTransport(SerializerModel):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.events.api.notification_transports import NotificationTransportSerializer
+        from authentik.events.api.notification_transports import (
+            NotificationTransportSerializer,
+        )
 
         return NotificationTransportSerializer
 
@@ -607,7 +564,9 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     severity = models.TextField(
         choices=NotificationSeverity.choices,
         default=NotificationSeverity.NOTICE,
-        help_text=_("Controls which severity level the created notifications will have."),
+        help_text=_(
+            "Controls which severity level the created notifications will have."
+        ),
     )
     group = models.ForeignKey(
         Group,
@@ -643,7 +602,9 @@ class NotificationWebhookMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[type[Serializer]]:
-        from authentik.events.api.notification_mappings import NotificationWebhookMappingSerializer
+        from authentik.events.api.notification_mappings import (
+            NotificationWebhookMappingSerializer,
+        )
 
         return NotificationWebhookMappingSerializer
 

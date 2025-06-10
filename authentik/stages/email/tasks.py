@@ -35,7 +35,9 @@ def send_mails(
     # Use the class path instead of the class itself for serialization
     stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(send_mail.message(message.__dict__, stage_class_path, str(stage.pk)))
+        tasks.append(
+            send_mail.message(message.__dict__, stage_class_path, str(stage.pk))
+        )
     return group(tasks).run()
 
 
@@ -83,9 +85,11 @@ def send_mail(
     # Because we use the Message-ID as UID for the task, manually assign it
     message_object.extra_headers["Message-ID"] = message_id
 
-    # Add the logo (we can't add it in the previous message since MIMEImage
-    # can't be converted to json)
-    message_object.attach(logo_data())
+    # Add the logo if it is used in the email body (we can't add it in the
+    # previous message since MIMEImage can't be converted to json)
+    body = get_email_body(message_object)
+    if "cid:logo" in body:
+        message_object.attach(logo_data())
 
     if (
         message_object.to

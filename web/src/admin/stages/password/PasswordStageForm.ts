@@ -82,14 +82,10 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Backends")}
-                        ?required=${true}
-                        name="backends"
-                    >
+                    <ak-form-element-horizontal label=${msg("Backends")} required name="backends">
                         <ak-checkbox-group
                             class="user-field-select"
                             .options=${backends}
@@ -103,7 +99,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
-                        ?required=${true}
+                        required
                         name="configureFlow"
                     >
                         <ak-search-select
@@ -141,7 +137,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                                 }
                                 return selected;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -152,7 +148,7 @@ export class PasswordStageForm extends BaseStageForm<PasswordStage> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Failed attempts before cancel")}
-                        ?required=${true}
+                        required
                         name="failedAttemptsBeforeCancel"
                     >
                         <input

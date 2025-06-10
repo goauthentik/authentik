@@ -86,6 +86,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
+            externalUrlRegex: ":\\/\\/goauthentik\\.io",
         },
     },
     presets: [

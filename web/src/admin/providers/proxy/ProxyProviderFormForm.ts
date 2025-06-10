@@ -48,7 +48,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             help=${msg(
                 "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
             )}
-            inputHint="code"
+            input-hint="code"
         >
         </ak-text-input>
 
@@ -57,7 +57,7 @@ function renderHttpBasic(provider: Partial<ProxyProvider>) {
             label=${msg("HTTP-Basic Password Key")}
             value="${ifDefined(provider?.basicAuthPasswordAttribute)}"
             help=${msg("User/Group Attribute used for the password part of the HTTP-Basic Header.")}
-            inputHint="code"
+            input-hint="code"
         >
         </ak-text-input>`;
 }
@@ -90,7 +90,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            inputHint="code"
+            input-hint="code"
         ></ak-text-input>
         <ak-text-input
             name="internalHost"
@@ -99,7 +99,7 @@ function renderProxySettings(provider: Partial<ProxyProvider>, errors?: Validati
             required
             .errorMessages=${errors?.internalHost ?? []}
             help=${msg("Upstream host that the requests are forwarded to.")}
-            inputHint="code"
+            input-hint="code"
         ></ak-text-input>
 
         <ak-switch-input
@@ -126,7 +126,7 @@ function renderForwardSingleSettings(provider: Partial<ProxyProvider>, errors?: 
             help=${msg(
                 "The external URL you'll access the application at. Include any non-standard port.",
             )}
-            inputHint="code"
+            input-hint="code"
         ></ak-text-input>`;
 }
 
@@ -225,7 +225,7 @@ export function renderForm(
             .errorMessages=${errors?.accessTokenValidity ?? []}
             required
             .help=${msg("Configure how long tokens are valid for.")}
-            inputHint="code"
+            input-hint="code"
         ></ak-text-input>
 
         <ak-form-group>

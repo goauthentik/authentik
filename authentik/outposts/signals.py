@@ -1,17 +1,24 @@
 """authentik outpost signals"""
 
+from django.contrib.auth.signals import user_logged_out
 from django.core.cache import cache
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete, pre_save
 from django.dispatch import receiver
+from django.http import HttpRequest
 from structlog.stdlib import get_logger
 
 from authentik.brands.models import Brand
-from authentik.core.models import Provider
+from authentik.core.models import AuthenticatedSession, Provider, User
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.utils.reflection import class_to_path
 from authentik.outposts.models import Outpost, OutpostServiceConnection
-from authentik.outposts.tasks import CACHE_KEY_OUTPOST_DOWN, outpost_controller, outpost_post_save
+from authentik.outposts.tasks import (
+    CACHE_KEY_OUTPOST_DOWN,
+    outpost_controller,
+    outpost_post_save,
+    outpost_session_end,
+)
 
 LOGGER = get_logger()
 UPDATE_TRIGGERING_MODELS = (
@@ -35,7 +42,9 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     # Name changes the deployment name, need to recreate
     dirty += old_instance.name != instance.name
     # namespace requires re-create
-    dirty += old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
+    dirty += (
+        old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
+    )
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
@@ -85,3 +94,19 @@ def pre_delete_cleanup(sender, instance: Outpost, **_):
     instance.user.delete()
     cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, instance)
     outpost_controller.send(instance.pk.hex, action="down", from_cache=True)
+
+
+@receiver(user_logged_out)
+def logout_revoke_direct(sender: type[User], request: HttpRequest, **_):
+    """Catch logout by direct logout and forward to providers"""
+    if not request.session or not request.session.session_key:
+        return
+    outpost_session_end.send(request.session.session_key)
+
+
+@receiver(pre_delete, sender=AuthenticatedSession)
+def logout_revoke(
+    sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_
+):
+    """Catch logout by expiring sessions being deleted"""
+    outpost_session_end.send(instance.session.session_key)
