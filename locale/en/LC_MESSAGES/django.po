@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-20 00:10+0000\n"
+"POT-Creation-Date: 2025-06-04 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -961,13 +961,16 @@ msgid "Starting full provider sync"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
-#, python-brace-format
-msgid "Syncing page {page} of users"
+msgid "Syncing users"
+msgstr ""
+
+#: authentik/lib/sync/outgoing/tasks.py
+msgid "Syncing groups"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
+msgid "Syncing page {page} of {object_type}"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -2224,6 +2227,10 @@ msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
 msgstr ""
 
@@ -2253,6 +2260,12 @@ msgid ""
 msgstr ""
 
 #: authentik/sources/ldap/models.py
+msgid ""
+"Delete authentik users and groups which were previously supplied by this "
+"source, but are now missing from it."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr ""
 
@@ -2266,6 +2279,11 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid ""
+"Unique ID used while checking if this object still exists in the directory."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -2639,6 +2657,11 @@ msgstr ""
 msgid "Group SAML Source Connections"
 msgstr ""
 
+#: authentik/sources/saml/views.py
+#, python-brace-format
+msgid "Continue to {source_name}"
+msgstr ""
+
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr ""
@@ -2994,6 +3017,10 @@ msgstr ""
 msgid "User Consents"
 msgstr ""
 
+#: authentik/stages/consent/stage.py
+msgid "Invalid consent token, re-showing prompt"
+msgstr ""
+
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr ""
@@ -3008,6 +3035,14 @@ msgstr ""
 
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
+msgstr ""
+
+#: authentik/stages/email/flow.py
+msgid "Continue to confirm this email address."
+msgstr ""
+
+#: authentik/stages/email/flow.py
+msgid "Link was already used, please request a new link."
 msgstr ""
 
 #: authentik/stages/email/models.py
@@ -3460,10 +3495,6 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
-msgstr ""
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

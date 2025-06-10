@@ -6,6 +6,7 @@ import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/users/UserForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums.js";
@@ -22,7 +23,11 @@ import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { PoliciesApi, PolicyBinding } from "@goauthentik/api";
+import {
+    PoliciesApi,
+    PolicyBinding,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-bound-policies-list")
 export class BoundPoliciesList extends Table<PolicyBinding> {
@@ -178,7 +183,12 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
-                </ak-forms-modal>`,
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikPoliciesPolicybinding}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 
@@ -189,7 +199,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <div slot="primary">
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
@@ -215,7 +225,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
-                      ?showBindingPage=${true}
+                      showBindingPage
                       bindingTarget=${ifDefined(this.target)}
                   ></ak-policy-wizard>`
                 : nothing}

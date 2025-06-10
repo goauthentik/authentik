@@ -1,26 +1,7 @@
 # syntax=docker/dockerfile:1
 
-# Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS website-builder
-
-ENV NODE_ENV=production
-
-WORKDIR /work/website
-
-RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
-    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
-    --mount=type=cache,id=npm-website,sharing=shared,target=/root/.npm \
-    npm ci --include=dev
-
-COPY ./website /work/website/
-COPY ./blueprints /work/blueprints/
-COPY ./schema.yml /work/
-COPY ./SECURITY.md /work/
-
-RUN npm run build-bundled
-
-# Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/library/node:24 AS web-builder
+# Stage 1: Build webui
+FROM --platform=${BUILDPLATFORM} docker.io/library/node:24-slim AS node-builder
 
 ARG GIT_BUILD_HASH
 ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
@@ -32,7 +13,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
     --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
     --mount=type=bind,target=/work/web/packages/sfe/package.json,src=./web/packages/sfe/package.json \
     --mount=type=bind,target=/work/web/scripts,src=./web/scripts \
-    --mount=type=cache,id=npm-web,sharing=shared,target=/root/.npm \
+    --mount=type=cache,id=npm-ak,sharing=shared,target=/root/.npm \
     npm ci --include=dev
 
 COPY ./package.json /work
@@ -43,7 +24,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build && \
     npm run build:sfe
 
-# Stage 3: Build go proxy
+# Stage 2: Build go proxy
 FROM --platform=${BUILDPLATFORM} docker.io/library/golang:1.24-bookworm AS go-builder
 
 ARG TARGETOS
@@ -68,8 +49,8 @@ RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
 COPY ./cmd /go/src/goauthentik.io/cmd
 COPY ./authentik/lib /go/src/goauthentik.io/authentik/lib
 COPY ./web/static.go /go/src/goauthentik.io/web/static.go
-COPY --from=web-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
-COPY --from=web-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
+COPY --from=node-builder /work/web/robots.txt /go/src/goauthentik.io/web/robots.txt
+COPY --from=node-builder /work/web/security.txt /go/src/goauthentik.io/web/security.txt
 COPY ./internal /go/src/goauthentik.io/internal
 COPY ./go.mod /go/src/goauthentik.io/go.mod
 COPY ./go.sum /go/src/goauthentik.io/go.sum
@@ -80,7 +61,7 @@ RUN --mount=type=cache,sharing=locked,target=/go/pkg/mod \
     CGO_ENABLED=1 GOFIPS140=latest GOARM="${TARGETVARIANT#v}" \
     go build -o /go/authentik ./cmd/server
 
-# Stage 4: MaxMind GeoIP
+# Stage 3: MaxMind GeoIP
 FROM --platform=${BUILDPLATFORM} ghcr.io/maxmind/geoipupdate:v7.1.0 AS geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City GeoLite2-ASN"
@@ -93,10 +74,10 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "GEOIPUPDATE_LICENSE_KEY_FILE=/run/secrets/GEOIPUPDATE_LICENSE_KEY /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
-# Stage 5: Download uv
-FROM ghcr.io/astral-sh/uv:0.7.6 AS uv
-# Stage 6: Base python image
-FROM ghcr.io/goauthentik/fips-python:3.13.3-slim-bookworm-fips AS python-base
+# Stage 4: Download uv
+FROM ghcr.io/astral-sh/uv:0.7.12 AS uv
+# Stage 5: Base python image
+FROM ghcr.io/goauthentik/fips-python:3.13.4-slim-bookworm-fips AS python-base
 
 ENV VENV_PATH="/ak-root/.venv" \
     PATH="/lifecycle:/ak-root/.venv/bin:$PATH" \
@@ -109,7 +90,7 @@ WORKDIR /ak-root/
 
 COPY --from=uv /uv /uvx /bin/
 
-# Stage 7: Python dependencies
+# Stage 6: Python dependencies
 FROM python-base AS python-deps
 
 ARG TARGETARCH
@@ -144,7 +125,7 @@ RUN --mount=type=bind,target=pyproject.toml,src=pyproject.toml \
     --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
-# Stage 8: Run
+# Stage 7: Run
 FROM python-base AS final-image
 
 ARG VERSION
@@ -187,9 +168,8 @@ COPY ./lifecycle/ /lifecycle
 COPY ./authentik/sources/kerberos/krb5.conf /etc/krb5.conf
 COPY --from=go-builder /go/authentik /bin/authentik
 COPY --from=python-deps /ak-root/.venv /ak-root/.venv
-COPY --from=web-builder /work/web/dist/ /web/dist/
-COPY --from=web-builder /work/web/authentik/ /web/authentik/
-COPY --from=website-builder /work/website/build/ /website/help/
+COPY --from=node-builder /work/web/dist/ /web/dist/
+COPY --from=node-builder /work/web/authentik/ /web/authentik/
 COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000

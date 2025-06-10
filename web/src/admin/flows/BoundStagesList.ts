@@ -1,5 +1,6 @@
 import "@goauthentik/admin/flows/StageBindingForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import "@goauthentik/admin/stages/StageWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/Tabs";
@@ -14,7 +15,11 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowStageBinding, FlowsApi } from "@goauthentik/api";
+import {
+    FlowStageBinding,
+    FlowsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-bound-stages-list")
 export class BoundStagesList extends Table<FlowStageBinding> {
@@ -99,7 +104,12 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
-                </ak-forms-modal>`,
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.AuthentikFlowsFlowstagebinding}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>`,
         ];
     }
 
@@ -127,7 +137,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <div slot="primary">
                     <ak-stage-wizard
                         createText=${msg("Create and bind Stage")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-stage-wizard>
                     <ak-forms-modal>
@@ -148,7 +158,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
         return html`
             <ak-stage-wizard
                 createText=${msg("Create and bind Stage")}
-                ?showBindingPage=${true}
+                showBindingPage
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>

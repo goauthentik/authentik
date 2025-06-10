@@ -33,14 +33,14 @@ In order to use GitHub Enterprise Server, SCIM must also be set up.
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>github.company</em>/saml/consume</kbd>.
-    - Set the **Audience** and **Issuer** to <kbd>https://<em>github.company</em></kbd>.
+    - Set the **ACS URL** to `https://github.company/saml/consume`.
+    - Set the **Audience** and **Issuer** to `https://github.company`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate. It is advised to download this certificate as it will be required later. It can be found under **System** > **Certificates** in the Admin Interface.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

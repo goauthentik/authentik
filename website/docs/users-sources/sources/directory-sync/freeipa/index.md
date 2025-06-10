@@ -13,7 +13,7 @@ The following placeholders are used in this guide:
 
 ## FreeIPA Setup
 
-1. Log into FreeIPA.
+1. Log in to FreeIPA.
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
