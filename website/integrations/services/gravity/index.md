@@ -22,7 +22,7 @@ This documentation lists only the settings that you need to change from their de
 :::
 
 :::note
-Gravity automatically triggers SSO authentication when configured. To prevent this behavior, log in using the following URL: <kbd>https://<em>gravity.company</em>/ui/?local</kbd>.
+Gravity automatically triggers SSO authentication when configured. To prevent this behavior, log in using the following URL: `https://gravity.company/ui/?local`.
 :::
 
 ## authentik configuration
@@ -38,7 +38,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID**, **Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>gravity.company</em>/auth/oidc/callback</kbd>.
+    - Set a `Strict` redirect URI to `https://gravity.company/auth/oidc/callback`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -49,10 +49,10 @@ To support the integration of Gravity with authentik, you need to create an appl
 1. From the **Gravity administrative interface**, navigate to **Cluster** > **Roles** and click **API**.
 2. Under the **OIDC** sub-section, configure the following values:
 
-- **Issuer**: <kbd>https://<em>authentik.company</em>/application/o/<em>application-slug</em>/</kbd>
+- **Issuer**: `https://authentik.company/application/o/application-slug/`
 - **Client ID**: Your Client ID from authentik
 - **Client Secret**: Your Client Secret from authentik
-- **Redirect URL**: <kbd>https://<em>gravity.company</em>/auth/oidc/callback</kbd>
+- **Redirect URL**: `https://gravity.company/auth/oidc/callback`
 
 3. Click **Update** to save and apply your configuration.
 

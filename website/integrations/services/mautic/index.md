@@ -69,15 +69,15 @@ Because Mautic requires a first name and last name attribute, create two [SAML p
     - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
     - **Choose a Provider**: select **SAML Provider** as the provider type.
     - **Configure the Provider**:
-        - Set the **Name** to <kbd><em>mautic-provider</em></kbd>
-        - Set the **ACS URL** to <kbd>https://<em>mautic.company</em>/s/saml/login_check</kbd>
-        - Set the **Issuer** to <kbd><em>mautic.company</em></kbd>
+        - Set the **Name** to `mautic-provider`
+        - Set the **ACS URL** to `https://mautic.company/s/saml/login_check`
+        - Set the **Issuer** to `mautic.company`
         - Set the **Service Provider Binding** to `Post`
         - Under **Advanced protocol settings** set the **Signing Certificate** to `authentik Self-signed Certificate` and check **Sign assertions** and **Sign responses**
         - Under **Advanced protocol settings** add the newly created property mappings `SAML-FirstName-from-Name` and `SAML-LastName-from-Name` under **Property Mappings**. **Property Mappings**.
 3. Click **Submit** to save the new application and provider.
-4. Go to **Applications** > **Providers** and click on <kbd><em>mautic-provider</em></kbd>.
-    - Under **Metadata** click on **Download** to save the file as <kbd><em>mautic-provider</em>\_authentik_meta.xml</kbd>.
+4. Go to **Applications** > **Providers** and click on `mautic-provider`.
+    - Under **Metadata** click on **Download** to save the file as `mautic-provider\_authentik_meta.xml`.
 
 ## Mautic configuration
 
@@ -92,8 +92,8 @@ When running behind an SSL-terminating reverse proxy (e.g. traefik): In **Config
 
 In **Configuration > User/Authentication Settings**, set the following values:
 
-- **Entity ID for the IDP**: <kbd>https://<em>mautic.company</em></kbd>
-- **Identity provider metadata file**: The <kbd><em>mautic-provider</em>\_authentik_meta.xml</kbd> file
+- **Entity ID for the IDP**: `https://mautic.company`
+- **Identity provider metadata file**: The `mautic-provider\_authentik_meta.xml` file
 - **Default role for created users**: Choose one to enable creating users.
 - **Email**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` (as per provider > preview in authentik)
 - **Username**: `http://schemas.goauthentik.io/2021/02/saml/username` (as per provider > preview in authentik)
@@ -145,16 +145,16 @@ Therefore, follow these steps (where the placeholder `Mautic Self-signed Certifi
 To avoid changing certificates in authentik, go to the authentik Admin interface and generate a new one:
 
 1. Go to **System > Certificates** and click on **Generate**. Use the following values:
-    - **Common Name**: <kbd><em>Mautic Self-signed Certificate</em></kbd>
+    - **Common Name**: `Mautic Self-signed Certificate`
     - **Private key Algorithm**: `RSA`
-2. Click the caret (**>**) next to the newly generated certificate, then select **Download certificate** to get the <kbd><em>Mautic Self-signed Certificate</em>\_certificate.pem</kbd> file and **Download Private key** to get the <kbd><em>Mautic Self-signed Certificate</em>\_private_key.pem</kbd> file.
-3. Make sure that the <kbd><em>Mautic Self-signed Certificate</em>\_private_key.pem</kbd> is in PKCS#1 format.
-   To verify, use `grep` to check for `RSA` in the header and footer of the file:
-    ```sh
-    grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
-    ```
-    If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----BEGIN RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
-4. If the key is not in PKCS#1 format, add RSA after `BEGIN` and `END` in <kbd><em>Mautic Self-signed Certificate</em>\_private_key.pem</kbd> as shown below and save the file as `private_key_new.pem`:
+2. Click the caret (**>**) next to the newly generated certificate, then select **Download certificate** to get the `Mautic Self-signed Certificate\_certificate.pem` file and **Download Private key** to get the `Mautic Self-signed Certificate\_private_key.pem` file.
+3. Make sure that the `Mautic Self-signed Certificate\_private_key.pem` is in PKCS#1 format.
+   To verify, use `grep`to check for`RSA` in the header and footer of the file:
+   `sh
+grep "RSA PRIVATE KEY" "Mautic Self-signed Certificate_private_key.pem"
+`
+   If the command returns the correct match (e.g., `-----BEGIN RSA PRIVATE KEY-----` and `-----BEGIN RSA PRIVATE KEY-----`), the key is in PKCS#1 format, and you can skip steps 4 to 6.
+4. If the key is not in PKCS#1 format, add RSA after `BEGIN` and `END` in `Mautic Self-signed Certificate\_private_key.pem` as shown below and save the file as `private_key_new.pem`:
     ```diff
     - -----BEGIN PRIVATE KEY-----
     + -----BEGIN RSA PRIVATE KEY-----
@@ -175,7 +175,7 @@ To avoid changing certificates in authentik, go to the authentik Admin interface
 
     - **Organization Name**: `authentik`
     - **Organizational Unit Name**: `Self-signed`
-    - **Common Name**: <kbd><em>Mautic Self-signed Certificate</em></kbd>
+    - **Common Name**: `Mautic Self-signed Certificate`
 
 6. Next, generate the certificate with the (now) PKCS#1-compliant key and the previously generated signing request using the following command:
 
@@ -185,16 +185,16 @@ To avoid changing certificates in authentik, go to the authentik Admin interface
 
 7. In authentik, navigate to **System > Certificates** and click on **Edit** the update previously generated certificate.
    Click on the description below the text inputs to activate the inputs.
-    - **Certificate**: Enter the contents of `certificate_new.pem` or, if steps 4 to 6 were skipped, <kbd><em>Mautic Self-signed Certificate</em>\_certificate.pem</kbd>
-    - **Private Key**: Enter the contents of `private_key_new.pem` or, if steps 4 to 6 were skipped, <kbd><em>Mautic Self-signed Certificate</em>\_private_key.pem</kbd>
+    - **Certificate**: Enter the contents of `certificate_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_certificate.pem`
+    - **Private Key**: Enter the contents of `private_key_new.pem` or, if steps 4 to 6 were skipped, `Mautic Self-signed Certificate\_private_key.pem`
     - Click on **Update**
-8. Navigate to **Applications > Providers** and **Edit** <kbd><em>mautic-provider</em></kbd> (which was created in [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik)).
-   In **Advanced protocol settings**, change **Signing Certificate** to <kbd><em>Mautic Self-signed Certificate</em></kbd>
-9. Save the provider, view it, and download the metadata file to <kbd><em>mautic-provider</em>\_authentik_meta.xml</kbd>
+8. Navigate to **Applications > Providers** and **Edit** `mautic-provider` (which was created in [Create an application and provider in authentik](#create-an-application-and-provider-in-authentik)).
+   In **Advanced protocol settings**, change **Signing Certificate** to `Mautic Self-signed Certificate`
+9. Save the provider, view it, and download the metadata file to `mautic-provider\_authentik_meta.xml`
 10. In Mautic, navigate to **Configuration > User/Authentication Settings** and set the following values:
 
 - **X.509 certificate**: The `certificate_new.crt` file
 - **Private key**: The `private_key_new.pem` file
-- **Identity provider metadata file**: The new <kbd><em>mautic-provider</em>\_authentik_meta.xml</kbd> file
+- **Identity provider metadata file**: The new `mautic-provider\_authentik_meta.xml` file
 
 11. Click on **Save**.
