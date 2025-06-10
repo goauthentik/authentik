@@ -411,17 +411,29 @@ const items = [
                     {
                         type: "category",
                         label: "Flow",
-                        items: ["customize/interfaces/flow/customization"],
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/flow/customization",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
                         label: "User",
-                        items: ["customize/interfaces/user/customization"],
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/user/customization",
+                        },
+                        items: [],
                     },
                     {
                         type: "category",
                         label: "Admin",
-                        items: ["customize/interfaces/admin/customization"],
+                        link: {
+                            type: "doc",
+                            id: "customize/interfaces/admin/customization",
+                        },
+                        items: [],
                     },
                 ],
             },
