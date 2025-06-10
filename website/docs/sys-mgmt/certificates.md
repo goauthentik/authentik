@@ -104,7 +104,7 @@ Since authentik 2021.12.4, you can configure the certificate used by authentik's
 
 ### Let's Encrypt integration
 
-To use Let's Encrypt certificates with Certbot, in Docker Compose deployments, create or edit `docker-compose.override.yml` in the same folder as your authentik docker-compose file. The example below uses the AWS Route 53 DNS plugin:
+To use Let's Encrypt certificates with Certbot in Docker Compose deployments, create or edit the `docker-compose.override.yml` file in the same directory as your authentik Docker Compose file. The example below demonstrates the use of the AWS Route 53 DNS plugin:
 
 ```yaml
 services:
