@@ -2,7 +2,6 @@
 title: Certificates
 ---
 
-# Overview
 
 Certificates in authentik are used for:
 
