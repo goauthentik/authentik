@@ -5,6 +5,7 @@ from typing import Any
 from django.db.models import F, Q
 from django.db.models import Value as V
 from django.http.request import HttpRequest
+from django.utils.safestring import mark_safe
 
 from authentik import get_full_version
 from authentik.brands.models import Brand
@@ -32,8 +33,10 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
     """Context Processor that injects brand object into every template"""
     brand = getattr(request, "brand", DEFAULT_BRAND)
     tenant = getattr(request, "tenant", Tenant())
+    brand_css = mark_safe(brand.branding_custom_css)
     return {
         "brand": brand,
+        "brand_css": brand_css,
         "footer_links": tenant.footer_links,
         "html_meta": {**get_http_meta()},
         "version": get_full_version(),
