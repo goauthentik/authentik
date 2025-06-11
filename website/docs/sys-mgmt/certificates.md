@@ -42,7 +42,7 @@ authentik can automatically discover and import certificates from a designated d
 - **Docker Compose**: A `certs` directory is mapped to `/certs` within the container
 - **Kubernetes**: You can map custom secrets/volumes under `/certs`
 
-authentik checks for new or changed files every 5 minutes and automatically triggers an outpost refresh when changes are detected.
+authentik checks for new or changed files every hour and automatically triggers an outpost refresh when changes are detected.
 
 ### Manual imports
 
