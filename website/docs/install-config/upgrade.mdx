@@ -10,13 +10,13 @@ Upgrading to the latest version of authentik, whether a new major release or a p
 authentik does not support downgrading. Make sure to back up your database in case you need to revert an upgrade.
 :::
 
-- Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
+- **Preview the Release Notes**: Be sure to carefully read the [Release Notes](../releases/) for the specific version to which you plan to upgrade. The release might have special requirements or actions or contain breaking changes.
 
-- Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
+- **Database backup**: Make a backup of your PostgreSQL database before upgrading. You can dump your existing database to get a backup file. For more information about dumping and backing up your database, refer to [Upgrade PostgreSQL on Docker Compose](../troubleshooting/postgres/upgrade_docker.md) or [Upgrade PostgreSQL on Kubernetes](../troubleshooting/postgres/upgrade_kubernetes.md).
 
-- You need to upgrade in sequence of the major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you should first upgrade to the latest 2024.2.x release, then to the latest 2024.4.x release, and finally to the latest 2024.6.x release, in sequence. Always use the latest available patch version (_x_ in this case being the latest patch release) for each major.minor release.
+- **Upgrade sequence**: Upgrades need to follow the sequence of major releases; do not skip directly from an older major version to the most recent version. For example, if you are currently running 2023.10.3, you should first upgrade to the latest 2024.2.x release, then to the latest 2024.4.x release, and finally to the latest 2024.6.x release, in sequence. Always use the latest available patch version (_x_ in this case being the latest patch release) for each major.minor release.
 
-- The version of the authentik instance and any outposts must be the same. We recommended that you always upgrade any outposts at the same time you upgrade your authentik instance.
+- **Outposts**: The versions of the authentik server and any authentik outposts must be the same. Always [upgrade any outposts](../add-secure-apps/outposts/upgrading.md) at the same time that you upgrade your authentik instance.
 
 ## Upgrade authentik
 
@@ -57,6 +57,10 @@ import Tabs from "@theme/Tabs";
 
   </TabItem>
 </Tabs>
+
+## Upgrade any outposts
+
+Be sure to also [upgrade any outposts](../add-secure-apps/outposts/upgrading.md) when you upgrade your authentik instance.
 
 ## Verify your upgrade
 
