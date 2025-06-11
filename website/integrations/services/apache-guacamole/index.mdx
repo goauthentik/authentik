@@ -64,8 +64,8 @@ Docker containers are typically configured using environment variables. To ensur
     ```yaml showLineNumbers
     OPENID_AUTHORIZATION_ENDPOINT=https://authentik.company/application/o/authorize/
     OPENID_CLIENT_ID=<Client ID from authentik>
-    OPENID_ISSUER=https://authentik.company/application/o/<your-slug>/
-    OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<your-slug>/jwks/
+    OPENID_ISSUER=https://authentik.company/application/o/<application_slug>/
+    OPENID_JWKS_ENDPOINT=https://authentik.company/application/o/<application_slug>/jwks/
     OPENID_REDIRECT_URI=https://guacamole.company/
     OPENID_USERNAME_CLAIM_TYPE=preferred_username
     ```
@@ -83,8 +83,8 @@ Additionally, ensure your `guacamole.properties` file (typically located in `/et
     ```yaml showLineNumbers title="/etc/guacamole/guacamole.properties"
     openid-authorization-endpoint=https://authentik.company/application/o/authorize/
     openid-client-id=<Client ID from authentik>
-    openid-issuer=https://authentik.company/application/o/<your-slug>/
-    openid-jwks-endpoint=https://authentik.company/application/o/<your-slug>/jwks/
+    openid-issuer=https://authentik.company/application/o/<application_slug>/
+    openid-jwks-endpoint=https://authentik.company/application/o/<application_slug>/jwks/
     openid-redirect-uri=https://guacamole.company/
     openid-username-claim-type=preferred_username
     ```

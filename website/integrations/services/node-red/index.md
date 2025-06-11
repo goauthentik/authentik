@@ -73,7 +73,7 @@ strategy: {
         icon:"fa-cloud",
         strategy: require("passport-openidconnect").Strategy,
         options: {
-                issuer: 'https://authentik.company/application/o/<application-slug>/',
+                issuer: 'https://authentik.company/application/o/<application_slug>/',
                 authorizationURL: 'https://authentik.company/application/o/authorize/',
                 tokenURL: 'https://authentik.company/application/o/token/',
                 userInfoURL: 'https://authentik.company/application/o/userinfo/',

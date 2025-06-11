@@ -56,7 +56,7 @@ This guide assumes that you have environment variables `$TERRAKUBE_OIDC_CLIENT_I
           id: TerrakubeClient
           name: TerrakubeClient
           config:
-              issuer: "https://authentik.company/application/o/<Your application slug>/"
+              issuer: "https://authentik.company/application/o/<application_slug>/"
               clientID: $TERRAKUBE_OIDC_CLIENT_ID
               clientSecret: $TERRAKUBE_OIDC_CLIENT_SECRET
               redirectURI: "https://terrakube-dex.company/dex/callback"

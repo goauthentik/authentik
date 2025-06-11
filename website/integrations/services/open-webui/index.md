@@ -49,7 +49,7 @@ Enter the following details from the authentik provider:
 - Set **OAUTH_CLIENT_ID** to the Client ID copied from authentik.
 - Set **OAUTH_CLIENT_SECRET** to the Client Secret copied from authentik.
 - Set **OAUTH_PROVIDER_NAME** to `authentik`.
-- Set **OPENID_PROVIDER_URL** to `https://authentik.company/application/o/your-slug-here/.well-known/openid-configuration`.
+- Set **OPENID_PROVIDER_URL** to `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`.
 - Set **OPENID_REDIRECT_URI** to `https://openwebui.company/oauth/oidc/callback`.
 - If you wish for new users to be created on Open Web UI, set **ENABLE_OAUTH_SIGNUP** to 'true'.
 

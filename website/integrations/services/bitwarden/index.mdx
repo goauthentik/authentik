@@ -143,8 +143,8 @@ To support the integration of Bitwarden with authentik, you need to create an ap
         - **Expect signed assertions**: Select this option.
     - Under **SAML identity provider configuration**:
         - **Entity ID**: `authentik`
-        - **Single sign-on service URL**: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
-        - **Single log-out service URL**: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
+        - **Single sign-on service URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+        - **Single log-out service URL**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
         - **X509 public certificate**: Paste the contents of your certificate file.
 3. Under **SAML service provider configuration**, take note of the **SP entity ID** and **Assertion consumer service (ACS) URL** values. These will be required in the next section.
 4. Click **Save**.
