@@ -1,4 +1,3 @@
-
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import get_apps
 from authentik.tasks.schedules.lib import ScheduleSpec

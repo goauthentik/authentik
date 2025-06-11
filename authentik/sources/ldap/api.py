@@ -5,7 +5,6 @@ from typing import Any
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DictField, ListField, SerializerMethodField
