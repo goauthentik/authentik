@@ -2,6 +2,7 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-private-text-input.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -45,7 +46,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -53,7 +54,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -168,12 +169,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Connection settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Server URI")}
-                        ?required=${true}
+                        required
                         name="serverUri"
                     >
                         <input
@@ -259,18 +260,12 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
+                    <ak-private-text-input
                         label=${msg("Bind Password")}
-                        ?writeOnly=${this.instance !== undefined}
                         name="bindPassword"
-                    >
-                        <input type="text" value="" class="pf-c-form-control" />
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Base DN")}
-                        ?required=${true}
-                        name="baseDn"
-                    >
+                        ?revealed=${this.instance === undefined}
+                    ></ak-private-text-input>
+                    <ak-form-element-horizontal label=${msg("Base DN")} required name="baseDn">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.baseDn)}"
@@ -280,7 +275,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("LDAP Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -344,7 +339,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.syncParentGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -361,7 +356,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition User DN")}
+                        label=${msg("Additional User DN")}
                         name="additionalUserDn"
                     >
                         <input
@@ -374,7 +369,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Addition Group DN")}
+                        label=${msg("Additional Group DN")}
                         name="additionalGroupDn"
                     >
                         <input
@@ -388,7 +383,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("User object filter")}
-                        ?required=${true}
+                        required
                         name="userObjectFilter"
                     >
                         <input
@@ -403,7 +398,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group object filter")}
-                        ?required=${true}
+                        required
                         name="groupObjectFilter"
                     >
                         <input
@@ -418,7 +413,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Group membership field")}
-                        ?required=${true}
+                        required
                         name="groupMembershipField"
                     >
                         <input
@@ -435,7 +430,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("User membership attribute")}
-                        ?required=${true}
+                        required
                         name="userMembershipAttribute"
                     >
                         <input
@@ -472,7 +467,7 @@ export class LDAPSourceForm extends BaseSourceForm<LDAPSource> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Object uniqueness field")}
-                        ?required=${true}
+                        required
                         name="objectUniquenessField"
                     >
                         <input

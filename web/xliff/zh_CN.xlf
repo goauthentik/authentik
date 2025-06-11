@@ -2818,19 +2818,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>用户路径</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>额外的用户 DN</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>额外的用户 DN，添加到 Base DN 起始处。</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>额外的组 DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -9691,10 +9681,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Failed to preview prompt</source>
   <target>预览输入失败</target>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-  <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'。当选中“使用用户属性查询”时，此配置应该为用户属性，否则为组属性。</target>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
   <target>使用用户属性查询</target>
@@ -9878,6 +9864,30 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se3b26b762110bda0">
   <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
   <target>删除之前由此源提供，但现已缺失的用户和组。</target>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+  <target>欢迎。</target>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>包含组成员的字段。此字段的值与用户成员关系属性匹配。</target>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+  <target>用户成员关系属性</target>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+  <target>匹配组成员关系字段值的属性。</target>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+  <target>额外的用户 DN</target>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+  <target>额外的组 DN</target>
 </trans-unit>
     </body>
   </file>
