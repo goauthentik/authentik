@@ -74,6 +74,11 @@ export class SessionFixture extends PageFixture {
         await this.$submitPasswordStageButton.click();
     }
 
+    public checkAuthenticated = async (): Promise<boolean> => {
+        // TODO: Check if the user is authenticated via API
+        return true;
+    };
+
     /**
      * Log into the application.
      */

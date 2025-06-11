@@ -141,6 +141,7 @@ skip = [
     "**/web/src/locales",
     "**/web/xliff",
     "**/web/out",
+    "**/web/playwright-report",
     "./web/storybook-static",
     "./web/custom-elements.json",
     "./website/build",

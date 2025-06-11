@@ -13,7 +13,7 @@ type TestIDLocatorProxy = DeepLocatorProxy<TestIDSelectorMap>;
 
 interface E2EFixturesTestScope {
     /**
-     * A proxy to retreive elements by test ID.
+     * A proxy to retrieve elements by test ID.
      *
      * ```ts
      * const $button = $.button;

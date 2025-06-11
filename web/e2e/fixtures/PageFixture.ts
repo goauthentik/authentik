@@ -19,7 +19,7 @@ export abstract class PageFixture {
     protected readonly testName: string;
 
     /**
-     * A proxy to retreive elements by test ID.
+     * A proxy to retrieve elements by test ID.
      *
      * ```ts
      * const $button = this.$.button;

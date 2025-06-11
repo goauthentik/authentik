@@ -40,7 +40,7 @@ describe("Configure OAuth2 Providers", () => {
         ConsoleTestRunner.info("Clicking component...");
         await $ouidComponent.click();
 
-        ConsoleTestRunner.info("Wating for next button to be enabled...");
+        ConsoleTestRunner.info("Waiting for next button to be enabled...");
         await ProviderWizardView.$nextButton.waitForEnabled();
 
         ConsoleTestRunner.info("Clicking next...");
