@@ -36,30 +36,34 @@ If the issue persists after restarting, you can reset the admin password directl
 
 1. Access the server and reset the `akadmin` user's password:
 
-   For Docker Compose:
-   ```bash
-   docker compose exec server ak changepassword akadmin
-   ```
+    For Docker Compose:
 
-   For Kubernetes:
-   ```bash
-   kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
-   ```
+    ```bash
+    docker compose exec server ak changepassword akadmin
+    ```
 
-   For CLI:
-   ```bash
-   uv run ak changepassword akadmin
-   ```
+    For Kubernetes:
 
-   Follow the prompts to set a new password.
+    ```bash
+    kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
+    ```
+
+    For CLI:
+
+    ```bash
+    uv run ak changepassword akadmin
+    ```
+
+    Follow the prompts to set a new password.
 
 2. Log in using the admin interface:
-   - Username: `akadmin`
-   - Password: [the password you just set]
-   - URL: `https://your-authentik-url/if/flow/default-authentication-flow/?next=%2F`
+
+    - URL: `https://your-authentik-url/if/flow/default-authentication-flow/?next=%2F`
+    - Username: `akadmin`
+    - Password: [the password you just set]
 
 3. (Optional) Update the admin's email in the settings at `/if/user/#/settings` if needed.
 
 :::note
-This method bypasses the initial setup flow and should only be used if restarting the containers doesn't resolve the issue. The initial setup flow is the recommended way to configure the admin user as it ensures all necessary setup steps are completed.
+This method bypasses the initial setup flow and should only be used if restarting the containers doesn't resolve the issue. The initial setup flow is the correct way to configure the admin user as it ensures all necessary setup steps are completed.
 :::
