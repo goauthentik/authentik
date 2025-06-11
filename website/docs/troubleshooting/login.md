@@ -47,16 +47,7 @@ Kubernetes deployments:
     kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
     ```
 
-    Follow the prompts to set a new password.
-
-2. Log in using the admin interface:
-
-    - URL: `https://your-authentik-url/if/flow/default-authentication-flow/?next=%2F`
-    - Username: `akadmin`
-    - Password: [the password you just set]
-
-3. (Optional) Update the admin's email in the settings at `/if/user/#/settings` if needed.
-
+Follow the prompts to set a new password. You can then login via: `https://authentik.company/if/flow/default-authentication-flow/?next=%2F`
 :::note
 This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the admin user.
 :::
