@@ -7,6 +7,6 @@ class AuthentikEnterpriseSearchConfig(EnterpriseConfig):
     """Enterprise app config"""
 
     name = "authentik.enterprise.search"
-    label = "authentik_enterprise_search"
+    label = "authentik_search"
     verbose_name = "authentik Enterprise.Search"
     default = True
