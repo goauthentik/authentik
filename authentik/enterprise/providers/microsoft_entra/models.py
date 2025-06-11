@@ -76,7 +76,7 @@ class MicrosoftEntraProviderGroup(SerializerModel):
         return f"Microsoft Entra Provider Group {self.group_id} to {self.provider_id}"
 
 
-class MicrosoftEntraProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
+class MicrosoftEntraProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Microsoft Entra."""
 
     client_id = models.TextField()

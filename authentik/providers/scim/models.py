@@ -69,7 +69,7 @@ class SCIMCompatibilityMode(models.TextChoices):
     SLACK = "slack", _("Slack")
 
 
-class SCIMProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
+class SCIMProvider(OutgoingSyncProvider, BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)

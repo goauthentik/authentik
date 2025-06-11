@@ -85,7 +85,7 @@ class GoogleWorkspaceProviderGroup(SerializerModel):
         return f"Google Workspace Provider Group {self.group_id} to {self.provider_id}"
 
 
-class GoogleWorkspaceProvider(OutgoingSyncProvider, ScheduledModel, BackchannelProvider):
+class GoogleWorkspaceProvider(OutgoingSyncProvider, BackchannelProvider):
     """Sync users from authentik into Google Workspace."""
 
     delegated_subject = models.EmailField()
