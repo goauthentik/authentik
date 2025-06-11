@@ -34,7 +34,6 @@ If you're unable to access the initial setup flow (`/if/flow/initial-setup/`), f
 
 However, if the issue persists after restarting, you can directly reset the admin password using the following commands:
 
-
 Docker Compose deployments:
 
     ```bash
@@ -48,6 +47,9 @@ Kubernetes deployments:
     ```
 
 Follow the prompts to set a new password. You can then login via: `https://authentik.company/if/flow/default-authentication-flow/?next=%2F`
+
+Update the admin's email in the settings at `/if/user/#/settings`
+
 :::note
 This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the admin user.
 :::
