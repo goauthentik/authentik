@@ -141,7 +141,7 @@ In this mode, the regular expressions are matched against the Request's full URL
 
 ## Dynamic backend selection
 
-You can configure the backend the proxy should access dynamically via scope mappings. To do this, create a scope mapping with a name and scope of your choice, and set the epxression to:
+You can configure the backend the proxy should access dynamically via scope mappings. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 return {
@@ -155,7 +155,7 @@ Afterwards, edit the proxy provider and add this new mapping. The expression is 
 
 ## Host header:ak-version[2025.6.1]
 
-By default, the proxy provider will use the forwarded host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the host header with a property mapping. To do this, create a scope mapping with a name and scope of your choice, and set the epxression to:
+By default, the proxy provider will use the forwarded host header received from the client. Starting with authentik 2025.6.1, it is possible to dynamically adjust the host header with a property mapping. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 return {
@@ -169,7 +169,7 @@ Afterwards, edit the proxy provider and add this new mapping. The expression is 
 
 ### Dynamically setting host header
 
-You can dynamically set the host header to match the **Internal host** value set on the proxy provider. To do this, create a scope mapping with a name and scope of your choice, and set the epxression to:
+You can dynamically set the host header to match the **Internal host** value set on the proxy provider. To do this, create a scope mapping with a name and scope of your choice, and set the expression to:
 
 ```python
 from urllib.parse import urlparse
