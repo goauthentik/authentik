@@ -662,12 +662,6 @@
         <target>Приложения, которые используются чаще всего</target>
         
       </trans-unit>
-      <trans-unit id="sda5e1499f93146ad">
-        <source><x id="0" equiv-text="${ago}"/> days ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>дней назад</target>
-        
-      </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>Объектов создано</target>
@@ -2818,19 +2812,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Путь пользователя</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>Дополнение User DN</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>Дополнительный DN пользователя, добавляемый к базовому DN.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>Дополнение Group DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -6129,19 +6113,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>Скачать закрытый ключ</target>
         
       </trans-unit>
-      <trans-unit id="s3a5fec3d73ac9edc">
-        <source>Create Certificate-Key Pair</source>
-        <target>Создание пары сертификат-ключ</target>
-        
-      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>Сгенерировать</target>
-        
-      </trans-unit>
-      <trans-unit id="sf9bddaf910f4eea5">
-        <source>Generate Certificate-Key Pair</source>
-        <target>Сгенерировать пару сертификат-ключ</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -7542,10 +7516,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7ccce0ec8d228db6">
   <source>Configure SCIM Provider</source>
   <target>Настроить SCIM Провайдера</target>
-</trans-unit>
-<trans-unit id="s7513372fe60f6387">
-  <source>Event volume</source>
-  <target>Объем событий</target>
 </trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
@@ -9643,6 +9613,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+</trans-unit>
+<trans-unit id="sb7af25ce6e30d61a">
+  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+</trans-unit>
+<trans-unit id="se1d2545eda4b1600">
+  <source>Import Existing Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sb3d5c0a0501669df">
+  <source>Generate New Certificate-Key Pair</source>
 </trans-unit>
     </body>
   </file>
