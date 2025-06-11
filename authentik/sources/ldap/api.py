@@ -170,15 +170,8 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
     def sync_status(self, request: Request, slug: str) -> Response:
         """Get source's sync status"""
         source: LDAPSource = self.get_object()
-        tasks = list(
-            get_objects_for_user(request.user, "authentik_events.view_systemtask").filter(
-                name="ldap_sync",
-                uid__startswith=source.slug,
-            )
-        )
         with source.sync_lock as lock_acquired:
             status = {
-                "tasks": tasks,
                 # If we could not acquire the lock, it means a task is using it, and thus is running
                 "is_running": not lock_acquired,
             }
