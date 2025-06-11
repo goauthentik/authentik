@@ -43,6 +43,10 @@ class AuthentikTasksConfig(ManagedAppConfig):
     def ready(self) -> None:
         from authentik.tasks.broker import PostgresBroker
 
+        old_broker = dramatiq.get_broker()
+        if len(old_broker.actors) != 0:
+            raise RuntimeError("Mis-registered actors")
+
         dramatiq.set_encoder(PickleEncoder())
 
         broker = PostgresBroker(middleware=[])
