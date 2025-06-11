@@ -174,5 +174,5 @@ class TestEmailStageSending(FlowTestCase):
                 response = self.client.post(url)
             response = self.client.post(url)
             self.assertEqual(response.status_code, 200)
-            self.assertTrue(len(mail.outbox) >= 1)
+            self.assertGreaterEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, "authentik")

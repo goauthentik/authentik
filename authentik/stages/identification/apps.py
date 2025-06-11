@@ -1,11 +1,12 @@
 """authentik identification stage app config"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikStageIdentificationConfig(AppConfig):
+class AuthentikStageIdentificationConfig(ManagedAppConfig):
     """authentik identification stage config"""
 
     name = "authentik.stages.identification"
     label = "authentik_stages_identification"
     verbose_name = "authentik Stages.Identification"
+    default = True

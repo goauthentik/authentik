@@ -662,12 +662,6 @@
         <target>Aplicaciones con mayor uso</target>
         
       </trans-unit>
-      <trans-unit id="sda5e1499f93146ad">
-        <source><x id="0" equiv-text="${ago}"/> days ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/>días atrás</target>
-        
-      </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>Objetos creados</target>
@@ -2793,19 +2787,9 @@ no se aprueba cuando una o ambas de las opciones seleccionadas son iguales o sup
         <target>Ruta de usuario</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>DN de usuario adicional</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>DN de usuario adicional, antepuesto al DN base.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>DN de grupo de adición</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -6040,19 +6024,9 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
         <target>Descargar clave privada</target>
         
       </trans-unit>
-      <trans-unit id="s3a5fec3d73ac9edc">
-        <source>Create Certificate-Key Pair</source>
-        <target>Crear un Par de Claves y Certificado</target>
-        
-      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>Generar</target>
-        
-      </trans-unit>
-      <trans-unit id="sf9bddaf910f4eea5">
-        <source>Generate Certificate-Key Pair</source>
-        <target>Generar par de claves de certificado</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -7385,10 +7359,6 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
   <source>Configure SCIM Provider</source>
   <target>Configura el Proveedor de SCIM</target>
 </trans-unit>
-<trans-unit id="s7513372fe60f6387">
-  <source>Event volume</source>
-  <target>Volumen de evento</target>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
   <target>Ajustes de conexión.</target>
@@ -8652,7 +8622,7 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
   <target>Aplicaciones externas que utilizan <x id="0" equiv-text="${this.brand.brandingTitle || &quot;authentik&quot;}"/> como proveedor de identidad a través de protocolos como OAuth2 y SAML. Aquí se muestran todas las aplicaciones, incluso aquellas a las que no puede acceder.</target>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
@@ -9167,9 +9137,6 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
 </trans-unit>
@@ -9301,6 +9268,39 @@ Las vinculaciones a grupos o usuarios se comparan con el usuario del evento.</ta
 </trans-unit>
 <trans-unit id="s4f9860fefb8fbe01">
   <source>Configure the attribute of the user used to look for a user.</source>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+</trans-unit>
+<trans-unit id="sb7af25ce6e30d61a">
+  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+</trans-unit>
+<trans-unit id="se1d2545eda4b1600">
+  <source>Import Existing Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sb3d5c0a0501669df">
+  <source>Generate New Certificate-Key Pair</source>
 </trans-unit>
     </body>
   </file>
