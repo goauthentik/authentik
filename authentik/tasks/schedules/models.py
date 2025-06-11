@@ -1,6 +1,7 @@
 import pickle  # nosec
 from uuid import uuid4
 
+import pgtrigger
 from cron_converter import Cron
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
@@ -55,6 +56,18 @@ class Schedule(SerializerModel):
             ("send_schedule", _("Manually trigger a schedule")),
         ]
         indexes = (models.Index(fields=("rel_obj_content_type", "rel_obj_id")),)
+        triggers = (
+            pgtrigger.Trigger(
+                name="set_next_run_on_paused",
+                operation=pgtrigger.Update,
+                when=pgtrigger.Before,
+                condition=pgtrigger.Q(new__paused=True) & pgtrigger.Q(old__paused=False),
+                func="""
+                    NEW.next_run = to_timestamp(0);
+                    RETURN NEW;
+                """,
+            ),
+        )
 
     def __str__(self):
         return self.uid

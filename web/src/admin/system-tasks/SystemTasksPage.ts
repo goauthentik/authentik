@@ -62,7 +62,7 @@ export class SystemTasksPage extends AKElement {
                 </section>
                 <section
                     slot="page-tasks"
-                    data-tab-title="${msg("One-off tasks")}"
+                    data-tab-title="${msg("Tasks")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">

@@ -1,8 +1,8 @@
+import { formatElapsedTime } from "#common/temporal";
 import "@goauthentik/admin/system-tasks/ScheduleForm";
 import "@goauthentik/admin/system-tasks/TaskList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -31,15 +31,41 @@ export class ScheduleList extends Table<Schedule> {
     @property()
     order = "next_run";
 
+    @property()
+    relObjAppLabel?: string;
+    @property()
+    relObjModel?: string;
+    @property()
+    relObjId?: string;
+
+    @property()
+    showOnlyStandalone: boolean = true;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList);
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Schedule>> {
+        const relObjIdIsnull =
+            typeof this.relObjId !== "undefined"
+                ? undefined
+                : this.showOnlyStandalone
+                  ? true
+                  : undefined;
         return new TasksApi(DEFAULT_CONFIG).tasksSchedulesList({
             ...(await this.defaultEndpointConfig()),
+            relObjContentTypeAppLabel: this.relObjAppLabel,
+            relObjContentTypeModel: this.relObjModel,
+            relObjId: this.relObjId,
+            relObjIdIsnull,
         });
     }
+
+    #toggleShowOnlyStandalone = () => {
+        this.showOnlyStandalone = !this.showOnlyStandalone;
+        this.page = 1;
+        return this.fetch();
+    };
 
     columns(): TableColumn[] {
         return [
@@ -48,6 +74,35 @@ export class ScheduleList extends Table<Schedule> {
             new TableColumn(msg("Next run"), "next_run"),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        if (this.relObjId !== undefined) {
+            return html``;
+        }
+        return html`&nbsp;
+            <div class="pf-c-toolbar__group pf-m-filter-group">
+                <div class="pf-c-toolbar__item pf-m-search-filter">
+                    <div class="pf-c-input-group">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${this.showOnlyStandalone}
+                                @change=${this.#toggleShowOnlyStandalone}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria - hidden="true"> </i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">
+                                ${msg("Show only standalone schedules")}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>`;
     }
 
     row(item: Schedule): TemplateResult[] {
@@ -59,7 +114,7 @@ export class ScheduleList extends Table<Schedule> {
                 ${item.paused
                     ? html`Paused`
                     : html`
-                          <div>${getRelativeTime(item.nextRun)}</div>
+                          <div>${formatElapsedTime(item.nextRun)}</div>
                           <small>${item.nextRun.toLocaleString()}</small>
                       `}
             `,
@@ -101,7 +156,11 @@ export class ScheduleList extends Table<Schedule> {
         return html` <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
-                    <ak-task-list .schedule=${item}></ak-task-list>
+                    <ak-task-list
+                        .relObjAppLabel="authentik_tasks_schedules"
+                        .relObjModel="schedule"
+                        .relObjId="${item.id}"
+                    ></ak-task-list>
                 </div>
             </div>
         </td>`;

@@ -40441,6 +40441,10 @@ paths:
     get:
       operationId: tasks_schedules_list
       parameters:
+      - in: query
+        name: actor_name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -40459,6 +40463,26 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: paused
+        schema:
+          type: boolean
+      - in: query
+        name: rel_obj_content_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_content_type__model
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id__isnull
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
@@ -40668,6 +40692,22 @@ paths:
         name: queue_name
         schema:
           type: string
+      - in: query
+        name: rel_obj_content_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_content_type__model
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id
+        schema:
+          type: string
+      - in: query
+        name: rel_obj_id__isnull
+        schema:
+          type: boolean
       - name: search
         required: false
         in: query
@@ -54942,6 +54982,10 @@ components:
     PatchedScheduleRequest:
       type: object
       properties:
+        rel_obj_id:
+          type: string
+          nullable: true
+          minLength: 1
         crontab:
           type: string
           minLength: 1
@@ -58883,6 +58927,16 @@ components:
           type: string
           readOnly: true
           description: Dramatiq actor to call
+        rel_obj_app_label:
+          type: string
+          readOnly: true
+        rel_obj_model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        rel_obj_id:
+          type: string
+          nullable: true
         crontab:
           type: string
           description: When to schedule tasks
@@ -58903,10 +58957,16 @@ components:
       - description
       - id
       - next_run
+      - rel_obj_app_label
+      - rel_obj_model
       - uid
     ScheduleRequest:
       type: object
       properties:
+        rel_obj_id:
+          type: string
+          nullable: true
+          minLength: 1
         crontab:
           type: string
           minLength: 1
@@ -59849,9 +59909,13 @@ components:
           type: string
           format: date-time
           description: Task last modified time
-        rel_obj_content_type:
-          type: integer
-          nullable: true
+        rel_obj_app_label:
+          type: string
+          readOnly: true
+        rel_obj_model:
+          type: string
+          title: Python model class name
+          readOnly: true
         rel_obj_id:
           type: string
           nullable: true
@@ -59868,6 +59932,8 @@ components:
       - actor_name
       - aggregated_status
       - messages
+      - rel_obj_app_label
+      - rel_obj_model
       - uid
     Tenant:
       type: object

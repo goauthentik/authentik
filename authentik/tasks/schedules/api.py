@@ -1,9 +1,12 @@
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from dramatiq.actor import Actor
 from dramatiq.broker import get_broker
 from dramatiq.errors import ActorNotFound
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import ReadOnlyField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -20,19 +23,25 @@ from authentik.tasks.schedules.models import Schedule
 
 
 class ScheduleSerializer(ModelSerializer):
+    rel_obj_app_label = ReadOnlyField(source="rel_obj_content_type.app_label")
+    rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
+
     description = SerializerMethodField()
 
     class Meta:
         model = Schedule
-        fields = [
+        fields = (
             "id",
             "uid",
             "actor_name",
+            "rel_obj_app_label",
+            "rel_obj_model",
+            "rel_obj_id",
             "crontab",
             "paused",
             "next_run",
             "description",
-        ]
+        )
 
     def get_description(self, instance: Schedule) -> str | None:
         if instance.rel_obj:
@@ -43,7 +52,24 @@ class ScheduleSerializer(ModelSerializer):
             actor: Actor = get_broker().get_actor(instance.actor_name)
         except ActorNotFound:
             return "FIXME this shouldn't happen"
+        if not actor.fn.__doc__:
+            return "no doc"
         return actor.fn.__doc__.strip()
+
+
+class ScheduleFilter(FilterSet):
+    rel_obj_id__isnull = BooleanFilter("rel_obj_id", "isnull")
+
+    class Meta:
+        model = Schedule
+        fields = (
+            "actor_name",
+            "rel_obj_content_type__app_label",
+            "rel_obj_content_type__model",
+            "rel_obj_id",
+            "rel_obj_id__isnull",
+            "paused",
+        )
 
 
 class ScheduleViewSet(
@@ -52,13 +78,22 @@ class ScheduleViewSet(
     ListModelMixin,
     GenericViewSet,
 ):
-    queryset = Schedule.objects.all()
+    queryset = Schedule.objects.select_related("rel_obj_content_type").all()
     serializer_class = ScheduleSerializer
     search_fields = (
         "id",
         "uid",
+        "actor_name",
+        "rel_obj_content_type__app_label",
+        "rel_obj_content_type__model",
+        "rel_obj_id",
+        "description",
     )
-    ordering = ("next_run", "uid")
+    filterset_class = ScheduleFilter
+    ordering = (
+        "next_run",
+        "uid",
+    )
 
     @permission_required("authentik_tasks_schedules.send_schedule")
     @extend_schema(

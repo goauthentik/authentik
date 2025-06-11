@@ -1,3 +1,6 @@
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
+from rest_framework.fields import ReadOnlyField
 from rest_framework.mixins import (
     ListModelMixin,
     RetrieveModelMixin,
@@ -11,6 +14,9 @@ from authentik.tenants.utils import get_current_tenant
 
 
 class TaskSerializer(ModelSerializer):
+    rel_obj_app_label = ReadOnlyField(source="rel_obj_content_type.app_label")
+    rel_obj_model = ReadOnlyField(source="rel_obj_content_type.model")
+
     messages = LogEventSerializer(many=True, source="_messages")
 
     class Meta:
@@ -21,12 +27,30 @@ class TaskSerializer(ModelSerializer):
             "actor_name",
             "state",
             "mtime",
-            "rel_obj_content_type",
+            "rel_obj_app_label",
+            "rel_obj_model",
             "rel_obj_id",
             "uid",
             "messages",
             "aggregated_status",
         ]
+
+
+class TaskFilter(FilterSet):
+    rel_obj_id__isnull = BooleanFilter("rel_obj_id", "isnull")
+
+    class Meta:
+        model = Task
+        fields = (
+            "queue_name",
+            "actor_name",
+            "state",
+            "rel_obj_content_type__app_label",
+            "rel_obj_content_type__model",
+            "rel_obj_id",
+            "rel_obj_id__isnull",
+            "aggregated_status",
+        )
 
 
 class TaskViewSet(
@@ -41,16 +65,16 @@ class TaskViewSet(
         "queue_name",
         "actor_name",
         "state",
+        "rel_obj_app_label",
+        "rel_obj_model",
+        "rel_obj_id",
         "_uid",
         "aggregated_status",
     )
-    filterset_fields = (
-        "queue_name",
-        "actor_name",
-        "state",
-        "aggregated_status",
-    )
+    filterset_class = TaskFilter
     ordering = ("-mtime",)
 
     def get_queryset(self):
-        return Task.objects.filter(tenant=get_current_tenant())
+        return Task.objects.select_related("rel_obj_content_type").filter(
+            tenant=get_current_tenant()
+        )

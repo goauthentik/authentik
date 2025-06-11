@@ -15878,6 +15878,14 @@
         "model_authentik_tasks_schedules.schedule": {
             "type": "object",
             "properties": {
+                "rel_obj_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Rel obj id"
+                },
                 "crontab": {
                     "type": "string",
                     "minLength": 1,

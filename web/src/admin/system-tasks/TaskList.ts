@@ -1,6 +1,6 @@
+import { formatElapsedTime } from "#common/temporal";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/LogViewer";
@@ -16,7 +16,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Schedule, Task, TasksApi, TasksTasksListStateEnum } from "@goauthentik/api";
+import { Task, TasksApi, TasksTasksListStateEnum } from "@goauthentik/api";
 
 @customElement("ak-task-list")
 export class TaskList extends Table<Task> {
@@ -24,7 +24,14 @@ export class TaskList extends Table<Task> {
     clearOnRefresh = true;
 
     @property()
-    schedule: Schedule | undefined;
+    relObjAppLabel?: string;
+    @property()
+    relObjModel?: string;
+    @property()
+    relObjId?: string;
+
+    @property()
+    showOnlyStandalone: boolean = true;
 
     searchEnabled(): boolean {
         return true;
@@ -38,13 +45,26 @@ export class TaskList extends Table<Task> {
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Task>> {
-        const excludeScheduled = this.schedule === undefined;
+        const relObjIdIsnull =
+            typeof this.relObjId !== "undefined"
+                ? undefined
+                : this.showOnlyStandalone
+                  ? true
+                  : undefined;
         return new TasksApi(DEFAULT_CONFIG).tasksTasksList({
             ...(await this.defaultEndpointConfig()),
-            excludeScheduled: excludeScheduled,
-            scheduleUid: this.schedule?.uid,
+            relObjContentTypeAppLabel: this.relObjAppLabel,
+            relObjContentTypeModel: this.relObjModel,
+            relObjId: this.relObjId,
+            relObjIdIsnull,
         });
     }
+
+    #toggleShowOnlyStandalone = () => {
+        this.showOnlyStandalone = !this.showOnlyStandalone;
+        this.page = 1;
+        return this.fetch();
+    };
 
     columns(): TableColumn[] {
         return [
@@ -54,6 +74,37 @@ export class TaskList extends Table<Task> {
             new TableColumn(msg("State"), "state"),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        console.log("task show standalone");
+        console.log(this.showOnlyStandalone);
+        if (this.relObjId !== undefined) {
+            return html``;
+        }
+        return html`&nbsp;
+            <div class="pf-c-toolbar__group pf-m-filter-group">
+                <div class="pf-c-toolbar__item pf-m-search-filter">
+                    <div class="pf-c-input-group">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${this.showOnlyStandalone}
+                                @change=${this.#toggleShowOnlyStandalone}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria - hidden="true"> </i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">
+                                ${msg("Show only standalone tasks")}
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>`;
     }
 
     taskState(task: Task): TemplateResult {
@@ -74,9 +125,9 @@ export class TaskList extends Table<Task> {
     row(item: Task): TemplateResult[] {
         return [
             html`<div>${item.actorName}</div>
-                <small>${item.uid}</small>`,
+                <small>${item.uid.replace(new RegExp("^authentik."), "")}</small>`,
             html`${item.queueName}`,
-            html`<div>${getRelativeTime(item.mtime)}</div>
+            html`<div>${formatElapsedTime(item.mtime || new Date())}</div>
                 <small>${item.mtime.toLocaleString()}</small>`,
             this.taskState(item),
             html``,
