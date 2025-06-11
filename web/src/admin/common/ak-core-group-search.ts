@@ -56,7 +56,6 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
 
     constructor() {
         super();
-        this.selected = this.selected.bind(this);
         this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
@@ -83,9 +82,9 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
     }
 
-    selected(group: Group) {
+    selected = (group: Group) => {
         return this.group === group.pk;
-    }
+    };
 
     render() {
         return html`

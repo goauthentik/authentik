@@ -22,9 +22,33 @@ export class FormFixture extends PageFixture {
         value: string,
         parent: LocatorContext = this.page,
     ): Promise<void> {
-        const control = parent.getByRole("textbox", {
-            name: fieldName,
-        });
+        const control = parent
+            .getByRole("textbox", {
+                name: fieldName,
+            })
+            .first();
+
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
+
+        await control.fill(value);
+    }
+
+    /**
+     * Set the value of a numeric input.
+     *
+     * @param fieldName The name of the form element.
+     * @param value the value to set.
+     */
+    public async fillNumericField(
+        fieldName: string,
+        value: string,
+        parent: LocatorContext = this.page,
+    ): Promise<void> {
+        const control = parent
+            .getByRole("spinbutton", {
+                name: fieldName,
+            })
+            .first();
 
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 

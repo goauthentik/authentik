@@ -98,6 +98,11 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
     }
 
+    constructor() {
+        super();
+        this.selected = this.selected.bind(this);
+    }
+
     handleSearchUpdate = (ev: CustomEvent) => {
         ev.stopPropagation();
         this.selectedFlow = ev.detail.value;
@@ -118,13 +123,13 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * use this method, but several have more complex needs, such as relating to the brand, or just
      * returning false.
      */
-    selected = (flow: Flow): boolean => {
+    selected(flow: Flow): boolean {
         let selected = this.currentFlow === flow.pk;
         if (!this.currentFlow && this.defaultFlowSlug && flow.slug === this.defaultFlowSlug) {
             selected = true;
         }
         return selected;
-    };
+    }
 
     connectedCallback() {
         super.connectedCallback();

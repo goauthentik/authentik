@@ -3,7 +3,7 @@ import { ProvidersFixture } from "#e2e/fixtures/ProvidersFixture";
 import { createRandomName } from "#e2e/utils/generators";
 import { IDGenerator } from "@goauthentik/core/id";
 
-test.describe("Configure OAuth2 Providers", () => {
+test.describe("Configure Providers", () => {
     const providerNames = new Map<string, string>();
 
     test.beforeEach(async ({ $, page, session, providers }, { testId }) => {
@@ -27,12 +27,6 @@ test.describe("Configure OAuth2 Providers", () => {
         await expect(page.locator("ak-wizard-page-type-create")).toBeVisible();
 
         await wizard.navigation.next.expect.toBeDisabled();
-
-        const $ouidComponent = page.locator("ouid=oauth2provider");
-
-        await $ouidComponent.click();
-
-        await wizard.navigation.next.click();
     });
 
     test.afterEach(async ({ $, providers, page }, { testId }) => {
@@ -83,12 +77,19 @@ test.describe("Configure OAuth2 Providers", () => {
         });
     });
 
-    test("Should configure a simple OAuth2 Application", async ({
+    test("Should configure a simple OAuth2 Provider", async ({
         $,
+        page,
         providers,
         form,
     }, testInfo) => {
         const { wizard } = $;
+
+        const $ouidComponent = page.locator("ouid=oauth2provider");
+
+        await $ouidComponent.click();
+
+        await wizard.navigation.next.click();
 
         const providerName = providerNames.get(testInfo.testId)!;
         const $providerForm = providers.locateProviderForm("oauth2");
@@ -109,7 +110,7 @@ test.describe("Configure OAuth2 Providers", () => {
         await wizard.navigation.next.click();
     });
 
-    test("Should configure a complete OAuth2 Application", async ({
+    test("Should configure a complete OAuth2 Provider", async ({
         $,
         page,
         providers,
@@ -118,6 +119,13 @@ test.describe("Configure OAuth2 Providers", () => {
         const { wizard } = $;
 
         const { $providerList } = providers;
+
+        const $ouidComponent = page.locator("ouid=oauth2provider");
+
+        await $ouidComponent.click();
+
+        await wizard.navigation.next.click();
+
         const $providerForm = providers.locateProviderForm("oauth2");
 
         const providerName = providerNames.get(testInfo.testId)!;
@@ -169,6 +177,70 @@ test.describe("Configure OAuth2 Providers", () => {
         await form.setRadio("Issuer mode", "Same identifier is used for all providers");
 
         await form.setFormGroup("Machine-to-Machine authentication settings", true);
+
+        const request = page.waitForRequest((request) => {
+            const url = new URL(request.url());
+            return url.pathname.startsWith("/api/v3/providers/") && request.method() === "GET";
+        });
+
+        const response = page.waitForResponse((response) => {
+            return response.url().includes("/api/v3/providers/") && response.ok();
+        });
+
+        await wizard.navigation.next.click();
+
+        await request;
+        await response;
+    });
+
+    test("Should configure a complete LDAP Provider", async ({
+        $,
+        page,
+        providers,
+        form,
+    }, testInfo) => {
+        const { wizard } = $;
+
+        const $providerForm = providers.locateProviderForm("ldap");
+
+        await expect(
+            $providerForm,
+            "LDAP Provider Form is not visible until next is clicked",
+        ).toBeHidden();
+
+        await page.locator("ouid=ldapprovider").click();
+
+        await wizard.navigation.next.click();
+
+        await expect(
+            $providerForm,
+            "LDAP Provider Form is visible after next is clicked",
+        ).toBeVisible();
+
+        const providerName = providerNames.get(testInfo.testId)!;
+
+        await form.fillTextField("name", providerName, $providerForm);
+
+        await form.setFormGroup("Flow settings", true);
+        await form.setFormGroup("Protocol settings", true);
+
+        await form.selectSearchValue("Bind flow", /default-authentication-flow/);
+
+        await form.fillTextField("Base DN", "DC=ldap-2,DC=goauthentik,DC=io");
+
+        await form.selectSearchValue("Certificate", /authentik Self-signed Certificate/);
+
+        await form.fillTextField("TLS Server name", "goauthentik.io");
+
+        await form.fillNumericField("UID start number", "2001");
+
+        await form.fillNumericField("GID start number", "4001");
+
+        await form.setRadio("Search mode", "Direct querying");
+
+        await form.setRadio("Bind mode", "Direct binding");
+
+        await form.setInputCheck("MFA Support", false);
 
         const request = page.waitForRequest((request) => {
             const url = new URL(request.url());

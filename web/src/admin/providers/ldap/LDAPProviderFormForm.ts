@@ -47,7 +47,9 @@ export function renderForm(
 ) {
     return html`
         <ak-text-input
+            autocomplete="on"
             name="name"
+            placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             label=${msg("Name")}
             .errorMessages=${errors?.name ?? []}
@@ -89,6 +91,7 @@ export function renderForm(
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
                     <ak-branded-flow-search
+                        label=${msg("Bind flow")}
                         flowType=${FlowsInstancesListDesignationEnum.Authentication}
                         .currentFlow=${provider?.authorizationFlow}
                         .brandFlow=${brand?.flowAuthentication}
@@ -138,6 +141,8 @@ export function renderForm(
                     .errorMessages=${errors?.certificate ?? []}
                 >
                     <ak-crypto-certificate-search
+                        label=${msg("Certificate")}
+                        placeholder=${msg("Select a certificate...")}
                         certificate=${ifDefined(provider?.certificate ?? nothing)}
                         name="certificate"
                     >
