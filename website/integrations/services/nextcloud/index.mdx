@@ -145,7 +145,7 @@ Depending on your Nextcloud configuration, you may need to use `https://nextclou
     - **Identifier**: `authentik`
     - **Client ID**: Client ID from authentik
     - **Client secret**: Client secret from authentik
-    - **Discovery endpoint**: `https://authentik.company/application/o/<application-slug>/.well-known/openid-configuration`
+    - **Discovery endpoint**: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
     - **Scope**: `email profile openid`
     - Under **Attribute mappings**:
 
@@ -309,8 +309,8 @@ To grant Nextcloud admin access to authentik users you will need to create a pro
 
     - **Optional display name**: `authentik`
     - **Identifier of the IdP entity**: `https://authentik.company`
-    - **URL target for authentication requests**: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
-    - **URL for SLO requests**: `https://authentik.company/application/saml/<application-slug>/slo/binding/redirect/`
+    - **URL target for authentication requests**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+    - **URL for SLO requests**: `https://authentik.company/application/saml/<application_slug>/slo/binding/redirect/`
     - **Public X.509 certificate of the IdP**: Paste the contents of your certificate file.
     - **Set attribute mappings**:
         - **Display name**: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`

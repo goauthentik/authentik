@@ -55,7 +55,7 @@ This documentation lists only the settings that you need to change from their de
 5. Fill in the following:
     - **Display name**: Anything you like.
     - **Email domain**: `company`
-    - **IdP SSO URL**: `https://authentik.company/application/saml/<semgrep slug>/sso/binding/post/`
+    - **IdP SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
     - **IdP Issuer ID**: `https://authentik.company`
     - **Upload/paste certificate**: Downloaded from the previous step.
 
