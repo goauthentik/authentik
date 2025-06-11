@@ -31,7 +31,10 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
+export interface AkControlElement<T = string | string[]> extends HTMLInputElement {
+    json: () => T;
+    requestUpdate?: () => void;
+}
 
 const doNotProcess = <T extends HTMLElement>(element: T) => element.dataset.formIgnore === "true";
 
@@ -61,11 +64,13 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
  *
  */
 export function serializeForm<T extends KeyUnknown>(
-    elements: NodeListOf<HorizontalFormElement>,
-): T | undefined {
+    elements: Iterable<HorizontalFormElement | AkControlElement>,
+): T {
     const json: { [key: string]: unknown } = {};
-    elements.forEach((element) => {
-        element.requestUpdate();
+
+    Array.from(elements).forEach((element) => {
+        element.requestUpdate?.();
+
         if (element.hidden) {
             return;
         }
@@ -121,6 +126,7 @@ export function serializeForm<T extends KeyUnknown>(
             assignValue(inputElement, inputElement.value, json);
         }
     });
+
     return json as unknown as T;
 }
 
@@ -154,8 +160,7 @@ export function serializeForm<T extends KeyUnknown>(
  *
  *
  */
-
-export abstract class Form<T> extends AKElement {
+export abstract class Form<T = unknown> extends AKElement {
     abstract send(data: T): Promise<unknown>;
 
     viewportCheck = true;

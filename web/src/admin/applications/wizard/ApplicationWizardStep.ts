@@ -5,7 +5,7 @@ import {
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
-import { AkControlElement } from "@goauthentik/elements/AkControlElement";
+import type { AkControlElement } from "@goauthentik/elements/forms/Form";
 import { serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 

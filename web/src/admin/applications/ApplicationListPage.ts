@@ -85,7 +85,7 @@ export class ApplicationListPage extends WithBrandConfig(TablePage<Application>)
         ];
     }
 
-    renderSidebarAfter(): TemplateResult {
+    protected renderSidebarAfter(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__body">

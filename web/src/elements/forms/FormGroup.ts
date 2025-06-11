@@ -20,7 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * trigger the `expanded` property as needed.
  */
 @customElement("ak-form-group")
-export class FormGroup extends AKElement {
+export class AKFormGroup extends AKElement {
     @property({ type: Boolean, reflect: true })
     public open = false;
 
@@ -133,8 +133,9 @@ export class FormGroup extends AKElement {
                 ${ref(this.formRef)}
                 ?open=${this.open}
                 ?aria-expanded="${this.open}"
-                role="presentation"
+                role="group"
                 aria-owns="form-group-expandable-content"
+                aria-labelledby="form-group-header-title"
                 aria-describedby="form-group-expandable-content-description"
             >
                 <summary @click=${this.toggle}>
@@ -142,7 +143,7 @@ export class FormGroup extends AKElement {
                         <header class="pf-c-form__field-group-header-title">
                             <div
                                 class="pf-c-form__field-group-header-title-text"
-                                data-test-id="form-group-header-title"
+                                id="form-group-header-title"
                                 role="heading"
                                 aria-level="3"
                             >
@@ -161,7 +162,7 @@ export class FormGroup extends AKElement {
                         </div>
                     </div>
                 </summary>
-                <div role="group" id="form-group-expandable-content">
+                <div id="form-group-expandable-content">
                     <slot></slot>
                 </div>
             </details>
@@ -171,6 +172,6 @@ export class FormGroup extends AKElement {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-form-group": FormGroup;
+        "ak-form-group": AKFormGroup;
     }
 }

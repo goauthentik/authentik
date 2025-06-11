@@ -5,7 +5,6 @@ import { ProvidersFixture } from "#e2e/fixtures/ProvidersFixture";
 import { SessionFixture } from "#e2e/fixtures/SessionFixture";
 import { UserLibraryFixture } from "#e2e/fixtures/UserLibraryFixture";
 import { createOUIDNameEngine } from "#e2e/selectors/ouid";
-import { ConsoleLogger } from "#logger/node";
 import { test as base } from "@playwright/test";
 
 export { expect } from "@playwright/test";
@@ -41,7 +40,7 @@ export const test = base.extend<E2EFixturesTestScope, E2EWorkerScope>({
     ],
 
     $: async ({ page }, use) => {
-        await use(createLocatorProxy<TestIDSelectorMap>(page, "test-id"));
+        await use(createLocatorProxy<TestIDSelectorMap>(page));
     },
 
     session: async ({ page }, use, { title }) => {

@@ -1,3 +1,4 @@
+import { createLocatorProxy } from "#e2e/elements/proxy";
 import { PageFixture } from "#e2e/fixtures/PageFixture";
 import { Page } from "@playwright/test";
 
@@ -19,9 +20,8 @@ export class ProvidersFixture extends PageFixture {
 
     //#region Selectors
 
-    public readonly $newProviderButton = this.page.getByTestId("new-provider-button");
-    public readonly $searchInput = this.page.getByTestId("table-search-input");
-    public readonly $searchButton = this.page.getByTestId("table-search-submit");
+    public readonly $providerList = this.page.locator("ak-provider-list");
+    public readonly $ = createLocatorProxy<TestIDSelectorMap>(this.$providerList);
 
     //#endregion
 

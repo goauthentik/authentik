@@ -20,23 +20,13 @@ export abstract class TablePage<T> extends Table<T> {
         return super.styles.concat(PFPage, PFContent, PFSidebar);
     }
 
-    renderSidebarBefore(): TemplateResult {
-        return html``;
-    }
+    protected renderSidebarBefore?(): TemplateResult;
 
-    renderSidebarAfter(): TemplateResult {
-        return html``;
-    }
+    protected renderSidebarAfter?(): TemplateResult;
 
-    // Optionally render section above the table
-    renderSectionBefore(): TemplateResult {
-        return html``;
-    }
+    protected renderSectionBefore?(): TemplateResult;
 
-    // Optionally render section below the table
-    renderSectionAfter(): TemplateResult {
-        return html``;
-    }
+    protected renderSectionAfter?(): TemplateResult;
 
     renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
@@ -77,18 +67,18 @@ export abstract class TablePage<T> extends Table<T> {
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>
-            ${this.renderSectionBefore()}
+            ${this.renderSectionBefore?.()}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
-                        ${this.renderSidebarBefore()}
+                        ${this.renderSidebarBefore?.()}
                         <div class="pf-c-sidebar__content">
                             <div class="pf-c-card">${this.renderTable()}</div>
                         </div>
-                        ${this.renderSidebarAfter()}
+                        ${this.renderSidebarAfter?.()}
                     </div>
                 </div>
             </section>
-            ${this.renderSectionAfter()}`;
+            ${this.renderSectionAfter?.()}`;
     }
 }

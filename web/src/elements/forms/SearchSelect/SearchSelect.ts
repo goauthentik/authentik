@@ -37,9 +37,7 @@ export abstract class SearchSelectBase<T>
     extends AkControlElement<string>
     implements ISearchSelectBase<T>
 {
-    static get styles() {
-        return [PFBase];
-    }
+    static styles = [PFBase];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.
@@ -90,6 +88,10 @@ export abstract class SearchSelectBase<T>
     // Used to inform the form of the name of the object
     @property()
     name?: string;
+
+    // Used to inform the form of the input label.
+    @property()
+    label?: string;
 
     // The textual placeholder for the search's <input> object, if currently empty. Used as the
     // native <input> object's `placeholder` field.
@@ -265,6 +267,7 @@ export abstract class SearchSelectBase<T>
             .options=${options}
             value=${ifDefined(value)}
             ?blankable=${this.blankable}
+            label=${ifDefined(this.label)}
             name=${ifDefined(this.name)}
             placeholder=${this.placeholder}
             emptyOption=${ifDefined(this.blankable ? this.emptyOption : undefined)}

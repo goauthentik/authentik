@@ -1,5 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { FormGroup } from "@goauthentik/elements/forms/FormGroup";
+import { AKFormGroup } from "@goauthentik/elements/forms/FormGroup";
 import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg, str } from "@lit/localize";
@@ -102,7 +102,7 @@ export class HorizontalFormElement extends AKElement {
         // check if we're in a form group, and expand that form group
         const parent = this.parentElement?.parentElement;
         if (parent && "open" in parent) {
-            (parent as FormGroup).open = true;
+            (parent as AKFormGroup).open = true;
         }
     }
     get invalid(): boolean {
@@ -143,9 +143,10 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group">
+        return html`<div class="pf-c-form__group" role="group" aria-label="${this.label}">
             <div class="pf-c-form__group-label">
                 <label
+                    id="group-label"
                     class="pf-c-form__label"
                     ?aria-required=${this.required}
                     for="${ifDefined(this.fieldID)}"

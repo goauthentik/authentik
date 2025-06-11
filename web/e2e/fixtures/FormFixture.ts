@@ -1,53 +1,123 @@
 import { PageFixture } from "#e2e/fixtures/PageFixture";
-import { Locator, Page, expect } from "@playwright/test";
+import type { LocatorContext } from "#e2e/selectors/types";
+import { Page, expect } from "@playwright/test";
 
 export class FormFixture extends PageFixture {
     static fixtureName = "Form";
 
-    //#region Form Selectors
+    //#region Selector Methods
+
+    //#endregion
+
+    //#region Field Methods
+
+    /**
+     * Set the value of a text input.
+     *
+     * @param fieldName The name of the form element.
+     * @param value the value to set.
+     */
+    public async fillTextField(
+        fieldName: string,
+        value: string,
+        parent: LocatorContext = this.page,
+    ): Promise<void> {
+        const control = parent.getByRole("textbox", {
+            name: fieldName,
+        });
+
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
+
+        await control.fill(value);
+    }
+
+    /**
+     * Set the value of a radio or checkbox input.
+     *
+     * @param fieldName The name of the form element.
+     * @param value the value to set.
+     */
+    public async setInputCheck(
+        fieldName: string,
+        value: boolean = true,
+        parent: LocatorContext = this.page,
+    ): Promise<void> {
+        const control = parent.locator("ak-switch-input", {
+            hasText: fieldName,
+        });
+
+        await control.scrollIntoViewIfNeeded();
+
+        await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
+
+        const currentChecked = await control
+            .getAttribute("checked")
+            .then((value) => value !== null);
+
+        if (currentChecked === value) {
+            return;
+        }
+
+        await control.click();
+    }
+
+    /**
+     * Set the value of a radio or checkbox input.
+     *
+     * @param fieldName The name of the form element.
+     * @param pattern the value to set.
+     */
+    public async setRadio(
+        groupName: string,
+        fieldName: string,
+        parent: LocatorContext = this.page,
+    ): Promise<void> {
+        const group = parent.getByRole("group", { name: groupName });
+
+        await expect(group, `Field "${groupName}" should be visible`).toBeVisible();
+        const control = parent.getByRole("radio", { name: fieldName });
+
+        await control.setChecked(true, {
+            force: true,
+        });
+    }
 
     /**
      * Set the value of a search select input.
      *
-     * @param name The name of the search select element.
+     * @param fieldLabel The name of the search select element.
      * @param pattern The text to match against the search select entry.
      */
     public async selectSearchValue(
-        name: string,
+        fieldLabel: string,
         pattern: string | RegExp,
-        parent: Pick<Locator, "locator"> = this.page,
+        parent: LocatorContext = this.page,
     ): Promise<void> {
-        let control = parent.locator(`ak-search-select[name="${name}"]`);
+        const control = parent.getByRole("textbox", { name: fieldLabel });
 
-        const found = await control.isVisible();
+        await expect(
+            control,
+            `Search select control (${fieldLabel}) should be visible`,
+        ).toBeVisible();
 
-        if (!found) {
-            control = parent.locator(`ak-search-select-ez[name="${name}"]`);
-        }
+        const fieldName = await control.getAttribute("name");
 
-        await expect(control, `Search select control (${name}) should be visible`).toBeVisible();
-
-        if (!control) {
-            throw new Error(`Unable to find an ak-search-select variant matching ${name}}`);
+        if (!fieldName) {
+            throw new Error(`Unable to find name attribute on search select (${fieldLabel})`);
         }
 
         // Find the search select input control and activate it.
-        const view = control.locator("ak-search-select-view");
-        const input = view.locator('input[type="text"]');
-
-        await input.scrollIntoViewIfNeeded();
-        await input.click();
+        await control.click();
 
         const button = this.page
             // ---
-            .locator(`div[data-managed-for*="${name}"]`)
-            .locator("button", {
+            .locator(`div[data-managed-for*="${fieldName}"] button`, {
                 hasText: pattern,
             });
 
         if (!button) {
             throw new Error(
-                `Unable to find an ak-search-select entry matching ${name}:${pattern.toString()}`,
+                `Unable to find an ak-search-select entry matching ${fieldLabel}:${pattern.toString()}`,
             );
         }
 
@@ -56,15 +126,36 @@ export class FormFixture extends PageFixture {
         await control.blur();
     }
 
-    public async selectAuthorizationFlow(
-        parent: Pick<Locator, "locator"> = this.page,
+    public async setFormGroup(
         pattern: string | RegExp,
-        name = "authorizationFlow",
+        value: boolean = true,
+        parent: LocatorContext = this.page,
     ) {
-        return this.selectSearchValue(name, pattern, parent);
+        const control = parent
+            .locator("ak-form-group", {
+                hasText: pattern,
+            })
+            .first();
+
+        const currentOpen = await control.getAttribute("open").then((value) => value !== null);
+
+        if (currentOpen === value) {
+            this.logger.debug(`Form group ${pattern} is already ${value ? "open" : "closed"}`);
+            return;
+        }
+
+        this.logger.debug(`Toggling form group ${pattern} to ${value ? "open" : "closed"}`);
+
+        await control.click();
+
+        if (value) {
+            await expect(control).toHaveAttribute("open");
+        } else {
+            await expect(control).not.toHaveAttribute("open");
+        }
     }
 
-    //#region Public Methods
+    //#endregion
 
     //#region Lifecycle
 

@@ -1,7 +1,5 @@
-import type { DeepLocatorProxy } from "#e2e/elements/proxy";
 import { ConsoleLogger, FixtureLogger } from "#logger/node";
 import { Page } from "@playwright/test";
-import { kebabCase } from "change-case";
 
 export interface PageFixtureOptions {
     page: Page;

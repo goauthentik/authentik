@@ -101,7 +101,7 @@ export class LibraryApplication extends AKElement {
             return html`<div class="pf-c-card__header">
                     <a
                         @click=${() => {
-                            this.racEndpointLaunch?.onClick();
+                            this.racEndpointLaunch?.show();
                         }}
                     >
                         <ak-app-icon
@@ -114,7 +114,7 @@ export class LibraryApplication extends AKElement {
                 <div class="pf-c-card__title">
                     <a
                         @click=${() => {
-                            this.racEndpointLaunch?.onClick();
+                            this.racEndpointLaunch?.show();
                         }}
                     >
                         ${this.application.name}

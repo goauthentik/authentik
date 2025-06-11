@@ -6,7 +6,7 @@ import "@goauthentik/elements/EmptyState";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
@@ -16,16 +16,15 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
-    static get styles() {
-        return ModalButton.styles.concat(
-            PFAbout,
-            css`
-                .pf-c-about-modal-box__hero {
-                    background-image: url("/static/dist/assets/images/flow_background.jpg");
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...ModalButton.styles,
+        PFAbout,
+        css`
+            .pf-c-about-modal-box__hero {
+                background-image: url("/static/dist/assets/images/flow_background.jpg");
+            }
+        `,
+    ];
 
     async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
@@ -55,19 +54,17 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ];
     }
 
-    renderModal() {
+    #backdropListener = (event: PointerEvent) => {
+        event.stopPropagation();
+    };
+
+    protected override renderModal() {
         let product = this.brandingTitle;
 
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-                this.closeModal();
-            }}
-        >
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
                 <div
                     class="pf-c-about-modal-box"
@@ -83,13 +80,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                         />
                     </div>
                     <div class="pf-c-about-modal-box__close">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            @click=${() => {
-                                this.open = false;
-                            }}
-                        >
+                        <button class="pf-c-button pf-m-plain" type="button" @click=${this.close}>
                             <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>

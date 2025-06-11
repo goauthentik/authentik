@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { LocatorContext } from "#e2e/selectors/types";
 import { ConsoleLogger } from "#logger/node";
 import { Locator, Page, expect } from "@playwright/test";
 import { kebabCase } from "change-case";
-
-export interface PageFixtureOptions {
-    page: Page;
-    testName: string;
-}
 
 export type LocatorMatchers = ReturnType<typeof expect<Locator>>;
 
@@ -26,12 +22,13 @@ export type DeepLocatorProxy<T> =
         : LocatorProxy;
 
 export function createLocatorProxy<T extends Record<string, any>>(
-    page: Page,
-    dataAttribute: string,
+    ctx: LocatorContext,
+    initialPathPrefix: string[] = [],
+    dataAttribute: string = "test-id",
 ): DeepLocatorProxy<T> {
     dataAttribute = kebabCase(dataAttribute);
 
-    function createProxy(path: string[] = []): any {
+    function createProxy(path: string[] = initialPathPrefix): any {
         const proxyCache = new Map<string, LocatorProxy>();
 
         return new Proxy({} as any, {
@@ -44,7 +41,7 @@ export function createLocatorProxy<T extends Record<string, any>>(
                 const selector = `[data-${dataAttribute}="${selectorValue}"]`;
 
                 // Create a locator for the current selector
-                const locator = page.locator(selector);
+                const locator = ctx.locator(selector);
 
                 if (proxyCache.has(selector)) {
                     ConsoleLogger.debug(`Using cached locator for ${selector}`);

@@ -52,7 +52,7 @@ export abstract class HorizontalLightComponent<T> extends AKElement {
 
     abstract renderControl(): SlottedTemplateResult;
 
-    renderHelp(): SlottedTemplateResult[] {
+    renderHelp(): SlottedTemplateResult | SlottedTemplateResult[] {
         const bigHelp = Array.isArray(this.bighelp) ? this.bighelp : [this.bighelp ?? nothing];
 
         return [

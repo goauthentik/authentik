@@ -1,5 +1,3 @@
-import type { SerializableControl } from "@goauthentik/elements/forms/Form";
-
 import { AKElement } from "./Base";
 
 /**
@@ -10,10 +8,7 @@ import { AKElement } from "./Base";
  * extracting the value.
  *
  */
-export abstract class AkControlElement<T = string | string[]>
-    extends AKElement
-    implements SerializableControl<T>
-{
+export abstract class AkControlElement<T = string | string[]> extends AKElement {
     constructor() {
         super();
         this.dataset.akControl = "true";

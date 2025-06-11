@@ -28,24 +28,30 @@ import { Provider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
-    searchEnabled(): boolean {
+    override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    override pageTitle(): string {
         return msg("Providers");
     }
-    pageDescription(): string {
+
+    override pageDescription(): string {
         return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
     }
-    pageIcon(): string {
+
+    override pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    override checkbox = true;
+    override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
+
+    public searchLabel = msg("Provider name");
+    public searchPlaceholder = msg("Search for providers…");
 
     async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
@@ -53,7 +59,7 @@ export class ProviderListPage extends TablePage<Provider> {
         );
     }
 
-    columns(): TableColumn[] {
+    override columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Application")),
@@ -62,8 +68,9 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Provider(s)")}
             .objects=${this.selectedElements}
