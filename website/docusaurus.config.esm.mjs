@@ -89,6 +89,9 @@ const config = createDocusaurusConfig({
             externalUrlRegex: ":\\/\\/goauthentik\\.io",
         },
     },
+    customFields: {
+        currentVersion: "2025.4.1",
+    },
     presets: [
         [
             "@docusaurus/preset-classic",
