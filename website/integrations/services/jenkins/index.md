@@ -50,7 +50,7 @@ Modify the **Security Realm** option to select `Login with Openid Connect`.
 
 In the **Client id** and **Client secret** fields, enter the Client ID and Client Secret values from the provider you created.
 
-Set the configuration mode to **Automatic configuration** and set the **Well-known configuration endpoint** to `https://authentik.company/application/o/<Slug of the application from above>/.well-known/openid-configuration`
+Set the configuration mode to **Automatic configuration** and set the **Well-known configuration endpoint** to `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 
 Check the checkbox **Override scopes** and input the scopes `openid profile email` into the new input field.
 

@@ -65,7 +65,7 @@ To support the integration of Aruba Orchestrator with authentik, you need to cre
     - **Name**: `authentik`
     - **Username Attribute**: `http://schemas.goauthentik.io/2021/02/saml/username`
     - **Issuer URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
-    - **SSO Endpoint**: `https://authentik.company/application/saml/<slug>/sso/binding/init/` (replace \<slug\> with application slug name)
+    - **SSO Endpoint**: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`
     - **IdP X509 Cert**: (paste in the downloaded signing certificate)
     - **ACS URL**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/consume`
     - **EdgeConnect SLO Endpoint**: `https://arubaorchestrator.company/gms/rest/authentication/saml2/logout`

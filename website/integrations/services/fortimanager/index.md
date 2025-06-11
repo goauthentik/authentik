@@ -34,7 +34,7 @@ To support the integration of FortiManager with authentik, you need to create an
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Set the **ACS URL** to `https://fortimanager.company/saml/?acs`.
-    - Set the **Issuer** to `https://authentik.company/application/saml/application-slug/sso/binding/redirect/`.
+    - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
     - Set the **Service Provider Binding** to `Post`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -48,8 +48,8 @@ To support the integration of FortiManager with authentik, you need to create an
 4. Choose the **Default Login Page** as either **Normal** or **Single Sign-On**. Selecting **Normal** allows both local and SAML authentication, while **Single Sign-On** restricts login to SAML only.
 5. By default, FortiManager creates a new user if one does not exist. Set the **Default Admin Profile** to assign the desired permissions to new users. A `no_permissions` profile is created by default for this purpose.
 6. Set the **IdP Type** field to **Custom**.
-7. For the **IdP Entity ID** field, enter: `https://authentik.company/application/saml/application-slug/sso/binding/redirect/`
-8. Set the **IdP Login URL** to: `https://authentik.company/application/saml/application-slug/sso/binding/redirect/`
+7. For the **IdP Entity ID** field, enter: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
+8. Set the **IdP Login URL** to: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
 9. Set the **IdP Logout URL** to: `https://authentik.company/`
 10. In the **IdP Certificate** field, import your authentik certificate (either self-signed or valid).
 
