@@ -9,11 +9,6 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.db import models
-from django.db.models import Count, ExpressionWrapper, F
-from django.db.models.fields import DurationField
-from django.db.models.functions import Extract
-from django.db.models.manager import Manager
-from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -197,21 +192,15 @@ class Event(SerializerModel, ExpiringModel):
         if hasattr(request, "user"):
             original_user = None
             if hasattr(request, "session"):
-                original_user = request.session.get(
-                    SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None
-                )
+                original_user = request.session.get(SESSION_KEY_IMPERSONATE_ORIGINAL_USER, None)
             self.user = get_user(request.user, original_user)
         if user:
             self.user = get_user(user)
         # Check if we're currently impersonating, and add that user
         if hasattr(request, "session"):
             if SESSION_KEY_IMPERSONATE_ORIGINAL_USER in request.session:
-                self.user = get_user(
-                    request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
-                )
-                self.user["on_behalf_of"] = get_user(
-                    request.session[SESSION_KEY_IMPERSONATE_USER]
-                )
+                self.user = get_user(request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER])
+                self.user["on_behalf_of"] = get_user(request.session[SESSION_KEY_IMPERSONATE_USER])
         # User 255.255.255.255 as fallback if IP cannot be determined
         self.client_ip = ClientIPMiddleware.get_client_ip(request)
         # Enrich event data
@@ -345,12 +334,8 @@ class NotificationTransport(SerializerModel):
             "user_username": notification.user.username,
         }
         if notification.event and notification.event.user:
-            default_body["event_user_email"] = notification.event.user.get(
-                "email", None
-            )
-            default_body["event_user_username"] = notification.event.user.get(
-                "username", None
-            )
+            default_body["event_user_email"] = notification.event.user.get("email", None)
+            default_body["event_user_username"] = notification.event.user.get("username", None)
         headers = {}
         if self.webhook_mapping_body:
             default_body = sanitize_item(
@@ -461,9 +446,7 @@ class NotificationTransport(SerializerModel):
             "title": "",
         }
         if notification.event and notification.event.user:
-            context["key_value"]["event_user_email"] = notification.event.user.get(
-                "email", None
-            )
+            context["key_value"]["event_user_email"] = notification.event.user.get("email", None)
             context["key_value"]["event_user_username"] = notification.event.user.get(
                 "username", None
             )
@@ -564,9 +547,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     severity = models.TextField(
         choices=NotificationSeverity.choices,
         default=NotificationSeverity.NOTICE,
-        help_text=_(
-            "Controls which severity level the created notifications will have."
-        ),
+        help_text=_("Controls which severity level the created notifications will have."),
     )
     group = models.ForeignKey(
         Group,

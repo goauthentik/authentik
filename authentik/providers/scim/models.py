@@ -14,7 +14,6 @@ from authentik.core.models import BackchannelProvider, Group, PropertyMapping, U
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncProvider
-from authentik.tasks.schedules.models import ScheduledModel
 
 
 class SCIMProviderUser(SerializerModel):

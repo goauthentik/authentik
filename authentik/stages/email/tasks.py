@@ -35,9 +35,7 @@ def send_mails(
     # Use the class path instead of the class itself for serialization
     stage_class_path = class_to_path(stage.__class__)
     for message in messages:
-        tasks.append(
-            send_mail.message(message.__dict__, stage_class_path, str(stage.pk))
-        )
+        tasks.append(send_mail.message(message.__dict__, stage_class_path, str(stage.pk)))
     return group(tasks).run()
 
 

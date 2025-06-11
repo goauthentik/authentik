@@ -42,9 +42,7 @@ def pre_save_outpost(sender, instance: Outpost, **_):
     # Name changes the deployment name, need to recreate
     dirty += old_instance.name != instance.name
     # namespace requires re-create
-    dirty += (
-        old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
-    )
+    dirty += old_instance.config.kubernetes_namespace != instance.config.kubernetes_namespace
     if bool(dirty):
         LOGGER.info("Outpost needs re-deployment due to changes", instance=instance)
         cache.set(CACHE_KEY_OUTPOST_DOWN % instance.pk.hex, old_instance)
@@ -105,8 +103,6 @@ def logout_revoke_direct(sender: type[User], request: HttpRequest, **_):
 
 
 @receiver(pre_delete, sender=AuthenticatedSession)
-def logout_revoke(
-    sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_
-):
+def logout_revoke(sender: type[AuthenticatedSession], instance: AuthenticatedSession, **_):
     """Catch logout by expiring sessions being deleted"""
     outpost_session_end.send(instance.session.session_key)

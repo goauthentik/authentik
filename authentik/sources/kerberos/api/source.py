@@ -2,7 +2,6 @@
 
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
-from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, SerializerMethodField
 from rest_framework.request import Request

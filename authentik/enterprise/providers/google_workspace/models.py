@@ -21,7 +21,6 @@ from authentik.core.models import (
 from authentik.lib.models import SerializerModel
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.sync.outgoing.models import OutgoingSyncDeleteAction, OutgoingSyncProvider
-from authentik.tasks.schedules.models import ScheduledModel
 
 
 def default_scopes() -> list[str]:

@@ -2,7 +2,6 @@ from django.db.models import Model
 from django.db.models.query import Q
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from dramatiq.actor import Actor
-from dramatiq.results.errors import ResultFailure
 
 from authentik.core.models import Group, User
 from authentik.lib.sync.outgoing.base import Direction

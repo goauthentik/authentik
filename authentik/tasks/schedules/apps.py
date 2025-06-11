@@ -1,4 +1,3 @@
-from django.apps import apps
 
 from authentik.blueprints.apps import ManagedAppConfig
 from authentik.lib.utils.reflection import get_apps
@@ -15,21 +14,12 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
     def tenant_schedule_specs(self) -> list[ScheduleSpec]:
         from authentik.tasks.schedules.models import ScheduledModel
 
-        def is_scheduled_model(klass) -> bool:
-            if ScheduledModel in klass.__bases__:
-                return True
-            return any(is_scheduled_model(klass) for klass in klass.__bases__)
-
         schedules = []
-
-        for Model in apps.get_models():
-            if not is_scheduled_model(Model):
-                continue
+        for Model in ScheduledModel.models():
             for obj in Model.objects.all():
                 for spec in obj.schedule_specs:
                     spec.rel_obj = obj
                     schedules.append(spec)
-
         return schedules
 
     def _reconcile_schedules(self, specs: list[ScheduleSpec]):

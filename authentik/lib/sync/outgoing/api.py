@@ -1,7 +1,5 @@
-from django.utils.text import slugify
 from dramatiq.actor import Actor
-from drf_spectacular.utils import OpenApiResponse, extend_schema
-from guardian.shortcuts import get_objects_for_user
+from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, ChoiceField
 from rest_framework.request import Request

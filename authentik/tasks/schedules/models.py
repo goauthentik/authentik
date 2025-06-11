@@ -3,6 +3,7 @@ from uuid import uuid4
 
 import pgtrigger
 from cron_converter import Cron
+from django.apps import apps
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
@@ -108,6 +109,15 @@ class ScheduledModel(models.Model):
 
     class Meta:
         abstract = True
+
+    @classmethod
+    def models(cls) -> list[models.Model]:
+        def is_scheduled_model(klass) -> bool:
+            if ScheduledModel in klass.__bases__:
+                return True
+            return any(is_scheduled_model(klass) for klass in klass.__bases__)
+
+        return [model for model in apps.get_models() if is_scheduled_model(model)]
 
     @property
     def schedule_specs(self) -> list[ScheduleSpec]:
