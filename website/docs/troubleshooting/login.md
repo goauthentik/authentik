@@ -28,30 +28,23 @@ uv run ak create_recovery_key 10 akadmin
 
 This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.
 
-## Can't access Initial Setup
+## Can't access initial setup
 
-If you're unable to access the initial setup flow (`/if/flow/initial-setup/`), first try restarting the containers as this often resolves temporary issues:
+If you're unable to access the initial setup flow (`/if/flow/initial-setup/`), first try restarting the containers as this often resolves temporary issues.
 
-If the issue persists after restarting, you can reset the admin password directly through the container as a last resort:
+However, if the issue persists after restarting, you can directly reset the admin password using the following commands:
 
-1. Access the server and reset the `akadmin` user's password:
 
-    For Docker Compose:
+Docker Compose deployments:
 
     ```bash
     docker compose exec server ak changepassword akadmin
     ```
 
-    For Kubernetes:
+Kubernetes deployments:
 
     ```bash
     kubectl exec -it deployment/authentik-server -c server -- ak changepassword akadmin
-    ```
-
-    For CLI:
-
-    ```bash
-    uv run ak changepassword akadmin
     ```
 
     Follow the prompts to set a new password.
@@ -65,5 +58,5 @@ If the issue persists after restarting, you can reset the admin password directl
 3. (Optional) Update the admin's email in the settings at `/if/user/#/settings` if needed.
 
 :::note
-This method bypasses the initial setup flow and should only be used if restarting the containers doesn't resolve the issue. The initial setup flow is the correct way to configure the admin user as it ensures all necessary setup steps are completed.
+This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the admin user.
 :::
