@@ -55,7 +55,7 @@ To support the integration of Home Assistant with authentik, you need to create 
 
 ### Home Assistant configuration for OIDC
 
-1. Click the following link to install the custom component: [Install hass-openid using HACS](https://my.home-assistant.io/redirect/hacs_repository/?category=integration&repository=hass-openid&owner=cavefire)
+1. Install hass-openid following the instructions at https://github.com/cavefire/hass-openid
 2. To support the integration of Home Assistant with authentik, you'll need to update the `configuration.yaml` file of your Home Assistant deployment:
 ```yaml showLineNumbers title="/config/configuration.yaml"
 openid:
