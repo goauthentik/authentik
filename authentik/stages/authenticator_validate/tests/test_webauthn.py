@@ -156,7 +156,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         session[SESSION_KEY_PLAN] = plan
         session.save()
@@ -265,7 +265,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
@@ -342,7 +342,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
@@ -424,7 +424,7 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         session = self.client.session
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
-        plan.append_stage(UserLoginStage(name=generate_id()))
+        plan.append_stage(UserLoginStage.objects.create(name=generate_id()))
         plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
