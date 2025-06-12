@@ -7,8 +7,8 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-text-input.js";
-import "@goauthentik/components/ak-private-textarea-input.js";
+import "@goauthentik/components/ak-secret-text-input.js";
+import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -248,22 +248,22 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                         value=${ifDefined(this.instance?.syncPrincipal)}
                         help=${msg("Principal used to authenticate to the KDC for syncing.")}
                     ></ak-text-input>
-                    <ak-private-text-input
+                    <ak-secret-text-input
                         name="syncPassword"
                         label=${msg("Sync password")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Password used to authenticate to the KDC for syncing. Optional if Sync keytab or Sync credentials cache is provided.",
                         )}
-                    ></ak-private-text-input>
-                    <ak-private-textarea-input
+                    ></ak-secret-text-input>
+                    <ak-secret-textarea-input
                         name="syncKeytab"
                         label=${msg("Sync keytab")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Keytab used to authenticate to the KDC for syncing. Optional if Sync password or Sync credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
-                    ></ak-private-textarea-input>
+                    ></ak-secret-textarea-input>
                     <ak-text-input
                         name="syncCcache"
                         label=${msg("Sync credentials cache")}
@@ -285,14 +285,14 @@ export class KerberosSourceForm extends WithCapabilitiesConfig(BaseSourceForm<Ke
                             "Force the use of a specific server name for SPNEGO. Must be in the form HTTP@domain",
                         )}
                     ></ak-text-input>
-                    <ak-private-textarea-input
+                    <ak-secret-textarea-input
                         name="spnegoKeytab"
                         label=${msg("SPNEGO keytab")}
                         ?revealed=${this.instance === undefined}
                         help=${msg(
                             "Keytab used for SPNEGO. Optional if SPNEGO credentials cache is provided. Must be base64 encoded or in the form TYPE:residual.",
                         )}
-                    ></ak-private-textarea-input>
+                    ></ak-secret-textarea-input>
                     <ak-text-input
                         name="spnegoCcache"
                         label=${msg("SPNEGO credentials cache")}

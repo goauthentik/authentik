@@ -8,8 +8,8 @@ import {
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
@@ -441,14 +441,14 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-private-textarea-input
+                    <ak-secret-textarea-input
                         label=${msg("Consumer secret")}
                         name="consumerSecret"
                         input-hint="code"
                         help=${msg("Also known as Client Secret.")}
                         required
                         ?revealed=${this.instance === undefined}
-                    ></ak-private-textarea-input>
+                    ></ak-secret-textarea-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
