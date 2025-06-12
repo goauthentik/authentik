@@ -16,8 +16,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost, OutpostConfig, OutpostType
-from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.ldap.models import APIAccessMode, LDAPProvider
+from authentik.root.tests import patched__get_ct_cached
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

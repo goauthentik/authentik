@@ -13,8 +13,8 @@ from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import Outpost, OutpostType
-from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
+from authentik.root.tests import patched__get_ct_cached
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

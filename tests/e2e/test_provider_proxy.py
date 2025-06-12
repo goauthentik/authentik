@@ -18,8 +18,8 @@ from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
-from authentik.outposts.tests.test_ws import patched__get_ct_cached
 from authentik.providers.proxy.models import ProxyProvider
+from authentik.root.tests import patched__get_ct_cached
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

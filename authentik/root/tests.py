@@ -3,9 +3,21 @@
 from pathlib import Path
 from secrets import token_urlsafe
 from tempfile import gettempdir
+from unittest.mock import patch
 
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
+from django.test import TransactionTestCase as BaseTransactionTestCase
 from django.urls import reverse
+
+
+def patched__get_ct_cached(app_label, codename):
+    """Caches `ContentType` instances like its `QuerySet` does."""
+    return ContentType.objects.get(app_label=app_label, permission__codename=codename)
+
+
+@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
+class TransactionTestCase(BaseTransactionTestCase): ...
 
 
 class TestRoot(TestCase):
