@@ -1,4 +1,3 @@
-from djangoql.serializers import DjangoQLSchemaSerializer
 from rest_framework.response import Response
 
 from authentik.api.pagination import Pagination
@@ -15,7 +14,9 @@ class AutocompletePagination(Pagination):
         schema = QLSearch().get_schema(self.request, self.view)
         introspections = {}
         if hasattr(self.view, "get_ql_fields"):
-            introspections = DjangoQLSchemaSerializer().serialize(
+            from authentik.enterprise.search.schema import AKQLSchemaSerializer
+
+            introspections = AKQLSchemaSerializer().serialize(
                 schema(self.page.paginator.object_list.model)
             )
         return introspections

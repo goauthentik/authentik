@@ -1,16 +1,16 @@
 """DjangoQL search"""
 
 from django.apps import apps
-from django.db import models
 from django.db.models import QuerySet
 from djangoql.ast import Name
-from djangoql.compat import text_type
 from djangoql.exceptions import DjangoQLError
 from djangoql.queryset import apply_search
-from djangoql.schema import DjangoQLSchema, StrField
+from djangoql.schema import DjangoQLSchema
 from rest_framework.filters import SearchFilter
 from rest_framework.request import Request
 from structlog.stdlib import get_logger
+
+from authentik.enterprise.search.fields import JSONSearchField
 
 LOGGER = get_logger()
 AUTOCOMPLETE_COMPONENT_NAME = "Autocomplete"
@@ -18,41 +18,6 @@ AUTOCOMPLETE_SCHEMA = {
     "type": "object",
     "additionalProperties": {},
 }
-
-
-class JSONSearchField(StrField):
-    """JSON field for DjangoQL"""
-
-    model: models.Model
-    type = "relation"
-
-    def __init__(self, model=None, name=None, nullable=None):
-        super().__init__(model, name, nullable)
-
-    def get_lookup(self, path, operator, value):
-        search = "__".join(path)
-        op, invert = self.get_operator(operator)
-        q = models.Q(**{f"{search}{op}": self.get_lookup_value(value)})
-        return ~q if invert else q
-
-    def relation(self) -> str:
-        return f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
-
-
-class ChoiceSearchField(StrField):
-    def __init__(self, model=None, name=None, nullable=None):
-        super().__init__(model, name, nullable, suggest_options=True)
-
-    def get_options(self, search):
-        result = []
-        choices = self._field_choices()
-        if choices:
-            search = search.lower()
-            for c in choices:
-                choice = text_type(c[0])
-                if search in choice.lower():
-                    result.append(choice)
-        return result
 
 
 class BaseSchema(DjangoQLSchema):

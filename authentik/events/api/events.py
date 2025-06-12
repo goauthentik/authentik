@@ -135,10 +135,10 @@ class EventViewSet(ModelViewSet):
     def get_ql_fields(self):
         from djangoql.schema import DateTimeField, StrField
 
-        from authentik.enterprise.search.ql import ChoiceSearchField, JSONSearchField
+        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
 
         return [
-            JSONSearchField(Event, "user"),
+            # JSONSearchField(Event, "user"),
             ChoiceSearchField(Event, "action"),
             StrField(Event, "app", suggest_options=True),
             JSONSearchField(Event, "context"),
