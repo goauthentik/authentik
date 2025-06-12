@@ -120,3 +120,9 @@ ${this.displayValue}</textarea
         `;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-hidden-textarea-input": AkHiddenTextAreaInput;
+    }
+}

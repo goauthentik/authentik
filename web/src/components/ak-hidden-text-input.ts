@@ -111,10 +111,10 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         });
     }
 
-    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping
-    // its content in the LightDom so the inner components actually inherit styling,
-    // the normal `css` options aren't available.  Embedding styles is bad styling,
-    // and we'll fix it in the next style refresh.
+    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping its content
+    // in the LightDom so the inner components actually inherit styling, the normal `css` options
+    // aren't available. Embedding styles is bad styling, and we'll fix it in the next style
+    // refresh.
     protected renderInputField(setValue: (ev: InputEvent) => void, code: boolean) {
         return html` <input
             style="flex: 1 1 auto; min-width: 0;"
@@ -151,8 +151,6 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         </div>`;
     }
 }
-
-export default AkHiddenTextInput;
 
 declare global {
     interface HTMLElementTagNameMap {

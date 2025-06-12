@@ -81,3 +81,9 @@ export class VisibilityToggle extends AKElement implements VisibilityToggleProps
         </button>`;
     }
 }
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-visibility-toggle": VisibilityToggle;
+    }
+}
