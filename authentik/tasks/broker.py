@@ -6,6 +6,7 @@ from queue import Empty, Queue
 from random import randint
 
 import tenacity
+from django.conf import settings
 from django.db import (
     DEFAULT_DB_ALIAS,
     DatabaseError,
@@ -61,13 +62,15 @@ def raise_connection_error(func):
 
 class DbConnectionMiddleware(Middleware):
     def _close_old_connections(self, *args, **kwargs):
+        if settings.TEST:
+            return
         close_old_connections()
 
     # TODO: figure out if we really need this, it seems a bit excessive to close connections after
     # each message and if fails in tests
 
-    # before_process_message = _close_old_connections
-    # after_process_message = _close_old_connections
+    before_process_message = _close_old_connections
+    after_process_message = _close_old_connections
 
     def _close_connections(self, *args, **kwargs):
         connections.close_all()
