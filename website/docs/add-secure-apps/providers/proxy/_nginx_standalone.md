@@ -1,4 +1,4 @@
-Create a `http_top.conf` file in your niginx custom directory (`data/nginx/custom/`) with the following content:
+Create a `http_top.conf` file in your nginx `conf.d` directory (`/nginx/conf.d/`) with the following content:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
@@ -6,10 +6,6 @@ map $http_upgrade $connection_upgrade {
 		  ''      close;
 }
 ```
-
-note:::
-You may need to create the `/custom` directory if it doesn't already exist.
-:::
 
 Use the following nginx template:
 
