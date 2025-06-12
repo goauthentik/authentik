@@ -18,16 +18,6 @@ export abstract class PageFixture {
     protected readonly page: Page;
     protected readonly testName: string;
 
-    /**
-     * A proxy to retrieve elements by test ID.
-     *
-     * ```ts
-     * const $button = this.$.button;
-     * ```
-     */
-    // public readonly $: DeepLocatorProxy<TestIDSelectorMap>;
-    //#region Public Methods
-
     constructor({ page, testName }: PageFixtureOptions) {
         this.page = page;
         this.testName = testName;

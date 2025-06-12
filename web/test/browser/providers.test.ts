@@ -85,22 +85,14 @@ test.describe("Configure Providers", () => {
     }, testInfo) => {
         const { wizard } = $;
 
-        const $ouidComponent = page.locator("ouid=oauth2provider");
-
-        await $ouidComponent.click();
+        await page.locator("ouid=oauth2provider").click();
 
         await wizard.navigation.next.click();
 
         const providerName = providerNames.get(testInfo.testId)!;
         const $providerForm = providers.locateProviderForm("oauth2");
 
-        const nameField = $providerForm.getByRole("textbox", {
-            name: "name",
-        });
-
-        await expect(nameField).toBeVisible();
-
-        await nameField.fill(providerName);
+        await form.fillTextField("name", providerName, $providerForm);
 
         await form.selectSearchValue(
             "Authorization flow",
@@ -120,9 +112,7 @@ test.describe("Configure Providers", () => {
 
         const { $providerList } = providers;
 
-        const $ouidComponent = page.locator("ouid=oauth2provider");
-
-        await $ouidComponent.click();
+        await page.locator("ouid=oauth2provider").click();
 
         await wizard.navigation.next.click();
 
