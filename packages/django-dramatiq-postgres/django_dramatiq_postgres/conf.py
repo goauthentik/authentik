@@ -16,6 +16,7 @@ class Conf:
     middlewares = conf.get(
         "middlewares",
         (
+            ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
             ("dramatiq.middleware.age_limit.AgeLimit", {}),
             ("dramatiq.middleware.time_limit.TimeLimit", {}),
             ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
@@ -24,3 +25,9 @@ class Conf:
             ("dramatiq.middleware.retries.Retries", {}),
         ),
     )
+
+    channel_prefix = conf.get("channel_prefix", "dramatiq.tasks")
+
+    task_class = conf.get("task_class", None)
+
+    test = conf.get("test", False)

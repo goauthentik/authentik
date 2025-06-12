@@ -1,7 +1,7 @@
 [project]
 name = "django-dramatiq-postgres"
 version = "0.1.0"
-description = "Django and DramatiQ integration with postgres-specific features"
+description = "Django and Dramatiq integration with postgres-specific features"
 requires-python = ">=3.9,<3.14"
 readme = "README.md"
 license = "MIT"

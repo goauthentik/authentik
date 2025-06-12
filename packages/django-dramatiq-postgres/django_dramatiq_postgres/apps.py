@@ -8,7 +8,7 @@ from django_dramatiq_postgres.conf import Conf
 
 class DjangoDramatiqPostgres(AppConfig):
     name = "django_dramatiq_postgres"
-    verbose_name = "Django DramatiQ postgres"
+    verbose_name = "Django Dramatiq postgres"
 
     def ready(self):
         old_broker = dramatiq.get_broker()
@@ -28,12 +28,13 @@ class DjangoDramatiqPostgres(AppConfig):
             "middleware": [],
         }
         broker: dramatiq.broker.Broker = import_string(Conf.broker_class)(
-            *broker_args, **broker_kwargs
+            *broker_args,
+            **broker_kwargs,
         )
 
         for middleware_class, middleware_kwargs in Conf.middlewares.items():
             middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
-                **middleware_kwargs
+                **middleware_kwargs,
             )
             broker.add_middleware(middleware)
 
