@@ -3,9 +3,11 @@
 import os
 from argparse import ArgumentParser
 from unittest import TestCase
+from unittest.mock import patch
 
 import pytest
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
 from structlog.stdlib import get_logger
 
@@ -26,6 +28,11 @@ def get_docker_tag() -> str:
         branch_name = os.environ[env_pr_branch]
     branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
     return f"gh-{branch_name}"
+
+
+def patched__get_ct_cached(app_label, codename):
+    """Caches `ContentType` instances like its `QuerySet` does."""
+    return ContentType.objects.get(app_label=app_label, permission__codename=codename)
 
 
 class PytestTestRunner(DiscoverRunner):  # pragma: no cover
@@ -159,8 +166,9 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                 return 1
 
         self.logger.info("Running tests", test_files=self.args)
-        try:
-            return pytest.main(self.args)
-        except Exception as e:
-            self.logger.error("Error running tests", error=str(e), test_files=self.args)
-            return 1
+        with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
+            try:
+                return pytest.main(self.args)
+            except Exception as e:
+                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                return 1

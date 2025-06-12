@@ -4,6 +4,7 @@ from dataclasses import asdict
 
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
+from django.test import TransactionTestCase
 
 from authentik import __version__
 from authentik.core.tests.utils import create_test_flow
@@ -11,7 +12,6 @@ from authentik.outposts.consumer import WebsocketMessage, WebsocketMessageInstru
 from authentik.outposts.models import Outpost, OutpostType
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.root import websocket
-from authentik.root.tests import TransactionTestCase
 
 
 class TestOutpostWS(TransactionTestCase):

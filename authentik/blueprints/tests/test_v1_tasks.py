@@ -3,13 +3,13 @@
 from hashlib import sha512
 from tempfile import NamedTemporaryFile, mkdtemp
 
+from django.test import TransactionTestCase
 from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discovery, blueprints_find
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.root.tests import TransactionTestCase
 
 TMP = mkdtemp("authentik-blueprints")
 

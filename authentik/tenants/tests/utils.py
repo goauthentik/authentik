@@ -1,7 +1,6 @@
 from django.core.management import call_command
 from django.db import connection, connections
-
-from authentik.root.tests import APITransactionTestCase
+from rest_framework.test import APITransactionTestCase
 
 
 class TenantAPITestCase(APITransactionTestCase):
