@@ -17,7 +17,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Schedule, TasksApi } from "@goauthentik/api";
+import { ModelEnum, Schedule, TasksApi } from "@goauthentik/api";
 
 @customElement("ak-schedule-list")
 export class ScheduleList extends Table<Schedule> {
@@ -153,14 +153,13 @@ export class ScheduleList extends Table<Schedule> {
     }
 
     renderExpanded(item: Schedule): TemplateResult {
-        // TODO: no hardcoded things
-        // grep authentik_tasks_schedules.schedule gen-ts-api
+        const [appLabel, modelName] = ModelEnum.AuthentikTasksSchedulesSchedule.split(".");
         return html` <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
                     <ak-task-list
-                        .relObjAppLabel="authentik_tasks_schedules"
-                        .relObjModel="schedule"
+                        .relObjAppLabel=${appLabel}
+                        .relObjModel=${modelName}
                         .relObjId="${item.id}"
                     ></ak-task-list>
                 </div>
