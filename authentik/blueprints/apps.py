@@ -147,11 +147,11 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
             ScheduleSpec(
                 actor=blueprints_discovery,
                 crontab=f"{fqdn_rand('blueprints_v1_discover')} * * * *",
-                run_on_startup=True,
+                send_on_startup=True,
             ),
             ScheduleSpec(
                 actor=clear_failed_blueprints,
                 crontab=f"{fqdn_rand('blueprints_v1_cleanup')} * * * *",
-                run_on_startup=True,
+                send_on_startup=True,
             ),
         ]

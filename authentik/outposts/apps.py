@@ -82,7 +82,7 @@ class AuthentikOutpostConfig(ManagedAppConfig):
             ScheduleSpec(
                 actor=outpost_connection_discovery,
                 crontab=f"{fqdn_rand('outpost_connection_discovery')} */8 * * *",
-                run_on_startup=True,
+                send_on_startup=True,
                 paused=not CONFIG.get_bool("outposts.discover"),
             ),
         ]

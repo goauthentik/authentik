@@ -26,12 +26,17 @@ class AuthentikTasksSchedulesConfig(ManagedAppConfig):
 
         from authentik.tasks.schedules.models import Schedule
 
+        schedules_to_send = []
         with transaction.atomic():
             pks_to_keep = []
             for spec in specs:
                 schedule = spec.update_or_create()
                 pks_to_keep.append(schedule.pk)
+                if spec.send_on_startup:
+                    schedules_to_send.append(schedule)
             Schedule.objects.exclude(pk__in=pks_to_keep).delete()
+        for schedule in schedules_to_send:
+            schedule.send()
 
     @ManagedAppConfig.reconcile_tenant
     def reconcile_tenant_schedules(self):
