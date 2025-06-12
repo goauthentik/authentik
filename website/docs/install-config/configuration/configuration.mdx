@@ -67,14 +67,12 @@ To check if your config has been applied correctly, you can run the following co
 
 ### Basic Connection Settings
 
-- `AUTHENTIK_POSTGRESQL__HOST`: Defines the hostname or IP address of your PostgreSQL server where authentik will store its data.
-- `AUTHENTIK_POSTGRESQL__NAME`: Specifies the name of the database that authentik will use within PostgreSQL.
-- `AUTHENTIK_POSTGRESQL__USER`: Defines the username that authentik will use to authenticate with PostgreSQL.
-- `AUTHENTIK_POSTGRESQL__PORT`: Specifies the port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
-- `AUTHENTIK_POSTGRESQL__PASSWORD`: Defines the password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
-  {/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
-  {/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Defines the name of the schema used by default in the database. Defaults to `public`. :ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__HOST`: Hostname or IP address of your PostgreSQL server where authentik will store its data.
+- `AUTHENTIK_POSTGRESQL__PORT`: Port on which PostgreSQL is listening. Defaults to the standard PostgreSQL port `5432`.
+- `AUTHENTIK_POSTGRESQL__USER`: Username that authentik will use to authenticate with PostgreSQL.
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
+- `AUTHENTIK_POSTGRESQL__NAME`: Name of the database that authentik will use within PostgreSQL.
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Specifies the PostgreSQL schema name to use for authentik data. If not specified, defalts to `public`. :ak-version[2024.12]
 
     It is only supported to change this value before the initial start of authentik.
 
@@ -107,11 +105,19 @@ See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable
 
     See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details on when to enable this feature. Particularly useful when using a connection pooler to detect and recover from stale connections.
 
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but may cause issues when using connection poolers in transaction pooling mode.
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but are **not compatible** with:
+
+    - Connection poolers in transaction pooling mode (such as PgBouncer in transaction pooling mode)
+    - Cross-database queries
+    - Some types of database proxies
+
+    **Set this to `true` if you're using PgBouncer in transaction pooling mode or experiencing cursor-related errors.**
 
     See [Django's documentation on transaction pooling and server-side cursors](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors) for more details.
 
-- `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Allows passing extra configuration options to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. The value must be a base64-encoded JSON dictionary. Ignored when `USE_POOL` is set to `false`. :ak-version[2025.4]
+{/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
+{/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
+{/* - `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Allows passing extra configuration options to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. The value must be a base64-encoded JSON dictionary. Ignored when `AUTHENTIK_POSTGRESQL__USE_POOL` is set to `false`. :ak-version[2025.4] */}
 
 ### Deprecated Settings
 
@@ -120,7 +126,7 @@ See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable
 
 ### Read Replicas
 
-You can configure additional read replica databases to distribute database load and improve performance. If read replicas are configured, the main database is not used for reads. If you'd like the main database to be included for reads, add it as a read replica as well.
+You can configure additional replica databases to distribute database load and improve performance. When replicas are configured, authentik automatically routes query operations between the primary database (for writes) and replica databases (for queries). By default, the primary database won't be used for queries when replicas are available. If you want the primary database to also handle queries, simply add it as a replica too.
 
 To configure authentik to use replicas, add the settings below to your [configuration file](./configuration.mdx#set-your-environment-variables). If you have multiple replicas, add settings for each replica by replacing the default `0` with a unique value for each additional replica.
 
