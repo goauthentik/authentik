@@ -344,6 +344,37 @@ USE_TZ = True
 LOCALE_PATHS = ["./locale"]
 
 
+# Tests
+
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+
+# DramatiQ
+
+DRAMATIQ = {
+    "middlewares": (
+        # TODO: fixme
+        # ("dramatiq.middleware.prometheus.Prometheus", {}),
+        ("dramatiq.middleware.age_limit.AgeLimit", {}),
+        (
+            "dramatiq.middleware.time_limit.TimeLimit",
+            {
+                # 5 minutes task timeout by default for all tasks
+                "time_limit": 600 * 1000,
+            },
+        ),
+        ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
+        ("dramatiq.middleware.callbacks.Callbacks", {}),
+        ("dramatiq.middleware.pipelines.Pipelines", {}),
+        ("dramatiq.middleware.retries.Retries", {"max_retries": 20 if not TEST else 0}),
+        # TODO: results
+        ("authentik.tasks.middleware.FullyQualifiedActorName", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
+    )
+}
+
+
 # Sentry integration
 
 env = get_env()
@@ -405,9 +436,6 @@ else:
     # such as django-tenants
     MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
     MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
-
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 structlog_configure()
 LOGGING = get_logger_config()
