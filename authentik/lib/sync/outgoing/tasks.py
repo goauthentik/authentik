@@ -128,6 +128,7 @@ class SyncTasks:
         ).first()
         if not provider:
             return
+        task.set_uid(slugify(provider.name))
         # Override dry run mode if requested, however don't save the provider
         # so that scheduled sync tasks still run in dry_run mode
         if override_dry_run:
@@ -152,12 +153,10 @@ class SyncTasks:
             except DryRunRejected as exc:
                 task.info(
                     "Dropping mutating request due to dry run",
-                    attributes={
-                        "obj": sanitize_item(obj),
-                        "method": exc.method,
-                        "url": exc.url,
-                        "body": exc.body,
-                    },
+                    obj=sanitize_item(obj),
+                    method=exc.method,
+                    url=exc.url,
+                    body=exc.body,
                 )
             except BadRequestSyncException as exc:
                 self.logger.warning("failed to sync object", exc=exc, obj=obj)
@@ -187,6 +186,7 @@ class SyncTasks:
         provider_pk: int,
         raw_op: str,
     ):
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -200,6 +200,7 @@ class SyncTasks:
         ).first()
         if not provider:
             return
+        task.set_uid(slugify(provider.name))
         operation = Direction(raw_op)
         client = provider.client_for_model(instance.__class__)
         # Check if the object is allowed within the provider's restrictions
@@ -233,6 +234,7 @@ class SyncTasks:
         action: str,
         pk_set: list[int],
     ):
+        task = CurrentTask.get_task()
         self.logger = get_logger().bind(
             provider_type=class_to_path(self._provider_model),
         )
@@ -245,6 +247,7 @@ class SyncTasks:
         ).first()
         if not provider:
             return
+        task.set_uid(slugify(provider.name))
 
         # Check if the object is allowed within the provider's restrictions
         queryset: QuerySet = provider.get_object_qs(Group)

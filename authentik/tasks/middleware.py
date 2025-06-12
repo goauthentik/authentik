@@ -18,17 +18,24 @@ class FullyQualifiedActorName(Middleware):
 
 
 class CurrentTask(Middleware):
-    _TASK: contextvars.ContextVar[Task | None] = contextvars.ContextVar("_TASK", default=None)
+    _TASK: contextvars.ContextVar[list[Task] | None] = contextvars.ContextVar(
+        "_TASK",
+        default=None,
+    )
 
     @classmethod
     def get_task(cls) -> Task:
         task = cls._TASK.get()
-        if task is None:
+        if not task:
             raise RuntimeError("CurrentTask.get_task() should only be called in a running task")
-        return task
+        return task[-1]
 
     def before_process_message(self, broker: Broker, message: Message):
-        self._TASK.set(Task.objects.get(message_id=message.message_id))
+        tasks = self._TASK.get()
+        if tasks is None:
+            tasks = []
+        tasks.append(Task.objects.get(message_id=message.message_id))
+        self._TASK.set(tasks)
 
     def after_process_message(
         self,
@@ -38,9 +45,10 @@ class CurrentTask(Middleware):
         result: Any | None = None,
         exception: Exception | None = None,
     ):
-        task: Task | None = self._TASK.get()
-        if task is None:
+        tasks: list[Task] | None = self._TASK.get()
+        if tasks is None or len(tasks) == 0:
             LOGGER.warn("Task was None, not saving. This should not happen")
+            return
         else:
-            task.save()
-        self._TASK.set(None)
+            tasks[-1].save()
+        self._TASK.set(tasks[:-1])
