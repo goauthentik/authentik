@@ -1,4 +1,4 @@
-Create a `http_top.conf` file at `data/nginx/custom/` with the following content:
+Create a `http_top.conf` file in your niginx custom directory (`data/nginx/custom/`) with the following content:
 
 ```nginx
 map $http_upgrade $connection_upgrade {
