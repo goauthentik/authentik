@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from django.test import TransactionTestCase as BaseTransactionTestCase
 from django.urls import reverse
+from rest_framework.test import APITransactionTestCase as BaseAPITransactionTestCase
 
 
 def patched__get_ct_cached(app_label, codename):
@@ -18,6 +19,10 @@ def patched__get_ct_cached(app_label, codename):
 
 @patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TransactionTestCase(BaseTransactionTestCase): ...
+
+
+@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
+class APITransactionTestCase(BaseAPITransactionTestCase): ...
 
 
 class TestRoot(TestCase):

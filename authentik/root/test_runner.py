@@ -12,10 +12,20 @@ from structlog.stdlib import get_logger
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
-from tests.e2e.utils import get_docker_tag
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "main")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
 
 
 class PytestTestRunner(DiscoverRunner):  # pragma: no cover
