@@ -113,8 +113,12 @@ class ManagedAppConfig(AppConfig):
         """
         from django_tenants.utils import get_public_schema_name, schema_context
 
-        with schema_context(get_public_schema_name()):
-            self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
+        try:
+            with schema_context(get_public_schema_name()):
+                self._reconcile(self.RECONCILE_GLOBAL_CATEGORY)
+        except (DatabaseError, ProgrammingError, InternalError) as exc:
+            self.logger.debug("Failed to access database to run reconcile", exc=exc)
+            return
 
 
 class AuthentikBlueprintsConfig(ManagedAppConfig):

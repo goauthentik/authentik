@@ -50,11 +50,11 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         CONFIG.set("error_reporting.send_pii", True)
         sentry_init()
 
+        apps.get_app_config("authentik_tasks").use_test_broker()
+
         pre_startup.send(sender=self, mode="test")
         startup.send(sender=self, mode="test")
         post_startup.send(sender=self, mode="test")
-
-        apps.get_app_config("authentik_tasks").use_test_broker()
 
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):
