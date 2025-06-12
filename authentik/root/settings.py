@@ -350,7 +350,7 @@ TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 
-# DramatiQ
+# Dramatiq
 
 DRAMATIQ = {
     "middlewares": (
@@ -361,8 +361,7 @@ DRAMATIQ = {
             "dramatiq.middleware.time_limit.TimeLimit",
             {
                 # 5 minutes task timeout by default for all tasks
-                "time_limit": 600
-                * 1000,
+                "time_limit": 600 * 1000,
             },
         ),
         ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),

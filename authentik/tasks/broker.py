@@ -256,12 +256,13 @@ class _PostgresConsumer(Consumer):
         self.broker = broker
         self.db_alias = db_alias
         self.queue_name = queue_name
-        self.timeout = timeout // 1000
+        self.timeout = 30000 // 1000
         self.unlock_queue = Queue()
         self.in_processing = set()
         self.prefetch = prefetch
         self.misses = 0
         self._listen_connection: DatabaseWrapper | None = None
+        self.postgres_channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
 
         self.scheduler = Scheduler(self.broker)
 
@@ -283,11 +284,7 @@ class _PostgresConsumer(Consumer):
         # Should be set to True by Django by default
         self._listen_connection.set_autocommit(True)
         with self._listen_connection.cursor() as cursor:
-            cursor.execute(
-                sql.SQL("LISTEN {}").format(
-                    sql.Identifier(channel_name(self.queue_name, ChannelIdentifier.ENQUEUE))
-                )
-            )
+            cursor.execute(sql.SQL("LISTEN {}").format(sql.Identifier(self.postgres_channel)))
         return self._listen_connection
 
     @raise_connection_error
@@ -342,13 +339,15 @@ class _PostgresConsumer(Consumer):
             )
             .values_list("message_id", flat=True)
         )
-        channel = channel_name(self.queue_name, ChannelIdentifier.ENQUEUE)
-        return [Notify(pid=0, channel=channel, payload=item) for item in notifies]
+        return [Notify(pid=0, channel=self.postgres_channel, payload=item) for item in notifies]
 
     def _poll_for_notify(self):
         with self.listen_connection.cursor() as cursor:
-            notifies = list(cursor.connection.notifies(timeout=self.timeout))
-            self.logger.debug(f"Received {len(notifies)} postgres notifies")
+            self.logger.debug(f"timeout is {self.timeout}")
+            notifies = list(cursor.connection.notifies(timeout=self.timeout, stop_after=1))
+            self.logger.debug(
+                f"Received {len(notifies)} postgres notifies on channel {self.postgres_channel}"
+            )
             self.notifies += notifies
 
     def _get_message_lock_id(self, message: Message) -> int:
