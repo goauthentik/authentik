@@ -69,13 +69,13 @@ class JSONSearchField(StrField):
             relation_key = "_".join(parent_parts)
             if len(parts) > 1:
                 out_dict = {
-                        relation_key: {
-                            parts[0]: {
-                                "type": "relation",
-                                "relation": f"{relation_key}_{parts[0]}",
-                            }
+                    relation_key: {
+                        parts[0]: {
+                            "type": "relation",
+                            "relation": f"{relation_key}_{parts[0]}",
                         }
                     }
+                }
                 child_paths = recursive_function(parts.copy(), parent_parts.copy())
                 child_paths.update(out_dict)
                 return child_paths
@@ -105,7 +105,6 @@ class JSONSearchField(StrField):
                 else:
                     final_dict[key][sub_key] = sub_value
         return OrderedDict(final_dict)
-
 
     def relation(self) -> str:
         return f"{self.model._meta.app_label}.{self.model._meta.model_name}_{self.name}"
