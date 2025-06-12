@@ -2,8 +2,6 @@
 
 from os import environ
 
-from django.test import TransactionTestCase
-
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
@@ -12,6 +10,7 @@ from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import load_fixture
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
+from authentik.root.tests import TransactionTestCase
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.user_login.models import UserLoginStage

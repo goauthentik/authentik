@@ -3,12 +3,11 @@
 from collections.abc import Callable
 from pathlib import Path
 
-from django.test import TransactionTestCase
-
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
 from authentik.blueprints.v1.importer import Importer
 from authentik.brands.models import Brand
+from authentik.root.tests import TransactionTestCase
 
 
 class TestPackaged(TransactionTestCase):

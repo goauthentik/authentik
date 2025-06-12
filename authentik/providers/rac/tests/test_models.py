@@ -1,7 +1,5 @@
 """Test RAC Models"""
 
-from django.test import TransactionTestCase
-
 from authentik.core.models import Application, AuthenticatedSession, Session
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
@@ -12,6 +10,7 @@ from authentik.providers.rac.models import (
     RACPropertyMapping,
     RACProvider,
 )
+from authentik.root.tests import TransactionTestCase
 
 
 class TestModels(TransactionTestCase):
