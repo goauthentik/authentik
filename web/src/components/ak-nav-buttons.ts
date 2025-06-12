@@ -177,6 +177,7 @@ export class NavigationButtons extends AKElement {
         return html`<img
             class="pf-c-page__header-tools-item pf-c-avatar pf-m-hidden pf-m-visible-on-xl"
             src=${ifDefined(this.me?.user.avatar)}
+            aria-hidden="true"
             alt="${msg("Avatar image")}"
         />`;
     }
@@ -191,7 +192,7 @@ export class NavigationButtons extends AKElement {
     }
 
     render() {
-        return html`<div class="pf-c-page__header-tools">
+        return html`<div role="presentation" class="pf-c-page__header-tools">
             <div class="pf-c-page__header-tools-group">
                 ${this.renderApiDrawerTrigger()}
                 <!-- -->

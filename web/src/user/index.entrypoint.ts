@@ -222,7 +222,6 @@ class UserInterfacePresentation extends WithBrandConfig(AKElement) {
                                 <div class="pf-c-drawer__body">
                                     <main class="pf-c-page__main">
                                         <ak-router-outlet
-                                            role="main"
                                             class="pf-l-bullseye__item pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"

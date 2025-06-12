@@ -8,6 +8,7 @@ import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { until } from "lit/directives/until.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
@@ -54,8 +55,15 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ];
     }
 
+    #contentRef = createRef<HTMLDivElement>();
+
     #backdropListener = (event: PointerEvent) => {
-        event.stopPropagation();
+        // We only want to close the modal when the backdrop is clicked, not when it's children are clicked.
+
+        if (this.#contentRef.value?.contains(event.target as Node)) {
+            return;
+        }
+        this.close();
     };
 
     protected override renderModal() {
@@ -67,6 +75,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
                 <div
+                    ${ref(this.#contentRef)}
                     class="pf-c-about-modal-box"
                     role="dialog"
                     aria-modal="true"
