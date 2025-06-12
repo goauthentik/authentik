@@ -66,9 +66,6 @@ class DbConnectionMiddleware(Middleware):
             return
         close_old_connections()
 
-    # TODO: figure out if we really need this, it seems a bit excessive to close connections after
-    # each message and if fails in tests
-
     before_process_message = _close_old_connections
     after_process_message = _close_old_connections
 
