@@ -7,11 +7,8 @@ from unittest import TestCase
 import pytest
 from django.conf import settings
 from django.test.runner import DiscoverRunner
-<<<<<<< HEAD
 from django.test.testcases import apps
-=======
 from structlog.stdlib import get_logger
->>>>>>> main
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init

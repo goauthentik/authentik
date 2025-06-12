@@ -153,6 +153,8 @@ export class ScheduleList extends Table<Schedule> {
     }
 
     renderExpanded(item: Schedule): TemplateResult {
+        // TODO: no hardcoded things
+        // grep authentik_tasks_schedules.schedule gen-ts-api
         return html` <td role="cell" colspan="3">
             <div class="pf-c-table__expandable-row-content">
                 <div class="pf-c-content">
