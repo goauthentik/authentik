@@ -26,7 +26,6 @@ class JSONSearchField(StrField):
         return ~q if invert else q
 
     def context_keys(self, model: type[Model]) -> Generator[tuple[str]]:
-        # object_pks = self.get_lookup()
         with connection.cursor() as cursor:
             cursor.execute(
                 f"""
@@ -53,7 +52,7 @@ class JSONSearchField(StrField):
                 )
 
                 SELECT key_path_array FROM unique_paths;
-            """
+            """  # nosec
             )
             return (x[0] for x in cursor.fetchall())
 
