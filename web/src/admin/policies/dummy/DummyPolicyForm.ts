@@ -36,7 +36,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -64,7 +64,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
@@ -82,11 +82,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             <span class="pf-c-switch__label">${msg("Pass policy?")}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (min)")}
-                        ?required=${true}
-                        name="waitMin"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (min)")} required name="waitMin">
                         <input
                             type="number"
                             value="${this.instance?.waitMin ?? 1}"
@@ -99,11 +95,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Wait (max)")}
-                        ?required=${true}
-                        name="waitMax"
-                    >
+                    <ak-form-element-horizontal label=${msg("Wait (max)")} required name="waitMax">
                         <input
                             type="number"
                             value="${this.instance?.waitMax ?? 5}"
