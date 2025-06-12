@@ -93,33 +93,23 @@ The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloa
     - `verify-ca`: Verify that the server certificate is signed by a trusted certificate authority.
     - `verify-full`: Verify both the server certificate and that the hostname matches.
 
-- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: Specifies the file path to the Certificate Authority (CA) certificate used to verify the server's SSL certificate. Required when using `verify-ca` or `verify-full` modes.
-- `AUTHENTIK_POSTGRESQL__SSLCERT`: Specifies the file path to the client certificate that authentik will present to the PostgreSQL server for mutual TLS authentication. Only needed if the PostgreSQL server requires client certificate authentication.
-- `AUTHENTIK_POSTGRESQL__SSLKEY`: Specifies the file path to the private key corresponding to the client certificate specified in `SSLCERT`. Used to prove authentik's identity to the PostgreSQL server.
+- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: Specifies the file path to the Certificate Authority (CA) certificate used to verify the PostgreSQL server's SSL certificate. Required when using `verify-ca` or `verify-full` modes.
 
-### Connection Management
+- `AUTHENTIK_POSTGRESQL__SSLCERT`: Specifies the file path to the client certificate that authentik will present to the PostgreSQL server for mutual TLS authentication. Only needed if your PostgreSQL server requires client certificate authentication.
 
-- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Controls how long database connections are kept open in seconds. Defaults to `0` (connections are closed after each request). Possible values:
+- `AUTHENTIK_POSTGRESQL__SSLKEY`: Specifies the file path to the private key corresponding to the client certificate specified in `AUTHENTIK_POSTGRESQL__SSLCERT`. Used to prove authentik's identity to the PostgreSQL server.
 
-    - `0`: No persistent connections.
-    - Any positive integer: Number of seconds to keep connections open.
-    - `null`: Unlimited persistent connections.
+See [Django's PostgreSQL documentation](https://docs.djangoproject.com/en/stable/ref/databases/#postgresql-connection-settings) for more details on these settings.
 
-    See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-max-age) for more details on how this affects performance and resource usage.
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Maximum age of a database connection in seconds. Defaults to `0` (close after each request). Set to a positive value to enable connection persistence or `None` for unlimited persistence. See [Django's documentation on persistent connections](https://docs.djangoproject.com/en/stable/ref/databases/#persistent-connections) for details.
 
-- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Enables health checks on persistent database connections before they are reused. Helps prevent the use of stale connections that might have been closed by the server. Defaults to `false`. Possible values:
-
-    - `true`: Perform health checks.
-    - `false`: Do not perform health checks.
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Enables health checks on persistent database connections before they are reused. Defaults to `false`. Helps prevent the use of stale connections that might have been closed by the server.
 
     See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details on when to enable this feature. Particularly useful when using a connection pooler to detect and recover from stale connections.
 
-- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Server-side cursors can improve performance for large result sets but may not be compatible with all database configurations. Defaults to `false`. Possible values:
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disables server-side cursors when set to `true`. Defaults to `false`. Server-side cursors can improve performance for large result sets, but may cause issues when using connection poolers in transaction pooling mode.
 
-    - `true`: Disable server-side cursors.
-    - `false`: Enable server-side cursors.
-
-    See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#disable-server-side-cursors) for more details on when you might want to disable server-side cursors.
+    See [Django's documentation on transaction pooling and server-side cursors](https://docs.djangoproject.com/en/stable/ref/databases/#transaction-pooling-and-server-side-cursors) for more details.
 
 - `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Allows passing extra configuration options to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. The value must be a base64-encoded JSON dictionary. Ignored when `USE_POOL` is set to `false`. :ak-version[2025.4]
 
