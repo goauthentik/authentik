@@ -72,7 +72,7 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__USER`: Username that authentik will use to authenticate with PostgreSQL.
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
 - `AUTHENTIK_POSTGRESQL__NAME`: Name of the database that authentik will use within PostgreSQL.
-- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Specifies the PostgreSQL schema name to use for authentik data. If not specified, defalts to `public`. :ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Specifies the PostgreSQL schema name to use for authentik data. If not specified, defaults to `public`. :ak-version[2024.12]
 
     It is only supported to change this value before the initial start of authentik.
 
