@@ -1,10 +1,19 @@
-```nginx
-# Upgrade WebSocket if requested, otherwise use keepalive
-map $http_upgrade $connection_upgrade_keepalive {
-    default upgrade;
-    ''      '';
-}
+Create a `http_top.conf` file at `data/nginx/custom/` with the following content:
 
+```nginx
+map $http_upgrade $connection_upgrade {
+		default upgrade;
+		  ''      close;
+}
+```
+
+note:::
+You may need to create the `/custom` directory if it doesn't already exist.
+:::
+
+Use the following nginx template:
+
+```nginx
 server {
     # SSL and VHost configuration
     listen                  443 ssl http2;
@@ -20,13 +29,13 @@ server {
     proxy_buffer_size 32k;
 
     location / {
-        # Put your proxy_pass to your application here, and all the other statements you'll need
+        # Put your proxy_pass to your application here, and all the other statements you'll need.
         # proxy_pass http://localhost:5000;
         # proxy_set_header Host $host;
         # proxy_set_header ...
         # Support for websocket
         proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection $connection_upgrade_keepalive;
+        proxy_set_header Connection $connection_upgrade;
 
         ##############################
         # authentik-specific config
