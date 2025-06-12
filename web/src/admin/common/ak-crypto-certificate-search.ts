@@ -38,7 +38,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     public search!: SearchSelect<CertificateKeyPair>;
 
     @property({ type: String })
-    public name: string | null | undefined;
+    public name?: string | null;
 
     @property({ type: String })
     public label?: string | undefined;
@@ -63,7 +63,10 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     @property({ type: Boolean, attribute: "singleton" })
     public singleton = false;
 
-    selectedKeypair?: CertificateKeyPair;
+    /**
+     * @todo Document this.
+     */
+    public selectedKeypair?: CertificateKeyPair;
 
     get value() {
         return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;

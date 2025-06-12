@@ -44,13 +44,13 @@ export class CoreGroupSearch extends CustomListenerElement(AKElement) {
      * @attr
      */
     @property({ type: String, reflect: true })
-    group?: string;
+    public group?: string;
 
     @query("ak-search-select")
-    search!: SearchSelect<Group>;
+    public search!: SearchSelect<Group>;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name?: string | null;
 
     selectedGroup?: Group;
 
