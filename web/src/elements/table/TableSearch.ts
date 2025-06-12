@@ -55,7 +55,12 @@ export class TableSearch extends AKElement {
     };
 
     render(): TemplateResult {
-        return html`<form class="pf-c-input-group" @submit=${this.#submitListener} role="search">
+        return html`<form
+            class="pf-c-input-group"
+            @submit=${this.#submitListener}
+            role="search"
+            aria-label="Table search"
+        >
             <input
                 aria-label="${this.label}"
                 class="pf-c-form-control"

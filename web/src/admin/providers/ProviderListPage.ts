@@ -106,9 +106,8 @@ export class ProviderListPage extends TablePage<Provider> {
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
-        return html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i> ${msg(
-                "Warning: Provider not assigned to any application.",
-            )}`;
+        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
+            ${msg("Warning: Provider not assigned to any application.")}`;
     }
 
     row(item: Provider): TemplateResult[] {
@@ -127,9 +126,13 @@ export class ProviderListPage extends TablePage<Provider> {
                     type=${item.component}
                 >
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
+                <button
+                    aria-label=${msg("Edit provider")}
+                    slot="trigger"
+                    class="pf-c-button pf-m-plain"
+                >
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i aria-hidden="true" class="fas fa-edit"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,

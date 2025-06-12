@@ -19,7 +19,7 @@ import { UsedBy, UsedByActionEnum } from "@goauthentik/api";
 type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
-export class DeleteObjectsTable<T> extends Table<T> {
+export class DeleteObjectsTable<T extends object> extends Table<T> {
     paginated = false;
 
     @property({ attribute: false })
@@ -247,7 +247,7 @@ export class DeleteBulkForm<T> extends ModalButton {
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-delete-objects-table": DeleteObjectsTable<unknown>;
-        "ak-forms-delete-bulk": DeleteBulkForm<unknown>;
+        "ak-delete-objects-table": DeleteObjectsTable<object>;
+        "ak-forms-delete-bulk": DeleteBulkForm<object>;
     }
 }

@@ -1,6 +1,7 @@
 import { expect, test } from "#e2e";
 import { ProvidersFixture } from "#e2e/fixtures/ProvidersFixture";
 import { createRandomName } from "#e2e/utils/generators";
+import { ConsoleLogger } from "#logger/node";
 import { IDGenerator } from "@goauthentik/core/id";
 
 test.describe("Configure Providers", () => {
@@ -29,52 +30,48 @@ test.describe("Configure Providers", () => {
         await wizard.navigation.next.expect.toBeDisabled();
     });
 
-    test.afterEach(async ({ $, providers, page }, { testId }) => {
-        // const { wizard } = $;
+    test.afterEach(async ({ providers }, { testId }) => {
         const { $providerList } = providers;
 
         const providerName = providerNames.get(testId)!;
-
-        // await expect(wizard.heading.$, "Wizard has closed").toBeHidden({
-        //     timeout: 1500,
-        // });
 
         const searchInput = $providerList
             .getByRole("search")
             .getByPlaceholder("Search for providers");
 
-        await page.waitForTimeout(1000);
-
         await searchInput.fill(providerName);
-        await searchInput.focus();
-        await searchInput.press("Enter", { delay: 200 });
-        await searchInput.press("Enter", { delay: 200 });
 
-        await searchInput.blur();
+        const tries = 10;
+        let found = false;
 
-        // const response = page.waitForResponse((response) => {
-        //     const url = new URL(response.url());
-        //     return (
-        //         url.pathname.startsWith("/api/v3/providers/all/") &&
-        //         url.searchParams.get("search") === providerName
-        //     );
-        // });
+        for (let i = 0; i < tries; i++) {
+            await searchInput.press("Enter");
+            await searchInput.blur();
 
-        // // await $providerList
-        // //     .getByRole("search")
-        // //     .getByRole("button", { name: "Search", exact: true })
-        // //     .click({
-        // //         force: true,
-        // //     });
+            const $table = $providerList.getByRole("row", {
+                name: providerName,
+            });
 
-        // await response;
+            ConsoleLogger.info(
+                `${i + 1}/${tries} Waiting for provider ${providerName} to appear in the table`,
+            );
 
-        await expect(
-            $providerList.getByText(providerName),
-            `Provider "${providerName}" should be visible`,
-        ).toBeVisible({
-            timeout: 1500,
-        });
+            found = await $table
+                .waitFor({
+                    timeout: 1500,
+                })
+                .then(() => true)
+                .catch(() => false);
+
+            if (found) {
+                ConsoleLogger.info(`Provider ${providerName} found in the table`);
+                break;
+            }
+        }
+
+        if (!found) {
+            throw new Error(`Provider ${providerName} not found in the table`);
+        }
     });
 
     test("Should configure a simple OAuth2 Provider", async ({
@@ -162,8 +159,8 @@ test.describe("Configure Providers", () => {
         await form.fillTextField("Refresh token validity", "days=40");
 
         await form.setInputCheck("Include claims in id_token", false);
-        await form.setRadio("Subject mode", "Based on the User's username");
 
+        await form.setRadio("Subject mode", "Based on the User's username");
         await form.setRadio("Issuer mode", "Same identifier is used for all providers");
 
         await form.setFormGroup("Machine-to-Machine authentication settings", true);
