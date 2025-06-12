@@ -44,6 +44,15 @@ declare module "process" {
                 readonly AK_LOG_LEVEL?: Level;
 
                 /**
+                 * The base URL of web server to run the tests against.
+                 *
+                 * Typically this is `http://localhost:9000`.
+                 *
+                 * @format url
+                 */
+                readonly AK_TEST_RUNNER_PAGE_URL?: string;
+
+                /**
                  * @todo Determine where this is used and if it is needed,
                  * give it a better name.
                  * @deprecated
