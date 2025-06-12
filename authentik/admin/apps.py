@@ -3,6 +3,7 @@
 from prometheus_client import Info
 
 from authentik.blueprints.apps import ManagedAppConfig
+from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.lib import ScheduleSpec
 
@@ -41,5 +42,6 @@ class AuthentikAdminConfig(ManagedAppConfig):
             ScheduleSpec(
                 actor=update_latest_version,
                 crontab=f"{fqdn_rand('admin_latest_version')} * * * *",
+                paused=CONFIG.get_bool("disable_update_check"),
             ),
         ]

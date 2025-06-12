@@ -13,6 +13,7 @@ if TYPE_CHECKING:
 class ScheduleSpec:
     actor: Actor
     crontab: str
+    paused: bool = False
     uid: str | None = None
 
     args: Iterable[Any] = field(default_factory=tuple)
@@ -50,6 +51,7 @@ class ScheduleSpec:
         defaults = {
             **query,
             "actor_name": self.actor.actor_name,
+            "paused": self.paused,
             "args": self.get_args(),
             "kwargs": self.get_kwargs(),
             "options": self.get_options(),
