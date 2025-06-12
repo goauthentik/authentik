@@ -47,8 +47,7 @@ def ldap_connectivity_check(pk: str | None = None):
     # We take the configured hours timeout time by 3.5 as we run user and
     # group in parallel and then membership, then deletions, so 3x is to cover the serial tasks,
     # and 0.5x on top of that to give some more leeway
-    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
-    * 3.5,
+    time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000) * 3.5,
 )
 def ldap_sync(source_pk: str):
     """Sync a single source"""
@@ -115,7 +114,7 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     return messages
 
 
-@actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"))
+@actor(time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours") * 1000)
 def ldap_sync_page(source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self = CurrentTask.get_task()

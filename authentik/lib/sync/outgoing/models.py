@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from dramatiq.actor import Actor
 
 from authentik.core.models import Group, User
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
+from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import BaseOutgoingSyncClient
 from authentik.lib.utils.time import fqdn_rand
 from authentik.tasks.schedules.lib import ScheduleSpec
@@ -48,13 +48,14 @@ class OutgoingSyncProvider(ScheduledModel, Model):
     def get_paginator[T: User | Group](self, type: type[T]) -> Paginator:
         return Paginator(self.get_object_qs(type), PAGE_SIZE)
 
-    def get_object_sync_time_limit[T: User | Group](self, type: type[T]) -> int:
+    def get_object_sync_time_limit_ms[T: User | Group](self, type: type[T]) -> int:
         num_pages: int = self.get_paginator(type).num_pages
-        return int(num_pages * PAGE_TIMEOUT * 1.5) * 1000
+        return int(num_pages * PAGE_TIMEOUT_MS * 1.5)
 
-    def get_sync_time_limit(self) -> int:
+    def get_sync_time_limit_ms(self) -> int:
         return int(
-            self.get_object_sync_time_limit(User) + self.get_object_sync_time_limit(Group) * 1.5
+            (self.get_object_sync_time_limit_ms(User) + self.get_object_sync_time_limit_ms(Group))
+            * 1.5
         )
 
     @property
@@ -78,7 +79,7 @@ class OutgoingSyncProvider(ScheduledModel, Model):
                 uid=self.pk,
                 args=(self.pk,),
                 options={
-                    "time_limit": self.get_sync_time_limit(),
+                    "time_limit": self.get_sync_time_limit_ms(),
                 },
                 send_on_save=True,
                 crontab=f"{fqdn_rand(self.pk)} */4 * * *",

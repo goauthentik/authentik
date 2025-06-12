@@ -10,7 +10,7 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.expression.exceptions import SkipObjectException
 from authentik.core.models import Group, User
 from authentik.events.utils import sanitize_item
-from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT
+from authentik.lib.sync.outgoing import PAGE_SIZE, PAGE_TIMEOUT_MS
 from authentik.lib.sync.outgoing.base import Direction
 from authentik.lib.sync.outgoing.exceptions import (
     BadRequestSyncException,
@@ -47,7 +47,7 @@ class SyncTasks:
         for page in paginator.page_range:
             page_sync = sync_objects.message_with_options(
                 args=(class_to_path(object_type), page, provider.pk),
-                time_limit=PAGE_TIMEOUT * 1000,
+                time_limit=PAGE_TIMEOUT_MS,
                 # Assign tasks to the same schedule as the current one
                 rel_obj=current_task.rel_obj,
                 **options,
@@ -97,8 +97,8 @@ class SyncTasks:
                         object_type=Group,
                     )
                 )
-                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit(User))
-                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit(Group))
+                users_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(User))
+                group_tasks.run().wait(timeout=provider.get_object_sync_time_limit_ms(Group))
             except TransientSyncException as exc:
                 self.logger.warning("transient sync exception", exc=exc)
                 raise Retry() from exc
