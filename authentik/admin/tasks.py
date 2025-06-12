@@ -38,7 +38,7 @@ def update_latest_version():
     self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
-        self.warning("Version check disabled.")
+        self.info("Version check disabled.")
         return
     try:
         response = get_http_session().get(
