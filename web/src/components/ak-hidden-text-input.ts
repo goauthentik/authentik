@@ -40,24 +40,11 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
     extends HorizontalLightComponent<string>
     implements AkHiddenTextInputProps
 {
-    static get styles() {
+    public static get styles() {
         return [
             css`
-                :host {
-                    --ak-hidden-text-input-gap: var(--pf-v5-global--spacer--xs, 0.25rem);
-                }
-                #main {
+                main {
                     display: flex;
-                    width: 100%;
-                    gap: var(--ak-hidden-text-input-gap);
-                }
-                #main > input {
-                    flex: 1 1 auto;
-                    min-width: 0; /* Prevents flex item overflow */
-                }
-                #main > ak-visibility-toggle {
-                    flex: 0 0 auto;
-                    align-self: center;
                 }
             `,
         ];
@@ -124,8 +111,13 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         });
     }
 
+    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping
+    // its content in the LightDom so the inner components actually inherit styling,
+    // the normal `css` options aren't available.  Embedding styles is bad styling,
+    // and we'll fix it in the next style refresh.
     protected renderInputField(setValue: (ev: InputEvent) => void, code: boolean) {
         return html` <input
+            style="flex: 1 1 auto; min-width: 0;"
             part="input"
             type=${this.revealed ? "text" : "password"}
             @input=${setValue}
@@ -145,11 +137,12 @@ export class AkHiddenTextInput<T extends InputLike = HTMLInputElement>
         const setValue = (ev: InputEvent) => {
             this.value = (ev.target as T).value;
         };
-        return html` <div id="main" part="main">
+        return html` <div style="display: flex; gap: 0.25rem">
             ${this.renderInputField(setValue, code)}
             <!-- -->
             <ak-visibility-toggle
                 part="toggle"
+                style="flex: 0 0 auto; align-self: flex-start"
                 ?open=${this.revealed}
                 show-message=${this.showMessage}
                 hide-message=${this.hideMessage}

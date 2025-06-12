@@ -44,17 +44,6 @@ export class AkHiddenTextAreaInput
     extends AkHiddenTextInput<HTMLTextAreaElement>
     implements AkHiddenTextAreaInputProps
 {
-    static get styles() {
-        return [
-            ...AkHiddenTextInput.styles,
-            css`
-                textarea {
-                    resize: vertical;
-                }
-            `,
-        ];
-    }
-
     /* These are mostly just forwarded to the textarea component. */
 
     /**
@@ -103,11 +92,16 @@ export class AkHiddenTextAreaInput
             .join("\n");
     }
 
+    // TODO: Because of the peculiarities of how HorizontalLightComponent works, keeping its content
+    // in the LightDom so the inner components actually inherit styling, the normal `css` options
+    // aren't available. Embedding styles is bad styling, and we'll fix it in the next style
+    // refresh.
     protected override renderInputField(setValue: (ev: InputEvent) => void, code: boolean) {
         const wrap = this.revealed ? this.wrap : "soft";
 
         return html`
             <textarea
+                style="flex: 1 1 auto; min-width: 0;"
                 part="textarea"
                 @input=${setValue}
                 placeholder=${ifDefined(this.placeholder)}
