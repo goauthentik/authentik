@@ -2,7 +2,6 @@
 title: Certificates
 ---
 
-
 Certificates in authentik are used for:
 
 - Signing and verifying SAML requests and responses
