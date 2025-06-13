@@ -19,7 +19,7 @@ const metadata: Meta<VisibilityToggleProps> = {
 A straightforward two-state iconic button for toggling the visibility of sensitive content such as passwords, private keys, or other secret information.
                 
 - Use for sensitive content that users might want to temporarily reveal
-- There are default hide/show messages for screen readers, but they can be overriden
+- There are default hide/show messages for screen readers, but they can be overridden
 - Clients always handle the state
 - The \`open\` state is false by default; we assume you want sensitive content hidden at start
 `,
