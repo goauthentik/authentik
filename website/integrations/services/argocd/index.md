@@ -78,7 +78,7 @@ url: https://argocd.company
 dex.config: |
     connectors:
     - config:
-        issuer: https://authentik.company/application/o/<application slug defined in step 2>/
+        issuer: https://authentik.company/application/o/<application_slug>/
         clientID: <client ID from the Provider above>
         clientSecret: $dex.authentik.clientSecret
         insecureEnableGroups: true

@@ -39,7 +39,7 @@ To support the integration of GlobalProtect with authentik, you need to create a
     - **Choose a Provider type**: Select **SAML Provider**.
     - **Configure the Provider**:
         - Set the **ACS URL** to `https://gp.company:443/SAML20/SP/ACS`. (Note the absence of the trailing slash and the inclusion of the web interface port)
-        - Set the **Issuer** to `https://authentik.company/application/saml/application-slug/sso/binding/redirect/`.
+        - Set the **Issuer** to `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`.
         - Set the **Service Provider Binding** to `Post`.
         - Under **Advanced protocol settings**, select an available signing certificate.
 3. Click **Submit** to save the new application and provider.

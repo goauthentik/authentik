@@ -87,7 +87,7 @@ You can set up OpenID in two different ways: via the web interface or the comman
 From the sidebar of the main page, go to **Identity -> OpenID**, click **Create**, and then define the configuration as follows:
 
 - Name: MinIO
-- Config URL: `https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration`
+- Config URL: `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 - Client ID: Your client ID from the previous step
 - Client Secret: Your client secret from the previous step
 - Scopes: `openid, email, profile, minio`
@@ -103,7 +103,7 @@ After that is done, run the following command to configure the OpenID provider:
 
 ```
 ~ mc admin config set myminio identity_openid \
-  config_url="https://authentik.company/application/o/<minio slug>/.well-known/openid-configuration" \
+  config_url="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration" \
   client_id="<client id>" \
   client_secret="<client secret>" \
   scopes="openid,profile,email,minio"

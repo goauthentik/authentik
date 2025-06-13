@@ -51,7 +51,7 @@ To support the integration of Landscape with authentik, you need to create an ap
 On the Landscape Server, edit the file `/etc/landscape/service.conf` and add the following snippet under the `[landscape]` section:
 
 ```
-oidc-issuer = https://authentik.company/application/o/<slug of the application you've created>/
+oidc-issuer = https://authentik.company/application/o/<application_slug>/
 oidc-client-id = <client ID of the provider you've created>
 oidc-client-secret = <client Secret of the provider you've created>
 ```

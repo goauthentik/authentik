@@ -49,7 +49,7 @@ To support the integration of Gravity with authentik, you need to create an appl
 1. From the **Gravity administrative interface**, navigate to **Cluster** > **Roles** and click **API**.
 2. Under the **OIDC** sub-section, configure the following values:
 
-- **Issuer**: `https://authentik.company/application/o/application-slug/`
+- **Issuer**: `https://authentik.company/application/o/<application_slug>/`
 - **Client ID**: Your Client ID from authentik
 - **Client Secret**: Your Client Secret from authentik
 - **Redirect URL**: `https://gravity.company/auth/oidc/callback`
