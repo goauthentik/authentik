@@ -134,7 +134,7 @@ class Command(BaseCommand):
                 "id": {"type": "string"},
                 "state": {
                     "type": "string",
-                    "enum": [s.value for s in BlueprintEntryDesiredState],
+                    "enum": sorted([s.value for s in BlueprintEntryDesiredState]),
                     "default": "present",
                 },
                 "conditions": {"type": "array", "items": {"type": "boolean"}},
@@ -205,7 +205,7 @@ class Command(BaseCommand):
                 "type": "object",
                 "required": ["permission"],
                 "properties": {
-                    "permission": {"type": "string", "enum": perms},
+                    "permission": {"type": "string", "enum": sorted(perms)},
                     "user": {"type": "integer"},
                     "role": {"type": "string"},
                 },
