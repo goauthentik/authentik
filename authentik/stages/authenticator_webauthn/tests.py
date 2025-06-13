@@ -404,6 +404,6 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
             component="ak-stage-access-denied",
             error_message=(
                 "Exceeded maximum attempts. Contact your authentik administrator for help."
-            )
+            ),
         )
         self.assertFalse(WebAuthnDevice.objects.filter(user=self.user).exists())
