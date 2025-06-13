@@ -1138,6 +1138,6 @@ class File(SerializerModel):
                 CONFIG.get("web.path", "/")[:-1]
                 + f"/files/{'public' if self.public else 'private'}/{self.pk}"
             )
-        elif self.location.startswith("/"):
+        elif self.location.startswith("/static"):
             return CONFIG.get("web.path", "/")[:-1] + self.location
         return self.location

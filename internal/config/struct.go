@@ -5,6 +5,7 @@ type Config struct {
 	Storage        StorageConfig        `yaml:"storage"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL, overwrite"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting" env:", prefix=AUTHENTIK_ERROR_REPORTING__"`
+	Postgresql     PostgresqlConfig     `yaml:"postgresql" env:", prefix=AUTHENTIK_POSTGRESQL__"`
 	Redis          RedisConfig          `yaml:"redis" env:", prefix=AUTHENTIK_REDIS__"`
 	Outposts       OutpostConfig        `yaml:"outposts" env:", prefix=AUTHENTIK_OUTPOSTS__"`
 
@@ -23,6 +24,16 @@ type Config struct {
 	AuthentikHostBrowser string `env:"AUTHENTIK_HOST_BROWSER"`
 	AuthentikToken       string `env:"AUTHENTIK_TOKEN"`
 	AuthentikInsecure    bool   `env:"AUTHENTIK_INSECURE"`
+}
+
+// TODO: SSL
+type PostgresqlConfig struct {
+	Host          string `yaml:"host" env:"HOST, overwrite"`
+	Port          string `yaml:"port" env:"PORT, overwrite"`
+	User          string `yaml:"user" env:"USER, overwrite"`
+	Password      string `yaml:"password" env:"PASSWORD, overwrite"`
+	Name          string `yaml:"name" env:"NAME, overwrite"`
+	DefaultSchema string `yaml:"default_schema" env:"DEFAULT_SCHEMA, overwrite"`
 }
 
 type RedisConfig struct {
