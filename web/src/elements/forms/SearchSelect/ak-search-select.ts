@@ -47,9 +47,7 @@ export interface ISearchSelect<T> extends ISearchSelectBase<T> {
 
 @customElement("ak-search-select")
 export class SearchSelect<T> extends SearchSelectBase<T> implements ISearchSelect<T> {
-    static get styles() {
-        return [...SearchSelectBase.styles];
-    }
+    static styles = [...SearchSelectBase.styles];
 
     // A function which takes the query state object (accepting that it may be empty) and returns a
     // new collection of objects.

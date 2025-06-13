@@ -14,61 +14,70 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-table-search")
 export class TableSearch extends AKElement {
     @property()
-    value?: string;
+    public value?: string;
 
     @property()
-    onSearch?: (value: string) => void;
+    public onSearch?: (value: string) => void;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFButton,
-            PFToolbar,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                ::-webkit-search-cancel-button {
-                    display: none;
-                }
-            `,
-        ];
-    }
+    @property()
+    public label: string = msg("Search");
+
+    @property()
+    public placeholder: string = msg("Search…");
+
+    static styles: CSSResult[] = [
+        PFBase,
+        PFButton,
+        PFToolbar,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            ::-webkit-search-cancel-button {
+                display: none;
+            }
+        `,
+    ];
+
+    #resetListener = () => {
+        this.onSearch?.("");
+    };
+
+    #submitListener = (event: SubmitEvent) => {
+        event.preventDefault();
+        if (!this.onSearch) return;
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const searchValue = formData.get("search");
+
+        if (typeof searchValue !== "string") return;
+
+        this.onSearch(searchValue);
+    };
 
     render(): TemplateResult {
         return html`<form
             class="pf-c-input-group"
-            method="GET"
-            @submit=${(e: Event) => {
-                e.preventDefault();
-                if (!this.onSearch) return;
-                const el = this.shadowRoot?.querySelector<HTMLInputElement>("input[type=search]");
-                if (!el) return;
-                if (el.value === "") return;
-                this.onSearch(el?.value);
-            }}
+            @submit=${this.#submitListener}
+            role="search"
+            aria-label="Table search"
         >
             <input
+                aria-label="${this.label}"
                 class="pf-c-form-control"
                 name="search"
                 type="search"
-                placeholder=${msg("Search...")}
+                placeholder="${this.placeholder}"
                 value="${ifDefined(this.value)}"
-                @search=${(ev: Event) => {
-                    if (!this.onSearch) return;
-                    this.onSearch((ev.target as HTMLInputElement).value);
-                }}
             />
             <button
+                aria-label=${msg("Reset Search")}
                 class="pf-c-button pf-m-control"
                 type="reset"
-                @click=${() => {
-                    if (!this.onSearch) return;
-                    this.onSearch("");
-                }}
+                @click=${this.#resetListener}
             >
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <button class="pf-c-button pf-m-control" type="submit">
+            <button aria-label=${msg("Search")} class="pf-c-button pf-m-control" type="submit">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>`;

@@ -185,12 +185,22 @@ export class LibraryPage extends AKElement {
     render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
-                <h1 role="heading" aria-level="1" id="library-page-title">
+                <h1 role="heading" aria-level="1" data-test-id="page-heading">
                     ${msg("My applications")}
                 </h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : nothing}
             </div>
             <section class="pf-c-page__main-section">${this.renderState()}</section>
         </main>`;
+    }
+}
+
+declare global {
+    interface PageTestIDMap {
+        heading: HTMLHeadingElement;
+    }
+
+    interface TestIDSelectorMap {
+        page: PageTestIDMap;
     }
 }

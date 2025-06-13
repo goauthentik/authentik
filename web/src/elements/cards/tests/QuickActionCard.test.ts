@@ -1,5 +1,5 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
@@ -22,11 +22,12 @@ describe("ak-quick-actions-card", () => {
                 .actions=${ACTIONS}
             ></ak-quick-actions-card>`,
         );
-        const component = await $("ak-quick-actions-card");
-        const items = await component.$$(">>>.pf-c-list li");
-        // @ts-expect-error "Another ChainablePromise mistake"
-        await expect(Array.from(items).length).toEqual(5);
-        await expect(await component.$(">>>.pf-c-list li:nth-of-type(4)")).toHaveText(
+
+        const component = $("ak-quick-actions-card");
+        const items = component.$$(">>>.pf-c-list li");
+
+        await expect(items.length).resolves.toEqual(5);
+        await expect(component.$(">>>.pf-c-list li:nth-of-type(4)")).resolves.toHaveText(
             "Manage users",
         );
     });

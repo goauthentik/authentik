@@ -22,6 +22,7 @@ import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -164,14 +165,18 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
     async firstUpdated(): Promise<void> {
         this.user = await me();
 
-        const canAccessAdmin =
-            this.user.user.isSuperuser ||
-            // TODO: somehow add `access_admin_interface` to the API schema
-            this.user.user.systemPermissions.includes("access_admin_interface");
+        me().then((session) => {
+            this.user = session;
 
-        if (!canAccessAdmin && this.user.user.pk > 0) {
-            window.location.assign("/if/user/");
-        }
+            const canAccessAdmin =
+                this.user.user.isSuperuser ||
+                // TODO: somehow add `access_admin_interface` to the API schema
+                this.user.user.systemPermissions.includes("access_admin_interface");
+
+            if (!canAccessAdmin && this.user.user.pk > 0) {
+                window.location.assign("/if/user/");
+            }
+        });
     }
 
     render(): TemplateResult {
@@ -196,7 +201,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                     <ak-enterprise-status interface="admin"></ak-enterprise-status>
                 </ak-page-navbar>
 
-                <ak-sidebar class="${classMap(sidebarClasses)}">
+                <ak-sidebar ?hidden=${!this.sidebarOpen} class="${classMap(sidebarClasses)}">
                     ${renderSidebarItems(AdminSidebarEntries)}
                     ${this.can(CapabilitiesEnum.IsEnterprise)
                         ? renderSidebarItems(AdminSidebarEnterpriseEntries)
@@ -208,9 +213,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                         <div class="pf-c-drawer__main">
                             <div class="pf-c-drawer__content">
                                 <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                                    <div class="pf-c-page__main">
                                         <ak-router-outlet
                                             role="main"
+                                            aria-label="${msg("Main content")}"
                                             class="pf-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
@@ -218,7 +224,7 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
                                             .routes=${ROUTES}
                                         >
                                         </ak-router-outlet>
-                                    </main>
+                                    </div>
                                 </div>
                             </div>
                             <ak-notification-drawer

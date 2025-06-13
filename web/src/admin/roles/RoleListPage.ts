@@ -65,7 +65,7 @@ export class RoleListPage extends TablePage<Role> {
         </ak-forms-delete-bulk>`;
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}

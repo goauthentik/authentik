@@ -1,19 +1,18 @@
+import { searchSelect } from "#tests/utils/controls";
 import { $ } from "@wdio/globals";
 
-import Page from "../page.js";
-
-export class ForwardProxyForm extends Page {
-    async setAuthorizationFlow(selector: string) {
-        await this.searchSelect(
-            '>>>ak-flow-search[name="authorizationFlow"]',
+export abstract class ForwardProxyForm {
+    public static setAuthorizationFlow(selector: string) {
+        return searchSelect(
+            'ak-flow-search[name="authorizationFlow"]',
             "authorizationFlow",
             selector,
         );
     }
 
-    get externalHost() {
-        return $('>>>input[name="externalHost"]');
+    public static get $externalHost() {
+        return $('input[name="externalHost"]');
     }
 }
 
-export default new ForwardProxyForm();
+export default ForwardProxyForm;

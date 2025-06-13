@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -10,15 +10,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Pagination } from "@goauthentik/api";
 
+export type TablePageChangeListener = (page: number) => void;
+
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
     @property({ attribute: false })
     pages?: Pagination;
 
     @property({ attribute: false })
-    pageChangeHandler: (page: number) => void = () => {
-        return;
-    };
+    onPageChange?: TablePageChangeListener;
 
     static get styles(): CSSResult[] {
         return [
@@ -37,10 +37,19 @@ export class TablePagination extends AKElement {
         ];
     }
 
-    render(): TemplateResult {
+    #navigatePrevious = () => {
+        this.onPageChange?.(this.pages?.previous || 0);
+    };
+
+    #navigateNext = () => {
+        this.onPageChange?.(this.pages?.next || 0);
+    };
+
+    render() {
         if (!this.pages) {
-            return html``;
+            return nothing;
         }
+
         return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">
@@ -52,13 +61,11 @@ export class TablePagination extends AKElement {
                         </span>
                     </div>
                 </div>
-                <nav class="pf-c-pagination__nav" aria-label=${msg("Pagination")}>
+                <nav class="pf-c-pagination__nav" aria-label=${msg("Table pagination")}>
                     <div class="pf-c-pagination__nav-control pf-m-prev">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {
-                                this.pageChangeHandler(this.pages?.previous || 0);
-                            }}
+                            @click=${this.#navigatePrevious}
                             ?disabled="${(this.pages?.previous || 0) < 1}"
                             aria-label="${msg("Go to previous page")}"
                         >
@@ -68,9 +75,7 @@ export class TablePagination extends AKElement {
                     <div class="pf-c-pagination__nav-control pf-m-next">
                         <button
                             class="pf-c-button pf-m-plain"
-                            @click=${() => {
-                                this.pageChangeHandler(this.pages?.next || 0);
-                            }}
+                            @click=${this.#navigateNext}
                             ?disabled="${(this.pages?.next || 0) <= 0}"
                             aria-label="${msg("Go to next page")}"
                         >

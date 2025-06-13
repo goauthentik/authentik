@@ -399,7 +399,7 @@ export class UserListPage extends WithBrandConfig(WithCapabilitiesConfig(TablePa
         `;
     }
 
-    renderSidebarBefore(): TemplateResult {
+    protected renderSidebarBefore(): TemplateResult {
         return html`<div class="pf-c-sidebar__panel pf-m-width-25">
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${msg("User folders")}</div>

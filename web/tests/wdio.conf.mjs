@@ -3,11 +3,10 @@
  *
  * @see https://webdriver.io/docs/configurationfile.html
  */
+import { addCommands } from "#tests/commands";
 import { cwd } from "process";
 import litCSS from "vite-plugin-lit-css";
 import tsconfigPaths from "vite-tsconfig-paths";
-
-import { addCommands } from "../commands.mjs";
 
 const NODE_ENV = process.env.NODE_ENV || "development";
 const headless = !!process.env.HEADLESS || !!process.env.CI;
@@ -110,14 +109,11 @@ export const config = {
         ui: "bdd",
         timeout: 60000,
     },
-    /**
-     * @param {WebdriverIO.Browser} browser
-     */
-    before(_capabilities, _specs, browser) {
-        addCommands(browser);
-    },
-
-    afterTest() {
-        if (lemmeSee) return browser.pause(500);
-    },
+    baseUrl: "http://localhost:9000",
+    // /**
+    //  * @param {WebdriverIO.Browser} browser
+    //  */
+    // before(_capabilities, _specs, browser) {
+    //     addCommands(browser);
+    // },
 };

@@ -6,8 +6,9 @@ import "@goauthentik/elements/EmptyState";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
+import { createRef, ref } from "lit/directives/ref.js";
 import { until } from "lit/directives/until.js";
 
 import PFAbout from "@patternfly/patternfly/components/AboutModalBox/about-modal-box.css";
@@ -16,16 +17,15 @@ import { AdminApi, CapabilitiesEnum, LicenseSummaryStatusEnum } from "@goauthent
 
 @customElement("ak-about-modal")
 export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton)) {
-    static get styles() {
-        return ModalButton.styles.concat(
-            PFAbout,
-            css`
-                .pf-c-about-modal-box__hero {
-                    background-image: url("/static/dist/assets/images/flow_background.jpg");
-                }
-            `,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...ModalButton.styles,
+        PFAbout,
+        css`
+            .pf-c-about-modal-box__hero {
+                background-image: url("/static/dist/assets/images/flow_background.jpg");
+            }
+        `,
+    ];
 
     async getAboutEntries(): Promise<[string, string | TemplateResult][]> {
         const status = await new AdminApi(DEFAULT_CONFIG).adminSystemRetrieve();
@@ -55,21 +55,32 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         ];
     }
 
-    renderModal() {
+    #contentRef = createRef<HTMLDivElement>();
+
+    #backdropListener = (event: PointerEvent) => {
+        // We only want to close the modal when the backdrop is clicked, not when it's children are clicked.
+
+        if (this.#contentRef.value?.contains(event.target as Node)) {
+            return;
+        }
+        this.close();
+    };
+
+    protected override renderModal() {
         let product = this.brandingTitle;
 
         if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-                this.closeModal();
-            }}
-        >
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
-                <div class="pf-c-about-modal-box" role="dialog" aria-modal="true">
+                <div
+                    ${ref(this.#contentRef)}
+                    class="pf-c-about-modal-box"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                >
                     <div class="pf-c-about-modal-box__brand">
                         <img
                             class="pf-c-about-modal-box__brand-image"
@@ -78,18 +89,12 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                         />
                     </div>
                     <div class="pf-c-about-modal-box__close">
-                        <button
-                            class="pf-c-button pf-m-plain"
-                            type="button"
-                            @click=${() => {
-                                this.open = false;
-                            }}
-                        >
+                        <button class="pf-c-button pf-m-plain" type="button" @click=${this.close}>
                             <i class="fas fa-times" aria-hidden="true"></i>
                         </button>
                     </div>
                     <div class="pf-c-about-modal-box__header">
-                        <h1 class="pf-c-title pf-m-4xl">${product}</h1>
+                        <h1 class="pf-c-title pf-m-4xl" id="modal-title">${product}</h1>
                     </div>
                     <div class="pf-c-about-modal-box__hero"></div>
                     <div class="pf-c-about-modal-box__content">

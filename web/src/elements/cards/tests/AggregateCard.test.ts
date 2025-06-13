@@ -1,5 +1,5 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
@@ -12,14 +12,15 @@ describe("ak-aggregate-card", () => {
                 ><p>This is the main content</p></ak-aggregate-card
             >`,
         );
-        const component = await $("ak-aggregate-card");
-        await expect(await component.$(">>>.pf-c-card__header a")).not.toExist();
-        await expect(await component.$(">>>.pf-c-card__title i")).not.toExist();
-        await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
-        await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
+        const component = $("ak-aggregate-card");
+
+        await expect(component.$(">>>.pf-c-card__header a")).resolves.not.toExist();
+        await expect(component.$(">>>.pf-c-card__title i")).resolves.not.toExist();
+        await expect(component.$(">>>.pf-c-card__title")).resolves.toHaveText("Loading");
+        await expect(component.$(">>>.pf-c-card__body")).resolves.toHaveText(
             "This is the main content",
         );
-        await expect(await component.$(">>>.subtext")).not.toExist();
+        await expect(component.$(">>>.subtext")).resolves.not.toExist();
     });
 
     it("should render the standard card with an icon", async () => {
@@ -28,10 +29,11 @@ describe("ak-aggregate-card", () => {
                 ><p>This is the main content</p></ak-aggregate-card
             >`,
         );
-        const component = await $("ak-aggregate-card");
-        await expect(await component.$(">>>.pf-c-card__title i")).toExist();
-        await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
-        await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
+        const component = $("ak-aggregate-card");
+
+        await expect(component.$(">>>.pf-c-card__title i")).resolves.toExist();
+        await expect(component.$(">>>.pf-c-card__title")).resolves.toHaveText("Loading");
+        await expect(component.$(">>>.pf-c-card__body")).resolves.toHaveText(
             "This is the main content",
         );
     });
@@ -42,11 +44,12 @@ describe("ak-aggregate-card", () => {
                 ><p>This is the main content</p></ak-aggregate-card
             >`,
         );
-        const component = await $("ak-aggregate-card");
-        await expect(await component.$(">>>.pf-c-card__header a")).toExist();
-        await expect(await component.$(">>>.pf-c-card__title i")).toExist();
-        await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
-        await expect(await component.$(">>>.pf-c-card__body")).toHaveText(
+        const component = $("ak-aggregate-card");
+
+        await expect(component.$(">>>.pf-c-card__header a")).resolves.toExist();
+        await expect(component.$(">>>.pf-c-card__title i")).resolves.toExist();
+        await expect(component.$(">>>.pf-c-card__title")).resolves.toHaveText("Loading");
+        await expect(component.$(">>>.pf-c-card__body")).resolves.toHaveText(
             "This is the main content",
         );
     });
@@ -61,10 +64,11 @@ describe("ak-aggregate-card", () => {
                 ><p>This is the main content</p></ak-aggregate-card
             >`,
         );
-        const component = await $("ak-aggregate-card");
-        await expect(await component.$(">>>.pf-c-card__header a")).toExist();
-        await expect(await component.$(">>>.pf-c-card__title i")).toExist();
-        await expect(await component.$(">>>.pf-c-card__title")).toHaveText("Loading");
-        await expect(await component.$(">>>.subtext")).toHaveText("Xena had subtext");
+        const component = $("ak-aggregate-card");
+
+        await expect(component.$(">>>.pf-c-card__header a")).resolves.toExist();
+        await expect(component.$(">>>.pf-c-card__title i")).resolves.toExist();
+        await expect(component.$(">>>.pf-c-card__title")).resolves.toHaveText("Loading");
+        await expect(component.$(">>>.subtext")).resolves.toHaveText("Xena had subtext");
     });
 });

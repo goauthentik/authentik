@@ -47,9 +47,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Public Key")}
                         required
@@ -126,9 +125,8 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
                         <input
                             type="url"

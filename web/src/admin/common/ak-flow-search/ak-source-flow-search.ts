@@ -32,19 +32,14 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
     @property({ type: String })
     instanceId: string | undefined;
 
-    constructor() {
-        super();
-        this.selected = this.selected.bind(this);
-    }
-
     // If there's no instance or no currentFlowId for it and the flow resembles the fallback,
     // otherwise defer to the parent class.
-    selected(flow: Flow): boolean {
+    selected = (flow: Flow): boolean => {
         return (
             (!this.instanceId && !this.currentFlow && flow.slug === this.fallback) ||
             super.selected(flow)
         );
-    }
+    };
 }
 
 declare global {

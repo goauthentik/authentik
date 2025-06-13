@@ -1,9 +1,10 @@
 import "#components/ak-page-header";
 import { updateURLParams } from "#elements/router/RouteMatch";
 import { Table } from "#elements/table/Table";
+import { SlottedTemplateResult } from "#elements/types";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
+import { CSSResult, nothing } from "lit";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -11,84 +12,114 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFSidebar from "@patternfly/patternfly/components/Sidebar/sidebar.css";
 
-export abstract class TablePage<T> extends Table<T> {
+export abstract class TablePage<T extends object> extends Table<T> {
+    static styles: CSSResult[] = [...super.styles, PFPage, PFContent, PFSidebar];
+
+    //#region Abstract methods
+
+    /**
+     * The title of the page.
+     * @abstract
+     */
     abstract pageTitle(): string;
+
+    /**
+     * The description of the page.
+     * @abstract
+     */
     abstract pageDescription(): string | undefined;
+
+    /**
+     * The icon to display in the page header.
+     * @abstract
+     */
     abstract pageIcon(): string;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFPage, PFContent, PFSidebar);
-    }
+    /**
+     * Render content before the sidebar.
+     * @abstract
+     */
+    protected renderSidebarBefore?(): TemplateResult;
 
-    renderSidebarBefore(): TemplateResult {
-        return html``;
-    }
+    /**
+     * Render content after the sidebar.
+     * @abstract
+     */
+    protected renderSidebarAfter?(): TemplateResult;
 
-    renderSidebarAfter(): TemplateResult {
-        return html``;
-    }
+    /**
+     * Render content before the main section.
+     * @abstract
+     */
+    protected renderSectionBefore?(): TemplateResult;
 
-    // Optionally render section above the table
-    renderSectionBefore(): TemplateResult {
-        return html``;
-    }
+    /**
+     * Render content after the main section.
+     * @abstract
+     */
+    protected renderSectionAfter?(): TemplateResult;
 
-    // Optionally render section below the table
-    renderSectionAfter(): TemplateResult {
-        return html``;
-    }
-
-    renderEmpty(inner?: TemplateResult): TemplateResult {
+    /**
+     * Render the empty state.
+     */
+    protected renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
                 ? inner
                 : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No objects found.")}">
                       <div slot="body">
-                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
+                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : nothing}
                       </div>
                       <div slot="primary">${this.renderObjectCreate()}</div>
                   </ak-empty-state>`}
         `);
     }
 
-    renderEmptyClearSearch(): TemplateResult {
-        if (this.search === "") {
-            return html``;
+    protected clearSearch = () => {
+        this.search = "";
+
+        this.requestUpdate();
+
+        updateURLParams({
+            search: "",
+        });
+
+        return this.fetch();
+    };
+
+    protected renderEmptyClearSearch(): SlottedTemplateResult {
+        if (!this.search) {
+            return nothing;
         }
-        return html`<button
-            @click=${() => {
-                this.search = "";
-                this.requestUpdate();
-                this.fetch();
-                updateURLParams({
-                    search: "",
-                });
-            }}
-            class="pf-c-button pf-m-link"
-        >
+
+        return html`<button @click=${this.clearSearch} class="pf-c-button pf-m-link">
             ${msg("Clear search")}
         </button>`;
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-page-header
                 icon=${this.pageIcon()}
                 header=${this.pageTitle()}
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>
-            ${this.renderSectionBefore()}
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            ${this.renderSectionBefore?.()}
+            <section
+                id="table-page-main"
+                aria-label=${this.pageTitle()}
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
-                        ${this.renderSidebarBefore()}
+                        ${this.renderSidebarBefore?.()}
                         <div class="pf-c-sidebar__content">
                             <div class="pf-c-card">${this.renderTable()}</div>
                         </div>
-                        ${this.renderSidebarAfter()}
+                        ${this.renderSidebarAfter?.()}
                     </div>
                 </div>
             </section>
-            ${this.renderSectionAfter()}`;
+            ${this.renderSectionAfter?.()}`;
     }
 }

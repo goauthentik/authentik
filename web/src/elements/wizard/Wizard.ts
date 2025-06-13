@@ -243,9 +243,10 @@ export class Wizard extends ModalButton {
         };
 
         return html`<div class="pf-c-wizard">
-            <div class="pf-c-wizard__header">
+            <header class="pf-c-wizard__header">
                 ${this.canCancel
                     ? html`<button
+                          data-test-id="wizard-close"
                           class="pf-c-button pf-m-plain pf-c-wizard__close"
                           type="button"
                           aria-label="${msg("Close")}"
@@ -254,9 +255,12 @@ export class Wizard extends ModalButton {
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
                     : nothing}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.header}</h1>
+                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title" data-test-id="wizard-heading">
+                    ${this.header}
+                </h1>
                 <p class="pf-c-wizard__description">${this.description}</p>
-            </div>
+            </header>
+
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
                     <nav class="pf-c-wizard__nav">
@@ -293,8 +297,9 @@ export class Wizard extends ModalButton {
                         </div>
                     </main>
                 </div>
-                <footer class="pf-c-wizard__footer">
+                <nav class="pf-c-wizard__footer" aria-label="${msg("Wizard navigation")}">
                     <button
+                        data-test-id="wizard-navigation-next"
                         class="pf-c-button pf-m-primary"
                         type="submit"
                         ?disabled=${!this.isValid}
@@ -323,6 +328,7 @@ export class Wizard extends ModalButton {
                         : 0) > 0 && this.canBack
                         ? html`
                               <button
+                                  data-test-id="wizard-navigation-previous"
                                   class="pf-c-button pf-m-secondary"
                                   type="button"
                                   @click=${navigateToPreviousStep}
@@ -332,8 +338,9 @@ export class Wizard extends ModalButton {
                           `
                         : nothing}
                     ${this.canCancel
-                        ? html`<div class="pf-c-wizard__footer-cancel">
+                        ? html`<div class="pf-c-wizard__footer-abort">
                               <button
+                                  data-test-id="wizard-navigation-cancel"
                                   class="pf-c-button pf-m-link"
                                   type="button"
                                   @click=${(ev: Event) => this.reset(ev)}
@@ -342,7 +349,7 @@ export class Wizard extends ModalButton {
                               </button>
                           </div>`
                         : nothing}
-                </footer>
+                </nav>
             </div>
         </div>`;
     }
@@ -353,5 +360,19 @@ export class Wizard extends ModalButton {
 declare global {
     interface HTMLElementTagNameMap {
         "ak-wizard": Wizard;
+    }
+
+    interface WizardNavigationTestIDMap {
+        next: HTMLButtonElement;
+        previous: HTMLButtonElement;
+        cancel: HTMLButtonElement;
+    }
+
+    interface WizardTestIDMap {
+        navigation: WizardNavigationTestIDMap;
+    }
+
+    interface TestIDSelectorMap {
+        wizard: WizardTestIDMap;
     }
 }

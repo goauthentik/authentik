@@ -43,12 +43,20 @@ const testOptions = [
 ];
 
 export const CheckboxGroup = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const displayChange = (ev: any) => {
-        document.getElementById("check-message-pad")!.innerHTML = `
-<p>Values selected on target: ${ev.target.value.join(", ")}</p>
-<p>Values sent in event: ${ev.detail.join(", ")}</p>
-<p>Values present as data-ak-control: <kbd>${JSON.stringify(ev.target.json, null)}</kbd></p>`;
+    const displayChange = (event: CustomEvent<string[]>) => {
+        const target = event.target as AkCheckboxGroup;
+
+        document.getElementById("check-message-pad")!.innerHTML = /*html*/ `
+        <p>
+            Values selected on target: ${target.value.join(", ")}
+        </p>
+        <p>
+            Values sent in event: ${event.detail.join(", ")}
+        </p>
+        <p>
+            Values present as data-ak-control: <kbd>${JSON.stringify(target.json(), null)}</kbd>
+        </p>
+    `;
     };
 
     return container(
@@ -65,28 +73,32 @@ export const CheckboxGroup = () => {
     );
 };
 
-type FDType = [string, string | FormDataEntryValue];
+type FDType = [key: string, value: string | FormDataEntryValue];
 
 export const FormCheckboxGroup = () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const displayChange = (ev: any) => {
-        ev.preventDefault();
-        const formData = new FormData(ev.target);
+    const displayChange = (event: SubmitEvent) => {
+        event.preventDefault();
 
-        const valList = Array.from(formData)
-            .map(([_key, val]: FDType) => val)
-            .join(", ");
+        if (!(event.target instanceof HTMLFormElement)) {
+            throw new Error("Expected target to be a form element");
+        }
 
-        const fdList = Array.from(formData)
-            .map(
-                ([key, val]: FDType) =>
-                    `${encodeURIComponent(key)}=${encodeURIComponent(val as string)}`,
-            )
-            .join("&");
+        const formData = new FormData(event.target);
 
-        document.getElementById("check-message-pad")!.innerHTML = `
-<p>Values as seen in \`form.formData\`: ${valList}</p>
-<p>Values as seen in x-form-encoded format: <kbd>${fdList}</kbd></p>`;
+        const valList = Array.from(formData.values()).join(", ");
+
+        const fdList = Array.from(formData, ([key, val]: FDType) => {
+            return `${encodeURIComponent(key)}=${encodeURIComponent(val as string)}`;
+        }).join("&");
+
+        document.getElementById("check-message-pad")!.innerHTML = /*html*/ `
+            <p>
+                Values as seen in ${"`form.formData`"}: ${valList}
+            </p>
+            <p>
+                Values as seen in x-form-encoded format: <kbd>${fdList}</kbd>
+            </p>
+        `;
     };
 
     return container(
@@ -94,9 +106,9 @@ export const FormCheckboxGroup = () => {
                 FormData example. This variant emits the same events and exhibits the same behavior
                 as the above, but instead of monitoring for 'change' events on the checkbox group,
                 we monitor for the user pressing the 'submit' button. What is displayed is the
-                values as understood by the &lt;form&gt; object, via its internal \`formData\`
-                field, to demonstrate that this component works with forms as if it were a native
-                form element.
+                values as understood by the &lt;form&gt; object, via its internal
+                ${"`form.formData`"} field, to demonstrate that this component works with forms as
+                if it were a native form element.
             </p>
 
             <form @submit=${displayChange}>

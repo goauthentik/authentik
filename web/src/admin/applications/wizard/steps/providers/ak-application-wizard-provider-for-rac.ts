@@ -60,9 +60,8 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     input-hint="code"
                 ></ak-text-input>
 
-                <ak-form-group expanded>
-                    <span slot="header"> ${msg("Protocol settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group open label=" ${msg("Protocol settings")} ">
+                    <div class="pf-c-form">
                         <ak-form-element-horizontal
                             label=${msg("Property mappings")}
                             name="propertyMappings"

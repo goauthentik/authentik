@@ -87,9 +87,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("Branding settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Branding settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Title")} required name="brandingTitle">
                         <input
                             type="text"
@@ -170,9 +169,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("External user settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("External user settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Default application")}
                         name="defaultApplication"
@@ -215,9 +213,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header"> ${msg("Default flows")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Default flows")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Authentication flow")}
                         name="flowAuthentication"
@@ -295,9 +292,8 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Other global settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Other global settings")} ">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Web Certificate")}
                         name="webCertificate"

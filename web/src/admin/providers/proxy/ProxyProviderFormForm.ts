@@ -228,9 +228,8 @@ export function renderForm(
             input-hint="code"
         ></ak-text-input>
 
-        <ak-form-group>
-            <span slot="header">${msg("Advanced protocol settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced protocol settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                     <ak-crypto-certificate-search
                         .certificate=${provider?.certificate}
@@ -273,9 +272,8 @@ ${provider?.skipPathRegex}</textarea
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header">${msg("Authentication settings")}</span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Authentication settings")}">
+            <div class="pf-c-form">
                 <ak-switch-input
                     name="interceptHeaderAuth"
                     label=${msg("Intercept header authentication")}
@@ -333,9 +331,8 @@ ${provider?.skipPathRegex}</textarea
             </div>
         </ak-form-group>
 
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Authentication flow")}
                     name="authenticationFlow"

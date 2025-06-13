@@ -3,6 +3,7 @@ import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
@@ -31,8 +32,7 @@ export function renderSidebarItem([
         properties.path = path;
     }
 
-    return html`<ak-sidebar-item ${spread(properties)}>
-        ${label ? html`<span slot="label">${label}</span>` : nothing}
+    return html`<ak-sidebar-item label=${ifDefined(label)} ${spread(properties)}>
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
 }

@@ -76,9 +76,8 @@ export class EventMatcherPolicyForm extends BasePolicyForm<EventMatcherPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Action")} name="action">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<TypeCreate[]> => {

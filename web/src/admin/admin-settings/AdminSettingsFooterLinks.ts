@@ -1,4 +1,7 @@
-import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
+import {
+    AkControlElement,
+    formatFormElementAsJSON,
+} from "@goauthentik/elements/AkControlElement.js";
 import { type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
@@ -23,33 +26,32 @@ const hasLegalScheme = (url: string) =>
 
 @customElement("ak-admin-settings-footer-link")
 export class FooterLinkInput extends AkControlElement<FooterLink> {
-    static get styles() {
-        return [
-            PFBase,
-            PFInputGroup,
-            PFFormControl,
-            css`
-                .pf-c-input-group input#linkname {
-                    flex-grow: 1;
-                    width: 8rem;
-                }
-            `,
-        ];
-    }
+    static styles = [
+        PFBase,
+        PFInputGroup,
+        PFFormControl,
+        css`
+            .pf-c-input-group input#linkname {
+                flex-grow: 1;
+                width: 8rem;
+            }
+        `,
+    ];
 
     @property({ type: Object, attribute: false })
-    footerLink: FooterLink = {
+    public footerLink: FooterLink = {
         name: "",
         href: "",
     };
 
-    @queryAll(".ak-form-control")
-    controls?: HTMLInputElement[];
+    @property({ type: String })
+    public name?: string | null;
 
-    json() {
-        return Object.fromEntries(
-            Array.from(this.controls ?? []).map((control) => [control.name, control.value]),
-        ) as unknown as FooterLink;
+    @queryAll(".ak-form-control")
+    protected controls?: HTMLInputElement[];
+
+    public override json() {
+        return formatFormElementAsJSON<FooterLink>(this.controls);
     }
 
     get isValid() {

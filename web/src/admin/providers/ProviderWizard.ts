@@ -25,12 +25,7 @@ import { ProvidersApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton];
-    }
-
-    @property()
-    createText = msg("Create");
+    static styles: CSSResult[] = [PFBase, PFButton];
 
     @property({ attribute: false })
     providerTypes: TypeCreate[] = [];
@@ -41,7 +36,7 @@ export class ProviderWizard extends AKElement {
     };
 
     @query("ak-wizard")
-    wizard?: Wizard;
+    private wizard?: Wizard;
 
     connectedCallback() {
         super.connectedCallback();
@@ -82,7 +77,15 @@ export class ProviderWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
+                <button
+                    aria-label=${msg("New Provider")}
+                    aria-description="${msg("Open the wizard to create a new provider.")}"
+                    type="button"
+                    slot="trigger"
+                    class="pf-c-button pf-m-primary"
+                >
+                    ${msg("Create")}
+                </button>
             </ak-wizard>
         `;
     }

@@ -56,9 +56,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
                         required
@@ -181,9 +180,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header">${msg("User filtering")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("User filtering")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
                         <label class="pf-c-switch">
                             <input
@@ -234,9 +232,8 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="propertyMappings"

@@ -1,54 +1,40 @@
+import AdminPage from "#tests/pageobjects/admin.page";
+import OAuthForm from "#tests/pageobjects/forms/oauth.form";
+import { findElementByTestID } from "#tests/utils/selectors";
 import { $ } from "@wdio/globals";
 
-import AdminPage from "./admin.page.js";
-import OauthForm from "./forms/oauth.form.js";
+export class ProviderWizardView extends AdminPage {
+    public readonly OAuth = OAuthForm;
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
-
-class ProviderWizardView extends AdminPage {
-    /**
-     * define selectors using getter methods
-     */
-
-    oauth = OauthForm;
-
-    get wizardTitle() {
-        return $(">>>ak-wizard .pf-c-wizard__header h1.pf-c-title");
+    public static get $wizardTitle() {
+        return findElementByTestID("wizard-title", $("ak-wizard"));
     }
 
-    get providerList() {
-        return $(">>>ak-provider-wizard-initial");
+    public static get $providerList() {
+        return $("ak-provider-wizard-initial");
     }
 
-    get nextButton() {
-        return $(">>>ak-wizard footer button.pf-m-primary");
+    public static get $nextButton() {
+        return findElementByTestID("wizard-navigation-next", $("ak-wizard"));
     }
 
-    async getProviderType(type: string) {
-        return await this.providerList.$(`>>>input[value="${type}"]`);
+    public static get $cancelButton() {
+        return findElementByTestID("wizard-navigation-abort", $("ak-wizard"));
     }
 
-    get successMessage() {
-        return $('>>>[data-commit-state="success"]');
+    public static get $successMessage() {
+        return $('[data-commit-state="success"]');
+    }
+
+    protected static findProviderForm(providerType: string) {
+        const selector = `ak-provider-${providerType}-form`;
+
+        return $(selector);
+    }
+
+    public static get $OAuth2ProviderForm() {
+        return this.findProviderForm("oauth2");
     }
 }
 
-type Pair = [string, string];
-
-// Define a getter for each provider type in the radio button collection.
-
-const providerValues: Pair[] = [["oauth2", "oauth2Provider"]];
-
-providerValues.forEach(([value, name]: Pair) => {
-    Object.defineProperties(ProviderWizardView.prototype, {
-        [name]: {
-            get: function () {
-                return this.providerList.$(`>>>input[id="ak-provider-${value}-form"]`);
-            },
-        },
-    });
-});
-
-export default new ProviderWizardView();
+export default ProviderWizardView;
