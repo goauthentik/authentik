@@ -533,12 +533,13 @@ class Application(SerializerModel, PolicyBindingModel):
     )
 
     # For template applications, this can be set to /static/authentik/applications/*
-    meta_icon = models.FileField(
+    meta_old_icon = models.FileField(
         upload_to="application-icons/",
         default=None,
         null=True,
         max_length=500,
     )
+    meta_icon = models.ForeignKey("File", null=True, on_delete=models.SET_NULL)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 
