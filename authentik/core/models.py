@@ -1111,6 +1111,8 @@ class File(SerializerModel):
     content = models.BinaryField(null=True)
     location = models.TextField(null=True)
     public = models.BooleanField(default=False)
+    delete_on_delete = models.BooleanField(default=False)
+    expiry = models.DateTimeField()
 
     class Meta:
         verbose_name = _("File")
