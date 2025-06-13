@@ -18,7 +18,7 @@ from authentik.stages.authenticator_webauthn.models import (
     WebAuthnDevice,
     WebAuthnDeviceType,
 )
-from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
+from authentik.stages.authenticator_webauthn.stage import PLAN_CONTEXT_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.tasks import webauthn_mds_import
 
 
@@ -57,6 +57,9 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
         )
+
+        plan: FlowPlan = self.client.session[SESSION_KEY_PLAN]
+
         self.assertEqual(response.status_code, 200)
         session = self.client.session
         self.assertStageResponse(
@@ -70,7 +73,7 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
                     "name": self.user.username,
                     "displayName": self.user.name,
                 },
-                "challenge": bytes_to_base64url(session[SESSION_KEY_WEBAUTHN_CHALLENGE]),
+                "challenge": bytes_to_base64url(plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]),
                 "pubKeyCredParams": [
                     {"type": "public-key", "alg": -7},
                     {"type": "public-key", "alg": -8},
@@ -97,11 +100,11 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         """Test registration"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -146,11 +149,11 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -209,11 +212,11 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -259,11 +262,11 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
 
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session = self.client.session
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
+        plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = b64decode(
             b"03Xodi54gKsfnP5I9VFfhaGXVVE2NUyZpBBXns/JI+x6V9RY2Tw2QmxRJkhh7174EkRazUntIwjMVY9bFG60Lw=="
         )
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
         session.save()
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),

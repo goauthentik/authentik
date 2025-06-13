@@ -41,7 +41,7 @@ from authentik.stages.authenticator_webauthn.models import (
 )
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
 
-SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
+PLAN_CONTEXT_WEBAUTHN_CHALLENGE = "goauthentik.io/stages/authenticator_webauthn/challenge"
 
 
 class AuthenticatorWebAuthnChallenge(WithUserInfoChallenge):
@@ -62,7 +62,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
     def validate_response(self, response: dict) -> dict:
         """Validate webauthn challenge response"""
-        challenge = self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE]
+        challenge = self.stage.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE]
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
@@ -114,8 +114,8 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
     response_class = AuthenticatorWebAuthnChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        # clear session variables prior to starting a new registration
-        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
+        # clear flow variables prior to starting a new registration
+        self.executor.plan.context.pop(PLAN_CONTEXT_WEBAUTHN_CHALLENGE, None)
         stage: AuthenticatorWebAuthnStage = self.executor.current_stage
         user = self.get_pending_user()
 
@@ -139,8 +139,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
             attestation=AttestationConveyancePreference.DIRECT,
         )
 
-        self.request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = registration_options.challenge
-        self.request.session.save()
+        self.executor.plan.context[PLAN_CONTEXT_WEBAUTHN_CHALLENGE] = registration_options.challenge
         return AuthenticatorWebAuthnChallenge(
             data={
                 "registration": loads(options_to_json(registration_options)),
@@ -179,6 +178,3 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         else:
             return self.executor.stage_invalid("Device with Credential ID already exists.")
         return self.executor.stage_ok()
-
-    def cleanup(self):
-        self.request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)
