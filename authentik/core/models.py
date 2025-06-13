@@ -29,6 +29,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -1107,12 +1108,19 @@ class File(SerializerModel):
     id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
     name = models.TextField()
-    content = models.BinaryField()
+    content = models.BinaryField(null=True)
+    location = models.TextField(null=True)
     public = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("File")
         verbose_name = _("Files")
+        constraints = (
+            models.CheckConstraint(
+                condition=Q(content__isnull=False) | Q(location__isnull=False),
+                name="one_of_content_location_is_defined",
+            ),
+        )
 
     def __str__(self) -> str:
         return self.name
@@ -1122,3 +1130,14 @@ class File(SerializerModel):
         from authentik.core.api.files import FileSerializer
 
         return FileSerializer
+
+    @property
+    def url(self) -> str:
+        if self.content:
+            return (
+                CONFIG.get("web.path", "/")[:-1]
+                + f"/files/{'public' if self.public else 'private'}/{self.pk}"
+            )
+        elif self.location.startswith("/"):
+            return CONFIG.get("web.path", "/")[:-1] + self.location
+        return self.location

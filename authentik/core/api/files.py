@@ -15,7 +15,9 @@ class FileSerializer(ModelSerializer):
             "pk",
             "name",
             "content",
+            "location",
             "private",
+            "url",
         )
 
 
@@ -24,4 +26,7 @@ class FileViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FileSerializer
     filterset_fields = ("private",)
     ordering = ("name",)
-    search_fields = ("name",)
+    search_fields = (
+        "name",
+        "location",
+    )
