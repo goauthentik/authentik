@@ -112,7 +112,7 @@ class RACFinalStage(RedirectStage):
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
-            settings=self.executor.plan.context.get("connection_settings", {}),
+            settings=self.executor.plan.context.get("prompt_data", {}).get("connection_settings", {}),  # noqa: E501
             session=self.request.session["authenticatedsession"],
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
