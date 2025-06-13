@@ -14,6 +14,7 @@ import { APIMessage } from "@goauthentik/elements/messages/Message";
 import { msg } from "@lit/localize";
 import { CSSResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -145,7 +146,7 @@ export class MessageContainer extends AKElement {
                 return html`<ak-message
                     ?live=${idx === 0}
                     level=${level}
-                    description=${description}
+                    description=${ifDefined(description)}
                     .onDismiss=${() => this.#removeMessage(message)}
                 >
                     ${title}

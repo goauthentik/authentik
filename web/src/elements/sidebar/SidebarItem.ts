@@ -5,6 +5,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, css, nothing } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -142,7 +143,7 @@ export class SidebarItem extends AKElement {
 
     renderWithChildren() {
         return html`<li
-            aria-label=${this.label}
+            aria-label=${ifDefined(this.label)}
             role="heading"
             class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
         >
@@ -181,7 +182,7 @@ export class SidebarItem extends AKElement {
     renderWithPathAndChildren() {
         return html`<li
             role="presentation"
-            aria-label=${this.label}
+            aria-label=${ifDefined(this.label)}
             class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
         >
             ${this.label}
@@ -231,7 +232,11 @@ export class SidebarItem extends AKElement {
             return this.path ? this.renderWithPathAndChildren() : this.renderWithChildren();
         }
 
-        return html`<li role="presentation" aria-label=${this.label} class="pf-c-nav__item">
+        return html`<li
+            role="presentation"
+            aria-label=${ifDefined(this.label)}
+            class="pf-c-nav__item"
+        >
             ${this.path ? this.renderWithPath() : this.renderWithLabel()}
         </li>`;
     }

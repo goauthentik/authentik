@@ -3,6 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 
 import { html, nothing } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-switch-input")
 export class AkSwitchInput extends AKElement {
@@ -48,7 +49,7 @@ export class AkSwitchInput extends AKElement {
                     class="pf-c-switch__input"
                     type="checkbox"
                     ?checked=${doCheck}
-                    aria-label=${this.label}
+                    aria-label=${ifDefined(this.label)}
                 />
                 <span class="pf-c-switch__toggle">
                     <span class="pf-c-switch__toggle-icon">

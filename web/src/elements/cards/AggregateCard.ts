@@ -1,7 +1,7 @@
 import { SlottedTemplateResult } from "#elements/types";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -121,7 +121,7 @@ export class AggregateCard extends AKElement implements IAggregateCard {
 
     render(): SlottedTemplateResult {
         return html`<div
-            aria-label="${this.header}"
+            aria-label="${ifDefined(this.header)}"
             role="region"
             class="pf-c-card pf-c-card-aggregate"
         >
