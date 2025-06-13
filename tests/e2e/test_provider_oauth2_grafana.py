@@ -410,3 +410,77 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
             self.driver.find_element(By.CSS_SELECTOR, "header > h1").text,
             "Permission denied",
         )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @apply_blueprint("default/flow-default-provider-authorization-implicit-consent.yaml")
+    @apply_blueprint("system/providers-oauth2.yaml")
+    @reconcile_app("authentik_crypto")
+    def test_authorization_consent_implied_parallel(self):
+        """test OpenID Provider flow (default authorization flow with implied consent)"""
+        # Bootstrap all needed objects
+        authorization_flow = Flow.objects.get(
+            slug="default-provider-authorization-implicit-consent"
+        )
+        provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_type=ClientTypes.CONFIDENTIAL,
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            signing_key=create_test_cert(),
+            redirect_uris=[
+                RedirectURI(
+                    RedirectURIMatchingMode.STRICT, "http://localhost:3000/login/generic_oauth"
+                )
+            ],
+            authorization_flow=authorization_flow,
+        )
+        provider.property_mappings.set(
+            ScopeMapping.objects.filter(
+                scope_name__in=[
+                    SCOPE_OPENID,
+                    SCOPE_OPENID_EMAIL,
+                    SCOPE_OPENID_PROFILE,
+                    SCOPE_OFFLINE_ACCESS,
+                ]
+            )
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=self.app_slug,
+            provider=provider,
+        )
+
+        self.driver.get(self.live_server_url)
+        login_window = self.driver.current_window_handle
+
+        self.driver.switch_to.new_window("tab")
+        grafana_window = self.driver.current_window_handle
+        self.driver.get("http://localhost:3000")
+        self.driver.find_element(By.CLASS_NAME, "btn-service--oauth").click()
+
+        self.driver.switch_to.window(login_window)
+        self.login()
+
+        self.driver.switch_to.window(grafana_window)
+        self.wait_for_url("http://localhost:3000/?orgId=1")
+        self.driver.get("http://localhost:3000/profile")
+        self.assertEqual(
+            self.driver.find_element(By.CLASS_NAME, "page-header__title").text,
+            self.user.name,
+        )
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=name]").get_attribute("value"),
+            self.user.name,
+        )
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=email]").get_attribute("value"),
+            self.user.email,
+        )
+        self.assertEqual(
+            self.driver.find_element(By.CSS_SELECTOR, "input[name=login]").get_attribute("value"),
+            self.user.email,
+        )
