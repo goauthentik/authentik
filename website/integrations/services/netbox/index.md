@@ -54,11 +54,11 @@ REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth config
-SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<application_slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
 SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
-LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
+LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
 The Netbox configuration needs to be extended, for this you can create a new file in the configuration folder, for example `authentik.py`.
@@ -90,7 +90,7 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 #SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<Application slug>/end-session/
+#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/
 ```
 
 ### Groups

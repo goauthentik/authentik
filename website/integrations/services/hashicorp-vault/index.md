@@ -53,7 +53,7 @@ Configure the oidc auth method, oidc discovery url is the OpenID Configuration I
 
 ```
 vault write auth/oidc/config \
-         oidc_discovery_url="https://authentik.company/application/o/vault-slug/" \
+         oidc_discovery_url="https://authentik.company/application/o/<application_slug>/" \
          oidc_client_id="Client ID" \
          oidc_client_secret="Client Secret" \
          default_role="reader"

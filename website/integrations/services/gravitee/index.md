@@ -56,5 +56,5 @@ Only settings that have been modified from default have been listed.
 - **Token Endpoint**: `https://authentik.company/application/o/token/`
 - **Authorize Endpoint**: `https://authentik.company/application/o/authorize/`
 - **Userinfo Endpoint**: `https://authentik.company/application/o/userinfo/`
-- **Userinfo Logout Endpoint**: `https://authentik.company/application/o/application-slug/end-session/`
+- **Userinfo Logout Endpoint**: `https://authentik.company/application/o/<application_slug>/end-session/`
 - **Scopes**: `email openid profile`

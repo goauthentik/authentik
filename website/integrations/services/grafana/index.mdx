@@ -124,7 +124,7 @@ environment:
     GF_AUTH_GENERIC_OAUTH_AUTH_URL: "https://authentik.company/application/o/authorize/"
     GF_AUTH_GENERIC_OAUTH_TOKEN_URL: "https://authentik.company/application/o/token/"
     GF_AUTH_GENERIC_OAUTH_API_URL: "https://authentik.company/application/o/userinfo/"
-    GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.company/application/o/<Slug of the application from above>/end-session/"
+    GF_AUTH_SIGNOUT_REDIRECT_URL: "https://authentik.company/application/o/<application_slug>/end-session/"
     # Optionally enable auto-login (bypasses Grafana login screen)
     GF_AUTH_OAUTH_AUTO_LOGIN: "true"
     # Optionally map user groups to Grafana roles
@@ -139,7 +139,7 @@ If you are using a config-file instead, you have to set these options:
 
 ```ini
 [auth]
-signout_redirect_url = https://authentik.company/application/o/<Slug of the application from above>/end-session/
+signout_redirect_url = https://authentik.company/application/o/<application_slug>/end-session/
 # Optionally enable auto-login
 oauth_auto_login = true
 
@@ -163,7 +163,7 @@ If you are using a Helm `values.yaml` file instead, you have to set these option
 ```yaml
 grafana.ini:
     auth:
-        signout_redirect_url: "https://authentik.company/application/o/<Slug of the application from above>/end-session/"
+        signout_redirect_url: "https://authentik.company/application/o/<application_slug>/end-session/"
         oauth_auto_login: true
     auth.generic_oauth:
         name: authentik
