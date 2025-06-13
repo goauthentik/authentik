@@ -1,7 +1,7 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-number-input";
-import "@goauthentik/components/ak-private-text-input.js";
+import "@goauthentik/components/ak-secret-text-input.js";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -70,7 +70,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         </p>
                     </ak-form-element-horizontal>
 
-                    <ak-private-text-input
+                    <ak-secret-text-input
                         name="privateKey"
                         label=${msg("Private Key")}
                         input-hint="code"
@@ -79,7 +79,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                         help=${msg(
                             "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
                         )}
-                    ></ak-private-text-input>
+                    ></ak-secret-text-input>
 
                     <ak-switch-input
                         name="interactive"

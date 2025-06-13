@@ -1,6 +1,6 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-text-input.js";
+import "@goauthentik/components/ak-secret-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
@@ -73,11 +73,11 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-private-text-input
+                <ak-secret-text-input
                     label=${msg("SMTP Password")}
                     name="password"
                     ?revealed=${this.instance === undefined}
-                ></ak-private-text-input>
+                ></ak-secret-text-input>
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input
