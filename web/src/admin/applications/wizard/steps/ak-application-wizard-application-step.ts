@@ -117,13 +117,11 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     ?invalid=${this.errors.has("name")}
                     .errorMessages=${errors.name ?? this.errorMessages("name")}
                     help=${msg("Application's display Name.")}
-                    id="ak-application-wizard-details-name"
                 ></ak-text-input>
                 <ak-slug-input
                     name="slug"
                     value=${ifDefined(app.slug)}
                     label=${msg("Slug")}
-                    source="#ak-application-wizard-details-name"
                     required
                     ?invalid=${errors.slug ?? this.errors.has("slug")}
                     .errorMessages=${this.errorMessages("slug")}

@@ -3,6 +3,7 @@ import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/util
 import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-slug-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -91,17 +92,16 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                 />
                 <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control pf-m-monospace"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                />
-                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
-            </ak-form-element-horizontal>
+
+            <ak-slug-input
+                name="slug"
+                value=${ifDefined(this.instance?.slug)}
+                label=${msg("Slug")}
+                required
+                help=${msg("Visible in the URL.")}
+                input-hint="code"
+            ></ak-slug-input>
+
             <ak-form-element-horizontal label=${msg("Designation")} required name="designation">
                 <select class="pf-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>

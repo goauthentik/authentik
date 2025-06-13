@@ -41,14 +41,27 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal slugMode label=${msg("Name")} required name="name">
+        const checkSlug = (ev: InputEvent) => {
+            if (ev && ev.target && ev.target instanceof HTMLInputElement) {
+                ev.target.value = (ev.target.value ?? "").replace(/[^a-z0-9-]/g, "");
+            }
+        };
+
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
+                    id="admin-stages-invitation-name"
                     value="${this.instance?.name || ""}"
                     class="pf-c-form-control"
                     required
+                    @input=${(ev: InputEvent) => checkSlug(ev)}
                     data-ak-slug="true"
                 />
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.",
+                    )}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Expires")} required name="expires">
                 <input
