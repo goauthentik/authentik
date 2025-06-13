@@ -6,7 +6,6 @@ from hashlib import sha512
 from pathlib import Path
 
 import orjson
-from celery.schedules import crontab
 from sentry_sdk import set_tag
 from xmlsec import enable_debug_trace
 
@@ -65,14 +64,17 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "authentik.tasks",
 ]
 TENANT_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
+    "pgtrigger",
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
+    "authentik.events",
     "authentik.flows",
     "authentik.outposts",
     "authentik.policies.dummy",
@@ -341,37 +343,40 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-CELERY = {
-    "task_soft_time_limit": 600,
-    "worker_max_tasks_per_child": 50,
-    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
-    "beat_schedule": {
-        "clean_expired_models": {
-            "task": "authentik.core.tasks.clean_expired_models",
-            "schedule": crontab(minute="2-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
-        "user_cleanup": {
-            "task": "authentik.core.tasks.clean_temporary_users",
-            "schedule": crontab(minute="9-59/5"),
-            "options": {"queue": "authentik_scheduled"},
-        },
-    },
-    "beat_scheduler": "authentik.tenants.scheduler:TenantAwarePersistentScheduler",
-    "task_create_missing_queues": True,
-    "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url") or redis_url(CONFIG.get("redis.db")),
-    "result_backend": CONFIG.get("result_backend.url") or redis_url(CONFIG.get("redis.db")),
-    "broker_transport_options": CONFIG.get_dict_from_b64_json(
-        "broker.transport_options", {"retry_policy": {"timeout": 5.0}}
-    ),
-    "result_backend_transport_options": CONFIG.get_dict_from_b64_json(
-        "result_backend.transport_options", {"retry_policy": {"timeout": 5.0}}
-    ),
-    "redis_retry_on_timeout": True,
+
+# Tests
+
+TEST = False
+TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
+
+
+# Dramatiq
+
+DRAMATIQ = {
+    "middlewares": (
+        # TODO: fixme
+        # ("dramatiq.middleware.prometheus.Prometheus", {}),
+        ("dramatiq.middleware.age_limit.AgeLimit", {}),
+        (
+            "dramatiq.middleware.time_limit.TimeLimit",
+            {
+                # 5 minutes task timeout by default for all tasks
+                "time_limit": 600 * 1000,
+            },
+        ),
+        ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
+        ("dramatiq.middleware.callbacks.Callbacks", {}),
+        ("dramatiq.middleware.pipelines.Pipelines", {}),
+        ("dramatiq.middleware.retries.Retries", {"max_retries": 20 if not TEST else 0}),
+        # TODO: results
+        ("authentik.tasks.middleware.FullyQualifiedActorName", {}),
+        ("authentik.tasks.middleware.CurrentTask", {}),
+    )
 }
 
+
 # Sentry integration
+
 env = get_env()
 _ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
@@ -432,9 +437,6 @@ else:
     MEDIA_ROOT = STORAGES["default"]["OPTIONS"]["location"]
     MEDIA_URL = STORAGES["default"]["OPTIONS"]["base_url"]
 
-TEST = False
-TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-
 structlog_configure()
 LOGGING = get_logger_config()
 
@@ -445,7 +447,6 @@ _DISALLOWED_ITEMS = [
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
-    "CELERY",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -468,7 +469,6 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -477,7 +477,6 @@ def _update_settings(app_path: str):
 
 
 if DEBUG:
-    CELERY["task_always_eager"] = True
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
         "rest_framework.renderers.BrowsableAPIRenderer"
     )
@@ -497,10 +496,6 @@ try:
 except ImportError:
     pass
 
-# Import events after other apps since it relies on tasks and other things from all apps
-# being imported for @prefill_task
-TENANT_APPS.append("authentik.events")
-
 
 # Load subapps's settings
 for _app in set(SHARED_APPS + TENANT_APPS):
@@ -508,6 +503,10 @@ for _app in set(SHARED_APPS + TENANT_APPS):
         continue
     _update_settings(f"{_app}.settings")
 _update_settings("data.user_settings")
+
+# Import schedules after other apps since it relies on tasks and ScheduledModel being
+# registered for its startup.
+TENANT_APPS.append("authentik.tasks.schedules")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

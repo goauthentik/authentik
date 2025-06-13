@@ -2,6 +2,7 @@
 
 from django.core.cache import cache
 from django.utils.translation import gettext_lazy as _
+from dramatiq import actor
 from packaging.version import parse
 from requests import RequestException
 from structlog.stdlib import get_logger
@@ -9,10 +10,9 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.admin.apps import PROM_INFO
 from authentik.events.models import Event, EventAction
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 VERSION_NULL = "0.0.0"
@@ -32,13 +32,13 @@ def _set_prom_info():
     )
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def update_latest_version(self: SystemTask):
+@actor
+def update_latest_version():
     """Update latest version info"""
+    self = CurrentTask.get_task()
     if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskStatus.WARNING, "Version check disabled.")
+        self.info("Version check disabled.")
         return
     try:
         response = get_http_session().get(
@@ -48,7 +48,7 @@ def update_latest_version(self: SystemTask):
         data = response.json()
         upstream_version = data.get("stable", {}).get("version")
         cache.set(VERSION_CACHE_KEY, upstream_version, VERSION_CACHE_TIMEOUT)
-        self.set_status(TaskStatus.SUCCESSFUL, "Successfully updated latest Version")
+        self.info("Successfully updated latest Version")
         _set_prom_info()
         # Check if upstream version is newer than what we're running,
         # and if no event exists yet, create one.
@@ -71,7 +71,7 @@ def update_latest_version(self: SystemTask):
             ).save()
     except (RequestException, IndexError) as exc:
         cache.set(VERSION_CACHE_KEY, VERSION_NULL, VERSION_CACHE_TIMEOUT)
-        self.set_error(exc)
+        raise exc
 
 
 _set_prom_info()

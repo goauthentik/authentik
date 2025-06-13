@@ -88,7 +88,6 @@ def get_logger_config():
         "authentik": global_level,
         "django": "WARNING",
         "django.request": "ERROR",
-        "celery": "WARNING",
         "selenium": "WARNING",
         "docker": "WARNING",
         "urllib3": "WARNING",
