@@ -17,11 +17,11 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param value the value to set.
      */
-    public async fillTextField(
+    public fillTextField = async (
         fieldName: string,
         value: string,
         parent: LocatorContext = this.page,
-    ): Promise<void> {
+    ): Promise<void> => {
         const control = parent
             .getByRole("textbox", {
                 name: fieldName,
@@ -31,7 +31,7 @@ export class FormFixture extends PageFixture {
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
         await control.fill(value);
-    }
+    };
 
     /**
      * Set the value of a numeric input.
@@ -39,11 +39,11 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param value the value to set.
      */
-    public async fillNumericField(
+    public fillNumericField = async (
         fieldName: string,
         value: string,
         parent: LocatorContext = this.page,
-    ): Promise<void> {
+    ): Promise<void> => {
         const control = parent
             .getByRole("spinbutton", {
                 name: fieldName,
@@ -53,7 +53,7 @@ export class FormFixture extends PageFixture {
         await expect(control, `Field (${fieldName}) should be visible`).toBeVisible();
 
         await control.fill(value);
-    }
+    };
 
     /**
      * Set the value of a radio or checkbox input.
@@ -61,11 +61,11 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param value the value to set.
      */
-    public async setInputCheck(
+    public setInputCheck = async (
         fieldName: string,
         value: boolean = true,
         parent: LocatorContext = this.page,
-    ): Promise<void> {
+    ): Promise<void> => {
         const control = parent.locator("ak-switch-input", {
             hasText: fieldName,
         });
@@ -83,7 +83,7 @@ export class FormFixture extends PageFixture {
         }
 
         await control.click();
-    }
+    };
 
     /**
      * Set the value of a radio or checkbox input.
@@ -91,11 +91,11 @@ export class FormFixture extends PageFixture {
      * @param fieldName The name of the form element.
      * @param pattern the value to set.
      */
-    public async setRadio(
+    public setRadio = async (
         groupName: string,
         fieldName: string,
         parent: LocatorContext = this.page,
-    ): Promise<void> {
+    ): Promise<void> => {
         const group = parent.getByRole("group", { name: groupName });
 
         await expect(group, `Field "${groupName}" should be visible`).toBeVisible();
@@ -104,7 +104,7 @@ export class FormFixture extends PageFixture {
         await control.setChecked(true, {
             force: true,
         });
-    }
+    };
 
     /**
      * Set the value of a search select input.
@@ -112,11 +112,11 @@ export class FormFixture extends PageFixture {
      * @param fieldLabel The name of the search select element.
      * @param pattern The text to match against the search select entry.
      */
-    public async selectSearchValue(
+    public selectSearchValue = async (
         fieldLabel: string,
         pattern: string | RegExp,
         parent: LocatorContext = this.page,
-    ): Promise<void> {
+    ): Promise<void> => {
         const control = parent.getByRole("textbox", { name: fieldLabel });
 
         await expect(
@@ -148,13 +148,13 @@ export class FormFixture extends PageFixture {
         await button.click();
         await this.page.keyboard.press("Tab");
         await control.blur();
-    }
+    };
 
-    public async setFormGroup(
+    public setFormGroup = async (
         pattern: string | RegExp,
         value: boolean = true,
         parent: LocatorContext = this.page,
-    ) {
+    ) => {
         const control = parent
             .locator("ak-form-group", {
                 hasText: pattern,
@@ -177,7 +177,7 @@ export class FormFixture extends PageFixture {
         } else {
             await expect(control).not.toHaveAttribute("open");
         }
-    }
+    };
 
     //#endregion
 

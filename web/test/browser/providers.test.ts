@@ -1,11 +1,14 @@
 import { expect, test } from "#e2e";
 import { ProvidersFixture } from "#e2e/fixtures/ProvidersFixture";
 import { createRandomName } from "#e2e/utils/generators";
+import { P, series } from "#e2e/utils/runner";
 import { ConsoleLogger } from "#logger/node";
 import { IDGenerator } from "@goauthentik/core/id";
 
 test.describe("Configure Providers", () => {
     const providerNames = new Map<string, string>();
+
+    //#region Lifecycle
 
     test.beforeEach(async ({ $, page, session, providers }, { testId }) => {
         const { wizard } = $;
@@ -41,6 +44,12 @@ test.describe("Configure Providers", () => {
 
         await searchInput.fill(providerName);
 
+        //#region Confirm provider
+
+        // We have to wait for the provider to appear in the table,
+        // but several UI elements will be rendered asynchronously.
+        // We attempt several times to find the provider to avoid flakiness.
+
         const tries = 10;
         let found = false;
 
@@ -72,7 +81,13 @@ test.describe("Configure Providers", () => {
         if (!found) {
             throw new Error(`Provider ${providerName} not found in the table`);
         }
+
+        //#endregion
     });
+
+    //#endregion
+
+    //#region OAuth2
 
     test("Should configure a simple OAuth2 Provider", async ({
         $,
@@ -144,41 +159,27 @@ test.describe("Configure Providers", () => {
             "Client Secret should be visible when Client Type is Confidential",
         ).toBeVisible();
 
-        await form.selectSearchValue("Signing Key", /authentik Self-signed Certificate/);
-        await form.selectSearchValue("Encryption Key", /authentik Self-signed Certificate/);
-
-        await form.setFormGroup("Advanced flow settings", true);
-
-        await form.selectSearchValue("Authentication flow", /default-source-authentication/);
-        await form.selectSearchValue("Invalidation flow", /default-invalidation-flow/);
-
-        await form.setFormGroup("Advanced protocol settings", true);
-
-        await form.fillTextField("Access code validity", "minutes=2");
-        await form.fillTextField("Access token validity", "minutes=10");
-        await form.fillTextField("Refresh token validity", "days=40");
-
-        await form.setInputCheck("Include claims in id_token", false);
-
-        await form.setRadio("Subject mode", "Based on the User's username");
-        await form.setRadio("Issuer mode", "Same identifier is used for all providers");
-
-        await form.setFormGroup("Machine-to-Machine authentication settings", true);
-
-        const request = page.waitForRequest((request) => {
-            const url = new URL(request.url());
-            return url.pathname.startsWith("/api/v3/providers/") && request.method() === "GET";
-        });
-
-        const response = page.waitForResponse((response) => {
-            return response.url().includes("/api/v3/providers/") && response.ok();
-        });
-
-        await wizard.navigation.next.click();
-
-        await request;
-        await response;
+        await series(
+            P(form.selectSearchValue, "Signing Key", /authentik Self-signed Certificate/),
+            P(form.selectSearchValue, "Encryption Key", /authentik Self-signed Certificate/),
+            P(form.setFormGroup, "Advanced flow settings", true),
+            P(form.selectSearchValue, "Authentication flow", /default-source-authentication/),
+            P(form.selectSearchValue, "Invalidation flow", /default-invalidation-flow/),
+            P(form.setFormGroup, "Advanced protocol settings", true),
+            P(form.fillTextField, "Access code validity", "minutes=2"),
+            P(form.fillTextField, "Access token validity", "minutes=10"),
+            P(form.fillTextField, "Refresh token validity", "days=40"),
+            P(form.setInputCheck, "Include claims in id_token", false),
+            P(form.setRadio, "Subject mode", "Based on the User's username"),
+            P(form.setRadio, "Issuer mode", "Same identifier is used for all providers"),
+            P(form.setFormGroup, "Machine-to-Machine authentication settings", true),
+            P(wizard.navigation.next.click),
+        );
     });
+
+    //#endregion
+
+    //#region LDAP
 
     test("Should configure a complete LDAP Provider", async ({
         $,
@@ -206,41 +207,22 @@ test.describe("Configure Providers", () => {
 
         const providerName = providerNames.get(testInfo.testId)!;
 
-        await form.fillTextField("name", providerName, $providerForm);
-
-        await form.setFormGroup("Flow settings", true);
-        await form.setFormGroup("Protocol settings", true);
-
-        await form.selectSearchValue("Bind flow", /default-authentication-flow/);
-
-        await form.fillTextField("Base DN", "DC=ldap-2,DC=goauthentik,DC=io");
-
-        await form.selectSearchValue("Certificate", /authentik Self-signed Certificate/);
-
-        await form.fillTextField("TLS Server name", "goauthentik.io");
-
-        await form.fillNumericField("UID start number", "2001");
-
-        await form.fillNumericField("GID start number", "4001");
-
-        await form.setRadio("Search mode", "Direct querying");
-
-        await form.setRadio("Bind mode", "Direct binding");
-
-        await form.setInputCheck("MFA Support", false);
-
-        const request = page.waitForRequest((request) => {
-            const url = new URL(request.url());
-            return url.pathname.startsWith("/api/v3/providers/") && request.method() === "GET";
-        });
-
-        const response = page.waitForResponse((response) => {
-            return response.url().includes("/api/v3/providers/") && response.ok();
-        });
-
-        await wizard.navigation.next.click();
-
-        await request;
-        await response;
+        await series(
+            P(form.fillTextField, "name", providerName, $providerForm),
+            P(form.setFormGroup, "Flow settings", true),
+            P(form.setFormGroup, "Protocol settings", true),
+            P(form.selectSearchValue, "Bind flow", /default-authentication-flow/),
+            P(form.fillTextField, "Base DN", "DC=ldap-2,DC=goauthentik,DC=io"),
+            P(form.selectSearchValue, "Certificate", /authentik Self-signed Certificate/),
+            P(form.fillTextField, "TLS Server name", "goauthentik.io"),
+            P(form.fillNumericField, "UID start number", "2001"),
+            P(form.fillNumericField, "GID start number", "4001"),
+            P(form.setRadio, "Search mode", "Direct querying"),
+            P(form.setRadio, "Bind mode", "Direct binding"),
+            P(form.setInputCheck, "MFA Support", false),
+            P(wizard.navigation.next.click),
+        );
     });
+
+    //#endregion
 });
