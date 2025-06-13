@@ -1100,3 +1100,24 @@ class AuthenticatedSession(SerializerModel):
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
         )
+
+
+class File(SerializerModel):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    name = models.TextField()
+    content = models.BinaryField()
+    public = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = _("File")
+        verbose_name = _("Files")
+
+    def __str__(self) -> str:
+        return self.name
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.files import FileSerializer
+
+        return FileSerializer
