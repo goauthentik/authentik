@@ -73,6 +73,25 @@ To check if your config has been applied correctly, you can run the following co
 - `AUTHENTIK_POSTGRESQL__PASSWORD`: Password that authentik will use to authenticate with PostgreSQL. If not specified, defaults to the value of the environment variable `POSTGRES_PASSWORD`. Note that this default behavior only applies when using the default Docker Compose configuration.
 - `AUTHENTIK_POSTGRESQL__NAME`: Name of the database that authentik will use within PostgreSQL.
 - `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`: Specifies the PostgreSQL schema name to use for authentik data. If not specified, defaults to `public`. :ak-version[2024.12]
+- `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
+  {/* TODO: Temporarily deactivated feature, see https://github.com/goauthentik/authentik/issues/14320 */}
+  {/* - `AUTHENTIK_POSTGRESQL__USE_POOL`: Use a [connection pool](https://docs.djangoproject.com/en/stable/ref/databases/#connection-pool) for PostgreSQL connections. Defaults to `false`. :ak-version[2025.4] */}
+  {/* - `AUTHENTIK_POSTGRESQL__POOL_OPTIONS`: Extra configuration to pass to the [ConnectionPool object](https://www.psycopg.org/psycopg3/docs/api/pool.html#psycopg_pool.ConnectionPool) when it is created. Must be a base64-encoded JSON dictionary. Ignored when `USE_POOL` is set to `false`. :ak-version[2025.4] */}
+- `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer. Deprecated, see below
+- `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool. Deprecated, see below
+- `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `"verify-ca"`
+- `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
+- `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
+- `AUTHENTIK_POSTGRESQL__SSLKEY`: Path to private key of `SSLCERT` certificate
+- `AUTHENTIK_POSTGRESQL__CONN_MAX_AGE`: Database connection lifetime. Defaults to `0` (no persistent connections). Can be set to `null` for unlimited persistent connections. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-max-age) for more details.
+- `AUTHENTIK_POSTGRESQL__CONN_HEALTH_CHECKS`: Existing persistent database connections will be health checked before they are reused if set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#conn-health-checks) for more details.
+- `AUTHENTIK_POSTGRESQL__DISABLE_SERVER_SIDE_CURSORS`: Disable server side cursors when set to `true`. Defaults to `false`. See [Django's documentation](https://docs.djangoproject.com/en/stable/ref/settings/#disable-server-side-cursors) for more details.
+
+The PostgreSQL settings `HOST`, `PORT`, `USER`, and `PASSWORD` support hot-reloading. Adding and removing read replicas doesn't support hot-reloading.
+
+- `AUTHENTIK_POSTGRESQL__DEFAULT_SCHEMA`:ak-version[2024.12]
+
+    The name of the schema used by default in the database. Defaults to `public`.
 
     It is only supported to change this value before the initial start of authentik.
 
