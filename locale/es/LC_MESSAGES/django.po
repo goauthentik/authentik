@@ -631,7 +631,7 @@ msgstr "Proveedores del Marco de Señales Compartidas"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "Add stream to SSF provider"
-msgstr "Agregar flujo al proveedor SSF"
+msgstr "Agregar flujo de datos al proveedor SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
@@ -647,7 +647,7 @@ msgstr "Evento de Flujo de Datos SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Events"
-msgstr "Eventos de Flujo SSF"
+msgstr "Eventos de Flujos de Datos SSF"
 
 #: authentik/enterprise/providers/ssf/tasks.py
 msgid "Failed to send request"
