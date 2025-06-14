@@ -2341,7 +2341,7 @@ msgid ""
 "HTTP@hostname"
 msgstr ""
 "Forzar el uso de un nombre de servidor específico para SPNEGO. Debe estar en"
-" el formato HTTP@hostname"
+" el formato HTTP@nombre_de_host"
 
 #: authentik/sources/kerberos/models.py
 msgid "SPNEGO keytab base64-encoded or path to keytab in the form FILE:path"
