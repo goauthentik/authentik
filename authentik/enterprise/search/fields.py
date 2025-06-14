@@ -25,7 +25,7 @@ class JSONSearchField(StrField):
         q = Q(**{f"{search}{op}": self.get_lookup_value(value)})
         return ~q if invert else q
 
-    def context_keys(self, model: type[Model]) -> Generator[tuple[str]]:
+    def json_field_keys(self) -> Generator[tuple[str]]:
         with connection.cursor() as cursor:
             cursor.execute(
                 f"""
@@ -33,7 +33,7 @@ class JSONSearchField(StrField):
                     SELECT
                         ARRAY[jsonb_object_keys("{self.name}")] AS key_path_array,
                         "{self.name}" -> jsonb_object_keys("{self.name}") AS value
-                    FROM {model._meta.db_table}
+                    FROM {self.model._meta.db_table}
                     WHERE "{self.name}" IS NOT NULL
                         AND jsonb_typeof("{self.name}") = 'object'
 
@@ -83,7 +83,7 @@ class JSONSearchField(StrField):
 
         relation_structure = defaultdict(dict)
 
-        for relations in self.context_keys(self.model):
+        for relations in self.json_field_keys():
             result = recursive_function([base_model_name] + relations)
             for relation_key, value in result.items():
                 for sub_relation_key, sub_value in value.items():

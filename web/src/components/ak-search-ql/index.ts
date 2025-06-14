@@ -147,17 +147,9 @@ export class QLSearch extends AKElement {
         // Mostly static variables for padding, font line-height and how many
         const lineHeight = parseInt(window.getComputedStyle(this.searchElement).lineHeight, 10);
         const paddingTop = parseInt(window.getComputedStyle(this.searchElement).paddingTop, 10);
-        const paddingBottom = parseInt(
-            window.getComputedStyle(this.searchElement).paddingBottom,
-            10,
-        );
         const paddingLeft = parseInt(window.getComputedStyle(this.searchElement).paddingLeft, 10);
         const paddingRight = parseInt(window.getComputedStyle(this.searchElement).paddingRight, 10);
         const actualInnerWidth = bcr.width - paddingLeft - paddingRight;
-        const lettersPerLine = Math.floor(actualInnerWidth / letterWidth);
-
-        const col = (this.searchElement.selectionStart % lettersPerLine) + 1;
-        const line = Math.floor(this.searchElement.selectionStart / lettersPerLine) + 1;
 
         let relX = 0;
         let relY = 1;

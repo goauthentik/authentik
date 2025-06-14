@@ -79,7 +79,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
     render(): TemplateResult {
         return html`<form
             class="pf-c-input-group"
-            method="GET"
+            method="get"
             @submit=${(e: Event) => {
                 e.preventDefault();
                 if (!this.onSearch) return;
@@ -97,6 +97,7 @@ export class TableSearch extends WithLicenseSummary(AKElement) {
                 type="reset"
                 @click=${() => {
                     if (!this.onSearch) return;
+                    this.value = "";
                     this.onSearch("");
                 }}
             >
