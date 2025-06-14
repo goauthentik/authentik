@@ -28,9 +28,9 @@ uv run ak create_recovery_key 10 akadmin
 
 This will output a link, that can be used to instantly gain access to authentik as the user specified above. The link is valid for amount of years specified above, in this case, 10 years.
 
-## Can't access initial setup
+## Can't access initial setup flow during installation steps
 
-If you're unable to access the initial setup flow (`/if/flow/initial-setup/`), first try restarting the containers as this often resolves temporary issues.
+If you're unable to access the initial setup flow (`/if/flow/initial-setup/`) immediately after installing authentik, first try restarting the containers because this often resolves temporary issues.
 
 However, if the issue persists after restarting, you can directly reset the admin password using the following commands:
 
@@ -51,5 +51,5 @@ After following the prompts to set a new password, you can then login via: `http
 After logging in, you can set the email address and other settings for the account by navigating to **Directory** > **Users** and editing the user account.
 
 :::note
-This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the admin user.
+This method bypasses the initial setup flow and should only be used as a last resort. The initial setup flow is the recommended method to configure the administrator user.
 :::
