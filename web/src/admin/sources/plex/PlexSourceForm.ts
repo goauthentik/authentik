@@ -128,7 +128,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     this.doAuth();
                 }}
             >
-                ${msg("Re-authenticate with plex")}
+                ${msg("Re-authenticate with Plex")}
             </button>
             <ak-form-element-horizontal name="allowFriends">
                 <label class="pf-c-switch">
