@@ -3997,7 +3997,7 @@ msgstr "Longitud predeterminada del token"
 
 #: authentik/tenants/models.py
 msgid "Tenant"
-msgstr "inquilino"
+msgstr "Inquilino"
 
 #: authentik/tenants/models.py
 msgid "Tenants"
