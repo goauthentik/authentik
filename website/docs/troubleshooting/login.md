@@ -32,7 +32,7 @@ This will output a link, that can be used to instantly gain access to authentik 
 
 If you're unable to access the initial setup flow (`/if/flow/initial-setup/`) immediately after installing authentik, first try restarting the containers because this often resolves temporary issues.
 
-However, if the issue persists after restarting, you can directly reset the admin password using the following commands:
+However, if the issue persists after restarting, you can directly set the admin password using the following commands:
 
 Docker Compose deployments:
 
