@@ -9881,6 +9881,12 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Generate New Certificate-Key Pair</source>
   <target>生成新的证书密钥对</target>
 </trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
