@@ -3314,8 +3314,8 @@ msgstr "No se pudo validar el token"
 msgid ""
 "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 msgstr ""
-"Compensación después de la cual caduca el consentimiento. (Formato: horas = "
-"1; minutos = 2; segundos = 3)."
+"Desfase después del cual expira el consentimiento. (Formato: "
+"hours=1;minutes=2;seconds=3)."
 
 #: authentik/stages/consent/models.py
 msgid "Consent Stage"
