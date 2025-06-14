@@ -10,6 +10,7 @@ from kubernetes.client.exceptions import OpenApiException
 from authentik.core.tests.utils import create_test_flow
 from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
+from authentik.outposts.controllers.k8s.service import ServiceReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
 from authentik.outposts.tasks import outpost_connection_discovery
@@ -90,6 +91,35 @@ class OutpostKubernetesTests(TestCase):
                 )
 
         deployment_reconciler.delete(deployment_reconciler.get_reference_object())
+
+    @pytest.mark.timeout(120)
+    def test_service_reconciler(self):
+        """test that service requires update"""
+        controller = ProxyKubernetesController(self.outpost, self.service_connection)
+        service_reconciler = ServiceReconciler(controller)
+
+        self.assertIsNotNone(service_reconciler.retrieve())
+
+        config = self.outpost.config
+        config.kubernetes_service_type = "NodePort"
+        config.kubernetes_json_patches = {
+            "service": [
+                {
+                    "op": "add",
+                    "path": "/spec/ipFamilyPolicy",
+                    "value": "PreferDualStack",
+                }
+            ]
+        }
+        self.outpost.config = config
+
+        with self.assertRaises(NeedsUpdate):
+            service_reconciler.reconcile(
+                service_reconciler.retrieve(),
+                service_reconciler.get_reference_object(),
+            )
+
+        service_reconciler.delete(service_reconciler.get_reference_object())
 
     @pytest.mark.timeout(120)
     def test_controller_rename(self):

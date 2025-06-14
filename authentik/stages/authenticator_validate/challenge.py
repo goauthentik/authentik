@@ -8,26 +8,31 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
 from webauthn import options_to_json
 from webauthn.authentication.generate_authentication_options import generate_authentication_options
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
+from webauthn.helpers import parse_authentication_credential_json
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
-from webauthn.helpers.exceptions import InvalidAuthenticationResponse
+from webauthn.helpers.exceptions import InvalidAuthenticationResponse, InvalidJSONStructure
 from webauthn.helpers.structs import UserVerificationRequirement
 
 from authentik.core.api.utils import JSONDictField, PassiveSerializer
 from authentik.core.models import Application, User
 from authentik.core.signals import login_failed
+from authentik.events.middleware import audit_ignore
 from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
+from authentik.lib.utils.email import mask_email
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_email.models import EmailDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -43,6 +48,7 @@ class DeviceChallenge(PassiveSerializer):
     device_class = CharField()
     device_uid = CharField()
     challenge = JSONDictField()
+    last_used = DateTimeField(allow_null=True)
 
 
 def get_challenge_for_device(
@@ -51,6 +57,8 @@ def get_challenge_for_device(
     """Generate challenge for a single device"""
     if isinstance(device, WebAuthnDevice):
         return get_webauthn_challenge(request, stage, device)
+    if isinstance(device, EmailDevice):
+        return {"email": mask_email(device.email)}
     # Code-based challenges have no hints
     return {}
 
@@ -100,12 +108,21 @@ def select_challenge(request: HttpRequest, device: Device):
     """Callback when the user selected a challenge in the frontend."""
     if isinstance(device, SMSDevice):
         select_challenge_sms(request, device)
+    elif isinstance(device, EmailDevice):
+        select_challenge_email(request, device)
 
 
 def select_challenge_sms(request: HttpRequest, device: SMSDevice):
     """Send SMS"""
     device.generate_token()
     device.stage.send(device.token, device)
+
+
+def select_challenge_email(request: HttpRequest, device: EmailDevice):
+    """Send Email"""
+    valid_secs: int = timedelta_from_string(device.stage.token_expiry).total_seconds()
+    device.generate_token(valid_secs=valid_secs)
+    device.stage.send(device)
 
 
 def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Device:
@@ -120,7 +137,9 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
             stage=stage_view.executor.current_stage,
             device_class=DeviceClasses.TOTP.value,
         )
-        raise ValidationError(_("Invalid Token"))
+        raise ValidationError(
+            _("Invalid Token. Please ensure the time on your device is accurate and try again.")
+        )
     return device
 
 
@@ -128,23 +147,40 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     """Validate WebAuthn Challenge"""
     request = stage_view.request
     challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
-    credential_id = data.get("id")
+    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
+    try:
+        credential = parse_authentication_credential_json(data)
+    except InvalidJSONStructure as exc:
+        LOGGER.warning("Invalid WebAuthn challenge response", exc=exc)
+        raise ValidationError("Invalid device", "invalid") from None
 
-    device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
+    device = WebAuthnDevice.objects.filter(credential_id=credential.id).first()
     if not device:
-        raise ValidationError("Invalid device")
+        raise ValidationError("Invalid device", "invalid")
     # We can only check the device's user if the user we're given isn't anonymous
     # as this validation is also used for password-less login where webauthn is the very first
     # step done by a user. Only if this validation happens at a later stage we can check
     # that the device belongs to the user
     if not user.is_anonymous and device.user != user:
-        raise ValidationError("Invalid device")
-
-    stage: AuthenticatorValidateStage = stage_view.executor.current_stage
-
+        raise ValidationError("Invalid device", "invalid")
+    # When a device_type was set when creating the device (2024.4+), and we have a limitation,
+    # make sure the device type is allowed.
+    if (
+        device.device_type
+        and stage.webauthn_allowed_device_types.exists()
+        and not stage.webauthn_allowed_device_types.filter(pk=device.device_type.pk).exists()
+    ):
+        raise ValidationError(
+            _(
+                "Invalid device type. Contact your {brand} administrator for help.".format(
+                    brand=stage_view.request.brand.branding_title
+                )
+            ),
+            "invalid",
+        )
     try:
         authentication_verification = verify_authentication_response(
-            credential=data,
+            credential=credential,
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),
@@ -161,10 +197,12 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
             stage=stage_view.executor.current_stage,
             device=device,
             device_class=DeviceClasses.WEBAUTHN.value,
+            device_type=device.device_type,
         )
         raise ValidationError("Assertion failed") from exc
 
-    device.set_sign_count(authentication_verification.new_sign_count)
+    with audit_ignore():
+        device.set_sign_count(authentication_verification.new_sign_count)
     return device
 
 

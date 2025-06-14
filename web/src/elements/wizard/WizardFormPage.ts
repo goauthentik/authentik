@@ -2,7 +2,7 @@ import { Form, KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { property } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -12,7 +12,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-@customElement("ak-wizard-form")
 export abstract class WizardForm extends Form<KeyUnknown> {
     viewportCheck = false;
 
@@ -40,24 +39,24 @@ export class WizardFormPage extends WizardPage {
 
     inputCallback(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
-        if (!form) {
-            return;
-        }
+
+        if (!form) return;
+
         const state = form.checkValidity();
         this.host.isValid = state;
     }
 
     nextCallback = async (): Promise<boolean> => {
         const form = this.shadowRoot?.querySelector<WizardForm>("ak-wizard-form");
+
         if (!form) {
             console.warn("authentik/wizard: could not find form element");
             return false;
         }
+
         const response = await form.submit();
-        if (response === undefined) {
-            return false;
-        }
-        return response;
+
+        return Boolean(response);
     };
 
     nextDataCallback: (data: KeyUnknown) => Promise<boolean> = async (): Promise<boolean> => {

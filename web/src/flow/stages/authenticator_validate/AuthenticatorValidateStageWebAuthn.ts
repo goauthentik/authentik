@@ -7,7 +7,7 @@ import "@goauthentik/elements/EmptyState";
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
+import { PropertyValues, TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
@@ -72,14 +72,16 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
     }
 
-    firstUpdated(): void {
-        // convert certain members of the PublicKeyCredentialRequestOptions into
-        // byte arrays as expected by the spec.
-        const credentialRequestOptions = this.deviceChallenge
-            ?.challenge as PublicKeyCredentialRequestOptions;
-        this.transformedCredentialRequestOptions =
-            transformCredentialRequestOptions(credentialRequestOptions);
-        this.authenticateWrapper();
+    updated(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("challenge") && this.challenge !== undefined) {
+            // convert certain members of the PublicKeyCredentialRequestOptions into
+            // byte arrays as expected by the spec.
+            const credentialRequestOptions = this.deviceChallenge
+                ?.challenge as PublicKeyCredentialRequestOptions;
+            this.transformedCredentialRequestOptions =
+                transformCredentialRequestOptions(credentialRequestOptions);
+            this.authenticateWrapper();
+        }
     }
 
     async authenticateWrapper(): Promise<void> {
@@ -88,8 +90,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
         }
         this.authenticating = true;
         this.authenticate()
-            .catch((e: Error) => {
-                console.warn("authentik/flows/authenticator_validate/webauthn: failed to auth", e);
+            .catch((error: unknown) => {
+                console.warn(
+                    "authentik/flows/authenticator_validate/webauthn: failed to auth",
+                    error,
+                );
                 this.errorMessage = msg("Authentication failed. Please try again.");
             })
             .finally(() => {
@@ -105,7 +110,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                     ?loading="${this.authenticating}"
                     header=${this.authenticating
                         ? msg("Authenticating...")
-                        : this.errorMessage || msg("Failed to authenticate")}
+                        : this.errorMessage || msg("Loading")}
                     icon="fa-times"
                 >
                 </ak-empty-state>
@@ -125,5 +130,11 @@ export class AuthenticatorValidateStageWebAuthn extends BaseDeviceStage<
                 </div>
             </form>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-authenticator-validate-webauthn": AuthenticatorValidateStageWebAuthn;
     }
 }

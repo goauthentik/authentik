@@ -2,11 +2,9 @@
 
 from collections.abc import Iterator
 from copy import copy
-from datetime import timedelta
 
 from django.core.cache import cache
 from django.db.models import QuerySet
-from django.db.models.functions import ExtractHour
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
@@ -17,18 +15,16 @@ from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodFiel
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
-from structlog.testing import capture_logs
 
-from authentik.admin.api.metrics import CoordinateSerializer
+from authentik.api.pagination import Pagination
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import ModelSerializer
 from authentik.core.models import Application, User
-from authentik.events.models import EventAction
-from authentik.events.utils import sanitize_dict
+from authentik.events.logs import LogEventSerializer, capture_logs
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -37,16 +33,19 @@ from authentik.lib.utils.file import (
 )
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
-from authentik.policies.types import PolicyResult
+from authentik.policies.types import CACHE_PREFIX, PolicyResult
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
 
 
-def user_app_cache_key(user_pk: str) -> str:
+def user_app_cache_key(user_pk: str, page_number: int | None = None) -> str:
     """Cache key where application list for user is saved"""
-    return f"goauthentik.io/core/app_access/{user_pk}"
+    key = f"{CACHE_PREFIX}app_access/{user_pk}"
+    if page_number:
+        key += f"/{page_number}"
+    return key
 
 
 class ApplicationSerializer(ModelSerializer):
@@ -100,7 +99,12 @@ class ApplicationSerializer(ModelSerializer):
 class ApplicationViewSet(UsedByMixin, ModelViewSet):
     """Application Viewset"""
 
-    queryset = Application.objects.all().prefetch_related("provider")
+    queryset = (
+        Application.objects.all()
+        .with_provider()
+        .prefetch_related("policies")
+        .prefetch_related("backchannel_providers")
+    )
     serializer_class = ApplicationSerializer
     search_fields = [
         "name",
@@ -144,6 +148,15 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 applications.append(application)
         return applications
 
+    def _filter_applications_with_launch_url(
+        self, pagined_apps: Iterator[Application]
+    ) -> list[Application]:
+        applications = []
+        for app in pagined_apps:
+            if app.get_launch_url():
+                applications.append(app)
+        return applications
+
     @extend_schema(
         parameters=[
             OpenApiParameter(
@@ -182,9 +195,9 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if request.user.is_superuser:
             log_messages = []
             for log in logs:
-                if log.get("process", "") == "PolicyProcess":
+                if log.attributes.get("process", "") == "PolicyProcess":
                     continue
-                log_messages.append(sanitize_dict(log))
+                log_messages.append(LogEventSerializer(log).data)
             result.log_messages = log_messages
             response = PolicyTestResultSerializer(result)
         return Response(response.data)
@@ -201,6 +214,11 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.INT,
             ),
+            OpenApiParameter(
+                name="only_with_launch_url",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.BOOL,
+            ),
         ]
     )
     def list(self, request: Request) -> Response:
@@ -213,8 +231,13 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
+        only_with_launch_url = str(
+            request.query_params.get("only_with_launch_url", "false")
+        ).lower()
+
         queryset = self._filter_queryset_for_list(self.get_queryset())
-        pagined_apps = self.paginate_queryset(queryset)
+        paginator: Pagination = self.paginator
+        paginated_apps = paginator.paginate_queryset(queryset, request)
 
         if "for_user" in request.query_params:
             try:
@@ -228,23 +251,29 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
                     raise ValidationError({"for_user": "User not found"})
             except ValueError as exc:
                 raise ValidationError from exc
-            allowed_applications = self._get_allowed_applications(pagined_apps, user=for_user)
+            allowed_applications = self._get_allowed_applications(paginated_apps, user=for_user)
             serializer = self.get_serializer(allowed_applications, many=True)
             return self.get_paginated_response(serializer.data)
 
         allowed_applications = []
         if not should_cache:
-            allowed_applications = self._get_allowed_applications(pagined_apps)
+            allowed_applications = self._get_allowed_applications(paginated_apps)
         if should_cache:
-            allowed_applications = cache.get(user_app_cache_key(self.request.user.pk))
+            allowed_applications = cache.get(
+                user_app_cache_key(self.request.user.pk, paginator.page.number)
+            )
             if not allowed_applications:
-                LOGGER.debug("Caching allowed application list")
-                allowed_applications = self._get_allowed_applications(pagined_apps)
+                LOGGER.debug("Caching allowed application list", page=paginator.page.number)
+                allowed_applications = self._get_allowed_applications(paginated_apps)
                 cache.set(
-                    user_app_cache_key(self.request.user.pk),
+                    user_app_cache_key(self.request.user.pk, paginator.page.number),
                     allowed_applications,
                     timeout=86400,
                 )
+
+        if only_with_launch_url == "true":
+            allowed_applications = self._filter_applications_with_launch_url(allowed_applications)
+
         serializer = self.get_serializer(allowed_applications, many=True)
         return self.get_paginated_response(serializer.data)
 
@@ -288,18 +317,3 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
         return set_file_url(request, app, "meta_icon")
-
-    @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
-    @extend_schema(responses={200: CoordinateSerializer(many=True)})
-    @action(detail=True, pagination_class=None, filter_backends=[])
-    def metrics(self, request: Request, slug: str):
-        """Metrics for application logins"""
-        app = self.get_object()
-        return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event").filter(
-                action=EventAction.AUTHORIZE_APPLICATION,
-                context__authorized_application__pk=app.pk.hex,
-            )
-            # 3 data points per day, so 8 hour spans
-            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
-        )

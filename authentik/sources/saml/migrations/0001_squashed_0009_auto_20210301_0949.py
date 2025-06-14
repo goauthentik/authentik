@@ -10,6 +10,8 @@ from authentik.sources.saml.processors import constants
 
 
 def update_algorithms(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
+    db_alias = schema_editor.connection.alias
+
     SAMLSource = apps.get_model("authentik_sources_saml", "SAMLSource")
     signature_translation_map = {
         "rsa-sha1": constants.RSA_SHA1,
@@ -22,7 +24,7 @@ def update_algorithms(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         "sha256": constants.SHA256,
     }
 
-    for source in SAMLSource.objects.all():
+    for source in SAMLSource.objects.using(db_alias).all():
         source.signature_algorithm = signature_translation_map.get(
             source.signature_algorithm, constants.RSA_SHA256
         )

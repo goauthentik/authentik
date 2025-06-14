@@ -1,6 +1,6 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { SentryIgnoredError } from "@goauthentik/common/sentry";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -18,7 +18,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     }
 
     async send(data: SAMLProvider): Promise<void> {
-        const file = this.getFormFiles()["metadata"];
+        const file = this.getFormFiles().metadata;
         if (!file) {
             throw new SentryIgnoredError("No form data");
         }
@@ -26,16 +26,17 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             file: file,
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
+            invalidationFlow: data.invalidationFlow || "",
         });
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search-no-default
@@ -46,9 +47,29 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Invalidation flow")}
+                required
+                name="invalidationFlow"
+            >
+                <ak-flow-search-no-default
+                    flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                    defaultFlowSlug="default-provider-invalidation-flow"
+                    required
+                ></ak-flow-search-no-default>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Flow used when logging out of this provider.")}
+                </p>
+            </ak-form-element-horizontal>
 
             <ak-form-element-horizontal label=${msg("Metadata")} name="metadata">
                 <input type="file" value="" class="pf-c-form-control" />
             </ak-form-element-horizontal>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-saml-import-form": SAMLProviderImportForm;
     }
 }

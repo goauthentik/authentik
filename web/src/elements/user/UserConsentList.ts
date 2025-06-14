@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
+import "@goauthentik/elements/chips/Chip";
+import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
@@ -16,12 +17,10 @@ export class UserConsentList extends Table<UserConsent> {
     @property({ type: Number })
     userId?: number;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserConsent>> {
+    async apiEndpoint(): Promise<PaginatedResponse<UserConsent>> {
         return new CoreApi(DEFAULT_CONFIG).coreUserConsentList({
+            ...(await this.defaultEndpointConfig()),
             user: this.userId,
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
         });
     }
 
@@ -63,10 +62,22 @@ export class UserConsentList extends Table<UserConsent> {
         return [
             html`${item.application.name}`,
             html`${item.expires && item.expiring
-                ? html`<div>${getRelativeTime(item.expires)}</div>
+                ? html`<div>${formatElapsedTime(item.expires)}</div>
                       <small>${item.expires.toLocaleString()}</small>`
                 : msg("-")}`,
-            html`${item.permissions || "-"}`,
+            html`${item.permissions
+                ? html`<ak-chip-group>
+                      ${item.permissions.split(" ").map((perm) => {
+                          return html`<ak-chip .removable=${false}>${perm}</ak-chip>`;
+                      })}
+                  </ak-chip-group>`
+                : html`-`}`,
         ];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-consent-list": UserConsentList;
     }
 }

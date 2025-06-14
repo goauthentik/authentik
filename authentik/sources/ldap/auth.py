@@ -6,10 +6,9 @@ from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.models import LDAP_DISTINGUISHED_NAME, LDAPSource
 
 LOGGER = get_logger()
-LDAP_DISTINGUISHED_NAME = "distinguishedName"
 
 
 class LDAPBackend(InbuiltBackend):
@@ -21,13 +20,15 @@ class LDAPBackend(InbuiltBackend):
             return None
         for source in LDAPSource.objects.filter(enabled=True):
             LOGGER.debug("LDAP Auth attempt", source=source)
-            user = self.auth_user(source, **kwargs)
+            user = self.auth_user(request, source, **kwargs)
             if user:
                 self.set_method("ldap", request, source=source)
                 return user
         return None
 
-    def auth_user(self, source: LDAPSource, password: str, **filters: str) -> User | None:
+    def auth_user(
+        self, request: HttpRequest, source: LDAPSource, password: str, **filters: str
+    ) -> User | None:
         """Try to bind as either user_dn or mail with password.
         Returns True on success, otherwise False"""
         users = User.objects.filter(**filters)
@@ -41,10 +42,11 @@ class LDAPBackend(InbuiltBackend):
         # or has a password, but couldn't be authenticated by ModelBackend.
         # This means we check with a bind to see if the LDAP password has changed
         if self.auth_user_by_bind(source, user, password):
-            # Password given successfully binds to LDAP, so we save it in our Database
-            LOGGER.debug("Updating user's password in DB", user=user)
-            user.set_password(password, signal=False)
-            user.save()
+            if source.password_login_update_internal_password:
+                # Password given successfully binds to LDAP, so we save it in our Database
+                LOGGER.debug("Updating user's password in DB", user=user)
+                user.set_password(password, sender=source, request=request)
+                user.save()
             return user
         # Password doesn't match
         LOGGER.debug("Failed to bind, password invalid")

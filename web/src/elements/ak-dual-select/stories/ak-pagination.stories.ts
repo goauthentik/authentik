@@ -5,6 +5,7 @@ import { TemplateResult, html } from "lit";
 
 import "../components/ak-pagination";
 import { AkPagination } from "../components/ak-pagination";
+import { DualSelectEventType } from "../types";
 
 const metadata: Meta<AkPagination> = {
     title: "Elements / Dual Select / Pagination Control",
@@ -44,7 +45,7 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const handleMoveChanged = (result: any) => {
-    console.log(result);
+    console.debug(result);
     const target = document.querySelector("#action-button-message-pad");
     target!.append(
         new DOMParser().parseFromString(
@@ -54,7 +55,7 @@ const handleMoveChanged = (result: any) => {
     );
 };
 
-window.addEventListener("ak-pagination-nav-to", handleMoveChanged);
+window.addEventListener(DualSelectEventType.NavigateTo, handleMoveChanged);
 
 type Story = StoryObj;
 

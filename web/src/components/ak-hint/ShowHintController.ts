@@ -63,7 +63,7 @@ export class ShowHintController implements ReactiveController {
     render() {
         return html`<ak-hint-footer
             ><div style="text-align: right">
-                <input type="checkbox" @input=${this.hide} />${msg(
+                <input type="checkbox" @input=${this.hide} />&nbsp;${msg(
                     "Don't show this message again.",
                 )}
             </div></ak-hint-footer

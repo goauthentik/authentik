@@ -1,11 +1,11 @@
-import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EventWithContext } from "@goauthentik/common/events";
-import { actionToLabel } from "@goauthentik/common/labels";
-import { getRelativeTime } from "@goauthentik/common/utils";
-import "@goauthentik/components/ak-event-info";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
+import { EventGeo, EventUser } from "#admin/events/utils";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EventWithContext } from "#common/events";
+import { actionToLabel } from "#common/labels";
+import { formatElapsedTime } from "#common/temporal";
+import "#components/ak-event-info";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -18,7 +18,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { EventsApi } from "@goauthentik/api";
+import { EventToJSON, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
@@ -104,7 +104,7 @@ export class EventViewPage extends AKElement {
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <div>${getRelativeTime(this.event.created)}</div>
+                                            <div>${formatElapsedTime(this.event.created)}</div>
                                             <small>${this.event.created.toLocaleString()}</small>
                                         </div>
                                     </dd>
@@ -143,10 +143,16 @@ export class EventViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">${msg("Raw event info")}</div>
                         <div class="pf-c-card__body">
-                            <pre>${JSON.stringify(this.event, null, 4)}</pre>
+                            <pre>${JSON.stringify(EventToJSON(this.event), null, 4)}</pre>
                         </div>
                     </div>
                 </div>
             </section>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-view": EventViewPage;
     }
 }

@@ -3,9 +3,9 @@
 from django.apps import apps
 from django.http import HttpResponseNotFound
 from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
+from authentik.core.api.utils import ModelSerializer
 from authentik.tenants.api.tenants import TenantApiKeyPermission
 from authentik.tenants.models import Domain
 

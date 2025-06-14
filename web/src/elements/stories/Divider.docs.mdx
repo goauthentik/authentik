@@ -1,0 +1,51 @@
+import { Canvas, Description, Meta, Story, Title } from "@storybook/blocks";
+
+import * as DividerStories from "./Divider.stories";
+
+<Meta of={DividerStories} />
+
+# Divider
+
+Divider is a horizontal rule, an in-page element to separate displayed items.
+
+It has no configurable attributes. It does have a single unnamed slot, which is displayed in-line in
+the center of the rule. If the CSS Base in loaded into the parent context, icons defined in the base
+can be used here.
+
+## Usage
+
+```Typescript
+import "@goauthentik/elements/Divider.js";
+```
+
+```html
+<ak-divider></ak-divider>
+```
+
+With content:
+
+```html
+<ak-divider><p>Time for bed!</p></ak-divider>
+```
+
+With an icon:
+
+```html
+<ak-divider><i class="fa fa-bed"></i></ak-divider>
+```
+
+## Demo
+
+Note that the Divider inherits its background from its parent component.
+
+### Default Horizontal Rule
+
+<Story of={DividerStories.DefaultStory} />
+
+### With A Message
+
+<Story of={DividerStories.DividerWithSlottedContent} />
+
+### With an Icon
+
+<Story of={DividerStories.DividerWithSlottedIcon} />

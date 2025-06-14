@@ -19,6 +19,7 @@ entries:
 - attrs:
     backends:
     - authentik.core.auth.InbuiltBackend
+    - authentik.sources.kerberos.auth.KerberosBackend
     - authentik.sources.ldap.auth.LDAPBackend
     - authentik.core.auth.TokenBackend
     configure_flow: !Find [authentik_flows.flow, [slug, default-password-change]]
@@ -82,3 +83,5 @@ entries:
     order: 10
     target: !KeyOf default-authentication-flow-password-binding
     policy: !KeyOf default-authentication-flow-password-optional
+  attrs:
+    failure_result: true

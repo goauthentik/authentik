@@ -1,16 +1,23 @@
-"""authentik saml_idp Models"""
+"""authentik SAML Provider Models"""
 
 from django.db import models
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik.core.api.object_types import CreatableType
 from authentik.core.models import PropertyMapping, Provider
 from authentik.crypto.models import CertificateKeyPair
+from authentik.lib.models import DomainlessURLValidator
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.sources.saml.processors.constants import (
     DSA_SHA1,
+    ECDSA_SHA1,
+    ECDSA_SHA256,
+    ECDSA_SHA384,
+    ECDSA_SHA512,
     RSA_SHA1,
     RSA_SHA256,
     RSA_SHA384,
@@ -34,7 +41,9 @@ class SAMLBindings(models.TextChoices):
 class SAMLProvider(Provider):
     """SAML 2.0 Endpoint for applications which support SAML."""
 
-    acs_url = models.URLField(verbose_name=_("ACS URL"))
+    acs_url = models.TextField(
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], verbose_name=_("ACS URL")
+    )
     audience = models.TextField(
         default="",
         blank=True,
@@ -65,6 +74,20 @@ class SAMLProvider(Provider):
             "the NameIDPolicy of the incoming request will be considered"
         ),
     )
+    authn_context_class_ref_mapping = models.ForeignKey(
+        "SAMLPropertyMapping",
+        default=None,
+        blank=True,
+        null=True,
+        on_delete=models.SET_DEFAULT,
+        verbose_name=_("AuthnContextClassRef Property Mapping"),
+        related_name="+",
+        help_text=_(
+            "Configure how the AuthnContextClassRef value will be created. When left empty, "
+            "the AuthnContextClassRef will be set based on which authentication methods the user "
+            "used to authenticate."
+        ),
+    )
 
     assertion_valid_not_before = models.TextField(
         default="minutes=-5",
@@ -92,8 +115,7 @@ class SAMLProvider(Provider):
         ),
     )
 
-    digest_algorithm = models.CharField(
-        max_length=50,
+    digest_algorithm = models.TextField(
         choices=(
             (SHA1, _("SHA1")),
             (SHA256, _("SHA256")),
@@ -102,13 +124,16 @@ class SAMLProvider(Provider):
         ),
         default=SHA256,
     )
-    signature_algorithm = models.CharField(
-        max_length=50,
+    signature_algorithm = models.TextField(
         choices=(
             (RSA_SHA1, _("RSA-SHA1")),
             (RSA_SHA256, _("RSA-SHA256")),
             (RSA_SHA384, _("RSA-SHA384")),
             (RSA_SHA512, _("RSA-SHA512")),
+            (ECDSA_SHA1, _("ECDSA-SHA1")),
+            (ECDSA_SHA256, _("ECDSA-SHA256")),
+            (ECDSA_SHA384, _("ECDSA-SHA384")),
+            (ECDSA_SHA512, _("ECDSA-SHA512")),
             (DSA_SHA1, _("DSA-SHA1")),
         ),
         default=RSA_SHA256,
@@ -136,22 +161,42 @@ class SAMLProvider(Provider):
         on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
     )
+    encryption_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertions are encrypted by the IdP using the public "
+            "key of the encryption keypair. The assertion is decrypted by the SP using the "
+            "the private key."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Encryption Keypair"),
+        related_name="+",
+    )
 
     default_relay_state = models.TextField(
         default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
     )
 
+    sign_assertion = models.BooleanField(default=True)
+    sign_response = models.BooleanField(default=False)
+
     @property
     def launch_url(self) -> str | None:
         """Use IDP-Initiated SAML flow as launch URL"""
         try:
-
             return reverse(
                 "authentik_providers_saml:sso-init",
                 kwargs={"application_slug": self.application.slug},
             )
         except Provider.application.RelatedObjectDoesNotExist:
             return None
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
 
     @property
     def serializer(self) -> type[Serializer]:
@@ -179,11 +224,11 @@ class SAMLPropertyMapping(PropertyMapping):
 
     @property
     def component(self) -> str:
-        return "ak-property-mapping-saml-form"
+        return "ak-property-mapping-provider-saml-form"
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingSerializer
+        from authentik.providers.saml.api.property_mappings import SAMLPropertyMappingSerializer
 
         return SAMLPropertyMappingSerializer
 
@@ -192,5 +237,22 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-        verbose_name = _("SAML Property Mapping")
-        verbose_name_plural = _("SAML Property Mappings")
+        verbose_name = _("SAML Provider Property Mapping")
+        verbose_name_plural = _("SAML Provider Property Mappings")
+
+
+class SAMLProviderImportModel(CreatableType, Provider):
+    """Create a SAML Provider by importing its Metadata."""
+
+    @property
+    def component(self):
+        return "ak-provider-saml-import-form"
+
+    @property
+    def icon_url(self) -> str | None:
+        return static("authentik/sources/saml.png")
+
+    class Meta:
+        abstract = True
+        verbose_name = _("SAML Provider from Metadata")
+        verbose_name_plural = _("SAML Providers from Metadata")

@@ -1,8 +1,8 @@
 ---
-title: NetBox
+title: Integrate with NetBox
+sidebar_label: NetBox
+support_level: community
 ---
-
-<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is NetBox
 
@@ -12,19 +12,33 @@ title: NetBox
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `netbox.company` is the FQDN of the NetBox install.
--   `authentik.company` is the FQDN of the authentik install.
+- `netbox.company` is the FQDN of the NetBox installation.
+- `authentik.company` is the FQDN of the authentik installation.
 
-Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _OAuth2/OpenID provider_ with the following parameters:
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
--   Client Type: `Confidential`
--   Redirect URIs: `https://netbox.company/oauth/complete/oidc/`
--   Scopes: OpenID, Email and Profile
--   Signing Key: Select any available key
+## authentik configuration
 
-Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
+To support the integration of NetBox with authentik, you need to create an application/provider pair in authentik.
+
+### Create an application and provider in authentik
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
+
+- **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
+- **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
+- **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
+    - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
+    - Set a `Strict` redirect URI to `https://netbox.company/oauth/complete/oidc/`.
+    - Select any available signing key.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+
+3. Click **Submit** to save the new application and provider.
 
 ## NetBox
 
@@ -40,10 +54,11 @@ REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth config
-SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<application_slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
-LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
+SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
+LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
 The Netbox configuration needs to be extended, for this you can create a new file in the configuration folder, for example `authentik.py`.
@@ -56,9 +71,10 @@ from os import environ
 #############
 
 # python-social-auth configuration
-SOCIAL_AUTH_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_ENDPOINT')
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT = environ.get('SOCIAL_AUTH_OIDC_OIDC_ENDPOINT')
 SOCIAL_AUTH_OIDC_KEY = environ.get('SOCIAL_AUTH_OIDC_KEY')
 SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
+SOCIAL_AUTH_OIDC_SCOPE = environ.get('SOCIAL_AUTH_OIDC_SCOPE').split(' ')
 LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 
 
@@ -74,15 +90,20 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 #SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<Application slug>/end-session/
+#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/
 ```
 
 ### Groups
 
 To manage groups in NetBox custom social auth pipelines are required. To create them you have to create the `custom_pipeline.py` file in the NetBox directory with the following content.
 
+:::info
+From Netbox version 4.0.0 Netbox add the custom `Group` models. The following code is compatible with Netbox 4.0.0 and above. For Netbox versions below 4.0.0, the import statement and group adding / deleting of user lines must be changed.
+:::
+
 ```python
-from django.contrib.auth.models import Group
+# from django.contrib.auth.models import Group # For Netbox < 4.0.0
+from netbox.authentication import Group # For Netbox >= 4.0.0
 
 class AuthFailed(Exception):
     pass
@@ -96,7 +117,8 @@ def add_groups(response, user, backend, *args, **kwargs):
     # Add all groups from oAuth token
     for group in groups:
         group, created = Group.objects.get_or_create(name=group)
-        group.user_set.add(user)
+        # group.user_set.add(user) # For Netbox < 4.0.0
+        user.groups.add(group) # For Netbox >= 4.0.0
 
 def remove_groups(response, user, backend, *args, **kwargs):
     try:
@@ -114,7 +136,8 @@ def remove_groups(response, user, backend, *args, **kwargs):
     # Delete non oAuth token groups
     for delete_group in delete_groups:
         group = Group.objects.get(name=delete_group)
-        group.user_set.remove(user)
+        # group.user_set.remove(user) # For Netbox < 4.0.0
+        user.groups.remove(group) # For Netbox >= 4.0.0
 
 
 def set_roles(response, user, backend, *args, **kwargs):

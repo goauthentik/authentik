@@ -4,18 +4,37 @@ from json import dumps
 from typing import Any
 
 from django.core.management.base import BaseCommand, no_translations
-from django.db.models import Model
-from drf_jsonschema_serializer.convert import field_to_converter
+from django.db.models import Model, fields
+from drf_jsonschema_serializer.convert import converter, field_to_converter
 from rest_framework.fields import Field, JSONField, UUIDField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
+from authentik import __version__
 from authentik.blueprints.v1.common import BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
+
+
+@converter
+class PrimaryKeyRelatedFieldConverter:
+    """Custom primary key field converter which is aware of non-integer based PKs
+
+    This is not an exhaustive fix for other non-int PKs, however in authentik we either
+    use UUIDs or ints"""
+
+    field_class = PrimaryKeyRelatedField
+
+    def convert(self, field: PrimaryKeyRelatedField):
+        model: Model = field.queryset.model
+        pk_field = model._meta.pk
+        if isinstance(pk_field, fields.UUIDField):
+            return {"type": "string", "format": "uuid"}
+        return {"type": "integer"}
 
 
 class Command(BaseCommand):
@@ -29,7 +48,7 @@ class Command(BaseCommand):
             "$schema": "http://json-schema.org/draft-07/schema",
             "$id": "https://goauthentik.io/blueprints/schema.json",
             "type": "object",
-            "title": "authentik Blueprint schema",
+            "title": f"authentik {__version__} Blueprint schema",
             "required": ["version", "entries"],
             "properties": {
                 "version": {
@@ -94,17 +113,20 @@ class Command(BaseCommand):
             )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
             self.schema["properties"]["entries"]["items"]["oneOf"].append(
-                self.template_entry(model_path, serializer)
+                self.template_entry(model_path, model, serializer)
             )
 
-    def template_entry(self, model_path: str, serializer: Serializer) -> dict:
+    def template_entry(self, model_path: str, model: type[Model], serializer: Serializer) -> dict:
         """Template entry for a single model"""
         model_schema = self.to_jsonschema(serializer)
         model_schema["required"] = []
         def_name = f"model_{model_path}"
         def_path = f"#/$defs/{def_name}"
         self.schema["$defs"][def_name] = model_schema
-        return {
+        def_name_perm = f"model_{model_path}_permissions"
+        def_path_perm = f"#/$defs/{def_name_perm}"
+        self.schema["$defs"][def_name_perm] = self.model_permissions(model)
+        template = {
             "type": "object",
             "required": ["model", "identifiers"],
             "properties": {
@@ -112,14 +134,20 @@ class Command(BaseCommand):
                 "id": {"type": "string"},
                 "state": {
                     "type": "string",
-                    "enum": [s.value for s in BlueprintEntryDesiredState],
+                    "enum": sorted([s.value for s in BlueprintEntryDesiredState]),
                     "default": "present",
                 },
                 "conditions": {"type": "array", "items": {"type": "boolean"}},
+                "permissions": {"$ref": def_path_perm},
                 "attrs": {"$ref": def_path},
                 "identifiers": {"$ref": def_path},
             },
         }
+        # Meta models don't require identifiers, as there's no matching database model to find
+        if issubclass(model, BaseMetaModel):
+            del template["properties"]["identifiers"]
+            template["required"].remove("identifiers")
+        return template
 
     def field_to_jsonschema(self, field: Field) -> dict:
         """Convert a single field to json schema"""
@@ -166,3 +194,20 @@ class Command(BaseCommand):
         if required:
             result["required"] = required
         return result
+
+    def model_permissions(self, model: type[Model]) -> dict:
+        perms = [x[0] for x in model._meta.permissions]
+        for action in model._meta.default_permissions:
+            perms.append(f"{action}_{model._meta.model_name}")
+        return {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["permission"],
+                "properties": {
+                    "permission": {"type": "string", "enum": sorted(perms)},
+                    "user": {"type": "integer"},
+                    "role": {"type": "string"},
+                },
+            },
+        }

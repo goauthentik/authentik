@@ -53,7 +53,7 @@ class ServiceConnectionInvalid(SentryIgnoredException):
 class OutpostConfig:
     """Configuration an outpost uses to configure it self"""
 
-    # update website/docs/outposts/_config.md
+    # update website/docs/add-secure-apps/outposts/_config.md
 
     authentik_host: str = ""
     authentik_host_insecure: bool = False
@@ -61,6 +61,7 @@ class OutpostConfig:
 
     log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
+    refresh_interval: str = "minutes=5"
 
     container_image: str | None = field(default=None)
 
@@ -73,6 +74,8 @@ class OutpostConfig:
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
     kubernetes_ingress_class_name: str | None = field(default=None)
+    kubernetes_httproute_annotations: dict[str, str] = field(default_factory=dict)
+    kubernetes_httproute_parent_refs: list[dict[str, str]] = field(default_factory=list)
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
@@ -131,7 +134,7 @@ class OutpostServiceConnection(models.Model):
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
 
-    def __str__(self) -> __version__:
+    def __str__(self) -> str:
         return f"Outpost service connection {self.name}"
 
     @property
@@ -434,6 +437,10 @@ class OutpostState:
     version: str | None = field(default=None)
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
+    golang_version: str = field(default="")
+    openssl_enabled: bool = field(default=False)
+    openssl_version: str = field(default="")
+    fips_enabled: bool = field(default=False)
     hostname: str = field(default="")
     args: dict = field(default_factory=dict)
 
@@ -446,7 +453,7 @@ class OutpostState:
             return False
         if self.build_hash != get_build_hash():
             return False
-        return parse(self.version) < OUR_VERSION
+        return parse(self.version) != OUR_VERSION
 
     @staticmethod
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:

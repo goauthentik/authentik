@@ -1,8 +1,8 @@
 ---
-title: Sentry
+title: Integrate with Sentry
+sidebar_label: Sentry
+support_level: authentik
 ---
-
-<span class="badge badge--primary">Support level: authentik</span>
 
 ## What is Sentry
 
@@ -13,22 +13,26 @@ title: Sentry
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used in this guide:
 
--   `sentry.company` is the FQDN of the Sentry install.
--   `authentik.company` is the FQDN of the authentik install.
+- `sentry.company` is the FQDN of the Sentry installation.
+- `authentik.company` is the FQDN of the authentik installation.
+
+:::note
+This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
+:::
 
 Create an application in authentik. Create a SAML Provider with the following values
 
--   ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
--   Issuer: `authentik`
--   Service Provider Binding: `Post`
--   Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
+- ACS URL: `https://sentry.company/saml/acs/<sentry organisation name>/`
+- Issuer: `authentik`
+- Service Provider Binding: `Post`
+- Audience: `https://sentry.company/saml/metadata/<sentry organisation name>/`
 
 Under _Advanced protocol settings_, set the following:
 
--   Signing Certificate: Select any certificate.
--   Property Mapping: Select all Managed Mappings
+- Signing Certificate: Select any certificate.
+- Property Mapping: Select all Managed Mappings
 
 ## Sentry
 
@@ -42,8 +46,8 @@ In authentik, get the Metadata URL by right-clicking `Download Metadata` and sel
 
 On the next screen, input these Values
 
--   IdP User ID: `http://schemas.goauthentik.io/2021/02/saml/uid`
--   User Email: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
--   First Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
+- IdP User ID: `http://schemas.goauthentik.io/2021/02/saml/uid`
+- User Email: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
+- First Name: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name`
 
 After confirming, Sentry will authenticate with authentik, and you should be redirected back to a page confirming your settings.

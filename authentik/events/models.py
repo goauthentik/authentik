@@ -1,7 +1,5 @@
 """authentik events models"""
 
-import time
-from collections import Counter
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
@@ -11,11 +9,6 @@ from uuid import uuid4
 
 from django.apps import apps
 from django.db import connection, models
-from django.db.models import Count, ExpressionWrapper, F
-from django.db.models.fields import DurationField
-from django.db.models.functions import Extract
-from django.db.models.manager import Manager
-from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -49,6 +42,7 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.email.utils import TemplateEmailMessage
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_current_tenant
 
 LOGGER = get_logger()
 DISCORD_FIELD_LIMIT = 25
@@ -58,7 +52,11 @@ NOTIFICATION_SUMMARY_LENGTH = 75
 def default_event_duration():
     """Default duration an Event is saved.
     This is used as a fallback when no brand is available"""
-    return now() + timedelta(days=365)
+    try:
+        tenant = get_current_tenant(only=["event_retention"])
+        return now() + timedelta_from_string(tenant.event_retention)
+    except Tenant.DoesNotExist:
+        return now() + timedelta(days=365)
 
 
 def default_brand():
@@ -119,60 +117,6 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
-class EventQuerySet(QuerySet):
-    """Custom events query set with helper functions"""
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Get event count by hour in the last day, fill with zeros"""
-        _now = now()
-        max_since = timedelta(days=60)
-        # Allow maximum of 60 days to limit load
-        if time_since.total_seconds() > max_since.total_seconds():
-            time_since = max_since
-        date_from = _now - time_since
-        result = (
-            self.filter(created__gte=date_from)
-            .annotate(age=ExpressionWrapper(_now - F("created"), output_field=DurationField()))
-            .annotate(age_interval=extract("age"))
-            .values("age_interval")
-            .annotate(count=Count("pk"))
-            .order_by("age_interval")
-        )
-        data = Counter({int(d["age_interval"]): d["count"] for d in result})
-        results = []
-        interval_delta = time_since / data_points
-        for interval in range(1, -data_points, -1):
-            results.append(
-                {
-                    "x_cord": time.mktime((_now + (interval_delta * interval)).timetuple()) * 1000,
-                    "y_cord": data[interval * -1],
-                }
-            )
-        return results
-
-
-class EventManager(Manager):
-    """Custom helper methods for Events"""
-
-    def get_queryset(self) -> QuerySet:
-        """use custom queryset"""
-        return EventQuerySet(self.model, using=self._db)
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Wrap method from queryset"""
-        return self.get_queryset().get_events_per(time_since, extract, data_points)
-
-
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -187,8 +131,6 @@ class Event(SerializerModel, ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
-
-    objects = EventManager()
 
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
@@ -238,17 +180,13 @@ class Event(SerializerModel, ExpiringModel):
                 "args": cleanse_dict(QueryDict(request.META.get("QUERY_STRING", ""))),
                 "user_agent": request.META.get("HTTP_USER_AGENT", ""),
             }
+            if hasattr(request, "request_id"):
+                self.context["http_request"]["request_id"] = request.request_id
             # Special case for events created during flow execution
             # since they keep the http query within a wrapped query
             if QS_QUERY in self.context["http_request"]["args"]:
                 wrapped = self.context["http_request"]["args"][QS_QUERY]
                 self.context["http_request"]["args"] = cleanse_dict(QueryDict(wrapped))
-        if hasattr(request, "tenant"):
-            tenant: Tenant = request.tenant
-            # Because self.created only gets set on save, we can't use it's value here
-            # hence we set self.created to now and then use it
-            self.created = now()
-            self.expires = self.created + timedelta_from_string(tenant.event_retention)
         if hasattr(request, "brand"):
             brand: Brand = request.brand
             self.brand = sanitize_dict(model_to_dict(brand))
@@ -305,6 +243,16 @@ class Event(SerializerModel, ExpiringModel):
     class Meta:
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
+        indexes = ExpiringModel.Meta.indexes + [
+            models.Index(fields=["action"]),
+            models.Index(fields=["user"]),
+            models.Index(fields=["app"]),
+            models.Index(fields=["created"]),
+            models.Index(fields=["client_ip"]),
+            models.Index(
+                models.F("context__authorized_application"), name="authentik_e_ctx_app__idx"
+            ),
+        ]
 
 
 class TransportMode(models.TextChoices):
@@ -325,8 +273,27 @@ class NotificationTransport(SerializerModel):
     mode = models.TextField(choices=TransportMode.choices, default=TransportMode.LOCAL)
 
     webhook_url = models.TextField(blank=True, validators=[DomainlessURLValidator()])
-    webhook_mapping = models.ForeignKey(
-        "NotificationWebhookMapping", on_delete=models.SET_DEFAULT, null=True, default=None
+    webhook_mapping_body = models.ForeignKey(
+        "NotificationWebhookMapping",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        default=None,
+        related_name="+",
+        help_text=_(
+            "Customize the body of the request. "
+            "Mapping should return data that is JSON-serializable."
+        ),
+    )
+    webhook_mapping_headers = models.ForeignKey(
+        "NotificationWebhookMapping",
+        on_delete=models.SET_DEFAULT,
+        null=True,
+        default=None,
+        related_name="+",
+        help_text=_(
+            "Configure additional headers to be sent. "
+            "Mapping should return a dictionary of key-value pairs"
+        ),
     )
     send_once = models.BooleanField(
         default=False,
@@ -349,8 +316,8 @@ class NotificationTransport(SerializerModel):
 
     def send_local(self, notification: "Notification") -> list[str]:
         """Local notification delivery"""
-        if self.webhook_mapping:
-            self.webhook_mapping.evaluate(
+        if self.webhook_mapping_body:
+            self.webhook_mapping_body.evaluate(
                 user=notification.user,
                 request=None,
                 notification=notification,
@@ -369,9 +336,18 @@ class NotificationTransport(SerializerModel):
         if notification.event and notification.event.user:
             default_body["event_user_email"] = notification.event.user.get("email", None)
             default_body["event_user_username"] = notification.event.user.get("username", None)
-        if self.webhook_mapping:
+        headers = {}
+        if self.webhook_mapping_body:
             default_body = sanitize_item(
-                self.webhook_mapping.evaluate(
+                self.webhook_mapping_body.evaluate(
+                    user=notification.user,
+                    request=None,
+                    notification=notification,
+                )
+            )
+        if self.webhook_mapping_headers:
+            headers = sanitize_item(
+                self.webhook_mapping_headers.evaluate(
                     user=notification.user,
                     request=None,
                     notification=notification,
@@ -381,6 +357,7 @@ class NotificationTransport(SerializerModel):
             response = get_http_session().post(
                 self.webhook_url,
                 json=default_body,
+                headers=headers,
             )
             response.raise_for_status()
         except RequestException as exc:
@@ -452,6 +429,13 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
+        if notification.user.email.strip() == "":
+            LOGGER.info(
+                "Discarding notification as user has no email address",
+                user=notification.user,
+                notification=notification,
+            )
+            return None
         subject_prefix = "authentik Notification: "
         context = {
             "key_value": {
@@ -539,7 +523,7 @@ class Notification(SerializerModel):
             if len(self.body) > NOTIFICATION_SUMMARY_LENGTH
             else self.body
         )
-        return f"Notification for user {self.user}: {body_trunc}"
+        return f"Notification for user {self.user_id}: {body_trunc}"
 
     class Meta:
         verbose_name = _("Notification")
@@ -676,3 +660,4 @@ class SystemTask(SerializerModel, ExpiringModel):
         permissions = [("run_task", _("Run task"))]
         verbose_name = _("System Task")
         verbose_name_plural = _("System Tasks")
+        indexes = ExpiringModel.Meta.indexes

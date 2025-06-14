@@ -3,12 +3,12 @@ import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
@@ -45,13 +45,8 @@ export class EventListPage extends TablePage<Event> {
         `);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
-        return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
+        return new EventsApi(DEFAULT_CONFIG).eventsEventsList(await this.defaultEndpointConfig());
     }
 
     columns(): TableColumn[] {
@@ -78,12 +73,12 @@ export class EventListPage extends TablePage<Event> {
         `;
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
@@ -97,7 +92,7 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderExpanded(item: Event): TemplateResult {
-        return html` <td role="cell" colspan="3">
+        return html` <td role="cell" colspan="5">
                 <div class="pf-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>
@@ -105,5 +100,11 @@ export class EventListPage extends TablePage<Event> {
             <td></td>
             <td></td>
             <td></td>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-event-list": EventListPage;
     }
 }

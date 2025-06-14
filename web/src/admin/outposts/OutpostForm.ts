@@ -45,9 +45,9 @@ const providerListArgs = (page: number, search = "") => ({
 });
 
 const dualSelectPairMaker = (item: ProviderBase): DualSelectPair => {
-    const label = item.assignedBackchannelApplicationName
-        ? item.assignedBackchannelApplicationName
-        : item.assignedApplicationName;
+    const label =
+        item.assignedBackchannelApplicationName || item.assignedApplicationName || item.name;
+
     return [
         `${item.pk}`,
         html`<div class="selection-main">${label}</div>
@@ -97,7 +97,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     embedded = false;
 
     @state()
-    providers?: DataProvider;
+    providers: DataProvider = providerProvider(this.type);
+
     defaultConfig?: OutpostDefaultConfig;
 
     async loadInstance(pk: string): Promise<Outpost> {
@@ -105,6 +106,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             uuid: pk,
         });
         this.type = o.type || OutpostTypeEnum.Proxy;
+        this.providers = providerProvider(o.type);
         return o;
     }
 
@@ -127,11 +129,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 uuid: this.instance.pk || "",
                 outpostRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
-                outpostRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesCreate({
+            outpostRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -142,7 +143,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             [OutpostTypeEnum.Rac, msg("RAC")],
         ];
 
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -150,7 +151,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} required name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${(ev: Event) => {
@@ -201,7 +202,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         }
                         return selected;
                     }}
-                    ?blankable=${true}
+                    blankable
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
@@ -210,9 +211,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    See
-                    <a target="_blank" href="${docLink("/docs/outposts?utm_source=authentik")}"
-                        >documentation</a
+                    <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href="${docLink("/docs/add-secure-apps/outposts?utm_source=authentik")}"
+                        >${msg("See documentation")}</a
                     >.
                 </p>
             </ak-form-element-horizontal>
@@ -228,7 +231,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     selected-label="${msg("Selected Applications")}"
                 ></ak-dual-select-provider>
             </ak-form-element-horizontal>
-            <ak-form-group aria-label="Advanced settings">
+            <ak-form-group aria-label=${msg("Advanced settings")}>
                 <span slot="header"> ${msg("Advanced settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Configuration")} name="config">
@@ -245,8 +248,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             ${msg("See more here:")}&nbsp;
                             <a
                                 target="_blank"
+                                rel="noopener noreferrer"
                                 href="${docLink(
-                                    "/docs/outposts?utm_source=authentik#configuration",
+                                    "/docs/add-secure-apps/outposts?utm_source=authentik#configuration",
                                 )}"
                                 >${msg("Documentation")}</a
                             >
@@ -254,5 +258,11 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-outpost-form": OutpostForm;
     }
 }

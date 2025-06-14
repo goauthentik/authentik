@@ -2,15 +2,12 @@
 
 from datetime import datetime, timedelta
 
-from django.contrib.sessions.backends.cache import KEY_PREFIX
-from django.core.cache import cache
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
     USER_ATTRIBUTE_EXPIRES,
     USER_ATTRIBUTE_GENERATED,
-    AuthenticatedSession,
     ExpiringModel,
     User,
 )
@@ -35,23 +32,6 @@ def clean_expired_models(self: SystemTask):
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
         messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
-    # Special case
-    amount = 0
-
-    for session in AuthenticatedSession.objects.all():
-        cache_key = f"{KEY_PREFIX}{session.session_key}"
-        value = None
-        try:
-            value = cache.get(cache_key)
-
-        except Exception as exc:
-            LOGGER.debug("Failed to get session from cache", exc=exc)
-        if not value:
-            session.delete()
-            amount += 1
-    LOGGER.debug("Expired sessions", model=AuthenticatedSession, amount=amount)
-
-    messages.append(f"Expired {amount} {AuthenticatedSession._meta.verbose_name_plural}")
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
 
 

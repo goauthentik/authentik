@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { TemplateResult, css, html, nothing } from "lit";
@@ -25,12 +25,7 @@ const selectStyles = css`
  * @part select - The select itself, to override the height specified above.
  */
 @customElement("ak-multi-select")
-export class AkMultiSelect extends AKElement {
-    constructor() {
-        super();
-        this.dataset.akControl = "true";
-    }
-
+export class AkMultiSelect extends AkControlElement {
     static get styles() {
         return [PFBase, PFForm, PFFormControl, selectStyles];
     }
@@ -94,6 +89,11 @@ export class AkMultiSelect extends AKElement {
         return this.values;
     }
 
+    connectedCallback() {
+        super.connectedCallback();
+        this.dataset.akControl = "true";
+    }
+
     renderHelp() {
         return [
             this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
@@ -148,3 +148,9 @@ export class AkMultiSelect extends AKElement {
 }
 
 export default AkMultiSelect;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-multi-select": AkMultiSelect;
+    }
+}

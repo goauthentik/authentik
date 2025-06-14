@@ -35,14 +35,6 @@ runs:
             AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
             ```
 
-            For arm64, use these values:
-
-            ```shell
-            AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
-            AUTHENTIK_TAG=${{ inputs.tag }}-arm64
-            AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-            ```
-
             Afterwards, run the upgrade commands from the latest release notes.
           </details>
           <details>
@@ -54,20 +46,10 @@ runs:
             authentik:
                 outposts:
                     container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-            image:
-                repository: ghcr.io/goauthentik/dev-server
-                tag: ${{ inputs.tag }}
-            ```
-
-            For arm64, use these values:
-
-            ```yaml
-            authentik:
-                outposts:
-                    container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
-            image:
-                repository: ghcr.io/goauthentik/dev-server
-                tag: ${{ inputs.tag }}-arm64
+            global:
+                image:
+                    repository: ghcr.io/goauthentik/dev-server
+                    tag: ${{ inputs.tag }}
             ```
 
             Afterwards, run the upgrade commands from the latest release notes.

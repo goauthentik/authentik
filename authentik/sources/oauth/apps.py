@@ -33,11 +33,10 @@ class AuthentikSourceOAuthConfig(ManagedAppConfig):
     mountpoint = "source/oauth/"
     default = True
 
-    @ManagedAppConfig.reconcile_global
-    def load_source_types(self):
-        """Load source_types from config file"""
+    def import_related(self):
         for source_type in AUTHENTIK_SOURCES_OAUTH_TYPES:
             try:
                 self.import_module(source_type)
             except ImportError as exc:
                 LOGGER.warning("Failed to load OAuth Source", exc=exc)
+        return super().import_related()

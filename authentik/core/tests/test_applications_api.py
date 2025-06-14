@@ -9,9 +9,12 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
-from authentik.providers.oauth2.models import OAuth2Provider
+from authentik.providers.oauth2.models import OAuth2Provider, RedirectURI, RedirectURIMatchingMode
+from authentik.providers.proxy.models import ProxyProvider
+from authentik.providers.saml.models import SAMLProvider
 
 
 class TestApplicationsAPI(APITestCase):
@@ -21,7 +24,7 @@ class TestApplicationsAPI(APITestCase):
         self.user = create_test_admin_user()
         self.provider = OAuth2Provider.objects.create(
             name="test",
-            redirect_uris="http://some-other-domain",
+            redirect_uris=[RedirectURI(RedirectURIMatchingMode.STRICT, "http://some-other-domain")],
             authorization_flow=create_test_flow(),
         )
         self.allowed: Application = Application.objects.create(
@@ -131,6 +134,7 @@ class TestApplicationsAPI(APITestCase):
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
                             "authentication_flow": None,
+                            "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
                             "component": "ak-provider-oauth2-form",
                             "meta_model_name": "authentik_providers_oauth2.oauth2provider",
@@ -183,6 +187,7 @@ class TestApplicationsAPI(APITestCase):
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
                             "authentication_flow": None,
+                            "invalidation_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
                             "component": "ak-provider-oauth2-form",
                             "meta_model_name": "authentik_providers_oauth2.oauth2provider",
@@ -221,4 +226,32 @@ class TestApplicationsAPI(APITestCase):
                     },
                 ],
             },
+        )
+
+    def test_get_provider(self):
+        """Ensure that proxy providers (at the time of writing that is the only provider
+        that inherits from another proxy type (OAuth) instead of inheriting from the root
+        provider class) is correctly looked up and selected from the database"""
+        slug = generate_id()
+        provider = ProxyProvider.objects.create(name=generate_id())
+        Application.objects.create(
+            name=generate_id(),
+            slug=slug,
+            provider=provider,
+        )
+        self.assertEqual(Application.objects.get(slug=slug).get_provider(), provider)
+        self.assertEqual(
+            Application.objects.with_provider().get(slug=slug).get_provider(), provider
+        )
+
+        slug = generate_id()
+        provider = SAMLProvider.objects.create(name=generate_id())
+        Application.objects.create(
+            name=generate_id(),
+            slug=slug,
+            provider=provider,
+        )
+        self.assertEqual(Application.objects.get(slug=slug).get_provider(), provider)
+        self.assertEqual(
+            Application.objects.with_provider().get(slug=slug).get_provider(), provider
         )

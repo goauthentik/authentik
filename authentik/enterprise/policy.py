@@ -13,7 +13,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
 
     def check_license(self):
         """Check license"""
-        if not LicenseKey.get_total().is_valid():
+        if not LicenseKey.get_total().status().is_valid:
             return PolicyResult(False, _("Enterprise required to access this feature."))
         if self.request.user.type != UserTypes.INTERNAL:
             return PolicyResult(False, _("Feature only accessible for internal users."))

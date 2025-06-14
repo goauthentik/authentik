@@ -12,12 +12,11 @@ from rest_framework.fields import CharField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.utils import ModelSerializer, PassiveSerializer
 from authentik.policies.event_matcher.models import model_choices
-from authentik.rbac.api.rbac import PermissionAssignSerializer
+from authentik.rbac.api.rbac import PermissionAssignResultSerializer, PermissionAssignSerializer
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import Role
 
@@ -29,7 +28,7 @@ class RoleObjectPermissionSerializer(ModelSerializer):
     model = ReadOnlyField(source="content_type.model")
     codename = ReadOnlyField(source="permission.codename")
     name = ReadOnlyField(source="permission.name")
-    object_pk = ReadOnlyField()
+    object_pk = CharField()
 
     class Meta:
         model = GroupObjectPermission
@@ -89,8 +88,9 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     @extend_schema(
         request=PermissionAssignSerializer(),
         responses={
-            204: OpenApiResponse(description="Successfully assigned"),
+            200: PermissionAssignResultSerializer(many=True),
         },
+        operation_id="rbac_permissions_assigned_by_roles_assign",
     )
     @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:
@@ -99,10 +99,12 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         role: Role = self.get_object()
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        ids = []
         with atomic():
             for perm in data.validated_data["permissions"]:
-                assign_perm(perm, role.group, data.validated_data["model_instance"])
-        return Response(status=204)
+                assigned_perm = assign_perm(perm, role.group, data.validated_data["model_instance"])
+                ids.append(PermissionAssignResultSerializer(instance={"id": assigned_perm.pk}).data)
+        return Response(ids, status=200)
 
     @permission_required("authentik_rbac.unassign_role_permissions")
     @extend_schema(

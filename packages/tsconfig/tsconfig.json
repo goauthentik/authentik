@@ -1,0 +1,29 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "alwaysStrict": true,
+        "baseUrl": ".",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "esModuleInterop": false,
+        "isolatedModules": true,
+        "incremental": true,
+        "jsx": "react-jsx",
+        "lib": ["ESNext"],
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "newLine": "lf",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": false,
+        "outDir": "${configDir}/out",
+        "pretty": true,
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "noUncheckedIndexedAccess": true,
+        "target": "ESNext",
+        "useUnknownInCatchVariables": true
+    }
+}

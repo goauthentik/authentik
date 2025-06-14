@@ -1,15 +1,18 @@
 """OAuth2Provider API Views"""
 
 from copy import copy
+from re import compile
+from re import error as RegexError
 
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ChoiceField
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -20,12 +23,38 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
 from authentik.providers.oauth2.id_token import IDToken
-from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, ScopeMapping
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    OAuth2Provider,
+    RedirectURIMatchingMode,
+    ScopeMapping,
+)
 from authentik.rbac.decorators import permission_required
+
+
+class RedirectURISerializer(PassiveSerializer):
+    """A single allowed redirect URI entry"""
+
+    matching_mode = ChoiceField(choices=RedirectURIMatchingMode.choices)
+    url = CharField()
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
+
+    redirect_uris = RedirectURISerializer(many=True, source="_redirect_uris")
+
+    def validate_redirect_uris(self, data: list) -> list:
+        for entry in data:
+            if entry.get("matching_mode") == RedirectURIMatchingMode.REGEX:
+                url = entry.get("url")
+                try:
+                    compile(url)
+                except RegexError:
+                    raise ValidationError(
+                        _("Invalid Regex Pattern: {url}".format(url=url))
+                    ) from None
+        return data
 
     class Meta:
         model = OAuth2Provider
@@ -39,11 +68,13 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "include_claims_in_id_token",
             "signing_key",
+            "encryption_key",
             "redirect_uris",
             "sub_mode",
             "property_mappings",
             "issuer_mode",
-            "jwks_sources",
+            "jwt_federation_sources",
+            "jwt_federation_providers",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -78,7 +109,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "refresh_token_validity",
         "include_claims_in_id_token",
         "signing_key",
-        "redirect_uris",
         "sub_mode",
         "property_mappings",
         "issuer_mode",

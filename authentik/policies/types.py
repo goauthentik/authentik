@@ -13,6 +13,7 @@ from authentik.events.context_processors.base import get_context_processors
 
 if TYPE_CHECKING:
     from authentik.core.models import User
+    from authentik.events.logs import LogEvent
     from authentik.policies.models import PolicyBinding
 
 LOGGER = get_logger()
@@ -74,7 +75,7 @@ class PolicyResult:
     source_binding: PolicyBinding | None
     source_results: list[PolicyResult] | None
 
-    log_messages: list[dict] | None
+    log_messages: list[LogEvent] | None
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

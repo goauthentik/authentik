@@ -48,7 +48,7 @@ export const AppIcon = () => {
            </dd>
             <dt>Programmatically Good</dt><dd>
 
-                <ak-status-label ?good=${true}></ak-status-label>
+                <ak-status-label good></ak-status-label>
 
            </dd>
             <dt>Programmatically Bad</dt><dd>

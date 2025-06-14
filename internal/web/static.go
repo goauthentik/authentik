@@ -14,41 +14,69 @@ import (
 )
 
 func (ws *WebServer) configureStatic() {
-	statRouter := ws.lh.NewRoute().Subrouter()
-	statRouter.Use(ws.staticHeaderMiddleware)
-	indexLessRouter := statRouter.NewRoute().Subrouter()
+	// Setup routers
+	staticRouter := ws.loggingRouter.NewRoute().Subrouter()
+	staticRouter.Use(ws.staticHeaderMiddleware)
+	indexLessRouter := staticRouter.NewRoute().Subrouter()
+	// Specifically disable index
 	indexLessRouter.Use(web.DisableIndex)
+
 	distFs := http.FileServer(http.Dir("./web/dist"))
-	distHandler := http.StripPrefix("/static/dist/", distFs)
-	authentikHandler := http.StripPrefix("/static/authentik/", http.FileServer(http.Dir("./web/authentik")))
-	helpHandler := http.FileServer(http.Dir("./website/help/"))
-	indexLessRouter.PathPrefix("/static/dist/").Handler(distHandler)
-	indexLessRouter.PathPrefix("/static/authentik/").Handler(authentikHandler)
 
-	// Prevent font-loading issues on safari, which loads fonts relatively to the URL the browser is on
-	indexLessRouter.PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	pathStripper := func(handler http.Handler, paths ...string) http.Handler {
+		h := handler
+		for _, path := range paths {
+			h = http.StripPrefix(path, h)
+		}
+		return h
+	}
+
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/dist/").Handler(pathStripper(
+		distFs,
+		"static/dist/",
+		config.Get().Web.Path,
+	))
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/static/authentik/").Handler(pathStripper(
+		http.FileServer(http.Dir("./web/authentik")),
+		"static/authentik/",
+		config.Get().Web.Path,
+	))
+
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/flow/{flow_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/flow/%s", vars["flow_slug"]), distFs)).ServeHTTP(rw, r)
+		pathStripper(
+			distFs,
+			"if/flow/"+vars["flow_slug"],
+			config.Get().Web.Path,
+		).ServeHTTP(rw, r)
 	})
-	indexLessRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
-	indexLessRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
-	indexLessRouter.PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/admin/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/admin", config.Get().Web.Path), distFs))
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/user/assets").Handler(http.StripPrefix(fmt.Sprintf("%sif/user", config.Get().Web.Path), distFs))
+	indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 
-		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/rac/%s", vars["app_slug"]), distFs)).ServeHTTP(rw, r)
+		pathStripper(
+			distFs,
+			"if/rac/"+vars["app_slug"],
+			config.Get().Web.Path,
+		).ServeHTTP(rw, r)
 	})
 
 	// Media files, if backend is file
 	if config.Get().Storage.Media.Backend == "file" {
 		fsMedia := http.FileServer(http.Dir(config.Get().Storage.Media.File.Path))
-		indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fsMedia))
+		indexLessRouter.PathPrefix(config.Get().Web.Path).PathPrefix("/media/").Handler(pathStripper(
+			http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				w.Header().Set("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; sandbox")
+				fsMedia.ServeHTTP(w, r)
+			}),
+			"media/",
+			config.Get().Web.Path,
+		))
 	}
 
-	statRouter.PathPrefix("/if/help/").Handler(http.StripPrefix("/if/help/", helpHandler))
-	statRouter.PathPrefix("/help").Handler(http.RedirectHandler("/if/help/", http.StatusMovedPermanently))
-
-	ws.lh.Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).Path("/robots.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.RobotsTxt)
@@ -56,7 +84,7 @@ func (ws *WebServer) configureStatic() {
 			ws.log.WithError(err).Warning("failed to write response")
 		}
 	})
-	ws.lh.Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+	staticRouter.PathPrefix(config.Get().Web.Path).Path("/.well-known/security.txt").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		rw.Header()["Content-Type"] = []string{"text/plain"}
 		rw.WriteHeader(200)
 		_, err := rw.Write(staticWeb.SecurityTxt)

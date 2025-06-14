@@ -70,7 +70,7 @@ export class UserSourceSettingsPage extends AKElement {
         let connectionPk = -1;
         if (this.connections) {
             const connections = this.connections.results.filter(
-                (con) => con.source.slug === source.objectUid,
+                (con) => con.sourceObj.slug === source.objectUid,
             );
             if (connections.length > 0) {
                 connectionPk = connections[0].pk;
@@ -139,8 +139,13 @@ export class UserSourceSettingsPage extends AKElement {
                                 })}
                             `}
                   `
-                : html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
-                  </ak-empty-state>`}
+                : html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`}
         </ul>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-source": UserSourceSettingsPage;
     }
 }

@@ -1,12 +1,14 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
-import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
-import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import { EVENT_REFRESH } from "#common/constants";
+import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/errors/network";
+import { globalAK } from "#common/global";
+import { MessageLevel } from "#common/messages";
+import { refreshMe } from "#common/users";
+import { AKElement } from "#elements/Base";
+import { showMessage } from "#elements/messages/MessageContainer";
+import { WithBrandConfig } from "#elements/mixins/branding";
+import { StageHost } from "#flow/stages/base";
+import "#user/user-settings/details/stages/prompt/PromptStage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -20,13 +22,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    ChallengeChoices,
     ChallengeTypes,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
     RedirectChallenge,
-    ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
 
@@ -36,7 +36,7 @@ export class UserSettingsFlowExecutor
     implements StageHost
 {
     @property()
-    flowSlug?: string;
+    flowSlug = this.brand?.flowUserSettings;
 
     private _challenge?: ChallengeTypes;
 
@@ -71,13 +71,13 @@ export class UserSettingsFlowExecutor
             })
             .then((data) => {
                 this.challenge = data;
-                if (this.challenge.responseErrors) {
-                    return false;
-                }
-                return true;
+                return !this.challenge.responseErrors;
             })
-            .catch((e: Error | ResponseError) => {
-                this.errorMessage(e);
+            .catch(async (error: unknown) => {
+                const parsedError = await parseAPIResponseError(error);
+
+                this.errorMessage(parsedError);
+
                 return false;
             })
             .finally(() => {
@@ -86,12 +86,17 @@ export class UserSettingsFlowExecutor
             });
     }
 
-    firstUpdated(): void {
-        this.flowSlug = this.brand?.flowUserSettings;
-        if (!this.flowSlug) {
-            return;
+    firstUpdated() {
+        if (this.flowSlug) {
+            this.nextChallenge();
         }
-        this.nextChallenge();
+    }
+
+    updated(): void {
+        if (!this.flowSlug && this.brand) {
+            this.flowSlug = this.brand.flowUserSettings;
+            this.nextChallenge();
+        }
     }
 
     async nextChallenge(): Promise<void> {
@@ -110,17 +115,13 @@ export class UserSettingsFlowExecutor
         }
     }
 
-    async errorMessage(error: Error | Response): Promise<void> {
-        let body = "";
-        if (error instanceof Error) {
-            body = error.message;
-        }
+    async errorMessage(error: APIError): Promise<void> {
         const challenge: FlowErrorChallenge = {
-            type: ChallengeChoices.Native,
             component: "ak-stage-flow-error",
-            error: body,
+            error: pluckErrorDetail(error),
             requestId: "",
         };
+
         this.challenge = challenge as ChallengeTypes;
     }
 
@@ -146,8 +147,15 @@ export class UserSettingsFlowExecutor
         if (!this.challenge) {
             return html``;
         }
-        switch (this.challenge.type) {
-            case ChallengeChoices.Redirect:
+        switch (this.challenge.component) {
+            case "ak-stage-prompt":
+                return html`<ak-user-stage-prompt
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-user-stage-prompt>`;
+            case "xak-flow-shell":
+                return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
+            case "xak-flow-redirect":
                 if ((this.challenge as RedirectChallenge).to !== "/") {
                     return html`<a
                         href="${(this.challenge as RedirectChallenge).to}"
@@ -158,38 +166,26 @@ export class UserSettingsFlowExecutor
                 // Flow has finished, so let's load while in the background we can restart the flow
                 this.loading = true;
                 console.debug("authentik/user/flows: redirect to '/', restarting flow.");
-                this.firstUpdated();
+                this.nextChallenge();
                 this.globalRefresh();
                 showMessage({
                     level: MessageLevel.success,
                     message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-                </ak-empty-state>`;
-            case ChallengeChoices.Shell:
-                return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
-            case ChallengeChoices.Native:
-                switch (this.challenge.component) {
-                    case "ak-stage-prompt":
-                        return html`<ak-user-stage-prompt
-                            .host=${this as StageHost}
-                            .challenge=${this.challenge}
-                        ></ak-user-stage-prompt>`;
-                    default:
-                        console.debug(
-                            `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
-                        );
-                        return html`
-                            <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
-                                ${msg("Open settings")}
-                            </a>
-                        `;
-                }
+                return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
             default:
-                console.debug(`authentik/user/flows: unexpected data type ${this.challenge.type}`);
-                break;
+                console.debug(
+                    `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
+                );
+                return html`
+                    <a
+                        href="${globalAK().api.base}if/flow/${this.flowSlug}/"
+                        class="pf-c-button pf-m-primary"
+                    >
+                        ${msg("Open settings")}
+                    </a>
+                `;
         }
-        return html``;
     }
 
     renderChallengeWrapper(): TemplateResult {
@@ -197,8 +193,7 @@ export class UserSettingsFlowExecutor
             return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
-            </ak-empty-state>`;
+            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }
@@ -208,5 +203,11 @@ export class UserSettingsFlowExecutor
             <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
         </div>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-user-settings-flow-executor": UserSettingsFlowExecutor;
     }
 }

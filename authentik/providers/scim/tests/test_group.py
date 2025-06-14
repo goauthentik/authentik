@@ -127,7 +127,7 @@ class SCIMGroupTests(TestCase):
                 "id": scim_id,
             },
         )
-        mock.delete("https://localhost/Groups", status_code=204)
+        mock.delete(f"https://localhost/Groups/{scim_id}", status_code=204)
         uid = generate_id()
         group = Group.objects.create(
             name=uid,

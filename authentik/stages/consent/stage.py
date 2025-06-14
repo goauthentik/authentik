@@ -4,13 +4,14 @@ from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
-    ChallengeTypes,
     WithUserInfoChallenge,
 )
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
@@ -48,6 +49,11 @@ class ConsentChallengeResponse(ChallengeResponse):
     component = CharField(default="ak-stage-consent")
     token = CharField(required=True)
 
+    def validate_token(self, token: str):
+        if token != self.stage.executor.request.session[SESSION_KEY_CONSENT_TOKEN]:
+            raise ValidationError(_("Invalid consent token, re-showing prompt"))
+        return token
+
 
 class ConsentStageView(ChallengeStageView):
     """Simple consent checker."""
@@ -58,7 +64,6 @@ class ConsentStageView(ChallengeStageView):
         token = str(uuid4())
         self.request.session[SESSION_KEY_CONSENT_TOKEN] = token
         data = {
-            "type": ChallengeTypes.NATIVE.value,
             "permissions": self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, []),
             "additional_permissions": self.executor.plan.context.get(
                 PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS, []
@@ -122,9 +127,6 @@ class ConsentStageView(ChallengeStageView):
         return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        if response.data["token"] != self.request.session[SESSION_KEY_CONSENT_TOKEN]:
-            self.logger.info("Invalid consent token, re-showing prompt")
-            return self.get(self.request)
         if self.should_always_prompt():
             return self.executor.stage_ok()
         current_stage: ConsentStage = self.executor.current_stage

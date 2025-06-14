@@ -1,5 +1,8 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-number-input";
+import "@goauthentik/components/ak-secret-text-input.js";
+import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -24,11 +27,10 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                 stageUuid: this.instance.pk || "",
                 patchedCaptchaStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
-                captchaStageRequest: data as unknown as CaptchaStageRequest,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesCaptchaCreate({
+            captchaStageRequest: data as unknown as CaptchaStageRequest,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -37,7 +39,7 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -45,18 +47,20 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Public Key")}
-                        ?required=${true}
+                        required
                         name="publicKey"
                     >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.publicKey || "")}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -65,16 +69,58 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Private Key")}
-                        ?required=${true}
-                        ?writeOnly=${this.instance !== undefined}
+
+                    <ak-secret-text-input
                         name="privateKey"
+                        label=${msg("Private Key")}
+                        input-hint="code"
+                        required
+                        ?revealed=${this.instance === undefined}
+                        help=${msg(
+                            "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                        )}
+                    ></ak-secret-text-input>
+
+                    <ak-switch-input
+                        name="interactive"
+                        label=${msg("Interactive")}
+                        ?checked="${this.instance?.interactive}"
+                        help=${msg(
+                            "Enable this flag if the configured captcha requires User-interaction. Required for reCAPTCHA v2, hCaptcha and Cloudflare Turnstile.",
+                        )}
                     >
-                        <input type="text" value="" class="pf-c-form-control" required />
+                    </ak-switch-input>
+                    <ak-number-input
+                        label=${msg("Score minimum threshold")}
+                        required
+                        name="scoreMinThreshold"
+                        value="${ifDefined(this.instance?.scoreMinThreshold || 0.5)}"
+                        help=${msg("Minimum required score to allow continuing")}
+                    ></ak-number-input>
+                    <ak-number-input
+                        label=${msg("Score maximum threshold")}
+                        required
+                        name="scoreMaxThreshold"
+                        value="${ifDefined(this.instance?.scoreMaxThreshold || -1)}"
+                        help=${msg("Maximum allowed score to allow continuing")}
+                    ></ak-number-input>
+                    <ak-form-element-horizontal name="errorOnInvalidScore">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${this.instance?.errorOnInvalidScore ?? true}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Error on invalid score")}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                                "When enabled and the resultant score is outside the threshold, the user will not be able to continue. When disabled, the user will be able to continue and the score can be used in policies to customize further stages.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -83,18 +129,16 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
             <ak-form-group>
                 <span slot="header"> ${msg("Advanced settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("JS URL")}
-                        ?required=${true}
-                        name="jsUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("JS URL")} required name="jsUrl">
                         <input
-                            type="text"
+                            type="url"
                             value="${ifDefined(
                                 this.instance?.jsUrl ||
                                     "https://www.recaptcha.net/recaptcha/api.js",
                             )}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -103,18 +147,16 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("API URL")}
-                        ?required=${true}
-                        name="apiUrl"
-                    >
+                    <ak-form-element-horizontal label=${msg("API URL")} required name="apiUrl">
                         <input
-                            type="text"
+                            type="url"
                             value="${ifDefined(
                                 this.instance?.apiUrl ||
                                     "https://www.recaptcha.net/recaptcha/api/siteverify",
                             )}"
-                            class="pf-c-form-control"
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
                             required
                         />
                         <p class="pf-c-form__helper-text">
@@ -125,5 +167,11 @@ export class CaptchaStageForm extends BaseStageForm<CaptchaStage> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-stage-captcha-form": CaptchaStageForm;
     }
 }

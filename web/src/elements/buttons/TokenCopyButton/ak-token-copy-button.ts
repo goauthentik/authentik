@@ -84,9 +84,15 @@ export class TokenCopyButton extends BaseTaskButton {
 
         showMessage({
             level: MessageLevel.error,
-            message,
+            message: message,
         });
     }
 }
 
 export default TokenCopyButton;
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-token-copy-button": TokenCopyButton;
+    }
+}

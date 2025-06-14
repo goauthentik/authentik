@@ -6,7 +6,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import { CertificateGenerationRequest, CertificateKeyPair, CryptoApi } from "@goauthentik/api";
+import {
+    AlgEnum,
+    CertificateGenerationRequest,
+    CertificateKeyPair,
+    CryptoApi,
+} from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-generate-form")
 export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
@@ -24,7 +29,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         return html`<ak-form-element-horizontal
                 label=${msg("Common Name")}
                 name="commonName"
-                ?required=${true}
+                required
             >
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
@@ -34,12 +39,33 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                     ${msg("Optional, comma-separated SubjectAlt Names.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Validity days")}
-                name="validityDays"
-                ?required=${true}
-            >
+            <ak-form-element-horizontal label=${msg("Validity days")} name="validityDays" required>
                 <input class="pf-c-form-control" type="number" value="365" />
-            </ak-form-element-horizontal>`;
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Private key Algorithm")} required name="alg">
+                <ak-radio
+                    .options=${[
+                        {
+                            label: msg("RSA"),
+                            value: AlgEnum.Rsa,
+                            default: true,
+                        },
+                        {
+                            label: msg("ECDSA"),
+                            value: AlgEnum.Ecdsa,
+                        },
+                    ]}
+                >
+                </ak-radio>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Algorithm used to generate the private key.")}
+                </p>
+            </ak-form-element-horizontal> `;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-crypto-certificate-generate-form": CertificateKeyPairForm;
     }
 }

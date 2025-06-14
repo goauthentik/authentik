@@ -37,6 +37,9 @@ class WebsocketMessageInstruction(IntEnum):
     # Provider specific message
     PROVIDER_SPECIFIC = 3
 
+    # Session ended
+    SESSION_END = 4
+
 
 @dataclass(slots=True)
 class WebsocketMessage:
@@ -121,6 +124,10 @@ class OutpostConsumer(JsonWebsocketConsumer):
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.pop("version", None)
             state.build_hash = msg.args.pop("buildHash", "")
+            state.golang_version = msg.args.pop("golangVersion", "")
+            state.openssl_enabled = msg.args.pop("opensslEnabled", False)
+            state.openssl_version = msg.args.pop("opensslVersion", "")
+            state.fips_enabled = msg.args.pop("fipsEnabled", False)
             state.args.update(msg.args)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
@@ -139,6 +146,14 @@ class OutpostConsumer(JsonWebsocketConsumer):
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
             asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
+        )
+
+    def event_session_end(self, event):
+        """Event handler which is called when a session is ended"""
+        self.send_json(
+            asdict(
+                WebsocketMessage(instruction=WebsocketMessageInstruction.SESSION_END, args=event)
+            )
         )
 
     def event_provider_specific(self, event):

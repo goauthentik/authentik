@@ -8,9 +8,10 @@ from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 from rest_framework.fields import BooleanField, CharField
 
-from authentik.core.models import AuthenticatedSession, User
-from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
+from authentik.core.models import Session, User
+from authentik.events.middleware import audit_ignore
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
+from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
@@ -19,7 +20,6 @@ from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.user_login.middleware import (
     SESSION_KEY_BINDING_GEO,
     SESSION_KEY_BINDING_NET,
-    SESSION_KEY_LAST_IP,
 )
 from authentik.stages.user_login.models import UserLoginStage
 
@@ -44,11 +44,7 @@ class UserLoginStageView(ChallengeStageView):
     response_class = UserLoginChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> UserLoginChallenge:
-        return UserLoginChallenge(
-            data={
-                "type": ChallengeTypes.NATIVE.value,
-            }
-        )
+        return UserLoginChallenge(data={})
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Check for remember_me, and do login"""
@@ -76,7 +72,9 @@ class UserLoginStageView(ChallengeStageView):
         """Set the sessions' last IP and session bindings"""
         stage: UserLoginStage = self.executor.current_stage
 
-        self.request.session[SESSION_KEY_LAST_IP] = ClientIPMiddleware.get_client_ip(self.request)
+        self.request.session[self.request.session.model.Keys.LAST_IP] = (
+            ClientIPMiddleware.get_client_ip(self.request)
+        )
         self.request.session[SESSION_KEY_BINDING_NET] = stage.network_binding
         self.request.session[SESSION_KEY_BINDING_GEO] = stage.geoip_binding
 
@@ -95,11 +93,14 @@ class UserLoginStageView(ChallengeStageView):
             self.logger.warning("User is not active, login will not work.")
         delta = self.set_session_duration(remember)
         self.set_session_ip()
-        login(
-            self.request,
-            user,
-            backend=backend,
-        )
+        # the `user_logged_in` signal will update the user to write the `last_login` field
+        # which we don't want to log as we already have a dedicated login event
+        with audit_ignore():
+            login(
+                self.request,
+                user,
+                backend=backend,
+            )
         self.logger.debug(
             "Logged in",
             backend=backend,
@@ -107,12 +108,8 @@ class UserLoginStageView(ChallengeStageView):
             flow_slug=self.executor.flow.slug,
             session_duration=delta,
         )
-        # Only show success message if we don't have a source in the flow
-        # as sources show their own success messages
-        if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
-            messages.success(self.request, _("Successfully logged in!"))
         if self.executor.current_stage.terminate_other_sessions:
-            AuthenticatedSession.objects.filter(
-                user=user,
+            Session.objects.filter(
+                authenticatedsession__user=user,
             ).exclude(session_key=self.request.session.session_key).delete()
         return self.executor.stage_ok()

@@ -61,7 +61,7 @@ const mockData = {
 };
 
 const metadata: Meta<AkFlowSearch<Flow>> = {
-    title: "Elements / Select Search / Flow",
+    title: "Elements / Search Select / Flow",
     component: "ak-flow-search",
     parameters: {
         docs: {
@@ -110,7 +110,7 @@ export const Default = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search
@@ -124,7 +124,7 @@ export const WithInitialValue = () =>
     container(
         html` <ak-form-element-horizontal
             label=${msg("Authorization flow")}
-            ?required=${true}
+            required
             name="authorizationFlow"
         >
             <ak-flow-search

@@ -1,5 +1,4 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
@@ -13,7 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { ConnectionToken, Endpoint, RACProvider, RacApi } from "@goauthentik/api";
+import { ConnectionToken, RACProvider, RacApi } from "@goauthentik/api";
 
 @customElement("ak-rac-connection-token-list")
 export class ConnectionTokenListPage extends Table<ConnectionToken> {
@@ -37,12 +36,9 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<ConnectionToken>> {
+    async apiEndpoint(): Promise<PaginatedResponse<ConnectionToken>> {
         return new RacApi(DEFAULT_CONFIG).racConnectionTokensList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
+            ...(await this.defaultEndpointConfig()),
             provider: this.provider?.pk,
             sessionUser: this.userId,
         });
@@ -53,20 +49,20 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Connection Token(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: Endpoint) => {
+            .metadata=${(item: ConnectionToken) => {
                 return [
-                    { key: msg("Name"), value: item.name },
-                    { key: msg("Host"), value: item.host },
+                    { key: msg("Endpoint"), value: item.endpointObj.name },
+                    { key: msg("User"), value: item.user.username },
                 ];
             }}
-            .usedBy=${(item: Endpoint) => {
+            .usedBy=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensUsedByList({
-                    connectionTokenUuid: item.pk,
+                    connectionTokenUuid: item.pk || "",
                 });
             }}
-            .delete=${(item: Endpoint) => {
+            .delete=${(item: ConnectionToken) => {
                 return new RacApi(DEFAULT_CONFIG).racConnectionTokensDestroy({
-                    connectionTokenUuid: item.pk,
+                    connectionTokenUuid: item.pk || "",
                 });
             }}
         >
@@ -94,5 +90,11 @@ export class ConnectionTokenListPage extends Table<ConnectionToken> {
             return [html`${item.endpointObj.name}`, html`${item.user.username}`];
         }
         return [html`${item.providerObj.name}`, html`${item.endpointObj.name}`];
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-rac-connection-token-list": ConnectionTokenListPage;
     }
 }

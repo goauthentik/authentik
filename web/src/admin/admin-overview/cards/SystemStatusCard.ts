@@ -46,7 +46,7 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
             return;
         }
         const outpost = outposts.results[0];
-        outpost.config["authentik_host"] = window.location.origin;
+        outpost.config.authentik_host = window.location.origin;
         await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
             uuid: outpost.pk,
             outpostRequest: outpost,
@@ -90,5 +90,11 @@ export class SystemStatusCard extends AdminStatusCard<SystemInfo> {
 
     renderValue(): TemplateResult {
         return html`${this.statusSummary}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-admin-status-system": SystemStatusCard;
     }
 }

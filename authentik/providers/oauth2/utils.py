@@ -178,12 +178,18 @@ def protected_resource_view(scopes: list[str]):
     return wrapper
 
 
-def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
-    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+def provider_from_request(request: HttpRequest) -> tuple[OAuth2Provider | None, str, str]:
+    """Get provider from Basic auth of client_id:client_secret. Does not perform authentication"""
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
-        return None
+        return None, "", ""
     provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
+    return provider, client_id, client_secret
+
+
+def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
+    """Attempt to authenticate via Basic auth of client_id:client_secret"""
+    provider, client_id, client_secret = provider_from_request(request)
     if not provider:
         return None
     if client_id != provider.client_id or client_secret != provider.client_secret:

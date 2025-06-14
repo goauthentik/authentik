@@ -1,15 +1,18 @@
-import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
-import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
-import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
-import "@goauthentik/admin/providers/rac/RACProviderViewPage";
-import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
-import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
-import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/EmptyState";
-import "@goauthentik/elements/PageHeader";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "#admin/providers/google_workspace/GoogleWorkspaceProviderViewPage";
+import "#admin/providers/ldap/LDAPProviderViewPage";
+import "#admin/providers/microsoft_entra/MicrosoftEntraProviderViewPage";
+import "#admin/providers/oauth2/OAuth2ProviderViewPage";
+import "#admin/providers/proxy/ProxyProviderViewPage";
+import "#admin/providers/rac/RACProviderViewPage";
+import "#admin/providers/radius/RadiusProviderViewPage";
+import "#admin/providers/saml/SAMLProviderViewPage";
+import "#admin/providers/scim/SCIMProviderViewPage";
+import "#admin/providers/ssf/SSFProviderViewPage";
+import { DEFAULT_CONFIG } from "#common/api/config";
+import "#components/ak-page-header";
+import { AKElement } from "#elements/Base";
+import "#elements/EmptyState";
+import "#elements/buttons/SpinnerButton/ak-spinner-button";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -39,7 +42,7 @@ export class ProviderViewPage extends AKElement {
 
     renderProvider(): TemplateResult {
         if (!this.provider) {
-            return html`<ak-empty-state ?loading=${true} ?fullHeight=${true}></ak-empty-state>`;
+            return html`<ak-empty-state loading fullHeight></ak-empty-state>`;
         }
         switch (this.provider?.component) {
             case "ak-provider-saml-form":
@@ -70,6 +73,18 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-rac-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-rac-view>`;
+            case "ak-provider-google-workspace-form":
+                return html`<ak-provider-google-workspace-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-google-workspace-view>`;
+            case "ak-provider-microsoft-entra-form":
+                return html`<ak-provider-microsoft-entra-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-microsoft-entra-view>`;
+            case "ak-provider-ssf-form":
+                return html`<ak-provider-ssf-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-ssf-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
@@ -83,5 +98,11 @@ export class ProviderViewPage extends AKElement {
             >
             </ak-page-header>
             ${this.renderProvider()}`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-provider-view": ProviderViewPage;
     }
 }

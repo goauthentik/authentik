@@ -25,16 +25,6 @@ class OAuth1Callback(OAuthCallback):
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("id")
 
-    def get_user_enroll_context(
-        self,
-        info: dict[str, Any],
-    ) -> dict[str, Any]:
-        return {
-            "username": info.get("screen_name"),
-            "email": info.get("email"),
-            "name": info.get("name"),
-        }
-
 
 @registry.register()
 class OAUth1Type(SourceType):
@@ -50,6 +40,13 @@ class OAUth1Type(SourceType):
     profile_url = "http://localhost:5001/api/me"
     urls_customizable = False
 
+    def get_base_user_properties(self, info: dict[str, Any], **kwargs) -> dict[str, Any]:
+        return {
+            "username": info.get("screen_name"),
+            "email": info.get("email"),
+            "name": info.get("name"),
+        }
+
 
 class TestSourceOAuth1(SeleniumTestCase):
     """Test OAuth1 Source"""
@@ -59,14 +56,10 @@ class TestSourceOAuth1(SeleniumTestCase):
         self.client_secret = generate_key()
         self.source_slug = generate_id()
         super().setUp()
-
-    def get_container_specs(self) -> dict[str, Any] | None:
-        return {
-            "image": "ghcr.io/beryju/oauth1-test-server:v1.1",
-            "detach": True,
-            "ports": {"5000": "5001"},
-            "auto_remove": True,
-            "environment": {
+        self.run_container(
+            image="ghcr.io/beryju/oauth1-test-server:v1.1",
+            ports={"5000": "5001"},
+            environment={
                 "OAUTH1_CLIENT_ID": self.client_id,
                 "OAUTH1_CLIENT_SECRET": self.client_secret,
                 "OAUTH1_REDIRECT_URI": self.url(
@@ -74,7 +67,7 @@ class TestSourceOAuth1(SeleniumTestCase):
                     source_slug=self.source_slug,
                 ),
             },
-        }
+        )
 
     def create_objects(self):
         """Create required objects"""
@@ -136,7 +129,6 @@ class TestSourceOAuth1(SeleniumTestCase):
         # Wait until we've loaded the user info page
         sleep(2)
         # Wait until we've logged in
-        self.wait_for_url(self.if_user_url("/library"))
-        self.driver.get(self.if_user_url("/settings"))
+        self.wait_for_url(self.if_user_url())
 
         self.assert_user(User(username="example-user", name="test name", email="foo@example.com"))

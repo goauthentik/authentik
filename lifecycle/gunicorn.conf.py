@@ -2,25 +2,38 @@
 
 import os
 from hashlib import sha512
-from multiprocessing import cpu_count
 from os import makedirs
 from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
+from cryptography.hazmat.backends.openssl.backend import backend
+from defusedxml import defuse_stdlib
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
+from authentik.lib.debug import start_debug_server
 from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
+from lifecycle.migrate import run_migrations
+from lifecycle.wait_for_db import wait_for_db
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
+    from gunicorn.app.wsgiapp import WSGIApplication
     from gunicorn.arbiter import Arbiter
+
+    from authentik.root.asgi import AuthentikAsgi
+
+defuse_stdlib()
+
+if CONFIG.get_bool("compliance.fips.enabled", False):
+    backend._enable_fips()
+
+wait_for_db()
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
@@ -35,17 +48,14 @@ bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
+preload_app = True
+
 max_requests = 1000
 max_requests_jitter = 50
 
 logconfig_dict = get_logger_config()
 
-# if we're running in kubernetes, use fixed workers because we can scale with more pods
-# otherwise (assume docker-compose), use as much as we can
-if SERVICE_HOST_ENV_NAME in os.environ:
-    default_workers = 2
-else:
-    default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
+default_workers = 2
 
 workers = CONFIG.get_int("web.workers", default_workers)
 threads = CONFIG.get_int("web.threads", 4)
@@ -100,6 +110,18 @@ def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     worker._worker_id = _next_worker_id(server)
 
 
+def post_worker_init(worker: DjangoUvicornWorker):
+    """Notify ASGI app that its started up"""
+    # Only trigger startup DB logic on first worker
+    # Startup code that imports code or is otherwise needed in every worker
+    # does not use this signal, so we can skip this safely
+    if worker._worker_id != 1:
+        return
+    app: WSGIApplication = worker.app
+    root_app: AuthentikAsgi = app.callable
+    root_app.call_startup()
+
+
 if not CONFIG.get_bool("disable_startup_analytics", False):
     env = get_env()
     should_send = env not in ["dev", "ci"]
@@ -125,7 +147,5 @@ if not CONFIG.get_bool("disable_startup_analytics", False):
         except Exception:  # nosec
             pass
 
-if CONFIG.get_bool("remote_debug"):
-    import debugpy
-
-    debugpy.listen(("0.0.0.0", 6800))  # nosec
+start_debug_server()
+run_migrations()

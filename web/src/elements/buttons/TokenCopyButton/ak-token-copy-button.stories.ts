@@ -12,7 +12,7 @@ import AKTokenCopyButton from "./ak-token-copy-button";
 
 function makeid(length: number) {
     const sample = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    return new Array(length)
+    return Array.from({ length })
         .fill(" ")
         .map(() => sample.charAt(Math.floor(Math.random() * sample.length)))
         .join("");
@@ -51,7 +51,6 @@ const displayMessage = (result: any) => {
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     target!.appendChild(doc.firstChild!);
 };
 

@@ -29,11 +29,10 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     @property({ attribute: false })
     app?: Application;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Endpoint>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Endpoint>> {
         const endpoints = await new RacApi(DEFAULT_CONFIG).racEndpointsList({
+            ...(await this.defaultEndpointConfig()),
             provider: this.app?.provider || 0,
-            page: page,
-            search: this.search,
         });
         if (this.open && endpoints.pagination.count === 1) {
             this.clickHandler(endpoints.results[0]);
@@ -43,7 +42,7 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Name")];
+        return [new TableColumn(msg("Name"))];
     }
 
     row(item: Endpoint): TemplateResult[] {
@@ -67,5 +66,11 @@ export class RACLaunchEndpointModal extends TableModal<Endpoint> {
                     ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-library-rac-endpoint-launch": RACLaunchEndpointModal;
     }
 }

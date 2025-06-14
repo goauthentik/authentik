@@ -2,14 +2,14 @@ import { EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { getRelativeTime } from "@goauthentik/common/utils";
+import { formatElapsedTime } from "@goauthentik/common/temporal";
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -27,11 +27,9 @@ export class UserEvents extends Table<Event> {
     @property()
     targetUser!: string;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {
+    async apiEndpoint(): Promise<PaginatedResponse<Event>> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
-            page: page,
-            ordering: this.order,
-            pageSize: (await uiConfig()).pagination.perPage,
+            ...(await this.defaultEndpointConfig()),
             username: this.targetUser,
         });
     }
@@ -45,11 +43,11 @@ export class UserEvents extends Table<Event> {
         ];
     }
 
-    row(item: EventWithContext): TemplateResult[] {
+    row(item: EventWithContext): SlottedTemplateResult[] {
         return [
             html`${actionToLabel(item.action)}`,
             EventUser(item),
-            html`<div>${getRelativeTime(item.created)}</div>
+            html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<span>${item.clientIp || msg("-")}</span>`,
         ];
@@ -72,5 +70,11 @@ export class UserEvents extends Table<Event> {
                 <div slot="body">${msg("No matching events could be found.")}</div>
             </ak-empty-state>`,
         );
+    }
+}
+
+declare global {
+    interface HTMLElementTagNameMap {
+        "ak-events-user": UserEvents;
     }
 }

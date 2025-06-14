@@ -30,6 +30,7 @@ from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, E
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
+from authentik.events.logs import capture_logs
 from authentik.events.models import TaskStatus
 from authentik.events.system_tasks import SystemTask, prefill_task
 from authentik.events.utils import sanitize_dict
@@ -158,7 +159,7 @@ def blueprints_discovery(self: SystemTask, path: str | None = None):
         check_blueprint_v1_file(blueprint)
         count += 1
     self.set_status(
-        TaskStatus.SUCCESSFUL, _("Successfully imported %(count)d files." % {"count": count})
+        TaskStatus.SUCCESSFUL, _("Successfully imported {count} files.".format(count=count))
     )
 
 
@@ -211,14 +212,15 @@ def apply_blueprint(self: SystemTask, instance_pk: str):
         if not valid:
             instance.status = BlueprintInstanceStatus.ERROR
             instance.save()
-            self.set_status(TaskStatus.ERROR, *[x["event"] for x in logs])
+            self.set_status(TaskStatus.ERROR, *logs)
             return
-        applied = importer.apply()
-        if not applied:
-            instance.status = BlueprintInstanceStatus.ERROR
-            instance.save()
-            self.set_status(TaskStatus.ERROR, "Failed to apply")
-            return
+        with capture_logs() as logs:
+            applied = importer.apply()
+            if not applied:
+                instance.status = BlueprintInstanceStatus.ERROR
+                instance.save()
+                self.set_status(TaskStatus.ERROR, *logs)
+                return
         instance.status = BlueprintInstanceStatus.SUCCESSFUL
         instance.last_applied_hash = file_hash
         instance.last_applied = now()

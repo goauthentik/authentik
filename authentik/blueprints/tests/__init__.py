@@ -39,7 +39,7 @@ def reconcile_app(app_name: str):
         def wrapper(*args, **kwargs):
             config = apps.get_app_config(app_name)
             if isinstance(config, ManagedAppConfig):
-                config.ready()
+                config._on_startup_callback(None)
             return func(*args, **kwargs)
 
         return wrapper

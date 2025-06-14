@@ -2,14 +2,15 @@
 
 from collections.abc import Callable
 from enum import Enum
+from typing import Any
 
 from django.http.request import HttpRequest
 from django.templatetags.static import static
 from django.urls.base import reverse
 from structlog.stdlib import get_logger
 
-from authentik.flows.challenge import Challenge, ChallengeTypes, RedirectChallenge
-from authentik.sources.oauth.models import OAuthSource
+from authentik.flows.challenge import Challenge, RedirectChallenge
+from authentik.sources.oauth.models import AuthorizationCodeAuthMethod, OAuthSource
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
 
@@ -40,6 +41,10 @@ class SourceType:
     oidc_well_known_url: str | None = None
     oidc_jwks_url: str | None = None
 
+    authorization_code_auth_method: AuthorizationCodeAuthMethod = (
+        AuthorizationCodeAuthMethod.BASIC_AUTH
+    )
+
     def icon_url(self) -> str:
         """Get Icon URL for login"""
         return static(f"authentik/sources/{self.name}.svg")
@@ -47,14 +52,27 @@ class SourceType:
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
         return RedirectChallenge(
-            instance={
-                "type": ChallengeTypes.REDIRECT.value,
+            data={
                 "to": reverse(
                     "authentik_sources_oauth:oauth-client-login",
                     kwargs={"source_slug": source.slug},
                 ),
             }
         )
+
+    def get_base_user_properties(
+        self, source: OAuthSource, info: dict[str, Any], **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Get base user properties for enrollment/update"""
+        return info
+
+    def get_base_group_properties(
+        self, source: OAuthSource, group_id: str, **kwargs
+    ) -> dict[str, Any | dict[str, Any]]:
+        """Get base group properties for creation/update"""
+        return {
+            "name": group_id,
+        }
 
 
 class SourceTypeRegistry:
