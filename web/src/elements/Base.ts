@@ -16,8 +16,12 @@ import { property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+export interface AKElementProps {
+    activeTheme: ResolvedUITheme;
+}
+
 @localized()
-export class AKElement extends LitElement {
+export class AKElement extends LitElement implements AKElementProps {
     //#region Static Properties
 
     public static styles?: Array<CSSResult | CSSModule>;
