@@ -639,7 +639,7 @@ msgstr "Flujo SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr "Flujos SSF"
+msgstr "Flujo de Datos SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
