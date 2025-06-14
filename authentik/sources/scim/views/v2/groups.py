@@ -143,36 +143,46 @@ class GroupsView(SCIMObjectView):
         if not connection:
             raise Http404
 
-        # Start with current attributes
         data = connection.attributes.copy() if hasattr(connection, "attributes") else {}
+        current_members = {m.get("value") for m in data.get("members", []) if m.get("value")}
 
-        # SCIM PATCH expects a list of operations
         operations = request.data.get("Operations", [])
         for op in operations:
             op_type = op.get("op", "").lower()
             path = op.get("path", "")
             value = op.get("value")
 
-            # Only supporting 'replace' for displayName and members for now
-            if op_type == "replace":
-                if path.lower() == "displayname":
+            if path.lower() == "displayname":
+                if op_type in ["replace", "add"]:
                     data["name"] = value
-                elif path.lower() == "members":
-                    data["members"] = value
-            elif op_type == "add" and path.lower() == "members":
-                # Add members to the current list
-                current = data.get("members", [])
-                if not isinstance(current, list):
-                    current = []
-                current.extend(value)
-                data["members"] = current
-            elif op_type == "remove" and path.lower() == "members":
-                # Remove members by value
-                current = data.get("members", [])
-                if not isinstance(current, list):
-                    current = []
-                remove_ids = set(m.get("value") for m in value)
-                data["members"] = [m for m in current if m.get("value") not in remove_ids]
+                elif op_type == "remove":
+                    data.pop("name", None)
+
+            elif path.lower() == "members":
+                if op_type == "replace":
+                    # Replace all members
+                    data["members"] = value if value is not None else []
+                    current_members = {m.get("value") for m in data["members"] if m.get("value")}
+                elif op_type == "add":
+                    # Add only new members
+                    if not isinstance(value, list):
+                        value = [value]
+                    for member in value:
+                        member_id = member.get("value")
+                        if member_id and member_id not in current_members:
+                            data.setdefault("members", []).append(member)
+                            current_members.add(member_id)
+                elif op_type == "remove":
+                    if value is None:
+                        # Remove all members
+                        data["members"] = []
+                        current_members = set()
+                    else:
+                        if not isinstance(value, list):
+                            value = [value]
+                        remove_ids = {m.get("value") for m in value if m.get("value")}
+                        data["members"] = [m for m in data.get("members", []) if m.get("value") not in remove_ids]
+                        current_members -= remove_ids
 
         connection = self.update_group(connection, data)
         return Response(self.group_to_scim(connection), status=200)
