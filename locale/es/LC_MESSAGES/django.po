@@ -1246,7 +1246,7 @@ msgstr ""
 
 #: authentik/policies/expiry/models.py
 msgid "Password has expired."
-msgstr "La contraseña ha caducado."
+msgstr "La contraseña ha expirado."
 
 #: authentik/policies/expiry/models.py
 msgid "Password Expiry Policy"
