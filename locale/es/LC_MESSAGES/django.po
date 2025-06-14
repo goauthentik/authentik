@@ -635,11 +635,11 @@ msgstr "Agregar flujo al proveedor SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream"
-msgstr "Flujo SSF"
+msgstr "Flujo de Datos SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Streams"
-msgstr "Flujo de Datos SSF"
+msgstr "Flujos de Datos SSF"
 
 #: authentik/enterprise/providers/ssf/models.py
 msgid "SSF Stream Event"
