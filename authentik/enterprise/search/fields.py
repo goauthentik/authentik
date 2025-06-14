@@ -29,26 +29,26 @@ class JSONSearchField(StrField):
         with connection.cursor() as cursor:
             cursor.execute(
                 f"""
-                WITH RECURSIVE {self.name}_keys AS (
+                WITH RECURSIVE "{self.name}_keys" AS (
                     SELECT
-                        ARRAY[jsonb_object_keys({self.name})] AS key_path_array,
-                        {self.name} -> jsonb_object_keys({self.name}) AS value
+                        ARRAY[jsonb_object_keys("{self.name}")] AS key_path_array,
+                        "{self.name}" -> jsonb_object_keys("{self.name}") AS value
                     FROM {model._meta.db_table}
-                    WHERE {self.name} IS NOT NULL
-                        AND jsonb_typeof({self.name}) = 'object'
+                    WHERE "{self.name}" IS NOT NULL
+                        AND jsonb_typeof("{self.name}") = 'object'
 
                     UNION ALL
 
                     SELECT
                         ck.key_path_array || jsonb_object_keys(ck.value),
                         ck.value -> jsonb_object_keys(ck.value) AS value
-                    FROM {self.name}_keys ck
+                    FROM "{self.name}_keys" ck
                     WHERE jsonb_typeof(ck.value) = 'object'
                 ),
 
                 unique_paths AS (
                     SELECT DISTINCT key_path_array
-                    FROM {self.name}_keys
+                    FROM "{self.name}_keys"
                 )
 
                 SELECT key_path_array FROM unique_paths;
