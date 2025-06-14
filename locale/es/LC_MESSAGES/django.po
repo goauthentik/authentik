@@ -1066,8 +1066,7 @@ msgstr "Sincronizando página {page} de {object_type}"
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
 msgstr ""
-"Descartando solicitud de mutación debido a ejecución en modo de prueba (dry "
-"run)"
+"Descartando solicitud de mutación debido a ejecución en modo de simulación"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
