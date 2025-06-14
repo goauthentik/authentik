@@ -135,6 +135,49 @@ class GroupsView(SCIMObjectView):
         return Response(self.group_to_scim(connection), status=200)
 
     @atomic
+    def patch(self, request: Request, group_id: str, **kwargs) -> Response:
+        """Patch group handler"""
+        connection = SCIMSourceGroup.objects.filter(
+            source=self.source, group__group_uuid=group_id
+        ).first()
+        if not connection:
+            raise Http404
+
+        # Start with current attributes
+        data = connection.attributes.copy() if hasattr(connection, "attributes") else {}
+
+        # SCIM PATCH expects a list of operations
+        operations = request.data.get("Operations", [])
+        for op in operations:
+            op_type = op.get("op", "").lower()
+            path = op.get("path", "")
+            value = op.get("value")
+
+            # Only supporting 'replace' for displayName and members for now
+            if op_type == "replace":
+                if path.lower() == "displayname":
+                    data["name"] = value
+                elif path.lower() == "members":
+                    data["members"] = value
+            elif op_type == "add" and path.lower() == "members":
+                # Add members to the current list
+                current = data.get("members", [])
+                if not isinstance(current, list):
+                    current = []
+                current.extend(value)
+                data["members"] = current
+            elif op_type == "remove" and path.lower() == "members":
+                # Remove members by value
+                current = data.get("members", [])
+                if not isinstance(current, list):
+                    current = []
+                remove_ids = set(m.get("value") for m in value)
+                data["members"] = [m for m in current if m.get("value") not in remove_ids]
+
+        connection = self.update_group(connection, data)
+        return Response(self.group_to_scim(connection), status=200)
+
+    @atomic
     def delete(self, request: Request, group_id: str, **kwargs) -> Response:
         """Delete group handler"""
         connection = SCIMSourceGroup.objects.filter(
