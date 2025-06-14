@@ -36,7 +36,7 @@ To support the integration of Harbor with authentik, you need to create an appli
 
     - **Protocol Settings**:
         - **Redirect URI**:
-            - Strict: <kbd>https://<em>harbor.company</em>/c/oidc/callback/</kbd>.
+            - Strict: `https://harbor.company/c/oidc/callback/`.
         - **Signing Key**: select any available signing key.
     - **Advanced Protocol Settings**:
         - **Scopes**: add `authentik default OAuth Mapping: OpenID 'offline_access'` to **Selected Scopes**.
@@ -54,9 +54,9 @@ To support the integration of authentik with Harbor, you need to configure OIDC 
 3. In the **Auth Mode** dropdown, select **OIDC** and provide the following required configurations.
 
     - **OIDC Provider Name**: `authentik`
-    - **OIDC Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>harbor</em></kbd>
-    - **OIDC Client ID**: <em>client ID from authentik</em>
-    - **OIDC Client Secret**: <em>client secret from authentik</em>
+    - **OIDC Endpoint**: `https://authentik.company/application/o/harbor`
+    - **OIDC Client ID**: client ID from authentik
+    - **OIDC Client Secret**: client secret from authentik
     - **OIDC Scope**: `openid,profile,email,offline_access`
     - **Username Claim**: `preferred_username`
 

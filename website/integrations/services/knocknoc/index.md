@@ -79,10 +79,10 @@ This example will set session duration at 540 minutes. Change the value to match
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
   **Protocol Settings**:
-    - **ACS URL**: <kbd>https://<em>knocknoc.company</em>/api/saml/acs</kbd>
-    - **Issuer**: <kbd>https://<em>authentik.company</em></kbd>
+    - **ACS URL**: `https://knocknoc.company/api/saml/acs`
+    - **Issuer**: `https://authentik.company`
     - **Service Provider Binding**: `Post`
-    - **Audience**: <kbd>https://<em>kocknoc.company</em>/api/saml/metadata</kbd>
+    - **Audience**: `https://kocknoc.company/api/saml/metadata`
     - Under **Advanced protocol settings**, add the three **Property Mappings** you created in the previous section, then set the **NameID Property Mapping** to `Authentik default SAML Mapping: Username`.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -99,7 +99,7 @@ This example will set session duration at 540 minutes. Change the value to match
 2. Set the following configuration:
 
     - **Metadata URL**: **SAML Metadata URL** copied from the authentik provider.
-    - **Public URL**: <kbd>https://<em>knocknoc.company</em></kbd>
+    - **Public URL**: `https://knocknoc.company`
     - **Key file**: select a key file.
     - **Cert file**: select a certificate file.
 

@@ -38,7 +38,7 @@ To support the integration of Zipline with authentik, you need to create an appl
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>zipline.company</em>/api/auth/oauth/oidc</kbd>.
+    - Set a `Strict` redirect URI to `https://zipline.company/api/auth/oauth/oidc`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -52,9 +52,9 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 - **OIDC Client ID**: Your Client ID from authentik
 - **OIDC Client Secret**: Your Client Secret from authentik
-- **OIDC Authorize URL**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-- **OIDC Token URL**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-- **OIDC Userinfo URL**: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+- **OIDC Authorize URL**: `https://authentik.company/application/o/authorize/`
+- **OIDC Token URL**: `https://authentik.company/application/o/token/`
+- **OIDC Userinfo URL**: `https://authentik.company/application/o/userinfo/`
 
 3. Then, click **Save**.
 
