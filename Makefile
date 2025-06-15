@@ -94,7 +94,7 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
-		uv run ak make_blueprint_schema > blueprints/schema.json
+		uv run ak make_blueprint_schema --file blueprints/schema.json
 	AUTHENTIK_DEBUG=true \
 		AUTHENTIK_TENANTS__ENABLED=true \
 		AUTHENTIK_OUTPOSTS__DISABLE_EMBEDDED_OUTPOST=true \
