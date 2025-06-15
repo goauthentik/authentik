@@ -2991,11 +2991,6 @@ Belirlenen seçeneklerden biri veya her ikisi de eşiğe eşit veya eşiğin üz
         <target>Sunucuları yükle</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Plex ile yeniden kimlik doğrulama</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik doğrulamasına izin ver</target>
@@ -9606,6 +9601,9 @@ Gruplara/kullanıcılara yapılan bağlamalar, etkinliğin kullanıcısına kar�
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
 </trans-unit>
     </body>
   </file>

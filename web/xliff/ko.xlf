@@ -2974,11 +2974,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>서버 로드</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Plex로 다시 인증하기</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>친구들이 Plex를 통해 인증할 수 있도록 허용하십시오. 심지어 서버를 공유하지 않는 경우에도 해당됩니다.</target>
@@ -9215,6 +9210,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
 </trans-unit>
     </body>
   </file>
