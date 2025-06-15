@@ -3013,11 +3013,6 @@ nie przechodzi, gdy jedna lub obie wybrane opcje są równe lub wyższe od progu
         <target>Załaduj serwery</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Ponowne uwierzytelnienie za pomocą plex</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>Zezwalaj znajomym na uwierzytelnianie przez Plex, nawet jeśli nie udostępniasz żadnych serwerów</target>
@@ -9542,6 +9537,9 @@ Powiązania z grupami/użytkownikami są sprawdzane względem użytkownika zdarz
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
 </trans-unit>
     </body>
   </file>

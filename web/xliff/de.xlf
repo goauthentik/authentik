@@ -3002,11 +3002,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>Server laden</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Mit Plex erneut authentifizieren</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>Freunden erlauben sich via Plex zu authentifizieren, auch wenn keine Server geteilt werden.</target>
@@ -9247,6 +9242,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sb1b05a7573ab618c">
   <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
 </trans-unit>
     </body>
   </file>
