@@ -17,6 +17,8 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/pires/go-proxyproto"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
@@ -49,6 +51,7 @@ type WebServer struct {
 	mainRouter     *mux.Router
 	loggingRouter  *mux.Router
 	log            *log.Entry
+	postgresClient *gorm.DB
 	upstreamClient *http.Client
 	upstreamURL    *url.URL
 
@@ -63,6 +66,21 @@ func NewWebServer() *WebServer {
 	mainHandler.Use(handlers.CompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
+
+	// TODO: ssl
+	postgresDsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		config.Get().Postgresql.Host,
+		config.Get().Postgresql.Port,
+		config.Get().Postgresql.User,
+		config.Get().Postgresql.Password,
+		config.Get().Postgresql.Name,
+	)
+
+	db, err := gorm.Open(postgres.Open(postgresDsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
 
 	tmp := os.TempDir()
 	socketPath := path.Join(tmp, UnixSocketName)
@@ -88,6 +106,7 @@ func NewWebServer() *WebServer {
 		mainRouter:     mainHandler,
 		loggingRouter:  loggingHandler,
 		log:            l,
+		postgresClient: db,
 		gunicornReady:  false,
 		upstreamClient: upstreamClient,
 		upstreamURL:    u,

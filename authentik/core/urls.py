@@ -8,6 +8,7 @@ from authentik.core.api.application_entitlements import ApplicationEntitlementVi
 from authentik.core.api.applications import ApplicationViewSet
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
+from authentik.core.api.files import FileViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.property_mappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
@@ -78,6 +79,7 @@ api_urlpatterns = [
         TransactionalApplicationView.as_view(),
         name="core-transactional-application",
     ),
+    ("core/files", FileViewSet),
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
