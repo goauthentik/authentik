@@ -3,6 +3,7 @@
 from datetime import datetime, timedelta
 
 from django.utils.timezone import now
+from dramatiq.actor import actor
 from structlog.stdlib import get_logger
 
 from authentik.core.models import (
@@ -11,17 +12,15 @@ from authentik.core.models import (
     ExpiringModel,
     User,
 )
-from authentik.events.system_tasks import SystemTask, TaskStatus, prefill_task
-from authentik.root.celery import CELERY_APP
+from authentik.tasks.middleware import CurrentTask
 
 LOGGER = get_logger()
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_expired_models(self: SystemTask):
+@actor
+def clean_expired_models():
     """Remove expired objects"""
-    messages = []
+    self = CurrentTask.get_task()
     for cls in ExpiringModel.__subclasses__():
         cls: ExpiringModel
         objects = (
@@ -31,16 +30,14 @@ def clean_expired_models(self: SystemTask):
         for obj in objects:
             obj.expire_action()
         LOGGER.debug("Expired models", model=cls, amount=amount)
-        messages.append(f"Expired {amount} {cls._meta.verbose_name_plural}")
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)
+        self.info(f"Expired {amount} {cls._meta.verbose_name_plural}")
 
 
-@CELERY_APP.task(bind=True, base=SystemTask)
-@prefill_task
-def clean_temporary_users(self: SystemTask):
+@actor
+def clean_temporary_users():
     """Remove temporary users created by SAML Sources"""
+    self = CurrentTask.get_task()
     _now = datetime.now()
-    messages = []
     deleted_users = 0
     for user in User.objects.filter(**{f"attributes__{USER_ATTRIBUTE_GENERATED}": True}):
         if not user.attributes.get(USER_ATTRIBUTE_EXPIRES):
@@ -52,5 +49,4 @@ def clean_temporary_users(self: SystemTask):
             LOGGER.debug("User is expired and will be deleted.", user=user, delta=delta)
             user.delete()
             deleted_users += 1
-    messages.append(f"Successfully deleted {deleted_users} users.")
-    self.set_status(TaskStatus.SUCCESSFUL, *messages)
+    self.info(f"Successfully deleted {deleted_users} users.")

@@ -26,7 +26,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
 
     def get_objects(self, **kwargs) -> Generator:
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return iter(())
 
         # If we are looking up groups from users, we don't need to fetch the group membership field
@@ -45,7 +45,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
     def sync(self, page_data: list) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
         if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
+            self._task.info("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
         for group in page_data:
@@ -94,7 +94,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         # group_uniq might be a single string or an array with (hopefully) a single string
         if isinstance(group_uniq, list):
             if len(group_uniq) < 1:
-                self.message(
+                self._task.info(
                     f"Group does not have a uniqueness attribute: '{group_dn}'",
                     group=group_dn,
                 )
@@ -104,7 +104,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             groups = Group.objects.filter(**{f"attributes__{LDAP_UNIQUENESS}": group_uniq})
             if not groups.exists():
                 if self._source.sync_groups:
-                    self.message(
+                    self._task.info(
                         f"Group does not exist in our DB yet, run sync_groups first: '{group_dn}'",
                         group=group_dn,
                     )

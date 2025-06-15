@@ -252,9 +252,13 @@ class MicrosoftEntraGroupTests(TestCase):
             member_add.assert_called_once()
             self.assertEqual(
                 member_add.call_args[0][0].odata_id,
-                f"https://graph.microsoft.com/v1.0/directoryObjects/{MicrosoftEntraProviderUser.objects.filter(
+                f"https://graph.microsoft.com/v1.0/directoryObjects/{
+                    MicrosoftEntraProviderUser.objects.filter(
                         provider=self.provider,
-                    ).first().microsoft_id}",
+                    )
+                    .first()
+                    .microsoft_id
+                }",
             )
 
     def test_group_create_member_remove(self):
@@ -311,9 +315,13 @@ class MicrosoftEntraGroupTests(TestCase):
             member_add.assert_called_once()
             self.assertEqual(
                 member_add.call_args[0][0].odata_id,
-                f"https://graph.microsoft.com/v1.0/directoryObjects/{MicrosoftEntraProviderUser.objects.filter(
+                f"https://graph.microsoft.com/v1.0/directoryObjects/{
+                    MicrosoftEntraProviderUser.objects.filter(
                         provider=self.provider,
-                    ).first().microsoft_id}",
+                    )
+                    .first()
+                    .microsoft_id
+                }",
             )
             member_remove.assert_called_once()
 
@@ -413,7 +421,7 @@ class MicrosoftEntraGroupTests(TestCase):
                 ),
             ) as group_list,
         ):
-            microsoft_entra_sync.delay(self.provider.pk).get()
+            microsoft_entra_sync.send(self.provider.pk).get_result()
             self.assertTrue(
                 MicrosoftEntraProviderGroup.objects.filter(
                     group=different_group, provider=self.provider
