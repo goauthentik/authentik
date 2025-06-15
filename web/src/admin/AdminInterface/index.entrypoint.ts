@@ -1,5 +1,6 @@
 import "#admin/AdminInterface/AboutModal";
 import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { adminCommands } from "#admin/AdminInterface/AdminCommands";
 import { ROUTES } from "#admin/Routes";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
@@ -21,6 +22,7 @@ import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+import "ninja-keys";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
@@ -119,6 +121,10 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
             .pf-c-drawer__panel {
                 z-index: var(--pf-global--ZIndex--xl);
             }
+            ninja-keys {
+                --ninja-z-index: 99999;
+                --ninja-accent-color: var(--ak-accent);
+            }
         `,
     ];
 
@@ -190,6 +196,11 @@ export class AdminInterface extends WithCapabilitiesConfig(AuthenticatedInterfac
         };
 
         return html` <ak-locale-context>
+            <ninja-keys
+                .data=${adminCommands}
+                noAutoLoadMdicons
+                class="${this.activeTheme === UiThemeEnum.Dark ? "dark" : ""}"
+            ></ninja-keys>
             <div class="pf-c-page">
                 <ak-page-navbar ?open=${this.sidebarOpen} @sidebar-toggle=${this.sidebarListener}>
                     <ak-version-banner></ak-version-banner>
