@@ -23,7 +23,7 @@ from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.sync.mapper import PropertyMappingManager
 from authentik.sources.scim.models import SCIMSource
 from authentik.sources.scim.views.v2.auth import SCIMTokenAuth
-
+from rest_framework.parsers import JSONParser
 SCIM_CONTENT_TYPE = "application/scim+json"
 
 
@@ -46,7 +46,7 @@ class SCIMView(APIView):
     logger: BoundLogger
 
     permission_classes = [IsAuthenticated]
-    parser_classes = [SCIMParser]
+    parser_classes = [SCIMParser, JSONParser]
     renderer_classes = [SCIMRenderer]
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:

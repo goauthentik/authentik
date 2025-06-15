@@ -1,13 +1,13 @@
 """SCIM User Views"""
 
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from django.db.models import Q
 from django.db.transaction import atomic
 from django.http import Http404, QueryDict
 from django.urls import reverse
 from pydanticscim.user import Email, EmailKind, Name
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, APIException
 from rest_framework.request import Request
 from rest_framework.response import Response
 
@@ -17,6 +17,19 @@ from authentik.providers.scim.clients.schema import User as SCIMUserModel
 from authentik.sources.scim.models import SCIMSourceUser
 from authentik.sources.scim.views.v2.base import SCIMObjectView
 
+class SCIMValidationError(APIException):
+    status_code = 400
+    default_detail = "Invalid syntax"
+    default_code = "invalidSyntax"
+
+    def __init__(self, detail=None, scim_type="invalidSyntax"):
+        if detail is None:
+            detail = self.default_detail
+        self.detail = {
+            "schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"],
+            "scimType": scim_type,
+            "detail": detail,
+        }
 
 class UsersView(SCIMObjectView):
     """SCIM User view"""
@@ -63,6 +76,10 @@ class UsersView(SCIMObjectView):
     def get(self, request: Request, user_id: str | None = None, **kwargs) -> Response:
         """List User handler"""
         if user_id:
+            try:
+                UUID(user_id)
+            except ValueError:
+                raise Http404("User does not exist")
             connection = (
                 SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id)
                 .select_related("user")
@@ -76,11 +93,18 @@ class UsersView(SCIMObjectView):
         )
         connections = connections.filter(self.filter_parse(request))
         page = self.paginate_query(connections)
+        # Ensure startIndex matches the requested value (default 1)
+        try:
+            start_index = int(request.query_params.get("startIndex", 1))
+            if start_index < 1:
+                start_index = 1
+        except (ValueError, TypeError):
+            start_index = 1
         return Response(
             {
                 "totalResults": page.paginator.count,
                 "itemsPerPage": page.paginator.per_page,
-                "startIndex": page.start_index(),
+                "startIndex": start_index,
                 "schemas": ["urn:ietf:params:scim:api:messages:2.0:ListResponse"],
                 "Resources": [self.user_to_scim(connection) for connection in page],
             }
@@ -92,7 +116,7 @@ class UsersView(SCIMObjectView):
         properties = self.build_object_properties(data)
 
         if not properties.get("username"):
-            raise ValidationError("Invalid user")
+            raise SCIMValidationError("Missing required attribute: userName")
 
         user = connection.user if connection else User()
         if _user := User.objects.filter(username=properties.get("username")).first():
@@ -128,6 +152,10 @@ class UsersView(SCIMObjectView):
 
     def put(self, request: Request, user_id: str, **kwargs) -> Response:
         """Update user handler"""
+        try:
+            UUID(user_id)
+        except ValueError:
+            raise Http404("User does not exist")
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
             raise Http404
@@ -135,8 +163,40 @@ class UsersView(SCIMObjectView):
         return Response(self.user_to_scim(connection), status=200)
 
     @atomic
+    def patch(self, request: Request, user_id: str, **kwargs) -> Response:
+        """Patch user handler"""
+        try:
+            UUID(user_id)
+        except ValueError:
+            raise Http404("User does not exist")
+        connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
+        if not connection:
+            raise Http404
+
+        data = connection.attributes.copy() if hasattr(connection, "attributes") else {}
+        operations = request.data.get("Operations", [])
+        for op in operations:
+            op_type = op.get("op", "").lower()
+            path = op.get("path", "")
+            value = op.get("value")
+
+            if path.lower() == "username" or path.lower() == "userName":
+                if op_type in ["replace", "add"]:
+                    data["userName"] = value
+                elif op_type == "remove":
+                    data.pop("userName", None)
+            # Add more SCIM attribute handling as needed
+
+        connection = self.update_user(connection, data)
+        return Response(self.user_to_scim(connection), status=200)
+
+    @atomic
     def delete(self, request: Request, user_id: str, **kwargs) -> Response:
         """Delete user handler"""
+        try:
+            UUID(user_id)
+        except ValueError:
+            raise Http404("User does not exist")
         connection = SCIMSourceUser.objects.filter(source=self.source, user__uuid=user_id).first()
         if not connection:
             raise Http404
