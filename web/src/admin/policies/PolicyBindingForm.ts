@@ -1,21 +1,18 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { groupBy } from "@goauthentik/common/utils";
+
 import {
     PolicyBindingCheckTarget,
     PolicyBindingCheckTargetToLabel,
 } from "@goauthentik/admin/policies/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { groupBy } from "@goauthentik/common/utils";
+
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { CSSResult, nothing } from "lit";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-
-import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 import {
     CoreApi,
@@ -28,6 +25,13 @@ import {
     PolicyBinding,
     User,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, nothing } from "lit";
+import { TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+
+import PFContent from "@patternfly/patternfly/components/Content/content.css";
 
 export type PolicyBindingNotice = { type: PolicyBindingCheckTarget; notice: string };
 

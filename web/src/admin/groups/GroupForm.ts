@@ -1,22 +1,31 @@
 import "@goauthentik/admin/groups/MemberSelectModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+
 import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/SearchSelect";
+
+import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CoreApi, CoreGroupsListRequest, Group, RbacApi, Role } from "@goauthentik/api";
 
 export function rbacRolePair(item: Role): DualSelectPair {
     return [item.pk, html`<div class="selection-main">${item.name}</div>`, item.name];

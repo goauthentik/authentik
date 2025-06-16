@@ -1,13 +1,15 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { StagesApi, UserDeleteStage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { StagesApi, UserDeleteStage } from "@goauthentik/api";
 
 @customElement("ak-stage-user-delete-form")
 export class UserDeleteStageForm extends BaseStageForm<UserDeleteStage> {

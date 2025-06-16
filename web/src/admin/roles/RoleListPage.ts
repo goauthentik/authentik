@@ -1,19 +1,23 @@
 import "#admin/roles/RoleForm";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
+
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+
 import { PaginatedResponse } from "#elements/table/Table";
 import { TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { RbacApi, Role } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { RbacApi, Role } from "@goauthentik/api";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {

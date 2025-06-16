@@ -4,6 +4,7 @@ import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import "../ak-hidden-text-input";
+
 import { type AkHiddenTextInput, type AkHiddenTextInputProps } from "../ak-hidden-text-input.js";
 
 const metadata: Meta<AkHiddenTextInputProps> = {

@@ -1,13 +1,15 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
+import { Pagination } from "@goauthentik/api";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
 import { LitElement, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { Pagination } from "@goauthentik/api";
-
 import "../ak-dual-select";
+
 import { AkDualSelect } from "../ak-dual-select";
 import { DualSelectEventType, type DualSelectPair } from "../types";
 

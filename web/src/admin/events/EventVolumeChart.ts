@@ -1,13 +1,15 @@
-import { EventChart } from "#elements/charts/EventChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { EventChart } from "#elements/charts/EventChart";
+
+import { EventVolume, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
+
 import { ChartData } from "chart.js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-import { EventVolume, EventsApi, EventsEventsListRequest } from "@goauthentik/api";
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {

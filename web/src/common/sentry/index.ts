@@ -1,6 +1,10 @@
 import { globalAK } from "@goauthentik/common/global";
 import { me } from "@goauthentik/common/users";
+
 import { readInterfaceRouteParam } from "@goauthentik/elements/router/utils";
+
+import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
+
 import {
     ErrorEvent,
     EventHint,
@@ -10,8 +14,6 @@ import {
     setUser,
 } from "@sentry/browser";
 import * as Spotlight from "@spotlightjs/spotlight";
-
-import { CapabilitiesEnum, ResponseError } from "@goauthentik/api";
 
 /**
  * A generic error that can be thrown without triggering Sentry's reporting.

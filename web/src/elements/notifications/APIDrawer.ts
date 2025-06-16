@@ -2,6 +2,7 @@ import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

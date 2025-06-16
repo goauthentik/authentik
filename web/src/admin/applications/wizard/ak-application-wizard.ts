@@ -1,6 +1,7 @@
-import { WizardCloseEvent } from "@goauthentik/components/ak-wizard/events.js";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+
+import { WizardCloseEvent } from "@goauthentik/components/ak-wizard/events.js";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";

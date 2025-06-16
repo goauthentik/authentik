@@ -25,20 +25,24 @@ import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+
 import { PaginatedResponse, TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Stage, StagesApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Stage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {

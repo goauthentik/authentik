@@ -1,13 +1,12 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
 
 import {
     FlowStageBinding,
@@ -19,6 +18,10 @@ import {
     StagesAllListRequest,
     StagesApi,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-binding-form")
 export class StageBindingForm extends ModelForm<FlowStageBinding, string> {

@@ -1,17 +1,16 @@
 import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
+
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CertAttributeEnum,
@@ -20,6 +19,11 @@ import {
     StagesApi,
     UserAttributeEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-stage-mtls-form")
 export class MTLSStageForm extends BaseStageForm<MutualTLSStage> {

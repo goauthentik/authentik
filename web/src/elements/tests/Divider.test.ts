@@ -1,9 +1,11 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
+
 import { $, expect } from "@wdio/globals";
 
 import { html } from "lit";
 
 import "../Divider.js";
+
 import { akDivider } from "../Divider.js";
 
 describe("ak-divider", () => {

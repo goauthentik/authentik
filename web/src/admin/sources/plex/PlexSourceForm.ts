@@ -1,5 +1,11 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
+
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
@@ -7,20 +13,13 @@ import {
     GroupMatchingModeToLabel,
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -29,6 +28,11 @@ import {
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./PlexSourceFormHelpers.js";
 

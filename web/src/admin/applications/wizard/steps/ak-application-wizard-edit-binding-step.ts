@@ -1,23 +1,30 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
+
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-toggle-group";
+
 import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
+
 import { type SearchSelectBase } from "@goauthentik/elements/forms/SearchSelect/SearchSelect.js";
+
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select-ez.js";
+
+import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
-
-import { CoreApi, Group, PoliciesApi, Policy, PolicyBinding, User } from "@goauthentik/api";
 
 const withQuery = <T>(search: string | undefined, args: T) => (search ? { ...args, search } : args);
 

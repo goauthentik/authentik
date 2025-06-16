@@ -1,20 +1,22 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import "@goauthentik/admin/common/ak-crypto-certificate-search.js";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import {
     propertyMappingsProvider,
     propertyMappingsSelector,
 } from "@goauthentik/admin/providers/rac/RACProviderFormHelpers.js";
+
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
+
+import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { FlowsInstancesListDesignationEnum, type RACProvider } from "@goauthentik/api";
 
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";
 

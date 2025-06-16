@@ -1,10 +1,11 @@
-import { type AkCryptoCertificateSearch } from "@goauthentik/admin/common/ak-crypto-certificate-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { customElement, state } from "lit/decorators.js";
+import { type AkCryptoCertificateSearch } from "@goauthentik/admin/common/ak-crypto-certificate-search";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 
 import { ProvidersApi, SAMLProvider } from "@goauthentik/api";
+
+import { customElement, state } from "lit/decorators.js";
 
 import { renderForm } from "./SAMLProviderFormForm.js";
 

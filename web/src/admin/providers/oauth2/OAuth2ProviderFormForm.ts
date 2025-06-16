@@ -1,10 +1,13 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
+import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+
 import {
     IRedirectURIInput,
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
-import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+
 import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
@@ -18,10 +21,6 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { msg } from "@lit/localize";
-import { html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-
 import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
@@ -32,6 +31,10 @@ import {
     SubModeEnum,
     ValidationError,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./OAuth2ProviderFormHelpers.js";
 import { oauth2ProvidersProvider, oauth2ProvidersSelector } from "./OAuth2ProvidersProvider.js";

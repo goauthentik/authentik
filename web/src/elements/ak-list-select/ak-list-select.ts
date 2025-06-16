@@ -7,6 +7,7 @@ import type {
     SelectOptions,
 } from "@goauthentik/elements/types.js";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
+
 import { match } from "ts-pattern";
 
 import { PropertyValueMap, css, html, nothing } from "lit";

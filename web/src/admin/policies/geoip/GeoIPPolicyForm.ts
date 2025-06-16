@@ -1,16 +1,20 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
+
 import "@goauthentik/elements/ak-dual-select";
+
 import { DataProvision, DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
+import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { DetailedCountry, GeoIPPolicy, PoliciesApi } from "@goauthentik/api";
 
 import { countryCache } from "./CountryCache";
 

@@ -12,6 +12,7 @@ yarn add -D @goauthentik/esbuild-plugin-live-reload
 
 ```js
 import { liveReloadPlugin } from "@goauthentik/esbuild-plugin-live-reload";
+
 import esbuild from "esbuild";
 
 const NodeEnvironment = process.env.NODE_ENV || "development";

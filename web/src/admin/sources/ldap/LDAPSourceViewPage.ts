@@ -1,16 +1,27 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/ldap/LDAPSourceConnectivity";
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/sync/SyncStatusCard";
+
+import {
+    LDAPSource,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+    SyncStatus,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -24,13 +35,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    LDAPSource,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SourcesApi,
-    SyncStatus,
-} from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {

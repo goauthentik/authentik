@@ -1,5 +1,7 @@
 import "@goauthentik/admin/common/ak-license-notice";
+
 import { StageBindingForm } from "@goauthentik/admin/flows/StageBindingForm";
+
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
 import "@goauthentik/admin/stages/authenticator_email/AuthenticatorEmailStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
@@ -23,14 +25,22 @@ import "@goauthentik/admin/stages/user_delete/UserDeleteStageForm";
 import "@goauthentik/admin/stages/user_login/UserLoginStageForm";
 import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
+
 import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
+
 import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+
 import { Wizard } from "@goauthentik/elements/wizard/Wizard";
+
+import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -39,8 +49,6 @@ import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-wizard")
 export class StageWizard extends AKElement {

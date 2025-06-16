@@ -1,12 +1,12 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
+import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { ContextualFlowInfo, CurrentBrand, ErrorDetail } from "@goauthentik/api";
 
 export interface SubmitOptions {
     invisible: boolean;

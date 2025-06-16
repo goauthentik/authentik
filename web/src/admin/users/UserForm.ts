@@ -1,18 +1,25 @@
 import "@goauthentik/admin/users/GroupSelectModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
+
+import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CoreApi, Group, User, UserTypeEnum } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {

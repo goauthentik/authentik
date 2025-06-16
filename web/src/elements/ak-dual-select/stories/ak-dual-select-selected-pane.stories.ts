@@ -1,11 +1,14 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-selected-pane";
+
 import { AkDualSelectSelectedPane } from "../components/ak-dual-select-selected-pane";
+
 import "./sb-host-provider";
 
 const metadata: Meta<AkDualSelectSelectedPane> = {

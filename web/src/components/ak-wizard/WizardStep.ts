@@ -1,5 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound";
+
 import { P, match } from "ts-pattern";
 
 import { consume } from "@lit/context";

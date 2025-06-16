@@ -1,5 +1,7 @@
 import { FlowExecutor } from "@goauthentik/flow/FlowExecutor";
 
+import { FlowExecutor } from "@goauthentik/flow/FlowExecutor";
+
 import { customElement } from "lit/decorators.js";
 
 @customElement("ak-storybook-interface-flow")

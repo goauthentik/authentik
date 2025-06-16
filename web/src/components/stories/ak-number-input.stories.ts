@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-number-input";
+
 import AkNumberInput from "../ak-number-input";
 
 const metadata: Meta<AkNumberInput> = {

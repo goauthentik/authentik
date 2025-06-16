@@ -2,15 +2,26 @@ import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderFor
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderGroupList";
 import "@goauthentik/admin/providers/google_workspace/GoogleWorkspaceProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/sync/SyncStatusCard";
+
+import {
+    GoogleWorkspaceProvider,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SyncStatus,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -27,13 +38,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    GoogleWorkspaceProvider,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SyncStatus,
-} from "@goauthentik/api";
 
 @customElement("ak-provider-google-workspace-view")
 export class GoogleWorkspaceProviderViewPage extends AKElement {

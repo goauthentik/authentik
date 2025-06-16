@@ -1,12 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/sync/SyncObjectForm";
-import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import {
     ProvidersApi,
@@ -14,6 +12,10 @@ import {
     SCIMProviderUser,
     SyncObjectModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-provider-scim-users-list")
 export class SCIMProviderUserList extends Table<SCIMProviderUser> {

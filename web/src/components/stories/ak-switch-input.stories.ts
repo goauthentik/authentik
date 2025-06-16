@@ -1,4 +1,5 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
@@ -8,6 +9,7 @@ import { TemplateResult, html } from "lit";
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 
 import "../ak-switch-input";
+
 import AkSwitchInput from "../ak-switch-input";
 
 const metadata: Meta<AkSwitchInput> = {

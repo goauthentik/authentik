@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html, render } from "lit";
 
 import "../ak-multi-select";
+
 import AkMultiSelect from "../ak-multi-select";
 
 const metadata: Meta<AkMultiSelect> = {

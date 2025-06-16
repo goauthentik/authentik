@@ -1,5 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
+import { Invitation, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -10,8 +13,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-invitation-list-link")
 export class InvitationListLink extends AKElement {

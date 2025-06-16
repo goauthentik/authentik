@@ -2,8 +2,14 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+
+import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -17,8 +23,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { PasswordChallenge, PasswordChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-password")
 export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChallengeResponseRequest> {

@@ -1,9 +1,10 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { customElement } from "lit/decorators.js";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 
 import { ProvidersApi, SCIMProvider } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 import { renderForm } from "./SCIMProviderFormForm.js";
 

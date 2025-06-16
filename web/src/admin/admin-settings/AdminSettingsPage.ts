@@ -1,15 +1,22 @@
 import "#admin/admin-settings/AdminSettingsForm";
-import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
+
+import { AdminSettingsForm } from "#admin/admin-settings/AdminSettingsForm";
+
 import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
+
 import { AKElement } from "#elements/Base";
+
 import "#elements/CodeMirror";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/ModalButton";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/ModalForm";
+
+import { AdminApi, Settings } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -25,8 +32,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { AdminApi, Settings } from "@goauthentik/api";
 
 @customElement("ak-admin-settings")
 export class AdminSettingsPage extends AKElement {

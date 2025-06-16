@@ -1,4 +1,5 @@
 import { EVENT_LOCALE_CHANGE, EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+
 import { AKElement } from "@goauthentik/elements/Base";
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 

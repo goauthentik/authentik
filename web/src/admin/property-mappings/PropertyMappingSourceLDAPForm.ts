@@ -1,11 +1,13 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
+
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
-
 import { LDAPSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-source-ldap-form")
 export class PropertyMappingSourceLDAPForm extends BasePropertyMappingForm<LDAPSourcePropertyMapping> {

@@ -5,6 +5,7 @@ import {
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
 import { groupBy } from "@goauthentik/common/utils";
+
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import type { GroupedOptions, SelectGroup, SelectOption } from "@goauthentik/elements/types.js";
@@ -19,6 +20,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "./ak-search-select-loading-indicator.js";
 import "./ak-search-select-view.js";
+
 import { SearchSelectView } from "./ak-search-select-view.js";
 
 type Group<T> = [string, T[]];

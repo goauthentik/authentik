@@ -1,23 +1,29 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/users/GroupSelectModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+
 import { Form } from "@goauthentik/elements/forms/Form";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { CoreApi, Group, User } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CoreApi, Group, User } from "@goauthentik/api";
 
 @customElement("ak-group-related-add")
 export class RelatedGroupAdd extends Form<{ groups: string[] }> {

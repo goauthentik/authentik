@@ -1,12 +1,15 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import { AkFlowSearch } from "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+
 import { Meta } from "@storybook/web-components";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-
-import { Flow, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
 const mockData = {
     pagination: {

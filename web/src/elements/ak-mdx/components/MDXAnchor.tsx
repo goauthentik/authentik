@@ -1,4 +1,5 @@
 import { useMDXModule } from "@goauthentik/elements/ak-mdx/MDXModuleContext";
+
 import { resolve } from "node:path";
 import React, { memo } from "react";
 

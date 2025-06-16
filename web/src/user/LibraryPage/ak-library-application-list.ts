@@ -1,5 +1,8 @@
 import { LayoutType } from "@goauthentik/common/ui/config";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
+import type { Application } from "@goauthentik/api";
 
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -9,8 +12,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import type { Application } from "@goauthentik/api";
 
 import type { AppGroupEntry, AppGroupList } from "./types.js";
 

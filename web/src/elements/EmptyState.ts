@@ -1,7 +1,11 @@
 import { PFSize } from "@goauthentik/common/enums.js";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Spinner";
+
 import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";

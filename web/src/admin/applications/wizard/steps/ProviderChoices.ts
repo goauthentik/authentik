@@ -1,8 +1,8 @@
 import "@goauthentik/admin/common/ak-license-notice";
 
-import { TemplateResult, html } from "lit";
-
 import type { TypeCreate } from "@goauthentik/api";
+
+import { TemplateResult, html } from "lit";
 
 type ProviderRenderer = () => TemplateResult;
 

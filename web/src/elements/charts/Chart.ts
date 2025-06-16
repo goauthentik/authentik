@@ -5,8 +5,11 @@ import {
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/EmptyState";
+
 import {
     Chart,
     ChartConfiguration,
@@ -22,13 +25,14 @@ import { Legend, Tooltip } from "chart.js";
 import { BarController, DoughnutController, LineController } from "chart.js";
 import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale, TimeSeriesScale } from "chart.js";
+
 import "chartjs-adapter-date-fns";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);

@@ -1,10 +1,14 @@
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceConnectivity";
 import "@goauthentik/admin/sources/kerberos/KerberosSourceForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/ak-mdx";
@@ -12,6 +16,14 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/sync/SyncStatusCard";
+
+import {
+    KerberosSource,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+    SyncStatus,
+} from "@goauthentik/api";
+
 import MDSourceKerberosBrowser from "~docs/users-sources/sources/protocols/kerberos/browser.md";
 
 import { msg } from "@lit/localize";
@@ -27,13 +39,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    KerberosSource,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SourcesApi,
-    SyncStatus,
-} from "@goauthentik/api";
 
 @customElement("ak-source-kerberos-view")
 export class KerberosSourceViewPage extends AKElement {

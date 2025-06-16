@@ -1,5 +1,7 @@
 import { PFSize } from "@goauthentik/common/enums.js";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import { P, match } from "ts-pattern";
 
 import { msg } from "@lit/localize";

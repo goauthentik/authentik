@@ -4,6 +4,7 @@
  * @runtime node
  */
 import { MonoRepoRoot } from "#paths/node";
+
 import { execSync } from "node:child_process";
 
 import PackageJSON from "../../../../package.json" with { type: "json" };

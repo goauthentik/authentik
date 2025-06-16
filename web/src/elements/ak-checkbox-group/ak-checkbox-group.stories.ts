@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "./ak-checkbox-group";
+
 import { CheckboxGroup as AkCheckboxGroup } from "./ak-checkbox-group";
 
 const metadata: Meta<AkCheckboxGroup> = {

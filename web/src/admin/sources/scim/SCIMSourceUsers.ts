@@ -1,11 +1,12 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
+
+import { SCIMSourceUser, SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { SCIMSourceUser, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-scim-users-list")
 export class SCIMSourceUserList extends Table<SCIMSourceUser> {

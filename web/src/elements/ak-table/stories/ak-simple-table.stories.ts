@@ -5,7 +5,9 @@ import { LitElement, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import { TableSortEvent } from "../TableColumn.js";
+
 import "../ak-simple-table.js";
+
 import { SimpleTable } from "../ak-simple-table.js";
 import { KeyBy } from "../types";
 import type { TableRow } from "../types";

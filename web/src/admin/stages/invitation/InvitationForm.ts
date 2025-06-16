@@ -1,18 +1,25 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal } from "@goauthentik/common/temporal";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/SearchSelect";
+
+import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {

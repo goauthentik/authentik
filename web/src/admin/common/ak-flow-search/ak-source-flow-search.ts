@@ -1,7 +1,7 @@
+import type { Flow } from "@goauthentik/api";
+
 import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
-
-import type { Flow } from "@goauthentik/api";
 
 import FlowSearch from "./FlowSearch";
 

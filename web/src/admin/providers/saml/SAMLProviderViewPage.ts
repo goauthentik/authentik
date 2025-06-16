@@ -1,20 +1,40 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
+
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+
+import {
+    CertificateKeyPair,
+    CoreApi,
+    CoreUsersListRequest,
+    CryptoApi,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLProvider,
+    User,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -32,18 +52,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    CertificateKeyPair,
-    CoreApi,
-    CoreUsersListRequest,
-    CryptoApi,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SAMLMetadata,
-    SAMLProvider,
-    User,
-} from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
     attributes: {

@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-toggle-group";
+
 import AkToggleGroup from "../ak-toggle-group";
 
 const metadata: Meta<AkToggleGroup> = {

@@ -4,6 +4,7 @@ import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { EmptyState, type IEmptyState } from "../EmptyState.js";
+
 import "../EmptyState.js";
 
 const metadata: Meta<EmptyState> = {

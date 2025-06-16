@@ -3,6 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
 import { render } from "@goauthentik/elements/tests/utils.js";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+
 import { $, browser, expect } from "@wdio/globals";
 import { slug } from "github-slugger";
 
@@ -11,6 +12,7 @@ import { customElement } from "lit/decorators.js";
 import { property, query } from "lit/decorators.js";
 
 import "../ak-search-select.js";
+
 import { SearchSelect } from "../ak-search-select.js";
 import { type ViewSample, sampleData } from "../stories/sampleData.js";
 import { AkSearchSelectViewDriver } from "./ak-search-select-view.comp.js";

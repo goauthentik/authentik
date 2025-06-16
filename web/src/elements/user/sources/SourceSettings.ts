@@ -1,19 +1,22 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
+import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
+
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/user/sources/SourceSettingsOAuth";
 import "@goauthentik/elements/user/sources/SourceSettingsPlex";
 import "@goauthentik/elements/user/sources/SourceSettingsSAML";
+
+import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDataList from "@patternfly/patternfly/components/DataList/data-list.css";
-
-import { PaginatedUserSourceConnectionList, SourcesApi, UserSetting } from "@goauthentik/api";
 
 @customElement("ak-user-settings-source")
 export class UserSourceSettingsPage extends AKElement {

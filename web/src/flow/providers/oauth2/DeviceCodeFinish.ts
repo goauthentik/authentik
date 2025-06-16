@@ -1,12 +1,15 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { OAuthDeviceCodeFinishChallenge } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { OAuthDeviceCodeFinishChallenge } from "@goauthentik/api";
 
 @customElement("ak-flow-provider-oauth2-code-finish")
 export class DeviceCodeFinish extends BaseStage<

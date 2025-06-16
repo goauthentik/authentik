@@ -4,6 +4,7 @@ import { LitElement, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { type ILoadingOverlay, LoadingOverlay } from "../LoadingOverlay.js";
+
 import "../LoadingOverlay.js";
 
 const metadata: Meta<LoadingOverlay> = {

@@ -1,11 +1,14 @@
 import { EVENT_MESSAGE } from "@goauthentik/common/constants";
+
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 import { slug } from "github-slugger";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-list-select.js";
+
 import { ListSelect } from "../ak-list-select.js";
 import { groupedSampleData, sampleData } from "./sampleData.js";
 

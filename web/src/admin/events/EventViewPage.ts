@@ -1,11 +1,16 @@
-import { EventGeo, EventUser } from "#admin/events/utils";
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EventWithContext } from "#common/events";
 import { actionToLabel } from "#common/labels";
 import { formatElapsedTime } from "#common/temporal";
+
+import { EventGeo, EventUser } from "#admin/events/utils";
+
 import "#components/ak-event-info";
 import "#components/ak-page-header";
+
 import { AKElement } from "#elements/Base";
+
+import { EventToJSON, EventsApi } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -17,8 +22,6 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { EventToJSON, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-event-view")
 export class EventViewPage extends AKElement {
