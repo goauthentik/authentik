@@ -53,7 +53,7 @@
 
 [[redirects]]
   from = "/integrations*"
-  to = "http://integrations.goauthentik.io:splat"
+  to = "https://integrations.goauthentik.io:splat"
   status = 302
 
 # Split Property Mappings docs between Providers and Sources
