@@ -9,6 +9,7 @@
         "build:api": "docusaurus gen-api-docs all",
         "build:docker": "cp ../docker-compose.yml ./static/docker-compose.yml",
         "build:docusaurus": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build",
+        "build:integrations": "cross-env NODE_OPTIONS='--max_old_space_size=65536' docusaurus build --config integrations/docusaurus.config.cjs",
         "build:schema": "cp -f ../schema.yml ./static/schema.yml",
         "deploy": "docusaurus deploy",
         "docusaurus": "docusaurus",

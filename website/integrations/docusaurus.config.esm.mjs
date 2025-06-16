@@ -2,7 +2,6 @@
  * @file Docusaurus config.
  *
  * @import * as Preset from "@docusaurus/preset-classic";
- * @import * as OpenApiPlugin from "docusaurus-plugin-openapi-docs";
  * @import { BuildUrlValues } from "remark-github";
  */
 import { createDocusaurusConfig } from "@goauthentik/docusaurus-config";
@@ -10,10 +9,10 @@ import { createRequire } from "node:module";
 import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
-import remarkEnterpriseDirective from "./remark/enterprise-directive.mjs";
-import remarkPreviewDirective from "./remark/preview-directive.mjs";
-import remarkSupportDirective from "./remark/support-directive.mjs";
-import remarkVersionDirective from "./remark/version-directive.mjs";
+import remarkEnterpriseDirective from "../remark/enterprise-directive.mjs";
+import remarkPreviewDirective from "../remark/preview-directive.mjs";
+import remarkSupportDirective from "../remark/support-directive.mjs";
+import remarkVersionDirective from "../remark/version-directive.mjs";
 
 const require = createRequire(import.meta.url);
 
@@ -21,11 +20,11 @@ const require = createRequire(import.meta.url);
  * Documentation site configuration for Docusaurus.
  */
 const config = createDocusaurusConfig({
-    url: "https://docs.goauthentik.io",
+    url: "https://integrations.goauthentik.io",
     future: {
         experimental_faster: true,
     },
-    themes: ["@docusaurus/theme-mermaid", "docusaurus-theme-openapi-docs"],
+    themes: ["@docusaurus/theme-mermaid"],
     themeConfig: {
         image: "img/social.png",
         navbar: {
@@ -43,15 +42,15 @@ const config = createDocusaurusConfig({
                     target: "_self",
                 },
                 {
-                    to: "https://integrations.goauthentik.io",
+                    to: "integrations/",
                     label: "Integrations",
                     position: "left",
-                    target: "_self",
                 },
                 {
-                    to: "docs/",
+                    to: "https://docs.goauthentik.io",
                     label: "Documentation",
                     position: "left",
+                    target: "_self",
                 },
                 {
                     to: "https://goauthentik.io/pricing/",
@@ -95,11 +94,12 @@ const config = createDocusaurusConfig({
             "@docusaurus/preset-classic",
             /** @type {Preset.Options} */ ({
                 docs: {
-                    id: "docs",
-                    sidebarPath: "./sidebars/docs.mjs",
-                    showLastUpdateTime: false,
+                    id: "docsIntegrations",
+                    path: "integrations",
+                    routeBasePath: "integrations",
+                    sidebarPath: "./sidebars/integrations.mjs",
                     editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
-                    docItemComponent: "@theme/ApiItem",
+                    showLastUpdateTime: false,
 
                     beforeDefaultRemarkPlugins: [
                         remarkDirective,
@@ -130,35 +130,6 @@ const config = createDocusaurusConfig({
                     customCss: require.resolve("@goauthentik/docusaurus-config/css/index.css"),
                 },
             }),
-        ],
-    ],
-    plugins: [
-        [
-            "@docusaurus/plugin-content-docs",
-            {
-                id: "docsIntegrations",
-                path: "integrations",
-                routeBasePath: "integrations",
-                sidebarPath: "./sidebars/integrations.mjs",
-                editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
-            },
-        ],
-        [
-            "docusaurus-plugin-openapi-docs",
-            {
-                id: "api",
-                docsPluginId: "docs",
-                config: /** @type {OpenApiPlugin.Options} */ ({
-                    authentik: {
-                        specPath: "static/schema.yml",
-                        outputDir: "docs/developer-docs/api/reference/",
-                        hideSendButton: true,
-                        sidebarOptions: {
-                            groupPathsBy: "tag",
-                        },
-                    },
-                }),
-            },
         ],
     ],
 });
