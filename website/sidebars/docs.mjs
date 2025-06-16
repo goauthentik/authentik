@@ -422,7 +422,7 @@ const items = [
                         label: "User and Admin",
                         link: {
                             type: "doc",
-                            id: "customize/interfaces/user/customization",
+                            id: "customize/interfaces/user-admin/customization",
                         },
                         items: [],
                     },
