@@ -9,6 +9,7 @@ import pytest
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
@@ -39,6 +40,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.logger = get_logger().bind(runner="pytest")
 
         self.args = []
         if self.failfast:
