@@ -64,6 +64,7 @@ SHARED_APPS = [
     "pgactivity",
     "pglock",
     "channels",
+    "django_dramatiq_postgres",
     "authentik.tasks",
 ]
 TENANT_APPS = [
@@ -361,7 +362,8 @@ DRAMATIQ = {
             "dramatiq.middleware.time_limit.TimeLimit",
             {
                 # 5 minutes task timeout by default for all tasks
-                "time_limit": 600 * 1000,
+                "time_limit": 600
+                * 1000,
             },
         ),
         ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
@@ -371,7 +373,8 @@ DRAMATIQ = {
         # TODO: results
         ("authentik.tasks.middleware.FullyQualifiedActorName", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
-    )
+    ),
+    "task_class": "authentik.tasks.models.Task",
 }
 
 

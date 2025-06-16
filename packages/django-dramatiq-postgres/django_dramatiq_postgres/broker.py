@@ -6,8 +6,6 @@ from queue import Empty, Queue
 from random import randint
 from typing import Any
 
-from django.utils.functional import cached_property
-from django.utils.module_loading import import_string
 import tenacity
 from django.db import (
     DEFAULT_DB_ALIAS,
@@ -19,6 +17,8 @@ from django.db import (
 from django.db.backends.postgresql.base import DatabaseWrapper
 from django.db.models import QuerySet
 from django.utils import timezone
+from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 from dramatiq.broker import Broker, Consumer, MessageProxy
 from dramatiq.common import compute_backoff, current_millis, dq_name, xq_name
 from dramatiq.errors import ConnectionError, QueueJoinTimeout
@@ -40,7 +40,7 @@ from structlog.stdlib import get_logger
 
 from django_dramatiq_postgres.conf import Conf
 from django_dramatiq_postgres.middleware import DbConnectionMiddleware
-from django_dramatiq_postgres.models import Task, ChannelIdentifier, TaskState, CHANNEL_PREFIX
+from django_dramatiq_postgres.models import CHANNEL_PREFIX, ChannelIdentifier, TaskBase, TaskState
 
 LOGGER = get_logger()
 
@@ -99,7 +99,7 @@ class PostgresBroker(Broker):
         return _PostgresConsumer
 
     @cached_property
-    def model(self) -> type[Task]:
+    def model(self) -> type[TaskBase]:
         return import_string(Conf.task_class)
 
     @property

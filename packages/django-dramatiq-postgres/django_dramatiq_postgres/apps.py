@@ -32,7 +32,7 @@ class DjangoDramatiqPostgres(AppConfig):
             **broker_kwargs,
         )
 
-        for middleware_class, middleware_kwargs in Conf.middlewares.items():
+        for middleware_class, middleware_kwargs in Conf.middlewares:
             middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
                 **middleware_kwargs,
             )

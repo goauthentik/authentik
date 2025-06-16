@@ -25,7 +25,7 @@ class TaskState(models.TextChoices):
     DONE = "done"
 
 
-class Task(models.Model):
+class TaskBase(models.Model):
     message_id = models.UUIDField(primary_key=True, default=uuid4)
     queue_name = models.TextField(default="default", help_text=_("Queue name"))
 
