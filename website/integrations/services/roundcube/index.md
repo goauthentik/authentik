@@ -59,7 +59,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
     - Set a `Strict` redirect URI to `https://roundcube.company/index.php?\_task=settings&\_action=plugin.oauth_redirect`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scope you just created to the list of selected scopes.
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

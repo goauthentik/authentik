@@ -42,7 +42,7 @@ To support the integration of Veeam Enterprise Manage with authentik, you need t
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - todo: saml metadata
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 

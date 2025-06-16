@@ -88,7 +88,7 @@ To support the integration of AWS with authentik using the classic IAM method, y
     - Set the **ACS URL** to `https://signin.aws.amazon.com/saml`
     - Set the **Audience** to `urn:amazon:webservices`
     - Under **Advanced protocol settings**, add both property mappings you created in the previous section
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 4. Download the **Metadata file** from the provider's page.
@@ -129,7 +129,7 @@ To support the integration of AWS with authentik using IAM Identity Center, you 
     - Upload the metadata file from AWS (obtained in AWS Configuration steps)
     - Copy the **Issuer URL** to the **Audience** field
     - Under **Advanced Protocol Settings**, set your **Signing Certificate**
-- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 4. Under **Related Objects**, download both:

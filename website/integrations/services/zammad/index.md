@@ -39,7 +39,7 @@ To support the integration of Zammad with authentik, you need to create an appli
     - Set the **Audience** to `https://zammad.company/auth/saml/metadata`.
     - Set the **Service Provider Bi`** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
-- **Configure Bindings** _`onal)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _`onal)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
