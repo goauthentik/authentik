@@ -5,6 +5,7 @@ import {
     akOAuthRedirectURIInput,
 } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderRedirectURI";
 import { ascii_letters, digits, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-hidden-text-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -166,17 +167,16 @@ export function renderForm(
                     input-hint="code"
                 >
                 </ak-text-input>
-                <ak-text-input
+                <ak-hidden-text-input
                     name="clientSecret"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
                     input-hint="code"
                     ?hidden=${!showClientSecret}
                 >
-                </ak-text-input>
+                </ak-hidden-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Redirect URIs/Origins (RegEx)")}
-                    required
                     name="redirectUris"
                 >
                     <ak-array-input
