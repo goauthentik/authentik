@@ -410,7 +410,7 @@ const items = [
                 items: [
                     {
                         type: "category",
-                        label: "Flow",
+                        label: "Flows",
                         link: {
                             type: "doc",
                             id: "customize/interfaces/flow/customization",
@@ -419,19 +419,10 @@ const items = [
                     },
                     {
                         type: "category",
-                        label: "User",
+                        label: "User and Admin",
                         link: {
                             type: "doc",
                             id: "customize/interfaces/user/customization",
-                        },
-                        items: [],
-                    },
-                    {
-                        type: "category",
-                        label: "Admin",
-                        link: {
-                            type: "doc",
-                            id: "customize/interfaces/admin/customization",
                         },
                         items: [],
                     },

@@ -1,14 +1,21 @@
-# Customizate the flow
+---
+title: Customize a flow
+---
 
-Because flows can be executed authenticated or unauthenticated, the default settings for all flows can be set via brands _attributes_.
+Typically, settings for flows are defined as defaults in the Brand settings](../../../sys-mgmt/brands.md). Be aware that some flows are executed before the specific user is authenticated (for example, the `default-authentication-flow`!) thus before authentik knows which user is seeing the flow, so using default settings for all flows provides a more consistent experience.
 
-You can define a background image [for one or more specific flows](../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options), overriding the default background image for all flows that is set in the instance's [brand](../../../sys-mgmt/brands.md).
+Two settings that you can configure per flow are the _background image_ for the flow, and the _layout_.
 
-[Flow configuration options](../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
+## Customize a flow's background image
 
-### `settings.theme.base`
+You can define a background image for:
 
-Configure the base color scheme. Defaults to `automatic`, which switches between dark and light mode based on the users' browsers' preference. Choices: `automatic`, `dark`, `light`.
+- all flows, as the default, set in the instance's [brand](../../../sys-mgmt/brands.md)
+- [one or more specific flows](../../../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options) (overrides the default)
+
+## Set the layout for a flow
+
+To define the layout for a flow, edit the flow and under **Appearance settings > Layout** select how the UI displays the flow when it is executed; with stacked elements, content left or right, and sidebar left or right.
 
 import Global from "../_global/global.mdx";
 

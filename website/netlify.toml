@@ -72,6 +72,17 @@
   to = "/docs/customize/branding"
   status = 302
 
+[[redirects]]
+  from = "/docs/customize/interfaces/admin/customization"
+  to = "/docs/customize/interfaces/user-admin/customization"
+  status = 302
+
+  [[redirects]]
+  from = "/docs/customize/interfaces/user/customization"
+  to = "/docs/customize/interfaces/user-admin/customization"
+  status = 302
+
+#
 
 # Migration to new structure with script Sept 2025
 [[redirects]]
