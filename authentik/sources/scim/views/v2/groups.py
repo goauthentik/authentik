@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.db.models import Q
 from django.db.transaction import atomic
-from django.http import Http404, QueryDict
+from django.http import QueryDict
 from django.urls import reverse
 from pydantic import ValidationError as PydanticValidationError
 from pydanticscim.group import GroupMember
@@ -17,6 +17,7 @@ from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMObjectView
+from authentik.sources.scim.views.v2.exceptions import SCIMConflictError, SCIMNotFoundError
 
 
 class GroupsView(SCIMObjectView):
@@ -58,7 +59,7 @@ class GroupsView(SCIMObjectView):
         if group_id:
             connection = base_query.filter(source=self.source, group__group_uuid=group_id).first()
             if not connection:
-                raise Http404
+                raise SCIMNotFoundError("Group not found.")
             return Response(self.group_to_scim(connection))
         connections = (
             base_query.filter(source=self.source).order_by("pk").filter(self.filter_parse(request))
@@ -119,7 +120,7 @@ class GroupsView(SCIMObjectView):
         ).first()
         if connection:
             self.logger.debug("Found existing group")
-            return Response(status=409)
+            raise SCIMConflictError("Group with ID exists already.")
         connection = self.update_group(None, request.data)
         return Response(self.group_to_scim(connection), status=201)
 
@@ -129,7 +130,7 @@ class GroupsView(SCIMObjectView):
             source=self.source, group__group_uuid=group_id
         ).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("Group not found.")
         connection = self.update_group(connection, request.data)
         return Response(self.group_to_scim(connection), status=200)
 
@@ -140,7 +141,7 @@ class GroupsView(SCIMObjectView):
             source=self.source, group__group_uuid=group_id
         ).first()
         if not connection:
-            raise Http404
+            raise SCIMNotFoundError("Group not found.")
         connection.group.delete()
         connection.delete()
         return Response(status=204)

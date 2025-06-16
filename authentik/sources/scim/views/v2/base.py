@@ -1,13 +1,11 @@
 """SCIM Utils"""
 
 from typing import Any
-from urllib.parse import urlparse
 
 from django.conf import settings
 from django.core.paginator import Page, Paginator
 from django.db.models import Q, QuerySet
 from django.http import HttpRequest
-from django.urls import resolve
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -55,28 +53,6 @@ class SCIMView(APIView):
 
     def get_authenticators(self):
         return [SCIMTokenAuth(self)]
-
-    def patch_resolve_value(self, raw_value: dict) -> User | Group | None:
-        """Attempt to resolve a raw `value` attribute of a patch operation into
-        a database model"""
-        model = User
-        query = {}
-        if "$ref" in raw_value:
-            url = urlparse(raw_value["$ref"])
-            if match := resolve(url.path):
-                if match.url_name == "v2-users":
-                    model = User
-                    query = {"pk": int(match.kwargs["user_id"])}
-        elif "type" in raw_value:
-            match raw_value["type"]:
-                case "User":
-                    model = User
-                    query = {"pk": int(raw_value["value"])}
-                case "Group":
-                    model = Group
-        else:
-            return None
-        return model.objects.filter(**query).first()
 
     def filter_parse(self, request: Request):
         """Parse the path of a Patch Operation"""
