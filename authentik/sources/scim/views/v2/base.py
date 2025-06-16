@@ -46,7 +46,7 @@ class SCIMView(APIView):
     logger: BoundLogger
 
     permission_classes = [IsAuthenticated]
-    parser_classes = [SCIMParser]
+    parser_classes = [SCIMParser, JSONParser]
     renderer_classes = [SCIMRenderer]
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
