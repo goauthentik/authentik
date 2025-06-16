@@ -3,18 +3,36 @@
 import os
 from argparse import ArgumentParser
 from unittest import TestCase
+from unittest.mock import patch
 
 import pytest
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.test.runner import DiscoverRunner
+from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from authentik.root.signals import post_startup, pre_startup, startup
-from tests.e2e.utils import get_docker_tag
 
 # globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
+
+
+def get_docker_tag() -> str:
+    """Get docker-tag based off of CI variables"""
+    env_pr_branch = "GITHUB_HEAD_REF"
+    default_branch = "GITHUB_REF"
+    branch_name = os.environ.get(default_branch, "main")
+    if os.environ.get(env_pr_branch, "") != "":
+        branch_name = os.environ[env_pr_branch]
+    branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
+    return f"gh-{branch_name}"
+
+
+def patched__get_ct_cached(app_label, codename):
+    """Caches `ContentType` instances like its `QuerySet` does."""
+    return ContentType.objects.get(app_label=app_label, permission__codename=codename)
 
 
 class PytestTestRunner(DiscoverRunner):  # pragma: no cover
@@ -22,6 +40,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.logger = get_logger().bind(runner="pytest")
 
         self.args = []
         if self.failfast:
@@ -113,4 +132,10 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                     f"path instead."
                 )
 
-        return pytest.main(self.args)
+        self.logger.info("Running tests", test_files=self.args)
+        with patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached):
+            try:
+                return pytest.main(self.args)
+            except Exception as e:
+                self.logger.error("Error running tests", error=str(e), test_files=self.args)
+                return 1
