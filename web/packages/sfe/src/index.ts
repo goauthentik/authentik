@@ -1,6 +1,7 @@
 import "formdata-polyfill";
 import $ from "jquery";
 import "weakmap-polyfill";
+import "webauthn-polyfills";
 
 import {
     type AuthenticatorValidationChallenge,

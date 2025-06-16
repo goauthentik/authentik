@@ -136,6 +136,7 @@
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.7.1",
         "unist-util-visit": "^5.0.0",
+        "webauthn-polyfills": "^0.1.7",
         "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.8.0"
     },
