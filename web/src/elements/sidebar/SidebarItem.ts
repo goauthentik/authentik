@@ -80,10 +80,10 @@ export class SidebarItem extends AKElement {
     isActive = false;
 
     @property({ type: Boolean })
-    isAbsoluteLink = false;
+    isAbsoluteLink?: boolean;
 
     @property({ type: Boolean })
-    highlight = false;
+    highlight?: boolean;
 
     parent?: SidebarItem;
 

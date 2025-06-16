@@ -37,7 +37,7 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                 <ak-form-element-horizontal
                     name="authorizationFlow"
                     label=${msg("Authorization flow")}
-                    required
+                    ?required=${true}
                 >
                     <ak-flow-search
                         flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -57,10 +57,10 @@ export class ApplicationWizardRACProviderForm extends ApplicationWizardProviderF
                     help=${msg(
                         "Determines how long a session lasts before being disconnected and requiring re-authorization.",
                     )}
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-text-input>
 
-                <ak-form-group expanded>
+                <ak-form-group .expanded=${true}>
                     <span slot="header"> ${msg("Protocol settings")} </span>
                     <div slot="body" class="pf-c-form">
                         <ak-form-element-horizontal

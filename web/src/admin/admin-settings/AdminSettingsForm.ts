@@ -72,7 +72,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
                 name="avatars"
                 label=${msg("Avatars")}
                 value="${ifDefined(this._settings?.avatars)}"
-                input-hint="code"
+                inputHint="code"
                 .bighelp=${html`
                     <p class="pf-c-form__helper-text">
                         ${msg(
@@ -159,7 +159,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="eventRetention"
                 label=${msg("Event retention")}
-                input-hint="code"
+                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.eventRetention)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -237,7 +237,7 @@ export class AdminSettingsForm extends Form<SettingsRequest> {
             <ak-text-input
                 name="defaultTokenDuration"
                 label=${msg("Default token duration")}
-                input-hint="code"
+                inputHint="code"
                 required
                 value="${ifDefined(this._settings?.defaultTokenDuration)}"
                 .bighelp=${html`<p class="pf-c-form__helper-text">

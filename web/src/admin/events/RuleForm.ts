@@ -58,7 +58,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -88,7 +88,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     .selected=${(group: Group): boolean => {
                         return group.pk === this.instance?.group;
                     }}
-                    blankable
+                    ?blankable=${true}
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
@@ -97,7 +97,11 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Transports")} required name="transports">
+            <ak-form-element-horizontal
+                label=${msg("Transports")}
+                ?required=${true}
+                name="transports"
+            >
                 <ak-dual-select-dynamic-selected
                     .provider=${eventTransportsProvider}
                     .selector=${eventTransportsSelector(this.instance?.transports)}
@@ -110,7 +114,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Severity")} required name="severity">
+            <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">
                 <ak-radio
                     .options=${[
                         {

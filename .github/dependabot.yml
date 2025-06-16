@@ -100,13 +100,6 @@ updates:
       goauthentik:
         patterns:
           - "@goauthentik/*"
-      eslint:
-        patterns:
-          - "@eslint/*"
-          - "@typescript-eslint/*"
-          - "eslint-*"
-          - "eslint"
-          - "typescript-eslint"
   - package-ecosystem: npm
     directory: "/lifecycle/aws"
     schedule:

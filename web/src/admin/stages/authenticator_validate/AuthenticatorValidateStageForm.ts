@@ -87,7 +87,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} required name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -95,12 +95,12 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Device classes")}
-                        required
+                        ?required=${true}
                         name="deviceClasses"
                     >
                         <ak-checkbox-group
@@ -119,7 +119,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Last validation threshold")}
-                        required
+                        ?required=${true}
                         name="lastAuthThreshold"
                     >
                         <input
@@ -139,7 +139,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Not configured action")}
-                        required
+                        ?required=${true}
                         name="notConfiguredAction"
                     >
                         <select
@@ -208,12 +208,12 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                         : html``}
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("WebAuthn-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("WebAuthn User verification")}
-                        required
+                        ?required=${true}
                         name="webauthnUserVerification"
                     >
                         <ak-radio
@@ -255,7 +255,7 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                                 "Optionally restrict which WebAuthn device types may be used. When no device types are selected, all devices are allowed.",
                             )}
                         </p>
-                        <ak-alert inline>
+                        <ak-alert ?inline=${true}>
                             ${
                                 /* TODO: Remove this after 2024.6..or maybe later? */
                                 msg(

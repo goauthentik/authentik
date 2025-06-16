@@ -133,7 +133,7 @@ export function renderForm(
         <ak-form-element-horizontal
             name="authorizationFlow"
             label=${msg("Authorization flow")}
-            required
+            ?required=${true}
         >
             <ak-flow-search
                 flowType=${FlowsInstancesListDesignationEnum.Authorization}
@@ -163,14 +163,14 @@ export function renderForm(
                     label=${msg("Client ID")}
                     value="${provider?.clientId ?? randomString(40, ascii_letters + digits)}"
                     required
-                    input-hint="code"
+                    inputHint="code"
                 >
                 </ak-text-input>
                 <ak-text-input
                     name="clientSecret"
                     label=${msg("Client Secret")}
                     value="${provider?.clientSecret ?? randomString(128, ascii_letters + digits)}"
-                    input-hint="code"
+                    inputHint="code"
                     ?hidden=${!showClientSecret}
                 >
                 </ak-text-input>
@@ -252,7 +252,7 @@ export function renderForm(
                 <ak-text-input
                     name="accessCodeValidity"
                     label=${msg("Access code validity")}
-                    input-hint="code"
+                    inputHint="code"
                     required
                     value="${provider?.accessCodeValidity ?? "minutes=1"}"
                     .bighelp=${html`<p class="pf-c-form__helper-text">
@@ -265,7 +265,7 @@ export function renderForm(
                     name="accessTokenValidity"
                     label=${msg("Access Token validity")}
                     value="${provider?.accessTokenValidity ?? "minutes=5"}"
-                    input-hint="code"
+                    inputHint="code"
                     required
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long access tokens are valid for.")}
@@ -278,8 +278,8 @@ export function renderForm(
                     name="refreshTokenValidity"
                     label=${msg("Refresh Token validity")}
                     value="${provider?.refreshTokenValidity ?? "days=30"}"
-                    input-hint="code"
-                    required
+                    inputHint="code"
+                    ?required=${true}
                     .bighelp=${html` <p class="pf-c-form__helper-text">
                             ${msg("Configure how long refresh tokens are valid for.")}
                         </p>

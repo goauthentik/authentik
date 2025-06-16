@@ -13,7 +13,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/avast/retry-go/v4"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
 	"github.com/gorilla/websocket"
@@ -25,6 +24,8 @@ import (
 	cryptobackend "goauthentik.io/internal/crypto/backend"
 	"goauthentik.io/internal/utils/web"
 )
+
+type WSHandler func(ctx context.Context, args map[string]interface{})
 
 const ConfigLogLevel = "log_level"
 
@@ -42,11 +43,12 @@ type APIController struct {
 
 	reloadOffset time.Duration
 
-	eventConn        *websocket.Conn
-	lastWsReconnect  time.Time
-	wsIsReconnecting bool
-	eventHandlers    []EventHandler
-	refreshHandlers  []func()
+	wsConn              *websocket.Conn
+	lastWsReconnect     time.Time
+	wsIsReconnecting    bool
+	wsBackoffMultiplier int
+	wsHandlers          []WSHandler
+	refreshHandlers     []func()
 
 	instanceUUID uuid.UUID
 }
@@ -81,19 +83,20 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
-	outposts, _ := retry.DoWithData[*api.PaginatedOutpostList](
-		func() (*api.PaginatedOutpostList, error) {
-			outposts, _, err := apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
-			return outposts, err
-		},
-		retry.Attempts(0),
-		retry.Delay(time.Second*3),
-		retry.OnRetry(func(attempt uint, err error) {
-			log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
-		}),
-	)
+	var outposts *api.PaginatedOutpostList
+	var err error
+	for {
+		outposts, _, err = apiClient.OutpostsApi.OutpostsInstancesList(context.Background()).Execute()
+
+		if err == nil {
+			break
+		}
+
+		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
+		time.Sleep(time.Second * 3)
+	}
 	if len(outposts.Results) < 1 {
-		log.Panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
+		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
 	}
 	outpost := outposts.Results[0]
 
@@ -116,23 +119,20 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		token:  token,
 		logger: log,
 
-		reloadOffset:    time.Duration(rand.Intn(10)) * time.Second,
-		instanceUUID:    uuid.New(),
-		Outpost:         outpost,
-		eventHandlers:   []EventHandler{},
-		refreshHandlers: make([]func(), 0),
+		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
+		instanceUUID:        uuid.New(),
+		Outpost:             outpost,
+		wsHandlers:          []WSHandler{},
+		wsBackoffMultiplier: 1,
+		refreshHandlers:     make([]func(), 0),
 	}
 	ac.logger.WithField("offset", ac.reloadOffset.String()).Debug("HA Reload offset")
-	err = ac.initEvent(akURL, outpost.Pk)
+	err = ac.initWS(akURL, outpost.Pk)
 	if err != nil {
-		go ac.recentEvents()
+		go ac.reconnectWS()
 	}
 	ac.configureRefreshSignal()
 	return ac
-}
-
-func (a *APIController) Log() *log.Entry {
-	return a.logger
 }
 
 // Start Starts all handlers, non-blocking
@@ -196,7 +196,7 @@ func (a *APIController) OnRefresh() error {
 	return err
 }
 
-func (a *APIController) getEventPingArgs() map[string]interface{} {
+func (a *APIController) getWebsocketPingArgs() map[string]interface{} {
 	args := map[string]interface{}{
 		"version":        constants.VERSION,
 		"buildHash":      constants.BUILD(""),
@@ -222,12 +222,12 @@ func (a *APIController) StartBackgroundTasks() error {
 		"build":        constants.BUILD(""),
 	}).Set(1)
 	go func() {
-		a.logger.Debug("Starting Event Handler...")
-		a.startEventHandler()
+		a.logger.Debug("Starting WS Handler...")
+		a.startWSHandler()
 	}()
 	go func() {
-		a.logger.Debug("Starting Event health notifier...")
-		a.startEventHealth()
+		a.logger.Debug("Starting WS Health notifier...")
+		a.startWSHealth()
 	}()
 	go func() {
 		a.logger.Debug("Starting Interval updater...")

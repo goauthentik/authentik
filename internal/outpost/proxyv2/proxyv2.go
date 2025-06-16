@@ -35,7 +35,7 @@ type ProxyServer struct {
 	akAPI       *ak.APIController
 }
 
-func NewProxyServer(ac *ak.APIController) ak.Outpost {
+func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	l := log.WithField("logger", "authentik.outpost.proxyv2")
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
@@ -66,7 +66,7 @@ func NewProxyServer(ac *ak.APIController) ak.Outpost {
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
-	ac.AddEventHandler(s.handleWSMessage)
+	ac.AddWSHandler(s.handleWSMessage)
 	return s
 }
 

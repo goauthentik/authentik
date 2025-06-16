@@ -33,8 +33,6 @@ type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
 export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
 
-const doNotProcess = <T extends HTMLElement>(element: T) => element.dataset.formIgnore === "true";
-
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
  */
@@ -76,7 +74,7 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         const inputElement = element.querySelector<AkControlElement>("[name]");
-        if (element.hidden || !inputElement || doNotProcess(inputElement)) {
+        if (element.hidden || !inputElement || (element.writeOnly && !element.writeOnlyActivated)) {
             return;
         }
 

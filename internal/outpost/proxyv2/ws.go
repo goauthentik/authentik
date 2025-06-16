@@ -3,27 +3,48 @@ package proxyv2
 import (
 	"context"
 
-	"goauthentik.io/internal/outpost/ak"
+	"github.com/mitchellh/mapstructure"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 )
 
-func (ps *ProxyServer) handleWSMessage(ctx context.Context, msg ak.Event) error {
-	if msg.Instruction != ak.EventKindSessionEnd {
-		return nil
-	}
-	mmsg := ak.EventArgsSessionEnd{}
-	err := msg.ArgsAs(&mmsg)
+type WSProviderSubType string
+
+const (
+	WSProviderSubTypeLogout WSProviderSubType = "logout"
+)
+
+type WSProviderMsg struct {
+	SubType   WSProviderSubType `mapstructure:"sub_type"`
+	SessionID string            `mapstructure:"session_id"`
+}
+
+func ParseWSProvider(args map[string]interface{}) (*WSProviderMsg, error) {
+	msg := &WSProviderMsg{}
+	err := mapstructure.Decode(args, &msg)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	for _, p := range ps.apps {
-		ps.log.WithField("provider", p.Host).Debug("Logging out")
-		err := p.Logout(ctx, func(c application.Claims) bool {
-			return c.Sid == mmsg.SessionID
-		})
-		if err != nil {
-			ps.log.WithField("provider", p.Host).WithError(err).Warning("failed to logout")
+	return msg, nil
+}
+
+func (ps *ProxyServer) handleWSMessage(ctx context.Context, args map[string]interface{}) {
+	msg, err := ParseWSProvider(args)
+	if err != nil {
+		ps.log.WithError(err).Warning("invalid provider-specific ws message")
+		return
+	}
+	switch msg.SubType {
+	case WSProviderSubTypeLogout:
+		for _, p := range ps.apps {
+			ps.log.WithField("provider", p.Host).Debug("Logging out")
+			err := p.Logout(ctx, func(c application.Claims) bool {
+				return c.Sid == msg.SessionID
+			})
+			if err != nil {
+				ps.log.WithField("provider", p.Host).WithError(err).Warning("failed to logout")
+			}
 		}
+	default:
+		ps.log.WithField("sub_type", msg.SubType).Warning("invalid sub_type")
 	}
-	return nil
 }

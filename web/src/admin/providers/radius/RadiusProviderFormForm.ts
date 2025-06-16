@@ -80,7 +80,7 @@ export function renderForm(
                     .errorMessages=${errors?.sharedSecret ?? []}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
                     required
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-text-input>
                 <ak-text-input
                     name="clientNetworks"
@@ -89,7 +89,7 @@ export function renderForm(
                     .errorMessages=${errors?.clientNetworks ?? []}
                     required
                     help=${clientNetworksHelp}
-                    input-hint="code"
+                    inputHint="code"
                 ></ak-text-input>
                 <ak-form-element-horizontal
                     label=${msg("Property mappings")}

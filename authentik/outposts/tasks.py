@@ -1,6 +1,5 @@
 """outpost tasks"""
 
-from hashlib import sha256
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname
@@ -48,11 +47,6 @@ from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
-
-
-def hash_session_key(session_key: str) -> str:
-    """Hash the session key for sending session end signals"""
-    return sha256(session_key.encode("ascii")).hexdigest()
 
 
 def controller_for_outpost(outpost: Outpost) -> type[BaseController] | None:
@@ -295,20 +289,3 @@ def outpost_connection_discovery(self: SystemTask):
                 url=unix_socket_path,
             )
     self.set_status(TaskStatus.SUCCESSFUL, *messages)
-
-
-@CELERY_APP.task()
-def outpost_session_end(session_id: str):
-    """Update outpost instances connected to a single outpost"""
-    layer = get_channel_layer()
-    hashed_session_id = hash_session_key(session_id)
-    for outpost in Outpost.objects.all():
-        LOGGER.info("Sending session end signal to outpost", outpost=outpost)
-        group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
-        async_to_sync(layer.group_send)(
-            group,
-            {
-                "type": "event.session.end",
-                "session_id": hashed_session_id,
-            },
-        )

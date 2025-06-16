@@ -1,12 +1,11 @@
 """authentik captcha app"""
 
-from authentik.blueprints.apps import ManagedAppConfig
+from django.apps import AppConfig
 
 
-class AuthentikStageCaptchaConfig(ManagedAppConfig):
+class AuthentikStageCaptchaConfig(AppConfig):
     """authentik captcha app"""
 
     name = "authentik.stages.captcha"
     label = "authentik_stages_captcha"
     verbose_name = "authentik Stages.Captcha"
-    default = True

@@ -134,7 +134,7 @@ export class BrandForm extends ModelForm<Brand, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default flow background")}
-                        required
+                        ?required=${true}
                         name="brandingDefaultFlowBackground"
                     >
                         <input

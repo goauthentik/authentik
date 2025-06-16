@@ -1,14 +1,12 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import {
     GroupMatchingModeToLabel,
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
-import "@goauthentik/components/ak-private-textarea-input.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
@@ -125,7 +123,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
         if (!this.providerType?.urlsCustomizable) {
             return html``;
         }
-        return html` <ak-form-group expanded>
+        return html` <ak-form-group .expanded=${true}>
             <span slot="header"> ${msg("URL settings")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
@@ -259,7 +257,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -267,7 +265,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -294,7 +292,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                required
+                ?required=${true}
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -337,7 +335,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                required
+                ?required=${true}
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -423,12 +421,12 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Consumer key")}
-                        required
+                        ?required=${true}
                         name="consumerKey"
                     >
                         <input
@@ -441,14 +439,19 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         />
                         <p class="pf-c-form__helper-text">${msg("Also known as Client ID.")}</p>
                     </ak-form-element-horizontal>
-                    <ak-private-textarea-input
+                    <ak-form-element-horizontal
                         label=${msg("Consumer secret")}
+                        ?required=${true}
+                        ?writeOnly=${this.instance !== undefined}
                         name="consumerSecret"
-                        input-hint="code"
-                        help=${msg("Also known as Client Secret.")}
-                        required
-                        ?revealed=${this.instance === undefined}
-                    ></ak-private-textarea-input>
+                    >
+                        <textarea
+                            class="pf-c-form-control pf-m-monospace"
+                            autocomplete="off"
+                            spellcheck="false"
+                        ></textarea>
+                        <p class="pf-c-form__helper-text">${msg("Also known as Client Secret.")}</p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="additionalScopes">
                         <input
                             type="text"
@@ -466,7 +469,7 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                 </div>
             </ak-form-group>
             ${this.renderUrlOptions()}
-            <ak-form-group expanded>
+            <ak-form-group ?expanded=${true}>
                 <span slot="header"> ${msg("OAuth Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -533,22 +536,6 @@ export class OAuthSourceForm extends WithCapabilitiesConfig(BaseSourceForm<OAuth
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
                         </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
-                        <ak-radio
-                            .options=${policyEngineModes}
-                            .value=${this.instance?.policyEngineMode}
-                        >
-                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

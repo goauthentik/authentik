@@ -1,7 +1,6 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import {
     GroupMatchingModeToLabel,
@@ -151,7 +150,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Allowed servers")}
-                required
+                ?required=${true}
                 name="allowedServers"
             >
                 <select class="pf-c-form-control" multiple>
@@ -175,7 +174,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -183,7 +182,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} required name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -208,7 +207,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("User matching mode")}
-                required
+                ?required=${true}
                 name="userMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -251,7 +250,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Group matching mode")}
-                required
+                ?required=${true}
                 name="groupMatchingMode"
             >
                 <select class="pf-c-form-control">
@@ -332,10 +331,14 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                       />
                       <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
-            <ak-form-group expanded>
+            <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Client ID")} required name="clientId">
+                    <ak-form-element-horizontal
+                        label=${msg("Client ID")}
+                        ?required=${true}
+                        name="clientId"
+                    >
                         <input
                             type="text"
                             value="${this.instance?.clientId ?? ""}"
@@ -379,7 +382,7 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group expanded>
+            <ak-form-group ?expanded=${true}>
                 <span slot="header"> ${msg("Plex Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
@@ -413,22 +416,6 @@ export class PlexSourceForm extends WithCapabilitiesConfig(BaseSourceForm<PlexSo
                         <p class="pf-c-form__helper-text">
                             ${msg("Property mappings for group creation.")}
                         </p>
-                    </ak-form-element-horizontal>
-                </div>
-            </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Policy engine mode")}
-                        required
-                        name="policyEngineMode"
-                    >
-                        <ak-radio
-                            .options=${policyEngineModes}
-                            .value=${this.instance?.policyEngineMode}
-                        >
-                        </ak-radio>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>`;

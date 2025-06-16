@@ -11,7 +11,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/avast/retry-go/v4"
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/internal/config"
@@ -31,7 +30,7 @@ func (ac *APIController) getWebsocketURL(akURL url.URL, outpostUUID string, quer
 	return wsUrl
 }
 
-func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
+func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	query := akURL.Query()
 	query.Set("instance_uuid", ac.instanceUUID.String())
 
@@ -58,19 +57,19 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 		return err
 	}
 
-	ac.eventConn = ws
+	ac.wsConn = ws
 	// Send hello message with our version
-	msg := Event{
-		Instruction: EventKindHello,
-		Args:        ac.getEventPingArgs(),
+	msg := websocketMessage{
+		Instruction: WebsocketInstructionHello,
+		Args:        ac.getWebsocketPingArgs(),
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
-		ac.logger.WithField("logger", "authentik.outpost.events").WithError(err).Warning("Failed to hello to authentik")
+		ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithError(err).Warning("Failed to hello to authentik")
 		return err
 	}
 	ac.lastWsReconnect = time.Now()
-	ac.logger.WithField("logger", "authentik.outpost.events").WithField("outpost", outpostUUID).Info("Successfully connected websocket")
+	ac.logger.WithField("logger", "authentik.outpost.ak-ws").WithField("outpost", outpostUUID).Info("Successfully connected websocket")
 	return nil
 }
 
@@ -78,19 +77,19 @@ func (ac *APIController) initEvent(akURL url.URL, outpostUUID string) error {
 func (ac *APIController) Shutdown() {
 	// Cleanly close the connection by sending a close message and then
 	// waiting (with timeout) for the server to close the connection.
-	err := ac.eventConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
+	err := ac.wsConn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to write close message")
 		return
 	}
-	err = ac.eventConn.Close()
+	err = ac.wsConn.Close()
 	if err != nil {
 		ac.logger.WithError(err).Warning("failed to close websocket")
 	}
 	ac.logger.Info("finished shutdown")
 }
 
-func (ac *APIController) recentEvents() {
+func (ac *APIController) reconnectWS() {
 	if ac.wsIsReconnecting {
 		return
 	}
@@ -101,47 +100,46 @@ func (ac *APIController) recentEvents() {
 		Path:   strings.ReplaceAll(ac.Client.GetConfig().Servers[0].URL, "api/v3", ""),
 	}
 	attempt := 1
-	_ = retry.Do(
-		func() error {
-			q := u.Query()
-			q.Set("attempt", strconv.Itoa(attempt))
-			u.RawQuery = q.Encode()
-			err := ac.initEvent(u, ac.Outpost.Pk)
-			attempt += 1
-			if err != nil {
-				return err
+	for {
+		q := u.Query()
+		q.Set("attempt", strconv.Itoa(attempt))
+		u.RawQuery = q.Encode()
+		err := ac.initWS(u, ac.Outpost.Pk)
+		attempt += 1
+		if err != nil {
+			ac.logger.Infof("waiting %d seconds to reconnect", ac.wsBackoffMultiplier)
+			time.Sleep(time.Duration(ac.wsBackoffMultiplier) * time.Second)
+			ac.wsBackoffMultiplier = ac.wsBackoffMultiplier * 2
+			// Limit to 300 seconds (5m)
+			if ac.wsBackoffMultiplier >= 300 {
+				ac.wsBackoffMultiplier = 300
 			}
+		} else {
 			ac.wsIsReconnecting = false
-			return nil
-		},
-		retry.Delay(1*time.Second),
-		retry.MaxDelay(5*time.Minute),
-		retry.DelayType(retry.BackOffDelay),
-		retry.Attempts(0),
-		retry.OnRetry(func(attempt uint, err error) {
-			ac.logger.Infof("waiting %d seconds to reconnect", attempt)
-		}),
-	)
+			ac.wsBackoffMultiplier = 1
+			return
+		}
+	}
 }
 
-func (ac *APIController) startEventHandler() {
-	logger := ac.logger.WithField("loop", "event-handler")
+func (ac *APIController) startWSHandler() {
+	logger := ac.logger.WithField("loop", "ws-handler")
 	for {
-		var wsMsg Event
-		if ac.eventConn == nil {
-			go ac.recentEvents()
+		var wsMsg websocketMessage
+		if ac.wsConn == nil {
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.eventConn.ReadJSON(&wsMsg)
+		err := ac.wsConn.ReadJSON(&wsMsg)
 		if err != nil {
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
 				"uuid":         ac.instanceUUID.String(),
 			}).Set(0)
-			logger.WithError(err).Warning("event read error")
-			go ac.recentEvents()
+			logger.WithError(err).Warning("ws read error")
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
@@ -151,8 +149,7 @@ func (ac *APIController) startEventHandler() {
 			"uuid":         ac.instanceUUID.String(),
 		}).Set(1)
 		switch wsMsg.Instruction {
-		case EventKindAck:
-		case EventKindTriggerUpdate:
+		case WebsocketInstructionTriggerUpdate:
 			time.Sleep(ac.reloadOffset)
 			logger.Debug("Got update trigger...")
 			err := ac.OnRefresh()
@@ -167,33 +164,30 @@ func (ac *APIController) startEventHandler() {
 					"build":        constants.BUILD(""),
 				}).SetToCurrentTime()
 			}
-		default:
-			for _, h := range ac.eventHandlers {
-				err := h(context.Background(), wsMsg)
-				if err != nil {
-					ac.logger.WithError(err).Warning("failed to run event handler")
-				}
+		case WebsocketInstructionProviderSpecific:
+			for _, h := range ac.wsHandlers {
+				h(context.Background(), wsMsg.Args)
 			}
 		}
 	}
 }
 
-func (ac *APIController) startEventHealth() {
+func (ac *APIController) startWSHealth() {
 	ticker := time.NewTicker(time.Second * 10)
 	for ; true; <-ticker.C {
-		if ac.eventConn == nil {
-			go ac.recentEvents()
+		if ac.wsConn == nil {
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.SendEventHello(map[string]interface{}{})
+		err := ac.SendWSHello(map[string]interface{}{})
 		if err != nil {
-			ac.logger.WithField("loop", "event-health").WithError(err).Warning("event write error")
-			go ac.recentEvents()
+			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
+			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		} else {
-			ac.logger.WithField("loop", "event-health").Trace("hello'd")
+			ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
@@ -236,19 +230,19 @@ func (ac *APIController) startIntervalUpdater() {
 	}
 }
 
-func (a *APIController) AddEventHandler(handler EventHandler) {
-	a.eventHandlers = append(a.eventHandlers, handler)
+func (a *APIController) AddWSHandler(handler WSHandler) {
+	a.wsHandlers = append(a.wsHandlers, handler)
 }
 
-func (a *APIController) SendEventHello(args map[string]interface{}) error {
-	allArgs := a.getEventPingArgs()
+func (a *APIController) SendWSHello(args map[string]interface{}) error {
+	allArgs := a.getWebsocketPingArgs()
 	for key, value := range args {
 		allArgs[key] = value
 	}
-	aliveMsg := Event{
-		Instruction: EventKindHello,
+	aliveMsg := websocketMessage{
+		Instruction: WebsocketInstructionHello,
 		Args:        allArgs,
 	}
-	err := a.eventConn.WriteJSON(aliveMsg)
+	err := a.wsConn.WriteJSON(aliveMsg)
 	return err
 }

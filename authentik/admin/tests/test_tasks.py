@@ -1,12 +1,12 @@
 """test admin tasks"""
 
-from django.apps import apps
 from django.core.cache import cache
 from django.test import TestCase
 from requests_mock import Mocker
 
 from authentik.admin.tasks import (
     VERSION_CACHE_KEY,
+    clear_update_notifications,
     update_latest_version,
 )
 from authentik.events.models import Event, EventAction
@@ -72,13 +72,12 @@ class TestAdminTasks(TestCase):
 
     def test_clear_update_notifications(self):
         """Test clear of previous notification"""
-        admin_config = apps.get_app_config("authentik_admin")
         Event.objects.create(
             action=EventAction.UPDATE_AVAILABLE, context={"new_version": "99999999.9999999.9999999"}
         )
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={"new_version": "1.1.1"})
         Event.objects.create(action=EventAction.UPDATE_AVAILABLE, context={})
-        admin_config.clear_update_notifications()
+        clear_update_notifications()
         self.assertFalse(
             Event.objects.filter(
                 action=EventAction.UPDATE_AVAILABLE, context__new_version="1.1"

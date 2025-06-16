@@ -120,7 +120,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
                 .value=${renderValue}
                 .selected=${this.selected}
                 @ak-change=${this.handleSearchUpdate}
-                blankable
+                ?blankable=${true}
             >
             </ak-search-select>
         `;
