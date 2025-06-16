@@ -17,7 +17,7 @@ The following placeholders are used in this guide:
 
 2. Create a user in FreeIPA, matching your naming scheme. Provide a strong password, example generation methods: `pwgen 64 1` or `openssl rand 36 | base64 -w 0`. After you are done click **Add and Edit**.
 
-    ![](./01_user_create.pn)
+    ![](./01_user_create.png)
 
 3. In the user management screen, select the Roles tab.
 
