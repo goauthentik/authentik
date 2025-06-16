@@ -1,16 +1,23 @@
 import "#admin/applications/ApplicationForm";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
+
 import "#elements/AppIcon";
 import "#elements/ak-mdx/ak-mdx";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import "#elements/forms/DeleteBulkForm";
 import "#elements/forms/ModalForm";
+
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { getURLParam } from "#elements/router/RouteMatch";
 import { PaginatedResponse } from "#elements/table/Table";
 import { TableColumn } from "#elements/table/Table";
 import { TablePage } from "#elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
+
 import MDApplication from "~docs/add-secure-apps/applications/index.md";
 
 import { msg, str } from "@lit/localize";
@@ -19,8 +26,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
-
-import { Application, CoreApi, PoliciesApi } from "@goauthentik/api";
 
 import "./ApplicationWizardHint.js";
 

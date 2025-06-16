@@ -1,12 +1,18 @@
 import "@goauthentik/admin/outposts/ServiceConnectionDockerForm";
 import "@goauthentik/admin/outposts/ServiceConnectionKubernetesForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+
 import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
+
+import { OutpostsApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -15,8 +21,6 @@ import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { OutpostsApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-service-connection-wizard")
 export class ServiceConnectionWizard extends AKElement {

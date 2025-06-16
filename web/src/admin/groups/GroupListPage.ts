@@ -1,19 +1,23 @@
 import "@goauthentik/admin/groups/GroupForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { CoreApi, Group } from "@goauthentik/api";
 
 @customElement("ak-group-list")
 export class GroupListPage extends TablePage<Group> {

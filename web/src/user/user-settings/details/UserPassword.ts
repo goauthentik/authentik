@@ -1,5 +1,6 @@
 import { AndNext } from "@goauthentik/common/api/config";
 import { globalAK } from "@goauthentik/common/global";
+
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";

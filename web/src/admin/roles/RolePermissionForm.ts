@@ -1,18 +1,22 @@
 import "@goauthentik/admin/rbac/PermissionSelectModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+
+import { Permission, RbacApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import { Permission, RbacApi } from "@goauthentik/api";
 
 interface RolePermissionAssign {
     permissions: string[];

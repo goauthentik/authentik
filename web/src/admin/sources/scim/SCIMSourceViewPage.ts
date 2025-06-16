@@ -2,15 +2,25 @@ import "@goauthentik/admin/rbac/ObjectPermissionsPage";
 import "@goauthentik/admin/sources/scim/SCIMSourceForm";
 import "@goauthentik/admin/sources/scim/SCIMSourceGroups";
 import "@goauthentik/admin/sources/scim/SCIMSourceUsers";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/ModalForm";
+
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SCIMSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -25,12 +35,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SCIMSource,
-    SourcesApi,
-} from "@goauthentik/api";
 
 @customElement("ak-source-scim-view")
 export class SCIMSourceViewPage extends AKElement {

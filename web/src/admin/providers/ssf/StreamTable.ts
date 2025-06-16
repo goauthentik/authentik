@@ -1,17 +1,20 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { SSFStream, SsfApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { SSFStream, SsfApi } from "@goauthentik/api";
 
 @customElement("ak-provider-ssf-stream-list")
 export class SSFProviderStreamList extends Table<SSFStream> {

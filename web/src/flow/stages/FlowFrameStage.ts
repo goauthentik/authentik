@@ -1,6 +1,11 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement } from "lit/decorators.js";
@@ -10,8 +15,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FrameChallenge, FrameChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("xak-flow-frame")
 export class FlowFrameStage extends BaseStage<FrameChallenge, FrameChallengeResponseRequest> {

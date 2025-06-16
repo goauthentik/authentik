@@ -1,20 +1,28 @@
 import { WithLicenseSummary } from "#elements/mixins/license";
+
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+
 import type { NavigableButton, WizardButton } from "@goauthentik/components/ak-wizard/types";
+
 import "@goauthentik/elements/EmptyState.js";
+
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+
 import "@goauthentik/elements/forms/FormGroup.js";
 import "@goauthentik/elements/forms/HorizontalFormElement.js";
+
 import { TypeCreateWizardPageLayouts } from "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
+
 import "@goauthentik/elements/wizard/TypeCreateWizardPage.js";
+
+import { TypeCreate } from "@goauthentik/api";
 
 import { consume } from "@lit/context";
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { TypeCreate } from "@goauthentik/api";
 
 import { applicationWizardProvidersContext } from "../ContextIdentity";
 import { type LocalTypeCreate } from "./ProviderChoices.js";

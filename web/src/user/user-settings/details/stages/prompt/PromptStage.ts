@@ -1,12 +1,16 @@
 import { globalAK } from "@goauthentik/common/global";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+
+import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
+
+import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {

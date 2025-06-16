@@ -1,21 +1,24 @@
-import { EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { actionToLabel } from "@goauthentik/common/labels";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
+import { EventUser } from "@goauthentik/admin/events/utils";
+
 import "@goauthentik/components/ak-event-info";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
+
+import { Event, EventsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Event, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-events-user")
 export class UserEvents extends Table<Event> {

@@ -1,7 +1,15 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import {
+    AuthenticatorStaticChallenge,
+    AuthenticatorStaticChallengeResponseRequest,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -14,11 +22,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorStaticChallenge,
-    AuthenticatorStaticChallengeResponseRequest,
-} from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-static")
 export class AuthenticatorStaticStage extends BaseStage<

@@ -1,16 +1,16 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
+
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { msg, str } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import "@goauthentik/elements/forms/SearchSelect";
+
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import {
     AuthenticatorDuoStage,
@@ -20,6 +20,10 @@ import {
     StagesApi,
     User,
 } from "@goauthentik/api";
+
+import { msg, str } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-duo-device-import-form")
 export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string> {

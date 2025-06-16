@@ -1,11 +1,27 @@
 import { renderSourceIcon } from "@goauthentik/admin/sources/utils";
+
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/components/ak-flow-password-input.js";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
 import "@goauthentik/flow/stages/captcha/CaptchaStage";
+
 import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
+
+import { AkRememberMeController } from "@goauthentik/flow/stages/identification/RememberMeController.js";
+
+import {
+    FlowDesignationEnum,
+    IdentificationChallenge,
+    IdentificationChallengeResponseRequest,
+    LoginSource,
+    UserFieldsEnum,
+} from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -19,14 +35,6 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    FlowDesignationEnum,
-    IdentificationChallenge,
-    IdentificationChallengeResponseRequest,
-    LoginSource,
-    UserFieldsEnum,
-} from "@goauthentik/api";
 
 export const PasswordManagerPrefill: {
     password: string | undefined;

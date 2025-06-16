@@ -1,14 +1,16 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/buttons/SpinnerButton";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
 
+import { Provider, ProvidersApi } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Provider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-select-table")
 export class ProviderSelectModal extends TableModal<Provider> {

@@ -1,19 +1,17 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/providers/rac/EndpointForm";
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse, Table } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
-
-import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import {
     Endpoint,
@@ -21,6 +19,12 @@ import {
     RacApi,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { CSSResult, TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 @customElement("ak-rac-endpoint-list")
 export class EndpointListPage extends Table<Endpoint> {

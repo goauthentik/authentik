@@ -1,14 +1,18 @@
 import "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
+
 import { FooterLinkInput } from "@goauthentik/admin/admin-settings/AdminSettingsFooterLinks.js";
+
 import "@goauthentik/elements/messages/MessageContainer";
+
+import { FooterLink } from "@goauthentik/api";
+
 import { Meta, StoryObj, WebComponentsRenderer } from "@storybook/web-components";
 import { DecoratorFunction } from "storybook/internal/types";
 
 import { html } from "lit";
 
-import { FooterLink } from "@goauthentik/api";
-
 import "../ak-array-input.js";
+
 import { IArrayInput } from "../ak-array-input.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,17 +1,19 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/SpinnerButton";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
+
+import { CoreApi, Group } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { CoreApi, Group } from "@goauthentik/api";
 
 @customElement("ak-user-group-select-table")
 export class GroupSelectModal extends TableModal<Group> {

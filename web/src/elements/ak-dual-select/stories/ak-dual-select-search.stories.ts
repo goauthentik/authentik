@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-search-bar";
+
 import { AkSearchbar } from "../components/ak-search-bar";
 
 const metadata: Meta<AkSearchbar> = {

@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-pagination";
+
 import { AkPagination } from "../components/ak-pagination";
 import { DualSelectEventType } from "../types";
 

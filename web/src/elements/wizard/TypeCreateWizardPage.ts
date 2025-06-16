@@ -1,6 +1,10 @@
 import { WithLicenseSummary } from "#elements/mixins/license";
+
 import "@goauthentik/admin/common/ak-license-notice";
+
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
+
+import { TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -12,8 +16,6 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { TypeCreate } from "@goauthentik/api";
 
 export enum TypeCreateWizardPageLayouts {
     list = "list",

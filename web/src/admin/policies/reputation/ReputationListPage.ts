@@ -1,24 +1,28 @@
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
-import getUnicodeFlagIcon from "country-flag-icons/unicode";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
 
 import {
     PoliciesApi,
     RbacPermissionsAssignedByUsersListModelEnum,
     Reputation,
 } from "@goauthentik/api";
+
+import getUnicodeFlagIcon from "country-flag-icons/unicode";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {

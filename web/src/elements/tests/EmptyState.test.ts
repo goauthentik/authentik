@@ -1,10 +1,12 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
+
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 
 import "../EmptyState.js";
+
 import { akEmptyState } from "../EmptyState.js";
 
 describe("ak-empty-state", () => {

@@ -2,14 +2,25 @@ import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderForm"
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderGroupList";
 import "@goauthentik/admin/providers/microsoft_entra/MicrosoftEntraProviderUserList";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/events/LogViewer";
+
+import {
+    MicrosoftEntraProvider,
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SyncStatus,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -26,13 +37,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    MicrosoftEntraProvider,
-    ProvidersApi,
-    RbacPermissionsAssignedByUsersListModelEnum,
-    SyncStatus,
-} from "@goauthentik/api";
 
 @customElement("ak-provider-microsoft-entra-view")
 export class MicrosoftEntraProviderViewPage extends AKElement {

@@ -1,19 +1,34 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/rbac/ObjectPermissionsPage";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/components/events/ObjectChangelog";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/ak-mdx";
+
 import type { Replacer } from "@goauthentik/elements/ak-mdx";
+
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
+
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { formatSlug } from "@goauthentik/elements/router/utils.js";
+
+import {
+    ProvidersApi,
+    ProxyMode,
+    ProxyProvider,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
+
 import MDCaddyStandalone from "~docs/add-secure-apps/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "~docs/add-secure-apps/providers/proxy/_nginx_ingress.md";
 import MDNginxPM from "~docs/add-secure-apps/providers/proxy/_nginx_proxy_manager.md";
@@ -38,13 +53,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ProvidersApi,
-    ProxyMode,
-    ProxyProvider,
-    RbacPermissionsAssignedByUsersListModelEnum,
-} from "@goauthentik/api";
 
 export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";

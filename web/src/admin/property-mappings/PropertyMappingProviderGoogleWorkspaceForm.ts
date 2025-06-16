@@ -1,11 +1,13 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
+
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { customElement } from "lit/decorators.js";
-
 import { GoogleWorkspaceProviderMapping, PropertymappingsApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-property-mapping-provider-google-workspace-form")
 export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMappingForm<GoogleWorkspaceProviderMapping> {

@@ -1,15 +1,22 @@
 import "#admin/groups/RelatedGroupList";
 import "#admin/rbac/ObjectPermissionsPage";
 import "#admin/roles/RoleForm";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
 import { EVENT_REFRESH } from "#common/constants";
+
 import { renderDescriptionList } from "#components/DescriptionList";
+
 import "#components/ak-page-header";
 import "#components/events/ObjectChangelog";
 import "#components/events/UserEvents";
+
 import { AKElement } from "#elements/Base";
+
 import "#elements/Tabs";
 import "#elements/forms/ModalForm";
+
+import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -23,8 +30,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {

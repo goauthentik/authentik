@@ -1,27 +1,32 @@
 import "@goauthentik/admin/applications/entitlements/ApplicationEntitlementForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+
 import { PolicyBindingCheckTarget } from "@goauthentik/admin/policies/utils";
+
 import "@goauthentik/admin/rbac/ObjectPermissionModal";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { PFSize } from "@goauthentik/common/enums";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     ApplicationEntitlement,
     CoreApi,
     RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-application-entitlements-list")
 export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {

@@ -1,22 +1,27 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-wizard/ak-wizard-steps.js";
-import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
+
 import { AKElement } from "@goauthentik/elements/Base.js";
+
+import { WizardUpdateEvent } from "@goauthentik/components/ak-wizard/events";
+
+import { ProvidersApi, ProxyMode } from "@goauthentik/api";
 
 import { ContextProvider } from "@lit/context";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { ProvidersApi, ProxyMode } from "@goauthentik/api";
-
 import { applicationWizardProvidersContext } from "./ContextIdentity";
 import { providerTypeRenderers } from "./steps/ProviderChoices.js";
+
 import "./steps/ak-application-wizard-application-step.js";
 import "./steps/ak-application-wizard-bindings-step.js";
 import "./steps/ak-application-wizard-edit-binding-step.js";
 import "./steps/ak-application-wizard-provider-choice-step.js";
 import "./steps/ak-application-wizard-provider-step.js";
 import "./steps/ak-application-wizard-submit-step.js";
+
 import { type ApplicationWizardState, type ApplicationWizardStateUpdate } from "./types";
 
 const freshWizardState = (): ApplicationWizardState => ({

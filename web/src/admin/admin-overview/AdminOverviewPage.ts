@@ -8,14 +8,23 @@ import "#admin/admin-overview/cards/WorkerStatusCard";
 import "#admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "#admin/admin-overview/charts/OutpostStatusChart";
 import "#admin/admin-overview/charts/SyncStatusChart";
+
 import { me } from "#common/users";
+
 import "#components/ak-page-header";
+
 import { AKElement } from "#elements/Base";
+
 import "#elements/cards/AggregatePromiseCard";
+
 import type { QuickAction } from "#elements/cards/QuickActionsCard";
+
 import "#elements/cards/QuickActionsCard";
+
 import { WithLicenseSummary } from "#elements/mixins/license";
 import { paramURL } from "#elements/router/RouterOutlet";
+
+import { SessionUser } from "@goauthentik/api";
 import { createReleaseNotesURL } from "@goauthentik/core/version";
 
 import { msg, str } from "@lit/localize";
@@ -28,8 +37,6 @@ import PFDivider from "@patternfly/patternfly/components/Divider/divider.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { SessionUser } from "@goauthentik/api";
 
 const AdminOverviewBase = WithLicenseSummary(AKElement);
 

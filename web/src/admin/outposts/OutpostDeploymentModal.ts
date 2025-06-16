@@ -1,13 +1,15 @@
 import { docLink } from "@goauthentik/common/global";
+
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+
 import "@goauthentik/elements/buttons/TokenCopyButton";
+
+import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Outpost, OutpostTypeEnum } from "@goauthentik/api";
 
 @customElement("ak-outpost-deployment-modal")
 export class OutpostDeploymentModal extends ModalButton {

@@ -1,15 +1,17 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
+import { CertificateKeyPair, CertificateKeyPairRequest, CryptoApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { CertificateKeyPair, CertificateKeyPairRequest, CryptoApi } from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-form")
 export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string> {

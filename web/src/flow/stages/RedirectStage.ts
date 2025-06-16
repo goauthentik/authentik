@@ -1,5 +1,9 @@
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -10,8 +14,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FlowChallengeResponseRequest, RedirectChallenge } from "@goauthentik/api";
 
 @customElement("ak-stage-redirect")
 export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeResponseRequest> {

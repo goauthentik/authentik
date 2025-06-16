@@ -1,10 +1,13 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-slug-input";
+
 import AkSlugInput from "../ak-slug-input";
+
 import "../ak-text-input";
 
 const metadata: Meta<AkSlugInput> = {

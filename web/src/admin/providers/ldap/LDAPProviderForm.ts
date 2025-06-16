@@ -1,12 +1,15 @@
 import { WithBrandConfig } from "#elements/mixins/branding";
+
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-branded-flow-search";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { customElement } from "lit/decorators.js";
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 
 import { LDAPProvider, ProvidersApi } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 import { renderForm } from "./LDAPProviderFormForm.js";
 

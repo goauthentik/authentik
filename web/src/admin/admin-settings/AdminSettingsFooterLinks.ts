@@ -1,5 +1,8 @@
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
 import { type Spread } from "@goauthentik/elements/types";
+
+import { FooterLink } from "@goauthentik/api";
+
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
@@ -10,8 +13,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FooterLink } from "@goauthentik/api";
 
 export interface IFooterLinkInput {
     footerLink: FooterLink;

@@ -1,17 +1,21 @@
-import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
+
+import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends BasePolicyForm<ExpressionPolicy> {

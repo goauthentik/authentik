@@ -1,10 +1,11 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
+
+import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
+
 import { $, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
-
-import { LicenseForecast, LicenseSummary, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 import "./EnterpriseStatusCard.js";
 

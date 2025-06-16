@@ -1,21 +1,23 @@
 import { certificateProvider, certificateSelector } from "@goauthentik/admin/brands/Certificates";
+
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { DefaultBrand } from "@goauthentik/common/ui/config";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/SearchSelect";
-import YAML from "yaml";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
+import "@goauthentik/elements/forms/SearchSelect";
 
 import {
     Application,
@@ -24,6 +26,12 @@ import {
     CoreApplicationsListRequest,
     FlowsInstancesListDesignationEnum,
 } from "@goauthentik/api";
+
+import YAML from "yaml";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-brand-form")
 export class BrandForm extends ModelForm<Brand, string> {

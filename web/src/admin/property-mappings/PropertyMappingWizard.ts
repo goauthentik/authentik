@@ -13,13 +13,19 @@ import "@goauthentik/admin/property-mappings/PropertyMappingSourcePlexForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSourceSAMLForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingSourceSCIMForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/TypeCreateWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
+
 import type { Wizard } from "@goauthentik/elements/wizard/Wizard";
+
+import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
@@ -28,8 +34,6 @@ import { property, query } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { PropertymappingsApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {

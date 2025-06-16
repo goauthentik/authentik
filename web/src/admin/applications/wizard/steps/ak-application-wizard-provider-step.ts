@@ -8,6 +8,7 @@ import { html, unsafeStatic } from "lit/static-html.js";
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider } from "../types.js";
 import { ApplicationWizardProviderForm } from "./providers/ApplicationWizardProviderForm.js";
+
 import "./providers/ak-application-wizard-provider-for-ldap.js";
 import "./providers/ak-application-wizard-provider-for-oauth.js";
 import "./providers/ak-application-wizard-provider-for-proxy.js";

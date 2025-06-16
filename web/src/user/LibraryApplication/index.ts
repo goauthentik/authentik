@@ -2,12 +2,18 @@ import { PFSize } from "@goauthentik/common/enums.js";
 import { globalAK } from "@goauthentik/common/global";
 import { rootInterface } from "@goauthentik/common/theme";
 import { truncateWords } from "@goauthentik/common/utils";
+
 import "@goauthentik/elements/AppIcon";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
+
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
+
+import { Application } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -19,8 +25,6 @@ import { styleMap } from "lit/directives/style-map.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { Application } from "@goauthentik/api";
 
 @customElement("ak-library-app")
 export class LibraryApplication extends AKElement {

@@ -1,16 +1,19 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
+
 import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
-import { msg } from "@lit/localize";
-import { PropertyValues, TemplateResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { BaseDeviceStage } from "@goauthentik/flow/stages/authenticator_validate/base";
 
 import {
     AuthenticatorValidationChallenge,
     AuthenticatorValidationChallengeResponseRequest,
     DeviceChallenge,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { PropertyValues, TemplateResult, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-validate-duo")
 export class AuthenticatorValidateStageWebDuo extends BaseDeviceStage<

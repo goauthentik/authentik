@@ -1,12 +1,17 @@
 import "#admin/AdminInterface/AboutModal";
-import type { AboutModal } from "#admin/AdminInterface/AboutModal";
-import { ROUTES } from "#admin/Routes";
+
 import { EVENT_API_DRAWER_TOGGLE, EVENT_NOTIFICATION_DRAWER_TOGGLE } from "#common/constants";
 import { configureSentry } from "#common/sentry/index";
 import { me } from "#common/users";
 import { WebsocketClient } from "#common/ws";
-import { SidebarToggleEventDetail } from "#components/ak-page-header";
+
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
+
+import { SidebarToggleEventDetail } from "#components/ak-page-header";
+
+import type { AboutModal } from "#admin/AdminInterface/AboutModal";
+import { ROUTES } from "#admin/Routes";
+
 import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/banner/EnterpriseStatusBanner";
@@ -14,13 +19,19 @@ import "#elements/banner/VersionBanner";
 import "#elements/banner/VersionBanner";
 import "#elements/messages/MessageContainer";
 import "#elements/messages/MessageContainer";
+
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
+
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+
+import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, eventOptions, property, query } from "lit/decorators.js";
@@ -31,8 +42,6 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { CapabilitiesEnum, SessionUser, UiThemeEnum } from "@goauthentik/api";
 
 import {
     AdminSidebarEnterpriseEntries,

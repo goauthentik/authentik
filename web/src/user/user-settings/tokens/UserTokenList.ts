@@ -2,24 +2,27 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { intentToLabel } from "@goauthentik/common/labels";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
+
 import "@goauthentik/components/ak-status-label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+
 import "@goauthentik/user/user-settings/tokens/UserTokenForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-
-import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
 
 @customElement("ak-user-token-list")
 export class UserTokenList extends Table<Token> {

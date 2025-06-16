@@ -1,4 +1,5 @@
 import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { localized, msg } from "@lit/localize";

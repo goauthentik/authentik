@@ -1,8 +1,12 @@
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/ak-list-select/ak-list-select.js";
+
 import { ListSelect } from "@goauthentik/elements/ak-list-select/ak-list-select.js";
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+
 import "@goauthentik/elements/forms/SearchSelect/ak-portal.js";
+
 import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/elements/types.js";
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 

@@ -6,8 +6,13 @@ import {
 import { globalAK } from "@goauthentik/common/global";
 import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
+
+import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
+
 import { match } from "ts-pattern";
 
 import { msg } from "@lit/localize";
@@ -24,8 +29,6 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-nav-buttons")
 export class NavigationButtons extends AKElement {

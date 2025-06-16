@@ -10,7 +10,9 @@ import {
     HorizontalLightComponent,
     HorizontalLightComponentProps,
 } from "./HorizontalLightComponent";
+
 import "./ak-visibility-toggle.js";
+
 import type { VisibilityToggleProps } from "./ak-visibility-toggle.js";
 
 type BaseProps = HorizontalLightComponentProps<string> &

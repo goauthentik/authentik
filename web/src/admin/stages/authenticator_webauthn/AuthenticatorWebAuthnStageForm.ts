@@ -1,16 +1,16 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
+
 import { DataProvision } from "@goauthentik/elements/ak-dual-select/types";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
 
 import {
     AuthenticatorAttachmentEnum,
@@ -23,6 +23,10 @@ import {
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
 
 @customElement("ak-stage-authenticator-webauthn-form")
 export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorWebAuthnStage> {

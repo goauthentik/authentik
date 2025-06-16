@@ -1,18 +1,21 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
+import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
+
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { AuthModeEnum, Endpoint, ProtocolEnum, RacApi } from "@goauthentik/api";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./RACProviderFormHelpers.js";
 

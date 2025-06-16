@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-radio-input";
+
 import AkRadioInput from "../ak-radio-input";
 
 const metadata: Meta<AkRadioInput<Record<string, number>>> = {

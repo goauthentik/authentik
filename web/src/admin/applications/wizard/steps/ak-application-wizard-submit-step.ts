@@ -1,24 +1,14 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError } from "@goauthentik/common/errors/network";
-import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
-import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
+
 import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
-import { P, match } from "ts-pattern";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, css, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
-
-// import { map } from "lit/directives/map.js";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
-import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
-import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
-import PFTitle from "@patternfly/patternfly/components/Title/title.css";
-import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
+import { WizardNavigationEvent } from "@goauthentik/components/ak-wizard/events.js";
+import { type WizardButton } from "@goauthentik/components/ak-wizard/types";
 
 import {
     type ApplicationRequest,
@@ -33,6 +23,20 @@ import {
     type TransactionPolicyBindingRequest,
     instanceOfValidationError,
 } from "@goauthentik/api";
+
+import { P, match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, css, html, nothing } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { classMap } from "lit/directives/class-map.js";
+
+// import { map } from "lit/directives/map.js";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
+import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
+import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 
 import { ApplicationWizardStep } from "../ApplicationWizardStep.js";
 import { OneOfProvider, isApplicationTransactionValidationError } from "../types.js";

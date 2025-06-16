@@ -5,11 +5,17 @@ import { actionToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
 import { me } from "@goauthentik/common/users";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/EmptyState";
+
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { EventsApi, Notification } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -20,8 +26,6 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFNotificationDrawer from "@patternfly/patternfly/components/NotificationDrawer/notification-drawer.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { EventsApi, Notification } from "@goauthentik/api";
 
 @customElement("ak-notification-drawer")
 export class NotificationDrawer extends AKElement {

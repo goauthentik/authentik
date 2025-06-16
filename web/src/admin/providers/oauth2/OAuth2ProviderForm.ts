@@ -1,11 +1,13 @@
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types";
+
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
+
+import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
 import { css } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { ClientTypeEnum, OAuth2Provider, ProvidersApi } from "@goauthentik/api";
 
 import { renderForm } from "./OAuth2ProviderFormForm.js";
 

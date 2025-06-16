@@ -1,13 +1,15 @@
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { renderForm } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormForm.js";
+
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { renderForm } from "@goauthentik/admin/providers/oauth2/OAuth2ProviderFormForm.js";
+
+import { OAuth2ProviderRequest, SourcesApi } from "@goauthentik/api";
+import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-import { OAuth2ProviderRequest, SourcesApi } from "@goauthentik/api";
-import { type OAuth2Provider, type PaginatedOAuthSourceList } from "@goauthentik/api";
 
 import { ApplicationTransactionValidationError } from "../../types.js";
 import { ApplicationWizardProviderForm } from "./ApplicationWizardProviderForm.js";

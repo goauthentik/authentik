@@ -3,19 +3,39 @@ import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "#common/constan
 import { globalAK } from "#common/global";
 import { configureSentry } from "#common/sentry/index";
 import { WebsocketClient } from "#common/ws";
+
 import { Interface } from "#elements/Interface";
+
 import "#elements/LoadingOverlay";
 import "#elements/ak-locale-context/ak-locale-context";
+
 import { WithBrandConfig } from "#elements/mixins/branding";
 import { WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import { themeImage } from "#elements/utils/images";
+
 import "#flow/components/ak-brand-footer";
 import "#flow/sources/apple/AppleLoginInit";
 import "#flow/sources/plex/PlexLoginInit";
 import "#flow/stages/FlowErrorStage";
 import "#flow/stages/FlowFrameStage";
 import "#flow/stages/RedirectStage";
+
 import { StageHost, SubmitOptions } from "#flow/stages/base";
+
+import { StageHost, SubmitOptions } from "#flow/stages/base";
+
+import {
+    CapabilitiesEnum,
+    ChallengeTypes,
+    ContextualFlowInfo,
+    FetchError,
+    FlowChallengeResponseRequest,
+    FlowErrorChallenge,
+    FlowLayoutEnum,
+    FlowsApi,
+    ResponseError,
+    ShellChallenge,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -30,19 +50,6 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    CapabilitiesEnum,
-    ChallengeTypes,
-    ContextualFlowInfo,
-    FetchError,
-    FlowChallengeResponseRequest,
-    FlowErrorChallenge,
-    FlowLayoutEnum,
-    FlowsApi,
-    ResponseError,
-    ShellChallenge,
-} from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor

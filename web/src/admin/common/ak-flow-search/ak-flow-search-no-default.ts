@@ -1,9 +1,9 @@
 import "@goauthentik/elements/forms/SearchSelect";
 
+import type { Flow } from "@goauthentik/api";
+
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import type { Flow } from "@goauthentik/api";
 
 import { FlowSearch, getFlowValue, renderDescription, renderElement } from "./FlowSearch";
 

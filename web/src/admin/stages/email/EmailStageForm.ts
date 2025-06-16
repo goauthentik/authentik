@@ -1,16 +1,18 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+
 import "@goauthentik/components/ak-secret-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
+import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends BaseStageForm<EmailStage> {

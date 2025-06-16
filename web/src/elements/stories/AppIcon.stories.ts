@@ -1,10 +1,12 @@
 import { PFSize } from "@goauthentik/common/enums.js";
+
 import type { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import "../AppIcon";
+
 import { AppIcon } from "../AppIcon";
 
 const sizeOptions = Array.from(Object.values(PFSize));

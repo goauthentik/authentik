@@ -1,13 +1,11 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     EventsApi,
@@ -17,6 +15,11 @@ import {
     PropertymappingsApi,
     PropertymappingsNotificationListRequest,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 @customElement("ak-event-transport-form")
 export class TransportForm extends ModelForm<NotificationTransport, string> {

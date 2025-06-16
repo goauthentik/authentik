@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../ak-status-label";
+
 import AkStatusLabel from "../ak-status-label";
 
 const metadata: Meta<AkStatusLabel> = {

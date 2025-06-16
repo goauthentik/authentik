@@ -10,23 +10,35 @@ import { UIConfig, getConfigForUser } from "#common/ui/config";
 import { DefaultBrand } from "#common/ui/config";
 import { me } from "#common/users";
 import { WebsocketClient } from "#common/ws";
+
 import "#components/ak-nav-buttons";
+
 import { AuthenticatedInterface } from "#elements/AuthenticatedInterface";
 import { AKElement } from "#elements/Base";
+
 import "#elements/ak-locale-context/ak-locale-context";
 import "#elements/banner/EnterpriseStatusBanner";
 import "#elements/buttons/ActionButton/ak-action-button";
 import "#elements/messages/MessageContainer";
+
 import { WithBrandConfig } from "#elements/mixins/branding";
+
 import "#elements/notifications/APIDrawer";
 import "#elements/notifications/NotificationDrawer";
+
 import { getURLParam, updateURLParams } from "#elements/router/RouteMatch";
+
 import "#elements/router/RouterOutlet";
 import "#elements/sidebar/Sidebar";
 import "#elements/sidebar/SidebarItem";
+
 import { themeImage } from "#elements/utils/images";
+
 import { ROUTES } from "#user/Routes";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { css, html, nothing } from "lit";
@@ -41,8 +53,6 @@ import PFNotificationBadge from "@patternfly/patternfly/components/NotificationB
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-
-import { EventsApi, SessionUser } from "@goauthentik/api";
 
 if (process.env.NODE_ENV === "development") {
     await import("@goauthentik/esbuild-plugin-live-reload/client");

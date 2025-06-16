@@ -1,4 +1,5 @@
 import { PFSize } from "@goauthentik/common/enums.js";
+
 import { AKElement } from "@goauthentik/elements/Base";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
 import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestrationController.js";

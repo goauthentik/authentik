@@ -4,8 +4,12 @@ import "@goauthentik/admin/roles/RoleAssignedGlobalPermissionsTable";
 import "@goauthentik/admin/roles/RoleAssignedObjectPermissionTable";
 import "@goauthentik/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/admin/users/UserAssignedObjectPermissionsTable";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Tabs";
+
+import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -15,8 +19,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {

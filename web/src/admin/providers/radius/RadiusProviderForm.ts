@@ -1,10 +1,12 @@
-import { WithBrandConfig } from "#elements/mixins/branding";
-import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { customElement } from "lit/decorators.js";
+import { WithBrandConfig } from "#elements/mixins/branding";
+
+import { BaseProviderForm } from "@goauthentik/admin/providers/BaseProviderForm";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
+
+import { customElement } from "lit/decorators.js";
 
 import { renderForm } from "./RadiusProviderFormForm.js";
 

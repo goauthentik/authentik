@@ -1,15 +1,13 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { severityToLabel } from "@goauthentik/common/labels";
+
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CoreApi,
@@ -20,6 +18,11 @@ import {
     PaginatedNotificationTransportList,
     SeverityEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { eventTransportsProvider, eventTransportsSelector } from "./RuleFormHelpers.js";
 

@@ -1,16 +1,18 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
 import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/DeleteBulkForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+
+import { CoreApi, UserConsent } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { CoreApi, UserConsent } from "@goauthentik/api";
 
 @customElement("ak-user-consent-list")
 export class UserConsentList extends Table<UserConsent> {

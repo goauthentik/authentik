@@ -1,12 +1,15 @@
 import { DefaultBrand } from "#common/ui/config";
+
 import "#components/ak-page-header";
+
 import { AKPageNavbar } from "#components/ak-page-navbar";
+
+import { CurrentBrand } from "@goauthentik/api";
+
 import { Meta } from "@storybook/web-components";
 
 import { html } from "lit";
 import { customElement } from "lit/decorators.js";
-
-import { CurrentBrand } from "@goauthentik/api";
 
 const metadata: Meta<AKPageNavbar> = {
     title: "Components / Page Navbar",

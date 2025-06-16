@@ -1,8 +1,12 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
 import "@goauthentik/admin/applications/ProviderSelectModal";
+
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
@@ -12,18 +16,20 @@ import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect/ak-search-select";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
+import { Application, CoreApi, Provider } from "@goauthentik/api";
+
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Application, CoreApi, Provider } from "@goauthentik/api";
 
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";

@@ -1,12 +1,16 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
+
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
+
+import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { BaseSourceForm } from "@goauthentik/admin/sources/BaseSourceForm";
 import {
     GroupMatchingModeToLabel,
     UserMatchingModeToLabel,
 } from "@goauthentik/admin/sources/oauth/utils";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+
 import "@goauthentik/components/ak-secret-text-input.js";
 import "@goauthentik/components/ak-secret-textarea-input.js";
 import "@goauthentik/components/ak-switch-input";
@@ -17,11 +21,6 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
-
 import {
     FlowsInstancesListDesignationEnum,
     GroupMatchingModeEnum,
@@ -31,6 +30,11 @@ import {
     SourcesApi,
     UserMatchingModeEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./KerberosSourceFormHelpers.js";
 

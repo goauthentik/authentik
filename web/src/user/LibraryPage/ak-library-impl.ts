@@ -1,8 +1,14 @@
 import { groupBy } from "@goauthentik/common/utils";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/EmptyState";
+
 import { bound } from "@goauthentik/elements/decorators/bound.js";
+
 import "@goauthentik/user/LibraryApplication";
+
+import type { Application } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
@@ -11,13 +17,13 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import styles from "./LibraryPageImpl.css";
 
-import type { Application } from "@goauthentik/api";
-
 import { appHasLaunchUrl } from "./LibraryPageImpl.utils";
+
 import "./ak-library-application-empty-list.js";
 import "./ak-library-application-list.js";
 import "./ak-library-application-search-empty.js";
 import "./ak-library-application-search.js";
+
 import {
     LibraryPageSearchEmpty,
     LibraryPageSearchReset,

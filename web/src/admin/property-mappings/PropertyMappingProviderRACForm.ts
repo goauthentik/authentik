@@ -1,19 +1,24 @@
-import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
+
+import { BasePropertyMappingForm } from "@goauthentik/admin/property-mappings/BasePropertyMappingForm";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
+
 import type { RadioOption } from "@goauthentik/elements/forms/Radio";
+
+import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { PropertymappingsApi, RACPropertyMapping } from "@goauthentik/api";
 
 export const staticSettingOptions: RadioOption<string | undefined>[] = [
     {

@@ -1,4 +1,5 @@
 import { MessageLevel } from "@goauthentik/common/messages";
+
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";

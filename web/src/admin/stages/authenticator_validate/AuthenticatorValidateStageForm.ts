@@ -1,6 +1,8 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { deviceTypeRestrictionPair } from "@goauthentik/admin/stages/authenticator_webauthn/utils";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-provider";
@@ -8,11 +10,6 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
-
-import { msg } from "@lit/localize";
-import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     AuthenticatorValidateStage,
@@ -22,6 +19,11 @@ import {
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
+
+import { msg } from "@lit/localize";
+import { TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     authenticatorWebauthnDeviceTypesListProvider,

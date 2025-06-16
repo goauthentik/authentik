@@ -1,17 +1,21 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { rootInterface } from "@goauthentik/common/theme";
 import { me } from "@goauthentik/common/users";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/EmptyState";
+
 import type { UserInterface } from "@goauthentik/user/index.entrypoint";
+
+import { Application, CoreApi } from "@goauthentik/api";
 
 import { localized, msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { Application, CoreApi } from "@goauthentik/api";
-
 import "./ak-library-impl.js";
+
 import type { PageUIConfig } from "./types.js";
 
 /**

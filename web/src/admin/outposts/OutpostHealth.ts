@@ -1,7 +1,11 @@
 import { formatElapsedTime } from "@goauthentik/common/temporal";
+
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
+
 import "@goauthentik/elements/Spinner";
+
+import { OutpostHealth } from "@goauthentik/api";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -9,8 +13,6 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { OutpostHealth } from "@goauthentik/api";
 
 @customElement("ak-outpost-health")
 export class OutpostHealthElement extends AKElement {

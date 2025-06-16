@@ -1,4 +1,5 @@
 import { docLink } from "@goauthentik/common/global";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 

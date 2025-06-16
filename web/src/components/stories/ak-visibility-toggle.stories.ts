@@ -4,6 +4,7 @@ import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import "../ak-visibility-toggle";
+
 import { type VisibilityToggle, type VisibilityToggleProps } from "../ak-visibility-toggle.js";
 
 const metadata: Meta<VisibilityToggleProps> = {

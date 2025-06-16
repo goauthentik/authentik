@@ -1,17 +1,19 @@
-import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
+import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
+import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { WizardStep } from "@goauthentik/components/ak-wizard/WizardStep.js";
 import {
     NavigationEventInit,
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
-import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { styles } from "@goauthentik/admin/applications/wizard/ApplicationWizardFormStepStyles.css.js";
+
+import { ValidationError } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { property, query } from "lit/decorators.js";
-
-import { ValidationError } from "@goauthentik/api";
 
 import {
     ApplicationTransactionValidationError,

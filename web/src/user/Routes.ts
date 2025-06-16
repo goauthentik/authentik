@@ -1,4 +1,5 @@
 import { Route } from "@goauthentik/elements/router/Route";
+
 import "@goauthentik/user/LibraryPage/ak-library.js";
 
 import { html } from "lit";

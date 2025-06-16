@@ -1,9 +1,11 @@
 import "@goauthentik/elements/messages/MessageContainer";
+
 import { Meta, StoryObj } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
 import "../components/ak-dual-select-controls";
+
 import { AkDualSelectControls } from "../components/ak-dual-select-controls";
 
 const metadata: Meta<AkDualSelectControls> = {

@@ -5,8 +5,12 @@ import {
     parseAPIResponseError,
     pluckErrorDetail,
 } from "@goauthentik/common/errors/network";
+
 import { AKElement } from "@goauthentik/elements/Base";
+
 import "@goauthentik/elements/Expand";
+
+import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -19,8 +23,6 @@ import PFNotificationDrawer from "@patternfly/patternfly/components/Notification
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import { FlowInspection, FlowsApi, Stage } from "@goauthentik/api";
 
 @customElement("ak-flow-inspector")
 export class FlowInspector extends AKElement {

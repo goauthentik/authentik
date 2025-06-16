@@ -1,22 +1,27 @@
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/flows/FlowImportForm";
-import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
+
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
+
+import { DesignationToLabel } from "@goauthentik/admin/flows/utils";
+
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
+
+import { Flow, FlowsApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-import { Flow, FlowsApi } from "@goauthentik/api";
 
 @customElement("ak-flow-list")
 export class FlowListPage extends TablePage<Flow> {

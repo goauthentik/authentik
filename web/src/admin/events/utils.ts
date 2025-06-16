@@ -1,5 +1,6 @@
 import { EventWithContext } from "@goauthentik/common/events";
 import { truncate } from "@goauthentik/common/utils";
+
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
 import { msg, str } from "@lit/localize";

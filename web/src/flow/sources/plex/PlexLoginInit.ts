@@ -1,8 +1,18 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { parseAPIResponseError } from "@goauthentik/common/errors/network";
 import { PlexAPIClient, popupCenterScreen } from "@goauthentik/common/helpers/plex";
+
 import { showAPIErrorMessage } from "@goauthentik/elements/messages/MessageContainer";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import {
+    PlexAuthenticationChallenge,
+    PlexAuthenticationChallengeResponseRequest,
+} from "@goauthentik/api";
+import { SourcesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult } from "lit";
@@ -16,12 +26,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    PlexAuthenticationChallenge,
-    PlexAuthenticationChallengeResponseRequest,
-} from "@goauthentik/api";
-import { SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-flow-source-plex")
 export class PlexLoginInit extends BaseStage<

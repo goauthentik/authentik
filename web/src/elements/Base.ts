@@ -10,11 +10,11 @@ import {
     resolveUITheme,
 } from "#common/theme";
 
+import { UiThemeEnum } from "@goauthentik/api";
+
 import { localized } from "@lit/localize";
 import { CSSResult, CSSResultGroup, CSSResultOrNative, LitElement } from "lit";
 import { property } from "lit/decorators.js";
-
-import { UiThemeEnum } from "@goauthentik/api";
 
 export interface AKElementProps {
     activeTheme: ResolvedUITheme;

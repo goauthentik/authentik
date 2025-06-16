@@ -1,9 +1,23 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
+
 import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+
+import { BaseStage, StageHost, SubmitOptions } from "@goauthentik/flow/stages/base";
+import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
+
+import {
+    AuthenticatorValidationChallenge,
+    AuthenticatorValidationChallengeResponseRequest,
+    CurrentBrand,
+    DeviceChallenge,
+    DeviceClassesEnum,
+    FlowsApi,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, css, html, nothing } from "lit";
@@ -15,15 +29,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    AuthenticatorValidationChallenge,
-    AuthenticatorValidationChallengeResponseRequest,
-    CurrentBrand,
-    DeviceChallenge,
-    DeviceClassesEnum,
-    FlowsApi,
-} from "@goauthentik/api";
 
 const customCSS = css`
     ul {

@@ -4,17 +4,21 @@ import "#admin/sources/oauth/OAuthSourceViewPage";
 import "#admin/sources/plex/PlexSourceViewPage";
 import "#admin/sources/saml/SAMLSourceViewPage";
 import "#admin/sources/scim/SCIMSourceViewPage";
+
 import { DEFAULT_CONFIG } from "#common/api/config";
+
 import "#components/ak-page-header";
+
 import { AKElement } from "#elements/Base";
+
 import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+
+import { Source, SourcesApi } from "@goauthentik/api";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { Source, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-view")
 export class SourceViewPage extends AKElement {

@@ -2,10 +2,6 @@ import {
     type DescriptionPair,
     renderDescriptionList,
 } from "@goauthentik/components/DescriptionList.js";
-import { match } from "ts-pattern";
-
-import { msg } from "@lit/localize";
-import { html } from "lit";
 
 import {
     ClientTypeEnum,
@@ -21,6 +17,11 @@ import {
     SAMLProvider,
     SCIMProvider,
 } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html } from "lit";
 
 import { OneOfProvider } from "../types.js";
 

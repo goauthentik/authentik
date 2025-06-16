@@ -4,11 +4,25 @@ import { APIError, parseAPIResponseError, pluckErrorDetail } from "#common/error
 import { globalAK } from "#common/global";
 import { MessageLevel } from "#common/messages";
 import { refreshMe } from "#common/users";
+
 import { AKElement } from "#elements/Base";
 import { showMessage } from "#elements/messages/MessageContainer";
 import { WithBrandConfig } from "#elements/mixins/branding";
+
 import { StageHost } from "#flow/stages/base";
+
+import { StageHost } from "#flow/stages/base";
+
 import "#user/user-settings/details/stages/prompt/PromptStage";
+
+import {
+    ChallengeTypes,
+    FlowChallengeResponseRequest,
+    FlowErrorChallenge,
+    FlowsApi,
+    RedirectChallenge,
+    ShellChallenge,
+} from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -20,15 +34,6 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import {
-    ChallengeTypes,
-    FlowChallengeResponseRequest,
-    FlowErrorChallenge,
-    FlowsApi,
-    RedirectChallenge,
-    ShellChallenge,
-} from "@goauthentik/api";
 
 @customElement("ak-user-settings-flow-executor")
 export class UserSettingsFlowExecutor

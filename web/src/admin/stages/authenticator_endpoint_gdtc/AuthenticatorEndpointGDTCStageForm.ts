@@ -1,17 +1,21 @@
-import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
+
 import "@goauthentik/elements/CodeMirror";
+
 import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
-
-import { AuthenticatorEndpointGDTCStage, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-endpoint-gdtc-form")
 export class AuthenticatorEndpointGDTCStageForm extends BaseStageForm<AuthenticatorEndpointGDTCStage> {

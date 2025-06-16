@@ -1,23 +1,31 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
+
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
-import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
+
 import { camelToSnake } from "@goauthentik/common/utils.js";
+
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
+
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
+
 import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
+
+import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
+
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
+
 import { isSlug } from "@goauthentik/elements/router/utils.js";
+
+import { type ApplicationRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { type ApplicationRequest } from "@goauthentik/api";
 
 import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
 

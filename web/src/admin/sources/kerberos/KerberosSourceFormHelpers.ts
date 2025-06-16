@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
 import { DualSelectPair } from "@goauthentik/elements/ak-dual-select/types.js";
 
 import { KerberosSourcePropertyMapping, PropertymappingsApi } from "@goauthentik/api";

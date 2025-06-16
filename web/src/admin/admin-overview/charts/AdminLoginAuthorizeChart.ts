@@ -1,11 +1,13 @@
-import { EventChart } from "#elements/charts/EventChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+
+import { EventChart } from "#elements/charts/EventChart";
+
+import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
+
 import { ChartData, ChartDataset } from "chart.js";
 
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
-
-import { EventActions, EventVolume, EventsApi } from "@goauthentik/api";
 
 @customElement("ak-charts-admin-login-authorization")
 export class AdminLoginAuthorizeChart extends EventChart {

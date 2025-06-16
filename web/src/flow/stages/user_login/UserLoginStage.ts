@@ -1,7 +1,12 @@
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
+
 import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { BaseStage } from "@goauthentik/flow/stages/base";
+
+import { UserLoginChallenge, UserLoginChallengeResponseRequest } from "@goauthentik/api";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -15,8 +20,6 @@ import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
-import { UserLoginChallenge, UserLoginChallengeResponseRequest } from "@goauthentik/api";
 
 @customElement("ak-stage-user-login")
 export class PasswordStage extends BaseStage<

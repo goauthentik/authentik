@@ -1,5 +1,6 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+
 import {
     oauth2ProviderSelector,
     oauth2ProvidersProvider,
@@ -8,17 +9,13 @@ import {
     oauth2SourcesProvider,
     oauth2SourcesSelector,
 } from "@goauthentik/admin/providers/oauth2/OAuth2Sources.js";
+
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
-import { match } from "ts-pattern";
-
-import { msg } from "@lit/localize";
-import { html, nothing } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -26,6 +23,12 @@ import {
     ProxyProvider,
     ValidationError,
 } from "@goauthentik/api";
+
+import { match } from "ts-pattern";
+
+import { msg } from "@lit/localize";
+import { html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { propertyMappingsProvider, propertyMappingsSelector } from "./ProxyProviderFormHelpers.js";
 
