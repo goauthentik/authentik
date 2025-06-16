@@ -75,7 +75,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
     for transport in trigger.transports.all():
-        for user in trigger.group.users.all():
+        for user in trigger.destination_users(event):
             LOGGER.debug("created notification")
             notification_transport.apply_async(
                 args=[
