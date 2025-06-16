@@ -69,5 +69,5 @@ spring:
                 provider:
                     authentik:
                         user-name-attribute: preferred_username
-                        issuer-uri: https://authentik.company/application/o/<application slug>/
+                        issuer-uri: https://authentik.company/application/o/<application_slug>/
 ```

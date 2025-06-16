@@ -60,7 +60,7 @@ sudo docker exec -it glitchtip-web-1 ./manage.py createsuperuser
 - Client ID: &lt;Client ID from authentik>
 - Secret key: &lt;Client Secret from authentik>
 - Key: leave blank
-- Settings: `{"server_url": "https://authentik.company/application/o/<Slug of the application from above>/"}`
+- Settings: `{"server_url": "https://authentik.company/application/o/<application_slug>/"}`
   The URL should match the **OpenID Configuration Issuer** URL for the authentik provider.
 
 This will add a **Log in with Authentik** button to the GlitchTip log in page. To add an authentik account to an existing GlitchTip account, log in using the username/password, click _Profile_, then click _Add Account_ in the _Social Auth Accounts_ section.

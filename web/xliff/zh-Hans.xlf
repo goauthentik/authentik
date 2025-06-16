@@ -3012,11 +3012,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>加载服务器</target>
         
       </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>使用 Plex 重新验证身份</target>
-        
-      </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
         <source>Allow friends to authenticate via Plex, even if you don't share any servers</source>
         <target>允许好友通过 Plex 进行身份验证，即使您不共享任何服务器。</target>
@@ -9847,30 +9842,48 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0a2cb398b54a6207">
   <source>Welcome.</source>
+  <target>欢迎。</target>
 </trans-unit>
 <trans-unit id="s4e1d2cb86cf5ecd0">
   <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+  <target>包含组成员的字段。此字段的值与用户成员关系属性匹配。</target>
 </trans-unit>
 <trans-unit id="s6478025f3e0174fa">
   <source>User membership attribute</source>
+  <target>用户成员关系属性</target>
 </trans-unit>
 <trans-unit id="s344be99cf5d36407">
   <source>Attribute which matches the value of Group membership field.</source>
+  <target>匹配组成员关系字段值的属性。</target>
 </trans-unit>
 <trans-unit id="sfa6b7b105640e457">
   <source>Additional User DN</source>
+  <target>额外的用户 DN</target>
 </trans-unit>
 <trans-unit id="s04bb32ec9f359507">
   <source>Additional Group DN</source>
+  <target>额外的组 DN</target>
 </trans-unit>
 <trans-unit id="sb7af25ce6e30d61a">
   <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+  <target>当前所选策略引擎模式为 <x id="0" equiv-text="${policyEngineMode.label}"/>：</target>
 </trans-unit>
 <trans-unit id="se1d2545eda4b1600">
   <source>Import Existing Certificate-Key Pair</source>
+  <target>导入已有的证书密钥对</target>
 </trans-unit>
 <trans-unit id="sb3d5c0a0501669df">
   <source>Generate New Certificate-Key Pair</source>
+  <target>生成新的证书密钥对</target>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
 </trans-unit>
     </body>
   </file>
