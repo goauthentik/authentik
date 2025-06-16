@@ -8,7 +8,7 @@ Most settings that are defined in the Brand's attributes are manifested in _both
 
 ## Custom settings
 
-The settings are grouped by:
+The following settings are grouped by:
 
 - `enabledFeatures` settings
 - general configurations
@@ -19,15 +19,15 @@ The following features can be enabled/disabled using attributes defined on the B
 
 #### `settings.enabledFeatures.apiDrawer`
 
-    Display the API Request drawer in the upper menu bar.
+    Display the API Request drawer in the upper tool bar.
 
 #### `settings.enabledFeatures.notificationDrawer`
 
-Display the Notification drawer in the upper menu bar.
+Display the Notification drawer in the upper tool bar.
 
 #### `settings.enabledFeatures.settings`
 
-    Display the Settings link in the upper menu bar.
+    Display the Settings link in the upper tool bar.
 
 #### `settings.enabledFeatures.applicationEdit` (User interface only)
 
@@ -35,11 +35,9 @@ Display the Notification drawer in the upper menu bar.
 
 #### `settings.enabledFeatures.search`
 
-    Display the Search bar in the upper menu bar.
+    Display the Search bar in the upper tool bar.
 
-![](./global-attributes.png)
-
-### Other configurations
+### General configurations
 
 #### `settings.navbar.userDisplay`
 
@@ -87,6 +85,12 @@ Default user path which is opened when opening the user list. Defaults to `users
 #### `settings.locale`
 
 The locale which can be configured in the user settings by default. This can be used to preset locales for groups of users, but still let them choose their own preferred locale.
+
+**Example**:
+
+The following screenshot shows the syntax for setting several attributes for a brand: light mode, a 3-column display of applications on My Applications page, hiding the API drawer from the tool bar, and disallowing users to edit the applications on My Applications page.
+
+![](./global-attributes.png)
 
 import Global from "../_global/global.mdx";
 
