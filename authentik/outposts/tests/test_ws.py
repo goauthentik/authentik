@@ -1,11 +1,9 @@
 """Websocket tests"""
 
 from dataclasses import asdict
-from unittest.mock import patch
 
 from channels.routing import URLRouter
 from channels.testing import WebsocketCommunicator
-from django.contrib.contenttypes.models import ContentType
 from django.test import TransactionTestCase
 
 from authentik import __version__
@@ -16,12 +14,6 @@ from authentik.providers.proxy.models import ProxyProvider
 from authentik.root import websocket
 
 
-def patched__get_ct_cached(app_label, codename):
-    """Caches `ContentType` instances like its `QuerySet` does."""
-    return ContentType.objects.get(app_label=app_label, permission__codename=codename)
-
-
-@patch("guardian.shortcuts._get_ct_cached", patched__get_ct_cached)
 class TestOutpostWS(TransactionTestCase):
     """Websocket tests"""
 
@@ -46,7 +38,6 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertFalse(connected)
-        await communicator.disconnect()
 
     async def test_auth_valid(self):
         """Test auth with token"""
@@ -57,7 +48,6 @@ class TestOutpostWS(TransactionTestCase):
         )
         connected, _ = await communicator.connect()
         self.assertTrue(connected)
-        await communicator.disconnect()
 
     async def test_send(self):
         """Test sending of Hello"""

@@ -3,7 +3,7 @@ title: Brands
 slug: /brands
 ---
 
-As an authentik admin, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard or can be set as default, in which case the brand will be used when no other brand matches the domain.
+As an authentik admin, you can customize your instance's appearance and behavior using brands. While a single authentik instance supports only one brand per domain, you can apply a separate brand to each domain.
 
 For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
 
@@ -23,14 +23,11 @@ The brand settings define the visual identity of the brand, including:
 
 - **Branding title**: Displayed in the browser tab (document title) and throughout the UI;
 - **Logo**: Appears in the sidebar/header;
-
-    :::info
-    Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
-    :::
-
 - **Favicon**: Shown on the browser tab.
-- **Default flow background** :ak-version[2025.4]: Default background image for the flow executor, can be overridden per flow, see [Flow configuration options](../add-secure-apps/flows-stages/flow/index.md#flow-configuration-options).
-- **Custom CSS** :ak-version[2025.4]: Add custom CSS to further customize the look of authentik. Creating such a file is outside the scope of this document.
+
+:::info
+Starting with authentik 2024.6.2, the placeholder `%(theme)s` can be used in the logo configuration option, which will be replaced with the active theme.
+:::
 
 ### External user settings
 
@@ -61,14 +58,4 @@ This means that if you want to select a default flow based on policy, you can le
 
 ## Other global settings
 
-#### Web Certificate
-
-The **Web Certificate** option can be used to configure which certificate authentik uses when its accessed directly via HTTPS (via port 9443).
-
-#### Client Certificates:ak-version[2025.4]
-
-When using the [Mutual TLS Stage](../add-secure-apps/flows-stages/stages/mtls/index.md) and accessing authentik directly, this option configures which certificate authorities clients' certificates can be issued by.
-
-#### Attributes
-
-Attributes such as locale, theme settings and custom attributes can be set to a per-brand default value here. Any custom attributes can be retrieved via [`group_attributes()`](../users-sources/user/user_ref.mdx#object-properties).
+Under **Other global settings** you can specify an exact web certificate.

@@ -1,7 +1,6 @@
 package web
 
 import (
-	"context"
 	"net"
 	"net/http"
 
@@ -9,14 +8,6 @@ import (
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/config"
 )
-
-type allowedProxyRequestContext string
-
-const allowedProxyRequest allowedProxyRequestContext = ""
-
-func IsRequestFromTrustedProxy(r *http.Request) bool {
-	return r.Context().Value(allowedProxyRequest) != nil
-}
 
 // ProxyHeaders Set proxy headers like X-Forwarded-For and such, but only if the direct connection
 // comes from a client that's in a list of trusted CIDRs
@@ -29,6 +20,7 @@ func ProxyHeaders() func(http.Handler) http.Handler {
 		}
 		nets = append(nets, cidr)
 	}
+	ph := handlers.ProxyHeaders
 	return func(h http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			host, _, err := net.SplitHostPort(r.RemoteAddr)
@@ -38,8 +30,7 @@ func ProxyHeaders() func(http.Handler) http.Handler {
 				for _, allowedCidr := range nets {
 					if remoteAddr != nil && allowedCidr.Contains(remoteAddr) {
 						log.WithField("remoteAddr", remoteAddr).WithField("cidr", allowedCidr.String()).Trace("Setting proxy headers")
-						rr := r.WithContext(context.WithValue(r.Context(), allowedProxyRequest, true))
-						handlers.ProxyHeaders(h).ServeHTTP(w, rr)
+						ph(h).ServeHTTP(w, r)
 						return
 					}
 				}

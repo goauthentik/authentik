@@ -27,7 +27,7 @@ To support the integration of Knocknoc with authentik, you need to create an app
 
 ### Create property mappings in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create** to create a property mapping.
 
 - **Select type**: Select **SAML Provider Property Mapping** as the type and click **Next**.
@@ -72,7 +72,7 @@ This example will set session duration at 540 minutes. Change the value to match
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.

@@ -2,9 +2,6 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "checkJs": true,
-        "allowJs": true,
-        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "emitDeclarationOnly": true,
         "experimentalDecorators": true,
@@ -21,6 +18,7 @@
             "@goauthentik/admin/*": ["./src/admin/*"],
             "@goauthentik/common/*": ["./src/common/*"],
             "@goauthentik/components/*": ["./src/components/*"],
+            "@goauthentik/docs/*": ["../website/docs/*"],
             "@goauthentik/elements/*": ["./src/elements/*"],
             "@goauthentik/flow/*": ["./src/flow/*"],
             "@goauthentik/locales/*": ["./src/locales/*"],
@@ -51,12 +49,17 @@
     },
     "exclude": [
         // ---
-        "**/out/**/*",
-        "**/dist/**/*",
+        "./out/**/*",
+        "./dist/**/*",
         "src/**/*.test.ts",
         "./tests",
 
         // TODO: Remove after monorepo cleanup.
         "src/**/*.comp.ts"
-    ]
+    ],
+    "references": [
+        {
+            "path": "./packages/esbuild-plugin-live-reload"
+        }
+    ],
 }

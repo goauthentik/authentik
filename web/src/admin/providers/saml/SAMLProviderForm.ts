@@ -27,10 +27,11 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 id: this.instance.pk,
                 sAMLProviderRequest: data,
             });
+        } else {
+            return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
+                sAMLProviderRequest: data,
+            });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersSamlCreate({
-            sAMLProviderRequest: data,
-        });
     }
 
     renderForm() {

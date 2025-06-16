@@ -25,10 +25,11 @@ export class PropertyMappingSourceKerberosForm extends BasePropertyMappingForm<K
                 pmUuid: this.instance.pk,
                 kerberosSourcePropertyMappingRequest: data,
             });
+        } else {
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosCreate({
+                kerberosSourcePropertyMappingRequest: data,
+            });
         }
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceKerberosCreate({
-            kerberosSourcePropertyMappingRequest: data,
-        });
     }
 }
 

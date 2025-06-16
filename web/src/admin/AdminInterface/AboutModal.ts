@@ -1,9 +1,11 @@
-import { WithBrandConfig } from "#elements/mixins/branding";
-import { WithLicenseSummary } from "#elements/mixins/license";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import "@goauthentik/elements/EmptyState";
+import { WithBrandConfig } from "@goauthentik/elements/Interface/brandProvider";
+import { WithLicenseSummary } from "@goauthentik/elements/Interface/licenseSummaryProvider";
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
+import { DefaultBrand } from "@goauthentik/elements/sidebar/SidebarBrand";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, css, html } from "lit";
@@ -43,7 +45,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
         }
         return [
             [msg("Version"), version.versionCurrent],
-            [msg("UI Version"), import.meta.env.AK_VERSION],
+            [msg("UI Version"), VERSION],
             [msg("Build"), build],
             [msg("Python version"), status.runtime.pythonVersion],
             [msg("Platform"), status.runtime.platform],
@@ -56,9 +58,8 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
     }
 
     renderModal() {
-        let product = this.brandingTitle;
-
-        if (this.licenseSummary.status !== LicenseSummaryStatusEnum.Unlicensed) {
+        let product = globalAK().brand.brandingTitle || DefaultBrand.brandingTitle;
+        if (this.licenseSummary.status != LicenseSummaryStatusEnum.Unlicensed) {
             product += ` ${msg("Enterprise")}`;
         }
         return html`<div
@@ -73,7 +74,7 @@ export class AboutModal extends WithLicenseSummary(WithBrandConfig(ModalButton))
                     <div class="pf-c-about-modal-box__brand">
                         <img
                             class="pf-c-about-modal-box__brand-image"
-                            src=${this.brandingFavicon}
+                            src=${this.brand?.brandingFavicon ?? DefaultBrand.brandingFavicon}
                             alt="${msg("authentik Logo")}"
                         />
                     </div>

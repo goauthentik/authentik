@@ -1,5 +1,6 @@
 import { BasePolicyForm } from "@goauthentik/admin/policies/BasePolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -24,10 +25,11 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                 policyUuid: this.instance.pk || "",
                 dummyPolicyRequest: data,
             });
+        } else {
+            return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
+                dummyPolicyRequest: data,
+            });
         }
-        return new PoliciesApi(DEFAULT_CONFIG).policiesDummyCreate({
-            dummyPolicyRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -49,7 +51,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.executionLogging ?? false}
+                        ?checked=${first(this.instance?.executionLogging, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -72,7 +74,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.result ?? false}
+                                ?checked=${first(this.instance?.result, false)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -89,7 +91,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     >
                         <input
                             type="number"
-                            value="${this.instance?.waitMin ?? 1}"
+                            value="${first(this.instance?.waitMin, 1)}"
                             class="pf-c-form-control"
                             required
                         />
@@ -106,7 +108,7 @@ export class DummyPolicyForm extends BasePolicyForm<DummyPolicy> {
                     >
                         <input
                             type="number"
-                            value="${this.instance?.waitMax ?? 5}"
+                            value="${first(this.instance?.waitMax, 5)}"
                             class="pf-c-form-control"
                             required
                         />

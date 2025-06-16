@@ -1,6 +1,7 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { UserCreationModeEnum } from "@goauthentik/api/dist/models/UserCreationModeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -34,10 +35,11 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                 stageUuid: this.instance.pk || "",
                 userWriteStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
+                userWriteStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesUserWriteCreate({
-            userWriteStageRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -93,7 +95,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.createUsersAsInactive ?? true}
+                                ?checked=${first(this.instance?.createUsersAsInactive, true)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
@@ -147,7 +149,7 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     >
                         <input
                             type="text"
-                            value="${this.instance?.userPathTemplate ?? ""}"
+                            value="${first(this.instance?.userPathTemplate, "")}"
                             class="pf-c-form-control pf-m-monospace"
                             autocomplete="off"
                             spellcheck="false"

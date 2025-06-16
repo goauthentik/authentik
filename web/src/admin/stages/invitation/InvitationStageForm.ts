@@ -1,5 +1,6 @@
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
@@ -23,10 +24,11 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                 stageUuid: this.instance.pk || "",
                 invitationStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
+                invitationStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesCreate({
-            invitationStageRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -49,7 +51,10 @@ export class InvitationStageForm extends BaseStageForm<InvitationStage> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${this.instance?.continueFlowWithoutInvitation ?? false}
+                                ?checked=${first(
+                                    this.instance?.continueFlowWithoutInvitation,
+                                    false,
+                                )}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">

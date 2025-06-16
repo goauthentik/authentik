@@ -1,8 +1,11 @@
 ---
 title: Integrate with EspoCRM
 sidebar_label: EspoCRM
-support_level: community
 ---
+
+# Integrate with EspoCRM
+
+<span class="badge badge--secondary">Support level: Community</span>
 
 ## What is EspoCRM?
 
@@ -31,7 +34,7 @@ To support the integration of EspoCRM with authentik, you need to create an appl
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -61,10 +64,10 @@ Configure the following fields:
 - **JSON Web Key Set Endpoint**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/jwks</kbd>
 - **Logout URL**: <kbd>https://<em>authentik.company</em>/application/o/<em>your-application-slug</em>/end_session</kbd>
 
-## Configuration verification
-
-To confirm that authentik is properly configured with EspoCRM, log out and log back in via authentik. Clicking the "Login" button on the homepage should redirect you to authentik.
-
 ## Resources
 
 - [EspoCRM administrator documentation on OpenID Connect authentication](https://docs.espocrm.com/administration/oidc/)
+
+## Configuration verification
+
+To confirm that authentik is properly configured with EspoCRM, log out and log back in via authentik. Clicking the "Login" button on the homepage should redirect you to authentik.

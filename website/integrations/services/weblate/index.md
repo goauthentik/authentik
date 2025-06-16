@@ -28,7 +28,7 @@ To support the integration of Weblate with authentik, you need to create an appl
 
 ### Create property mappings
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create four **SAML Provider Property Mapping**s with the following settings:
     - **Full Name Mapping:**
         - **Name**: Choose a descriptive name
@@ -65,7 +65,7 @@ To support the integration of Weblate with authentik, you need to create an appl
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.

@@ -12,7 +12,9 @@ import { globalVariables } from "../components/styles.css";
 
 @customElement("sb-dual-select-host-provider")
 export class SbHostProvider extends LitElement {
-    static styles = globalVariables;
+    static get styles() {
+        return globalVariables;
+    }
 
     render() {
         return html`<slot></slot>`;

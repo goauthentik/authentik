@@ -1,6 +1,5 @@
 # Ignore artifacts:
 build
-out
 coverage
 .docusaurus
 node_modules

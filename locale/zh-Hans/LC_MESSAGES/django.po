@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 11:25+0000\n"
+"POT-Creation-Date: 2025-04-23 09:00+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -101,10 +101,6 @@ msgstr "设置时，外部用户在验证身份后会被重定向到此应用程
 #: authentik/brands/models.py
 msgid "Web Certificate used by the authentik Core webserver."
 msgstr "authentik 核心 Web 服务器使用的 Web 证书。"
-
-#: authentik/brands/models.py
-msgid "Certificates used for client authentication."
-msgstr "用于客户端身份验证的证书"
 
 #: authentik/brands/models.py
 msgid "Brand"
@@ -630,33 +626,6 @@ msgstr "端点设备"
 msgid "Verifying your browser..."
 msgstr "正在验证您的浏览器…"
 
-#: authentik/enterprise/stages/mtls/models.py
-msgid ""
-"Configure certificate authorities to validate the certificate against. This "
-"option has a higher priority than the `client_certificate` option on "
-"`Brand`."
-msgstr "配置用于验证证书的证书机构。此选项的优先级比“品牌”中的“客户端证书”更高。"
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Mutual TLS Stage"
-msgstr "双向 TLS 阶段"
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Mutual TLS Stages"
-msgstr "双向 TLS 阶段"
-
-#: authentik/enterprise/stages/mtls/models.py
-msgid "Permissions to pass Certificates for outposts."
-msgstr "为前哨传递证书的权限。"
-
-#: authentik/enterprise/stages/mtls/stage.py
-msgid "Certificate required but no certificate was given."
-msgstr "需要证书但未提供。"
-
-#: authentik/enterprise/stages/mtls/stage.py
-msgid "No user found for certificate."
-msgstr "未找到证书的用户。"
-
 #: authentik/enterprise/stages/source/models.py
 msgid ""
 "Amount of time a user can take to return from the source to continue the "
@@ -975,12 +944,9 @@ msgid "Starting full provider sync"
 msgstr "开始全量提供程序同步"
 
 #: authentik/lib/sync/outgoing/tasks.py
-msgid "Syncing users"
-msgstr ""
-
-#: authentik/lib/sync/outgoing/tasks.py
-msgid "Syncing groups"
-msgstr ""
+#, python-brace-format
+msgid "Syncing page {page} of users"
+msgstr "正在同步用户页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
@@ -2289,12 +2255,6 @@ msgid ""
 msgstr "基于用户属性而非组属性查询组成员身份。这允许在 FreeIPA 或 Active Directory 等系统上支持嵌套组决策"
 
 #: authentik/sources/ldap/models.py
-msgid ""
-"Delete authentik users and groups which were previously supplied by this "
-"source, but are now missing from it."
-msgstr ""
-
-#: authentik/sources/ldap/models.py
 msgid "LDAP Source"
 msgstr "LDAP 源"
 
@@ -2309,11 +2269,6 @@ msgstr "LDAP 源属性映射"
 #: authentik/sources/ldap/models.py
 msgid "LDAP Source Property Mappings"
 msgstr "LDAP 源属性映射"
-
-#: authentik/sources/ldap/models.py
-msgid ""
-"Unique ID used while checking if this object still exists in the directory."
-msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "User LDAP Source Connection"
@@ -2692,11 +2647,6 @@ msgstr "组 SAML 源连接"
 msgid "Group SAML Source Connections"
 msgstr "组 SAML 源连接"
 
-#: authentik/sources/saml/views.py
-#, python-brace-format
-msgid "Continue to {source_name}"
-msgstr ""
-
 #: authentik/sources/scim/models.py
 msgid "SCIM Source"
 msgstr "SCIM 源"
@@ -3063,10 +3013,6 @@ msgstr "用户同意授权"
 msgid "User Consents"
 msgstr "用户同意授权"
 
-#: authentik/stages/consent/stage.py
-msgid "Invalid consent token, re-showing prompt"
-msgstr ""
-
 #: authentik/stages/deny/models.py
 msgid "Deny Stage"
 msgstr "拒绝阶段"
@@ -3082,14 +3028,6 @@ msgstr "虚拟阶段"
 #: authentik/stages/dummy/models.py
 msgid "Dummy Stages"
 msgstr "虚拟阶段"
-
-#: authentik/stages/email/flow.py
-msgid "Continue to confirm this email address."
-msgstr ""
-
-#: authentik/stages/email/flow.py
-msgid "Link was already used, please request a new link."
-msgstr ""
 
 #: authentik/stages/email/models.py
 msgid "Password Reset"

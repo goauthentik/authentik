@@ -1,16 +1,18 @@
 import { AkControlElement } from "@goauthentik/elements/AkControlElement.js";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter.js";
+import { debounce } from "@goauthentik/elements/utils/debounce";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { PropertyValues, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import type { Ref } from "lit/directives/ref.js";
 
 import type { Pagination } from "@goauthentik/api";
 
-import "./ak-dual-select.js";
-import { AkDualSelect } from "./ak-dual-select.js";
-import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./types.js";
+import "./ak-dual-select";
+import { AkDualSelect } from "./ak-dual-select";
+import type { DataProvider, DualSelectPair } from "./types";
 
 /**
  * @element ak-dual-select-provider
@@ -20,19 +22,18 @@ import { type DataProvider, DualSelectEventType, type DualSelectPair } from "./t
  * between authentik and the generic ak-dual-select component; aside from knowing that
  * the Pagination object "looks like Django," the interior components don't know anything
  * about authentik at all and could be dropped into Gravity unchanged.)
+ *
  */
+
 @customElement("ak-dual-select-provider")
 export class AkDualSelectProvider extends CustomListenerElement(AkControlElement) {
-    //#region Properties
-
-    /**
-     * A function that takes a page and returns the {@linkcode DualSelectPair DualSelectPair[]}
-     * collection with which to update the "Available" pane.
+    /** A function that takes a page and returns the DualSelectPair[] collection with which to update
+     * the "Available" pane.
      *
      * @attr
      */
     @property({ type: Object })
-    public provider!: DataProvider;
+    provider!: DataProvider;
 
     /**
      * The list of selected items. This is the *complete* list, not paginated, as presented by a
@@ -41,7 +42,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
      * @attr
      */
     @property({ type: Array })
-    public selected: DualSelectPair[] = [];
+    selected: DualSelectPair[] = [];
 
     /**
      * The label for the left ("available") pane
@@ -49,7 +50,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
      * @attr
      */
     @property({ attribute: "available-label" })
-    public availableLabel = msg("Available options");
+    availableLabel = msg("Available options");
 
     /**
      * The label for the right ("selected") pane
@@ -57,7 +58,7 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
      * @attr
      */
     @property({ attribute: "selected-label" })
-    public selectedLabel = msg("Selected options");
+    selectedLabel = msg("Selected options");
 
     /**
      * The debounce for the search as the user is typing in a request
@@ -65,125 +66,103 @@ export class AkDualSelectProvider extends CustomListenerElement(AkControlElement
      * @attr
      */
     @property({ attribute: "search-delay", type: Number })
-    public searchDelay = 250;
-
-    public get value() {
-        return this.dualSelector.value!.selected.map(([k, _]) => k);
-    }
-
-    public json() {
-        return this.value;
-    }
-
-    //#endregion
-
-    //#region State
+    searchDelay = 250;
 
     @state()
-    protected options: DualSelectPair[] = [];
+    options: DualSelectPair[] = [];
 
-    #loading = false;
+    protected dualSelector: Ref<AkDualSelect> = createRef();
 
-    #didFirstUpdate = false;
-    #selected: DualSelectPair[] = [];
+    protected isLoading = false;
 
-    #previousSearchValue = "";
+    private doneFirstUpdate = false;
+    private internalSelected: DualSelectPair[] = [];
 
     protected pagination?: Pagination;
 
-    //#endregion
-
-    //#region Refs
-
-    protected dualSelector = createRef<AkDualSelect>();
-
-    //#endregion
-
-    //#region Lifecycle
-
-    public connectedCallback(): void {
-        super.connectedCallback();
-        this.addCustomListener(DualSelectEventType.NavigateTo, this.#navigationListener);
-        this.addCustomListener(DualSelectEventType.Change, this.#changeListener);
-        this.addCustomListener(DualSelectEventType.Search, this.#searchListener);
-
-        this.#fetch(1);
+    constructor() {
+        super();
+        setTimeout(() => this.fetch(1), 0);
+        this.onNav = this.onNav.bind(this);
+        this.onChange = this.onChange.bind(this);
+        this.onSearch = this.onSearch.bind(this);
+        this.addCustomListener("ak-pagination-nav-to", this.onNav);
+        this.addCustomListener("ak-dual-select-change", this.onChange);
+        this.addCustomListener("ak-dual-select-search", this.onSearch);
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
-        if (changedProperties.has("selected") && !this.#didFirstUpdate) {
-            this.#didFirstUpdate = true;
-            this.#selected = this.selected;
+        if (changedProperties.has("selected") && !this.doneFirstUpdate) {
+            this.doneFirstUpdate = true;
+            this.internalSelected = this.selected;
+        }
+
+        if (changedProperties.has("searchDelay")) {
+            this.doSearch = debounce(
+                AkDualSelectProvider.prototype.doSearch.bind(this),
+                this.searchDelay,
+            );
         }
 
         if (changedProperties.has("provider")) {
             this.pagination = undefined;
-            this.#previousSearchValue = "";
-            this.#fetch();
+            this.fetch();
         }
     }
 
-    //#endregion
+    async fetch(page?: number, search = "") {
+        if (this.isLoading) {
+            return;
+        }
+        this.isLoading = true;
+        const goto = page ?? this.pagination?.current ?? 1;
+        const data = await this.provider(goto, search);
+        this.pagination = data.pagination;
+        this.options = data.options;
+        this.isLoading = false;
+    }
 
-    //#region Private Methods
+    onNav(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for navigation, received ${event} instead`);
+        }
+        this.fetch(event.detail);
+    }
 
-    #fetch = async (page?: number, search = this.#previousSearchValue): Promise<void> => {
-        if (this.#loading) return;
+    onChange(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
+        }
+        this.internalSelected = event.detail.value;
+        this.selected = this.internalSelected;
+    }
 
-        this.#previousSearchValue = search;
-        this.#loading = true;
+    onSearch(event: Event) {
+        if (!(event instanceof CustomEvent)) {
+            throw new Error(`Expecting a CustomEvent for change, received ${event} instead`);
+        }
+        this.doSearch(event.detail);
+    }
 
-        page ??= this.pagination?.current ?? 1;
+    doSearch(search: string) {
+        this.pagination = undefined;
+        this.fetch(undefined, search);
+    }
 
-        return this.provider(page, search)
-            .then((data) => {
-                this.pagination = data.pagination;
-                this.options = data.options;
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-            .finally(() => {
-                this.#loading = false;
-            });
-    };
+    get value() {
+        return this.dualSelector.value!.selected.map(([k, _]) => k);
+    }
 
-    //#endregion
-
-    //#region Event Listeners
-
-    #navigationListener = (event: CustomEvent<number>) => {
-        this.#fetch(event.detail, this.#previousSearchValue);
-    };
-
-    #changeListener = (event: CustomEvent<{ value: DualSelectPair[] }>) => {
-        this.#selected = event.detail.value;
-        this.selected = this.#selected;
-    };
-
-    #searchListener = (event: CustomEvent<string>) => {
-        this.#doSearch(event.detail);
-    };
-
-    #searchTimeoutID?: ReturnType<typeof setTimeout>;
-
-    #doSearch = (search: string) => {
-        clearTimeout(this.#searchTimeoutID);
-
-        setTimeout(() => {
-            this.pagination = undefined;
-            this.#fetch(undefined, search);
-        }, this.searchDelay);
-    };
-
-    //#endregion
+    json() {
+        return this.value;
+    }
 
     render() {
         return html`<ak-dual-select
             ${ref(this.dualSelector)}
             .options=${this.options}
             .pages=${this.pagination}
-            .selected=${this.#selected}
+            .selected=${this.internalSelected}
             available-label=${this.availableLabel}
             selected-label=${this.selectedLabel}
         ></ak-dual-select>`;

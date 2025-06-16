@@ -50,4 +50,3 @@ AMR_PASSWORD = "pwd"  # nosec
 AMR_MFA = "mfa"
 AMR_OTP = "otp"
 AMR_WEBAUTHN = "user"
-AMR_SMART_CARD = "sc"

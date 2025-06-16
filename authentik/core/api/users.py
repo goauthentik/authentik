@@ -84,7 +84,6 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.avatars import get_avatar
 from authentik.rbac.decorators import permission_required
 from authentik.rbac.models import get_permission_choices
-from authentik.stages.email.flow import pickle_flow_token_for_email
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -452,7 +451,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
-    def _create_recovery_link(self, for_email=False) -> tuple[str, Token]:
+    def _create_recovery_link(self) -> tuple[str, Token]:
         """Create a recovery link (when the current brand has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         brand: Brand = self.request._request.brand
@@ -474,16 +473,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             raise ValidationError(
                 {"non_field_errors": "Recovery flow not applicable to user"}
             ) from None
-        _plan = FlowToken.pickle(plan)
-        if for_email:
-            _plan = pickle_flow_token_for_email(plan)
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
                 "user": user,
                 "flow": flow,
-                "_plan": _plan,
-                "revoke_on_execution": not for_email,
+                "_plan": FlowToken.pickle(plan),
             },
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
@@ -653,7 +648,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if for_user.email == "":
             LOGGER.debug("User doesn't have an email address")
             raise ValidationError({"non_field_errors": "User does not have an email address set."})
-        link, token = self._create_recovery_link(for_email=True)
+        link, token = self._create_recovery_link()
         # Lookup the email stage to assure the current user can access it
         stages = get_objects_for_user(
             request.user, "authentik_stages_email.view_emailstage"

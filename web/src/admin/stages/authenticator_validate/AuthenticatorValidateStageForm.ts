@@ -57,10 +57,11 @@ export class AuthenticatorValidateStageForm extends BaseStageForm<AuthenticatorV
                 stageUuid: this.instance.pk || "",
                 authenticatorValidateStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
+                authenticatorValidateStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateCreate({
-            authenticatorValidateStageRequest: data,
-        });
     }
 
     isDeviceClassSelected(field: DeviceClassesEnum): boolean {

@@ -164,7 +164,9 @@ class BlueprintEntry:
         """Get the blueprint model, with yaml tags resolved if present"""
         return str(self.tag_resolver(self.model, blueprint))
 
-    def get_permissions(self, blueprint: "Blueprint") -> Generator[BlueprintEntryPermission]:
+    def get_permissions(
+        self, blueprint: "Blueprint"
+    ) -> Generator[BlueprintEntryPermission, None, None]:
         """Get permissions of this entry, with all yaml tags resolved"""
         for perm in self.permissions:
             yield BlueprintEntryPermission(

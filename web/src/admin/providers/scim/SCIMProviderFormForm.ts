@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/ak-dual-select/ak-dual-select-dynamic-selected-provider.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -36,7 +37,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 <ak-text-input
                     name="url"
                     label=${msg("URL")}
-                    value="${provider?.url ?? ""}"
+                    value="${first(provider?.url, "")}"
                     .errorMessages=${errors?.url ?? []}
                     required
                     help=${msg("SCIM base url, usually ends in /v2.")}
@@ -95,7 +96,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                         <input
                             class="pf-c-switch__input"
                             type="checkbox"
-                            ?checked=${provider?.dryRun ?? false}
+                            ?checked=${first(provider?.dryRun, false)}
                         />
                         <span class="pf-c-switch__toggle">
                             <span class="pf-c-switch__toggle-icon">
@@ -118,7 +119,7 @@ export function renderForm(provider?: Partial<SCIMProvider>, errors: ValidationE
                 <ak-switch-input
                     name="excludeUsersServiceAccount"
                     label=${msg("Exclude service accounts")}
-                    ?checked=${provider?.excludeUsersServiceAccount ?? true}
+                    ?checked=${first(provider?.excludeUsersServiceAccount, true)}
                 >
                 </ak-switch-input>
 

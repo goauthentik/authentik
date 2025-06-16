@@ -27,7 +27,7 @@ To support the integration of Omni with authentik, you need to create a property
 
 ### Create a Property Mapping, Application, and Provider in authentik
 
-1. Log in to authentik as an administrator and open the authentik Admin interface.
+1. Log in to authentik as an admin, and open the authentik Admin interface.
 2. Navigate to **Customization** > **Property Mappings** and click **Create** to create a property mapping.
 
 - **Choose a Property Mapping type**: Select SAML Provider Property Mapping as the property mapping type.

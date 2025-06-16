@@ -21,10 +21,11 @@ export class SCIMProviderFormPage extends BaseProviderForm<SCIMProvider> {
                 id: this.instance.pk,
                 sCIMProviderRequest: data,
             });
+        } else {
+            return new ProvidersApi(DEFAULT_CONFIG).providersScimCreate({
+                sCIMProviderRequest: data,
+            });
         }
-        return new ProvidersApi(DEFAULT_CONFIG).providersScimCreate({
-            sCIMProviderRequest: data,
-        });
     }
 
     renderForm() {

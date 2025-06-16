@@ -31,8 +31,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
 
         if kwargs.get("randomly_seed", None):
             self.args.append(f"--randomly-seed={kwargs['randomly_seed']}")
-        if kwargs.get("no_capture", False):
-            self.args.append("--capture=no")
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
@@ -65,11 +63,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "to reuse the seed from the previous run."
             "Default behaviour: use random.Random().getrandbits(32), so the seed is"
             "different on each run.",
-        )
-        parser.add_argument(
-            "--no-capture",
-            action="store_true",
-            help="Disable any capturing of stdout/stderr during tests.",
         )
 
     def run_tests(self, test_labels, extra_tests=None, **kwargs):

@@ -1,13 +1,12 @@
 import { PFSize } from "@goauthentik/common/enums.js";
 import { globalAK } from "@goauthentik/common/global";
-import { rootInterface } from "@goauthentik/common/theme";
 import { truncateWords } from "@goauthentik/common/utils";
 import "@goauthentik/elements/AppIcon";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 import "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
 import type { RACLaunchEndpointModal } from "@goauthentik/user/LibraryApplication/RACLaunchEndpointModal";
-import type { UserInterface } from "@goauthentik/user/index.entrypoint.js";
+import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
@@ -72,14 +71,14 @@ export class LibraryApplication extends AKElement {
     }
 
     renderExpansion(application: Application) {
-        const { me, uiConfig } = rootInterface<UserInterface>();
+        const me = rootInterface<UserInterface>()?.me;
 
         return html`<ak-expand textOpen=${msg("Fewer details")} textClosed=${msg("More details")}>
             <div class="pf-c-content">
                 <small>${application.metaPublisher}</small>
             </div>
             ${truncateWords(application.metaDescription || "", 10)}
-            ${uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+            ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
                 ? html`
                       <a
                           class="pf-c-button pf-m-control pf-m-small pf-m-block"
@@ -149,10 +148,9 @@ export class LibraryApplication extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
 
-        const { me, uiConfig } = rootInterface<UserInterface>();
-
+        const me = rootInterface<UserInterface>()?.me;
         const expandable =
-            (uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser) ||
+            (rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser) ||
             this.application.metaPublisher !== "" ||
             this.application.metaDescription !== "";
 

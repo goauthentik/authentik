@@ -63,19 +63,25 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                     group_member_dn = group_member.get("dn", {})
                     members.append(group_member_dn)
             else:
-                if (attributes := self.get_attributes(group)) is None:
+                if "attributes" not in group:
                     continue
-                members = attributes.get(self._source.group_membership_field, [])
+                members = group.get("attributes", {}).get(self._source.group_membership_field, [])
 
             ak_group = self.get_group(group)
             if not ak_group:
                 continue
 
+            membership_mapping_attribute = LDAP_DISTINGUISHED_NAME
+            if self._source.group_membership_field == "memberUid":
+                # If memberships are based on the posixGroup's 'memberUid'
+                # attribute we use the RDN instead of the FDN to lookup members.
+                membership_mapping_attribute = LDAP_UNIQUENESS
+
             users = User.objects.filter(
-                Q(**{f"attributes__{self._source.user_membership_attribute}__in": members})
+                Q(**{f"attributes__{membership_mapping_attribute}__in": members})
                 | Q(
                     **{
-                        f"attributes__{self._source.user_membership_attribute}__isnull": True,
+                        f"attributes__{membership_mapping_attribute}__isnull": True,
                         "ak_groups__in": [ak_group],
                     }
                 )

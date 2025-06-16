@@ -25,12 +25,13 @@ export class PropertyMappingProviderGoogleWorkspaceForm extends BasePropertyMapp
                 pmUuid: this.instance.pk,
                 googleWorkspaceProviderMappingRequest: data,
             });
+        } else {
+            return new PropertymappingsApi(
+                DEFAULT_CONFIG,
+            ).propertymappingsProviderGoogleWorkspaceCreate({
+                googleWorkspaceProviderMappingRequest: data,
+            });
         }
-        return new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsProviderGoogleWorkspaceCreate({
-            googleWorkspaceProviderMappingRequest: data,
-        });
     }
 }
 

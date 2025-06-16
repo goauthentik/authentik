@@ -9,7 +9,7 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.sources.mapper import SourceMapper
 from authentik.lib.config import CONFIG
 from authentik.lib.sync.mapper import PropertyMappingManager
-from authentik.sources.ldap.models import LDAPSource, flatten
+from authentik.sources.ldap.models import LDAPSource
 
 
 class BaseLDAPSynchronizer:
@@ -76,16 +76,6 @@ class BaseLDAPSynchronizer:
     def get_objects(self, **kwargs) -> Generator:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
-
-    def get_attributes(self, object):
-        if "attributes" not in object:
-            return
-        return object.get("attributes", {})
-
-    def get_identifier(self, attributes: dict):
-        if not attributes.get(self._source.object_uniqueness_field):
-            return
-        return flatten(attributes[self._source.object_uniqueness_field])
 
     def search_paginator(  # noqa: PLR0913
         self,

@@ -52,7 +52,8 @@ html[data-theme="dark"] {
             display: flex;
             gap: var(--ifm-spacing-horizontal);
             justify-content: center;
-            margin: calc(var(--ifm-spacing-horizontal) * 2) 0 var(--ifm-spacing-horizontal);
+            margin: calc(var(--ifm-spacing-horizontal) * 2) 0
+                var(--ifm-spacing-horizontal);
             padding: 0;
         }
 

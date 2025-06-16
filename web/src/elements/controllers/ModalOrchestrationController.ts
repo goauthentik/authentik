@@ -1,8 +1,10 @@
-import { LitElement, ReactiveController } from "lit";
+import { bound } from "@goauthentik/elements/decorators/bound.js";
 
-interface ModalElement extends LitElement {
-    closeModal(): void | boolean;
-}
+import { LitElement, ReactiveController, ReactiveControllerHost } from "lit";
+
+type ReactiveElementHost = Partial<ReactiveControllerHost> & LitElement;
+
+type ModalElement = LitElement & { closeModal(): void | boolean };
 
 export class ModalShowEvent extends Event {
     modal: ModalElement;
@@ -48,70 +50,75 @@ const modalIsLive = (modal: ModalElement) => modal.isConnected && modal.checkVis
  */
 
 export class ModalOrchestrationController implements ReactiveController {
-    #knownModals: ModalElement[] = [];
+    host!: ReactiveElementHost;
 
-    public hostConnected() {
+    knownModals: ModalElement[] = [];
+
+    constructor(host: ReactiveElementHost) {
+        this.host = host;
+        host.addController(this);
+    }
+
+    hostConnected() {
         window.addEventListener("keyup", this.handleKeyup);
-        window.addEventListener("ak-modal-show", this.#addModal);
+        window.addEventListener("ak-modal-show", this.addModal);
         window.addEventListener("ak-modal-hide", this.closeModal);
     }
 
-    public hostDisconnected() {
+    hostDisconnected() {
         window.removeEventListener("keyup", this.handleKeyup);
-        window.removeEventListener("ak-modal-show", this.#addModal);
+        window.removeEventListener("ak-modal-show", this.addModal);
         window.removeEventListener("ak-modal-hide", this.closeModal);
     }
 
-    #addModal = (e: ModalShowEvent) => {
-        this.#knownModals = [...this.#knownModals, e.modal];
-    };
+    @bound
+    addModal(e: ModalShowEvent) {
+        this.knownModals = [...this.knownModals, e.modal];
+    }
 
-    #cleanupFrameID = -1;
+    scheduleCleanup(modal: ModalElement) {
+        setTimeout(() => {
+            this.knownModals = this.knownModals.filter((m) => modalIsLive(m) && modal !== m);
+        }, 0);
+    }
 
-    #scheduleCleanup = (modal: ModalElement) => {
-        cancelAnimationFrame(this.#cleanupFrameID);
-
-        this.#cleanupFrameID = requestAnimationFrame(() => {
-            this.#knownModals = this.#knownModals.filter((m) => modalIsLive(m) && modal !== m);
-        });
-    };
-
-    closeModal = (e: ModalHideEvent) => {
+    @bound
+    closeModal(e: ModalHideEvent) {
         const modal = e.modal;
-
-        if (!modalIsLive(modal)) return;
-
-        if (modal.closeModal() !== false) {
-            this.#scheduleCleanup(modal);
+        if (!modalIsLive(modal)) {
+            return;
         }
-    };
+        if (modal.closeModal() !== false) {
+            this.scheduleCleanup(modal);
+        }
+    }
 
-    #removeTopmostModal = () => {
-        const knownModals = [...this.#knownModals];
-
+    removeTopmostModal() {
+        const knownModals = [...this.knownModals];
         // Pop off modals until you find the first live one, schedule it to be closed, and make that
         // cleaned list the current state. Since this is our *only* state object, this has the
         // effect of creating a new "knownModals" collection with some semantics.
         while (true) {
             const modal = knownModals.pop();
-
-            if (!modal) break;
-
-            if (!modalIsLive(modal)) continue;
-
-            if (modal.closeModal() !== false) {
-                this.#scheduleCleanup(modal);
+            if (!modal) {
+                break;
             }
-
+            if (!modalIsLive(modal)) {
+                continue;
+            }
+            if (modal.closeModal() !== false) {
+                this.scheduleCleanup(modal);
+            }
             break;
         }
-        this.#knownModals = knownModals;
-    };
+        this.knownModals = knownModals;
+    }
 
-    handleKeyup = ({ key }: KeyboardEvent) => {
+    @bound
+    handleKeyup(e: KeyboardEvent) {
         // The latter handles Firefox 37 and earlier.
-        if (key === "Escape" || key === "Esc") {
-            this.#removeTopmostModal();
+        if (e.key === "Escape" || e.key === "Esc") {
+            this.removeTopmostModal();
         }
-    };
+    }
 }

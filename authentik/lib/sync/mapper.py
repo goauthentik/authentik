@@ -59,7 +59,7 @@ class PropertyMappingManager:
         request: HttpRequest | None,
         return_mapping: bool = False,
         **kwargs,
-    ) -> Generator[tuple[dict, PropertyMapping]]:
+    ) -> Generator[tuple[dict, PropertyMapping], None]:
         """Iterate over all mappings that were pre-compiled and
         execute all of them with the given context"""
         if not self.__has_compiled:

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -31,10 +32,11 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 uuid: this.instance.pk || "",
                 dockerServiceConnectionRequest: data,
             });
+        } else {
+            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
+                dockerServiceConnectionRequest: data,
+            });
         }
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerCreate({
-            dockerServiceConnectionRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {
@@ -51,7 +53,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${this.instance?.local ?? false}
+                        ?checked=${first(this.instance?.local, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">

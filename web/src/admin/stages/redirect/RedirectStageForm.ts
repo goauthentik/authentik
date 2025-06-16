@@ -38,10 +38,11 @@ export class RedirectStageForm extends BaseStageForm<RedirectStage> {
                 stageUuid: this.instance.pk || "",
                 redirectStageRequest: data,
             });
+        } else {
+            return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
+                redirectStageRequest: data,
+            });
         }
-        return new StagesApi(DEFAULT_CONFIG).stagesRedirectCreate({
-            redirectStageRequest: data,
-        });
     }
 
     renderForm(): TemplateResult {

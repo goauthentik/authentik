@@ -11,13 +11,16 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDualListSelector from "@patternfly/patternfly/components/DualListSelector/dual-list-selector.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { DualSelectEventType, DualSelectPair } from "../types";
+import { EVENT_REMOVE_ONE } from "../constants";
+import type { DualSelectPair } from "../types";
+
+const styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
 
 const hostAttributes = [
     ["aria-labelledby", "dual-list-selector-selected-pane-status"],
     ["aria-multiselectable", "true"],
     ["role", "listbox"],
-] as const satisfies Array<[string, string]>;
+];
 
 /**
  * @element ak-dual-select-available-panel
@@ -35,86 +38,68 @@ const hostAttributes = [
  *
  */
 @customElement("ak-dual-select-selected-pane")
-export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEventType>(AKElement) {
-    static styles = [PFBase, PFButton, PFDualListSelector, listStyles, selectedPaneStyles];
+export class AkDualSelectSelectedPane extends CustomEmitterElement(AKElement) {
+    static get styles() {
+        return styles;
+    }
 
-    //#region Properties
-
-    /* The array of key/value pairs that are in the selected list. ALL of them. */
+    /* The array of key/value pairs that are in the selected list.  ALL of them. */
     @property({ type: Array })
     readonly selected: DualSelectPair[] = [];
 
-    //#endregion
-
-    //#region State
-
-    /**
-     * This is the only mutator for this object.
-     * It collects the list of objects the user has clicked on *in this pane*.
-     *
-     * It is explicitly marked as "public" to emphasize that the parent orchestrator
-     * for the dual-select widget can and will access it to get the list of keys to be
+    /*
+     * This is the only mutator for this object. It collects the list of objects the user has
+     * clicked on *in this pane*. It is explicitly marked as "public" to emphasize that the parent
+     * orchestrator for the dual-select widget can and will access it to get the list of keys to be
      * moved (removed) if the user so requests.
+     *
      */
     @state()
     public toMove: Set<string> = new Set();
 
-    //#endregion
+    constructor() {
+        super();
+        this.onClick = this.onClick.bind(this);
+        this.onMove = this.onMove.bind(this);
+    }
 
-    //#region Lifecycle
-    public connectedCallback() {
+    connectedCallback() {
         super.connectedCallback();
-
-        for (const [attr, value] of hostAttributes) {
+        hostAttributes.forEach(([attr, value]) => {
             if (!this.hasAttribute(attr)) {
                 this.setAttribute(attr, value);
             }
-        }
+        });
     }
 
-    //#endregion
-
-    //#region Public API
-
-    public clearMove() {
+    clearMove() {
         this.toMove = new Set();
     }
 
-    public get moveable() {
-        return Array.from(this.toMove.values());
-    }
-
-    //#endregion
-
-    //#region Event Listeners
-
-    #clickListener = (key: string): void => {
+    onClick(key: string) {
         if (this.toMove.has(key)) {
             this.toMove.delete(key);
         } else {
             this.toMove.add(key);
         }
-
         this.dispatchCustomEvent(
-            DualSelectEventType.MoveChanged,
+            "ak-dual-select-selected-move-changed",
             Array.from(this.toMove.values()).sort(),
         );
-
         this.dispatchCustomEvent("ak-dual-select-move");
         // Necessary because updating a map won't trigger a state change
         this.requestUpdate();
-    };
+    }
 
-    #moveListener = (key: string): void => {
+    onMove(key: string) {
         this.toMove.delete(key);
-
-        this.dispatchCustomEvent(DualSelectEventType.RemoveOne, key);
+        this.dispatchCustomEvent(EVENT_REMOVE_ONE, key);
         this.requestUpdate();
-    };
+    }
 
-    //#endregion
-
-    //#region Render
+    get moveable() {
+        return Array.from(this.toMove.values());
+    }
 
     render() {
         return html`
@@ -128,8 +113,8 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
                             class="pf-c-dual-list-selector__list-item"
                             aria-selected="false"
                             id="dual-list-selector-basic-selected-pane-list-option-0"
-                            @click=${() => this.#clickListener(key)}
-                            @dblclick=${() => this.#moveListener(key)}
+                            @click=${() => this.onClick(key)}
+                            @dblclick=${() => this.onMove(key)}
                             role="option"
                             data-ak-key=${key}
                             tabindex="-1"
@@ -149,8 +134,6 @@ export class AkDualSelectSelectedPane extends CustomEmitterElement<DualSelectEve
             </div>
         `;
     }
-
-    //#endregion
 }
 
 export default AkDualSelectSelectedPane;
