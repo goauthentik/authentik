@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 
 from authentik.core.models import Group, User
-from authentik.providers.scim.clients.schema import SCIM_USER_SCHEMA
+from authentik.providers.scim.clients.schema import SCIM_GROUP_SCHEMA
 from authentik.providers.scim.clients.schema import Group as SCIMGroupModel
 from authentik.sources.scim.models import SCIMSourceGroup
 from authentik.sources.scim.views.v2.base import SCIMObjectView
@@ -27,7 +27,7 @@ class GroupsView(SCIMObjectView):
     def group_to_scim(self, scim_group: SCIMSourceGroup) -> dict:
         """Convert Group to SCIM data"""
         payload = SCIMGroupModel(
-            schemas=[SCIM_USER_SCHEMA],
+            schemas=[SCIM_GROUP_SCHEMA],
             id=str(scim_group.group.pk),
             externalId=scim_group.id,
             displayName=scim_group.group.name,
