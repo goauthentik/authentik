@@ -94,6 +94,8 @@ Avoid phrasing that blames the user. Be subjective and polite when providing ins
 
 For Ken's sake, and many others, try to not use too many commas (avoid commaitis). Use a comma when needed to separate clauses, or for "slowing the pace" or clarity. Please **do** use the Oxford comma.
 
+In [lists](#lists), add a period at the end of a bulleted item if it is a complete sentence. Try not to mix incomplete and complete sentences in the same list.
+
 ### Capitalization
 
 #### Titles and headers
@@ -159,7 +161,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 - Use _italic_ for:
 
-    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section.
+    - Emphasis, but sparingly, to avoid overuse. For example, you can use italics for important terms or concepts on first mention in a section. Do not use italics to indicate a variable or placeholder; instead use angle brackets as described under [Variables](#variables).
 
 - Use `code formatting` for:
 
@@ -167,13 +169,27 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
     - File paths, file names, and directory names (e.g., `/usr/local/bin/`).
     - Inline code snippets (e.g., `.env`).
 
-- When handling URLs:
+### Lists
 
-    - For URLs entered as values or defined in fields, enclose any variables inside angle brackets (`< >`) to clearly indicate that these are placeholders that require user input.
+Add a period at the end of a bulleted item if it is a complete sentence. Try not to mix incomplete and complete sentences in the same list.
 
-        For example: `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+If there is a [colon](#following-a-colon) used in a bulleted list item, follow the capitalization rules.
+
+### URLs
 
     - When mentioning URLs in text or within procedural instructions, omit code formatting. For instance: "In your browser, go to https://example.com."
+
+    - For URLs entered as values or defined in fields, enclose any variables inside angle brackets (`< >`) and use underscores between words. See more about variables below (#variables).
+
+### Variables
+
+To clearly indicate terms or values that are placeholders and require user input, enclose any variables inside angle brackets (`< >`) and use underscores between words to clearly indicate that these are placeholders that require user input.
+
+        Examples:
+
+        `https://authentik.company/application/o/<slug>/.well-known/openid-configuration`
+
+        "Add the configuration setting: `<first_name>`."
 
 ### Titles and headers
 
@@ -189,7 +205,7 @@ When writing out steps in a procedural topic, avoid starting with "Once...". Ins
 
 ### Examples
 
-When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a semi-colon, like this:
+When you want to show an example (say, a code snippet), start on a new line, use bold text for the word "Example", and a colon, like this:
 
     **Example**:
 
