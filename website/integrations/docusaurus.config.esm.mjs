@@ -104,9 +104,7 @@ const config = createDocusaurusConfig({
 
                     beforeDefaultRemarkPlugins: [
                         remarkDirective,
-                        remarkLinkRewrite(
-                            new Map([["/docs", "https://docs.goauthentik.io"]]),
-                        ),
+                        remarkLinkRewrite(new Map([["/docs", "https://docs.goauthentik.io"]])),
                         remarkVersionDirective,
                         remarkEnterpriseDirective,
                         remarkPreviewDirective,
