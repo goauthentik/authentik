@@ -20,6 +20,9 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.rac.models import ConnectionToken, Endpoint, RACProvider
+from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+
+PLAN_CONNECTION_SETTINGS = "connection_settings"
 
 
 class RACStartView(PolicyAccessView):
@@ -109,10 +112,15 @@ class RACFinalStage(RedirectStage):
         return super().dispatch(request, *args, **kwargs)
 
     def get_challenge(self, *args, **kwargs) -> RedirectChallenge:
+        settings = self.executor.plan.context.get(PLAN_CONNECTION_SETTINGS)
+        if not settings:
+            settings = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {}).get(
+                PLAN_CONNECTION_SETTINGS
+            )
         token = ConnectionToken.objects.create(
             provider=self.provider,
             endpoint=self.endpoint,
-            settings=self.executor.plan.context.get("connection_settings", {}),
+            settings=settings or {},
             session=self.request.session["authenticatedsession"],
             expires=now() + timedelta_from_string(self.provider.connection_expiry),
             expiring=True,
