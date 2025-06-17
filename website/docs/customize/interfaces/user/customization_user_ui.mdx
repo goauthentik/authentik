@@ -1,0 +1,42 @@
+---
+title: Customize the User and Admin interfaces
+---
+
+Both the authentik User interface and Admin interface can be customized using attributes configured in the [Brands](../../../sys-mgmt/brands.md) section, found under **Other global settings > Attributes**.
+
+Most attributes defined in a Brand apply to _both_ the User and Admin interfaces. However, any settings that are specific to only one interface are explicitly noted as such below.
+
+## Custom settings
+
+The following settings are grouped by:
+
+- `enabledFeatures` settings
+- general settings (used on both the Admin interface and the User interface)
+- User interface only
+### Enabling/disabling features
+
+The features listed below can be enabled or disabled through attributes set on the Brand. By default, all of the listed features are enabled. To disable a specific feature, set its value to `false`, as shown in the screenshot below.
+
+import Enabledfeatureslist from "../interfaces/\_enabledfeatureslist.mdx";
+
+<Enabledfeatureslist />
+
+import Generalattributes from "../interfaces/\_generalattributes.mdx";
+
+<Generalattributes />
+
+### Settings for the User interface only
+
+#### `settings.layout.type` (User interface only)
+
+Which layout to use for the _My applications_ view. Defaults to `row`. Choices: `row`, `2-column`, `3-column`
+
+**Example**:
+
+The following screenshot shows the syntax for setting several attributes for a brand: light mode, a 3-column display of applications on My Applications page, hiding the API drawer from the tool bar, and disallowing users to edit the applications on My Applications page.
+
+![](./global-attributes.png)
+
+import Global from "../_global/global.mdx";
+
+<Global />
