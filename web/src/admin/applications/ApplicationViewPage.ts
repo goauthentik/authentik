@@ -13,6 +13,7 @@ import { AKElement } from "#elements/Base";
 import "#elements/EmptyState";
 import "#elements/Tabs";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
+import { ModelForm } from "#elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { CSSResult, PropertyValues, TemplateResult, html } from "lit";
@@ -90,6 +91,12 @@ export class ApplicationViewPage extends AKElement {
     }
 
     willUpdate(changedProperties: PropertyValues<this>) {
+        if (changedProperties.has("applicationSlug") && this.applicationSlug) {
+            this.fetchApplication(this.applicationSlug);
+        }
+    }
+
+    updated(changedProperties: PropertyValues<this>) {
         if (changedProperties.has("applicationSlug") && this.applicationSlug) {
             this.fetchApplication(this.applicationSlug);
         }
@@ -209,6 +216,16 @@ export class ApplicationViewPage extends AKElement {
                                                 <ak-application-form
                                                     slot="form"
                                                     .instancePk=${this.application.slug}
+                                                    @ak-form-successful-submit=${(
+                                                        e: CustomEvent,
+                                                    ) => {
+                                                        const app = e.detail as Application;
+                                                        ModelForm.handleIdentifierChange(
+                                                            this.applicationSlug || "",
+                                                            app.slug,
+                                                            "/core/applications/",
+                                                        );
+                                                    }}
                                                 >
                                                 </ak-application-form>
                                                 <button
