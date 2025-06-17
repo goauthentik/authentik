@@ -26,7 +26,7 @@ To run this command with Kubernetes, use
 kubectl exec -it deployment/authentik-worker -c worker -- ak test_email [...]
 ```
 
-## Google Workspace Email Relay Configuration
+## Google Workspace SMTP relay configuration
 
 To send email through Google SMTP servers, it is often easiest to use [Google's Relay option](https://support.google.com/a/answer/2956491). Google has documentation available at [Send email from a printer, scanner, or app](https://support.google.com/a/answer/176600?hl=en). Setting this up can be tricky as there is conflicting information about correct settings online. While setting up a service account and an App Password is possible, it is not needed to successfully send emails from authentik.
 
