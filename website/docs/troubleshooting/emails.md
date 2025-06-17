@@ -32,7 +32,7 @@ To send email through Google SMTP servers, it is often easiest to use [Google's 
 
 First, confirm the outbound IP address that authentik will use to send emails with. Follow Google's documentation to add the IP address or addresses to the "SMTP relay service" options in your workspace's Gmail settings.
 
-- Set Allowed Senders to `Only addresses in my domains`.
+- Set **Allowed Senders** to `Only addresses in my domains`.
 - Set Authentication to `Only accept mail from the specified IP addresses`.
 - Do not set `Require SMTP Authentication`.
 - Set `Require TLS encryption`.
