@@ -8,25 +8,39 @@
 {
     "extends": "@goauthentik/tsconfig",
     "compilerOptions": {
-        "noEmit": true,
+        "emitDeclarationOnly": true,
         "checkJs": true,
         "allowJs": true,
-        "composite": false,
+        "composite": true,
         "esModuleInterop": true,
         "moduleResolution": "bundler",
         "module": "esnext",
+        "allowImportingTsExtensions": true,
         "jsx": "preserve",
         "lib": ["DOM", "DOM.Iterable", "ESNext"],
         "baseUrl": ".",
-        "paths": {
-            "@site/*": ["./*"]
-        }
+        "rootDir": "."
     },
     "exclude": [
         // ---
-        "./out/**/*",
-        "./dist/**/*",
+        "**/out/**/*",
+        "**/static/**/*",
+        "**/dist/**/*",
+        "./api/reference/**/*",
         ".docusaurus",
-        "build"
+        "**/build/**/*"
+    ],
+    "references": [
+        {
+            "path": "./docusaurus-theme"
+        },
+
+        {
+            "path": "./api"
+        },
+
+        {
+            "path": "./integrations"
+        }
     ]
 }

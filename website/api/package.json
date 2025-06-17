@@ -1,0 +1,34 @@
+{
+    "name": "@goauthentik/api-docs",
+    "version": "0.0.0",
+    "description": "API Documentation",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:api build:types build:docusaurus",
+        "build:api": "docusaurus gen-api-docs all",
+        "build:docusaurus": "docusaurus build",
+        "build:types": "tsc -p .",
+        "deploy": "docusaurus deploy",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve",
+        "start": "docusaurus start",
+        "swizzle": "docusaurus swizzle"
+    },
+    "imports": {
+        "#articles/*": "./articles/*.mdx",
+        "#reference/sidebar": "./articles/reference/sidebar.ts"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}

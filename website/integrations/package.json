@@ -1,0 +1,31 @@
+{
+    "name": "@goauthentik/integration-docs",
+    "version": "0.0.0",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "run-s build:types build:docusaurus",
+        "build:docusaurus": "docusaurus build",
+        "build:types": "tsc -p .",
+        "deploy": "docusaurus deploy",
+        "docusaurus": "docusaurus",
+        "serve": "docusaurus serve",
+        "start": "docusaurus start",
+        "test": "node --test"
+    },
+    "engines": {
+        "node": ">=24"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
