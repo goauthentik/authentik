@@ -29,6 +29,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.expression.exceptions import PropertyMappingExpressionException
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
+from authentik.lib.config import CONFIG
 from authentik.lib.expression.exceptions import ControlFlowException
 from authentik.lib.generators import generate_id
 from authentik.lib.merge import MERGE_LIST_UNIQUE
@@ -533,12 +534,13 @@ class Application(SerializerModel, PolicyBindingModel):
     )
 
     # For template applications, this can be set to /static/authentik/applications/*
-    meta_icon = models.FileField(
+    meta_old_icon = models.FileField(
         upload_to="application-icons/",
         default=None,
         null=True,
         max_length=500,
     )
+    meta_icon = models.ForeignKey("File", null=True, on_delete=models.SET_NULL)
     meta_description = models.TextField(default="", blank=True)
     meta_publisher = models.TextField(default="", blank=True)
 
@@ -1100,3 +1102,44 @@ class AuthenticatedSession(SerializerModel):
             session=Session.objects.filter(session_key=request.session.session_key).first(),
             user=user,
         )
+
+
+class File(SerializerModel):
+    id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    name = models.TextField()
+    content = models.BinaryField(null=True)
+    location = models.TextField(null=True)
+    public = models.BooleanField(default=False)
+    delete_on_delete = models.BooleanField(default=False)
+    expiry = models.DateTimeField()
+
+    class Meta:
+        verbose_name = _("File")
+        verbose_name = _("Files")
+        constraints = (
+            models.CheckConstraint(
+                condition=Q(content__isnull=False) | Q(location__isnull=False),
+                name="one_of_content_location_is_defined",
+            ),
+        )
+
+    def __str__(self) -> str:
+        return self.name
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.core.api.files import FileSerializer
+
+        return FileSerializer
+
+    @property
+    def url(self) -> str:
+        if self.content:
+            return (
+                CONFIG.get("web.path", "/")[:-1]
+                + f"/files/{'public' if self.public else 'private'}/{self.pk}"
+            )
+        elif self.location.startswith("/static"):
+            return CONFIG.get("web.path", "/")[:-1] + self.location
+        return self.location
