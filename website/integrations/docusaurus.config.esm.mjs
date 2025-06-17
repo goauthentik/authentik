@@ -10,7 +10,7 @@ import remarkDirective from "remark-directive";
 import remarkGithub, { defaultBuildUrl } from "remark-github";
 
 import remarkEnterpriseDirective from "../remark/enterprise-directive.mjs";
-import remarkIntegrationsLinkRewrite from "../remark/integrations-link-directive.mjs";
+import remarkLinkRewrite from "../remark/link-rewrite-directive.mjs";
 import remarkPreviewDirective from "../remark/preview-directive.mjs";
 import remarkSupportDirective from "../remark/support-directive.mjs";
 import remarkVersionDirective from "../remark/version-directive.mjs";
@@ -104,7 +104,9 @@ const config = createDocusaurusConfig({
 
                     beforeDefaultRemarkPlugins: [
                         remarkDirective,
-                        remarkIntegrationsLinkRewrite,
+                        remarkLinkRewrite(
+                            new Map([["/docs", "https://docs.goauthentik.io"]]),
+                        ),
                         remarkVersionDirective,
                         remarkEnterpriseDirective,
                         remarkPreviewDirective,
