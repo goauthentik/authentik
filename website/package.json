@@ -22,7 +22,8 @@
         "start": "docusaurus start",
         "swizzle": "docusaurus swizzle",
         "test": "node --test",
-        "watch": "run-s build:schema build:api start"
+        "watch": "run-s build:schema build:api start",
+        "watch:integrations": "docusaurus start --config integrations/docusaurus.config.cjs"
     },
     "dependencies": {
         "@docusaurus/core": "^3.7.0",
