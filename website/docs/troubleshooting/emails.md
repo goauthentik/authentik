@@ -35,7 +35,7 @@ First, confirm the outbound IP address that authentik will use to send emails wi
 - Set **Allowed Senders** to `Only addresses in my domains`.
 - Set Authentication to `Only accept mail from the specified IP addresses`.
 - Do not set **Require SMTP Authentication**.
-- Set `Require TLS encryption`.
+- Select **Require TLS encryption**.
 
 Then, set the following environment variables for Authentik:
 
