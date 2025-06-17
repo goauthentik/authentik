@@ -2,9 +2,9 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { type SlottedTemplateResult, type Spread } from "@goauthentik/elements/types";
 import { spread } from "@open-wc/lit-helpers";
 
-import { css, html, nothing } from "lit";
+import { CSSResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { classMap } from "lit/directives/class-map.js";
+import { ClassInfo, classMap } from "lit/directives/class-map.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -35,17 +35,27 @@ export interface IAlert {
  * make, as well as in in-line documentation.
  */
 @customElement("ak-alert")
-export class Alert extends AKElement implements IAlert {
+export class AKAlert extends AKElement implements IAlert {
+    static styles: CSSResult[] = [
+        PFBase,
+        PFAlert,
+        css`
+            p {
+                margin: 0;
+            }
+        `,
+    ];
+
     /**
      * Whether or not to display the entire component's contents in-line or not.
      *
      * @attr
      */
     @property({ type: Boolean })
-    inline = false;
+    public inline?: boolean;
 
     @property({ type: Boolean })
-    plain = false;
+    public plain?: boolean;
 
     /**
      * Method of determining severity
@@ -61,28 +71,17 @@ export class Alert extends AKElement implements IAlert {
      * @attr
      */
     @property()
-    icon = "fa-exclamation-circle";
+    public icon = "fa-exclamation-circle";
 
-    static get styles() {
-        return [
-            PFBase,
-            PFAlert,
-            css`
-                p {
-                    margin: 0;
-                }
-            `,
-        ];
-    }
-
-    get classmap() {
+    get classmap(): ClassInfo {
         const level = levelNames.includes(this.level)
             ? `pf-m-${this.level}`
             : (this.level as string);
+
         return {
             "pf-c-alert": true,
-            "pf-m-inline": this.inline,
-            "pf-m-plain": this.plain,
+            "pf-m-inline": !!this.inline,
+            "pf-m-plain": !!this.plain,
             [level]: true,
         };
     }
@@ -90,9 +89,9 @@ export class Alert extends AKElement implements IAlert {
     render() {
         return html`<div class="${classMap(this.classmap)}">
             <div class="pf-c-alert__icon">
-                <i class="fas ${this.icon}"></i>
+                <i aria-hidden="true" class="fas ${this.icon}"></i>
             </div>
-            <h4 class="pf-c-alert__title"><slot></slot></h4>
+            <h4 role="presentation" class="pf-c-alert__title"><slot></slot></h4>
         </div>`;
     }
 }
@@ -104,6 +103,6 @@ export function akAlert(properties: IAlert, content: SlottedTemplateResult = not
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-alert": Alert;
+        "ak-alert": AKAlert;
     }
 }

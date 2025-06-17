@@ -2,11 +2,11 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { parseAPIResponseError, pluckErrorDetail } from "@goauthentik/common/errors/network";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { dateToUTC } from "@goauthentik/common/temporal";
-import { camelToSnake } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -30,7 +30,10 @@ export interface KeyUnknown {
 // Literally the only field `assignValue()` cares about.
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
-export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
+export interface AkControlElement<T = string | string[]> extends HTMLInputElement {
+    json: () => T;
+    requestUpdate?: () => void;
+}
 
 const doNotProcess = <T extends HTMLElement>(element: T) => element.dataset.formIgnore === "true";
 
@@ -60,11 +63,13 @@ function assignValue(element: HTMLNamedElement, value: unknown, json: KeyUnknown
  *
  */
 export function serializeForm<T extends KeyUnknown>(
-    elements: NodeListOf<HorizontalFormElement>,
-): T | undefined {
+    elements: Iterable<HorizontalFormElement | AkControlElement>,
+): T {
     const json: { [key: string]: unknown } = {};
-    elements.forEach((element) => {
-        element.requestUpdate();
+
+    Array.from(elements).forEach((element) => {
+        element.requestUpdate?.();
+
         if (element.hidden) {
             return;
         }
@@ -120,6 +125,7 @@ export function serializeForm<T extends KeyUnknown>(
             assignValue(inputElement, inputElement.value, json);
         }
     });
+
     return json as unknown as T;
 }
 
@@ -153,8 +159,7 @@ export function serializeForm<T extends KeyUnknown>(
  *
  *
  */
-
-export abstract class Form<T> extends AKElement {
+export abstract class Form<T = unknown> extends AKElement {
     abstract send(data: T): Promise<unknown>;
 
     viewportCheck = true;
@@ -165,23 +170,21 @@ export abstract class Form<T> extends AKElement {
     @state()
     nonFieldErrors?: string[];
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFCard,
-            PFButton,
-            PFForm,
-            PFAlert,
-            PFInputGroup,
-            PFFormControl,
-            PFSwitch,
-            css`
-                select[multiple] {
-                    height: 15em;
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFCard,
+        PFButton,
+        PFForm,
+        PFAlert,
+        PFInputGroup,
+        PFFormControl,
+        PFSwitch,
+        css`
+            select[multiple] {
+                height: 15em;
+            }
+        `,
+    ];
 
     /**
      * Called by the render function. Blocks rendering the form if the form is not within the
@@ -192,7 +195,11 @@ export abstract class Form<T> extends AKElement {
         return rect.x + rect.y + rect.width + rect.height !== 0;
     }
 
-    getSuccessMessage(): string {
+    /**
+     * Get the success message to display after a successful form submission.
+     * @abstract
+     */
+    public getSuccessMessage(): string {
         return this.successMessage;
     }
 
@@ -293,7 +300,7 @@ export abstract class Form<T> extends AKElement {
                         const elementName = element.name;
                         if (!elementName) return;
 
-                        const snakeProperty = camelToSnake(elementName);
+                        const snakeProperty = snakeCase(elementName);
 
                         if (snakeProperty in parsedError) {
                             element.errorMessages = parsedError[snakeProperty];

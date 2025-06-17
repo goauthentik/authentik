@@ -1,3 +1,4 @@
+import { SlottedTemplateResult } from "#elements/types";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/common/enums.js";
 import {
@@ -13,7 +14,7 @@ import { state } from "lit/decorators.js";
 
 export interface AdminStatus {
     icon: string;
-    message?: TemplateResult;
+    message?: SlottedTemplateResult;
 }
 
 /**
@@ -98,8 +99,8 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult displaying the value
      */
-    protected renderValue(): TemplateResult {
-        return html`${this.value}`;
+    protected renderValue(): SlottedTemplateResult {
+        return this.value ? html`${this.value}` : nothing;
     }
 
     /**
@@ -108,7 +109,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param status - AdminStatus object containing icon and message
      * @returns TemplateResult for status display
      */
-    private renderStatus(status: AdminStatus): TemplateResult {
+    private renderStatus(status: AdminStatus): SlottedTemplateResult {
         return html`
             <p><i class="${status.icon}"></i>&nbsp;${this.renderValue()}</p>
             ${status.message ? html`<p class="subtext">${status.message}</p>` : nothing}
@@ -121,9 +122,9 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      * @param error - Error message to display
      * @returns TemplateResult for error display
      */
-    private renderError(error: string): TemplateResult {
+    private renderError(error: string): SlottedTemplateResult {
         return html`
-            <p><i class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
+            <p><i aria-hidden="true" class="fa fa-times"></i>&nbsp;${msg("Failed to fetch")}</p>
             <p class="subtext">${error}</p>
         `;
     }
@@ -133,7 +134,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for loading spinner
      */
-    private renderLoading(): TemplateResult {
+    private renderLoading(): SlottedTemplateResult {
         return html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`;
     }
 
@@ -142,7 +143,7 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
      *
      * @returns TemplateResult for current component state
      */
-    renderInner(): TemplateResult {
+    renderInner(): SlottedTemplateResult {
         return html`
             <p class="center-value">
                 ${

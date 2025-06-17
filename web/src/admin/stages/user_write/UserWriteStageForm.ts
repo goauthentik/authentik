@@ -55,9 +55,8 @@ export class UserWriteStageForm extends BaseStageForm<UserWriteStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="userCreationMode">
                         <ak-radio
                             .options=${[

@@ -3,12 +3,12 @@ import type { Meta, StoryObj } from "@storybook/web-components";
 import { html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { Alert, type IAlert } from "../Alert.js";
+import { AKAlert, type IAlert } from "../Alert.js";
 import "../Alert.js";
 
 type IAlertForTesting = IAlert & { message: string };
 
-const metadata: Meta<Alert> = {
+const metadata: Meta<AKAlert> = {
     title: "Elements/<ak-alert>",
     component: "ak-alert",
     parameters: {

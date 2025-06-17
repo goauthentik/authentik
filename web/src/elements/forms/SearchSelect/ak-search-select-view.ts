@@ -7,7 +7,7 @@ import type { GroupedOptions, SelectOption, SelectOptions } from "@goauthentik/e
 import { randomId } from "@goauthentik/elements/utils/randomId.js";
 
 import { msg } from "@lit/localize";
-import { PropertyValues, html, nothing } from "lit";
+import { CSSResult, PropertyValues, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { Ref, createRef, ref } from "lit/directives/ref.js";
@@ -69,9 +69,7 @@ export interface ISearchSelectView {
  */
 @customElement("ak-search-select-view")
 export class SearchSelectView extends AKElement implements ISearchSelectView {
-    static get styles() {
-        return [PFBase, PFForm, PFFormControl, PFSelect];
-    }
+    static styles: CSSResult[] = [PFBase, PFForm, PFFormControl, PFSelect];
 
     /**
      * The options collection. The simplest variant is just [key, label, optional<description>]. See
@@ -126,12 +124,20 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
     caseSensitive = false;
 
     /**
-     * The name of the input, for forms
+     * The name of the input, for forms.
      *
      * @attr
      */
     @property({ type: String })
     name?: string;
+
+    /**
+     * The label of the input, for forms.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public label?: string;
 
     /**
      * The textual placeholder for the search's <input> object, if currently empty. Used as the
@@ -358,12 +364,14 @@ export class SearchSelectView extends AKElement implements ISearchSelectView {
                 <div class="pf-c-select__toggle pf-m-typeahead" part="ak-search-select-toggle">
                     <div class="pf-c-select__toggle-wrapper" part="ak-search-select-wrapper">
                         <input
+                            name=${ifDefined(this.name)}
+                            placeholder=${this.placeholder}
+                            aria-label=${ifDefined(this.label)}
                             part="ak-search-select-toggle-typeahead"
                             autocomplete="off"
                             class="pf-c-form-control pf-c-select__toggle-typeahead"
                             type="text"
                             ${ref(this.inputRef)}
-                            placeholder=${this.placeholder}
                             spellcheck="false"
                             @input=${this.onInput}
                             @click=${this.onClick}

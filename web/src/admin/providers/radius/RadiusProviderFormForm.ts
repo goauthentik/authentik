@@ -44,6 +44,7 @@ export function renderForm(
         <ak-text-input
             name="name"
             label=${msg("Name")}
+            placeholder=${msg("Provider name")}
             value=${ifDefined(provider?.name)}
             .errorMessages=${errors?.name ?? []}
             required
@@ -57,6 +58,8 @@ export function renderForm(
             .errorMessages=${errors?.authorizationFlow ?? []}
         >
             <ak-branded-flow-search
+                label=${msg("Authentication flow")}
+                placeholder=${msg("Select an authentication flow...")}
                 flowType=${FlowsInstancesListDesignationEnum.Authentication}
                 .currentFlow=${provider?.authorizationFlow}
                 .brandFlow=${brand?.flowAuthentication}
@@ -73,17 +76,14 @@ export function renderForm(
         >
         </ak-switch-input>
 
-        <ak-form-group expanded>
-            <span slot="header"> ${msg("Protocol settings")} </span>
-            <div slot="body" class="pf-c-form">
-                <ak-hidden-text-input
-                    name="sharedSecret"
-                    label=${msg("Shared secret")}
+        <ak-form-group open label="${msg("Protocol settings")}">
+            <div class="pf-c-form">
+                <ak-hidden-text-input>
+                    name="sharedSecret" label=${msg("Shared secret")}
                     .errorMessages=${errors?.sharedSecret ?? []}
                     value=${provider?.sharedSecret ?? randomString(128, ascii_letters + digits)}
-                    required
-                    input-hint="code"
-                ></ak-hidden-text-input>
+                    required input-hint="code" ></ak-hidden-text-input
+                >
                 <ak-text-input
                     name="clientNetworks"
                     label=${msg("Client Networks")}
@@ -106,15 +106,16 @@ export function renderForm(
                 </ak-form-element-horizontal>
             </div>
         </ak-form-group>
-        <ak-form-group>
-            <span slot="header"> ${msg("Advanced flow settings")} </span>
-            <div slot="body" class="pf-c-form">
+        <ak-form-group label="${msg("Advanced flow settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Invalidation flow")}
                     name="invalidationFlow"
                     required
                 >
                     <ak-flow-search
+                        label=${msg("Invalidation flow")}
+                        placeholder=${msg("Select an invalidation flow...")}
                         flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                         .currentFlow=${provider?.invalidationFlow}
                         .errorMessages=${errors?.invalidationFlow ?? []}

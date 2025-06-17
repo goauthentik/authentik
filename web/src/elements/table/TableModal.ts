@@ -1,3 +1,4 @@
+import { SlottedTemplateResult } from "#elements/types";
 import { PFSize } from "@goauthentik/common/enums.js";
 import { AKElement } from "@goauthentik/elements/Base";
 import { MODAL_BUTTON_STYLES } from "@goauthentik/elements/buttons/ModalButton";
@@ -5,7 +6,7 @@ import { ModalShowEvent } from "@goauthentik/elements/controllers/ModalOrchestra
 import { Table } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
+import { CSSResult, nothing } from "lit";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
@@ -16,35 +17,35 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 
-export abstract class TableModal<T> extends Table<T> {
+export abstract class TableModal<T extends object> extends Table<T> {
     @property()
-    size: PFSize = PFSize.Large;
+    public size: PFSize = PFSize.Large;
 
     @property({ type: Boolean })
-    set open(value: boolean) {
-        this._open = value;
-        if (value) {
+    set open(nextValue: boolean) {
+        this.#open = nextValue;
+
+        if (nextValue) {
             this.fetch();
         }
     }
 
     get open(): boolean {
-        return this._open;
+        return this.#open;
     }
 
-    _open = false;
+    #open = false;
 
-    static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFModalBox,
-            PFBullseye,
-            PFContent,
-            PFBackdrop,
-            PFPage,
-            PFStack,
-            MODAL_BUTTON_STYLES,
-        );
-    }
+    static styles: CSSResult[] = [
+        ...super.styles,
+        PFModalBox,
+        PFBullseye,
+        PFContent,
+        PFBackdrop,
+        PFPage,
+        PFStack,
+        MODAL_BUTTON_STYLES,
+    ];
 
     public async fetch(): Promise<void> {
         if (!this.open) {
@@ -53,10 +54,10 @@ export abstract class TableModal<T> extends Table<T> {
         return super.fetch();
     }
 
-    closeModal() {
+    public close = () => {
         this.resetForms();
         this.open = false;
-    }
+    };
 
     resetForms(): void {
         this.querySelectorAll<HTMLFormElement>("[slot=form]").forEach((form) => {
@@ -66,45 +67,48 @@ export abstract class TableModal<T> extends Table<T> {
         });
     }
 
-    onClick(): void {
+    public show = () => {
         this.open = true;
         this.dispatchEvent(new ModalShowEvent(this));
+
         this.querySelectorAll("*").forEach((child) => {
             if ("requestUpdate" in child) {
                 (child as AKElement).requestUpdate();
             }
         });
+    };
+
+    #closeListener = () => {
+        this.open = false;
+    };
+
+    #backdropListener(event: PointerEvent) {
+        event.stopPropagation();
     }
 
-    renderModalInner(): TemplateResult {
-        return this.renderTable();
-    }
-
-    renderModal(): TemplateResult {
-        return html`<div
-            class="pf-c-backdrop"
-            @click=${(e: PointerEvent) => {
-                e.stopPropagation();
-            }}
-        >
+    /**
+     * @abstract
+     */
+    protected renderModal(): SlottedTemplateResult {
+        return html`<div class="pf-c-backdrop" @click=${this.#backdropListener}>
             <div class="pf-l-bullseye">
                 <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
                     <button
-                        @click=${() => (this.open = false)}
+                        @click=${this.#closeListener}
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-label=${msg("Close dialog")}
                     >
                         <i class="fas fa-times" aria-hidden="true"></i>
                     </button>
-                    ${this.renderModalInner()}
+                    ${this.renderTable()}
                 </div>
             </div>
         </div>`;
     }
 
     render(): TemplateResult {
-        return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
-            ${this.open ? this.renderModal() : ""}`;
+        return html` <slot name="trigger" @click=${this.show}></slot>
+            ${this.open ? this.renderModal() : nothing}`;
     }
 }

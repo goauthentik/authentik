@@ -5,6 +5,7 @@ import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/forms/SearchSelect";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -34,13 +35,15 @@ export function getFlowValue(flow: Flow | undefined): string | undefined {
  */
 
 export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement) {
+    //#region Properties
+
     /**
      * The type of flow we're looking for.
      *
      * @attr
      */
     @property({ type: String })
-    flowType?: FlowsInstancesListDesignationEnum;
+    public flowType?: FlowsInstancesListDesignationEnum;
 
     /**
      * The id of the current flow, if any. For stages where the flow is already defined.
@@ -48,7 +51,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: String })
-    currentFlow?: string | undefined;
+    public currentFlow?: string | undefined;
 
     /**
      * If true, it is not valid to leave the flow blank.
@@ -56,10 +59,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
      * @attr
      */
     @property({ type: Boolean })
-    required?: boolean = false;
-
-    @query("ak-search-select")
-    search!: SearchSelect<T>;
+    public required?: boolean = false;
 
     /**
      * When specified and the object instance does not have a flow selected, auto-select the flow with the given slug.
@@ -70,9 +70,29 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     defaultFlowSlug?: string;
 
     @property({ type: String })
-    name: string | null | undefined;
+    public name?: string | null;
 
-    selectedFlow?: T;
+    /**
+     * The label of the input, for forms.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public label?: string;
+
+    /**
+     * The textual placeholder for the search's <input> object, if currently empty. Used as the
+     * native <input> object's `placeholder` field.
+     *
+     * @attr
+     */
+    @property({ type: String })
+    public placeholder: string = msg("Select a flow...");
+
+    @query("ak-search-select")
+    protected search!: SearchSelect<T>;
+
+    protected selectedFlow?: T;
 
     get value() {
         return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
@@ -80,18 +100,16 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
 
     constructor() {
         super();
-        this.fetchObjects = this.fetchObjects.bind(this);
         this.selected = this.selected.bind(this);
-        this.handleSearchUpdate = this.handleSearchUpdate.bind(this);
     }
 
-    handleSearchUpdate(ev: CustomEvent) {
+    handleSearchUpdate = (ev: CustomEvent) => {
         ev.stopPropagation();
         this.selectedFlow = ev.detail.value;
         this.dispatchEvent(new InputEvent("input", { bubbles: true, composed: true }));
-    }
+    };
 
-    async fetchObjects(query?: string): Promise<Flow[]> {
+    fetchObjects = async (query?: string): Promise<Flow[]> => {
         const args: FlowsInstancesListRequest = {
             ordering: "slug",
             designation: this.flowType,
@@ -99,7 +117,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         };
         const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
         return flows.results;
-    }
+    };
 
     /* This is the most commonly overridden method of this class. About half of the Flow Searches
      * use this method, but several have more complex needs, such as relating to the brand, or just
@@ -134,6 +152,8 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
+                placeholder=${ifDefined(this.placeholder ?? undefined)}
+                label=${ifDefined(this.label ?? undefined)}
                 name=${ifDefined(this.name ?? undefined)}
                 @ak-change=${this.handleSearchUpdate}
                 ?blankable=${!this.required}

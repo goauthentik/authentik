@@ -24,8 +24,8 @@
         "pseudolocalize": "node ./scripts/pseudolocalize.mjs",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "wireit",
-        "test": "wireit",
-        "test:e2e": "wireit",
+        "test": "vitest",
+        "test:e2e": "playwright test",
         "test:e2e:watch": "wireit",
         "test:watch": "wireit",
         "tsc": "wireit",
@@ -69,6 +69,9 @@
         "#flow/*": "./src/flow/*.js",
         "#locales/*": "./src/locales/*.js",
         "#stories/*": "./src/stories/*.js",
+        "#tests/*": "./tests/*.js",
+        "#e2e": "./e2e/index.ts",
+        "#e2e/*": "./e2e/*.ts",
         "#*/browser": {
             "types": "./out/*/browser.d.ts",
             "import": "./*/browser.js"
@@ -93,7 +96,7 @@
         "@floating-ui/dom": "^1.6.11",
         "@formatjs/intl-listformat": "^7.7.11",
         "@fortawesome/fontawesome-free": "^6.7.2",
-        "@goauthentik/api": "^2025.6.2-1750112513",
+        "@goauthentik/api": "^2025.6.1-1749515784",
         "@lit/context": "^1.1.2",
         "@lit/localize": "^0.12.2",
         "@lit/reactive-element": "^2.0.4",
@@ -102,9 +105,10 @@
         "@open-wc/lit-helpers": "^0.7.0",
         "@patternfly/elements": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^9.29.0",
-        "@spotlightjs/spotlight": "^3.0.0",
+        "@sentry/browser": "^9.28.0",
+        "@spotlightjs/spotlight": "^2.13.3",
         "@webcomponents/webcomponentsjs": "^2.8.0",
+        "base64-js": "^1.5.1",
         "change-case": "^5.4.4",
         "chart.js": "^4.4.9",
         "chartjs-adapter-date-fns": "^3.0.0",
@@ -120,7 +124,9 @@
         "hastscript": "^9.0.1",
         "lit": "^3.2.0",
         "md-front-matter": "^1.0.4",
-        "mermaid": "^11.6.0",
+        "mermaid": "^11.4.1",
+        "pino": "^9.7.0",
+        "pino-pretty": "^13.0.0",
         "rapidoc": "^9.3.8",
         "react": "^19.1.0",
         "react-dom": "^19.1.0",
@@ -136,7 +142,6 @@
         "trusted-types": "^2.0.0",
         "ts-pattern": "^5.7.1",
         "unist-util-visit": "^5.0.0",
-        "webauthn-polyfills": "^0.1.7",
         "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.8.0"
     },
@@ -149,6 +154,7 @@
         "@goauthentik/tsconfig": "^1.0.4",
         "@hcaptcha/types": "^1.0.4",
         "@lit/localize-tools": "^0.8.0",
+        "@playwright/test": "^1.52.0",
         "@storybook/addon-essentials": "^8.6.14",
         "@storybook/addon-links": "^8.6.14",
         "@storybook/blocks": "^8.6.12",
@@ -158,6 +164,7 @@
         "@storybook/test": "^8.6.14",
         "@storybook/web-components": "^8.6.14",
         "@storybook/web-components-vite": "^8.6.14",
+        "@testing-library/dom": "^10.4.0",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
         "@types/chart.js": "^2.9.41",
         "@types/codemirror": "^5.60.15",
@@ -170,16 +177,14 @@
         "@types/react-dom": "^19.1.5",
         "@typescript-eslint/eslint-plugin": "^8.8.0",
         "@typescript-eslint/parser": "^8.8.0",
-        "@wdio/browser-runner": "9.15",
-        "@wdio/cli": "9.15",
+        "@vitest/browser": "^3.2.0",
+        "@wdio/cli": "^9.15.0",
         "@wdio/spec-reporter": "^9.15.0",
-        "@web/test-runner": "^0.20.2",
-        "chromedriver": "^136.0.3",
-        "esbuild": "^0.25.5",
+        "esbuild": "^0.25.4",
         "esbuild-plugin-copy": "^2.1.1",
         "esbuild-plugin-polyfill-node": "^0.3.0",
         "esbuild-plugins-node-modules-polyfill": "^1.7.0",
-        "eslint": "^9.29.0",
+        "eslint": "^9.28.0",
         "eslint-plugin-lit": "^2.1.1",
         "eslint-plugin-wc": "^3.0.1",
         "github-slugger": "^2.0.0",
@@ -187,16 +192,22 @@
         "knip": "^5.58.0",
         "lit-analyzer": "^2.0.3",
         "npm-run-all": "^4.1.5",
+        "p-iteration": "^1.1.8",
+        "playwright": "^1.52.0",
         "prettier": "^3.3.3",
         "pseudolocale": "^2.1.0",
         "rollup-plugin-postcss-lit": "^2.2.0",
         "storybook": "^8.6.14",
         "storybook-addon-mock": "^5.0.0",
         "turnstile-types": "^1.2.3",
+        "type-fest": "^4.41.0",
         "typescript": "^5.8.3",
-        "typescript-eslint": "^8.34.1",
-        "vite-plugin-lit-css": "^2.0.0",
+        "typescript-eslint": "^8.34.0",
+        "unique-names-generator": "^4.7.1",
+        "vite": "^6.3.5",
+        "vite-plugin-lit-css": "^2.1.0",
         "vite-tsconfig-paths": "^5.0.1",
+        "vitest": "^3.2.0",
         "wireit": "^0.14.12"
     },
     "optionalDependencies": {
@@ -278,7 +289,7 @@
             "command": "lit-analyzer src"
         },
         "lint:types:tests": {
-            "command": "tsc --noEmit -p ./tests"
+            "command": "tsc --noEmit -p tsconfig.test.json"
         },
         "lint:types": {
             "command": "tsc -p .",
@@ -314,33 +325,33 @@
             }
         },
         "test": {
-            "command": "wdio ./wdio.conf.ts --logLevel=warn",
+            "command": "wdio ./wdio.conf.js --logLevel=warn",
             "env": {
                 "CI": "true",
                 "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.js",
             "dependencies": [
                 "build"
             ],
             "env": {
                 "CI": "true",
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:e2e:watch": {
-            "command": "wdio run ./tests/wdio.conf.ts",
+            "command": "wdio run ./tests/wdio.conf.js",
             "dependencies": [
                 "build"
             ],
             "env": {
-                "TS_NODE_PROJECT": "./tests/tsconfig.test.json"
+                "TS_NODE_PROJECT": "tsconfig.test.json"
             }
         },
         "test:watch": {
-            "command": "wdio run ./wdio.conf.ts",
+            "command": "wdio run ./wdio.conf.js",
             "dependencies": [
                 "build"
             ],

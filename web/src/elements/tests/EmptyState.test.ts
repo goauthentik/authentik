@@ -1,5 +1,5 @@
 import { render } from "@goauthentik/elements/tests/utils.js";
-import { $, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -8,15 +8,15 @@ import "../EmptyState.js";
 import { akEmptyState } from "../EmptyState.js";
 
 describe("ak-empty-state", () => {
-    afterEach(async () => {
-        await browser.execute(async () => {
-            await document.body.querySelector("ak-empty-state")?.remove();
-            if (document.body._$litPart$) {
-                // @ts-expect-error expression of type '"_$litPart$"' is added by Lit
-                await delete document.body._$litPart$;
+    afterEach(() =>
+        browser.execute(() => {
+            document.body.querySelector("ak-empty-state")?.remove();
+
+            if ("_$litPart$" in document.body) {
+                delete document.body._$litPart$;
             }
-        });
-    });
+        }),
+    );
 
     it("should render the default loader", async () => {
         render(
@@ -25,11 +25,13 @@ describe("ak-empty-state", () => {
             </ak-empty-state>`,
         );
 
-        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
-        await expect(empty).toExist();
+        const empty = $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
 
-        const header = await $("ak-empty-state").$(">>>.pf-c-title");
-        await expect(header).toHaveText("Loading");
+        await expect(empty).resolves.toExist();
+
+        const header = $("ak-empty-state").$(">>>.pf-c-title");
+
+        await expect(header).resolves.toHaveText("Loading");
     });
 
     it("should handle standard boolean", async () => {
@@ -39,11 +41,13 @@ describe("ak-empty-state", () => {
             </ak-empty-state>`,
         );
 
-        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
-        await expect(empty).toExist();
+        const empty = $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
 
-        const header = await $("ak-empty-state").$(">>>.pf-c-title");
-        await expect(header).toHaveText("Loading");
+        await expect(empty).resolves.toExist();
+
+        const header = $("ak-empty-state").$(">>>.pf-c-title");
+
+        await expect(header).resolves.toHaveText("Loading");
     });
 
     it("should render a static empty state", async () => {
@@ -53,12 +57,14 @@ describe("ak-empty-state", () => {
             </ak-empty-state>`,
         );
 
-        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
-        await expect(empty).toExist();
-        await expect(empty).toHaveClass("fa-question-circle");
+        const empty = $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
 
-        const header = await $("ak-empty-state").$(">>>.pf-c-title");
-        await expect(header).toHaveText("No messages found");
+        await expect(empty).resolves.toExist();
+        await expect(empty).resolves.toHaveElementClass("fa-question-circle");
+
+        const header = $("ak-empty-state").$(">>>.pf-c-title");
+
+        await expect(header).resolves.toHaveText("No messages found");
     });
 
     it("should render a slotted message", async () => {
@@ -69,18 +75,21 @@ describe("ak-empty-state", () => {
             </ak-empty-state>`,
         );
 
-        const message = await $("ak-empty-state").$(">>>.pf-c-empty-state__body").$(">>>p");
-        await expect(message).toHaveText("Try again with a different filter");
+        const message = $("ak-empty-state").$(">>>.pf-c-empty-state__body").$(">>>p");
+
+        await expect(message).resolves.toHaveText("Try again with a different filter");
     });
 
     it("should render as a function call", async () => {
         render(akEmptyState({ loading: true }, "Being Thoughtful"));
 
-        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
-        await expect(empty).toExist();
+        const empty = $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
 
-        const header = await $("ak-empty-state").$(">>>.pf-c-empty-state__body");
-        await expect(header).toHaveText("Being Thoughtful");
+        await expect(empty).resolves.toExist();
+
+        const header = $("ak-empty-state").$(">>>.pf-c-empty-state__body");
+
+        await expect(header).resolves.toHaveText("Being Thoughtful");
     });
 
     it("should render as a complex function call", async () => {
@@ -92,13 +101,16 @@ describe("ak-empty-state", () => {
             ),
         );
 
-        const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
-        await expect(empty).toExist();
+        const empty = $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
 
-        const header = await $("ak-empty-state").$(">>>.pf-c-empty-state__body");
-        await expect(header).toHaveText("Introspecting");
+        await expect(empty).resolves.toExist();
 
-        const primary = await $("ak-empty-state").$(">>>.pf-c-empty-state__primary");
-        await expect(primary).toHaveText("... carefully");
+        const header = $("ak-empty-state").$(">>>.pf-c-empty-state__body");
+
+        await expect(header).resolves.toHaveText("Introspecting");
+
+        const primary = $("ak-empty-state").$(">>>.pf-c-empty-state__primary");
+
+        await expect(primary).resolves.toHaveText("... carefully");
     });
 });

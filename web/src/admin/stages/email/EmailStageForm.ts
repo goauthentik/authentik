@@ -47,9 +47,8 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
         if (!this.showConnectionSettings) {
             return html``;
         }
-        return html`<ak-form-group>
-            <span slot="header"> ${msg("Connection settings")} </span>
-            <div slot="body" class="pf-c-form">
+        return html`<ak-form-group label="${msg("Connection settings")}">
+            <div class="pf-c-form">
                 <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
@@ -146,9 +145,8 @@ export class EmailStageForm extends BaseStageForm<EmailStage> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Stage-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Stage-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
                         <label class="pf-c-switch">
                             <input

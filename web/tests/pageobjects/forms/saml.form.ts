@@ -1,19 +1,18 @@
+import { searchSelect } from "#tests/utils/controls";
 import { $ } from "@wdio/globals";
 
-import Page from "../page.js";
-
-export class SamlForm extends Page {
-    async setAuthorizationFlow(selector: string) {
-        await this.searchSelect(
-            '>>>ak-flow-search[name="authorizationFlow"]',
+export abstract class SAMLForm {
+    public static setAuthorizationFlow(buttonText: string) {
+        return searchSelect(
+            'ak-flow-search[name="authorizationFlow"]',
             "authorizationFlow",
-            selector,
+            buttonText,
         );
     }
 
-    get acsUrl() {
-        return $('>>>input[name="acsUrl"]');
+    public static get $ASCURL() {
+        return $('input[name="acsUrl"]');
     }
 }
 
-export default new SamlForm();
+export default SAMLForm;

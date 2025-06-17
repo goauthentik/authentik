@@ -88,7 +88,7 @@ export class AKPageNavbar
                     color: var(--ak-dark-foreground);
                 }
 
-                navbar {
+                .main-content {
                     border-bottom: var(--pf-global--BorderWidth--sm);
                     border-bottom-style: solid;
                     border-bottom-color: var(--pf-global--BorderColor--100);
@@ -351,7 +351,12 @@ export class AKPageNavbar
     renderIcon() {
         if (this.icon) {
             if (this.iconImage && !this.icon.startsWith("fa://")) {
-                return html`<img class="accent-icon pf-icon" src="${this.icon}" alt="page icon" />`;
+                return html`<img
+                    aria-hidden="true"
+                    class="accent-icon pf-icon"
+                    src="${this.icon}"
+                    alt="page icon"
+                />`;
             }
 
             const icon = this.icon.replaceAll("fa://", "fa ");
@@ -363,9 +368,9 @@ export class AKPageNavbar
 
     render(): TemplateResult {
         return html` <slot></slot>
-            <navbar aria-label="Main" class="navbar">
-                <aside class="brand ${this.open ? "" : "pf-m-collapsed"}">
-                    <a href="#/">
+            <div role="banner" aria-label="Main" class="main-content">
+                <aside role="presentation" class="brand ${this.open ? "" : "pf-m-collapsed"}">
+                    <a aria-label="${msg("Home")}" href="#/">
                         <div class="logo">
                             <img
                                 src=${themeImage(this.brandingLogo)}
@@ -376,31 +381,35 @@ export class AKPageNavbar
                     </a>
                 </aside>
                 <button
+                    aria-controls="global-nav"
                     class="sidebar-trigger pf-c-button pf-m-plain"
                     @click=${this.#toggleSidebar}
-                    aria-label=${msg("Toggle sidebar")}
+                    aria-label=${this.open ? msg("Collapse navigation") : msg("Expand navigation")}
                     aria-expanded=${this.open ? "true" : "false"}
                 >
-                    <i class="fas fa-bars"></i>
+                    <i aria-hidden="true" class="fas fa-bars"></i>
                 </button>
 
-                <section
-                    class="items primary pf-c-content ${this.description ? "block-sibling" : ""}"
-                >
-                    <h1 class="page-title">
+                <div class="items primary pf-c-content ${this.description ? "block-sibling" : ""}">
+                    <h1 aria-labelledby="page-navbar-heading" class="page-title">
                         ${this.hasIcon
-                            ? html`<slot name="icon">${this.renderIcon()}</slot>`
+                            ? html`<slot aria-hidden="true" name="icon">${this.renderIcon()}</slot>`
                             : nothing}
-                        ${this.header}
+                        <span id="page-navbar-heading">${this.header}</span>
                     </h1>
-                </section>
+                </div>
                 ${this.description
-                    ? html`<section class="items page-description pf-c-content">
+                    ? html`<div
+                          role="heading"
+                          aria-level="2"
+                          aria-label="${this.description}"
+                          class="items page-description pf-c-content"
+                      >
                           <p>${this.description}</p>
-                      </section>`
+                      </div>`
                     : nothing}
 
-                <section class="items secondary">
+                <div class="items secondary">
                     <div class="pf-c-page__header-tools-group">
                         <ak-nav-buttons .uiConfig=${this.uiConfig} .me=${this.session}>
                             <a
@@ -412,8 +421,8 @@ export class AKPageNavbar
                             </a>
                         </ak-nav-buttons>
                     </div>
-                </section>
-            </navbar>`;
+                </div>
+            </div>`;
     }
 
     //#endregion
@@ -422,5 +431,9 @@ export class AKPageNavbar
 declare global {
     interface HTMLElementTagNameMap {
         "ak-page-navbar": AKPageNavbar;
+    }
+
+    interface TestIDSelectorMap {
+        page: PageTestIDMap;
     }
 }

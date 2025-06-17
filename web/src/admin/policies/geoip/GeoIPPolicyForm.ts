@@ -78,9 +78,8 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Distance settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Distance settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="checkHistoryDistance">
                         <label class="pf-c-switch">
                             <input
@@ -185,9 +184,8 @@ export class GeoIPPolicyForm extends BasePolicyForm<GeoIPPolicy> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header">${msg("Static rule settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Static rule settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("ASNs")} name="asns">
                         <input
                             type="text"

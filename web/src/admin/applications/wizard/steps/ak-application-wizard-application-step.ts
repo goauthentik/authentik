@@ -1,16 +1,15 @@
 import { ApplicationWizardStep } from "@goauthentik/admin/applications/wizard/ApplicationWizardStep.js";
 import "@goauthentik/admin/applications/wizard/ak-wizard-title.js";
 import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
-import { camelToSnake } from "@goauthentik/common/utils.js";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import { type NavigableButton, type WizardButton } from "@goauthentik/components/ak-wizard/types";
-import { type KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { isSlug } from "@goauthentik/elements/router/utils.js";
+import { snakeCase } from "change-case";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -23,11 +22,10 @@ import { ApplicationWizardStateUpdate, ValidationRecord } from "../types";
 
 const autoTrim = (v: unknown) => (typeof v === "string" ? v.trim() : v);
 
-const trimMany = (o: KeyUnknown, vs: string[]) =>
+const trimMany = (o: Record<string, unknown>, vs: string[]) =>
     Object.fromEntries(vs.map((v) => [v, autoTrim(o[v])]));
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const isStr = (v: any): v is string => typeof v === "string";
+const isStr = (v: unknown): v is string => typeof v === "string";
 
 @customElement("ak-application-wizard-application-step")
 export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
@@ -48,9 +46,7 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
     errorMessages(name: string) {
         return this.errors.has(name)
             ? [this.errors.get(name)]
-            : (this.wizard.errors?.app?.[name] ??
-                  this.wizard.errors?.app?.[camelToSnake(name)] ??
-                  []);
+            : (this.wizard.errors?.app?.[name] ?? this.wizard.errors?.app?.[snakeCase(name)] ?? []);
     }
 
     get buttons(): WizardButton[] {
@@ -146,9 +142,8 @@ export class ApplicationWizardApplicationStep extends ApplicationWizardStep {
                     .value=${app.policyEngineMode}
                     .errorMessages=${errors.policyEngineMode ?? []}
                 ></ak-radio-input>
-                <ak-form-group aria-label=${msg("UI Settings")}>
-                    <span slot="header"> ${msg("UI Settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                <ak-form-group label=${msg("UI Settings")}>
+                    <div class="pf-c-form">
                         <ak-text-input
                             name="metaLaunchUrl"
                             label=${msg("Launch URL")}

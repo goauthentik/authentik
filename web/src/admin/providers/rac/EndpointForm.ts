@@ -115,9 +115,8 @@ export class EndpointForm extends ModelForm<Endpoint, string> {
                     selected-label="${msg("Selected User Property Mappings")}"
                 ></ak-dual-select-dynamic-selected>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Settings")} name="settings">
                         <ak-codemirror
                             mode="yaml"

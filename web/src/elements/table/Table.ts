@@ -13,10 +13,11 @@ import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/table/TablePagination";
+import { TablePageChangeListener } from "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 import { SlottedTemplateResult } from "@goauthentik/elements/types";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { property, state } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
@@ -32,6 +33,13 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Pagination } from "@goauthentik/api";
+
+export interface DefaultAPIEndpointConfig {
+    ordering?: string;
+    page: number;
+    pageSize: number;
+    search?: string;
+}
 
 export interface TableLike {
     order?: string;
@@ -88,7 +96,12 @@ export class TableColumn {
             "pf-m-selected": table.order === this.orderBy || table.order === `-${this.orderBy}`,
         };
 
-        return html`<th role="columnheader" scope="col" class="${classMap(classes)}">
+        return html`<th
+            aria-label="${this.title}"
+            role="columnheader"
+            scope="col"
+            class="${classMap(classes)}"
+        >
             ${this.orderBy ? this.renderSortable(table) : html`${this.title}`}
         </th>`;
     }
@@ -100,14 +113,44 @@ export interface PaginatedResponse<T> {
     results: Array<T>;
 }
 
-export abstract class Table<T> extends AKElement implements TableLike {
-    abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
-    abstract columns(): TableColumn[];
-    abstract row(item: T): SlottedTemplateResult[];
+export abstract class Table<T extends object> extends AKElement implements TableLike {
+    /**
+     * The API endpoint to fetch data from.
+     * @abstract
+     */
+    protected abstract apiEndpoint(): Promise<PaginatedResponse<T>>;
 
-    private isLoading = false;
+    /**
+     * The columns to display in the table.
+     * @abstract
+     */
+    protected abstract columns(): TableColumn[];
 
-    searchEnabled(): boolean {
+    /**
+     * Render a row for a given item.
+     *
+     * @param item The item to render.
+     * @abstract
+     */
+    protected abstract row(item: T): SlottedTemplateResult[];
+
+    /**
+     * Render a row for a given item.
+     *
+     * @param item The item to render.
+     * @abstract
+     */
+    protected rowLabel(item: T): string | typeof nothing {
+        if ("name" in item && typeof item.name === "string") {
+            return msg(str`${item.name}`);
+        }
+
+        return nothing;
+    }
+
+    #loading = false;
+
+    protected searchEnabled(): boolean {
         return false;
     }
 
@@ -118,6 +161,14 @@ export abstract class Table<T> extends AKElement implements TableLike {
 
         return nothing;
     }
+
+    //#region Properties
+
+    @property({ type: String })
+    toolbarLabel = msg("Table actions");
+
+    @property({ type: String })
+    label?: string;
 
     @property({ attribute: false })
     data?: PaginatedResponse<T>;
@@ -167,41 +218,51 @@ export abstract class Table<T> extends AKElement implements TableLike {
     @property({ attribute: false })
     expandedElements: T[] = [];
 
+    @property({ attribute: false })
+    searchLabel?: string;
+
+    @property({ attribute: false })
+    searchPlaceholder?: string;
+
+    //#endregion
+
     @state()
     error?: APIError;
 
-    static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFTable,
-            PFBullseye,
-            PFButton,
-            PFSwitch,
-            PFToolbar,
-            PFDropdown,
-            PFPagination,
-            css`
-                .pf-c-table thead .pf-c-table__check {
-                    min-width: 3rem;
-                }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
-                }
-                .pf-c-toolbar__content {
-                    row-gap: var(--pf-global--spacer--sm);
-                }
-                .pf-c-toolbar__item .pf-c-input-group {
-                    padding: 0 var(--pf-global--spacer--sm);
-                }
+    //#region Static
 
-                .pf-c-table {
-                    --pf-c-table--m-striped__tr--BackgroundColor: var(
-                        --pf-global--BackgroundColor--dark-300
-                    );
-                }
-            `,
-        ];
-    }
+    static styles: CSSResult[] = [
+        PFBase,
+        PFTable,
+        PFBullseye,
+        PFButton,
+        PFSwitch,
+        PFToolbar,
+        PFDropdown,
+        PFPagination,
+        css`
+            .pf-c-table thead .pf-c-table__check {
+                min-width: 3rem;
+            }
+            .pf-c-table tbody .pf-c-table__check input {
+                margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+            }
+            .pf-c-toolbar__content {
+                row-gap: var(--pf-global--spacer--sm);
+            }
+            .pf-c-toolbar__item .pf-c-input-group {
+                padding: 0 var(--pf-global--spacer--sm);
+            }
+
+            .pf-c-table {
+                --pf-c-table--m-striped__tr--BackgroundColor: var(
+                    --pf-global--BackgroundColor--dark-300
+                );
+            }
+        `,
+    ];
+
+    //#endregion
 
     constructor() {
         super();
@@ -213,7 +274,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         }
     }
 
-    async defaultEndpointConfig() {
+    public async defaultEndpointConfig(): Promise<DefaultAPIEndpointConfig> {
         return {
             ordering: this.order,
             page: this.page,
@@ -229,9 +290,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
     }
 
     public async fetch(): Promise<void> {
-        if (this.isLoading) return;
+        if (this.#loading) return;
 
-        this.isLoading = true;
+        this.#loading = true;
 
         return this.apiEndpoint()
             .then((data) => {
@@ -279,7 +340,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 this.error = await parseAPIResponseError(error);
             })
             .finally(() => {
-                this.isLoading = false;
+                this.#loading = false;
                 this.requestUpdate();
             });
     }
@@ -296,7 +357,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         </tr>`;
     }
 
-    renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
+    protected renderEmpty(inner?: SlottedTemplateResult): TemplateResult {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
@@ -312,11 +373,21 @@ export abstract class Table<T> extends AKElement implements TableLike {
         </tbody>`;
     }
 
-    renderObjectCreate(): SlottedTemplateResult {
+    /**
+     * Render the create object button.
+     *
+     * @abstract
+     */
+    protected renderObjectCreate(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderError(): SlottedTemplateResult {
+    /**
+     * Render the error state.
+     *
+     * @abstract
+     */
+    protected renderError(): SlottedTemplateResult {
         if (!this.error) return nothing;
 
         return html`<ak-empty-state icon="fa-ban"
@@ -329,7 +400,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
-        if (!this.data || this.isLoading) {
+        if (!this.data || this.#loading) {
             return [this.renderLoading()];
         }
         if (this.data.pagination.count === 0) {
@@ -350,6 +421,8 @@ export abstract class Table<T> extends AKElement implements TableLike {
     }
 
     private renderRowGroup(items: T[]): TemplateResult[] {
+        const columns = this.columns();
+
         return items.map((item) => {
             const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
                 const target = ev.target as HTMLElement;
@@ -380,7 +453,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
             };
 
             const renderCheckbox = () =>
-                html`<td class="pf-c-table__check" role="cell">
+                html`<td aria-label="${msg("Select row")}" class="pf-c-table__check" role="button">
                     <label class="ignore-click"
                         ><input
                             type="checkbox"
@@ -420,9 +493,9 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 </td>`;
             };
 
-            return html`<tbody role="rowgroup" class="${classMap(expandedClass)}">
+            return html`<tbody class="${classMap(expandedClass)}">
                 <tr
-                    role="row"
+                    aria-label="${this.rowLabel(item)}"
                     class="${this.checkbox || this.clickable ? "pf-m-hoverable" : ""}"
                     @click=${this.clickable
                         ? () => {
@@ -433,7 +506,13 @@ export abstract class Table<T> extends AKElement implements TableLike {
                     ${this.checkbox ? renderCheckbox() : nothing}
                     ${this.expandable ? renderExpansion() : nothing}
                     ${this.row(item).map((column, columnIndex) => {
-                        return html`<td data-column-index="${columnIndex}" role="cell">
+                        const columnLabel = columns[columnIndex]?.title;
+
+                        return html`<td
+                            aria-label=${ifDefined(columnLabel)}
+                            data-column-index="${columnIndex}"
+                            role="cell"
+                        >
                             ${column}
                         </td>`;
                     })}
@@ -446,7 +525,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
         });
     }
 
-    renderToolbar(): TemplateResult {
+    protected renderToolbar(): TemplateResult {
         return html` ${this.renderObjectCreate()}
             <ak-spinner-button
                 .callAction=${() => {
@@ -458,48 +537,60 @@ export abstract class Table<T> extends AKElement implements TableLike {
             >`;
     }
 
-    renderToolbarSelected(): SlottedTemplateResult {
+    protected renderToolbarSelected(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderToolbarAfter(): SlottedTemplateResult {
+    protected renderToolbarAfter(): SlottedTemplateResult {
         return nothing;
     }
 
-    renderSearch(): TemplateResult {
-        const runSearch = (value: string) => {
-            this.search = value;
-            updateURLParams({
-                search: value,
-            });
-            this.fetch();
-        };
+    #searchListener = (value: string) => {
+        this.search = value;
 
-        return !this.searchEnabled()
-            ? html``
-            : html`<div class="pf-c-toolbar__group pf-m-search-filter">
-                  <ak-table-search
-                      class="pf-c-toolbar__item pf-m-search-filter"
-                      value=${ifDefined(this.search)}
-                      .onSearch=${runSearch}
-                  >
-                  </ak-table-search>
-              </div>`;
-    }
+        updateURLParams({
+            search: value,
+        });
 
-    renderToolbarContainer(): TemplateResult {
-        return html`<div class="pf-c-toolbar">
-            <div class="pf-c-toolbar__content">
-                ${this.renderSearch()}
-                <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
-                ${this.paginated ? this.renderTablePagination() : html``}
-            </div>
+        this.fetch();
+    };
+
+    protected renderSearch(): SlottedTemplateResult {
+        if (!this.searchEnabled()) {
+            return nothing;
+        }
+
+        return html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            <ak-table-search
+                class="pf-c-toolbar__item pf-m-search-filter"
+                value=${ifDefined(this.search)}
+                label=${ifDefined(this.searchLabel)}
+                placeholder=${ifDefined(this.searchPlaceholder)}
+                .onSearch=${this.#searchListener}
+            >
+            </ak-table-search>
         </div>`;
     }
 
-    firstUpdated(): void {
+    protected renderToolbarContainer(): SlottedTemplateResult {
+        return html`<header class="pf-c-toolbar" role="toolbar" aria-label="${this.toolbarLabel}">
+            <div role="presentation" class="pf-c-toolbar__content">
+                ${this.renderSearch()}
+                <div role="presentation" class="pf-c-toolbar__bulk-select">
+                    ${this.renderToolbar()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarAfter()}
+                </div>
+                <div role="presentation" class="pf-c-toolbar__group">
+                    ${this.renderToolbarSelected()}
+                </div>
+                ${this.paginated ? this.renderTablePagination() : nothing}
+            </div>
+        </header>`;
+    }
+
+    public firstUpdated(): void {
         this.fetch();
     }
 
@@ -517,7 +608,7 @@ export abstract class Table<T> extends AKElement implements TableLike {
                 : [];
         };
 
-        return html`<td class="pf-c-table__check" role="cell">
+        return html`<td class="pf-c-table__check" role="button">
             <input
                 name="select-all"
                 type="checkbox"
@@ -549,41 +640,51 @@ export abstract class Table<T> extends AKElement implements TableLike {
         </ak-chip-group>`;
     }
 
-    /* A simple pagination display, shown at both the top and bottom of the page. */
-    renderTablePagination(): TemplateResult {
-        const handler = (page: number) => {
-            updateURLParams({ tablePage: page });
-            this.page = page;
-            this.fetch();
-        };
+    #pageChangeListener: TablePageChangeListener = (page: number) => {
+        updateURLParams({ tablePage: page });
+        this.page = page;
+        this.fetch();
+    };
 
+    /**
+     * A simple pagination display, shown at both the top and bottom of the page.
+     */
+    protected renderTablePagination(): SlottedTemplateResult {
         return html`
             <ak-table-pagination
                 class="pf-c-toolbar__item pf-m-pagination"
                 .pages=${this.data?.pagination}
-                .pageChangeHandler=${handler}
+                .onPageChange=${this.#pageChangeListener}
             >
             </ak-table-pagination>
         `;
     }
 
-    renderTable(): TemplateResult {
-        const renderBottomPagination = () =>
-            html`<div class="pf-c-pagination pf-m-bottom">${this.renderTablePagination()}</div>`;
+    protected renderTable(): TemplateResult {
+        const columns = this.columns();
 
-        return html`${this.needChipGroup ? this.renderChipGroup() : html``}
+        return html`${this.needChipGroup ? this.renderChipGroup() : nothing}
             ${this.renderToolbarContainer()}
-            <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
-                <thead>
-                    <tr role="row" class="pf-c-table__header-row">
-                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : html``}
-                        ${this.expandable ? html`<td role="cell"></td>` : html``}
-                        ${this.columns().map((col) => col.render(this))}
+            <table
+                aria-labelledby="table-page-main"
+                class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable"
+            >
+                <thead aria-label="${msg("Table columns")}">
+                    <tr role="presentation" class="pf-c-table__header-row">
+                        ${this.checkbox ? this.renderAllOnThisPageCheckbox() : nothing}
+                        ${this.expandable
+                            ? html`<td aria-label="${msg("Expand table row")}" role="cell"></td>`
+                            : nothing}
+                        ${columns.map((col) => col.render(this))}
                     </tr>
                 </thead>
                 ${this.renderRows()}
             </table>
-            ${this.paginated ? renderBottomPagination() : html``}`;
+            ${this.paginated
+                ? html`<div class="pf-c-pagination pf-m-bottom">
+                      ${this.renderTablePagination()}
+                  </div>`
+                : nothing}`;
     }
 
     render(): TemplateResult {

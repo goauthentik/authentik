@@ -57,9 +57,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 value=${ifDefined(provider?.name)}
                 required
             ></ak-text-input>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Signing Key")}
                         name="signingKey"
@@ -93,9 +92,8 @@ export class SSFProviderFormPage extends BaseProviderForm<SSFProvider> {
                 </div>
             </ak-form-group>
 
-            <ak-form-group>
-                <span slot="header">${msg("Authentication settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Authentication settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("OIDC Providers")}
                         name="oidcAuthProviders"

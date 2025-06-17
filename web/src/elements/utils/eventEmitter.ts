@@ -1,4 +1,5 @@
 import {
+    AbstractLitElementConstructor,
     ConstructorWithMixin,
     LitElementConstructor,
     createMixin,
@@ -15,7 +16,7 @@ export interface CustomEventEmitterMixin<EventType extends string = string> {
 
 export function CustomEmitterElement<
     EventType extends string = string,
-    T extends LitElementConstructor = LitElementConstructor,
+    T extends AbstractLitElementConstructor = AbstractLitElementConstructor,
 >(SuperClass: T) {
     abstract class CustomEventEmmiter
         extends SuperClass

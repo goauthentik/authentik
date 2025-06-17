@@ -74,9 +74,8 @@ doesn't pass when either or both of the selected options are equal or above the 
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="checkIp">
                         <label class="pf-c-switch">
                             <input

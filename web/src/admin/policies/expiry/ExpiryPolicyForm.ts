@@ -64,9 +64,8 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("Policy-specific settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("Policy-specific settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Maximum age (in days)")}
                         required

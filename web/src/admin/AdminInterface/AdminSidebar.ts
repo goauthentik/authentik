@@ -1,16 +1,44 @@
+import { SidebarItemProperties } from "#elements/sidebar/SidebarItem";
 import { ID_REGEX, SLUG_REGEX, UUID_REGEX } from "@goauthentik/elements/router/Route";
 import { spread } from "@open-wc/lit-helpers";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 import { repeat } from "lit/directives/repeat.js";
+
+/**
+ * Given a record-like object, prefixes each key with a dot, allowing it to be spread into a
+ * template literal.
+ *
+ * ```ts
+ * interface MyElementProperties {
+ *     foo: string;
+ *     bar: number;
+ * }
+ *
+ * const properties {} as LitPropertyRecord<MyElementProperties>
+ *
+ * console.log(properties) // { '.foo': string; '.bar': number }
+ * ```
+ */
+export type LitPropertyRecord<T extends object> = {
+    [K in keyof T as K extends string ? LitPropertyKey<K> : never]: T[K];
+};
+
+/**
+ * A type that represents a property key that can be used in a LitPropertyRecord.
+ *
+ * @see {@linkcode LitPropertyRecord}
+ */
+export type LitPropertyKey<K> = K extends string ? `.${K}` | `?${K}` | K : K;
 
 // The second attribute type is of string[] to help with the 'activeWhen' control, which was
 // commonplace and singular enough to merit its own handler.
 type SidebarEntry = [
     path: string | null,
     label: string,
-    attributes?: Record<string, any> | string[] | null, // eslint-disable-line
+    attributes?: LitPropertyRecord<SidebarItemProperties> | string[] | null,
     children?: SidebarEntry[],
 ];
 
@@ -31,8 +59,7 @@ export function renderSidebarItem([
         properties.path = path;
     }
 
-    return html`<ak-sidebar-item ${spread(properties)}>
-        ${label ? html`<span slot="label">${label}</span>` : nothing}
+    return html`<ak-sidebar-item label=${ifDefined(label)} ${spread(properties)}>
         ${children ? renderSidebarItems(children) : nothing}
     </ak-sidebar-item>`;
 }

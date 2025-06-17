@@ -28,32 +28,38 @@ import { Provider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-list")
 export class ProviderListPage extends TablePage<Provider> {
-    searchEnabled(): boolean {
+    override searchEnabled(): boolean {
         return true;
     }
-    pageTitle(): string {
+
+    override pageTitle(): string {
         return msg("Providers");
     }
-    pageDescription(): string {
+
+    override pageDescription(): string {
         return msg("Provide support for protocols like SAML and OAuth to assigned applications.");
     }
-    pageIcon(): string {
+
+    override pageIcon(): string {
         return "pf-icon pf-icon-integration";
     }
 
-    checkbox = true;
-    clearOnRefresh = true;
+    override checkbox = true;
+    override clearOnRefresh = true;
 
     @property()
-    order = "name";
+    public order = "name";
 
-    async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
+    public searchLabel = msg("Provider name");
+    public searchPlaceholder = msg("Search for providers…");
+
+    override async apiEndpoint(): Promise<PaginatedResponse<Provider>> {
         return new ProvidersApi(DEFAULT_CONFIG).providersAllList(
             await this.defaultEndpointConfig(),
         );
     }
 
-    columns(): TableColumn[] {
+    override columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "name"),
             new TableColumn(msg("Application")),
@@ -62,8 +68,9 @@ export class ProviderListPage extends TablePage<Provider> {
         ];
     }
 
-    renderToolbarSelected(): TemplateResult {
+    override renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Provider(s)")}
             .objects=${this.selectedElements}
@@ -84,7 +91,7 @@ export class ProviderListPage extends TablePage<Provider> {
         </ak-forms-delete-bulk>`;
     }
 
-    rowApp(item: Provider): TemplateResult {
+    #rowApp(item: Provider): TemplateResult {
         if (item.assignedApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                 ${msg("Assigned to application ")}
@@ -92,6 +99,7 @@ export class ProviderListPage extends TablePage<Provider> {
                     >${item.assignedApplicationName}</a
                 >`;
         }
+
         if (item.assignedBackchannelApplicationName) {
             return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                 ${msg("Assigned to application (backchannel) ")}
@@ -99,15 +107,15 @@ export class ProviderListPage extends TablePage<Provider> {
                     >${item.assignedBackchannelApplicationName}</a
                 >`;
         }
-        return html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i> ${msg(
-                "Warning: Provider not assigned to any application.",
-            )}`;
+
+        return html`<i aria-hidden="true" class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
+            ${msg("Warning: Provider not assigned to any application.")}`;
     }
 
-    row(item: Provider): TemplateResult[] {
+    override row(item: Provider): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
-            this.rowApp(item),
+            this.#rowApp(item),
             html`${item.verboseName}`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
@@ -120,16 +128,20 @@ export class ProviderListPage extends TablePage<Provider> {
                     type=${item.component}
                 >
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
+                <button
+                    aria-label=${msg("Edit provider")}
+                    slot="trigger"
+                    class="pf-c-button pf-m-plain"
+                >
                     <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
+                        <i aria-hidden="true" class="fas fa-edit"></i>
                     </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];
     }
 
-    renderObjectCreate(): TemplateResult {
+    override renderObjectCreate(): TemplateResult {
         return html`<ak-provider-wizard> </ak-provider-wizard> `;
     }
 }

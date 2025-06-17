@@ -1,11 +1,11 @@
-import Page from "../page.js";
+import { searchSelect } from "#tests/utils/controls";
 
-export class RadiusForm extends Page {
-    async setAuthenticationFlow(selector: string) {
-        await this.searchSelect(
-            '>>>ak-branded-flow-search[name="authorizationFlow"]',
+export class RadiusForm {
+    async setAuthenticationFlow(buttonText: string) {
+        await searchSelect(
+            'ak-branded-flow-search[name="authorizationFlow"]',
             "authorizationFlow",
-            selector,
+            buttonText,
         );
     }
 }

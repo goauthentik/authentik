@@ -1,82 +1,79 @@
+import AdminPage from "#tests/pageobjects/admin.page";
+import ApplicationForm from "#tests/pageobjects/forms/application.form";
+import ForwardProxyForm from "#tests/pageobjects/forms/forward-proxy.form";
+import LDAPForm from "#tests/pageobjects/forms/ldap.form";
+import OAuthForm from "#tests/pageobjects/forms/oauth.form";
+import RadiusForm from "#tests/pageobjects/forms/radius.form";
+import SAMLForm from "#tests/pageobjects/forms/saml.form";
+import SCIMForm from "#tests/pageobjects/forms/scim.form";
+import TransparentProxyForm from "#tests/pageobjects/forms/transparent-proxy.form";
+import { findOUIDComponent } from "#tests/utils/selectors";
 import { $ } from "@wdio/globals";
 
-import AdminPage from "./admin.page.js";
-import ApplicationForm from "./forms/application.form.js";
-import ForwardProxyForm from "./forms/forward-proxy.form.js";
-import LdapForm from "./forms/ldap.form.js";
-import OauthForm from "./forms/oauth.form.js";
-import RadiusForm from "./forms/radius.form.js";
-import SamlForm from "./forms/saml.form.js";
-import ScimForm from "./forms/scim.form.js";
-import TransparentProxyForm from "./forms/transparent-proxy.form.js";
+export abstract class ApplicationWizardView extends AdminPage {
+    //#region Selectors
 
-/**
- * sub page containing specific selectors and methods for a specific page
- */
+    public static readonly LDAP = LDAPForm;
+    public static readonly OAuth = OAuthForm;
+    public static readonly TransparentProxy = TransparentProxyForm;
+    public static readonly ForwardProxy = ForwardProxyForm;
+    public static readonly SAML = SAMLForm;
+    public static readonly SCIM = SCIMForm;
+    public static readonly RADUS = RadiusForm;
+    public static readonly $app = ApplicationForm;
 
-class ApplicationWizardView extends AdminPage {
-    /**
-     * define selectors using getter methods
-     */
-
-    ldap = LdapForm;
-    oauth = OauthForm;
-    transparentProxy = TransparentProxyForm;
-    forwardProxy = ForwardProxyForm;
-    saml = SamlForm;
-    scim = ScimForm;
-    radius = RadiusForm;
-    app = ApplicationForm;
-
-    async wizardTitle() {
-        return await $(">>>.pf-c-wizard__title");
+    public static get $OAuth2Provider() {
+        return findOUIDComponent("oauth2provider", this.$providerList);
     }
 
-    async providerList() {
-        return await $(">>>ak-application-wizard-provider-choice-step");
+    public static get $LDAPProvider() {
+        return findOUIDComponent("ldapprovider", this.$providerList);
     }
 
-    async nextButton() {
-        return await $('>>>button[data-ouid-button-kind="wizard-next"]');
+    public static get $proxyProvider() {
+        return findOUIDComponent("proxyprovider", this.$providerList);
     }
 
-    async getProviderType(type: string) {
-        // @ts-expect-error "TSC does not understand the ChainablePromiseElement type at all."
-        return await this.providerList().$(`>>>input[value="${type}"]`);
+    public static get $RadiusProvider() {
+        return findOUIDComponent("radiusprovider", this.$providerList);
     }
 
-    async submitPage() {
-        return await $(">>>ak-application-wizard-submit-step");
+    public static get $SAMLProvider() {
+        return findOUIDComponent("samlprovider", this.$providerList);
     }
 
-    async successMessage() {
-        return await $('>>>[data-ouid-component-state="submitted"]');
+    public static get $SCIMProvider() {
+        return findOUIDComponent("scimprovider", this.$providerList);
     }
+
+    public static get $wizardTitle() {
+        return $("[data-test-id='wizard-title']");
+    }
+
+    public static get $providerList() {
+        return $("ak-application-wizard-provider-choice-step");
+    }
+
+    public static get $nextButton() {
+        return $('button[data-ouid-button-kind="wizard-next"]');
+    }
+
+    public static getProviderType(providerType: string) {
+        // Selector split into a variable to avoid Prettier's parser
+        // getting caught on the CSS syntax.
+        const selector = `input[value="${providerType}"]`;
+        return this.$providerList.$(selector);
+    }
+
+    public static get $submitPage() {
+        return $("ak-application-wizard-submit-step");
+    }
+
+    public static get $successMessage() {
+        return $('[data-ouid-component-state="submitted"]');
+    }
+
+    //#endregion
 }
 
-type Pair = [string, string];
-
-// Define a getter for each provider type in the radio button collection.
-
-const providerValues: Pair[] = [
-    ["oauth2provider", "oauth2Provider"],
-    ["ldapprovider", "ldapProvider"],
-    ["proxyprovider", "proxyProvider"],
-    ["radiusprovider", "radiusProvider"],
-    ["samlprovider", "samlProvider"],
-    ["scimprovider", "scimProvider"],
-];
-
-providerValues.forEach(([value, name]: Pair) => {
-    Object.defineProperties(ApplicationWizardView.prototype, {
-        [name]: {
-            get: async function () {
-                return await (
-                    await this.providerList()
-                ).$(`>>>div[data-ouid-component-name="${value}"]`);
-            },
-        },
-    });
-});
-
-export default new ApplicationWizardView();
+export default ApplicationWizardView;

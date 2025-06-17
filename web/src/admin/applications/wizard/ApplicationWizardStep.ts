@@ -5,7 +5,8 @@ import {
     WizardNavigationEvent,
     WizardUpdateEvent,
 } from "@goauthentik/components/ak-wizard/events";
-import { KeyUnknown, serializeForm } from "@goauthentik/elements/forms/Form";
+import type { AkControlElement } from "@goauthentik/elements/forms/Form";
+import { serializeForm } from "@goauthentik/elements/forms/Form";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
@@ -29,22 +30,21 @@ export class ApplicationWizardStep extends WizardStep {
 
     // As recommended in [WizardStep](../../../components/ak-wizard/WizardStep.ts), we override
     // these fields and provide them to all the child classes.
-    wizardTitle = msg("New application");
-    wizardDescription = msg("Create a new application and configure a provider for it.");
-    canCancel = true;
+    protected wizardTitle = msg("New application");
+    protected wizardDescription = msg("Create a new application and configure a provider for it.");
+    public cancelable = true;
 
     // This should be overridden in the children for more precise targeting.
     @query("form")
-    form!: HTMLFormElement;
+    protected form!: HTMLFormElement;
 
-    get formValues(): KeyUnknown | undefined {
+    get formValues(): Record<string, unknown> {
         const elements = [
-            ...Array.from(
-                this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
-            ),
-            ...Array.from(this.form.querySelectorAll<HTMLElement>("[data-ak-control=true]")),
+            ...this.form.querySelectorAll<HorizontalFormElement>("ak-form-element-horizontal"),
+            ...this.form.querySelectorAll<AkControlElement>("[data-ak-control]"),
         ];
-        return serializeForm(elements as unknown as NodeListOf<HorizontalFormElement>);
+
+        return serializeForm(elements);
     }
 
     protected removeErrors(

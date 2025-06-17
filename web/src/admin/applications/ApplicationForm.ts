@@ -177,9 +177,8 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 .options=${policyEngineModes}
                 .value=${this.instance?.policyEngineMode}
             ></ak-radio-input>
-            <ak-form-group>
-                <span slot="header"> ${msg("UI settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("UI settings")}">
+                <div class="pf-c-form">
                     <ak-text-input
                         name="metaLaunchUrl"
                         label=${msg("Launch URL")}

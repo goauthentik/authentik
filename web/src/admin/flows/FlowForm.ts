@@ -211,9 +211,8 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     ${msg("Required authentication level for this flow.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group>
-                <span slot="header"> ${msg("Behavior settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Behavior settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal name="compatibilityMode">
                         <label class="pf-c-switch">
                             <input
@@ -286,9 +285,8 @@ export class FlowForm extends WithCapabilitiesConfig(ModelForm<Flow, string>) {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Appearance settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Appearance settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Layout")} required name="layout">
                         <select class="pf-c-form-control">
                             <option

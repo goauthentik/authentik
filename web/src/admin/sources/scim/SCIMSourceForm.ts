@@ -68,9 +68,8 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     <label class="pf-c-check__label"> ${msg("Enabled")} </label>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-group expanded>
-                <span slot="header"> ${msg("SCIM Attribute mapping")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group open label="${msg("SCIM Attribute mapping")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User Property Mappings")}
                         name="userPropertyMappings"
@@ -105,9 +104,8 @@ export class SCIMSourceForm extends BaseSourceForm<SCIMSource> {
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group>
-                <span slot="header"> ${msg("Advanced protocol settings")} </span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Advanced protocol settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"

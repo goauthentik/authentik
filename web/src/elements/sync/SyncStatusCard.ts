@@ -8,7 +8,7 @@ import "@goauthentik/elements/events/LogViewer";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -85,11 +85,11 @@ export class SyncStatusTable extends Table<SystemTask> {
     }
 
     renderToolbarContainer() {
-        return html``;
+        return nothing;
     }
 
     renderTablePagination() {
-        return html``;
+        return nothing;
     }
 }
 

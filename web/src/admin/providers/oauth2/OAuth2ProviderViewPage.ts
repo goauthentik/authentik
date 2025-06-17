@@ -4,6 +4,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import renderDescriptionList from "@goauthentik/components/DescriptionList";
 import "@goauthentik/components/events/ObjectChangelog";
+import { IDGenerator } from "@goauthentik/core/id";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
@@ -265,12 +266,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                     <div class="pf-c-card__body">
                         <form class="pf-c-form">
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("providerInfo")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("OpenID Configuration URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("providerInfo")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -278,12 +283,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("issuer")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("OpenID Configuration Issuer")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("issuer")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -292,12 +301,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                             </div>
                             <hr class="pf-c-divider" />
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("authorize")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("Authorize URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("authorize")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -305,10 +318,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("token")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("Token URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("token")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -316,12 +333,16 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("userInfo")}"
+                                >
                                     <span class="pf-c-form__label-text"
                                         >${msg("Userinfo URL")}</span
                                     >
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("userInfo")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -329,10 +350,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("logout")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("Logout URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("logout")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -340,10 +365,14 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 />
                             </div>
                             <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
+                                <label
+                                    class="pf-c-form__label"
+                                    for="${IDGenerator.elementID("jwks")}"
+                                >
                                     <span class="pf-c-form__label-text">${msg("JWKS URL")}</span>
                                 </label>
                                 <input
+                                    id="${IDGenerator.elementID("jwks")}"
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
@@ -389,9 +418,12 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${renderDescriptionList(
                         [
                             [
-                                msg("Preview for user"),
+                                html`<label for="${IDGenerator.elementID("preview-user")}"
+                                    >${msg("Preview for user")}</label
+                                >`,
                                 html`
                                     <ak-search-select
+                                        id="${IDGenerator.elementID("preview-user")}"
                                         .fetchObjects=${async (query?: string): Promise<User[]> => {
                                             const args: CoreUsersListRequest = {
                                                 ordering: "username",

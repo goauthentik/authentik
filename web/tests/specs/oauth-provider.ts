@@ -1,47 +1,62 @@
-import { expect } from "@wdio/globals";
+import ProviderWizardView from "#tests/pageobjects/provider-wizard.page";
+import ProvidersListPage from "#tests/pageobjects/providers-list.page";
+import SessionPage from "#tests/pageobjects/session.page";
+import { ConsoleTestRunner } from "#tests/utils/logger";
+import { findElementByDataset } from "#tests/utils/selectors";
+import { $, expect } from "@wdio/globals";
 
-import ProviderWizardView from "../pageobjects/provider-wizard.page.js";
-import ProvidersListPage from "../pageobjects/providers-list.page.js";
-import { randomId } from "../utils/index.js";
-import { login } from "../utils/login.js";
+describe("Configure OAuth2 Providers", () => {
+    it("Should configure a simple OAuth2 Application", async () => {
+        await SessionPage.login({
+            to: ProvidersListPage.pathname,
+        });
 
-async function reachTheProvider() {
-    await ProvidersListPage.logout();
-    await login();
-    await ProvidersListPage.open();
-    await expect(await ProvidersListPage.pageHeader()).toHaveText("Providers");
+        await expect(ProvidersListPage.$pageHeader).resolves.toHaveText("Providers");
 
-    await ProvidersListPage.startWizardButton.click();
-    await ProviderWizardView.wizardTitle.waitForDisplayed();
-    await expect(await ProviderWizardView.wizardTitle).toHaveText("New provider");
-}
+        ConsoleTestRunner.info("Looking new provider wizard...");
+        await ProvidersListPage.$newProviderButton.waitForDisplayed({
+            timeout: 2_000,
+        });
+        ConsoleTestRunner.info("Clicking new provider wizard...");
+        await ProvidersListPage.$newProviderButton.click();
 
-describe("Configure Oauth2 Providers", () => {
-    it("Should configure a simple LDAP Application", async () => {
-        const newProviderName = `New OAuth2 Provider - ${randomId()}`;
+        ConsoleTestRunner.info("Waiting for wizard title...");
+        await ProviderWizardView.$wizardTitle.waitForDisplayed({
+            timeout: 5_000,
+        });
 
-        await reachTheProvider();
+        ConsoleTestRunner.info("Wizard title matches...");
 
-        await $(">>>ak-wizard-page-type-create").waitForDisplayed();
-        await $('>>>div[data-ouid-component-name="oauth2provider"]').scrollIntoView();
-        await $('>>>div[data-ouid-component-name="oauth2provider"]').click();
-        await ProviderWizardView.nextButton.click();
-        await ProviderWizardView.pause();
+        await expect(ProviderWizardView.$wizardTitle).resolves.toHaveText("New provider");
 
-        return await $('>>>ak-form-element-horizontal[name="name"]').$(">>>input");
-        await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
-        await ProviderWizardView.nextButton.click();
-        await ProviderWizardView.pause();
+        ConsoleTestRunner.info("Looking for ak-wizard-page-type-create...");
 
-        await ProvidersListPage.searchInput.setValue(newProviderName);
-        await ProvidersListPage.clickSearchButton();
-        await ProvidersListPage.pause();
+        await $("ak-wizard-page-type-create").waitForDisplayed();
 
-        const newProvider = await ProvidersListPage.findProviderRow();
-        await newProvider.waitForDisplayed();
-        expect(newProvider).toExist();
-        expect(await newProvider.getText()).toHaveText(newProviderName);
+        const $ouidComponent = findElementByDataset("ouid-component-name", "oauth2provider");
+        ConsoleTestRunner.info("Scrolling to component...");
+        $ouidComponent.scrollIntoView();
+
+        ConsoleTestRunner.info("Clicking component...");
+        await $ouidComponent.click();
+
+        ConsoleTestRunner.info("Waiting for next button to be enabled...");
+        await ProviderWizardView.$nextButton.waitForEnabled();
+
+        ConsoleTestRunner.info("Clicking next...");
+        await ProviderWizardView.$nextButton.click();
+
+        ConsoleTestRunner.info("Waiting for form page to load...");
+
+        await ProviderWizardView.$OAuth2ProviderForm.waitForExist({
+            timeout: 5000,
+        });
+
+        ConsoleTestRunner.info("Waiting for form page to be displayed...");
+        await ProviderWizardView.$OAuth2ProviderForm.waitForDisplayed({
+            timeout: 5000,
+        });
+
+        ConsoleTestRunner.info("Done!");
     });
 });

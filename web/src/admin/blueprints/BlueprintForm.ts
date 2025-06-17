@@ -176,9 +176,8 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 </div>
             </div>
 
-            <ak-form-group>
-                <span slot="header">${msg("Additional settings")}</span>
-                <div slot="body" class="pf-c-form">
+            <ak-form-group label="${msg("Additional settings")}">
+                <div class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
                             mode=${CodeMirrorMode.YAML}

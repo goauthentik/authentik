@@ -1,14 +1,14 @@
 import { AKElement } from "@goauthentik/elements/Base.js";
 import { bound } from "@goauthentik/elements/decorators/bound";
 
-import { ContextProvider } from "@lit/context";
+import { Context, ContextProvider } from "@lit/context";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { wizardStepContext } from "./WizardContexts";
-import { type WizardStep } from "./WizardStep";
-import { NavigationEventInit, WizardNavigationEvent } from "./events";
-import { WizardStepState } from "./types";
+import { wizardStepContext } from "./WizardContexts.js";
+import type { WizardStep } from "./WizardStep.js";
+import { NavigationEventInit, WizardNavigationEvent } from "./events.js";
+import { WizardStepLabel, WizardStepState } from "./types.js";
 
 /**
  * @class WizardStepsManager
@@ -26,11 +26,11 @@ import { WizardStepState } from "./types";
 @customElement("ak-wizard-steps")
 export class WizardStepsManager extends AKElement {
     @property({ type: String, attribute: true })
-    currentStep?: string;
+    public currentStep?: string;
 
-    wizardStepContext!: ContextProvider<{ __context__: WizardStepState | undefined }>;
+    protected wizardStepContext!: ContextProvider<Context<symbol, WizardStepState>>;
 
-    slots: WizardStep[] = [];
+    protected slots: WizardStep[] = [];
 
     constructor() {
         super();
@@ -57,13 +57,12 @@ export class WizardStepsManager extends AKElement {
         return target;
     }
 
-    get stepLabels() {
+    get stepLabels(): WizardStepLabel[] {
         return this.slots
             .filter((slot) => !slot.hide)
             .map((slot) => ({
                 label: slot.label,
                 id: slot.slot,
-                active: true,
                 enabled: slot.enabled,
             }));
     }
@@ -77,14 +76,18 @@ export class WizardStepsManager extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
+
         this.findSlots();
         this.findStepLabels();
+
         if (!this.currentStep && this.slots.length > 0) {
             const currentStep = this.slots[0].getAttribute("slot");
             if (!currentStep) {
                 throw new Error("All steps managed by this component must have a slot definition.");
             }
+
             this.currentStep = currentStep;
+
             this.wizardStepContext.setValue({
                 stepLabels: this.stepLabels,
                 currentStep: currentStep,
