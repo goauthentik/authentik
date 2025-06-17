@@ -87,7 +87,7 @@ const config = createDocusaurusConfig({
             appId: "36ROD0O0FV",
             apiKey: "727db511300ca9aec5425645bbbddfb5",
             indexName: "goauthentik",
-            externalUrlRegex: ":\\/\\/goauthentik\\.io",
+            externalUrlRegex: /(:\/\/goauthentik\.io|integrations\.goauthentik\.io)/.toString(),
         },
     },
     presets: [
@@ -133,16 +133,6 @@ const config = createDocusaurusConfig({
         ],
     ],
     plugins: [
-        [
-            "@docusaurus/plugin-content-docs",
-            {
-                id: "docsIntegrations",
-                path: "integrations",
-                routeBasePath: "integrations",
-                sidebarPath: "./sidebars/integrations.mjs",
-                editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
-            },
-        ],
         [
             "docusaurus-plugin-openapi-docs",
             {
