@@ -37,7 +37,7 @@ To support the integration of DocuWiki with authentik, you need to create an app
     - Set a `Strict` redirect URI to `https://docuwiki.company/doku.php`.
     - Select any available signing key.
     - Under **Advanced Protocol Settings**, add the following OAuth mapping under **Scopes**: `authentik default OAuth Mapping: OpenID 'offline_access'`
-- **Configure Bindings** _(optional)_: you can create a [binding](https://docs.goauthentik.io/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
+- **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
 
