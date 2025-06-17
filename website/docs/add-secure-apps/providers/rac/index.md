@@ -47,7 +47,7 @@ Configuration details such as credentials can be specified through _settings_, w
 
 Each connection is authorized through authentik policy objects that are bound to the application and the endpoint. Additional verification can be done with the authorization flow.
 
-A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user-admin/customization.mdx). Once the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
+A new connection is created every time an endpoint is selected in the [User Interface](../../../customize/interfaces/user/customization_user_ui.mdx). After the user's authentik session expires, the connection is terminated. Additionally, the connection timeout can be specified in the provider, which applies even if the user is still authenticated. The connection can also be terminated manually from the **Connections** tab of the RAC provider.
 
 Additionally it is possible to modify the connection settings through the authorization flow. Configuration set in `connection_settings` in the flow plan context will be merged with other settings as shown above.
 
