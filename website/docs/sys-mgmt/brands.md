@@ -3,7 +3,7 @@ title: Brands
 slug: /brands
 ---
 
-As an authentik admin, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard, or can be set as default, in which case the brand will be used when no other brand matches the domain.
+As an authentik administrator, you can customize your instance's appearance and behavior using brands. Brands apply to a single domain, a domain wildcard, or can be set as default, in which case the brand will be applied when no other brand matches the domain.
 
 For an overview of branding and other customization options in authentik refer to [Customize your instance](../customize/index.md).
 
