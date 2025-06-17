@@ -51,12 +51,6 @@ export class EmptyState extends AKElement implements IEmptyState {
     }
 
     render() {
-        const showHeader = this.loading || this.slots.hasSlotted("header");
-        const header = () =>
-            this.slots.hasSlotted("header")
-                ? html`<slot name="header"></slot>`
-                : html`<span>${msg("Loading")}</span>`;
-
         return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
             <div class="pf-c-empty-state__content">
                 ${this.loading
@@ -68,7 +62,9 @@ export class EmptyState extends AKElement implements IEmptyState {
                           "fa-question-circle"} pf-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                ${showHeader ? html` <h1 class="pf-c-title pf-m-lg">${header()}</h1>` : nothing}
+                ${this.slots.hasSlotted("header")
+                    ? html` <h1 class="pf-c-title pf-m-lg">$<slot name="header"></slot></h1>`
+                    : nothing}
                 ${this.slots.hasSlotted("body")
                     ? html` <div class="pf-c-empty-state__body">
                           <slot name="body"></slot>
