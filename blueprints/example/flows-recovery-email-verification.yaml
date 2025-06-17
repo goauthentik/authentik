@@ -57,7 +57,7 @@ entries:
       use_ssl: false
       timeout: 10
       from_address: system@authentik.local
-      token_expiry: minutes=30
+      token_expiry: 30
       subject: authentik
       template: email/password_reset.html
       activate_user_on_success: true
