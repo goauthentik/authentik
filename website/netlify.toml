@@ -1,3 +1,11 @@
+[[plugins]]
+package = "netlify-plugin-debug-cache"
+
+[[plugins]]
+package = "netlify-plugin-cache"
+  [plugins.inputs]
+  paths = [".docusaurus"]
+
 [[redirects]]
   from = "/blog/*"
   to = "https://goauthentik.io/blog/:splat"
