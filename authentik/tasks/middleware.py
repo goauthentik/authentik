@@ -8,8 +8,15 @@ from dramatiq.middleware import Middleware
 from structlog.stdlib import get_logger
 
 from authentik.tasks.models import Task
+from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
+
+
+class RelObjMiddleware(Middleware):
+    @property
+    def actor_options(self):
+        return {"rel_obj"}
 
 
 class FullyQualifiedActorName(Middleware):
@@ -52,3 +59,11 @@ class CurrentTask(Middleware):
         else:
             tasks[-1].save()
         self._TASK.set(tasks[:-1])
+
+
+class TenantMiddleware(Middleware):
+    def before_process_message(self, broker: Broker, message: Message):
+        Task.objects.select_related("tenant").get(message_id=message.message_id).tenant.activate()
+
+    def after_process_message(self, *args, **kwargs):
+        Tenant.deactivate()

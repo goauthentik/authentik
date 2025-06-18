@@ -19,20 +19,20 @@ class DjangoDramatiqPostgres(AppConfig):
                 "Make sure your actors are not imported too early."
             )
 
-        encoder: dramatiq.encoder.Encoder = import_string(Conf.encoder_class)()
+        encoder: dramatiq.encoder.Encoder = import_string(Conf().encoder_class)()
         dramatiq.set_encoder(encoder)
 
-        broker_args = Conf.broker_args
+        broker_args = Conf().broker_args
         broker_kwargs = {
-            **Conf.broker_kwargs,
+            **Conf().broker_kwargs,
             "middleware": [],
         }
-        broker: dramatiq.broker.Broker = import_string(Conf.broker_class)(
+        broker: dramatiq.broker.Broker = import_string(Conf().broker_class)(
             *broker_args,
             **broker_kwargs,
         )
 
-        for middleware_class, middleware_kwargs in Conf.middlewares:
+        for middleware_class, middleware_kwargs in Conf().middlewares:
             middleware: dramatiq.middleware.middleware.Middleware = import_string(middleware_class)(
                 **middleware_kwargs,
             )

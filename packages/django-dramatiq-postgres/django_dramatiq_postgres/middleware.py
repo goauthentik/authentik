@@ -9,7 +9,7 @@ from django_dramatiq_postgres.conf import Conf
 
 class DbConnectionMiddleware(Middleware):
     def _close_old_connections(self, *args, **kwargs):
-        if Conf.test:
+        if Conf().test:
             return
         close_old_connections()
 

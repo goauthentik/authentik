@@ -354,26 +354,33 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # Dramatiq
 
 DRAMATIQ = {
+    "broker_class": "authentik.tasks.broker.Broker",
+    "channel_prefix": "authentik.tasks",
+    "task_class": "authentik.tasks.models.Task",
     "middlewares": (
         # TODO: fixme
         # ("dramatiq.middleware.prometheus.Prometheus", {}),
+        ("django_dramatiq_postgres.middleware.DbConnectionMiddleware", {}),
         ("dramatiq.middleware.age_limit.AgeLimit", {}),
         (
+            # 5 minutes task timeout by default for all tasks, in ms
             "dramatiq.middleware.time_limit.TimeLimit",
-            {
-                # 5 minutes task timeout by default for all tasks
-                "time_limit": 600 * 1000,
-            },
+            {"time_limit": 600_000},
         ),
         ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
         ("dramatiq.middleware.callbacks.Callbacks", {}),
         ("dramatiq.middleware.pipelines.Pipelines", {}),
-        ("dramatiq.middleware.retries.Retries", {"max_retries": 20 if not TEST else 0}),
+        (
+            "dramatiq.middleware.retries.Retries",
+            {"max_retries": 20 if not TEST else 0},
+        ),
         # TODO: results
         ("authentik.tasks.middleware.FullyQualifiedActorName", {}),
+        ("authentik.tasks.middleware.RelObjMiddleware", {}),
+        ("authentik.tasks.middleware.TenantMiddleware", {}),
         ("authentik.tasks.middleware.CurrentTask", {}),
     ),
-    "task_class": "authentik.tasks.models.Task",
+    "test": TEST,
 }
 
 

@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from django_dramatiq_postgres.conf import Conf
 
-CHANNEL_PREFIX = f"{Conf.channel_prefix}.tasks"
+CHANNEL_PREFIX = f"{Conf().channel_prefix}.tasks"
 
 
 class ChannelIdentifier(StrEnum):
