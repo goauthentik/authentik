@@ -19,13 +19,12 @@ from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.user_login.middleware import (
+    SESSION_KEY_BINDING_NET,
     BoundSessionMiddleware,
     SessionBindingBroken,
     logout_extra,
 )
 from authentik.stages.user_login.models import GeoIPBinding, NetworkBinding, UserLoginStage
-from authentik.stages.user_login.middleware import SESSION_KEY_BINDING_NET
-from authentik.stages.user_login.models import NetworkBinding, UserLoginStage
 
 
 class TestUserLoginStage(FlowTestCase):

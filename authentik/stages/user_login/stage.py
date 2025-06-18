@@ -89,6 +89,7 @@ class UserLoginStageView(ChallengeStageView):
         self.request.session[SESSION_KEY_BINDING_NET] = stage.network_binding
         self.request.session[SESSION_KEY_BINDING_GEO] = stage.geoip_binding
 
+    # FIXME: identical function in authenticator_validate
     @property
     def cookie_jwt_key(self) -> str:
         """Signing key for Known-device Cookie for this stage"""
@@ -99,13 +100,15 @@ class UserLoginStageView(ChallengeStageView):
     def set_known_device_cookie(self, user: User):
         """Set a cookie, valid longer than the session, which denotes that this user
         has logged in on this device before."""
-        # TODO: Don't hardcode cookie duration
-        expiry = datetime.now() + timedelta(days=30)
+        delta = timedelta_from_string(self.executor.current_stage.remember_device)
+        response = self.executor.stage_ok()
+        if delta.total_seconds() < 1:
+            return response
+        expiry = datetime.now() + delta
         cookie_payload = {
             "sub": user.uid,
             "exp": expiry.timestamp(),
         }
-        response = self.executor.stage_ok()
         cookie = encode(cookie_payload, self.cookie_jwt_key)
         response.set_cookie(
             COOKIE_NAME_KNOWN_DEVICE,
