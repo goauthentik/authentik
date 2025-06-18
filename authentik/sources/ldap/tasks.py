@@ -71,37 +71,105 @@ def ldap_sync_single(source_pk: str):
             return
         # Delete all sync tasks from the cache
         DBSystemTask.objects.filter(name="ldap_sync", uid__startswith=source.slug).delete()
-        task = chain(
-            # User and group sync can happen at once, they have no dependencies on each other
-            group(
-                ldap_sync_paginator(source, UserLDAPSynchronizer)
-                + ldap_sync_paginator(source, GroupLDAPSynchronizer),
-            ),
-            # Membership sync needs to run afterwards
-            group(
-                ldap_sync_paginator(source, MembershipLDAPSynchronizer),
-            ),
-            # Finally, deletions. What we'd really like to do here is something like
-            # ```
-            # user_identifiers = <ldap query>
-            # User.objects.exclude(
-            #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
-            # ).delete()
-            # ```
-            # This runs into performance issues in large installations. So instead we spread the
-            # work out into three steps:
-            # 1. Get every object from the LDAP source.
-            # 2. Mark every object as "safe" in the database. This is quick, but any error could
-            #    mean deleting users which should not be deleted, so we do it immediately, in
-            #    large chunks, and only queue the deletion step afterwards.
-            # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
-            #    small chunks.
-            group(
-                ldap_sync_paginator(source, UserLDAPForwardDeletion)
-                + ldap_sync_paginator(source, GroupLDAPForwardDeletion),
-            ),
+
+        user_sync_signatures = ldap_sync_paginator(source, UserLDAPSynchronizer)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtasks",
+            subtype="User sync",
+            signatures=user_sync_signatures,
         )
-        task()
+        group_sync_signatures = ldap_sync_paginator(source, GroupLDAPSynchronizer)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtasks",
+            subtype="Group sync",
+            signatures=group_sync_signatures,
+        )
+        membership_sync_signatures = ldap_sync_paginator(source, MembershipLDAPSynchronizer)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtasks",
+            subtype="Membership sync",
+            signatures=membership_sync_signatures,
+        )
+        user_deletion_signatures = ldap_sync_paginator(source, UserLDAPForwardDeletion)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtasks",
+            subtype="User deletion",
+            signatures=user_deletion_signatures,
+        )
+        group_deletion_signatures = ldap_sync_paginator(source, GroupLDAPForwardDeletion)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtasks",
+            subtype="Group deletion",
+            signatures=group_deletion_signatures,
+        )
+
+        user_and_group_sync_group = group(user_sync_signatures + group_sync_signatures)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtask group",
+            subtype="User and Group sync",
+            group=user_and_group_sync_group,
+        )
+        membership_sync_group = group(membership_sync_signatures)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtask group",
+            subtype="Membership sync",
+            group=membership_sync_group,
+        )
+        user_and_group_deletion_group = group(user_deletion_signatures + group_deletion_signatures)
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync subtask group",
+            subtype="User and Group deletion",
+            group=user_and_group_deletion_group,
+        )
+
+        ldap_sync_chain = chain(
+            user_and_group_sync_group, membership_sync_group, user_and_group_deletion_group
+        )
+        LOGGER.warn(
+            "debug github issue 14925",
+            type="Created LDAP sync chain",
+            chain=ldap_sync_chain,
+        )
+
+        # task = chain(
+        #    # User and group sync can happen at once, they have no dependencies on each other
+        #    group(
+        #        ldap_sync_paginator(source, UserLDAPSynchronizer)
+        #        + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+        #    ),
+        #    # Membership sync needs to run afterwards
+        #    group(
+        #        ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+        #    ),
+        #    # Finally, deletions. What we'd really like to do here is something like
+        #    # ```
+        #    # user_identifiers = <ldap query>
+        #    # User.objects.exclude(
+        #    #     usersourceconnection__identifier__in=user_uniqueness_identifiers,
+        #    # ).delete()
+        #    # ```
+        #    # This runs into performance issues in large installations. So instead we spread the
+        #    # work out into three steps:
+        #    # 1. Get every object from the LDAP source.
+        #    # 2. Mark every object as "safe" in the database. This is quick, but any error could
+        #    #    mean deleting users which should not be deleted, so we do it immediately, in
+        #    #    large chunks, and only queue the deletion step afterwards.
+        #    # 3. Delete every unmarked item. This is slow, so we spread it over many tasks in
+        #    #    small chunks.
+        #    group(
+        #        ldap_sync_paginator(source, UserLDAPForwardDeletion)
+        #        + ldap_sync_paginator(source, GroupLDAPForwardDeletion),
+        #    ),
+        # )
+        ldap_sync_chain()
 
 
 def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:
