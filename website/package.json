@@ -55,7 +55,7 @@
         "@goauthentik/prettier-config": "^1.0.5",
         "@goauthentik/tsconfig": "^1.0.4",
         "@trivago/prettier-plugin-sort-imports": "^5.2.2",
-        "@types/lodash": "^4.17.17",
+        "@types/lodash": "^4.17.18",
         "@types/node": "^24.0.3",
         "@types/postman-collection": "^3.5.11",
         "@types/react": "^18.3.22",
