@@ -41,7 +41,7 @@ To support the integration of Pocketbase with authentik, you need to create an a
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>pocketbase.company</em>/api/oauth2-redirect</kbd>.
+    - Set a `Strict` redirect URI to `https://pocketbase.company/api/oauth2-redirect`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -49,9 +49,9 @@ To support the integration of Pocketbase with authentik, you need to create an a
 
 ## PocketBase configuration
 
-1. Sign in to PocketBase and access the superusers dashboard by navigating to <kbd>https://<em>pocketbase.company</em>/\_/#/settings</kbd>.
+1. Sign in to PocketBase and access the superusers dashboard by navigating to `https://pocketbase.company/\_/#/settings`.
 2. Toggle off **Hide collection create and edit controls**," then click the **Save changes** button.
-3. Open the **users** collection by clicking the **Collections** icon on the sidebar or head to <kbd>https://<em>pocketbase.company</em>/\_/#/collections?collection=pb_users_auth</kbd>.
+3. Open the **users** collection by clicking the **Collections** icon on the sidebar or head to `https://pocketbase.company/\_/#/collections?collection=pb_users_auth`.
 4. Click the gear icon next to the collection's name, then select the **Options** tab in the popup on the right.
 5. Enable the **OAuth2** authentication method by clicking the **OAuth2** tab and toggling **Enable**.
 6. Click **+ Add provider**, then select **OpenID Connect**.
@@ -59,6 +59,6 @@ To support the integration of Pocketbase with authentik, you need to create an a
     - Set **Client ID** to the Client ID copied from authentik.
     - Set **Client secret** to the Client Secret copied from authentik.
     - Set **Display name** to `authentik`.
-    - Set **Auth URL** to <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>.
-    - Set **Token URL** to <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>.
-    - Make sure **Fetch user info from** is set to `User info URL`, then set **User info URL** to <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+    - Set **Auth URL** to `https://authentik.company/application/o/authorize/`.
+    - Set **Token URL** to `https://authentik.company/application/o/token/`.
+    - Make sure **Fetch user info from** is set to `User info URL`, then set **User info URL** to `https://authentik.company/application/o/userinfo/`

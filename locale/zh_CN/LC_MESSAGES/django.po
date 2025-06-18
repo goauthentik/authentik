@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 11:25+0000\n"
+"POT-Creation-Date: 2025-06-04 00:12+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2025\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -983,8 +983,8 @@ msgstr "正在同步组"
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
-msgstr "正在同步群组页面 {page}"
+msgid "Syncing page {page} of {object_type}"
+msgstr "正在同步 {object_type} 页面 {page}"
 
 #: authentik/lib/sync/outgoing/tasks.py
 msgid "Dropping mutating request due to dry run"
@@ -2257,6 +2257,10 @@ msgstr "额外的组 DN"
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
 msgstr "将与此筛选器匹配的对象视为用户。"
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
+msgstr "匹配 `group_membership_field` 值的属性。"
 
 #: authentik/sources/ldap/models.py
 msgid "Field which contains members of a group."
@@ -3558,10 +3562,6 @@ msgstr "用户登录阶段"
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
 msgstr "没有待定用户可以登录。"
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
-msgstr "已成功登录！"
 
 #: authentik/stages/user_logout/models.py
 msgid "User Logout Stage"

@@ -54,7 +54,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -62,11 +62,7 @@ export class ApplicationEntitlementForm extends ModelForm<ApplicationEntitlement
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Attributes")}
-                ?required=${false}
-                name="attributes"
-            >
+            <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                 <ak-codemirror
                     mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(this.instance?.attributes ?? {})}"

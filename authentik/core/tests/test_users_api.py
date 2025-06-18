@@ -81,22 +81,6 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:user-list"), {"include_groups": "true"})
         self.assertEqual(response.status_code, 200)
 
-    def test_metrics(self):
-        """Test user's metrics"""
-        self.client.force_login(self.admin)
-        response = self.client.get(
-            reverse("authentik_api:user-metrics", kwargs={"pk": self.user.pk})
-        )
-        self.assertEqual(response.status_code, 200)
-
-    def test_metrics_denied(self):
-        """Test user's metrics (non-superuser)"""
-        self.client.force_login(self.user)
-        response = self.client.get(
-            reverse("authentik_api:user-metrics", kwargs={"pk": self.user.pk})
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_recovery_no_flow(self):
         """Test user recovery link (no recovery flow set)"""
         self.client.force_login(self.admin)

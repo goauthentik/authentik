@@ -1,9 +1,11 @@
 import { CapabilitiesEnum, WithCapabilitiesConfig } from "#elements/mixins/capabilities";
 import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-slug-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
@@ -24,7 +26,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { Application, CoreApi, Provider } from "@goauthentik/api";
 
-import { policyOptions } from "./PolicyOptions.js";
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";
 
@@ -130,14 +131,14 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 required
                 help=${msg("Application's display Name.")}
             ></ak-text-input>
-            <ak-text-input
+            <ak-slug-input
                 name="slug"
                 value=${ifDefined(this.instance?.slug)}
                 label=${msg("Slug")}
                 required
                 help=${msg("Internal application name used in URLs.")}
-                inputHint="code"
-            ></ak-text-input>
+                input-hint="code"
+            ></ak-slug-input>
             <ak-text-input
                 name="group"
                 value=${ifDefined(this.instance?.group)}
@@ -145,7 +146,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 help=${msg(
                     "Optionally enter a group name. Applications with identical groups are shown grouped together.",
                 )}
-                inputHint="code"
+                input-hint="code"
             ></ak-text-input>
             <ak-provider-search-input
                 name="provider"
@@ -173,7 +174,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                 label=${msg("Policy engine mode")}
                 required
                 name="policyEngineMode"
-                .options=${policyOptions}
+                .options=${policyEngineModes}
                 .value=${this.instance?.policyEngineMode}
             ></ak-radio-input>
             <ak-form-group>
@@ -186,7 +187,7 @@ export class ApplicationForm extends WithCapabilitiesConfig(ModelForm<Applicatio
                         help=${msg(
                             "If left empty, authentik will try to extract the launch URL based on the selected provider.",
                         )}
-                        inputHint="code"
+                        input-hint="code"
                     ></ak-text-input>
                     <ak-switch-input
                         name="openInNewTab"

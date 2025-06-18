@@ -93,11 +93,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("User")}
-                ?required=${true}
-                name="forUser"
-            >
+        return html`<ak-form-element-horizontal label=${msg("User")} required name="forUser">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {

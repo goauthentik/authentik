@@ -31,12 +31,12 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
     }
 
     renderForm(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html`<ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
-                ?required=${true}
+                required
                 name="authorizationFlow"
             >
                 <ak-flow-search-no-default
@@ -49,7 +49,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Invalidation flow")}
-                ?required=${true}
+                required
                 name="invalidationFlow"
             >
                 <ak-flow-search-no-default

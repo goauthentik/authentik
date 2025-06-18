@@ -88,7 +88,7 @@ NetBird requires the service account to have full administrative access to the a
 To configure NetBird to use authentik, add the following environment variables to your NetBird deployment:
 
 ```yaml showLineNumbers title="setup.env"
-NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application slug>/.well-known/openid-configuration"
+NETBIRD_AUTH_OIDC_CONFIGURATION_ENDPOINT="https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration"
 NETBIRD_USE_AUTH0=false
 NETBIRD_AUTH_CLIENT_ID="<Your Client ID>"
 NETBIRD_AUTH_SUPPORTED_SCOPES="openid profile email offline_access api"

@@ -45,9 +45,9 @@ To support the integration of Omni with authentik, you need to create a property
 
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
-    - **ACS URL**: <kbd>https://<em>omni.company</em>/saml/acs</kbd>
+    - **ACS URL**: `https://omni.company/saml/acs`
     - **Service Provider Binding**: `Post`
-    - **Audience**: <kbd>https://<em>omni.company</em>/saml/metadata</kbd>
+    - **Audience**: `https://omni.company/saml/metadata`
     - **Signing Certificate**: select a signing certificate, either the `authentik Self-signed Certificate` or generate a certificate via **System** > **Certificate**
     - **Sign assertions**: `true`
     - **Sign responses**: `true`
@@ -64,7 +64,7 @@ Add the following environment variables to your Omni configuration. Make sure to
 
 ```shell
 auth-saml-enabled=true
-auth-saml-url=https://<em>authentik.company</em>/application/saml/<em><application_slug></em>/metadata/
+auth-saml-url=https://authentik.company/application/saml/<application_slug>/metadata/
 ```
 
 ## Configuration verification

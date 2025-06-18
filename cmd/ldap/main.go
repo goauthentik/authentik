@@ -2,17 +2,13 @@ package main
 
 import (
 	"fmt"
-	"net/url"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"goauthentik.io/internal/common"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
-	"goauthentik.io/internal/debug"
-	"goauthentik.io/internal/outpost/ak"
+	"goauthentik.io/internal/outpost/ak/entrypoint"
 	"goauthentik.io/internal/outpost/ak/healthcheck"
 	"goauthentik.io/internal/outpost/ldap"
 )
@@ -25,65 +21,15 @@ Required environment variables:
 - AUTHENTIK_INSECURE: Skip SSL Certificate verification`
 
 var rootCmd = &cobra.Command{
-	Long:    helpMessage,
-	Version: constants.FullVersion(),
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		log.SetLevel(log.DebugLevel)
-		log.SetFormatter(&log.JSONFormatter{
-			FieldMap: log.FieldMap{
-				log.FieldKeyMsg:  "event",
-				log.FieldKeyTime: "timestamp",
-			},
-			DisableHTMLEscape: true,
-		})
-	},
-	Run: func(cmd *cobra.Command, args []string) {
-		debug.EnableDebugServer()
-		akURL := config.Get().AuthentikHost
-		if akURL == "" {
-			fmt.Println("env AUTHENTIK_HOST not set!")
-			fmt.Println(helpMessage)
-			os.Exit(1)
-		}
-		akToken := config.Get().AuthentikToken
-		if akToken == "" {
-			fmt.Println("env AUTHENTIK_TOKEN not set!")
-			fmt.Println(helpMessage)
-			os.Exit(1)
-		}
-
-		akURLActual, err := url.Parse(akURL)
+	Long:             helpMessage,
+	Version:          constants.FullVersion(),
+	PersistentPreRun: common.PreRun,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		err := entrypoint.OutpostMain("authentik.outpost.ldap", ldap.NewServer)
 		if err != nil {
-			fmt.Println(err)
 			fmt.Println(helpMessage)
-			os.Exit(1)
 		}
-
-		ex := common.Init()
-		defer common.Defer()
-		go func() {
-			for {
-				<-ex
-				os.Exit(0)
-			}
-		}()
-
-		ac := ak.NewAPIController(*akURLActual, akToken)
-		if ac == nil {
-			os.Exit(1)
-		}
-		defer ac.Shutdown()
-
-		ac.Server = ldap.NewServer(ac)
-
-		err = ac.Start()
-		if err != nil {
-			log.WithError(err).Panic("Failed to run server")
-		}
-
-		for {
-			<-ex
-		}
+		return err
 	},
 }
 

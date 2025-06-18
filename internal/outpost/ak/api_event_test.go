@@ -15,7 +15,7 @@ func URLMustParse(u string) *url.URL {
 	return ur
 }
 
-func TestWebsocketURL(t *testing.T) {
+func TestEventWebsocketURL(t *testing.T) {
 	u := URLMustParse("http://localhost:9000?foo=bar")
 	uuid := "23470845-7263-4fe3-bd79-ec1d7bf77d77"
 	ac := &APIController{}
@@ -23,7 +23,7 @@ func TestWebsocketURL(t *testing.T) {
 	assert.Equal(t, "ws://localhost:9000/ws/outpost/23470845-7263-4fe3-bd79-ec1d7bf77d77/?foo=bar", nu.String())
 }
 
-func TestWebsocketURL_Query(t *testing.T) {
+func TestEventWebsocketURL_Query(t *testing.T) {
 	u := URLMustParse("http://localhost:9000?foo=bar")
 	uuid := "23470845-7263-4fe3-bd79-ec1d7bf77d77"
 	ac := &APIController{}
@@ -33,7 +33,7 @@ func TestWebsocketURL_Query(t *testing.T) {
 	assert.Equal(t, "ws://localhost:9000/ws/outpost/23470845-7263-4fe3-bd79-ec1d7bf77d77/?bar=baz&foo=bar", nu.String())
 }
 
-func TestWebsocketURL_Subpath(t *testing.T) {
+func TestEventWebsocketURL_Subpath(t *testing.T) {
 	u := URLMustParse("http://localhost:9000/foo/bar/")
 	uuid := "23470845-7263-4fe3-bd79-ec1d7bf77d77"
 	ac := &APIController{}

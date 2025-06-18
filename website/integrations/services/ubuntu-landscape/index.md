@@ -40,7 +40,7 @@ To support the integration of Landscape with authentik, you need to create an ap
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>landscape.company</em>/login/handle-openid</kbd>.
+    - Set a `Strict` redirect URI to `https://landscape.company/login/handle-openid`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -51,7 +51,7 @@ To support the integration of Landscape with authentik, you need to create an ap
 On the Landscape Server, edit the file `/etc/landscape/service.conf` and add the following snippet under the `[landscape]` section:
 
 ```
-oidc-issuer = https://authentik.company/application/o/<slug of the application you've created>/
+oidc-issuer = https://authentik.company/application/o/<application_slug>/
 oidc-client-id = <client ID of the provider you've created>
 oidc-client-secret = <client Secret of the provider you've created>
 ```

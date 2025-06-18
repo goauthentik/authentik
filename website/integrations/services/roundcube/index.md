@@ -56,7 +56,7 @@ To support the integration of Roundcube with authentik, you need to create an ap
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>roundcube.company</em>/index.php?\_task=settings&\_action=plugin.oauth_redirect</kbd>.
+    - Set a `Strict` redirect URI to `https://roundcube.company/index.php?\_task=settings&\_action=plugin.oauth_redirect`.
     - Select any available signing key.
     - Under **Advanced protocol settings**, add the scope you just created to the list of selected scopes.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

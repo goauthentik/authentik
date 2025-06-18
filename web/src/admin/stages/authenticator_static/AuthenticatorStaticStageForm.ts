@@ -43,7 +43,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -67,12 +67,12 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Token count")}
-                        ?required=${true}
+                        required
                         name="tokenCount"
                     >
                         <input
@@ -89,7 +89,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token length")}
-                        ?required=${true}
+                        required
                         name="tokenLength"
                     >
                         <input
@@ -135,7 +135,7 @@ export class AuthenticatorStaticStageForm extends BaseStageForm<AuthenticatorSta
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

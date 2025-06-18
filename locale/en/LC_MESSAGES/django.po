@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-28 11:25+0000\n"
+"POT-Creation-Date: 2025-06-04 00:12+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -970,7 +970,7 @@ msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
 #, python-brace-format
-msgid "Syncing page {page} of groups"
+msgid "Syncing page {page} of {object_type}"
 msgstr ""
 
 #: authentik/lib/sync/outgoing/tasks.py
@@ -2224,6 +2224,10 @@ msgstr ""
 
 #: authentik/sources/ldap/models.py
 msgid "Consider Objects matching this filter to be Users."
+msgstr ""
+
+#: authentik/sources/ldap/models.py
+msgid "Attribute which matches the value of `group_membership_field`."
 msgstr ""
 
 #: authentik/sources/ldap/models.py
@@ -3491,10 +3495,6 @@ msgstr ""
 
 #: authentik/stages/user_login/stage.py
 msgid "No Pending user to login."
-msgstr ""
-
-#: authentik/stages/user_login/stage.py
-msgid "Successfully logged in!"
 msgstr ""
 
 #: authentik/stages/user_logout/models.py

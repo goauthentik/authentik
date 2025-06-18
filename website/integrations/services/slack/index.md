@@ -12,7 +12,7 @@ support_level: authentik
 
 The following placeholders are used in this guide:
 
-- <kbd><em>company</em>.slack.com</kbd> is the FQDN of your Slack workspace.
+- `company.slack.com` is the FQDN of your Slack workspace.
 - `authentik.company` is the FQDN of the authentik installation.
 
 :::note
@@ -31,14 +31,14 @@ To support the integration of Slack with authentik, you need to create an applic
 2. Navigate to **Customization** > **Property Mappings** and click **Create**. Create two **SAML Provider Property Mapping**s with the following settings:
     - **Name Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>User.Email</kbd>
+        - **SAML Attribute Name**: `User.Email`
         - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return request.user.email</kbd>
+        - **Expression**: `return request.user.email`
     - **Email Mapping:**
         - **Name**: Choose a descriptive name
-        - **SAML Attribute Name**: <kbd>User.Username</kbd>
+        - **SAML Attribute Name**: `User.Username`
         - **Friendly Name**: Leave blank
-        - **Expression**: <kbd>return request.user.username</kbd>
+        - **Expression**: `return request.user.username`
 
 ### Create an application and provider in authentik
 
@@ -48,8 +48,8 @@ To support the integration of Slack with authentik, you need to create an applic
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>company</em>.slack.com/sso/saml</kbd>.
-    - Set the **Issuer** to <kbd>https://slack.com</kbd>.
+    - Set the **ACS URL** to `https://company.slack.com/sso/saml`.
+    - Set the **Issuer** to `https://slack.com`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, add the two **Property Mappings** you created in the previous section, then select a **Signing Certificate**.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.

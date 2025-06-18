@@ -34,7 +34,7 @@ To support the integration of Jenkins with authentik, you need to create an appl
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>jenkins.company</em>/securityRealm/finishLogin</kbd>.
+    - Set a `Strict` redirect URI to `https://jenkins.company/securityRealm/finishLogin`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -50,7 +50,7 @@ Modify the **Security Realm** option to select `Login with Openid Connect`.
 
 In the **Client id** and **Client secret** fields, enter the Client ID and Client Secret values from the provider you created.
 
-Set the configuration mode to **Automatic configuration** and set the **Well-known configuration endpoint** to `https://authentik.company/application/o/<Slug of the application from above>/.well-known/openid-configuration`
+Set the configuration mode to **Automatic configuration** and set the **Well-known configuration endpoint** to `https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration`
 
 Check the checkbox **Override scopes** and input the scopes `openid profile email` into the new input field.
 

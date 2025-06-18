@@ -1,3 +1,7 @@
+import "#elements/Tabs";
+import { WithLicenseSummary } from "#elements/mixins/license";
+import { updateURLParams } from "#elements/router/RouteMatch";
+import "@goauthentik/admin/events/EventMap";
 import "@goauthentik/admin/events/EventVolumeChart";
 import { EventGeo, EventUser } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -15,11 +19,14 @@ import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Event, EventsApi } from "@goauthentik/api";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-event-list")
-export class EventListPage extends TablePage<Event> {
+export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
+    supportsQL = true;
 
     pageTitle(): string {
         return msg("Event Log");
@@ -38,11 +45,15 @@ export class EventListPage extends TablePage<Event> {
     order = "-created";
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(css`
-            .pf-m-no-padding-bottom {
-                padding-bottom: 0;
-            }
-        `);
+        // @ts-expect-error
+        return super.styles.concat(
+            PFGrid,
+            css`
+                .pf-m-no-padding-bottom {
+                    padding-bottom: 0;
+                }
+            `,
+        );
     }
 
     async apiEndpoint(): Promise<PaginatedResponse<Event>> {
@@ -61,16 +72,39 @@ export class EventListPage extends TablePage<Event> {
     }
 
     renderSectionBefore(): TemplateResult {
-        return html`
-            <div class="pf-c-page__main-section pf-m-no-padding-bottom">
+        if (this.licenseSummary?.status !== LicenseSummaryStatusEnum.Unlicensed) {
+            return html`<div
+                class="pf-l-grid pf-m-gutter pf-c-page__main-section pf-m-no-padding-bottom"
+            >
                 <ak-events-volume-chart
+                    class="pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl pf-m-4-col-on-2xl "
                     .query=${{
                         page: this.page,
                         search: this.search,
                     }}
+                    with-map
                 ></ak-events-volume-chart>
-            </div>
-        `;
+                <ak-events-map
+                    class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
+                    .events=${this.data}
+                    @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
+                        this.search = `event_uuid = "${ev.detail.eventId}"`;
+                        this.page = 1;
+                        updateURLParams({
+                            search: this.search,
+                            tablePage: this.page,
+                        });
+                        this.fetch();
+                    }}
+                ></ak-events-map>
+            </div>`;
+        }
+        return html`<ak-events-volume-chart
+            .query=${{
+                page: this.page,
+                search: this.search,
+            }}
+        ></ak-events-volume-chart>`;
     }
 
     row(item: EventWithContext): SlottedTemplateResult[] {

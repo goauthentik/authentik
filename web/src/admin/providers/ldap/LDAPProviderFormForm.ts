@@ -86,7 +86,7 @@ export function renderForm(
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
                     label=${msg("Bind flow")}
-                    ?required=${true}
+                    required
                     name="authorizationFlow"
                     .errorMessages=${errors?.authorizationFlow ?? []}
                 >
@@ -127,7 +127,7 @@ export function renderForm(
                     label=${msg("Base DN")}
                     required
                     value="${provider?.baseDn ?? "DC=ldap,DC=goauthentik,DC=io"}"
-                    inputHint="code"
+                    input-hint="code"
                     .errorMessages=${errors?.baseDn ?? []}
                     help=${msg(
                         "LDAP DN under which bind requests and search requests can be made.",
@@ -154,7 +154,7 @@ export function renderForm(
                     value="${provider?.tlsServerName ?? ""}"
                     .errorMessages=${errors?.tlsServerName ?? []}
                     help=${tlsServerNameHelp}
-                    inputHint="code"
+                    input-hint="code"
                 ></ak-text-input>
 
                 <ak-number-input

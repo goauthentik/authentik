@@ -1,9 +1,9 @@
 """authentik brands app"""
 
-from django.apps import AppConfig
+from authentik.blueprints.apps import ManagedAppConfig
 
 
-class AuthentikBrandsConfig(AppConfig):
+class AuthentikBrandsConfig(ManagedAppConfig):
     """authentik Brand app"""
 
     name = "authentik.brands"
@@ -12,3 +12,4 @@ class AuthentikBrandsConfig(AppConfig):
     mountpoints = {
         "authentik.brands.urls_root": "",
     }
+    default = True

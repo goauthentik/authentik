@@ -37,9 +37,9 @@ To support the integration of AWX Tower with authentik, you need to create an ap
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings. Take note of the **slug** as it will be required later.
 - **Choose a Provider type**: select **SAML Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
-    - Set the **ACS URL** to <kbd>https://<em>awx.company</em>/sso/complete/saml/</kbd>.
-    - Set the **Audience** to <kbd>awx</kbd>.
-    - Set the **Issuer** to <kbd>https://<em>awx.company</em>/sso/metadata/saml/</kbd>.
+    - Set the **ACS URL** to `https://awx.company/sso/complete/saml/`.
+    - Set the **Audience** to `awx`.
+    - Set the **Issuer** to `https://awx.company/sso/metadata/saml/`.
     - Set the **Service Provider Binding** to `Post`.
     - Under **Advanced protocol settings**, select an available signing certificate.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -81,7 +81,7 @@ In the `SAML Enabled Identity Providers` paste the following configuration:
         "attr_username": "http://schemas.goauthentik.io/2021/02/saml/username",
         "attr_user_permanent_id": "http://schemas.goauthentik.io/2021/02/saml/uid",
         "x509cert": "MIIDEjCCAfqgAwIBAgIRAJZ9pOZ1g0xjiHtQAAejsMEwDQYJKoZIhvcNAQELBQAwMDEuMCwGA1UEAwwlcGFzc2Jvb2sgU2VsZi1zaWduZWQgU0FNTCBDZXJ0aWZpY2F0ZTAeFw0xOTEyMjYyMDEwNDFaFw0yMDEyMjYyMDEwNDFaMFkxLjAsBgNVBAMMJXBhc3Nib29rIFNlbGYtc2lnbmVkIFNBTUwgQ2VydGlmaWNhdGUxETAPBgNVBAoMCHBhc3Nib29rMRQwEgYDVQQLDAtTZWxmLXNpZ25lZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAO/ktBYZkY9xAijF4acvzX6Q1K8KoIZeyde8fVgcWBz4L5FgDQ4/dni4k2YAcPdwteGL4nKVzetUzjbRCBUNuO6lqU4J4WNNX4Xg4Ir7XLRoAQeo+omTPBdpJ1p02HjtN5jT01umN3bK2yto1e37CJhK6WJiaXqRewPxh4lI4aqdj3BhFkJ3I3r2qxaWOAXQ6X7fg3w/ny7QP53//ouZo7hSLY3GIcRKgvdjjVM3OW5C3WLpOq5Dez5GWVJ17aeFCfGQ8bwFKde6qfYqyGcU9xHB36TtVHB9hSFP/tUFhkiSOxtsrYwCgCyXm4UTSpP+wiNyjKfFw7qGLBvA2hGTNw8CAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAh9PeAqPRQk1/SSygIFADZBi08O/DPCshFwEHvJATIcTzcDD8UGAjXh+H5OlkDyX7KyrcaNvYaafCUo63A+WprdtdY5Ty6SBEwTYyiQyQfwM9BfK+imCoif1Ai7xAelD7p9lNazWq7JU+H/Ep7U7Q7LvpxAbK0JArt+IWTb2NcMb3OWE1r0gFbs44O1l6W9UbJTbyLMzbGbe5i+NHlgnwPwuhtRMh0NUYabGHKcHbhwyFhfGAQv2dAp5KF1E5gu6ZzCiFePzc0FrqXQyb2zpFYcJHXquiqaOeG7cZxRHYcjrl10Vxzki64XVA9BpdELgKSnupDGUEJsRUt3WVOmvZuA==",
-        "url": "https://authentik.company/application/saml/<slug>/sso/binding/redirect/",
+        "url": "https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/",
         "entity_id": "https://awx.company/sso/metadata/saml/",
         "attr_email": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
         "attr_first_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"

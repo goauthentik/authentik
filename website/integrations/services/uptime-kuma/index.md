@@ -36,8 +36,8 @@ To support the integration of Uptime Kuma with authentik, you need to create an 
 - **Choose a Provider type**: select **Proxy Provider** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
 
-    - Set the **External host** to <kbd>https://<em>uptime-kuma</em>.company</kbd>.
-    - Set the **Internal host** to <kbd>http://<em>uptime-kuma:3001</em></kbd> where <kbd><em>uptime-kuma:3001</em></kbd> is the hostname and port of your Uptime Kuma container.
+    - Set the **External host** to `https://uptime-kuma.company`.
+    - Set the **Internal host** to `http://uptime-kuma:3001` where `uptime-kuma:3001` is the hostname and port of your Uptime Kuma container.
     - Under **Advanced protocol settings**, set **Unauthenticated Paths** to the following to allow unauthenticated access to the public status page:
 
         ```

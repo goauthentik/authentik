@@ -34,7 +34,7 @@ To support the integration of Homarr with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Create two `strict` redirect URIs and set to <kbd>https://homarr.company/api/auth/callback/oidc</kbd> and <kbd> http://localhost:50575/api/auth/callback/oidc</kbd>.
+    - Create two `strict` redirect URIs and set to `https://homarr.company/api/auth/callback/oidc` and ` http://localhost:50575/api/auth/callback/oidc`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -48,7 +48,7 @@ Add the following environment variables to your Homarr configuration. Make sure 
 AUTH_PROVIDERS="oidc,credentials"
 AUTH_OIDC_CLIENT_ID=<Client ID from authentik>
 AUTH_OIDC_CLIENT_SECRET=<Client secret from authentik>
-AUTH_OIDC_ISSUER=https://authentik.company/application/o/<slug from authentik>/
+AUTH_OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
 AUTH_OIDC_URI=https://authentik.company/application/o/authorize
 AUTH_OIDC_CLIENT_NAME=authentik
 OAUTH_ALLOW_DANGEROUS_EMAIL_ACCOUNT_LINKING=true

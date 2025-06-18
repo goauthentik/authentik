@@ -1,6 +1,7 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/policies/PolicyBindingForm";
 import { PolicyBindingNotice } from "@goauthentik/admin/policies/PolicyBindingForm";
+import { policyEngineModes } from "@goauthentik/admin/policies/PolicyEngineModes";
 import "@goauthentik/admin/policies/PolicyWizard";
 import {
     PolicyBindingCheckTarget,
@@ -33,6 +34,9 @@ import {
 export class BoundPoliciesList extends Table<PolicyBinding> {
     @property()
     target?: string;
+
+    @property()
+    policyEngineMode: string = "";
 
     @property({ type: Array })
     allowedTypes: PolicyBindingCheckTarget[] = [
@@ -194,12 +198,13 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state header=${msg("No Policies bound.")} icon="pf-icon-module">
+            html`<ak-empty-state icon="pf-icon-module"
+                ><span slot="header">${msg("No Policies bound.")}</span>
                 <div slot="body">${msg("No policies are currently bound to this object.")}</div>
                 <div slot="primary">
                     <ak-policy-wizard
                         createText=${msg("Create and bind Policy")}
-                        ?showBindingPage=${true}
+                        showBindingPage
                         bindingTarget=${ifDefined(this.target)}
                     ></ak-policy-wizard>
                     <ak-forms-modal size=${PFSize.Medium}>
@@ -225,7 +230,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
         return html`${this.allowedTypes.includes(PolicyBindingCheckTarget.policy)
                 ? html`<ak-policy-wizard
                       createText=${msg("Create and bind Policy")}
-                      ?showBindingPage=${true}
+                      showBindingPage
                       bindingTarget=${ifDefined(this.target)}
                   ></ak-policy-wizard>`
                 : nothing}
@@ -243,6 +248,23 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ${msg(str`Bind existing ${this.allowedTypesLabel}`)}
                 </button>
             </ak-forms-modal> `;
+    }
+
+    renderPolicyEngineMode() {
+        const policyEngineMode = policyEngineModes.find(
+            (pem) => pem.value === this.policyEngineMode,
+        );
+        if (policyEngineMode === undefined) {
+            return nothing;
+        }
+        return html`<p>
+            ${msg(str`The currently selected policy engine mode is ${policyEngineMode.label}:`)}
+            ${policyEngineMode.description}
+        </p>`;
+    }
+
+    renderToolbarContainer(): TemplateResult {
+        return html`${this.renderPolicyEngineMode()} ${super.renderToolbarContainer()}`;
     }
 }
 

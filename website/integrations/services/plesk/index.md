@@ -38,7 +38,7 @@ To support the integration of Plesk with authentik, you need to create an applic
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>plesk.company</em>/modules/oauth/public/login.php</kbd>.
+    - Set a `Strict` redirect URI to `https://plesk.company/modules/oauth/public/login.php`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -63,10 +63,10 @@ To support the integration of Plesk with authentik, you need to create an applic
 
     - **Client ID**: Enter the Client ID from your authentik provider
     - **Client Secret**: Enter the Client Secret from your authentik provider
-    - **Callback Host**: Enter your Plesk FQDN (example: <kbd>https://<em>plesk.company</em></kbd>)
-    - **Authorize URL**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-    - **Token URL**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-    - **Userinfo URL**: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+    - **Callback Host**: Enter your Plesk FQDN (example: `https://plesk.company`)
+    - **Authorize URL**: `https://authentik.company/application/o/authorize/`
+    - **Token URL**: `https://authentik.company/application/o/token/`
+    - **Userinfo URL**: `https://authentik.company/application/o/userinfo/`
     - **Scopes**: `openid,profile,email`
     - **Login Button Text**: Set your preferred text (example: "Log in with authentik")
 
