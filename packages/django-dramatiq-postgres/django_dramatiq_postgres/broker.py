@@ -373,7 +373,7 @@ class _PostgresConsumer(Consumer):
             notify = self.notifies.pop(0)
             task = self.query_set.get(message_id=notify.payload)
             message = Message.decode(task.message)
-            message.task = task
+            message.options["task"] = task
             if self._consume_one(message):
                 self.in_processing.add(message.message_id)
                 return MessageProxy(message)
