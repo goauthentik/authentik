@@ -5,10 +5,10 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { AkPrivateTextInput } from "./ak-private-text-input.js";
+import { AkSecretTextInput } from "./ak-secret-text-input.js";
 
-@customElement("ak-private-textarea-input")
-export class AkPrivateTextAreaInput extends AkPrivateTextInput {
+@customElement("ak-secret-textarea-input")
+export class AkSecretTextAreaInput extends AkSecretTextInput {
     protected override renderVisibleInput() {
         const code = this.inputHint === "code";
         const setValue = (ev: InputEvent) => {
@@ -34,10 +34,10 @@ export class AkPrivateTextAreaInput extends AkPrivateTextInput {
     }
 }
 
-export default AkPrivateTextAreaInput;
+export default AkSecretTextAreaInput;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-private-textarea-input": AkPrivateTextAreaInput;
+        "ak-secret-textarea-input": AkSecretTextAreaInput;
     }
 }

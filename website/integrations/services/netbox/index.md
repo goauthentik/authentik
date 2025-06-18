@@ -34,7 +34,7 @@ To support the integration of NetBox with authentik, you need to create an appli
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID**,**Client Secret**, and **slug** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>netbox.company</em>/oauth/complete/oidc/</kbd>.
+    - Set a `Strict` redirect URI to `https://netbox.company/oauth/complete/oidc/`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -54,11 +54,11 @@ REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth config
-SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
+SOCIAL_AUTH_OIDC_OIDC_ENDPOINT='https://authentik.company/application/o/<application_slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
 SOCIAL_AUTH_OIDC_SCOPE=openid profile email roles
-LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
+LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<application_slug>/end-session/'
 ```
 
 The Netbox configuration needs to be extended, for this you can create a new file in the configuration folder, for example `authentik.py`.
@@ -90,7 +90,7 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 #SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<Application slug>/end-session/
+#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<application_slug>/end-session/
 ```
 
 ### Groups

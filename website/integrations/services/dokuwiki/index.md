@@ -34,7 +34,7 @@ To support the integration of DocuWiki with authentik, you need to create an app
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>docuwiki.company</em>/doku.php</kbd>.
+    - Set a `Strict` redirect URI to `https://docuwiki.company/doku.php`.
     - Select any available signing key.
     - Under **Advanced Protocol Settings**, add the following OAuth mapping under **Scopes**: `authentik default OAuth Mapping: OpenID 'offline_access'`
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
@@ -60,9 +60,9 @@ For **oauthgeneric**:
 
 - Set `plugin»oauthgeneric»key` to the Client ID from authentik
 - Set `plugin»oauthgeneric»secret` to the Client Secret from authentik
-- Set `plugin»oauthgeneric»authurl` to <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-- Set `plugin»oauthgeneric»tokenurl` to <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-- Set `plugin»oauthgeneric»userurl` to <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+- Set `plugin»oauthgeneric»authurl` to `https://authentik.company/application/o/authorize/`
+- Set `plugin»oauthgeneric»tokenurl` to `https://authentik.company/application/o/token/`
+- Set `plugin»oauthgeneric»userurl` to `https://authentik.company/application/o/userinfo/`
 - Set `plugin»oauthgeneric»authmethod` to `Bearer Header`
 - Set `plugin»oauthgeneric»scopes` to `email, openid, profile, offline_access`
 - Select `plugin»oauthgeneric»needs-state`

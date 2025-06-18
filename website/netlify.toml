@@ -1,3 +1,11 @@
+[[plugins]]
+package = "netlify-plugin-cache"
+  [plugins.inputs]
+  paths = ["website/.docusaurus", "website/node_modules/.cache"]
+
+[[plugins]]
+package = "netlify-plugin-debug-cache"
+
 [[redirects]]
   from = "/blog/*"
   to = "https://goauthentik.io/blog/:splat"
@@ -49,6 +57,12 @@
 [[redirects]]
   from = "/integrations/sources/*"
   to = "/docs/sources/:splat"
+  status = 302
+
+# Split integrations to separate deploy
+[[redirects]]
+  from = "/integrations/*"
+  to = "https://integrations.goauthentik.io/integrations/:splat"
   status = 302
 
 # Split Property Mappings docs between Providers and Sources

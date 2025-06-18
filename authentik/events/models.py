@@ -1,21 +1,16 @@
 """authentik events models"""
 
-import time
-from collections import Counter
+from collections.abc import Generator
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
+from typing import Any
 from uuid import uuid4
 
 from django.apps import apps
 from django.db import connection, models
-from django.db.models import Count, ExpressionWrapper, F
-from django.db.models.fields import DurationField
-from django.db.models.functions import Extract
-from django.db.models.manager import Manager
-from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from django.http.request import QueryDict
 from django.utils.timezone import now
@@ -124,60 +119,6 @@ class EventAction(models.TextChoices):
     CUSTOM_PREFIX = "custom_"
 
 
-class EventQuerySet(QuerySet):
-    """Custom events query set with helper functions"""
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Get event count by hour in the last day, fill with zeros"""
-        _now = now()
-        max_since = timedelta(days=60)
-        # Allow maximum of 60 days to limit load
-        if time_since.total_seconds() > max_since.total_seconds():
-            time_since = max_since
-        date_from = _now - time_since
-        result = (
-            self.filter(created__gte=date_from)
-            .annotate(age=ExpressionWrapper(_now - F("created"), output_field=DurationField()))
-            .annotate(age_interval=extract("age"))
-            .values("age_interval")
-            .annotate(count=Count("pk"))
-            .order_by("age_interval")
-        )
-        data = Counter({int(d["age_interval"]): d["count"] for d in result})
-        results = []
-        interval_delta = time_since / data_points
-        for interval in range(1, -data_points, -1):
-            results.append(
-                {
-                    "x_cord": time.mktime((_now + (interval_delta * interval)).timetuple()) * 1000,
-                    "y_cord": data[interval * -1],
-                }
-            )
-        return results
-
-
-class EventManager(Manager):
-    """Custom helper methods for Events"""
-
-    def get_queryset(self) -> QuerySet:
-        """use custom queryset"""
-        return EventQuerySet(self.model, using=self._db)
-
-    def get_events_per(
-        self,
-        time_since: timedelta,
-        extract: Extract,
-        data_points: int,
-    ) -> list[dict[str, int]]:
-        """Wrap method from queryset"""
-        return self.get_queryset().get_events_per(time_since, extract, data_points)
-
-
 class Event(SerializerModel, ExpiringModel):
     """An individual Audit/Metrics/Notification/Error Event"""
 
@@ -192,8 +133,6 @@ class Event(SerializerModel, ExpiringModel):
 
     # Shadow the expires attribute from ExpiringModel to override the default duration
     expires = models.DateTimeField(default=default_event_duration)
-
-    objects = EventManager()
 
     @staticmethod
     def _get_app_from_request(request: HttpRequest) -> str:
@@ -610,7 +549,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         default=NotificationSeverity.NOTICE,
         help_text=_("Controls which severity level the created notifications will have."),
     )
-    group = models.ForeignKey(
+    destination_group = models.ForeignKey(
         Group,
         help_text=_(
             "Define which group of users this notification should be sent and shown to. "
@@ -620,6 +559,19 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+    destination_event_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, notification will be sent to user the user that triggered the event."
+            "When destination_group is configured, notification is sent to both."
+        ),
+    )
+
+    def destination_users(self, event: Event) -> Generator[User, Any]:
+        if self.destination_event_user and event.user.get("pk"):
+            yield User(pk=event.user.get("pk"))
+        if self.destination_group:
+            yield from self.destination_group.users.all()
 
     @property
     def serializer(self) -> type[Serializer]:
