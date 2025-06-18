@@ -21,7 +21,7 @@ import remarkVersionDirective from "./remark/version-directive.mjs";
 const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const { version } = require(path.resolve(__dirname, "../../package.json"));
+const { version } = require(path.resolve(__dirname, "../package.json"));
 
 /**
  * Documentation site configuration for Docusaurus.
