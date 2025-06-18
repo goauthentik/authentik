@@ -80,9 +80,14 @@ export class QLSearch extends AKElement {
                 :host([theme="dark"]) .pf-c-search-input__menu-item {
                     --pf-c-search-input__menu-item--Color: var(--ak-dark-foreground);
                 }
+                :host([theme="dark"]) .pf-c-search-input__menu-item:hover {
+                    --pf-c-search-input__menu-item--BackgroundColor: var(
+                        --ak-dark-background-lighter
+                    );
+                }
                 :host([theme="dark"]) .pf-c-search-input__menu-list-item.selected {
                     --pf-c-search-input__menu-item--hover--BackgroundColor: var(
-                        --ak-dark-background-lighter
+                        --ak-dark-background-light
                     );
                 }
                 :host([theme="dark"]) .pf-c-search-input__text::before {
