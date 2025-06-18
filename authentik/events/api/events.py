@@ -132,6 +132,22 @@ class EventViewSet(ModelViewSet):
     ]
     filterset_class = EventsFilter
 
+    def get_ql_fields(self):
+        from djangoql.schema import DateTimeField, StrField
+
+        from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
+
+        return [
+            StrField(Event, "event_uuid"),
+            StrField(Event, "app", suggest_options=True),
+            StrField(Event, "client_ip"),
+            JSONSearchField(Event, "user"),
+            JSONSearchField(Event, "brand"),
+            ChoiceSearchField(Event, "action"),
+            JSONSearchField(Event, "context"),
+            DateTimeField(Event, "created", suggest_options=True),
+        ]
+
     @extend_schema(
         methods=["GET"],
         responses={200: EventTopPerUserSerializer(many=True)},

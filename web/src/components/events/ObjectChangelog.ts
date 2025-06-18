@@ -76,7 +76,6 @@ export class ObjectChangelog extends Table<Event> {
             html`<div>${formatElapsedTime(item.created)}</div>
                 <small>${item.created.toLocaleString()}</small>`,
             html`<div>${item.clientIp || msg("-")}</div>
-
                 <small>${EventGeo(item)}</small>`,
         ];
     }
