@@ -54,11 +54,11 @@ To support the integration of Rustdesk Server Pro with authentik, you need to cr
     - Set **Name** to `authentik`
     - Set **Client ID** to the Client ID copied from authentik.
     - Set **Client secret** to the Client Secret copied from authentik.
-    - Set **Issuer** to `https://authentik.company/application/o/slug/`
+    - Set **Issuer** to `https://authentik.company/application/o/<application_slug>/`
     - Set **Authorization Endpoint** to `https://authentik.company/application/o/authorize/`
     - Set **Token Endpoint** to `https://authentik.company/application/o/token/`
     - Set **Userinfo Endpoint** to `https://authentik.company/application/o/userinfo/`
-    - Set **JWKS Endpoint** to `https://authentik.company/application/o/slug/jwks/`
+    - Set **JWKS Endpoint** to `https://authentik.company/application/o/<application_slug>/jwks/`
 
 :::info
 Users are created automatically on login. Permissions must be assigned by an administrator after user creation.

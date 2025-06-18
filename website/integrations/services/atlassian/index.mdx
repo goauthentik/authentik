@@ -67,7 +67,7 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 5. Click **Set up SAML single sign-on** and then **Next**.
 6. Set the following required configurations:
     - **Identity provider Entity ID**: `authentik`
-    - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/`
+    - **Identity provider SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **Public x509 certificate**: enter the contents of the certificate that was downloaded in the previous section.
 7. Click **Add**.
 8. You will be shown a **Service provider entity URL** and **Service provider assertion consumer service URL**. Copy both, they will be required in authentik.
@@ -79,9 +79,9 @@ To support the integration of Atlassian Cloud with authentik, you need to create
 
 1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Providers** and click the **Edit** icon of the newly created Atlassian Cloud provider.
-3. Under **Protocol settgins**, set the following required configurations:
-    - **ACS URL**: set the acs url to the copied **Service provider assertion consumer service URL** (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
-    - **Audience**: set the audience to the copied **Service provider entity URL** (e.g. https://auth.atlassian.com/saml/example).
+3. Under **Protocol settings**, set the following required configurations:
+    - **ACS URL**: set to the **Service provider assertion consumer service URL** from Atlassian Cloud (e.g. https://auth.atlassian.com/login/callback?connection=saml-example).
+    - **Audience**: set to the **Service provider entity URL** from Atlassian Cloud (e.g. https://auth.atlassian.com/saml/example).
 4. Click **Update**
 
 ## Enabling SSO in Atlassian Cloud

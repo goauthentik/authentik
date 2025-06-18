@@ -51,7 +51,7 @@ In the left-hand navigation, scroll down to the Security section and click `Auth
 On this page:
 
 - Select the `Enable SAML authentication` checkbox.
-- In `sign-on URL`, type `https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/`
+- In `sign-on URL`, type `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
 - For `Issuer`, type `https://github.com/orgs/foo` or the `Audience` you set in authentik
 - For `Public certificate`, paste the _full_ signing certificate into this field.
 - Verify that the `Signature method` and `Digest method` match your SAML provider settings in authentik.

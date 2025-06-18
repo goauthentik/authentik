@@ -53,7 +53,7 @@ oidc_providers:
     - idp_id: authentik
       idp_name: authentik
       discover: true
-      issuer: "https://authentik.company/application/o/app-slug/"
+      issuer: "https://authentik.company/application/o/<application_slug>/"
       client_id: "*client id*"
       client_secret: "*client secret*"
       scopes:

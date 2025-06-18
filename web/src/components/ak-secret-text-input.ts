@@ -8,8 +8,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { HorizontalLightComponent } from "./HorizontalLightComponent";
 
-@customElement("ak-private-text-input")
-export class AkPrivateTextInput extends HorizontalLightComponent<string> {
+@customElement("ak-secret-text-input")
+export class AkSecretTextInput extends HorizontalLightComponent<string> {
     @property({ type: String, reflect: true })
     public value = "";
 
@@ -23,7 +23,7 @@ export class AkPrivateTextInput extends HorizontalLightComponent<string> {
         this.revealed = true;
     }
 
-    #renderPrivateInput() {
+    #renderSecretInput() {
         return html`<div class="pf-c-form__horizontal-group" @click=${() => this.#onReveal()}>
             <input
                 class="pf-c-form-control"
@@ -60,14 +60,14 @@ export class AkPrivateTextInput extends HorizontalLightComponent<string> {
     }
 
     public override renderControl() {
-        return this.revealed ? this.renderVisibleInput() : this.#renderPrivateInput();
+        return this.revealed ? this.renderVisibleInput() : this.#renderSecretInput();
     }
 }
 
-export default AkPrivateTextInput;
+export default AkSecretTextInput;
 
 declare global {
     interface HTMLElementTagNameMap {
-        "ak-private-text-input": AkPrivateTextInput;
+        "ak-secret-text-input": AkSecretTextInput;
     }
 }

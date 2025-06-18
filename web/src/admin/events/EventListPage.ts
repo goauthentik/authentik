@@ -26,6 +26,7 @@ import { Event, EventsApi, LicenseSummaryStatusEnum } from "@goauthentik/api";
 @customElement("ak-event-list")
 export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
     expandable = true;
+    supportsQL = true;
 
     pageTitle(): string {
         return msg("Event Log");

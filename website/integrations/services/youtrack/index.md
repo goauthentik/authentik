@@ -54,7 +54,7 @@ To support the integration of YouTrack with authentik, you need to create an app
 2. Click **New module**, then select **SAML 2.0**.
 3. Fill out the form with the following information:
     - **Name**: Set an appropriate name (e.g. `authentik`)
-    - **SAML SSO URL**: `https://authentik.company/application/saml/<application slug>/sso/binding/redirect/`
+    - **SAML SSO URL**: `https://authentik.company/application/saml/<application_slug>/sso/binding/redirect/`
     - **IdP entity ID**: `https://youtrack.company/admin/hub/`
     - **Certificate fingerprint**: Set to the SHA-256 fingerprint retrieved in the previous step.
 4. Click **Create** to submit the form and take note of the **ACS URL**.

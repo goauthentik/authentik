@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal } from "@goauthentik/common/temporal";
+import "@goauthentik/components/ak-hidden-text-input";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
@@ -124,19 +125,14 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("Password")}>
-                    <input
-                        type="text"
-                        readonly
-                        value=${ifDefined(this.result?.token)}
-                        class="pf-c-form-control"
-                    />
-                    <p class="pf-c-form__helper-text">
-                        ${msg(
-                            "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
-                        )}
-                    </p>
-                </ak-form-element-horizontal>
+                <ak-hidden-text-input
+                    label=${msg("Password")}
+                    value="${this.result?.token ?? ""}"
+                    .help=${msg(
+                        "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
+                    )}
+                >
+                </ak-hidden-text-input>
             </form>`;
     }
 

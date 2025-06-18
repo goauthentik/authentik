@@ -32,7 +32,7 @@ To support the integration of HashiCorp Cloud with authentik, you need to create
 
 ### Create an Application and Provider in authentik
 
-1. Log in to authentik as an admin and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider**.
     - **Application**: Provide a descriptive name, an optional group, and UI settings. Take note of the **slug** as it will be required later.
     - **Choose a Provider type**: Select **SAML Provider**.

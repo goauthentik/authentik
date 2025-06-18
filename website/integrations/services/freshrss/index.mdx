@@ -54,7 +54,7 @@ To enable OIDC login with FreshRSS, update your `.env` file to include the follo
 
     ```yaml showLineNumbers
     OIDC_ENABLED=1
-    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<your-application-slug>/.well-known/openid-configuration
+    OIDC_PROVIDER_METADATA_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
     OIDC_CLIENT_ID=<Your Client ID from authentik<>
     OIDC_CLIENT_SECRET=<Your Client Secret from authentik>
     OIDC_X_FORWARDED_HEADERS=X-Forwarded-Port X-Forwarded-Proto X-Forwarded-Host
