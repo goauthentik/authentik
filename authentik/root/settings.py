@@ -355,7 +355,7 @@ TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 
 DRAMATIQ = {
     "broker_class": "authentik.tasks.broker.Broker",
-    "channel_prefix": "authentik.tasks",
+    "channel_prefix": "authentik",
     "task_class": "authentik.tasks.models.Task",
     "middlewares": (
         # TODO: fixme

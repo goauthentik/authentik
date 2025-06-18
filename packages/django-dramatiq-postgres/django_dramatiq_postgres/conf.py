@@ -46,7 +46,7 @@ class Conf:
 
     @property
     def channel_prefix(self) -> str:
-        return self.conf.get("channel_prefix", "dramatiq.tasks")
+        return self.conf.get("channel_prefix", "dramatiq")
 
     @property
     def task_class(self) -> str:
