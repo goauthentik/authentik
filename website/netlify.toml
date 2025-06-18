@@ -1,10 +1,10 @@
 [[plugins]]
-package = "netlify-plugin-debug-cache"
-
-[[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
-  paths = ["website/.docusaurus"]
+  paths = ["website/.docusaurus", "website/node_modules/.cache"]
+
+[[plugins]]
+package = "netlify-plugin-debug-cache"
 
 [[redirects]]
   from = "/blog/*"
