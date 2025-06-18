@@ -166,6 +166,7 @@ SPECTACULAR_SETTINGS = {
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
         "UserTypeEnum": "authentik.core.models.UserTypes",
         "OutgoingSyncDeleteAction": "authentik.lib.sync.outgoing.models.OutgoingSyncDeleteAction",
+        "SAMLNameIDPolicyEnum": "authentik.sources.saml.models.SAMLNameIDPolicy",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "ENUM_GENERATE_CHOICE_DESCRIPTION": False,
