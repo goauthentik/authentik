@@ -165,7 +165,7 @@ wheels = [
 
 [[package]]
 name = "authentik"
-version = "2025.6.1"
+version = "2025.6.2"
 source = { editable = "." }
 dependencies = [
     { name = "argon2-cffi" },
@@ -309,7 +309,7 @@ requires-dist = [
     { name = "packaging", specifier = "==25.0" },
     { name = "paramiko", specifier = "==3.5.1" },
     { name = "psycopg", extras = ["c", "pool"], specifier = "==3.2.9" },
-    { name = "pydantic", specifier = "==2.11.5" },
+    { name = "pydantic", specifier = "==2.11.7" },
     { name = "pydantic-scim", specifier = "==0.0.8" },
     { name = "pyjwt", specifier = "==2.10.1" },
     { name = "pyrad", specifier = "==2.4" },
@@ -329,7 +329,7 @@ requires-dist = [
     { name = "urllib3", specifier = "<3" },
     { name = "uvicorn", extras = ["standard"], specifier = "==0.34.3" },
     { name = "watchdog", specifier = "==6.0.0" },
-    { name = "webauthn", specifier = "==2.5.2" },
+    { name = "webauthn", specifier = "==2.6.0" },
     { name = "wsproto", specifier = "==1.2.0" },
     { name = "xmlsec", specifier = "==1.3.15" },
     { name = "zxcvbn", specifier = "==4.5.0" },
@@ -2463,7 +2463,7 @@ wheels = [
 
 [[package]]
 name = "pydantic"
-version = "2.11.5"
+version = "2.11.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
@@ -2471,9 +2471,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/86/8ce9040065e8f924d642c58e4a344e33163a07f6b57f836d0d734e0ad3fb/pydantic-2.11.5.tar.gz", hash = "sha256:7f853db3d0ce78ce8bbb148c401c2cdd6431b3473c0cdff2755c7690952a7b7a", size = 787102, upload-time = "2025-05-22T21:18:08.761Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/dd/4325abf92c39ba8623b5af936ddb36ffcfe0beae70405d456ab1fb2f5b8c/pydantic-2.11.7.tar.gz", hash = "sha256:d989c3c6cb79469287b1569f7447a17848c998458d49ebe294e975b9baf0f0db", size = 788350, upload-time = "2025-06-14T08:33:17.137Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b5/69/831ed22b38ff9b4b64b66569f0e5b7b97cf3638346eb95a2147fdb49ad5f/pydantic-2.11.5-py3-none-any.whl", hash = "sha256:f9c26ba06f9747749ca1e5c94d6a85cb84254577553c8785576fd38fa64dc0f7", size = 444229, upload-time = "2025-05-22T21:18:06.329Z" },
+    { url = "https://files.pythonhosted.org/packages/6a/c0/ec2b1c8712ca690e5d61979dee872603e92b8a32f94cc1b72d53beab008a/pydantic-2.11.7-py3-none-any.whl", hash = "sha256:dde5df002701f6de26248661f6835bbe296a47bf73990135c7d07ce741b9623b", size = 444782, upload-time = "2025-06-14T08:33:14.905Z" },
 ]
 
 [package.optional-dependencies]
@@ -3391,7 +3391,7 @@ wheels = [
 
 [[package]]
 name = "webauthn"
-version = "2.5.2"
+version = "2.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "asn1crypto" },
@@ -3399,9 +3399,9 @@ dependencies = [
     { name = "cryptography" },
     { name = "pyopenssl" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/92/8d2a4eec83d8e7feacdaad37c6eb6eb922100cecce5c14a41d8069a59a03/webauthn-2.5.2.tar.gz", hash = "sha256:09c13dfc1c68c810f32fa4d89b1d37acb9f9ae9091c9d7019e313be4525a95ef", size = 124114, upload-time = "2025-03-07T19:44:05.243Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/63/38/5792cb2034673c162a721df0ad65825699516ee0c938a65670ad3cdabf6c/webauthn-2.6.0.tar.gz", hash = "sha256:13cf5b009a64cef569599ffecf24550df1d7c0cd4fbaea870f937148484a80b4", size = 123608, upload-time = "2025-06-16T22:25:26.76Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7f/fe/f6ae41de9f383439e30b303a67f6f45d2fceabedaedc34c62f74d58c5c73/webauthn-2.5.2-py3-none-any.whl", hash = "sha256:44246e496e617eb5e2f51165046b9f0197fcdf470f69cd6734061a27ba365f8e", size = 71624, upload-time = "2025-03-07T19:44:03.728Z" },
+    { url = "https://files.pythonhosted.org/packages/56/c5/b1bba7f6a50caca77f37003e098f48f8dc68d990aba8a03ac8376016430b/webauthn-2.6.0-py3-none-any.whl", hash = "sha256:459973eb5780c1f41bec42b682acf587456b185733398a0b99a0714705b79447", size = 71189, upload-time = "2025-06-16T22:25:25.535Z" },
 ]
 
 [[package]]
