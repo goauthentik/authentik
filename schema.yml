@@ -22283,6 +22283,17 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: default_name_id_policy
+        schema:
+          type: string
+          enum:
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+          - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - in: query
         name: default_relay_state
         schema:
           type: string
@@ -29498,6 +29509,7 @@ paths:
           enum:
           - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+          - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
           - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
@@ -49063,14 +49075,6 @@ components:
       - mode
       - name
       - user_attribute
-    NameIdPolicyEnum:
-      enum:
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
-      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
-      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-      type: string
     NetworkBindingEnum:
       enum:
       - no_binding
@@ -55289,6 +55293,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
     PatchedSAMLSourcePropertyMappingRequest:
       type: object
       description: SAMLSourcePropertyMapping Serializer
@@ -55382,7 +55388,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -58130,6 +58136,15 @@ components:
       required:
       - download_url
       - metadata
+    SAMLNameIDPolicyEnum:
+      enum:
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
+      - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
+      - urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified
+      type: string
     SAMLPropertyMapping:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -58347,6 +58362,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -58519,6 +58536,8 @@ components:
         default_relay_state:
           type: string
           description: Default relay_state value for IDP-initiated logins
+        default_name_id_policy:
+          $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
       required:
       - acs_url
       - authorization_flow
@@ -58627,7 +58646,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
@@ -58817,7 +58836,7 @@ components:
             be a security risk, as no validation of the request ID is done.
         name_id_policy:
           allOf:
-          - $ref: '#/components/schemas/NameIdPolicyEnum'
+          - $ref: '#/components/schemas/SAMLNameIDPolicyEnum'
           description: NameID Policy sent to the IdP. Can be unset, in which case
             no Policy is sent.
         binding_type:
