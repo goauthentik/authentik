@@ -69,13 +69,11 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (!url.protocol.startsWith("http")) {
-            return html`<ak-empty-state
-                icon="fas fa-check"
-                header=${msg("You may close this page now.")}
-            >
+            return html`<ak-empty-state icon="fas fa-check"
+                ><span>${msg("You may close this page now.")}</span>
             </ak-empty-state>`;
         }
-        return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+        return html`<ak-empty-state loading><span>${msg("Loading")}> </span></ak-empty-state>`;
     }
 
     render(): TemplateResult {

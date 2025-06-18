@@ -44,11 +44,8 @@ const testOptions = [
 
 export const BasicRadioElement = () => {
     const displayChange = (ev: InputEvent) => {
-        document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            (ev.target as HTMLInputElement)!.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("radio-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify((ev.target as HTMLInputElement)!.value, null, 2)}`;
     };
 
     return container(

@@ -19,11 +19,7 @@ describe("ak-empty-state", () => {
     });
 
     it("should render the default loader", async () => {
-        render(
-            html`<ak-empty-state loading
-                ><span slot="header">${msg("Loading")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state loading><span>${msg("Loading")}</span> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
@@ -33,11 +29,7 @@ describe("ak-empty-state", () => {
     });
 
     it("should handle standard boolean", async () => {
-        render(
-            html`<ak-empty-state loading
-                ><span slot="header">${msg("Loading")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state loading><span>${msg("Loading")}</span> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
@@ -47,11 +39,7 @@ describe("ak-empty-state", () => {
     });
 
     it("should render a static empty state", async () => {
-        render(
-            html`<ak-empty-state
-                ><span slot="header">${msg("No messages found")}</span>
-            </ak-empty-state>`,
-        );
+        render(html`<ak-empty-state><span>${msg("No messages found")}</span> </ak-empty-state>`);
 
         const empty = await $("ak-empty-state").$(">>>.pf-c-empty-state__icon");
         await expect(empty).toExist();
@@ -64,7 +52,7 @@ describe("ak-empty-state", () => {
     it("should render a slotted message", async () => {
         render(
             html`<ak-empty-state
-                ><span slot="header">${msg("No messages found")}</span>
+                ><span>${msg("No messages found")}</span>
                 <p slot="body">Try again with a different filter</p>
             </ak-empty-state>`,
         );

@@ -47,11 +47,8 @@ export const RadioInput = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            ev.target.value,
-            null,
-            2,
-        )}`;
+        document.getElementById("radio-message-pad")!.innerText =
+            `Value selected: ${JSON.stringify(ev.target.value, null, 2)}`;
     };
 
     return container(

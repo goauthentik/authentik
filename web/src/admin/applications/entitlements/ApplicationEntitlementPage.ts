@@ -118,10 +118,9 @@ export class ApplicationEntitlementsPage extends Table<ApplicationEntitlement> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(
-            html`<ak-empty-state
-                header=${msg("No app entitlements created.")}
-                icon="pf-icon-module"
-            >
+            html`<ak-empty-state icon="pf-icon-module"
+                ><span>${msg("No app entitlements created.")}</span>
+
                 <div slot="body">
                     ${msg(
                         "This application does currently not have any application entitlement defined.",

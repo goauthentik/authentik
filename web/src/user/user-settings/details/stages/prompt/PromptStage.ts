@@ -64,7 +64,7 @@ export class UserSettingsPromptStage extends PromptStage {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state loading header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state loading><span>${msg("Loading")}></span></ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
                 <form
