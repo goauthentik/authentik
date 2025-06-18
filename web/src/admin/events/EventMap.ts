@@ -5,6 +5,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
 import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/core/ol-map";
+import type OlMap from "@openlayers-elements/core/ol-map";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
 import "@openlayers-elements/maps/ol-select";
 import Feature from "ol/Feature";
@@ -35,6 +36,12 @@ export class EventMap extends AKElement {
     @query("ol-layer-vector")
     vectorLayer?: OlLayerVector;
 
+    @query("ol-map")
+    map?: OlMap;
+
+    @property({ type: Number })
+    zoomPaddingPx = 100;
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -55,7 +62,12 @@ export class EventMap extends AKElement {
         if (!_changedProperties.has("events")) {
             return;
         }
-        this.vectorLayer?.source?.clear();
+        if (!this.vectorLayer?.source || !this.map?.map) {
+            return;
+        }
+        // Remove all existing points
+        this.vectorLayer.source.clear();
+        // Re-add them
         this.events?.results
             .filter((event) => {
                 if (!Object.hasOwn(event.context, "geo")) {
@@ -89,6 +101,17 @@ export class EventMap extends AKElement {
                 feature.setId(event.pk);
                 this.vectorLayer?.source?.addFeature(feature);
             });
+        // Zoom to show points better
+        this.map.map.getView().fit(this.vectorLayer.source.getExtent(), {
+            padding: [
+                this.zoomPaddingPx,
+                this.zoomPaddingPx,
+                this.zoomPaddingPx,
+                this.zoomPaddingPx,
+            ],
+            duration: 500,
+            maxZoom: 4.5,
+        });
     }
 
     render(): TemplateResult {
