@@ -6,16 +6,16 @@ support_level: community
 
 ## What is Planka
 
-> An open-source document management platform designed to help you organize, secure, and archive your files effortlessly.
+> Planka is an open-source, Trello-like application designed for project management using a Kanban board system.
 >
-> -- https://papra.app/
+> -- https://planka.app/
 
 ## Preparation
 
 The following placeholders are used in this guide:
 
 - `authentik.company` is the FQDN of the authentik installation.
-- `papra.company` is the FQDN of the Planka installation.
+- `planka.company` is the FQDN of the Planka installation.
 
 :::note
 This documentation lists only the settings that you need to change from their default values. Be aware that any changes other than those explicitly mentioned in this guide could cause issues accessing your application.
@@ -40,12 +40,42 @@ To support the integration of Planka with authentik, you need to create an appli
 
 3. Click **Submit** to save the new application and provider.
 
+### Crate a group in authentik _(optional)_
+
+If you want to provision users in Planka with administrator permissions, you will need to create a group in authentik.
+
+1. Log in to authentik as an administrator and open the authentik Admin interface.
+2. Navigate to **Directory** > **Groups** and click **Create**.
+3. Set a name for the group (e.g. `planka-admins`) and click **Create**.
+4. Click the name of the newly created group and navigate to the **Users** tab.
+5. Click **Add existing user**, select the user that needs Planka administrator access and click **Add**.
+
 ## Planka configuration
+
+Add the following required environment variables to your Planka deployment:
+
+```yaml
+OIDC_ISSUER=https://authentik.company/application/o/<application_slug>/
+OIDC_CLIENT_ID=<client if from authentik>
+OIDC_CLIENT_SECRET=<client secret from authentik>
+```
+
+Optionally, if you want to provision users with administrator access, include the following environment variable:
+
+```yaml
+OIDC_ADMIN_ROLES=<authentik group name>
+```
+
+Optionally, if you want to enforce the use of SSO and disable local authentication, include the following environment variable:
+
+```yaml
+OIDC_ENFORCED=true
+```
 
 ## Configuration verification
 
-To verify the integration with Planka, log out and attempt to log back in using..
+To verify the integration with Planka, log out and attempt to log back in using the **Log in with SSO** button. You should be redirected to authentik. Once authenticated, you should be redirected to the Planka dashboard.
 
 ## Resources
 
-- [Planka Documentation - OIDC](https://docs.planka.cloud/docs/configuration/oidc)
+- [Planka Docs - OIDC (OpenID Connect)](https://docs.planka.cloud/docs/configuration/oidc)
