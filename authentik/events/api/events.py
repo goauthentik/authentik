@@ -138,12 +138,12 @@ class EventViewSet(ModelViewSet):
         from authentik.enterprise.search.fields import ChoiceSearchField, JSONSearchField
 
         return [
+            ChoiceSearchField(Event, "action"),
             StrField(Event, "event_uuid"),
             StrField(Event, "app", suggest_options=True),
             StrField(Event, "client_ip"),
-            JSONSearchField(Event, "user"),
-            JSONSearchField(Event, "brand"),
-            ChoiceSearchField(Event, "action"),
+            JSONSearchField(Event, "user", suggest_nested=False),
+            JSONSearchField(Event, "brand", suggest_nested=False),
             JSONSearchField(Event, "context", suggest_nested=False),
             DateTimeField(Event, "created", suggest_options=True),
         ]
