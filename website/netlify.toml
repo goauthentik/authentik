@@ -74,12 +74,17 @@
 
 [[redirects]]
   from = "/docs/customize/interfaces/admin/customization"
-  to = "/docs/customize/interfaces/user-admin/customization"
+  to = "/docs/customize/interfaces/admin/customization_admin_ui"
   status = 302
 
   [[redirects]]
   from = "/docs/customize/interfaces/user/customization"
-  to = "/docs/customize/interfaces/user-admin/customization"
+  to = "/docs/customize/interfaces/user/customization_user_ui"
+  status = 302
+
+[[redirects]]
+  from = "/docs/customize/interfaces/flow/customization"
+  to = "/docs/customize/interfaces/flow/customization_flow"
   status = 302
 
 
