@@ -7787,7 +7787,7 @@ paths:
       description: NotificationRule Viewset
       parameters:
       - in: query
-        name: group__name
+        name: destination_group__name
         schema:
           type: string
       - in: query
@@ -48831,18 +48831,23 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
-        group_obj:
+        destination_group_obj:
           allOf:
           - $ref: '#/components/schemas/Group'
           readOnly: true
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
       required:
-      - group_obj
+      - destination_group_obj
       - name
       - pk
     NotificationRuleRequest:
@@ -48865,12 +48870,17 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
       required:
       - name
     NotificationTransport:
@@ -53940,12 +53950,17 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
