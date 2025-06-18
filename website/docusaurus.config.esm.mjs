@@ -18,6 +18,8 @@ import remarkVersionDirective from "./remark/version-directive.mjs";
 
 const require = createRequire(import.meta.url);
 
+const { version } = require("../package.json");
+
 /**
  * Documentation site configuration for Docusaurus.
  */
@@ -92,7 +94,7 @@ const config = createDocusaurusConfig({
         },
     },
     customFields: {
-        currentVersion: "2025.4.1",
+        currentVersion: version,
     },
     presets: [
         [
