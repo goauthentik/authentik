@@ -144,7 +144,7 @@ class EventViewSet(ModelViewSet):
             JSONSearchField(Event, "user"),
             JSONSearchField(Event, "brand"),
             ChoiceSearchField(Event, "action"),
-            JSONSearchField(Event, "context"),
+            JSONSearchField(Event, "context", suggest_nested=False),
             DateTimeField(Event, "created", suggest_options=True),
         ]
 
