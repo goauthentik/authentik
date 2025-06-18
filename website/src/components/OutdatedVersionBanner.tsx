@@ -10,9 +10,17 @@ import React, { useEffect, useState } from "react";
 export const OutdatedVersionBanner: React.FC = () => {
     const [isOutdated, setIsOutdated] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isDismissed, setIsDismissed] = useState(false);
     const { siteConfig } = useDocusaurusContext();
 
     useEffect(() => {
+        // Check if banner was previously dismissed
+        const bannerDismissed = sessionStorage.getItem("outdatedVersionBannerDismissed");
+        if (bannerDismissed) {
+            setIsDismissed(true);
+            return;
+        }
+
         try {
             // Get hostname and check if it's a version subdomain
             const hostname = window.location.hostname;
@@ -95,6 +103,16 @@ export const OutdatedVersionBanner: React.FC = () => {
         }
     }, [siteConfig.customFields?.currentVersion]);
 
+    const handleDismiss = () => {
+        sessionStorage.setItem("outdatedVersionBannerDismissed", "true");
+        setIsDismissed(true);
+    };
+
+    // Don't render if dismissed
+    if (isDismissed) {
+        return null;
+    }
+
     // Show error message if we encountered an error
     if (error) {
         return (
@@ -108,23 +126,69 @@ export const OutdatedVersionBanner: React.FC = () => {
                     alignItems: "center",
                     fontSize: "14px",
                     color: "var(--ifm-color-content)",
+                    position: "relative",
                 }}
             >
-                <div style={{ display: "flex", alignItems: "center", maxWidth: "1200px" }}>
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="var(--ifm-color-primary)"
+                <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    maxWidth: "1200px", 
+                    width: "100%",
+                    position: "relative"
+                }}>
+                    <div style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        textAlign: "center"
+                    }}>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="var(--ifm-color-primary)"
+                            style={{
+                                width: "20px",
+                                height: "20px",
+                                marginRight: "10px",
+                                flexShrink: 0,
+                            }}
+                        >
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v7h-2zm0 8h2v2h-2z" />
+                        </svg>
+                        <span>{error}</span>
+                    </div>
+                    <button
+                        onClick={handleDismiss}
+                        aria-label="Dismiss"
                         style={{
-                            width: "20px",
-                            height: "20px",
-                            marginRight: "10px",
-                            flexShrink: 0,
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            padding: "4px",
+                            position: "absolute",
+                            right: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: "var(--ifm-color-content)",
                         }}
                     >
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v7h-2zm0 8h2v2h-2z" />
-                    </svg>
-                    <span>{error}</span>
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                        >
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
             </div>
         );
@@ -145,32 +209,78 @@ export const OutdatedVersionBanner: React.FC = () => {
                 alignItems: "center",
                 fontSize: "14px",
                 color: "var(--ifm-color-content)",
+                position: "relative",
             }}
         >
-            <div style={{ display: "flex", alignItems: "center", maxWidth: "1200px" }}>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="var(--ifm-color-primary)"
-                    style={{ width: "20px", height: "20px", marginRight: "10px", flexShrink: 0 }}
-                >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v7h-2zm0 8h2v2h-2z" />
-                </svg>
-                <span>
-                    You are viewing an outdated version of the documentation. Visit{" "}
-                    <a
-                        href="https://docs.goauthentik.io"
-                        style={{
-                            color: "var(--ifm-color-primary)",
-                            fontWeight: 500,
-                            textDecoration: "none",
-                            borderBottom: "1px solid var(--ifm-color-primary)",
-                        }}
+            <div style={{ 
+                display: "flex", 
+                alignItems: "center", 
+                maxWidth: "1200px", 
+                width: "100%",
+                position: "relative"
+            }}>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    textAlign: "center"
+                }}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="var(--ifm-color-primary)"
+                        style={{ width: "20px", height: "20px", marginRight: "10px", flexShrink: 0 }}
                     >
-                        docs.goauthentik.io
-                    </a>{" "}
-                    for the latest version.
-                </span>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v7h-2zm0 8h2v2h-2z" />
+                    </svg>
+                    <span>
+                        You are viewing a previous version of the documentation. Visit{" "}
+                        <a
+                            href="https://docs.goauthentik.io"
+                            style={{
+                                color: "var(--ifm-color-primary)",
+                                fontWeight: 500,
+                                textDecoration: "none",
+                                borderBottom: "1px solid var(--ifm-color-primary)",
+                            }}
+                        >
+                            docs.goauthentik.io
+                        </a>{" "}
+                        for the current version.
+                    </span>
+                </div>
+                <button
+                    onClick={handleDismiss}
+                    aria-label="Dismiss"
+                    style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: "4px",
+                        position: "absolute",
+                        right: 0,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "var(--ifm-color-content)",
+                    }}
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    >
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
         </div>
     );
