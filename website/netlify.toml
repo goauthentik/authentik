@@ -53,8 +53,8 @@
 
 # Split integrations to separate deploy
 [[redirects]]
-  from = "/integrations*"
-  to = "https://integrations.goauthentik.io/integrations:splat"
+  from = "/integrations/*"
+  to = "https://integrations.goauthentik.io/integrations/:splat"
   status = 302
 
 # Split Property Mappings docs between Providers and Sources
