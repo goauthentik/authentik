@@ -45,7 +45,7 @@ To support the integration of Papra with authentik, you need to create an applic
 To support the integration of Papra with authentik, you'll need to add the following environment variable to your Papra deployment:
 
 ```yaml
-AUTH_PROVIDERS_CUSTOMS=[{"providerId": "authentik","providerName": "authentik","providerIconUrl": "https://raw.githubusercontent.com/goauthentik/authentik/refs/heads/main/web/icons/icon.svg","clientId": "client id from authentik","clientSecret": "client secret from authentik","type": "oidc","discoveryUrl": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","scopes": ["openid", "profile", "email"]}]
+AUTH_PROVIDERS_CUSTOMS=[{"providerId": "authentik","providerName": "authentik","providerIconUrl": "https://authentik.company/static/dist/assets/icons/icon.png","clientId": "<client_id>","clientSecret": "<client_secret>","type": "oidc","discoveryUrl": "https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration","scopes": ["openid", "profile", "email"]}]
 ```
 
 :::note
