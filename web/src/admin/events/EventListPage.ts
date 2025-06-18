@@ -88,7 +88,7 @@ export class EventListPage extends WithLicenseSummary(TablePage<Event>) {
                     class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-8-col-on-2xl "
                     .events=${this.data}
                     @select-event=${(ev: CustomEvent<{ eventId: string }>) => {
-                        this.search = ev.detail.eventId;
+                        this.search = `event_uuid = "${ev.detail.eventId}"`;
                         this.page = 1;
                         updateURLParams({
                             search: this.search,

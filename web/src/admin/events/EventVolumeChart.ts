@@ -11,7 +11,6 @@ import { EventVolume, EventsApi, EventsEventsListRequest } from "@goauthentik/ap
 
 @customElement("ak-events-volume-chart")
 export class EventVolumeChart extends EventChart {
-
     @property({ attribute: "with-map", type: Boolean })
     withMap = false;
 

@@ -1,32 +1,25 @@
 import { EventWithContext } from "#common/events";
 import { globalAK } from "#common/global";
+import { PaginatedResponse } from "#elements/table/Table";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@openlayers-elements/core/ol-layer-vector";
+import type OlLayerVector from "@openlayers-elements/core/ol-layer-vector";
 import "@openlayers-elements/core/ol-map";
-import type OlMap from "@openlayers-elements/core/ol-map";
-import "@openlayers-elements/maps/ol-control";
 import "@openlayers-elements/maps/ol-layer-openstreetmap";
-import OlMarkerIcon from "@openlayers-elements/maps/ol-marker-icon";
 import "@openlayers-elements/maps/ol-select";
-import type Feature from "ol/Feature";
+import Feature from "ol/Feature";
 import { Point } from "ol/geom";
+import { fromLonLat } from "ol/proj";
+import Icon from "ol/style/Icon";
+import Style from "ol/style/Style";
 
-import { CSSResult, TemplateResult, css, html, nothing } from "lit";
+import { CSSResult, PropertyValues, TemplateResult, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PaginatedEventList } from "@goauthentik/api";
-
-@customElement("ak-map-element")
-export class OLMarker extends OlMarkerIcon {
-    createFeature(map: OlMap | undefined): Feature<Point> {
-        const feature = super.createFeature(map);
-        feature.setId(this.id);
-        return feature;
-    }
-}
+import { Event } from "@goauthentik/api";
 
 /**
  *
@@ -37,10 +30,10 @@ export class OLMarker extends OlMarkerIcon {
 @customElement("ak-events-map")
 export class EventMap extends AKElement {
     @property({ attribute: false })
-    events?: PaginatedEventList;
+    events?: PaginatedResponse<Event>;
 
-    @query("ol-map")
-    map?: OlMap;
+    @query("ol-layer-vector")
+    vectorLayer?: OlLayerVector;
 
     static get styles(): CSSResult[] {
         return [
@@ -56,6 +49,46 @@ export class EventMap extends AKElement {
                 }
             `,
         ];
+    }
+
+    updated(_changedProperties: PropertyValues<this>): void {
+        if (!_changedProperties.has("events")) {
+            return;
+        }
+        this.vectorLayer?.source?.clear();
+        this.events?.results
+            .filter((event) => {
+                if (!Object.hasOwn(event.context, "geo")) {
+                    return false;
+                }
+                const geo = (event as EventWithContext).context.geo;
+                if (!geo?.lat || !geo.long) {
+                    return false;
+                }
+                return true;
+            })
+            .forEach((event) => {
+                const geo = (event as EventWithContext).context.geo!;
+                const point = new Point(fromLonLat([geo.long!, geo.lat!]));
+                const feature = new Feature({
+                    geometry: point,
+                });
+                feature.setStyle(
+                    new Style({
+                        image: new Icon({
+                            anchor: [0.5, 1],
+                            offset: [0, 0],
+                            opacity: 1,
+                            scale: 1,
+                            rotateWithView: false,
+                            rotation: 0,
+                            src: `${globalAK().api.base}static/dist/assets/images/map_pin.svg`,
+                        }),
+                    }),
+                );
+                feature.setId(event.pk);
+                this.vectorLayer?.source?.addFeature(feature);
+            });
     }
 
     render(): TemplateResult {
@@ -76,32 +109,7 @@ export class EventMap extends AKElement {
                     }}
                 ></ol-select>
                 <ol-layer-openstreetmap></ol-layer-openstreetmap>
-                <ol-layer-vector>
-                    ${this.events
-                        ? this.events.results
-                              .filter((event) => {
-                                  if (!Object.hasOwn(event.context, "geo")) {
-                                      return false;
-                                  }
-                                  const geo = (event as EventWithContext).context.geo;
-                                  if (!geo?.lat || !geo.long) {
-                                      return false;
-                                  }
-                                  return true;
-                              })
-                              .map((event) => {
-                                  const geo = (event as EventWithContext).context.geo!;
-                                  return html`<ak-map-element
-                                      src="${globalAK().api
-                                          .base}static/dist/assets/images/map_pin.svg"
-                                      lon=${geo.long!}
-                                      lat=${geo.lat!}
-                                      anchor-y="1"
-                                      id=${event.pk}
-                                  ></ak-map-element>`;
-                              })
-                        : nothing}
-                </ol-layer-vector>
+                <ol-layer-vector></ol-layer-vector>
             </ol-map>
         </div>`;
     }
