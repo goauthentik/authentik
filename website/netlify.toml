@@ -4,7 +4,7 @@ package = "netlify-plugin-debug-cache"
 [[plugins]]
 package = "netlify-plugin-cache"
   [plugins.inputs]
-  paths = [".docusaurus"]
+  paths = ["website/.docusaurus"]
 
 [[redirects]]
   from = "/blog/*"
