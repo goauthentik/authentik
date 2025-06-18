@@ -79,4 +79,4 @@ To confirm that authentik is properly configured with Seafile, log out of Seafil
 ## Resources
 
 - [Seafile Oauth authentication documentation](https://manual.seafile.com/13.0/config/oauth/)
-- [Seafile seahub_settings.py documentation](https://manual.seafile.com/13.0/config/seahub_settings_py/)
+- [Seafile `seahub_settings.py` documentation](https://manual.seafile.com/13.0/config/seahub_settings_py/)
