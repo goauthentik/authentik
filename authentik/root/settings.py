@@ -362,8 +362,7 @@ DRAMATIQ = {
             "dramatiq.middleware.time_limit.TimeLimit",
             {
                 # 5 minutes task timeout by default for all tasks
-                "time_limit": 600
-                * 1000,
+                "time_limit": 600 * 1000,
             },
         ),
         ("dramatiq.middleware.shutdown.ShutdownNotifications", {}),
@@ -450,6 +449,8 @@ _DISALLOWED_ITEMS = [
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
+    "SPECTACULAR_SETTINGS",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -472,6 +473,8 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
