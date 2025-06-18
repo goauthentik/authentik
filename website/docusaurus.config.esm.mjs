@@ -97,6 +97,7 @@ const config = createDocusaurusConfig({
             /** @type {Preset.Options} */ ({
                 docs: {
                     id: "docs",
+                    routeBasePath: "docs",
                     sidebarPath: "./sidebars/docs.mjs",
                     showLastUpdateTime: false,
                     editUrl: "https://github.com/goauthentik/authentik/edit/main/website/",
