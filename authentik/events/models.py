@@ -1,10 +1,12 @@
 """authentik events models"""
 
+from collections.abc import Generator
 from datetime import timedelta
 from difflib import get_close_matches
 from functools import lru_cache
 from inspect import currentframe
 from smtplib import SMTPException
+from typing import Any
 from uuid import uuid4
 
 from django.apps import apps
@@ -549,7 +551,7 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         default=NotificationSeverity.NOTICE,
         help_text=_("Controls which severity level the created notifications will have."),
     )
-    group = models.ForeignKey(
+    destination_group = models.ForeignKey(
         Group,
         help_text=_(
             "Define which group of users this notification should be sent and shown to. "
@@ -559,6 +561,19 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         blank=True,
         on_delete=models.SET_NULL,
     )
+    destination_event_user = models.BooleanField(
+        default=False,
+        help_text=_(
+            "When enabled, notification will be sent to user the user that triggered the event."
+            "When destination_group is configured, notification is sent to both."
+        ),
+    )
+
+    def destination_users(self, event: Event) -> Generator[User, Any]:
+        if self.destination_event_user and event.user.get("pk"):
+            yield User(pk=event.user.get("pk"))
+        if self.destination_group:
+            yield from self.destination_group.users.all()
 
     @property
     def serializer(self) -> type[Serializer]:

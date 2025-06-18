@@ -6671,11 +6671,16 @@
                     "title": "Severity",
                     "description": "Controls which severity level the created notifications will have."
                 },
-                "group": {
+                "destination_group": {
                     "type": "string",
                     "format": "uuid",
-                    "title": "Group",
+                    "title": "Destination group",
                     "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
+                },
+                "destination_event_user": {
+                    "type": "boolean",
+                    "title": "Destination event user",
+                    "description": "When enabled, notification will be sent to user the user that triggered the event.When destination_group is configured, notification is sent to both."
                 }
             },
             "required": []

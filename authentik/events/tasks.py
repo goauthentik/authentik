@@ -60,14 +60,10 @@ def event_trigger_handler(event_uuid: UUID, trigger_name: str):
     if not result.passing:
         return
 
-    if not trigger.group:
-        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
-        return
-
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)
     # Create the notification objects
     for transport in trigger.transports.all():
-        for user in trigger.group.users.all():
+        for user in trigger.destination_users(event):
             LOGGER.debug("created notification")
             notification_transport.send_with_options(
                 args=(
