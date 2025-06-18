@@ -47,7 +47,7 @@ export class OAuth2DeviceCode extends BaseStage<
                         label="${msg("Code")}"
                         required
                         class="pf-c-form__group"
-                        .errors=${(this.challenge?.responseErrors || {})["code"]}
+                        .errors=${(this.challenge?.responseErrors || {}).code}
                     >
                         <input
                             type="text"

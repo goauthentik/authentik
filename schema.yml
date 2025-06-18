@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2025.4.0
+  version: 2025.6.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -25,33 +25,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/App'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /admin/metrics/:
-    get:
-      operationId: admin_metrics_retrieve
-      description: Login Metrics per 1h
-      tags:
-      - admin
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/LoginMetrics'
           description: ''
         '400':
           content:
@@ -4136,42 +4109,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/applications/{slug}/metrics/:
-    get:
-      operationId: core_applications_metrics_list
-      description: Metrics for application logins
-      parameters:
-      - in: path
-        name: slug
-        schema:
-          type: string
-          description: Internal application name, used in URLs.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coordinate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /core/applications/{slug}/set_icon/:
     post:
       operationId: core_applications_set_icon_create
@@ -4460,6 +4397,15 @@ paths:
         name: branding_title
         schema:
           type: string
+      - in: query
+        name: client_certificates
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
       - in: query
         name: default
         schema:
@@ -6062,40 +6008,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/users/{id}/metrics/:
-    get:
-      operationId: core_users_metrics_retrieve
-      description: User metrics per 1h
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this User.
-        required: true
-      tags:
-      - core
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserMetrics'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /core/users/{id}/recovery/:
     post:
       operationId: core_users_recovery_create
@@ -7104,6 +7016,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7389,44 +7337,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /events/events/per_month/:
-    get:
-      operationId: events_events_per_month_list
-      description: Get the count of events per month
-      parameters:
-      - in: query
-        name: action
-        schema:
-          type: string
-      - in: query
-        name: query
-        schema:
-          type: string
-      tags:
-      - events
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Coordinate'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /events/events/top_per_user/:
     get:
       operationId: events_events_top_per_user_list
@@ -7475,6 +7385,42 @@ paths:
         schema:
           type: string
       - in: query
+        name: actions
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - authorize_application
+            - configuration_error
+            - custom_
+            - email_sent
+            - flow_execution
+            - impersonation_ended
+            - impersonation_started
+            - invitation_used
+            - login
+            - login_failed
+            - logout
+            - model_created
+            - model_deleted
+            - model_updated
+            - password_set
+            - policy_exception
+            - policy_execution
+            - property_mapping_exception
+            - secret_rotate
+            - secret_view
+            - source_linked
+            - suspicious_request
+            - system_exception
+            - system_task_exception
+            - system_task_execution
+            - update_available
+            - user_write
+        explode: true
+        style: form
+      - in: query
         name: brand_name
         schema:
           type: string
@@ -7503,6 +7449,11 @@ paths:
         schema:
           type: string
         description: Context Model Primary Key
+      - in: query
+        name: history_days
+        schema:
+          type: number
+          default: 7
       - name: ordering
         required: false
         in: query
@@ -7531,7 +7482,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Coordinate'
+                  $ref: '#/components/schemas/EventVolume'
           description: ''
         '400':
           content:
@@ -7836,7 +7787,7 @@ paths:
       description: NotificationRule Viewset
       parameters:
       - in: query
-        name: group__name
+        name: destination_group__name
         schema:
           type: string
       - in: query
@@ -24978,6 +24929,7 @@ paths:
           - authentik_stages_identification.identificationstage
           - authentik_stages_invitation.invitation
           - authentik_stages_invitation.invitationstage
+          - authentik_stages_mtls.mutualtlsstage
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
@@ -25226,6 +25178,7 @@ paths:
           - authentik_stages_identification.identificationstage
           - authentik_stages_invitation.invitation
           - authentik_stages_invitation.invitationstage
+          - authentik_stages_mtls.mutualtlsstage
           - authentik_stages_password.passwordstage
           - authentik_stages_prompt.prompt
           - authentik_stages_prompt.promptstage
@@ -28463,6 +28416,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: delete_not_found_objects
+        schema:
+          type: boolean
+      - in: query
         name: enabled
         schema:
           type: boolean
@@ -28566,6 +28523,10 @@ paths:
         name: sync_users_password
         schema:
           type: boolean
+      - in: query
+        name: user_membership_attribute
+        schema:
+          type: string
       - in: query
         name: user_object_filter
         schema:
@@ -37718,6 +37679,311 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /stages/mtls/:
+    get:
+      operationId: stages_mtls_list
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: query
+        name: cert_attribute
+        schema:
+          type: string
+          enum:
+          - common_name
+          - email
+          - subject
+      - in: query
+        name: certificate_authorities
+        schema:
+          type: array
+          items:
+            type: string
+            format: uuid
+        explode: true
+        style: form
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - optional
+          - required
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: user_attribute
+        schema:
+          type: string
+          enum:
+          - email
+          - username
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMutualTLSStageList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: stages_mtls_create
+      description: MutualTLSStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MutualTLSStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/mtls/{stage_uuid}/:
+    get:
+      operationId: stages_mtls_retrieve
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: stages_mtls_update
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MutualTLSStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: stages_mtls_partial_update
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMutualTLSStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MutualTLSStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: stages_mtls_destroy
+      description: MutualTLSStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/mtls/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_mtls_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mutual TLS Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/password/:
     get:
       operationId: stages_password_list
@@ -40945,7 +41211,9 @@ components:
       - authentik.enterprise.providers.google_workspace
       - authentik.enterprise.providers.microsoft_entra
       - authentik.enterprise.providers.ssf
+      - authentik.enterprise.search
       - authentik.enterprise.stages.authenticator_endpoint_gdtc
+      - authentik.enterprise.stages.mtls
       - authentik.enterprise.stages.source
       - authentik.events
       type: string
@@ -42422,6 +42690,9 @@ components:
           type: string
           minLength: 1
           default: ak-stage-autosubmit
+    Autocomplete:
+      type: object
+      additionalProperties: {}
     AutosubmitChallenge:
       type: object
       description: Autosubmit challenge used to send and navigate a POST request
@@ -42609,6 +42880,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - brand_uuid
@@ -42673,6 +42950,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
       required:
       - domain
@@ -42842,6 +43125,12 @@ components:
       - name
       - private_key
       - public_key
+    CertAttributeEnum:
+      enum:
+      - subject
+      - common_name
+      - email
+      type: string
     CertificateData:
       type: object
       description: Get CertificateKeyPair's data
@@ -43253,19 +43542,6 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
-    Coordinate:
-      type: object
-      description: Coordinates for diagrams
-      properties:
-        x_cord:
-          type: integer
-          readOnly: true
-        y_cord:
-          type: integer
-          readOnly: true
-      required:
-      - x_cord
-      - y_cord
     CountryCodeEnum:
       enum:
       - AF
@@ -44643,6 +44919,21 @@ components:
       - application
       - counted_events
       - unique_users
+    EventVolume:
+      type: object
+      description: Count of events of action created on day
+      properties:
+        action:
+          $ref: '#/components/schemas/EventActions'
+        time:
+          type: string
+          format: date-time
+        count:
+          type: integer
+      required:
+      - action
+      - count
+      - time
     EventsRequestedEnum:
       enum:
       - https://schemas.openid.net/secevent/caep/event-type/session-revoked
@@ -47554,6 +47845,9 @@ components:
         group_membership_field:
           type: string
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           description: Field which contains a unique Identifier.
@@ -47587,6 +47881,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
       required:
       - base_dn
       - component
@@ -47763,6 +48061,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -47788,6 +48090,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
       required:
       - base_dn
       - name
@@ -47939,29 +48245,6 @@ components:
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallenge'
-    LoginMetrics:
-      type: object
-      description: Login Metrics per 1h
-      properties:
-        logins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        logins_failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        authorizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-      required:
-      - authorizations
-      - logins
-      - logins_failed
     LoginSource:
       type: object
       description: Serializer for Login buttons of sources
@@ -48368,6 +48651,7 @@ components:
       - authentik_providers_microsoft_entra.microsoftentraprovidermapping
       - authentik_providers_ssf.ssfprovider
       - authentik_stages_authenticator_endpoint_gdtc.authenticatorendpointgdtcstage
+      - authentik_stages_mtls.mutualtlsstage
       - authentik_stages_source.sourcestage
       - authentik_events.event
       - authentik_events.notificationtransport
@@ -48375,6 +48659,96 @@ components:
       - authentik_events.notificationrule
       - authentik_events.notificationwebhookmapping
       type: string
+    MutualTLSStage:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+      required:
+      - cert_attribute
+      - component
+      - meta_model_name
+      - mode
+      - name
+      - pk
+      - user_attribute
+      - verbose_name
+      - verbose_name_plural
+    MutualTLSStageModeEnum:
+      enum:
+      - optional
+      - required
+      type: string
+    MutualTLSStageRequest:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
+      required:
+      - cert_attribute
+      - mode
+      - name
+      - user_attribute
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -48457,18 +48831,23 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
-        group_obj:
+        destination_group_obj:
           allOf:
           - $ref: '#/components/schemas/Group'
           readOnly: true
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
       required:
-      - group_obj
+      - destination_group_obj
       - name
       - pk
     NotificationRuleRequest:
@@ -48491,12 +48870,17 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
       required:
       - name
     NotificationTransport:
@@ -49473,9 +49857,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApplicationEntitlement'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedApplicationList:
       type: object
       properties:
@@ -49485,9 +49872,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Application'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatedSessionList:
       type: object
       properties:
@@ -49497,9 +49887,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatedSession'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorDuoStageList:
       type: object
       properties:
@@ -49509,9 +49902,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorDuoStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorEmailStageList:
       type: object
       properties:
@@ -49521,9 +49917,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorEmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorEndpointGDTCStageList:
       type: object
       properties:
@@ -49533,9 +49932,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorEndpointGDTCStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorSMSStageList:
       type: object
       properties:
@@ -49545,9 +49947,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorSMSStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorStaticStageList:
       type: object
       properties:
@@ -49557,9 +49962,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorStaticStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorTOTPStageList:
       type: object
       properties:
@@ -49569,9 +49977,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorTOTPStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorValidateStageList:
       type: object
       properties:
@@ -49581,9 +49992,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorValidateStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedAuthenticatorWebAuthnStageList:
       type: object
       properties:
@@ -49593,9 +50007,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/AuthenticatorWebAuthnStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedBlueprintInstanceList:
       type: object
       properties:
@@ -49605,9 +50022,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BlueprintInstance'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedBrandList:
       type: object
       properties:
@@ -49617,9 +50037,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Brand'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedCaptchaStageList:
       type: object
       properties:
@@ -49629,9 +50052,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CaptchaStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedCertificateKeyPairList:
       type: object
       properties:
@@ -49641,9 +50067,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/CertificateKeyPair'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedConnectionTokenList:
       type: object
       properties:
@@ -49653,9 +50082,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConnectionToken'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedConsentStageList:
       type: object
       properties:
@@ -49665,9 +50097,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConsentStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDenyStageList:
       type: object
       properties:
@@ -49677,9 +50112,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DenyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDockerServiceConnectionList:
       type: object
       properties:
@@ -49689,9 +50127,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DockerServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDomainList:
       type: object
       properties:
@@ -49701,9 +50142,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Domain'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDummyPolicyList:
       type: object
       properties:
@@ -49713,9 +50157,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DummyPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDummyStageList:
       type: object
       properties:
@@ -49725,9 +50172,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DummyStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedDuoDeviceList:
       type: object
       properties:
@@ -49737,9 +50187,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DuoDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEmailDeviceList:
       type: object
       properties:
@@ -49749,9 +50202,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEmailStageList:
       type: object
       properties:
@@ -49761,9 +50217,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EmailStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEndpointDeviceList:
       type: object
       properties:
@@ -49773,9 +50232,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EndpointDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEndpointList:
       type: object
       properties:
@@ -49785,9 +50247,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Endpoint'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEventList:
       type: object
       properties:
@@ -49797,9 +50262,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Event'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedEventMatcherPolicyList:
       type: object
       properties:
@@ -49809,9 +50277,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EventMatcherPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedExpiringBaseGrantModelList:
       type: object
       properties:
@@ -49821,9 +50292,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExpiringBaseGrantModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedExpressionPolicyList:
       type: object
       properties:
@@ -49833,9 +50307,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExpressionPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedExtraRoleObjectPermissionList:
       type: object
       properties:
@@ -49869,9 +50346,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Flow'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedFlowStageBindingList:
       type: object
       properties:
@@ -49881,9 +50361,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowStageBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGeoIPPolicyList:
       type: object
       properties:
@@ -49893,9 +50376,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GeoIPPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGoogleWorkspaceProviderGroupList:
       type: object
       properties:
@@ -49905,9 +50391,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleWorkspaceProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGoogleWorkspaceProviderList:
       type: object
       properties:
@@ -49917,9 +50406,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleWorkspaceProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGoogleWorkspaceProviderMappingList:
       type: object
       properties:
@@ -49929,9 +50421,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleWorkspaceProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGoogleWorkspaceProviderUserList:
       type: object
       properties:
@@ -49941,9 +50436,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GoogleWorkspaceProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupKerberosSourceConnectionList:
       type: object
       properties:
@@ -49953,9 +50451,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupLDAPSourceConnectionList:
       type: object
       properties:
@@ -49965,9 +50466,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupLDAPSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupList:
       type: object
       properties:
@@ -49977,9 +50481,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Group'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupOAuthSourceConnectionList:
       type: object
       properties:
@@ -49989,9 +50496,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupPlexSourceConnectionList:
       type: object
       properties:
@@ -50001,9 +50511,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupPlexSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupSAMLSourceConnectionList:
       type: object
       properties:
@@ -50013,9 +50526,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupSAMLSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedGroupSourceConnectionList:
       type: object
       properties:
@@ -50025,9 +50541,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/GroupSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedIdentificationStageList:
       type: object
       properties:
@@ -50037,9 +50556,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentificationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedInitialPermissionsList:
       type: object
       properties:
@@ -50049,9 +50571,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InitialPermissions'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedInvitationList:
       type: object
       properties:
@@ -50061,9 +50586,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Invitation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedInvitationStageList:
       type: object
       properties:
@@ -50073,9 +50601,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvitationStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedKerberosSourceList:
       type: object
       properties:
@@ -50085,9 +50616,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KerberosSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedKerberosSourcePropertyMappingList:
       type: object
       properties:
@@ -50097,9 +50631,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KerberosSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedKubernetesServiceConnectionList:
       type: object
       properties:
@@ -50109,9 +50646,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KubernetesServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedLDAPOutpostConfigList:
       type: object
       properties:
@@ -50121,9 +50661,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedLDAPProviderList:
       type: object
       properties:
@@ -50133,9 +50676,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedLDAPSourceList:
       type: object
       properties:
@@ -50145,9 +50691,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedLDAPSourcePropertyMappingList:
       type: object
       properties:
@@ -50157,9 +50706,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedLicenseList:
       type: object
       properties:
@@ -50169,9 +50721,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/License'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedMicrosoftEntraProviderGroupList:
       type: object
       properties:
@@ -50181,9 +50736,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedMicrosoftEntraProviderList:
       type: object
       properties:
@@ -50193,9 +50751,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedMicrosoftEntraProviderMappingList:
       type: object
       properties:
@@ -50205,9 +50766,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProviderMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedMicrosoftEntraProviderUserList:
       type: object
       properties:
@@ -50217,9 +50781,27 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/MicrosoftEntraProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
+    PaginatedMutualTLSStageList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MutualTLSStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
+      required:
+      - pagination
+      - results
+      - autocomplete
     PaginatedNotificationList:
       type: object
       properties:
@@ -50229,9 +50811,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Notification'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedNotificationRuleList:
       type: object
       properties:
@@ -50241,9 +50826,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NotificationRule'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedNotificationTransportList:
       type: object
       properties:
@@ -50253,9 +50841,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NotificationTransport'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedNotificationWebhookMappingList:
       type: object
       properties:
@@ -50265,9 +50856,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/NotificationWebhookMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedOAuth2ProviderList:
       type: object
       properties:
@@ -50277,9 +50871,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuth2Provider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedOAuthSourceList:
       type: object
       properties:
@@ -50289,9 +50886,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedOAuthSourcePropertyMappingList:
       type: object
       properties:
@@ -50301,9 +50901,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OAuthSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedOutpostList:
       type: object
       properties:
@@ -50313,9 +50916,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Outpost'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPasswordExpiryPolicyList:
       type: object
       properties:
@@ -50325,9 +50931,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PasswordExpiryPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPasswordPolicyList:
       type: object
       properties:
@@ -50337,9 +50946,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPasswordStageList:
       type: object
       properties:
@@ -50349,9 +50961,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PasswordStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPermissionList:
       type: object
       properties:
@@ -50361,9 +50976,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Permission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPlexSourceList:
       type: object
       properties:
@@ -50373,9 +50991,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlexSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPlexSourcePropertyMappingList:
       type: object
       properties:
@@ -50385,9 +51006,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PlexSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPolicyBindingList:
       type: object
       properties:
@@ -50397,9 +51021,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PolicyBinding'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPolicyList:
       type: object
       properties:
@@ -50409,9 +51036,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Policy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPromptList:
       type: object
       properties:
@@ -50421,9 +51051,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Prompt'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPromptStageList:
       type: object
       properties:
@@ -50433,9 +51066,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PromptStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedPropertyMappingList:
       type: object
       properties:
@@ -50445,9 +51081,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedProviderList:
       type: object
       properties:
@@ -50457,9 +51096,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Provider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedProxyOutpostConfigList:
       type: object
       properties:
@@ -50469,9 +51111,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedProxyProviderList:
       type: object
       properties:
@@ -50481,9 +51126,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRACPropertyMappingList:
       type: object
       properties:
@@ -50493,9 +51141,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RACPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRACProviderList:
       type: object
       properties:
@@ -50505,9 +51156,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RACProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRadiusOutpostConfigList:
       type: object
       properties:
@@ -50517,9 +51171,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusOutpostConfig'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRadiusProviderList:
       type: object
       properties:
@@ -50529,9 +51186,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRadiusProviderPropertyMappingList:
       type: object
       properties:
@@ -50541,9 +51201,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RadiusProviderPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRedirectStageList:
       type: object
       properties:
@@ -50553,9 +51216,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RedirectStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedReputationList:
       type: object
       properties:
@@ -50565,9 +51231,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Reputation'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedReputationPolicyList:
       type: object
       properties:
@@ -50577,9 +51246,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReputationPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRoleAssignedObjectPermissionList:
       type: object
       properties:
@@ -50589,9 +51261,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RoleAssignedObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedRoleList:
       type: object
       properties:
@@ -50601,9 +51276,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Role'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSAMLPropertyMappingList:
       type: object
       properties:
@@ -50613,9 +51291,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SAMLPropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSAMLProviderList:
       type: object
       properties:
@@ -50625,9 +51306,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SAMLProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSAMLSourceList:
       type: object
       properties:
@@ -50637,9 +51321,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SAMLSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSAMLSourcePropertyMappingList:
       type: object
       properties:
@@ -50649,9 +51336,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SAMLSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMMappingList:
       type: object
       properties:
@@ -50661,9 +51351,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMProviderGroupList:
       type: object
       properties:
@@ -50673,9 +51366,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMProviderGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMProviderList:
       type: object
       properties:
@@ -50685,9 +51381,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMProviderUserList:
       type: object
       properties:
@@ -50697,9 +51396,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMProviderUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMSourceGroupList:
       type: object
       properties:
@@ -50709,9 +51411,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSourceGroup'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMSourceList:
       type: object
       properties:
@@ -50721,9 +51426,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSource'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMSourcePropertyMappingList:
       type: object
       properties:
@@ -50733,9 +51441,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSourcePropertyMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSCIMSourceUserList:
       type: object
       properties:
@@ -50745,9 +51456,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SCIMSourceUser'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSMSDeviceList:
       type: object
       properties:
@@ -50757,9 +51471,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SMSDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSSFProviderList:
       type: object
       properties:
@@ -50769,9 +51486,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SSFProvider'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSSFStreamList:
       type: object
       properties:
@@ -50781,9 +51501,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SSFStream'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedScopeMappingList:
       type: object
       properties:
@@ -50793,9 +51516,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ScopeMapping'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedServiceConnectionList:
       type: object
       properties:
@@ -50805,9 +51531,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ServiceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSourceList:
       type: object
       properties:
@@ -50817,9 +51546,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Source'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSourceStageList:
       type: object
       properties:
@@ -50829,9 +51561,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SourceStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedStageList:
       type: object
       properties:
@@ -50841,9 +51576,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Stage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedStaticDeviceList:
       type: object
       properties:
@@ -50853,9 +51591,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StaticDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedSystemTaskList:
       type: object
       properties:
@@ -50865,9 +51606,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SystemTask'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedTOTPDeviceList:
       type: object
       properties:
@@ -50877,9 +51621,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TOTPDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedTenantList:
       type: object
       properties:
@@ -50889,9 +51636,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Tenant'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedTokenList:
       type: object
       properties:
@@ -50901,9 +51651,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Token'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedTokenModelList:
       type: object
       properties:
@@ -50913,9 +51666,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TokenModel'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUniquePasswordPolicyList:
       type: object
       properties:
@@ -50925,9 +51681,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UniquePasswordPolicy'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserAssignedObjectPermissionList:
       type: object
       properties:
@@ -50937,9 +51696,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserAssignedObjectPermission'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserConsentList:
       type: object
       properties:
@@ -50949,9 +51711,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserConsent'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserDeleteStageList:
       type: object
       properties:
@@ -50961,9 +51726,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserDeleteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserKerberosSourceConnectionList:
       type: object
       properties:
@@ -50973,9 +51741,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserKerberosSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserLDAPSourceConnectionList:
       type: object
       properties:
@@ -50985,9 +51756,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserLDAPSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserList:
       type: object
       properties:
@@ -50997,9 +51771,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/User'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserLoginStageList:
       type: object
       properties:
@@ -51009,9 +51786,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserLoginStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserLogoutStageList:
       type: object
       properties:
@@ -51021,9 +51801,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserLogoutStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserOAuthSourceConnectionList:
       type: object
       properties:
@@ -51033,9 +51816,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserPlexSourceConnectionList:
       type: object
       properties:
@@ -51045,9 +51831,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserPlexSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserSAMLSourceConnectionList:
       type: object
       properties:
@@ -51057,9 +51846,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserSAMLSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserSourceConnectionList:
       type: object
       properties:
@@ -51069,9 +51861,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserSourceConnection'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedUserWriteStageList:
       type: object
       properties:
@@ -51081,9 +51876,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserWriteStage'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedWebAuthnDeviceList:
       type: object
       properties:
@@ -51093,9 +51891,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnDevice'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     PaginatedWebAuthnDeviceTypeList:
       type: object
       properties:
@@ -51105,9 +51906,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/WebAuthnDeviceType'
+        autocomplete:
+          $ref: '#/components/schemas/Autocomplete'
       required:
       - pagination
       - results
+      - autocomplete
     Pagination:
       type: object
       properties:
@@ -51896,6 +52700,12 @@ components:
           format: uuid
           nullable: true
           description: Web Certificate used by the authentik Core webserver.
+        client_certificates:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Certificates used for client authentication.
         attributes: {}
     PatchedCaptchaStageRequest:
       type: object
@@ -52987,6 +53797,10 @@ components:
           type: string
           minLength: 1
           description: Field which contains members of a group.
+        user_membership_attribute:
+          type: string
+          minLength: 1
+          description: Attribute which matches the value of `group_membership_field`.
         object_uniqueness_field:
           type: string
           minLength: 1
@@ -53012,6 +53826,10 @@ components:
           description: Lookup group membership based on a user attribute instead of
             a group attribute. This allows nested group resolution on systems like
             FreeIPA and Active Directory
+        delete_not_found_objects:
+          type: boolean
+          description: Delete authentik users and groups which were previously supplied
+            by this source, but are now missing from it.
     PatchedLicenseRequest:
       type: object
       description: License Serializer
@@ -53079,6 +53897,31 @@ components:
           type: boolean
           description: When enabled, provider will not modify or create objects in
             the remote system.
+    PatchedMutualTLSStageRequest:
+      type: object
+      description: MutualTLSStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        mode:
+          $ref: '#/components/schemas/MutualTLSStageModeEnum'
+        certificate_authorities:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Configure certificate authorities to validate the certificate
+            against. This option has a higher priority than the `client_certificate`
+            option on `Brand`.
+        cert_attribute:
+          $ref: '#/components/schemas/CertAttributeEnum'
+        user_attribute:
+          $ref: '#/components/schemas/UserAttributeEnum'
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -53107,12 +53950,17 @@ components:
           - $ref: '#/components/schemas/SeverityEnum'
           description: Controls which severity level the created notifications will
             have.
-        group:
+        destination_group:
           type: string
           format: uuid
           nullable: true
           description: Define which group of users this notification should be sent
             and shown to. If left empty, Notification won't ben sent.
+        destination_event_user:
+          type: boolean
+          description: When enabled, notification will be sent to user the user that
+            triggered the event.When destination_group is configured, notification
+            is sent to both.
     PatchedNotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -59793,6 +60641,11 @@ components:
       - pk
       - uid
       - username
+    UserAttributeEnum:
+      enum:
+      - username
+      - email
+      type: string
     UserConsent:
       type: object
       description: UserConsent Serializer
@@ -60224,29 +61077,6 @@ components:
       - username_link
       - username_deny
       type: string
-    UserMetrics:
-      type: object
-      description: User Metrics
-      properties:
-        logins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        logins_failed:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-        authorizations:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coordinate'
-          readOnly: true
-      required:
-      - authorizations
-      - logins
-      - logins_failed
     UserOAuthSourceConnection:
       type: object
       description: User source connection

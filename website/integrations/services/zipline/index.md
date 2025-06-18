@@ -31,15 +31,16 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: Provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: Select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: Provide a name (or accept the auto-provided name), choose the authorization flow for this provider, and configure the following required settings:
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>zipline.company</em>/api/auth/oauth/oidc</kbd>.
+    - Set a `Strict` redirect URI to `https://zipline.company/api/auth/oauth/oidc`.
     - Select any available signing key.
+    - Under **Advanced Protocol Settings** > **Scopes**, add `authentik default OAuth Mapping: OpenID 'offline_access'` to the **Selected Scopes** list.
 - **Configure Bindings** _(optional)_: Create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
 3. Click **Submit** to save the new application and provider.
@@ -52,9 +53,9 @@ To support the integration of Zipline with authentik, you need to create an appl
 
 - **OIDC Client ID**: Your Client ID from authentik
 - **OIDC Client Secret**: Your Client Secret from authentik
-- **OIDC Authorize URL**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-- **OIDC Token URL**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-- **OIDC Userinfo URL**: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+- **OIDC Authorize URL**: `https://authentik.company/application/o/authorize/`
+- **OIDC Token URL**: `https://authentik.company/application/o/token/`
+- **OIDC Userinfo URL**: `https://authentik.company/application/o/userinfo/`
 
 3. Then, click **Save**.
 

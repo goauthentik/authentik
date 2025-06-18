@@ -146,7 +146,8 @@ class FlowExecutorView(APIView):
         except (AttributeError, EOFError, ImportError, IndexError) as exc:
             LOGGER.warning("f(exec): Failed to restore token plan", exc=exc)
         finally:
-            token.delete()
+            if token.revoke_on_execution:
+                token.delete()
         if not isinstance(plan, FlowPlan):
             return None
         plan.context[PLAN_CONTEXT_IS_RESTORED] = token

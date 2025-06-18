@@ -24,11 +24,10 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                 policyUuid: this.instance.pk || "",
                 passwordExpiryPolicyRequest: data,
             });
-        } else {
-            return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
-                passwordExpiryPolicyRequest: data,
-            });
         }
+        return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryCreate({
+            passwordExpiryPolicyRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -37,7 +36,7 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -65,12 +64,12 @@ export class PasswordExpiryPolicyForm extends BasePolicyForm<PasswordExpiryPolic
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Maximum age (in days)")}
-                        ?required=${true}
+                        required
                         name="days"
                     >
                         <input

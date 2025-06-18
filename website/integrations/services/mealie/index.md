@@ -27,7 +27,7 @@ To support the integration of Mealie with authentik, you need to create an appli
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -52,7 +52,7 @@ To enable OIDC login with Mealie, update your environment variables to include t
 ```yaml showLineNumbers
 OIDC_AUTH_ENABLED=true
 OIDC_PROVIDER_NAME=authentik
-OIDC_CONFIGURATION_URL=https://authentik.company/application/o/<slug from authentik>/.well-known/openid-configuration
+OIDC_CONFIGURATION_URL=https://authentik.company/application/o/<application_slug>/.well-known/openid-configuration
 OIDC_CLIENT_ID=<Client ID from authentik>
 OIDC_CLIENT_SECRET=<Client secret from authentik>
 OIDC_SIGNUP_ENABLED=true

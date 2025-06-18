@@ -27,7 +27,7 @@ To support the integration of Coder with authentik, you need to create an applic
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
@@ -45,7 +45,7 @@ To support the integration of Coder with authentik, you need to create an applic
 To support the integration of Coder with authentik, add the following environment variables to your Coder deployment:
 
 ```yaml showLineNumbers
-CODER_OIDC_ISSUER_URL=https://authentik.company/application/o/<application slug>/
+CODER_OIDC_ISSUER_URL=https://authentik.company/application/o/<application_slug>/
 CODER_OIDC_EMAIL_DOMAIN=acme.company,acme-corp.company
 CODER_OIDC_CLIENT_ID=<Client ID from authentik>
 CODER_OIDC_CLIENT_SECRET=<Client secret from authentik>
@@ -53,10 +53,10 @@ CODER_OIDC_SIGN_IN_TEXT=Log in with authentik
 CODER_OIDC_ICON_URL=https://authentik.company/static/dist/assets/icons/icon.png
 ```
 
-## Resources
-
-- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)
-
 ## Configuration verification
 
 To confirm that authentik is properly configured with Coder, log out and attempt to log back in by clicking **Log in with authentik**.
+
+## Resources
+
+- [Coder OIDC authentication documentatiom](https://coder.com/docs/admin/users/oidc-auth/)

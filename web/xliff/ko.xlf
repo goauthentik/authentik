@@ -645,12 +645,6 @@
         <target>사용량이 가장 많은 앱</target>
         
       </trans-unit>
-      <trans-unit id="sda5e1499f93146ad">
-        <source><x id="0" equiv-text="${ago}"/> days ago</source>
-        <target>
-        <x id="0" equiv-text="${ago}"/> 일 전</target>
-        
-      </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
         <target>오브젝트 생성됨</target>
@@ -2780,19 +2774,9 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>사용자 경로</target>
         
       </trans-unit>
-      <trans-unit id="sd18170637295bace">
-        <source>Addition User DN</source>
-        <target>사용자 DN 추가</target>
-        
-      </trans-unit>
       <trans-unit id="s9ae089fd248e72db">
         <source>Additional user DN, prepended to the Base DN.</source>
         <target>기본 DN 앞에 추가 사용자 DN을 추가합니다.</target>
-        
-      </trans-unit>
-      <trans-unit id="s5944355d69db1fb8">
-        <source>Addition Group DN</source>
-        <target>추가 그룹 DN</target>
         
       </trans-unit>
       <trans-unit id="sfae9f4ea5749a36b">
@@ -2988,11 +2972,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s91f389c796720a81">
         <source>Load servers</source>
         <target>서버 로드</target>
-        
-      </trans-unit>
-      <trans-unit id="s24f405197ede5ebb">
-        <source>Re-authenticate with plex</source>
-        <target>Plex로 다시 인증하기</target>
         
       </trans-unit>
       <trans-unit id="sc297b2e13c28ecf9">
@@ -6063,19 +6042,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>개인 키 다운로드</target>
         
       </trans-unit>
-      <trans-unit id="s3a5fec3d73ac9edc">
-        <source>Create Certificate-Key Pair</source>
-        <target>인증서-키 쌍 만들기</target>
-        
-      </trans-unit>
       <trans-unit id="s45cb501abd43ba52">
         <source>Generate</source>
         <target>발행</target>
-        
-      </trans-unit>
-      <trans-unit id="sf9bddaf910f4eea5">
-        <source>Generate Certificate-Key Pair</source>
-        <target>인증서-키 쌍 발행</target>
         
       </trans-unit>
       <trans-unit id="see2bcbc11bb91960">
@@ -7466,10 +7435,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Configure SCIM Provider</source>
   <target>SCIM 공급자 구성</target>
 </trans-unit>
-<trans-unit id="s7513372fe60f6387">
-  <source>Event volume</source>
-  <target>이력 규모</target>
-</trans-unit>
 <trans-unit id="s3271da6c18c25b18">
   <source>Connection settings.</source>
 </trans-unit>
@@ -8565,7 +8530,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>This option configures the footer links on the flow executor pages. The URL is limited to web and mail addresses. If the name is left blank, the URL will be shown.</source>
 </trans-unit>
 <trans-unit id="s66f572bec2bde9c4">
-  <source>External applications that use <x id="0" equiv-text="${this.brand?.brandingTitle ?? &quot;authentik&quot;}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <source>External applications that use <x id="0" equiv-text="${this.brandingTitle}"/> as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
 </trans-unit>
 <trans-unit id="s58bec0ecd4f3ccd4">
   <source>Strict</source>
@@ -8692,9 +8657,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s931754aabd4a6a47">
   <source>Create a Policy/User/Group Binding</source>
-</trans-unit>
-<trans-unit id="s10ba15343fe64890">
-  <source>Choose A Provider</source>
 </trans-unit>
 <trans-unit id="sb7be945aa799b8d7">
   <source>Please choose a provider type before proceeding.</source>
@@ -9078,9 +9040,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sc7524ea24eeeb019">
   <source>Failed to preview prompt</source>
 </trans-unit>
-<trans-unit id="s783964a224796865">
-  <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'. When selecting 'Lookup using a user attribute', this should be a user attribute, otherwise a group attribute.</source>
-</trans-unit>
 <trans-unit id="s1d47b4f61ca53e8e">
   <source>Lookup using user attribute</source>
 </trans-unit>
@@ -9164,6 +9123,99 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="sdd66c5a2e706fb81">
   <source>Toggle sidebar</source>
+</trans-unit>
+<trans-unit id="s7d4ec232535a36f0">
+  <source>Choose a Provider</source>
+</trans-unit>
+<trans-unit id="sa30ba280de276758">
+  <source>When enabled, the SAML response will be signed.</source>
+</trans-unit>
+<trans-unit id="s2c42bb3c6f5420d2">
+  <source>Client Certificates</source>
+</trans-unit>
+<trans-unit id="s95901716c0629274">
+  <source>Available Certificates</source>
+</trans-unit>
+<trans-unit id="sdbf6b484fa1436b0">
+  <source>Selected Certificates</source>
+</trans-unit>
+<trans-unit id="s9300147e327fd8f6">
+  <source>Client-certificate/mTLS authentication/enrollment.</source>
+</trans-unit>
+<trans-unit id="sbf990ec848470f5c">
+  <source>Certificate optional</source>
+</trans-unit>
+<trans-unit id="s72e2876e9409b9eb">
+  <source>If no certificate was provided, this stage will succeed and continue to the next stage.</source>
+</trans-unit>
+<trans-unit id="se07d973901a6e6b9">
+  <source>Certificate required</source>
+</trans-unit>
+<trans-unit id="s664c47df020ee414">
+  <source>If no certificate was provided, this stage will stop flow execution.</source>
+</trans-unit>
+<trans-unit id="sbe9da6dad795aa39">
+  <source>Certificate authorities</source>
+</trans-unit>
+<trans-unit id="se3a6aa4f0ab7568e">
+  <source>Configure the certificate authority client certificates are validated against. The certificate authority can also be configured on a brand, which allows for different certificate authorities for different domains.</source>
+</trans-unit>
+<trans-unit id="sb8fdf5a09a969870">
+  <source>Certificate attribute</source>
+</trans-unit>
+<trans-unit id="s8069037a865037c9">
+  <source>Configure the attribute of the certificate used to look for a user.</source>
+</trans-unit>
+<trans-unit id="sc185a8ad96f8eaa2">
+  <source>User attribute</source>
+</trans-unit>
+<trans-unit id="s4f9860fefb8fbe01">
+  <source>Configure the attribute of the user used to look for a user.</source>
+</trans-unit>
+<trans-unit id="s42b57339ad2f3ac7">
+  <source>Delete Not Found Objects</source>
+</trans-unit>
+<trans-unit id="se3b26b762110bda0">
+  <source>Delete authentik users and groups which were previously supplied by this source, but are now missing from it.</source>
+</trans-unit>
+<trans-unit id="s0a2cb398b54a6207">
+  <source>Welcome.</source>
+</trans-unit>
+<trans-unit id="s4e1d2cb86cf5ecd0">
+  <source>Field which contains members of a group. The value of this field is matched against User membership attribute.</source>
+</trans-unit>
+<trans-unit id="s6478025f3e0174fa">
+  <source>User membership attribute</source>
+</trans-unit>
+<trans-unit id="s344be99cf5d36407">
+  <source>Attribute which matches the value of Group membership field.</source>
+</trans-unit>
+<trans-unit id="sfa6b7b105640e457">
+  <source>Additional User DN</source>
+</trans-unit>
+<trans-unit id="s04bb32ec9f359507">
+  <source>Additional Group DN</source>
+</trans-unit>
+<trans-unit id="sb7af25ce6e30d61a">
+  <source>The currently selected policy engine mode is <x id="0" equiv-text="${policyEngineMode.label}"/>:</source>
+</trans-unit>
+<trans-unit id="se1d2545eda4b1600">
+  <source>Import Existing Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sb3d5c0a0501669df">
+  <source>Generate New Certificate-Key Pair</source>
+</trans-unit>
+<trans-unit id="sf9686d31d28fcf7d">
+  <source>Show field content</source>
+</trans-unit>
+<trans-unit id="sb1b05a7573ab618c">
+  <source>Hide field content</source>
+</trans-unit>
+<trans-unit id="s4f820625804ed29b">
+  <source>Re-authenticate with Plex</source>
+</trans-unit>
+<trans-unit id="s0433d667ea6eec1a">
+  <source>The name of an invitation must be a slug: only lower case letters, numbers, and the hyphen are permitted here.</source>
 </trans-unit>
     </body>
   </file>

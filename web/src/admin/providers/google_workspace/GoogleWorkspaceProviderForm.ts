@@ -41,15 +41,14 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                 id: this.instance.pk,
                 googleWorkspaceProviderRequest: data,
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
-                googleWorkspaceProviderRequest: data,
-            });
         }
+        return new ProvidersApi(DEFAULT_CONFIG).providersGoogleWorkspaceCreate({
+            googleWorkspaceProviderRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -57,12 +56,12 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Credentials")}
-                        ?required=${true}
+                        required
                         name="credentials"
                     >
                         <ak-codemirror
@@ -75,7 +74,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Delegated Subject")}
-                        ?required=${true}
+                        required
                         name="delegatedSubject"
                     >
                         <input
@@ -92,7 +91,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Default group email domain")}
-                        ?required=${true}
+                        required
                         name="defaultGroupEmailDomain"
                     >
                         <input
@@ -182,7 +181,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header">${msg("User filtering")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
@@ -226,7 +225,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                             .selected=${(group: Group): boolean => {
                                 return group.pk === this.instance?.filterGroup;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
@@ -235,7 +234,7 @@ export class GoogleWorkspaceProviderFormPage extends BaseProviderForm<GoogleWork
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
-            <ak-form-group ?expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal

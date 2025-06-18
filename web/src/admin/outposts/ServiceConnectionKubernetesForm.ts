@@ -35,15 +35,14 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 uuid: this.instance.pk || "",
                 kubernetesServiceConnectionRequest: data,
             });
-        } else {
-            return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
-                kubernetesServiceConnectionRequest: data,
-            });
         }
+        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesCreate({
+            kubernetesServiceConnectionRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
-        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"

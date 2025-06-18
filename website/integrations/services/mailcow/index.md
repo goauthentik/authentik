@@ -31,14 +31,14 @@ To support the integration of mailcow with authentik, you need to create an appl
 
 ### Create an application and provider in authentik
 
-1. Log in to authentik as an admin, and open the authentik Admin interface.
+1. Log in to authentik as an administrator and open the authentik Admin interface.
 2. Navigate to **Applications** > **Applications** and click **Create with Provider** to create an application and provider pair. (Alternatively you can first create a provider separately, then create the application and connect it with the provider.)
 
 - **Application**: provide a descriptive name, an optional group for the type of application, the policy engine mode, and optional UI settings.
 - **Choose a Provider type**: select **OAuth2/OpenID Connect** as the provider type.
 - **Configure the Provider**: provide a name (or accept the auto-provided name), the authorization flow to use for this provider, and the following required configurations.
     - Note the **Client ID** and **Client Secret** values because they will be required later.
-    - Set a `Strict` redirect URI to <kbd>https://<em>mailcow.company</em></kbd>.
+    - Set a `Strict` redirect URI to `https://mailcow.company`.
     - Select any available signing key.
 - **Configure Bindings** _(optional)_: you can create a [binding](/docs/add-secure-apps/flows-stages/bindings/) (policy, group, or user) to manage the listing and access to applications on a user's **My applications** page.
 
@@ -49,14 +49,14 @@ To support the integration of mailcow with authentik, you need to create an appl
 To configure mailcow with authentik, log in as an administrator and navigate to **System** > **Configuration**.
 Then, go to **Access** > **Identity Provider** and enter the following information in the form:
 
-- **Identity Provider**: <kbd>Generic-OIDC</kbd>
-- **Authorization endpoint**: <kbd>https://<em>authentik.company</em>/application/o/authorize/</kbd>
-- **Token endpoint**: <kbd>https://<em>authentik.company</em>/application/o/token/</kbd>
-- **User info endpoint**: <kbd>https://<em>authentik.company</em>/application/o/userinfo/</kbd>
+- **Identity Provider**: `Generic-OIDC`
+- **Authorization endpoint**: `https://authentik.company/application/o/authorize/`
+- **Token endpoint**: `https://authentik.company/application/o/token/`
+- **User info endpoint**: `https://authentik.company/application/o/userinfo/`
 - **Client ID**: The `Client ID` from the authentik provider
 - **Client Secret**: The `Client secret` from the authentik provider
-- **Redirect Url**: <kbd>https://<em>mailcow.company</em></kbd>
-- **Client Scopes**: <kbd>openid profile email</kbd>
+- **Redirect Url**: `https://mailcow.company`
+- **Client Scopes**: `openid profile email`
 
 ## Configuration verification
 

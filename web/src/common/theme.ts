@@ -1,9 +1,41 @@
 /**
  * @file Theme utilities.
  */
-import { UIConfig } from "@goauthentik/common/ui/config";
+import { type StyleRoot, createStyleSheetUnsafe, setAdoptedStyleSheets } from "#common/stylesheets";
 
-import { Config, CurrentBrand, UiThemeEnum } from "@goauthentik/api";
+import AKBase from "#common/styles/authentik.css";
+import AKBaseDark from "#common/styles/theme-dark.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { UiThemeEnum } from "@goauthentik/api";
+
+//#region Stylesheet Exports
+
+/**
+ * A global style sheet for the Patternfly base styles.
+ *
+ * @remarks
+ *
+ * While a component *may* import its own instance of the PFBase style sheet,
+ * this instance ensures referential identity.
+ */
+export const $PFBase = createStyleSheetUnsafe(PFBase);
+
+/**
+ * A global style sheet for the authentik base styles.
+ *
+ * @see {@linkcode $PFBase} for details.
+ */
+export const $AKBase = createStyleSheetUnsafe(AKBase);
+
+/**
+ * A global style sheet for the authentik dark theme.
+ *
+ * @see {@linkcode $PFBase} for details.
+ */
+export const $AKBaseDark = createStyleSheetUnsafe(AKBaseDark);
+
+//#endregion
 
 //#region Scheme Types
 
@@ -134,15 +166,21 @@ export function resolveUITheme(
  * Effect listener invoked when the color scheme changes.
  */
 export type UIThemeListener = (currentUITheme: ResolvedUITheme) => void;
+
 /**
- * Create an effect that runs
+ * Effect destructor invoked when cleanup is required.
+ */
+export type UIThemeDestructor = () => void;
+
+/**
+ * Create an effect that runs UI theme changes.
  *
  * @returns A cleanup function that removes the effect.
  */
 export function createUIThemeEffect(
     effect: UIThemeListener,
     listenerOptions?: AddEventListenerOptions,
-): () => void {
+): UIThemeDestructor {
     const colorSchemeTarget = resolveUITheme();
     const invertedColorSchemeTarget = UIThemeInversion[colorSchemeTarget];
 
@@ -174,6 +212,8 @@ export function createUIThemeEffect(
         mediaQueryList.removeEventListener("change", changeListener);
     };
 
+    listenerOptions?.signal?.addEventListener("abort", cleanup);
+
     return cleanup;
 }
 
@@ -182,17 +222,83 @@ export function createUIThemeEffect(
 //#region Theme Element
 
 /**
- * An element that can be themed.
+ * Applies the current UI theme to the given style root.
+ *
+ * @param styleRoot The style root to apply the theme to.
+ * @param currentUITheme The current UI theme to apply.
+ * @param additionalStyleSheets Additional style sheets to apply, in addition to the theme's base sheets.
+ * @category CSS
+ *
+ * @see {@linkcode setAdoptedStyleSheets} for caveats.
  */
-export interface ThemedElement extends HTMLElement {
-    brand?: CurrentBrand;
-    uiConfig?: UIConfig;
-    config?: Config;
-    activeTheme: ResolvedUITheme;
+export function applyUITheme(
+    styleRoot: StyleRoot,
+    currentUITheme: ResolvedUITheme = resolveUITheme(),
+    ...additionalStyleSheets: Array<CSSStyleSheet | undefined | null>
+): void {
+    setAdoptedStyleSheets(styleRoot, (currentStyleSheets) => {
+        const appendedSheets = additionalStyleSheets.filter(Boolean) as CSSStyleSheet[];
+
+        if (currentUITheme === UiThemeEnum.Dark) {
+            return [...currentStyleSheets, $AKBaseDark, ...appendedSheets];
+        }
+
+        return [
+            ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
+            ...appendedSheets,
+        ];
+    });
 }
 
-export function rootInterface<T extends ThemedElement = ThemedElement>(): T | null {
+/**
+ * Applies the given theme to the document, i.e. the `<html>` element.
+ *
+ * @param hint The color scheme hint to use.
+ */
+export function applyDocumentTheme(hint: CSSColorSchemeValue | UIThemeHint = "auto"): void {
+    const preferredColorScheme = formatColorScheme(hint);
+
+    if (document.documentElement.dataset.theme === preferredColorScheme) return;
+
+    const applyStyleSheets: UIThemeListener = (currentUITheme) => {
+        console.debug(`authentik/theme (document): switching to ${currentUITheme} theme`);
+
+        setAdoptedStyleSheets(document, (currentStyleSheets) => {
+            if (currentUITheme === "dark") {
+                return [...currentStyleSheets, $PFBase, $AKBase, $AKBaseDark];
+            }
+
+            return [
+                ...currentStyleSheets.filter((styleSheet) => styleSheet !== $AKBaseDark),
+                $PFBase,
+                $AKBase,
+            ];
+        });
+
+        document.documentElement.dataset.theme = currentUITheme;
+    };
+
+    if (preferredColorScheme === "auto") {
+        createUIThemeEffect(applyStyleSheets);
+        return;
+    }
+
+    applyStyleSheets(preferredColorScheme);
+}
+
+/**
+ * Returns the root interface element of the page.
+ *
+ * @todo Can this be handled with a Lit Mixin?
+ */
+export function rootInterface<T extends HTMLElement = HTMLElement>(): T {
     const element = document.body.querySelector<T>("[data-ak-interface-root]");
+
+    if (!element) {
+        throw new Error(
+            `Could not find root interface element. Was this element added before the parent interface element?`,
+        );
+    }
 
     return element;
 }

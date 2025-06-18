@@ -1,6 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { BaseStageForm } from "@goauthentik/admin/stages/BaseStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/components/ak-secret-text-input.js";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/Radio";
@@ -39,21 +40,20 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 stageUuid: this.instance.pk || "",
                 authenticatorEmailStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
-                authenticatorEmailStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorEmailCreate({
+            authenticatorEmailStageRequest: data,
+        });
     }
 
     renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
             return html``;
         }
-        return html`<ak-form-group .expanded=${true}>
+        return html`<ak-form-group expanded>
             <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} required name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -61,7 +61,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} required name="port">
                     <input
                         type="number"
                         value="${this.instance?.port ?? 25}"
@@ -76,13 +76,13 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         class="pf-c-form-control"
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("SMTP Password")}
-                    ?writeOnly=${this.instance !== undefined}
+
+                <ak-secret-text-input
                     name="password"
-                >
-                    <input type="text" value="" class="pf-c-form-control" />
-                </ak-form-element-horizontal>
+                    label=${msg("SMTP Password")}
+                    ?revealed=${this.instance === undefined}
+                ></ak-secret-text-input>
+
                 <ak-form-element-horizontal name="useTls">
                     <label class="pf-c-switch">
                         <input
@@ -113,11 +113,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                         <span class="pf-c-switch__label">${msg("Use SSL")}</span>
                     </label>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal
-                    label=${msg("Timeout")}
-                    ?required=${true}
-                    name="timeout"
-                >
+                <ak-form-element-horizontal label=${msg("Timeout")} required name="timeout">
                     <input
                         type="number"
                         value="${this.instance?.timeout ?? 30}"
@@ -127,7 +123,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
                     label=${msg("From address")}
-                    ?required=${true}
+                    required
                     name="fromAddress"
                 >
                     <input
@@ -146,7 +142,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
 
     renderForm(): TemplateResult {
         return html` <span> ${msg("Stage used to configure an email-based authenticator.")} </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -195,14 +191,10 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                 </p>
             </ak-form-element-horizontal>
             ${this.renderConnectionSettings()}
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Subject")}
-                        ?required=${true}
-                        name="subject"
-                    >
+                    <ak-form-element-horizontal label=${msg("Subject")} required name="subject">
                         <input
                             type="text"
                             value="${this.instance?.subject ?? "authentik Sign-in code"}"
@@ -215,7 +207,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Token expiration")}
-                        ?required=${true}
+                        required
                         name="tokenExpiry"
                     >
                         <input
@@ -261,7 +253,7 @@ export class AuthenticatorEmailStageForm extends BaseStageForm<AuthenticatorEmai
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

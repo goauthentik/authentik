@@ -25,11 +25,10 @@ export class PropertyMappingSourceOAuthForm extends BasePropertyMappingForm<OAut
                 pmUuid: this.instance.pk,
                 oAuthSourcePropertyMappingRequest: data,
             });
-        } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
-                oAuthSourcePropertyMappingRequest: data,
-            });
         }
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSourceOauthCreate({
+            oAuthSourcePropertyMappingRequest: data,
+        });
     }
 }
 

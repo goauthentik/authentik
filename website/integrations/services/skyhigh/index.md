@@ -31,11 +31,11 @@ This documentation lists only the settings that you need to change from their de
 
 While logged in to your Skyhigh Security Dashboard, click the configuration gear and navigate to `User Management` -> `SAML Configuration` -> `Skyhigh Cloud Users` tab
 
-Under the `Identity Provider` section enter the following values (replace `<slug>` with the name of the application slug you will use):
+Under the `Identity Provider` section enter the following values:
 
 - Issuer: `https://authentik.company/skyhigh-dashboard`
 - Certificate: Upload the signing certificate you will use for the Authentik provider
-- Login URL: `https://authentik.company/application/saml/<slug>/sso/binding/init/`
+- Login URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/init/`
 - SP-Initiated Request Binding: HTTP-POST
 - User exclusions: Select at least one administrator account to login directly (in case something goes wrong with SAML)
 
@@ -78,11 +78,11 @@ While logged in to your Skyhigh Security Dashboard, click the configuration gear
 
 Under the `Setup SAML` section click the `New SAML` button.
 
-Configure your SAML provider as follows (replace `<slug>` with the name of your slug):
+Configure your SAML provider as follows:
 
 - SAML Configuration Name: Enter a descriptive name here
 - Service Provider Entity ID: `https://login.auth.ui.trellix.com/sso/saml2`
-- SAML Identity Provider URL: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
+- SAML Identity Provider URL: `https://authentik.company/application/saml/<application_slug>/sso/binding/post/`
 - Identity Provider Entity ID: `https://authentik.company/skyhigh-swg`
 - User ID Attribute in SAML Response: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
 - Group ID Attribute in SAML Response: `http://schemas.xmlsoap.org/claims/Group`

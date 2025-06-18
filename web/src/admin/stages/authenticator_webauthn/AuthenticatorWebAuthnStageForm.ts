@@ -41,11 +41,10 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                 stageUuid: this.instance.pk || "",
                 authenticatorWebAuthnStageRequest: data,
             });
-        } else {
-            return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
-                authenticatorWebAuthnStageRequest: data,
-            });
         }
+        return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorWebauthnCreate({
+            authenticatorWebAuthnStageRequest: data,
+        });
     }
 
     renderForm(): TemplateResult {
@@ -54,7 +53,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     "Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
             </span>
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} required name="name">
                 <input
                     type="text"
                     value="${this.instance?.name ?? ""}"
@@ -78,12 +77,12 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-group .expanded=${true}>
+            <ak-form-group expanded>
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
                         label=${msg("User verification")}
-                        ?required=${true}
+                        required
                         name="userVerification"
                     >
                         <ak-radio
@@ -110,7 +109,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Resident key requirement")}
-                        ?required=${true}
+                        required
                         name="residentKeyRequirement"
                     >
                         <ak-radio
@@ -141,7 +140,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Authenticator Attachment")}
-                        ?required=${true}
+                        required
                         name="authenticatorAttachment"
                     >
                         <ak-radio
@@ -227,7 +226,7 @@ export class AuthenticatorWebAuthnStageForm extends BaseStageForm<AuthenticatorW
                             .selected=${(flow: Flow): boolean => {
                                 return this.instance?.configureFlow === flow.pk;
                             }}
-                            ?blankable=${true}
+                            blankable
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">

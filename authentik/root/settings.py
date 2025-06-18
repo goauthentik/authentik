@@ -132,7 +132,7 @@ TENANT_CREATION_FAKES_MIGRATIONS = True
 TENANT_BASE_SCHEMA = "template"
 PUBLIC_SCHEMA_NAME = CONFIG.get("postgresql.default_schema")
 
-GUARDIAN_MONKEY_PATCH = False
+GUARDIAN_MONKEY_PATCH_USER = False
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "authentik",
@@ -424,7 +424,7 @@ else:
         "BACKEND": "authentik.root.storages.FileStorage",
         "OPTIONS": {
             "location": Path(CONFIG.get("storage.media.file.path")),
-            "base_url": "/media/",
+            "base_url": CONFIG.get("web.path", "/") + "media/",
         },
     }
     # Compatibility for apps not supporting top-level STORAGES
@@ -446,6 +446,8 @@ _DISALLOWED_ITEMS = [
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
     "CELERY",
+    "SPECTACULAR_SETTINGS",
+    "REST_FRAMEWORK",
 ]
 
 SILENCED_SYSTEM_CHECKS = [
@@ -468,6 +470,8 @@ def _update_settings(app_path: str):
         TENANT_APPS.extend(getattr(settings_module, "TENANT_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
+        SPECTACULAR_SETTINGS.update(getattr(settings_module, "SPECTACULAR_SETTINGS", {}))
+        REST_FRAMEWORK.update(getattr(settings_module, "REST_FRAMEWORK", {}))
         CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
