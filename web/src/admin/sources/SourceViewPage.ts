@@ -11,6 +11,7 @@ import "#elements/EmptyState";
 import "#elements/buttons/SpinnerButton/ak-spinner-button";
 import { ModelForm } from "#elements/forms/ModelForm";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -31,7 +32,7 @@ export class SourceViewPage extends AKElement {
     _sourceSlug?: string;
 
     @property({ attribute: false })
-    source?: Source;
+    source?: Source | null;
 
     fetchSource(slug: string): void {
         new SourcesApi(DEFAULT_CONFIG)
@@ -40,6 +41,10 @@ export class SourceViewPage extends AKElement {
             })
             .then((source) => {
                 this.source = source;
+            })
+            .catch((error) => {
+                console.error(`Failed to fetch source with slug ${slug}:`, error);
+                this.source = null as unknown as Source;
             });
     }
 
@@ -51,8 +56,18 @@ export class SourceViewPage extends AKElement {
     }
 
     renderSource(): TemplateResult {
-        if (!this.source) {
+        if (this.source === undefined) {
             return html`<ak-empty-state loading fullHeight></ak-empty-state>`;
+        }
+
+        if (this.source === null) {
+            return html`<ak-empty-state 
+                header=${msg("Source not found")}
+                icon="fa fa-exclamation-triangle"
+                fullHeight
+            >
+                <p>${msg("The requested source does not exist or you don't have permission to view it.")}</p>
+            </ak-empty-state>`;
         }
 
         const handleFormSubmit = (e: CustomEvent) => {
@@ -97,6 +112,10 @@ export class SourceViewPage extends AKElement {
     }
 
     render(): TemplateResult {
+        if (this.source === null) {
+            return this.renderSource();
+        }
+        
         return html`<ak-page-header
                 icon="pf-icon pf-icon-middleware"
                 header=${ifDefined(this.source?.name)}
