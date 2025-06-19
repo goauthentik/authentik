@@ -123,6 +123,7 @@ TENANT_APPS = [
     "authentik.stages.user_login",
     "authentik.stages.user_logout",
     "authentik.stages.user_write",
+    "authentik.tasks.schedules",
     "authentik.brands",
     "authentik.blueprints",
     "guardian",
@@ -525,10 +526,6 @@ for _app in set(SHARED_APPS + TENANT_APPS):
         continue
     _update_settings(f"{_app}.settings")
 _update_settings("data.user_settings")
-
-# Import schedules after other apps since it relies on tasks and ScheduledModel being
-# registered for its startup.
-TENANT_APPS.append("authentik.tasks.schedules")
 
 SHARED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))
 INSTALLED_APPS = list(OrderedDict.fromkeys(SHARED_APPS + TENANT_APPS))

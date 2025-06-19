@@ -2,7 +2,7 @@ from enum import StrEnum, auto
 from uuid import UUID
 
 import pgtrigger
-from django.contrib.contenttypes.fields import ContentType, GenericForeignKey
+from django.contrib.contenttypes.fields import ContentType, GenericForeignKey, GenericRelation
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django_dramatiq_postgres.models import TaskBase
@@ -113,3 +113,14 @@ class Task(SerializerModel, TaskBase):
 
     def error(self, message: str | Exception, save: bool = False, **attributes):
         self.log("error", message, save=save, **attributes)
+
+
+class TasksModel(models.Model):
+    tasks = GenericRelation(
+        Task,
+        content_type_field="rel_obj_content_type",
+        object_id_field="rel_obj_id",
+    )
+
+    class Meta:
+        abstract = True

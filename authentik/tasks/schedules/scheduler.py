@@ -1,53 +1,24 @@
 import pglock
-from django.db import router, transaction
-from django.utils.timezone import now, timedelta
-from dramatiq.broker import Broker
+from django_dramatiq_postgres.scheduler import Scheduler as SchedulerBase
 from structlog.stdlib import get_logger
 
-from authentik.tasks.schedules.models import Schedule
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()
 
 
-class Scheduler:
-    def __init__(self, broker: Broker):
-        self.broker = broker
-
-    def process_schedule(self, schedule: Schedule):
-        next_run = schedule.next_run
-        while True:
-            next_run = schedule.calculate_next_run(next_run)
-            if next_run > now():
-                break
-            # Force to calculate the one after
-            next_run += timedelta(minutes=2)
-        schedule.next_run = next_run
-
-        schedule.send(self.broker)
-
-        schedule.save()
-
-    def run_per_tenant(self, tenant: Tenant):
-        with pglock.advisory(
-            lock_id=f"goauthentik.io/{tenant.schema_name}/tasks/scheduler",
+class Scheduler(SchedulerBase):
+    def _lock(self, tenant: Tenant) -> pglock.advisory:
+        return pglock.advisory(
+            lock_id=f"authentik.scheduler/{tenant.schema_name}",
             side_effect=pglock.Return,
             timeout=0,
-        ) as lock_acquired:
-            if not lock_acquired:
-                LOGGER.debug(
-                    "Failed to acquire lock for tasks scheduling, skipping",
-                    tenant=tenant.schema_name,
-                )
-                return
-            with transaction.atomic(using=router.db_for_write(Schedule)):
-                for schedule in Schedule.objects.select_for_update().filter(
-                    next_run__lt=now(),
-                    paused=False,
-                ):
-                    self.process_schedule(schedule)
+        )
 
     def run(self):
         for tenant in Tenant.objects.filter(ready=True):
             with tenant:
-                self.run_per_tenant(tenant)
+                with self._lock(tenant) as lock_acquired:
+                    if not lock_acquired:
+                        return
+                    self._run()
