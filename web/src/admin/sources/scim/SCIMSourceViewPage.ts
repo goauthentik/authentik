@@ -11,6 +11,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/ModalForm";
+import { createSourceFormSubmitHandler } from "@goauthentik/admin/sources/utils";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -110,7 +111,11 @@ export class SCIMSourceViewPage extends AKElement {
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update SCIM Source")} </span>
-                                <ak-source-scim-form slot="form" .instancePk=${this.source.slug}>
+                                <ak-source-scim-form 
+                                    slot="form" 
+                                    .instancePk=${this.source.slug}
+                                    @ak-form-successful-submit=${createSourceFormSubmitHandler()}
+                                >
                                 </ak-source-scim-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${msg("Edit")}
