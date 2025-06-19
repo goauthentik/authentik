@@ -7,7 +7,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/helpers";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { formatSlug } from "@goauthentik/elements/router/utils.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -32,6 +31,8 @@ export interface KeyUnknown {
 type HTMLNamedElement = Pick<HTMLInputElement, "name">;
 
 export type AkControlElement<T = string | string[]> = HTMLInputElement & { json: () => T };
+
+const doNotProcess = <T extends HTMLElement>(element: T) => element.dataset.formIgnore === "true";
 
 /**
  * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
@@ -74,7 +75,7 @@ export function serializeForm<T extends KeyUnknown>(
         }
 
         const inputElement = element.querySelector<AkControlElement>("[name]");
-        if (element.hidden || !inputElement || (element.writeOnly && !element.writeOnlyActivated)) {
+        if (element.hidden || !inputElement || doNotProcess(inputElement)) {
             return;
         }
 
@@ -193,39 +194,6 @@ export abstract class Form<T> extends AKElement {
 
     getSuccessMessage(): string {
         return this.successMessage;
-    }
-
-    /**
-     * After rendering the form, if there is both a `name` and `slug` element within the form,
-     * events the `name` element so that the slug will always have a slugified version of the
-     * `name.`. This duplicates functionality within ak-form-element-horizontal.
-     */
-    updated(): void {
-        this.shadowRoot
-            ?.querySelectorAll("ak-form-element-horizontal[name=name]")
-            .forEach((nameInput) => {
-                const input = nameInput.firstElementChild as HTMLInputElement;
-                const form = nameInput.closest("form");
-                if (form === null) {
-                    return;
-                }
-                const slugFieldWrapper = form.querySelector(
-                    "ak-form-element-horizontal[name=slug]",
-                );
-                if (!slugFieldWrapper) {
-                    return;
-                }
-                const slugField = slugFieldWrapper.firstElementChild as HTMLInputElement;
-                // Only attach handler if the slug is already equal to the name
-                // if not, they are probably completely different and shouldn't update
-                // each other
-                if (formatSlug(input.value) !== slugField.value) {
-                    return;
-                }
-                nameInput.addEventListener("input", () => {
-                    slugField.value = formatSlug(input.value);
-                });
-            });
     }
 
     resetForm(): void {

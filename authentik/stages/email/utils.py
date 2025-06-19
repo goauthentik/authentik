@@ -19,7 +19,8 @@ def logo_data() -> MIMEImage:
         path = Path("web/dist/assets/icons/icon_left_brand.png")
     with open(path, "rb") as _logo_file:
         logo = MIMEImage(_logo_file.read())
-    logo.add_header("Content-ID", "logo.png")
+    logo.add_header("Content-ID", "<logo>")
+    logo.add_header("Content-Disposition", "inline", filename="logo.png")
     return logo
 
 

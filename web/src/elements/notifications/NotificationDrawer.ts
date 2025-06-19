@@ -163,7 +163,8 @@ export class NotificationDrawer extends AKElement {
     }
 
     renderEmpty() {
-        return html`<ak-empty-state header=${msg("No notifications found.")}>
+        return html`<ak-empty-state
+            ><span slot="header">${msg("No notifications found.")}</span>
             <div slot="body">${msg("You don't have any notifications currently.")}</div>
         </ak-empty-state>`;
     }

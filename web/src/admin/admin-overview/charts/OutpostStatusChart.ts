@@ -1,3 +1,4 @@
+import { actionToColor } from "#elements/charts/EventChart";
 import { SummarizedSyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
@@ -7,7 +8,7 @@ import { ChartData, ChartOptions } from "chart.js";
 import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
-import { OutpostsApi } from "@goauthentik/api";
+import { EventActions, OutpostsApi } from "@goauthentik/api";
 
 @customElement("ak-admin-status-chart-outpost")
 export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
@@ -65,7 +66,11 @@ export class OutpostStatusChart extends AKChart<SummarizedSyncStatus[]> {
             labels: [msg("Healthy outposts"), msg("Outdated outposts"), msg("Unhealthy outposts")],
             datasets: data.map((d) => {
                 return {
-                    backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],
+                    backgroundColor: [
+                        actionToColor(EventActions.Login),
+                        actionToColor(EventActions.SuspiciousRequest),
+                        actionToColor(EventActions.AuthorizeApplication),
+                    ],
                     spanGaps: true,
                     data: [d.healthy, d.failed, d.unsynced],
                     label: d.label,
