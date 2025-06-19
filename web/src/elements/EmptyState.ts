@@ -93,7 +93,6 @@ export class EmptyState extends AKElement implements IEmptyState {
 }
 
 export function akEmptyState(properties: IEmptyState, content: SlottedTemplateResult = nothing) {
-    // If we have a header property, convert it to a slot
     const headerSlot = properties.header
         ? html`<span slot="header">${properties.header}</span>`
         : nothing;
